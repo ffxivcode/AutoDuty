@@ -1,0 +1,6 @@
+[submodule "ECommons"]
+	path = ECommons
+	url = https://github.com/ffxivcode/ECommons
+[submodule "ClickLib"]
+	path = ClickLib
+	url = https://github.com/ffxivcode/ClickLib
