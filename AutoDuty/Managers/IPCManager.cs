@@ -2,7 +2,7 @@
 using ECommons.Reflection;
 using System.Numerics;
 
-namespace AutoDuty
+namespace AutoDuty.Managers
 {
     internal static class IPCManager
     {

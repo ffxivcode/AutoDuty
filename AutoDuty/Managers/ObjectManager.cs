@@ -11,7 +11,7 @@ using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using System;
 
-namespace AutoDuty
+namespace AutoDuty.Managers
 {
     internal static class ObjectManager
     {

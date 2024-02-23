@@ -7,14 +7,13 @@ using Dalamud.Plugin.Services;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Reflection;
-using Dalamud.Common;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using ECommons.GameHelpers;
-using ECommons.Reflection;
+using AutoDuty.Managers;
+using AutoDuty.Windows;
 
 namespace AutoDuty;
 

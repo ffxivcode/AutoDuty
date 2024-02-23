@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Text.Json;
+using AutoDuty.Managers;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons;
@@ -12,7 +13,7 @@ using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ImGuiNET;
-namespace AutoDuty;
+namespace AutoDuty.Windows;
 
 public class MainWindow : Window, IDisposable
 {
@@ -189,7 +190,7 @@ public class MainWindow : Window, IDisposable
 
                                 if (item.Item2.Equals("false"))
                                 {
-                                    Plugin.ListBoxPOSText.Add($"{ item.Item1}|");
+                                    Plugin.ListBoxPOSText.Add($"{item.Item1}|");
                                 }
                                 else if (item.Item1.Equals("Boss"))
                                 {

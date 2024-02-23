@@ -12,11 +12,11 @@ using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.InteropServices;
 using Dalamud.Game.ClientState.Conditions;
 
-namespace AutoDuty
+namespace AutoDuty.Managers
 {
     public class ActionsManager()
     {
-        public readonly List<(string,string)> ActionsList =
+        public readonly List<(string, string)> ActionsList =
         [
             ("Wait","how long?"),
             ("WaitFor","for?"),
@@ -47,7 +47,7 @@ namespace AutoDuty
                     if (actionTask != null)
                         await (Task)actionTask.Invoke(this, p);
                 }
-            } 
+            }
             catch (Exception ex)
             {
                 Svc.Log.Error(ex.ToString());
@@ -65,7 +65,7 @@ namespace AutoDuty
         {
             exitDuty.Invoke((char)0);
         }
-        
+
         public async Task SelectYesno(string YesorNo)
         {
             Svc.Log.Info($"YesorNo: {YesorNo}");
@@ -74,7 +74,7 @@ namespace AutoDuty
                 nint addon;
                 int cnt = 0;
                 Svc.Log.Info("Waiting for YesNo");
-                while ((addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) == 0 && (cnt++ < 500) && !Token.IsCancellationRequested)
+                while ((addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) == 0 && cnt++ < 500 && !Token.IsCancellationRequested)
                     await Task.Delay(10, Token);
 
                 if (addon == 0 || Token.IsCancellationRequested)
@@ -134,14 +134,14 @@ namespace AutoDuty
 
                 while (IPCManager.VNavmesh_WaypointsCount > 0)
                     await Task.Delay(10, Token);
-                
+
             }
             catch (Exception ex)
             {
                 Svc.Log.Error(ex.ToString());
             }
         }
-        
+
         public async Task TreasureCoffer(string s)
         {
             Svc.Log.Info("Treasure Coffer Start");
@@ -171,7 +171,7 @@ namespace AutoDuty
                         return;
 
                     if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(_player.Position, o.Position)).FirstOrDefault()) is null)
-                            return;
+                        return;
 
                     ObjectManager.InteractWithObject(gameObject);
 
@@ -309,7 +309,7 @@ namespace AutoDuty
             Green = 0x1E8A8D,
         }
         public string GlobalStringStore;
-        
+
         public async Task DutySpecificCode(string stage)
         {
             switch (Svc.ClientState.TerritoryType)
@@ -338,7 +338,7 @@ namespace AutoDuty
 
                                 if (Token.IsCancellationRequested)
                                     return;
-                                 
+
                                 Svc.Log.Info("Done Moving - Interacting with Obj");
                                 nint addon;
                                 int cnt = 0;
@@ -348,13 +348,13 @@ namespace AutoDuty
                                     ObjectManager.InteractWithObject(a);
                                     await Task.Delay(10, Token);
                                 }
-                                while ((addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) == nint.Zero && (cnt++ < 500) && !Token.IsCancellationRequested);
+                                while ((addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) == nint.Zero && cnt++ < 500 && !Token.IsCancellationRequested);
 
-                                if ((addon == nint.Zero) || Token.IsCancellationRequested)
+                                if (addon == nint.Zero || Token.IsCancellationRequested)
                                     return;
 
                                 Svc.Log.Info($"Done Interacting with Obj - Selecting Yes on ({addon})");
-                                
+
                                 await SelectYesno("YES");
 
                                 if (Token.IsCancellationRequested)
