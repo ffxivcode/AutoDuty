@@ -13,12 +13,14 @@ using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ImGuiNET;
+using static System.Windows.Forms.AxHost;
 namespace AutoDuty.Windows;
 
 public class MainWindow : Window, IDisposable
 {
     readonly AutoDuty Plugin;
     (string, string) dropdownSelected = ("", "");
+    private string pathsURL = "https://github.com/ffxivcode/DalamudPlugins/tree/main/AutoDuty/Paths";
     ushort _territoryType;
     Vector3 _playerPosition;
     bool _inDungeon = false;
@@ -35,7 +37,7 @@ public class MainWindow : Window, IDisposable
     {
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(375, 330),
+            MinimumSize = new Vector2(425, 375),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
@@ -132,6 +134,7 @@ public class MainWindow : Window, IDisposable
                         {
                             LoadPath();
                             Plugin.Stage = 1;
+                            Plugin.Started = true;
                         }
                     }
                     ImGui.SameLine(0, 5);
@@ -143,6 +146,7 @@ public class MainWindow : Window, IDisposable
                         }
                     }
                     if (!ImGui.BeginListBox("##MainList", new Vector2(-1, -1))) return;
+                    
                     if (IPCManager.VNavmesh_IsEnabled && IPCManager.BossMod_IsEnabled)
                     {
                         foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
@@ -154,6 +158,8 @@ public class MainWindow : Window, IDisposable
                                 v4 = new Vector4(255, 255, 255, 1);
                             ImGui.TextColored(v4, item.name);
                         }
+                        if (_inDungeon && !_pathFileExists)
+                            ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(_territoryType).Split('|')[1].Trim()}\n({_territoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory}\nPlease download from:\n{pathsURL}\nor Create in the Build Tab");
                     }
                     else
                     {

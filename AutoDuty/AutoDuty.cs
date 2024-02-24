@@ -14,6 +14,7 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using ECommons.GameHelpers;
 using AutoDuty.Managers;
 using AutoDuty.Windows;
+using static System.Windows.Forms.AxHost;
 
 namespace AutoDuty;
 
@@ -35,6 +36,7 @@ public class AutoDuty : IDalamudPlugin
     public WindowSystem WindowSystem = new("AutoDuty");
     public int Stage = 0;
     public int Indexer = 0;
+    public bool Started = false;
     private Task? _task = null;
 
     public AutoDuty(DalamudPluginInterface pluginInterface)
@@ -42,7 +44,7 @@ public class AutoDuty : IDalamudPlugin
         try
         {
             Plugin = this;
-            ECommonsMain.Init(pluginInterface, this, ECommons.Module.All);
+            ECommonsMain.Init(pluginInterface, this, Module.All);
 
             Configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.Initialize(pluginInterface);
@@ -110,24 +112,25 @@ public class AutoDuty : IDalamudPlugin
         {
             //AutoDuty is stopped or has not started
             case 0:
-                if (IPCManager.VNavmesh_WaypointsCount > 0)
+                if (IPCManager.VNavmesh_WaypointsCount > 0 && Started)
                 {
-                    Svc.Log.Info($"Stopping Navigation");
+                    //Svc.Log.Info($"Stopping Navigation");
+                    Started = false;
                     IPCManager.VNavmesh_Stop();
                 }
                 if (IPCManager.VNavmesh_Tolerance > 0.5F)
                     IPCManager.VNavmesh_SetTolerance(0.5f);
                 if (_task is not null)
                 {
-                    Svc.Log.Info($"Clearing Task: {_task.Status}");
+                    //Svc.Log.Info($"Clearing Task: {_task.Status}");
                     if ((_task.Status != TaskStatus.Running || _task.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
                     {
-                        Svc.Log.Info($"Setting Cancellation Token");
+                        //Svc.Log.Info($"Setting Cancellation Token");
                         _actions.TokenSource.Cancel();
                     }
                     else if (_task.Status != TaskStatus.Running && _task.Status != TaskStatus.WaitingForActivation)
                     {
-                        Svc.Log.Info($"Cancellation Succesful");
+                        //Svc.Log.Info($"Cancellation Succesful");
                         //_task.Dispose();
                         _task = null;
                         SetToken();
@@ -145,20 +148,20 @@ public class AutoDuty : IDalamudPlugin
                     var action = lst[0];
                     var p = lst[1].Split(',');
                     _task = null;
-                    Svc.Log.Info($"Invoking Action: {action} with params: {p}");
-                    Svc.Log.Info($"Task is null: {_task is null}");
+                    //Svc.Log.Info($"Invoking Action: {action} with params: {p}");
+                   // Svc.Log.Info($"Task is null: {_task is null}");
                     _task = Task.Run(() => _actions.InvokeAction(action, p));
-                    Svc.Log.Info($"Waiting for Action");
+                    //Svc.Log.Info($"Waiting for Action");
                 }
                 else
                 {
                     Stage = 2;
                     var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
-                    Svc.Log.Info($"Navigating To: {destinationVector}");
+                    //Svc.Log.Info($"Navigating To: {destinationVector}");
                     if (!IPCManager.VNavmesh_MovementAllowed)
                         IPCManager.VNavmesh_SetMovementAllowed(true);
                     IPCManager.VNavmesh_MoveTo(destinationVector);
-                    Svc.Log.Info($"Waiting for Navigation");
+                    //Svc.Log.Info($"Waiting for Navigation");
                 }
                 break;
             //We are navigating
@@ -170,7 +173,7 @@ public class AutoDuty : IDalamudPlugin
 
                 if (IPCManager.VNavmesh_WaypointsCount == 0)
                 {
-                    Svc.Log.Info($"Done Waiting for Navigation");
+                    //Svc.Log.Info($"Done Waiting for Navigation");
                     Stage = 1;
                     Indexer++;
                 }
@@ -180,14 +183,12 @@ public class AutoDuty : IDalamudPlugin
                 {
                     if (_task.IsCompleted)
                     {
-                        Svc.Log.Info($"Done Waiting for Action");
+                        //Svc.Log.Info($"Done Waiting for Action");
                         Stage = 1;
                         _task = null;
                         Indexer++;
                     }
                 }
-                else
-                    Svc.Log.Info("Task has not started");
                 break;
             default:
                 break;

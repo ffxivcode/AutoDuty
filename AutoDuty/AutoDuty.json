@@ -1,11 +1,18 @@
 {
   "Author": "Herculezz",
   "Name": "AutoDuty",
+  "InternalName": "AutoDuty",
+  "AssemblyVersion": "0.0.0.1",
   "Punchline": "AutoDuty",
-  "Description": "AutoDuty",
-  "InternalName": "autoduty",
+  "Description": "A plugin to run dungeons for you with Trust or Duty Support, Requires BossMod and vnavmesh",
   "ApplicableVersion": "any",
-  "Tags": [
-    "AutoDuty"
-  ]
+  "RepoUrl": "",
+  "DalamudApiLevel": 9,
+  "DownloadLinkInstall": "https://github.com/ffxivcode/DalamudPlugins/raw/main/AutoDuty/AutoDuty-latest.zip",
+  "DownloadLinkUpdate": "https://github.com/ffxivcode/DalamudPlugins/raw/main/AutoDuty/AutoDuty-latest.zip",
+  "ImageUrls": [
+    "https://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/AutoDuty/AutoDuty1.png",
+    "https://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/AutoDuty/AutoDuty2.png"
+  ],
+  "IconUrl": "https://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/MBT/AutoDutyi.png"
 }

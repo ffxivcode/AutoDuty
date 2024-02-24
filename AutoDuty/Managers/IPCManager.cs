@@ -12,7 +12,7 @@ namespace AutoDuty.Managers
 
         internal static bool VNavmesh_IsEnabled => DalamudReflector.TryGetDalamudPlugin("vnavmesh", out _, false, true);
 
-        internal static bool VNavmesh_NavmeshIsNull => Svc.PluginInterface.GetIpcSubscriber<bool>("vnavmesh.NavmeshIsNull").InvokeFunc();
+        internal static bool VNavmesh_NavmeshIsNull => VNavmesh_IsEnabled ? Svc.PluginInterface.GetIpcSubscriber<bool>("vnavmesh.NavmeshIsNull").InvokeFunc() : false;
         internal static float VNavmesh_TaskProgress => Svc.PluginInterface.GetIpcSubscriber<float>("vnavmesh.TaskProgress").InvokeFunc();
         internal static int VNavmesh_WaypointsCount => Svc.PluginInterface.GetIpcSubscriber<int>("vnavmesh.WaypointsCount").InvokeFunc();
         internal static void VNavmesh_MoveTo(Vector3 v3) => Svc.PluginInterface.GetIpcSubscriber<Vector3, object>("vnavmesh.MoveTo").InvokeAction(v3);

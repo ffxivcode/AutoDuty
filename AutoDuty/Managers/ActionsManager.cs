@@ -38,7 +38,7 @@ namespace AutoDuty.Managers
         {
             try
             {
-                Svc.Log.Info($"InvokeAction: Action: {action} Params: {p.Length}");
+                //Svc.Log.Info($"InvokeAction: Action: {action} Params: {p.Length}");
 
                 if (!string.IsNullOrEmpty(action))
                 {
@@ -56,9 +56,9 @@ namespace AutoDuty.Managers
 
         public async Task Wait(string wait)
         {
-            Svc.Log.Info($"Wait: {wait}");
+            //Svc.Log.Info($"Wait: {wait}");
             await Task.Delay(Convert.ToInt32(wait), Token);
-            Svc.Log.Info($"Done Wait: {wait}");
+            //Svc.Log.Info($"Done Wait: {wait}");
         }
 
         public void ExitDuty(string _)
@@ -68,18 +68,18 @@ namespace AutoDuty.Managers
 
         public async Task SelectYesno(string YesorNo)
         {
-            Svc.Log.Info($"YesorNo: {YesorNo}");
+            //Svc.Log.Info($"YesorNo: {YesorNo}");
             try
             {
                 nint addon;
                 int cnt = 0;
-                Svc.Log.Info("Waiting for YesNo");
+                //Svc.Log.Info("Waiting for YesNo");
                 while ((addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) == 0 && cnt++ < 500 && !Token.IsCancellationRequested)
                     await Task.Delay(10, Token);
 
                 if (addon == 0 || Token.IsCancellationRequested)
                     return;
-                Svc.Log.Info("Done Waiting for YesNo");
+                //Svc.Log.Info("Done Waiting for YesNo");
                 await Task.Delay(25, Token);
 
                 if (Token.IsCancellationRequested)
@@ -91,7 +91,7 @@ namespace AutoDuty.Managers
                 {
                     if (YesorNo.Equals("YES"))
                     {
-                        Svc.Log.Info("Clicking Yes");
+                        //Svc.Log.Info("Clicking Yes");
                         ClickSelectYesNo.Using(addon).Yes();
                     }
                     else if (YesorNo.Equals("NO"))
@@ -109,7 +109,7 @@ namespace AutoDuty.Managers
                 return;
             }
             await Task.Delay(50, Token);
-            Svc.Log.Info("Done");
+            //Svc.Log.Info("Done");
         }
 
         public async Task MoveToObject(string objectName)
@@ -144,14 +144,14 @@ namespace AutoDuty.Managers
 
         public async Task TreasureCoffer(string s)
         {
-            Svc.Log.Info("Treasure Coffer Start");
+            //Svc.Log.Info("Treasure Coffer Start");
             await Interactable("Treasure Coffer");
-            Svc.Log.Info("Treasure Coffer Done");
+            //Svc.Log.Info("Treasure Coffer Done");
         }
 
         public async Task Interactable(string objectName)
         {
-            Svc.Log.Info($"Interactable: {objectName}");
+            //Svc.Log.Info($"Interactable: {objectName}");
             PlayerCharacter? _player;
             if ((_player = Svc.ClientState.LocalPlayer) is null)
                 return;
@@ -185,7 +185,7 @@ namespace AutoDuty.Managers
             }
 
             await Task.Delay(50, Token);
-            Svc.Log.Info($"Done Interactable: {objectName}");
+            //Svc.Log.Info($"Done Interactable: {objectName}");
         }
 
         public async Task Boss(string x, string y, string z)
@@ -234,7 +234,7 @@ namespace AutoDuty.Managers
             }
             if (bossObject != null)
             {
-                Svc.Log.Info("Boss: waiting while InCombat and while !" + bossObject.Name + ".IsDead");
+                //Svc.Log.Info("Boss: waiting while InCombat and while !" + bossObject.Name + ".IsDead");
                 while (Svc.Condition[ConditionFlag.InCombat] && !bossObject.IsDead)
                 {
                     if (Vector3.Distance(_player.Position, followTargetObject.Position) > IPCManager.VNavmesh_Tolerance && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
@@ -249,7 +249,7 @@ namespace AutoDuty.Managers
             }
             else
             {
-                Svc.Log.Info("Boss: We were unable to determine our Boss Object waiting while InCombat");
+                //Svc.Log.Info("Boss: We were unable to determine our Boss Object waiting while InCombat");
                 while (Svc.Condition[ConditionFlag.InCombat])
                 {
                     if (Vector3.Distance(_player.Position, followTargetObject.Position) > IPCManager.VNavmesh_Tolerance && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
@@ -271,7 +271,7 @@ namespace AutoDuty.Managers
             BattleChara bossObject = default;
             foreach (var obj in battleCharaObjs)
             {
-                Svc.Log.Info("Checking: " + obj.Name.ToString());
+                //Svc.Log.Info("Checking: " + obj.Name.ToString());
                 if (ObjectManager.IsBossFromIcon(obj))
                     bossObject = obj;
             }
@@ -330,7 +330,7 @@ namespace AutoDuty.Managers
                             var a = Svc.Objects.Where(a => a.Name.ToString().Equals(GlobalStringStore + " Coral Formation")).First();
                             if (a != null)
                             {
-                                Svc.Log.Info("Found Obj (" + a.Name.ToString() + ")- Moving");
+                                //Svc.Log.Info("Found Obj (" + a.Name.ToString() + ")- Moving");
                                 IPCManager.VNavmesh_SetTolerance(2.5f);
                                 IPCManager.VNavmesh_MoveTo(a.Position);
                                 while (IPCManager.VNavmesh_WaypointsCount != 0 && !Token.IsCancellationRequested)
@@ -339,7 +339,7 @@ namespace AutoDuty.Managers
                                 if (Token.IsCancellationRequested)
                                     return;
 
-                                Svc.Log.Info("Done Moving - Interacting with Obj");
+                                //Svc.Log.Info("Done Moving - Interacting with Obj");
                                 nint addon;
                                 int cnt = 0;
 
@@ -353,14 +353,14 @@ namespace AutoDuty.Managers
                                 if (addon == nint.Zero || Token.IsCancellationRequested)
                                     return;
 
-                                Svc.Log.Info($"Done Interacting with Obj - Selecting Yes on ({addon})");
+                                //Svc.Log.Info($"Done Interacting with Obj - Selecting Yes on ({addon})");
 
                                 await SelectYesno("YES");
 
                                 if (Token.IsCancellationRequested)
                                     return;
 
-                                Svc.Log.Info("Done Selecting Yes");
+                                //Svc.Log.Info("Done Selecting Yes");
                                 IPCManager.VNavmesh_SetTolerance(0.5f);
                             }
                             break;
