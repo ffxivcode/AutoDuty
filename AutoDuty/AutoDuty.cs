@@ -14,7 +14,6 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using ECommons.GameHelpers;
 using AutoDuty.Managers;
 using AutoDuty.Windows;
-using static System.Windows.Forms.AxHost;
 
 namespace AutoDuty;
 
@@ -49,7 +48,6 @@ public class AutoDuty : IDalamudPlugin
             Configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.Initialize(pluginInterface);
             
-
             _configDirectory = pluginInterface.ConfigDirectory;
             PathsDirectory = new DirectoryInfo(_configDirectory.FullName + "/paths");
 
@@ -72,8 +70,6 @@ public class AutoDuty : IDalamudPlugin
             pluginInterface.UiBuilder.Draw += DrawUI;
 
             Svc.Framework.Update += Framework_Update;
-
-            MainWindow.IsOpen = true;
 
             SetToken();
         }
@@ -157,11 +153,11 @@ public class AutoDuty : IDalamudPlugin
                 {
                     Stage = 2;
                     var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
-                    //Svc.Log.Info($"Navigating To: {destinationVector}");
+                    Svc.Log.Info($"Navigating To: {destinationVector}");
                     if (!IPCManager.Vnavmesh_Path_GetMovementAllowed )
                         IPCManager.Vnavmesh_Path_SetMovementAllowed(true);
                     IPCManager.Vnavmesh_Path_MoveTo(destinationVector);
-                    //Svc.Log.Info($"Waiting for Navigation");
+                    Svc.Log.Info($"Waiting for Navigation");
                 }
                 break;
             //We are navigating
@@ -173,7 +169,7 @@ public class AutoDuty : IDalamudPlugin
 
                 if (IPCManager.Vnavmesh_Path_NumWaypoints == 0)
                 {
-                    //Svc.Log.Info($"Done Waiting for Navigation");
+                    Svc.Log.Info($"Done Waiting for Navigation");
                     Stage = 1;
                     Indexer++;
                 }

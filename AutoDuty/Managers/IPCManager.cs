@@ -22,11 +22,7 @@ namespace AutoDuty.Managers
         internal static int   Vnavmesh_Path_NumWaypoints                => Invoke<int>  ("vnavmesh", "Path.NumWaypoints");
         internal static bool  Vnavmesh_Path_IsRunning                   => Invoke<bool> ("vnavmesh", "Path.IsRunning");
         internal static void  Vnavmesh_Path_MoveTo(Vector3 v3)          => Invoke       ("vnavmesh", "Path.MoveTo", v3);
-        internal static void  Vnavmesh_Path_MoveDir(Vector3 v3)         => Invoke       ("vnavmesh", "Path.MoveDir", v3);
-        internal static void  Vnavmesh_Path_MoveTarget()                => Invoke       ("vnavmesh", "Path.MoveTarget");
         internal static void  Vnavmesh_Path_FlyTo(Vector3 v3)           => Invoke       ("vnavmesh", "Path.FlyTo", v3);
-        internal static void  Vnavmesh_Path_FlyDir(Vector3 v3)          => Invoke       ("vnavmesh", "Path.FlyDir", v3);
-        internal static void  Vnavmesh_Path_FlyTarget()                 => Invoke       ("vnavmesh", "Path.FlyTarget");
         internal static void  Vnavmesh_Path_SetMovementAllowed(bool b)  => Invoke       ("vnavmesh", "Path.SetMovementAllowed", b);
         internal static bool  Vnavmesh_Path_GetMovementAllowed          => Invoke<bool> ("vnavmesh", "Path.GetMovementAllowed");
         internal static void  Vnavmesh_Path_SetTolerance(float f)       => Invoke       ("vnavmesh", "Path.SetTolerance", f);
