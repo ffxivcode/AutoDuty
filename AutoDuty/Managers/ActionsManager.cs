@@ -129,10 +129,10 @@ namespace AutoDuty.Managers
                 if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(_player.Position, o.Position)).FirstOrDefault()) is null)
                     return;
 
-                IPCManager.VNavmesh_SetMovementAllowed(true);
-                IPCManager.VNavmesh_MoveTo(gameObject.Position);
+                IPCManager.Vnavmesh_Path_SetMovementAllowed(true);
+                IPCManager.Vnavmesh_Path_MoveTo(gameObject.Position);
 
-                while (IPCManager.VNavmesh_WaypointsCount > 0)
+                while (IPCManager.Vnavmesh_Path_NumWaypoints > 0)
                     await Task.Delay(10, Token);
 
             }
@@ -197,8 +197,8 @@ namespace AutoDuty.Managers
             GameObject followTargetObject;
             var chat = new ECommons.Automation.Chat();
             AutoDuty.Plugin.StopForCombat = false;
-            IPCManager.VNavmesh_MoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)));
-            while (IPCManager.VNavmesh_WaypointsCount > 0 && !Token.IsCancellationRequested)
+            IPCManager.Vnavmesh_Path_MoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)));
+            while (IPCManager.Vnavmesh_Path_NumWaypoints > 0 && !Token.IsCancellationRequested)
                 await Task.Delay(10, Token);
             await Task.Delay(5000, Token);
             if (Token.IsCancellationRequested)
@@ -230,19 +230,19 @@ namespace AutoDuty.Managers
             }
             if (followTargetObject != null)
             {
-                IPCManager.VNavmesh_MoveTo(followTargetObject.Position);
+                IPCManager.Vnavmesh_Path_MoveTo(followTargetObject.Position);
             }
             if (bossObject != null)
             {
                 //Svc.Log.Info("Boss: waiting while InCombat and while !" + bossObject.Name + ".IsDead");
                 while (Svc.Condition[ConditionFlag.InCombat] && !bossObject.IsDead)
                 {
-                    if (Vector3.Distance(_player.Position, followTargetObject.Position) > IPCManager.VNavmesh_Tolerance && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
-                        IPCManager.VNavmesh_MoveTo(followTargetObject.Position);
-                    if ((IPCManager.BossMod_IsMoving || IPCManager.BossMod_ForbiddenZonesCount > 0) && IPCManager.VNavmesh_MovementAllowed)
-                        IPCManager.VNavmesh_SetMovementAllowed(false);
-                    else if (IPCManager.VNavmesh_MovementAllowed)
-                        IPCManager.VNavmesh_SetMovementAllowed(true);
+                    if (Vector3.Distance(_player.Position, followTargetObject.Position) > IPCManager.Vnavmesh_Path_GetTolerance && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
+                        IPCManager.Vnavmesh_Path_MoveTo(followTargetObject.Position);
+                    if ((IPCManager.BossMod_IsMoving || IPCManager.BossMod_ForbiddenZonesCount > 0) && IPCManager.Vnavmesh_Path_GetMovementAllowed )
+                        IPCManager.Vnavmesh_Path_SetMovementAllowed(false);
+                    else if (IPCManager.Vnavmesh_Path_GetMovementAllowed )
+                        IPCManager.Vnavmesh_Path_SetMovementAllowed(true);
 
                     await Task.Delay(5);
                 }
@@ -252,12 +252,12 @@ namespace AutoDuty.Managers
                 //Svc.Log.Info("Boss: We were unable to determine our Boss Object waiting while InCombat");
                 while (Svc.Condition[ConditionFlag.InCombat])
                 {
-                    if (Vector3.Distance(_player.Position, followTargetObject.Position) > IPCManager.VNavmesh_Tolerance && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
-                        IPCManager.VNavmesh_MoveTo(followTargetObject.Position);
-                    if ((IPCManager.BossMod_IsMoving || IPCManager.BossMod_ForbiddenZonesCount > 0) && IPCManager.VNavmesh_MovementAllowed)
-                        IPCManager.VNavmesh_SetMovementAllowed(false);
-                    else if (IPCManager.VNavmesh_MovementAllowed)
-                        IPCManager.VNavmesh_SetMovementAllowed(true);
+                    if (Vector3.Distance(_player.Position, followTargetObject.Position) > IPCManager.Vnavmesh_Path_GetTolerance && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
+                        IPCManager.Vnavmesh_Path_MoveTo(followTargetObject.Position);
+                    if ((IPCManager.BossMod_IsMoving || IPCManager.BossMod_ForbiddenZonesCount > 0) && IPCManager.Vnavmesh_Path_GetMovementAllowed )
+                        IPCManager.Vnavmesh_Path_SetMovementAllowed(false);
+                    else if (IPCManager.Vnavmesh_Path_GetMovementAllowed )
+                        IPCManager.Vnavmesh_Path_SetMovementAllowed(true);
 
                     await Task.Delay(5);
                 }
@@ -331,9 +331,9 @@ namespace AutoDuty.Managers
                             if (a != null)
                             {
                                 //Svc.Log.Info("Found Obj (" + a.Name.ToString() + ")- Moving");
-                                IPCManager.VNavmesh_SetTolerance(2.5f);
-                                IPCManager.VNavmesh_MoveTo(a.Position);
-                                while (IPCManager.VNavmesh_WaypointsCount != 0 && !Token.IsCancellationRequested)
+                                IPCManager.Vnavmesh_Path_SetTolerance(2.5f);
+                                IPCManager.Vnavmesh_Path_MoveTo(a.Position);
+                                while (IPCManager.Vnavmesh_Path_NumWaypoints != 0 && !Token.IsCancellationRequested)
                                     await Task.Delay(5, Token);
 
                                 if (Token.IsCancellationRequested)
@@ -361,7 +361,7 @@ namespace AutoDuty.Managers
                                     return;
 
                                 //Svc.Log.Info("Done Selecting Yes");
-                                IPCManager.VNavmesh_SetTolerance(0.5f);
+                                IPCManager.Vnavmesh_Path_SetTolerance(0.5f);
                             }
                             break;
                         default: break;

@@ -92,7 +92,7 @@ public class AutoDuty : IDalamudPlugin
         if (!IPCManager.BossMod_IsEnabled)
             return;
 
-        if (!IPCManager.VNavmesh_IsEnabled)
+        if (!IPCManager.Vnavmesh_IsEnabled)
             return;
 
         if (ExcelTerritoryHelper.Get(Svc.ClientState.TerritoryType).TerritoryIntendedUse != 3)
@@ -112,14 +112,14 @@ public class AutoDuty : IDalamudPlugin
         {
             //AutoDuty is stopped or has not started
             case 0:
-                if (IPCManager.VNavmesh_WaypointsCount > 0 && Started)
+                if (IPCManager.Vnavmesh_Path_NumWaypoints > 0 && Started)
                 {
                     //Svc.Log.Info($"Stopping Navigation");
                     Started = false;
-                    IPCManager.VNavmesh_Stop();
+                    IPCManager.Vnavmesh_Path_Stop();
                 }
-                if (IPCManager.VNavmesh_Tolerance > 0.5F)
-                    IPCManager.VNavmesh_SetTolerance(0.5f);
+                if (IPCManager.Vnavmesh_Path_GetTolerance > 0.5F)
+                    IPCManager.Vnavmesh_Path_SetTolerance(0.5f);
                 if (_task is not null)
                 {
                     //Svc.Log.Info($"Clearing Task: {_task.Status}");
@@ -158,20 +158,20 @@ public class AutoDuty : IDalamudPlugin
                     Stage = 2;
                     var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
                     //Svc.Log.Info($"Navigating To: {destinationVector}");
-                    if (!IPCManager.VNavmesh_MovementAllowed)
-                        IPCManager.VNavmesh_SetMovementAllowed(true);
-                    IPCManager.VNavmesh_MoveTo(destinationVector);
+                    if (!IPCManager.Vnavmesh_Path_GetMovementAllowed )
+                        IPCManager.Vnavmesh_Path_SetMovementAllowed(true);
+                    IPCManager.Vnavmesh_Path_MoveTo(destinationVector);
                     //Svc.Log.Info($"Waiting for Navigation");
                 }
                 break;
             //We are navigating
             case 2:
-                if ((ObjectManager.InCombat(_player) || IPCManager.BossMod_IsMoving || IPCManager.BossMod_ForbiddenZonesCount > 0) && IPCManager.VNavmesh_MovementAllowed)
-                    IPCManager.VNavmesh_SetMovementAllowed(false);
-                else if (!IPCManager.VNavmesh_MovementAllowed && !ObjectManager.InCombat(_player) && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
-                    IPCManager.VNavmesh_SetMovementAllowed(true);
+                if ((ObjectManager.InCombat(_player) || IPCManager.BossMod_IsMoving || IPCManager.BossMod_ForbiddenZonesCount > 0) && IPCManager.Vnavmesh_Path_GetMovementAllowed )
+                    IPCManager.Vnavmesh_Path_SetMovementAllowed(false);
+                else if (!IPCManager.Vnavmesh_Path_GetMovementAllowed  && !ObjectManager.InCombat(_player) && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
+                    IPCManager.Vnavmesh_Path_SetMovementAllowed(true);
 
-                if (IPCManager.VNavmesh_WaypointsCount == 0)
+                if (IPCManager.Vnavmesh_Path_NumWaypoints == 0)
                 {
                     //Svc.Log.Info($"Done Waiting for Navigation");
                     Stage = 1;

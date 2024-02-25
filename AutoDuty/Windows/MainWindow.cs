@@ -114,7 +114,7 @@ public class MainWindow : Window, IDisposable
             {
                 if (_inDungeon)
                 {
-                    var progress = IPCManager.VNavmesh_TaskProgress;
+                    var progress = IPCManager.Vnavmesh_Nav_BuildProgress;
                     if (progress >= 0)
                     {
                         ImGui.Text(TerritoryName.GetTerritoryName(_territoryType).Split('|')[1].Trim() + " Mesh Loading: ");
@@ -126,7 +126,7 @@ public class MainWindow : Window, IDisposable
                     ImGui.Separator();
                     ImGui.Spacing();
                 }
-                using (var d = ImRaii.Disabled(!_inDungeon || IPCManager.VNavmesh_NavmeshIsNull || !IPCManager.BossMod_IsEnabled || !IPCManager.VNavmesh_IsEnabled))
+                using (var d = ImRaii.Disabled(!_inDungeon || !IPCManager.Vnavmesh_Nav_IsReady || !IPCManager.BossMod_IsEnabled || !IPCManager.Vnavmesh_IsEnabled))
                 {
                     using (var d2 = ImRaii.Disabled(!_inDungeon || !_pathFileExists || Plugin.Stage > 0))
                     {
@@ -147,7 +147,7 @@ public class MainWindow : Window, IDisposable
                     }
                     if (!ImGui.BeginListBox("##MainList", new Vector2(-1, -1))) return;
                     
-                    if (IPCManager.VNavmesh_IsEnabled && IPCManager.BossMod_IsEnabled)
+                    if (IPCManager.Vnavmesh_IsEnabled && IPCManager.BossMod_IsEnabled)
                     {
                         foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
                         {
@@ -163,7 +163,7 @@ public class MainWindow : Window, IDisposable
                     }
                     else
                     {
-                        if (!IPCManager.VNavmesh_IsEnabled)
+                        if (!IPCManager.Vnavmesh_IsEnabled)
                             ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease goto https://github.com/awgil/ffxiv_navmesh");
                         if (!IPCManager.BossMod_IsEnabled)
                             ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease install and load BossMod");
