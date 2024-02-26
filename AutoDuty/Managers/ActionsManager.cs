@@ -195,7 +195,7 @@ namespace AutoDuty.Managers
                 return;
 
             GameObject followTargetObject;
-            var chat = new ECommons.Automation.Chat();
+            //var chat = new ECommons.Automation.Chat();
             AutoDuty.Plugin.StopForCombat = false;
             IPCManager.Vnavmesh_Path_MoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)));
             while (IPCManager.Vnavmesh_Path_NumWaypoints > 0 && !Token.IsCancellationRequested)

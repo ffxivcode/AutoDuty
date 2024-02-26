@@ -64,6 +64,9 @@ public class MainWindow : Window, IDisposable
 
     private void OnTerritoryChange(ushort t)
     {
+        if (t == 0)
+            return;
+
         _territoryType = t;
         _inDungeon = ExcelTerritoryHelper.Get(_territoryType).TerritoryIntendedUse == 3;
         _pathFile = $"{Plugin.PathsDirectory}/{_territoryType}.json";
