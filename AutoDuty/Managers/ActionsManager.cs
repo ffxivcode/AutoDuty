@@ -27,7 +27,8 @@ namespace AutoDuty.Managers
             ("MoveToObject","Object Name?"),
             ("ExitDuty","false"),
             ("TreasureCoffer","false"),
-            ("DutySpecificCode","step #?")
+            ("DutySpecificCode","step #?"),
+            ("BossMod","on / off")
         ];
 
         public CancellationTokenSource? TokenSource;
@@ -53,6 +54,12 @@ namespace AutoDuty.Managers
             {
                 Svc.Log.Error(ex.ToString());
             }
+        }
+        public async Task BossMod(string sts)
+        {
+            var chat = new ECommons.Automation.Chat();
+                chat.ExecuteCommand($"/vbmai {sts}");
+
         }
 
         public async Task Wait(string wait)
