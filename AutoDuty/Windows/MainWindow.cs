@@ -5,7 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Text.Json;
-using AutoDuty.Managers;
+using AutoDuty.IPC;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons;
@@ -30,8 +30,12 @@ public class MainWindow : Window, IDisposable
     bool showAddActionUI = false;
     bool ddisboss = false;
     readonly List<(string, string)> _actionsList;
+    int _clickedDuty = -1;
+    BossMod_IPCSubscriber _vbmIPC;
+    VNavmesh_IPCSubscriber _vnavIPC;
+    MBT_IPCSubscriber _mbtIPC;
 
-    public MainWindow(AutoDuty plugin, List<(string, string)> actionsList) : base(
+    public MainWindow(AutoDuty plugin, List<(string, string)> actionsList, VNavmesh_IPCSubscriber vnavIPC, BossMod_IPCSubscriber vbmIPC, MBT_IPCSubscriber mbtIPC) : base(
         "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
         SizeConstraints = new WindowSizeConstraints
@@ -42,9 +46,13 @@ public class MainWindow : Window, IDisposable
 
         Plugin = plugin;
         _actionsList = actionsList;
+        _vbmIPC = vbmIPC;
+        _vnavIPC = vnavIPC;
+        _mbtIPC = mbtIPC;
 
         OnTerritoryChange(Svc.ClientState.TerritoryType);
         Svc.ClientState.TerritoryChanged += OnTerritoryChange;
+        
     }
 
     private void AddAction(string action)
@@ -116,7 +124,7 @@ public class MainWindow : Window, IDisposable
             {
                 if (_inDungeon)
                 {
-                    var progress = IPCManager.Vnavmesh_Nav_BuildProgress;
+                    var progress = _vnavIPC.Nav_BuildProgress();
                     if (progress >= 0)
                     {
                         ImGui.Text(TerritoryName.GetTerritoryName(_territoryType).Split('|')[1].Trim() + " Mesh Loading: ");
@@ -127,52 +135,98 @@ public class MainWindow : Window, IDisposable
                     ImGui.Spacing();
                     ImGui.Separator();
                     ImGui.Spacing();
-                }
-                using (var d = ImRaii.Disabled(!_inDungeon || !IPCManager.Vnavmesh_Nav_IsReady || !IPCManager.BossMod_IsEnabled || !IPCManager.Vnavmesh_IsEnabled))
-                {
-                    using (var d2 = ImRaii.Disabled(!_inDungeon || !_pathFileExists || Plugin.Stage > 0))
+                    using (var d = ImRaii.Disabled(!_inDungeon || !_vnavIPC.Nav_IsReady() || !_vbmIPC.IsEnabled || !_vnavIPC.IsEnabled || !_mbtIPC.IsEnabled))
                     {
-                        if (ImGui.Button("Navigate Path"))
+                        using (var d2 = ImRaii.Disabled(!_inDungeon || !_pathFileExists || Plugin.Stage > 0))
                         {
-                            LoadPath();
-                            Plugin.Stage = 1;
-                            Plugin.Started = true;
+                            if (ImGui.Button("Navigate Path"))
+                            {
+                                LoadPath();
+                                Plugin.Stage = 1;
+                                Plugin.Started = true;
+                                Plugin.SetToken();
+                            }
                         }
-                    }
-                    ImGui.SameLine(0, 5);
-                    using (var d2 = ImRaii.Disabled(!_inDungeon || Plugin.Stage == 0))
-                    {
-                        if (ImGui.Button("Stop Navigating"))
+                        ImGui.SameLine(0, 5);
+                        using (var d2 = ImRaii.Disabled(!_inDungeon || Plugin.Stage == 0))
                         {
-                            Plugin.Stage = 0;
+                            if (ImGui.Button("Stop Navigating"))
+                            {
+                                Plugin.Stage = 0;
+                            }
                         }
-                    }
-                    if (!ImGui.BeginListBox("##MainList", new Vector2(-1, -1))) return;
-                    
-                    if (IPCManager.Vnavmesh_IsEnabled && IPCManager.BossMod_IsEnabled)
-                    {
-                        foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
-                        {
-                            Vector4 v4 = new();
-                            if (item.index == Plugin.Indexer && Plugin.Stage > 0)
-                                v4 = new Vector4(0, 255, 0, 1);
-                            else
-                                v4 = new Vector4(255, 255, 255, 1);
-                            ImGui.TextColored(v4, item.name);
-                        }
-                        if (_inDungeon && !_pathFileExists)
-                            ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(_territoryType).Split('|')[1].Trim()}\n({_territoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory}\nPlease download from:\n{pathsURL}\nor Create in the Build Tab");
-                    }
-                    else
-                    {
-                        if (!IPCManager.Vnavmesh_IsEnabled)
-                            ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease goto https://github.com/awgil/ffxiv_navmesh");
-                        if (!IPCManager.BossMod_IsEnabled)
-                            ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease install and load BossMod");
-                    }
-                    ImGui.EndListBox();
-                }
+                        if (!ImGui.BeginListBox("##MainList", new Vector2(-1, -1))) return;
 
+                        if (_vnavIPC.IsEnabled && _vbmIPC.IsEnabled && _mbtIPC.IsEnabled)
+                        {
+                            foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
+                            {
+                                Vector4 v4 = new();
+                                if (item.index == Plugin.Indexer && Plugin.Stage > 0)
+                                    v4 = new Vector4(0, 255, 0, 1);
+                                else
+                                    v4 = new Vector4(255, 255, 255, 1);
+                                ImGui.TextColored(v4, item.name);
+                            }
+                            if (_inDungeon && !_pathFileExists)
+                                ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(_territoryType).Split('|')[1].Trim()}\n({_territoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory}\nPlease download from:\n{pathsURL}\nor Create in the Build Tab");
+                        }
+                        else
+                        {
+                            if (!_vnavIPC.IsEnabled)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                            if (!_vbmIPC.IsEnabled)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                            if (!_mbtIPC.IsEnabled)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires MBT plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/repo.json");
+                        }
+                        ImGui.EndListBox();
+                    }
+                }
+                else
+                {
+                    ImGui.TextColored(new Vector4(255,0,0,1),"Please enter a duty with a completed path file or complete one");
+                    ImGui.TextColored(new Vector4(0, 255, 0, 1), "Below is for future use (F Game UI Interaction)");
+                    using (var d1 = ImRaii.Disabled(Plugin.Running || true))
+                    {
+                        using (var d2 = ImRaii.Disabled(_clickedDuty == -1))
+                        {
+                            if (ImGui.Button("Run"))
+                            {
+                                Plugin.Run(_clickedDuty);
+                            }
+                            ImGui.SameLine(0, 15);
+                            ImGui.InputInt("Times", ref Plugin.LoopTimes);
+                        }
+
+                        if (!ImGui.BeginListBox("##DutyList", new Vector2(-1, -1))) return;
+
+                        if (_vnavIPC.IsEnabled && _vbmIPC.IsEnabled && _mbtIPC.IsEnabled)
+                        {
+                            foreach (var item in Plugin.ListBoxDutyText.Select((Value, Index) => (Value, Index)))
+                            {
+                                Vector4 v4 = new();
+                                if (ImGui.IsItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+                                    _clickedDuty = item.Index - 1;
+                                if (_clickedDuty == item.Index)
+                                    v4 = new Vector4(0, 255, 0, 1);
+                                else
+                                    v4 = new Vector4(255, 255, 255, 1);
+                                ImGui.TextColored(v4, item.Value.Item1);
+                            }
+                        }
+                        else
+                        {
+                            if (!_vnavIPC.IsEnabled)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                            if (!_vbmIPC.IsEnabled)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                            if (!_mbtIPC.IsEnabled)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires MBT plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/repo.json");
+                        }
+                        ImGui.EndListBox();
+                    }
+                }
                 ImGui.EndTabItem();
             }
             using (var d = ImRaii.Disabled(!_inDungeon || Plugin.Stage > 0))

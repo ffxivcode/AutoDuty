@@ -11,10 +11,11 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.InteropServices;
 using Dalamud.Game.ClientState.Conditions;
+using AutoDuty.IPC;
 
 namespace AutoDuty.Managers
 {
-    public class ActionsManager()
+    public class ActionsManager(VNavmesh_IPCSubscriber _vnavIPC, BossMod_IPCSubscriber _vbmIPC, MBT_IPCSubscriber _mbtIPC)
     {
         public readonly List<(string, string)> ActionsList =
         [
@@ -129,10 +130,10 @@ namespace AutoDuty.Managers
                 if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(_player.Position, o.Position)).FirstOrDefault()) is null)
                     return;
 
-                IPCManager.Vnavmesh_Path_SetMovementAllowed(true);
-                IPCManager.Vnavmesh_Path_MoveTo(gameObject.Position);
+                _vnavIPC.Path_SetMovementAllowed(true);
+                _vnavIPC.SimpleMove_PathfindAndMoveTo(gameObject.Position, false);
 
-                while (IPCManager.Vnavmesh_Path_NumWaypoints > 0)
+                while (_vnavIPC.SimpleMove_PathfindInProgress() || _vnavIPC.Path_NumWaypoints() > 0)
                     await Task.Delay(10, Token);
 
             }
@@ -197,8 +198,8 @@ namespace AutoDuty.Managers
             GameObject followTargetObject;
             //var chat = new ECommons.Automation.Chat();
             AutoDuty.Plugin.StopForCombat = false;
-            IPCManager.Vnavmesh_Path_MoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)));
-            while (IPCManager.Vnavmesh_Path_NumWaypoints > 0 && !Token.IsCancellationRequested)
+            _vnavIPC.SimpleMove_PathfindAndMoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)), false);
+            while ((_vnavIPC.SimpleMove_PathfindInProgress() || _vnavIPC.Path_NumWaypoints() > 0) && !Token.IsCancellationRequested)
                 await Task.Delay(10, Token);
             await Task.Delay(5000, Token);
             if (Token.IsCancellationRequested)
@@ -230,19 +231,19 @@ namespace AutoDuty.Managers
             }
             if (followTargetObject != null)
             {
-                IPCManager.Vnavmesh_Path_MoveTo(followTargetObject.Position);
+                _mbtIPC.SetFollowTarget(followTargetObject.Name.TextValue);
+                _mbtIPC.SetFollowDistance(0);
+                _mbtIPC.SetFollowStatus(true);
             }
             if (bossObject != null)
             {
                 //Svc.Log.Info("Boss: waiting while InCombat and while !" + bossObject.Name + ".IsDead");
                 while (Svc.Condition[ConditionFlag.InCombat] && !bossObject.IsDead)
                 {
-                    if (Vector3.Distance(_player.Position, followTargetObject.Position) > IPCManager.Vnavmesh_Path_GetTolerance && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
-                        IPCManager.Vnavmesh_Path_MoveTo(followTargetObject.Position);
-                    if ((IPCManager.BossMod_IsMoving || IPCManager.BossMod_ForbiddenZonesCount > 0) && IPCManager.Vnavmesh_Path_GetMovementAllowed )
-                        IPCManager.Vnavmesh_Path_SetMovementAllowed(false);
-                    else if (IPCManager.Vnavmesh_Path_GetMovementAllowed )
-                        IPCManager.Vnavmesh_Path_SetMovementAllowed(true);
+                    if ((_vbmIPC.IsMoving() || _vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus() )
+                        _mbtIPC.SetFollowStatus(false);
+                    else if (!_mbtIPC.GetFollowStatus() && !_vbmIPC.IsMoving() && _vbmIPC.ForbiddenZonesCount() == 0)
+                        _mbtIPC.SetFollowStatus(true);
 
                     await Task.Delay(5);
                 }
@@ -252,18 +253,17 @@ namespace AutoDuty.Managers
                 //Svc.Log.Info("Boss: We were unable to determine our Boss Object waiting while InCombat");
                 while (Svc.Condition[ConditionFlag.InCombat])
                 {
-                    if (Vector3.Distance(_player.Position, followTargetObject.Position) > IPCManager.Vnavmesh_Path_GetTolerance && !IPCManager.BossMod_IsMoving && IPCManager.BossMod_ForbiddenZonesCount == 0)
-                        IPCManager.Vnavmesh_Path_MoveTo(followTargetObject.Position);
-                    if ((IPCManager.BossMod_IsMoving || IPCManager.BossMod_ForbiddenZonesCount > 0) && IPCManager.Vnavmesh_Path_GetMovementAllowed )
-                        IPCManager.Vnavmesh_Path_SetMovementAllowed(false);
-                    else if (IPCManager.Vnavmesh_Path_GetMovementAllowed )
-                        IPCManager.Vnavmesh_Path_SetMovementAllowed(true);
+                    if ((_vbmIPC.IsMoving() || _vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus())
+                        _mbtIPC.SetFollowStatus(false);
+                    else if (!_mbtIPC.GetFollowStatus() && !_vbmIPC.IsMoving() && _vbmIPC.ForbiddenZonesCount() == 0)
+                        _mbtIPC.SetFollowStatus(true);
 
                     await Task.Delay(5);
                 }
             }
             //chat.ExecuteCommand("/vbmai on");
             AutoDuty.Plugin.StopForCombat = true;
+            _mbtIPC.SetFollowStatus(false);
         }
         private static BattleChara? GetBossObject()
         {
@@ -331,9 +331,9 @@ namespace AutoDuty.Managers
                             if (a != null)
                             {
                                 //Svc.Log.Info("Found Obj (" + a.Name.ToString() + ")- Moving");
-                                IPCManager.Vnavmesh_Path_SetTolerance(2.5f);
-                                IPCManager.Vnavmesh_Path_MoveTo(a.Position);
-                                while (IPCManager.Vnavmesh_Path_NumWaypoints != 0 && !Token.IsCancellationRequested)
+                                _vnavIPC.Path_SetTolerance(2.5f);
+                                _vnavIPC.SimpleMove_PathfindAndMoveTo(a.Position, false);
+                                while ((_vnavIPC.SimpleMove_PathfindInProgress() || _vnavIPC.Path_NumWaypoints() > 0) && !Token.IsCancellationRequested)
                                     await Task.Delay(5, Token);
 
                                 if (Token.IsCancellationRequested)
@@ -361,7 +361,7 @@ namespace AutoDuty.Managers
                                     return;
 
                                 //Svc.Log.Info("Done Selecting Yes");
-                                IPCManager.Vnavmesh_Path_SetTolerance(0.5f);
+                                _vnavIPC.Path_SetTolerance(0.5f);
                             }
                             break;
                         default: break;
