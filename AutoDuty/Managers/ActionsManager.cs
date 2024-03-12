@@ -28,7 +28,8 @@ namespace AutoDuty.Managers
             ("ExitDuty","false"),
             ("TreasureCoffer","false"),
             ("DutySpecificCode","step #?"),
-            ("BossMod","on / off")
+            ("BossMod","on / off"),
+            ("Target","Target what?")
         ];
 
         public CancellationTokenSource? TokenSource;
@@ -133,13 +134,52 @@ namespace AutoDuty.Managers
 
         public async Task TreasureCoffer(string _) => await Interactable("Treasure Coffer");
 
+        public async Task Target(string objectName)
+        {
+            PlayerCharacter? _player;
+            if ((_player = Svc.ClientState.LocalPlayer) is null) return;
+
+            if (Token.IsCancellationRequested)
+                return;
+
+            await Task.Delay(5, Token);
+
+            try
+            {
+                var cnt = 0;
+                GameObject? gameObject;
+                List<GameObject>? listGameObject;
+                do
+                {
+                    if ((listGameObject = ObjectManager.GetObjectsByName([.. Svc.Objects], objectName)) is null)
+                        return;
+
+                    if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(_player.Position, o.Position)).FirstOrDefault()) is null)
+                        return;
+
+                    if (!gameObject.IsTargetable || !gameObject.IsValid())
+                        return;
+
+                    Svc.Targets.Target = gameObject;
+
+                    await Task.Delay(5, Token);
+                }
+                while (cnt++ < 4 && !Token.IsCancellationRequested && gameObject.IsTargetable && gameObject.IsValid());
+            }
+            catch (Exception ex)
+            {
+                //Svc.Log.Error(ex.ToString());
+            }
+
+            await Task.Delay(5, Token);
+        }
 
         public async Task Interactable(string objectName)
         {
             PlayerCharacter? _player;
             if ((_player = Svc.ClientState.LocalPlayer) is null) return;
 
-            await Task.Delay(2000, Token);
+            await Task.Delay(500, Token);
 
             if (Token.IsCancellationRequested)
                 return;
@@ -157,18 +197,21 @@ namespace AutoDuty.Managers
                     if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(_player.Position, o.Position)).FirstOrDefault()) is null)
                         return;
 
+                    if (!gameObject.IsTargetable || !gameObject.IsValid())
+                        return;
+
                     ObjectManager.InteractWithObject(gameObject);
 
-                    await Task.Delay(1000, Token);
+                    await Task.Delay(500, Token);
                 }
                 while (cnt++ < 4 && !Token.IsCancellationRequested && gameObject.IsTargetable && gameObject.IsValid());
             }
             catch (Exception ex)
             {
-                Svc.Log.Error(ex.ToString());
+                //Svc.Log.Error(ex.ToString());
             }
 
-            await Task.Delay(50, Token);
+            await Task.Delay(500, Token);
         }
 
         public async Task Boss(string x, string y, string z)

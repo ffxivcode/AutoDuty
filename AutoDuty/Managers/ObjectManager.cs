@@ -50,12 +50,13 @@ namespace AutoDuty.Managers
         {
             try
             {
+                if (gameObject == null || !gameObject.IsTargetable) return;
                 var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
                 TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
             }
             catch (Exception ex)
             {
-                Svc.Log.Error(ex.ToString());
+                //Svc.Log.Error(ex.ToString());
             }
         }
 
