@@ -15,55 +15,43 @@ namespace AutoDuty.Managers
 {
     internal static class ObjectManager
     {
-        internal static List<GameObject> GetObjectsByRadius(List<GameObject> gameObjects, float radius)
-        {
-            return gameObjects.Where(o => GetDistanceToPlayer(o) <= radius).ToList();
-        }
-        internal static List<GameObject> GetObjectsByName(List<GameObject> gameObjects, string name)
-        {
-            return gameObjects.Where(o => o.Name.ToString().ToUpper() == name.ToUpper()).ToList();
-        }
-        internal static GameObject GetClosestObjectByName(List<GameObject> gameObjects, string name)
-        {
-            return gameObjects.OrderBy(GetDistanceToPlayer).FirstOrDefault(p => p.Name.ToString().ToUpper().Equals(name.ToUpper()) && p.IsTargetable);
-        }
-        internal unsafe static float GetDistanceToPlayer(GameObject gameObject)
-        {
-            return Vector3.Distance(gameObject.Position, Player.GameObject->Position);
-        }
-        public static BNpcBase GetObjectNPC(GameObject obj)
-        {
-            if (obj == null) return null;
-            return GetSheet<BNpcBase>().GetRow(obj.DataId);
-        }
+        internal static List<GameObject> GetObjectsByRadius(List<GameObject> gameObjects, float radius) => gameObjects.Where(o => GetDistanceToPlayer(o) <= radius).ToList();
 
-        internal static ExcelSheet<T> GetSheet<T>() where T : ExcelRow => Svc.Data.GetExcelSheet<T>();
+        internal static List<GameObject> GetObjectsByName(List<GameObject> gameObjects, string name) => gameObjects.Where(o => o.Name.ToString().ToUpper() == name.ToUpper()).ToList();
 
-        internal static bool IsBossFromIcon(BattleChara obj)
+        internal static GameObject? GetClosestObjectByName(List<GameObject> gameObjects, string name) => gameObjects.OrderBy(GetDistanceToPlayer).FirstOrDefault(p => p.Name.ToString().ToUpper().Equals(name.ToUpper()) && p.IsTargetable);
+
+        internal unsafe static float GetDistanceToPlayer(GameObject gameObject) => Vector3.Distance(gameObject.Position, Player.GameObject->Position);
+
+        internal static BNpcBase? GetObjectNPC(GameObject gameObject) => GetSheet<BNpcBase>()?.GetRow(gameObject.DataId) ?? null;
+
+        internal static ExcelSheet<T>? GetSheet<T>() where T : ExcelRow => Svc.Data.GetExcelSheet<T>();
+
+        //From RotationSolver
+        internal static bool IsBossFromIcon(BattleChara battleChara)
         {
-            if (obj == null) return false;
+            if (battleChara == null) return false;
 
             //Icon
-            if (GetObjectNPC(obj)?.Rank is 1 or 2 /*or 4*/ or 6) return true;
+            if (GetObjectNPC(battleChara)?.Rank is 1 or 2 /*or 4*/ or 6) return true;
 
             return false;
         }
+
         internal static unsafe bool IsValid => Svc.Condition.Any()
         && !Svc.Condition[ConditionFlag.BetweenAreas]
         && !Svc.Condition[ConditionFlag.BetweenAreas51]
         && Player.Available
         && Player.Interactable;
 
-        internal static unsafe bool InCombat(this BattleChara obj)
-        {
-            return obj.Struct()->Character.InCombat;
-        }
-        internal static unsafe void InteractWithObject(GameObject baseObj)
+        internal static unsafe bool InCombat(this BattleChara battleChara) => battleChara.Struct()->Character.InCombat;
+        
+        internal static unsafe void InteractWithObject(GameObject gameObject)
         {
             try
             {
-                var convObj = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)baseObj.Address;
-                TargetSystem.Instance()->InteractWithObject(convObj, true);
+                var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
+                TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
             }
             catch (Exception ex)
             {

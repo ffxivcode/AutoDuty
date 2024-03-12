@@ -40,8 +40,6 @@ namespace AutoDuty.Managers
         {
             try
             {
-                //Svc.Log.Info($"InvokeAction: Action: {action} Params: {p.Length}");
-
                 if (!string.IsNullOrEmpty(action))
                 {
                     Type thisType = GetType();
@@ -55,39 +53,28 @@ namespace AutoDuty.Managers
                 Svc.Log.Error(ex.ToString());
             }
         }
-        public async Task BossMod(string sts)
+        public void BossMod(string sts)
         {
             var chat = new ECommons.Automation.Chat();
-                chat.ExecuteCommand($"/vbmai {sts}");
-
+            chat.ExecuteCommand($"/vbmai {sts}");
         }
 
-        public async Task Wait(string wait)
-        {
-            //Svc.Log.Info($"Wait: {wait}");
-            await Task.Delay(Convert.ToInt32(wait), Token);
-            //Svc.Log.Info($"Done Wait: {wait}");
-        }
+        public async Task Wait(string wait) => await Task.Delay(Convert.ToInt32(wait), Token);
 
-        public void ExitDuty(string _)
-        {
-            exitDuty.Invoke((char)0);
-        }
+        public void ExitDuty(string _) => exitDuty.Invoke((char)0);
 
         public async Task SelectYesno(string YesorNo)
         {
-            //Svc.Log.Info($"YesorNo: {YesorNo}");
             try
             {
                 nint addon;
                 int cnt = 0;
-                //Svc.Log.Info("Waiting for YesNo");
                 while ((addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) == 0 && cnt++ < 500 && !Token.IsCancellationRequested)
                     await Task.Delay(10, Token);
 
                 if (addon == 0 || Token.IsCancellationRequested)
                     return;
-                //Svc.Log.Info("Done Waiting for YesNo");
+
                 await Task.Delay(25, Token);
 
                 if (Token.IsCancellationRequested)
@@ -98,14 +85,9 @@ namespace AutoDuty.Managers
                 else
                 {
                     if (YesorNo.Equals("YES"))
-                    {
-                        //Svc.Log.Info("Clicking Yes");
                         ClickSelectYesNo.Using(addon).Yes();
-                    }
                     else if (YesorNo.Equals("NO"))
-                    {
                         ClickSelectYesNo.Using(addon).No();
-                    }
                 }
                 await Task.Delay(500, Token);
                 while (ObjectManager.PlayerIsCasting && !Token.IsCancellationRequested)
@@ -117,7 +99,6 @@ namespace AutoDuty.Managers
                 return;
             }
             await Task.Delay(50, Token);
-            //Svc.Log.Info("Done");
         }
 
         public async Task MoveToObject(string objectName)
@@ -150,19 +131,14 @@ namespace AutoDuty.Managers
             }
         }
 
-        public async Task TreasureCoffer(string s)
-        {
-            //Svc.Log.Info("Treasure Coffer Start");
-            await Interactable("Treasure Coffer");
-            //Svc.Log.Info("Treasure Coffer Done");
-        }
+        public async Task TreasureCoffer(string _) => await Interactable("Treasure Coffer");
+
 
         public async Task Interactable(string objectName)
         {
-            //Svc.Log.Info($"Interactable: {objectName}");
             PlayerCharacter? _player;
-            if ((_player = Svc.ClientState.LocalPlayer) is null)
-                return;
+            if ((_player = Svc.ClientState.LocalPlayer) is null) return;
+
             await Task.Delay(2000, Token);
 
             if (Token.IsCancellationRequested)
@@ -193,7 +169,6 @@ namespace AutoDuty.Managers
             }
 
             await Task.Delay(50, Token);
-            //Svc.Log.Info($"Done Interactable: {objectName}");
         }
 
         public async Task Boss(string x, string y, string z)
@@ -244,7 +219,6 @@ namespace AutoDuty.Managers
             }
             if (bossObject != null)
             {
-                //Svc.Log.Info("Boss: waiting while InCombat and while !" + bossObject.Name + ".IsDead");
                 while (Svc.Condition[ConditionFlag.InCombat] && !bossObject.IsDead)
                 {
                     if ((_vbmIPC.IsMoving() || _vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus() )
@@ -257,7 +231,6 @@ namespace AutoDuty.Managers
             }
             else
             {
-                //Svc.Log.Info("Boss: We were unable to determine our Boss Object waiting while InCombat");
                 while (Svc.Condition[ConditionFlag.InCombat])
                 {
                     if ((_vbmIPC.IsMoving() || _vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus())
@@ -274,13 +247,12 @@ namespace AutoDuty.Managers
         }
         private static BattleChara? GetBossObject()
         {
-            var battleCharaObjs = ObjectManager.GetObjectsByRadius([.. Svc.Objects], 30).OfType<BattleChara>();
-            BattleChara bossObject = default;
-            foreach (var obj in battleCharaObjs)
+            var battleCharas = ObjectManager.GetObjectsByRadius([.. Svc.Objects], 30).OfType<BattleChara>();
+            BattleChara? bossObject = default;
+            foreach (var battleChara in battleCharas)
             {
-                //Svc.Log.Info("Checking: " + obj.Name.ToString());
-                if (ObjectManager.IsBossFromIcon(obj))
-                    bossObject = obj;
+                if (ObjectManager.IsBossFromIcon(battleChara))
+                    bossObject = battleChara;
             }
 
             return bossObject;
@@ -321,7 +293,7 @@ namespace AutoDuty.Managers
         {
             switch (Svc.ClientState.TerritoryType)
             {
-                //Sastasha
+                //Sastasha - From BossMod
                 case 1036:
                     switch (stage)
                     {
@@ -337,7 +309,6 @@ namespace AutoDuty.Managers
                             var a = Svc.Objects.Where(a => a.Name.ToString().Equals(GlobalStringStore + " Coral Formation")).First();
                             if (a != null)
                             {
-                                //Svc.Log.Info("Found Obj (" + a.Name.ToString() + ")- Moving");
                                 _vnavIPC.Path_SetTolerance(2.5f);
                                 _vnavIPC.SimpleMove_PathfindAndMoveTo(a.Position, false);
                                 while ((_vnavIPC.SimpleMove_PathfindInProgress() || _vnavIPC.Path_NumWaypoints() > 0) && !Token.IsCancellationRequested)
@@ -346,7 +317,6 @@ namespace AutoDuty.Managers
                                 if (Token.IsCancellationRequested)
                                     return;
 
-                                //Svc.Log.Info("Done Moving - Interacting with Obj");
                                 nint addon;
                                 int cnt = 0;
 
@@ -360,14 +330,11 @@ namespace AutoDuty.Managers
                                 if (addon == nint.Zero || Token.IsCancellationRequested)
                                     return;
 
-                                //Svc.Log.Info($"Done Interacting with Obj - Selecting Yes on ({addon})");
-
                                 await SelectYesno("YES");
 
                                 if (Token.IsCancellationRequested)
                                     return;
 
-                                //Svc.Log.Info("Done Selecting Yes");
                                 _vnavIPC.Path_SetTolerance(0.5f);
                             }
                             break;

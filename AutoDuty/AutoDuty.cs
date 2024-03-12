@@ -23,7 +23,7 @@ using ECommons.Automation;
 
 namespace AutoDuty;
 
-// TODO: Need to add options to who they follow in combat, need to find the bug that is destroying the path when vbm is jousting, need to add MBT to req plugins message
+// TODO: Need to add options to who they follow in combat.
 
 public class AutoDuty : IDalamudPlugin
 {
@@ -40,6 +40,7 @@ public class AutoDuty : IDalamudPlugin
     public int Indexer = 0;
     public bool Started = false;
     public bool Running = false;
+
     private Task? _task = null;
     private const string CommandName = "/autoduty";
     private MainWindow MainWindow { get; init; }
@@ -48,6 +49,7 @@ public class AutoDuty : IDalamudPlugin
     private MBT_IPCSubscriber _mbtIPC;
     private BossMod_IPCSubscriber _vbmIPC;
     private VNavmesh_IPCSubscriber _vnavIPC;
+
     public AutoDuty(DalamudPluginInterface pluginInterface)
     {
         try
@@ -87,7 +89,7 @@ public class AutoDuty : IDalamudPlugin
 
             PopulateDuties();
             _mbtIPC.SetFollowStatus(false);
-            Svc.Log.Info(_mbtIPC.GetFollowStatus().ToString());
+
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
@@ -102,23 +104,25 @@ public class AutoDuty : IDalamudPlugin
     private void PopulateDuties()
     {
         var list = Svc.Data.GameData.GetExcelSheet<DawnContent>();
-        //Svc.Log.Info($"{list.RowCount}");
+        if (list == null) return;
+
         foreach (var e in list.Select((Value, Index) => (Value, Index)))
         {
-            Svc.Log.Information($"{e.Index}");
             if (e.Value is null || e.Index == 0)
                 continue;
-            ListBoxDutyText.Add((e.Value.Content.Value.Name.ToString()[..3].Equals("the") ? e.Value.Content.Value.Name.ToString().ReplaceFirst("the", "The") : e.Value.Content.Value.Name.ToString(), e.Value.Content.Value.TerritoryType.Value.RowId, e.Value.Content.Value.TerritoryType.Value.ExVersion.Value.RowId));
+            ListBoxDutyText.Add((e.Value.Content.Value.Name.ToString()[..3].Equals("the") ? e.Value.Content.Value.Name.ToString().ReplaceFirst("the", "The") : e.Value.Content.Value.Name.ToString(), e.Value.Content.Value.TerritoryType.Value?.RowId ?? 0, e.Value.Content.Value.TerritoryType.Value?.ExVersion.Value?.RowId ?? 0));
         }
         ListBoxDutyText = [.. ListBoxDutyText.OrderBy(e => e.Item3)];
     }
     private void PopulateDutiesTT()
     {
         var list = Svc.Data.GameData.GetExcelSheet<TerritoryType>();
+        if (list == null) return;
+
         foreach ( var e in list )
         {
             ContentFinderCondition? contentFinderCondition;
-            if (e.TerritoryIntendedUse == 3 && (contentFinderCondition = e.ContentFinderCondition.Value) != null && !contentFinderCondition.Name.RawString.IsNullOrEmpty())
+            if (e.TerritoryIntendedUse == 3 && (contentFinderCondition = e.ContentFinderCondition.Value) != null && !contentFinderCondition.Name.ToString().IsNullOrEmpty())
                 ListBoxDutyText.Add((contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The") : contentFinderCondition.Name.ToString(),e.RowId,0));
         }
     }
@@ -156,7 +160,6 @@ public class AutoDuty : IDalamudPlugin
             case 0:
                 if (_vnavIPC.Path_NumWaypoints() > 0 && Started)
                 {
-                    //Svc.Log.Info($"Stopping Navigation");
                     Started = false;
                     _vnavIPC.Path_Stop();
                 }
@@ -164,16 +167,10 @@ public class AutoDuty : IDalamudPlugin
                     _vnavIPC.Path_SetTolerance(0.5f);
                 if (_task is not null)
                 {
-                    //Svc.Log.Info($"Clearing Task: {_task.Status}");
-                    if ((_task.Status != TaskStatus.Running || _task.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
-                    {
-                        //Svc.Log.Info($"Setting Cancellation Token");
+                    if (_actions.TokenSource != null && (_task.Status != TaskStatus.Running || _task.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
                         _actions.TokenSource.Cancel();
-                    }
                     else if (_task.Status != TaskStatus.Running && _task.Status != TaskStatus.WaitingForActivation)
                     {
-                        //Svc.Log.Info($"Cancellation Succesful");
-                        //_task.Dispose();
                         _task = null;
                         SetToken();
                     }
@@ -190,20 +187,15 @@ public class AutoDuty : IDalamudPlugin
                     var action = lst[0];
                     var p = lst[1].Split(',');
                     _task = null;
-                    //Svc.Log.Info($"Invoking Action: {action} with params: {p}");
-                   // Svc.Log.Info($"Task is null: {_task is null}");
                     _task = Task.Run(() => _actions.InvokeAction(action, p));
-                    //Svc.Log.Info($"Waiting for Action");
                 }
                 else
                 {
                     Stage = 2;
                     var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
-                    Svc.Log.Info($"Navigating To: {destinationVector}");
                     if (!_vnavIPC.Path_GetMovementAllowed() )
                         _vnavIPC.Path_SetMovementAllowed(true);
                     _vnavIPC.SimpleMove_PathfindAndMoveTo(destinationVector, false);
-                    Svc.Log.Info($"Waiting for Navigation");
                 }
                 break;
             //We are navigating
@@ -215,7 +207,6 @@ public class AutoDuty : IDalamudPlugin
 
                 if (!_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0)
                 {
-                    Svc.Log.Info($"Done Waiting for Navigation");
                     Stage = 1;
                     Indexer++;
                 }
@@ -225,7 +216,6 @@ public class AutoDuty : IDalamudPlugin
                 {
                     if (_task.IsCompleted)
                     {
-                        //Svc.Log.Info($"Done Waiting for Action");
                         Stage = 1;
                         _task = null;
                         Indexer++;
@@ -264,112 +254,6 @@ public class AutoDuty : IDalamudPlugin
         //Just a Test function
         try
         {
-            //Run through Vault
-
-
-            //var player = ClientState.LocalPlayer;
-            //SetPos.SetPosPos(player.Position + new System.Numerics.Vector3(0, 1,
-            //0)) ;
-            //Dalamud.Logging.Log.Log(DalamudAPI.PartyList[0].Name.ToString());
-            //DalamudAPI.Targets.SetTarget(gameObject);
-            //Set the Games MovementMove 0=Standard, 1=Legacy
-            //DalamudAPI.GameConfig.UiControl.Set("MoveMode", 1);
-            /*if (DalamudAPI.GameConfig.UiControl.GetUInt("MoveMode") == 0)
-                textFollow1 = "Standard";
-            else if (DalamudAPI.GameConfig.UiControl.GetUInt("MoveMode") == 1)
-                textFollow1 = "Legacy";
-            //ClickSelectYesNo.Using(default).Yes();
-            *if (TryGetAddonByName<AtkUnitBase>("SelectYesno", out var addon))
-            {
-                Log.Information("got addon");
-            }
-            else
-            {
-                Log.Information("no addon found");
-            }
-            */
-            //var addon = GameGui.GetAddonByName("SelectYesno", 1);
-            // var addon = (AtkUnitBase*)GameGui.GetAddonByName("SelectYesno", 1);
-            // addonPTR->SendClick(addon, EventType.CHANGE, 0, ((AddonSelectYesno*)addon)->YesButton->AtkComponentBase.OwnerNode);
-            //ClickSelectYesNo.Using(addon).Yes();
-            //addon.
-            // Log.Information(addon->AtkValues[0].ToString());
-            //textTest = addon->AtkValues[0].ToString();
-            //InteractWithObject("Red Coral Formation");
-            //var go = GetGroupMemberObjectByRole(4);
-            //Log.Info("Our Healer is: " + go.Name.ToString());
-            //go = GetGroupMemberObjectByRole(1);
-            //Log.Info("Our Tank is: " + go.Name.ToString());
-            //Log.Info("Boss: " + IsBossFromIcon((BattleChara)Targets.Target));;
-
-            /*var objs = GetObjectInRadius(Objects, 30);
-            foreach (var obj in objs) 
-            {
-                Log.Info("Name: " + obj.Name.ToString() + " Distance: " + DistanceToPlayer(obj));            
-            }*/
-            /*var objs = GetObjectInRadius(Objects, 30);
-            var battleCharaObjs = objs.OfType<BattleChara>();
-            GameObject bossObject = default;
-            foreach (var obj in battleCharaObjs)
-            {
-                Log.Info("Checking: " + obj.Name.ToString());
-                if (IsBossFromIcon(obj))
-                    bossObject = obj;
-            }
-            if (bossObject)
-                Log.Info("Boss: " + bossObject.Name.ToString());*/
-            //Log.Info(DistanceToPlayer(Targets.Target).ToString());
-            /*var v3o = new RcVec3f(-113.888f, 150, 210.794f);
-             var path = meshesDirectory + "/" + ClientState.TerritoryType.ToString() + ".navmesh";
-             var fileStream = File.Open(path, FileMode.Open);
-             var nmd = new NavMeshDetour();
-             var point = nmd.FindNearestPolyPoint(v3o, new RcVec3f(0, 200, 0), fileStream);
-             Log.Info(point.ToString());
-             Navigate(new RcVec3f(ClientState.LocalPlayer.Position.X, ClientState.LocalPlayer.Position.Y, ClientState.LocalPlayer.Position.Z), point);*/
-            /*var i = Objects.OrderBy(o => DistanceToPlayer(o)).Where(p => p.Name.ToString().ToUpper().Equals("MINERAL DEPOSIT"));
-
-            foreach (var o in i) 
-            { 
-                Log.Info(o.Name.ToString() + " - " + DistanceToPlayer(o).ToString() + " IsTargetable" + o.IsTargetable);
-            }*/
-            //if (ECommons.Reflection.DalamudReflector.TryGetDalamudPlugin("vnavmesh", out var _))
-            //{
-            //PluginInterface.GetIpcSubscriber<bool, object>("vnavmesh.SetMovementAllowed").InvokeAction(true);
-
-            //}
-            /*
-            //This clicks the Item in the Gathering Window by Index 
-            var addon = (AddonGathering*)GameGui.GetAddonByName("Gathering", 1);
-            if (addon != null)
-            {
-                var ids = new List<uint>()
-                {
-                    addon->GatheredItemId1,
-                    addon->GatheredItemId2,
-                    addon->GatheredItemId3,
-                    addon->GatheredItemId4,
-                    addon->GatheredItemId5,
-                    addon->GatheredItemId6,
-                    addon->GatheredItemId7,
-                    addon->GatheredItemId8
-                };
-                ids.ForEach(p => Log.Info(p.ToString()));
-            }
-            //var addon2 = (AtkUnitBase*)GameGui.GetAddonByName("Gathering");
-            var receiveEventAddress = new nint(addon->AtkUnitBase.AtkEventListener.vfunc[2]);
-            var eventDelegate = Marshal.GetDelegateForFunctionPointer<ReceiveEventDelegate>(receiveEventAddress)!;
-
-            var target = AtkStage.GetSingleton();
-            var eventData = EventData.ForNormalTarget(target, &addon->AtkUnitBase);
-            var inputData = InputData.Empty();
-
-            eventDelegate.Invoke(&addon->AtkUnitBase.AtkEventListener, ClickLib.Enums.EventType.CHANGE, (uint)2, eventData.Data, inputData.Data);*/
-
-            //var addon = GameGui.GetAddonByName("SelectYesno", 1);
-            //var add = (AddonSelectYesno*)addon;
-            //Log.Info(Vector3.DistanceSquared(Svc.ClientState.LocalPlayer.Position,new Vector3(44.4254f,-9, 112.402f)).ToString());
-            // var Agent = AgentContentsFinder.Instance();
-            //Agent->OpenRegularDuty(10);
             var taskManager = new TaskManager();
             //s2->UiModule->
             //taskManager.Enqueue(() => OpenDawnStory());
