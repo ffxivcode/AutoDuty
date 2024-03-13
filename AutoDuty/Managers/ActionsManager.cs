@@ -179,7 +179,7 @@ namespace AutoDuty.Managers
             PlayerCharacter? _player;
             if ((_player = Svc.ClientState.LocalPlayer) is null) return;
 
-            await Task.Delay(500, Token);
+            await Task.Delay(2000, Token);
 
             if (Token.IsCancellationRequested)
                 return;
@@ -202,7 +202,7 @@ namespace AutoDuty.Managers
 
                     ObjectManager.InteractWithObject(gameObject);
 
-                    await Task.Delay(500, Token);
+                    await Task.Delay(1000, Token);
                 }
                 while (cnt++ < 4 && !Token.IsCancellationRequested && gameObject.IsTargetable && gameObject.IsValid());
             }
@@ -211,7 +211,7 @@ namespace AutoDuty.Managers
                 //Svc.Log.Error(ex.ToString());
             }
 
-            await Task.Delay(500, Token);
+            await Task.Delay(1000, Token);
         }
 
         public async Task Boss(string x, string y, string z)
