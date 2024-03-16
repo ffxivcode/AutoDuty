@@ -163,8 +163,8 @@ public class AutoDuty : IDalamudPlugin
                     Started = false;
                     _vnavIPC.Path_Stop();
                 }
-                if (_vnavIPC.Path_GetTolerance() > 0.5F)
-                    _vnavIPC.Path_SetTolerance(0.5f);
+                if (_vnavIPC.Path_GetTolerance() > 0.25F)
+                    _vnavIPC.Path_SetTolerance(0.25f);
                 if (_task is not null)
                 {
                     if (_actions.TokenSource != null && (_task.Status != TaskStatus.Running || _task.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
@@ -195,6 +195,8 @@ public class AutoDuty : IDalamudPlugin
                     var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
                     if (!_vnavIPC.Path_GetMovementAllowed() )
                         _vnavIPC.Path_SetMovementAllowed(true);
+                    if (_vnavIPC.Path_GetTolerance() > 0.25F)
+                        _vnavIPC.Path_SetTolerance(0.25f);
                     _vnavIPC.SimpleMove_PathfindAndMoveTo(destinationVector, false);
                 }
                 break;

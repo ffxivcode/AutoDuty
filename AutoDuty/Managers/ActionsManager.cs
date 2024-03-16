@@ -51,9 +51,16 @@ namespace AutoDuty.Managers
             }
             catch (Exception ex)
             {
-                Svc.Log.Error(ex.ToString());
+                //Svc.Log.Error(ex.ToString());
             }
         }
+
+        private async Task WaitForCombat(BattleChara player)
+        {
+            while (ObjectManager.InCombat(player) && !Token.IsCancellationRequested)
+                await Task.Delay(50, Token);
+        }
+
         public void BossMod(string sts)
         {
             var chat = new ECommons.Automation.Chat();
@@ -104,9 +111,11 @@ namespace AutoDuty.Managers
 
         public async Task MoveToObject(string objectName)
         {
-            PlayerCharacter? _player;
-            if ((_player = Svc.ClientState.LocalPlayer) is null)
+            PlayerCharacter? player;
+            if ((player = Svc.ClientState.LocalPlayer) is null)
                 return;
+
+            await WaitForCombat(player);
 
             try
             {
@@ -116,7 +125,7 @@ namespace AutoDuty.Managers
                 if ((listGameObject = ObjectManager.GetObjectsByName([.. Svc.Objects], objectName)) is null)
                     return;
 
-                if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(_player.Position, o.Position)).FirstOrDefault()) is null)
+                if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(player.Position, o.Position)).FirstOrDefault()) is null)
                     return;
 
                 _vnavIPC.Path_SetMovementAllowed(true);
@@ -173,11 +182,12 @@ namespace AutoDuty.Managers
 
             await Task.Delay(5, Token);
         }
-
         public async Task Interactable(string objectName)
         {
-            PlayerCharacter? _player;
-            if ((_player = Svc.ClientState.LocalPlayer) is null) return;
+            PlayerCharacter? player;
+            if ((player = Svc.ClientState.LocalPlayer) is null) return;
+
+            await WaitForCombat(player);
 
             await Task.Delay(2000, Token);
 
@@ -191,10 +201,13 @@ namespace AutoDuty.Managers
                 List<GameObject>? listGameObject;
                 do
                 {
+                    if ((listGameObject = ObjectManager.GetObjectsByRadius([.. Svc.Objects], 10)) is null)
+                        return;
+
                     if ((listGameObject = ObjectManager.GetObjectsByName([.. Svc.Objects], objectName)) is null)
                         return;
 
-                    if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(_player.Position, o.Position)).FirstOrDefault()) is null)
+                    if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(player.Position, o.Position)).FirstOrDefault()) is null)
                         return;
 
                     if (!gameObject.IsTargetable || !gameObject.IsValid())
@@ -378,7 +391,7 @@ namespace AutoDuty.Managers
                                 if (Token.IsCancellationRequested)
                                     return;
 
-                                _vnavIPC.Path_SetTolerance(0.5f);
+                                _vnavIPC.Path_SetTolerance(0.25f);
                             }
                             break;
                         default: break;
