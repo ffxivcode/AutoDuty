@@ -23,7 +23,7 @@ using ECommons.Automation;
 
 namespace AutoDuty;
 
-// TODO: Need to add options to who they follow in combat.
+// TODO: Need to add options to who they follow in combat. Need to add renav after combat and nav within range of mobs in combat, need to add shorcut checking on death and auto revive on death. Need to get Treelist callback from TaurenKey, Need to add 4-Box capability and add dungeons not in support.
 
 public class AutoDuty : IDalamudPlugin
 {
