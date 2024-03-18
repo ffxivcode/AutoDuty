@@ -49,6 +49,7 @@ public class AutoDuty : IDalamudPlugin
     private MBT_IPCSubscriber _mbtIPC;
     private BossMod_IPCSubscriber _vbmIPC;
     private VNavmesh_IPCSubscriber _vnavIPC;
+    private Chat _chat;
 
     public AutoDuty(DalamudPluginInterface pluginInterface)
     {
@@ -68,10 +69,11 @@ public class AutoDuty : IDalamudPlugin
             if (!PathsDirectory.Exists)
                 PathsDirectory.Create();
 
+            _chat = new();
             _vbmIPC = new();
             _mbtIPC = new();
             _vnavIPC = new();
-            _actions = new(_vnavIPC, _vbmIPC, _mbtIPC);
+            _actions = new(_vnavIPC, _vbmIPC, _mbtIPC, _chat);
             MainWindow = new(this, _actions.ActionsList, _vnavIPC, _vbmIPC, _mbtIPC);
 
             WindowSystem.AddWindow(MainWindow);
@@ -125,6 +127,14 @@ public class AutoDuty : IDalamudPlugin
             if (e.TerritoryIntendedUse == 3 && (contentFinderCondition = e.ContentFinderCondition.Value) != null && !contentFinderCondition.Name.ToString().IsNullOrEmpty())
                 ListBoxDutyText.Add((contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The") : contentFinderCondition.Name.ToString(),e.RowId,0));
         }
+    }
+
+    public void StartNavigation()
+    {
+        Stage = 1;
+        Started = true;
+        SetToken();
+        _chat.ExecuteCommand($"/vbmai on");
     }
 
     public void SetToken()

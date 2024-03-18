@@ -15,7 +15,7 @@ using AutoDuty.IPC;
 
 namespace AutoDuty.Managers
 {
-    public class ActionsManager(VNavmesh_IPCSubscriber _vnavIPC, BossMod_IPCSubscriber _vbmIPC, MBT_IPCSubscriber _mbtIPC)
+    public class ActionsManager(VNavmesh_IPCSubscriber _vnavIPC, BossMod_IPCSubscriber _vbmIPC, MBT_IPCSubscriber _mbtIPC, ECommons.Automation.Chat _chat)
     {
         public readonly List<(string, string)> ActionsList =
         [
@@ -61,11 +61,7 @@ namespace AutoDuty.Managers
                 await Task.Delay(50, Token);
         }
 
-        public void BossMod(string sts)
-        {
-            var chat = new ECommons.Automation.Chat();
-            chat.ExecuteCommand($"/vbmai {sts}");
-        }
+        public void BossMod(string sts) => _chat.ExecuteCommand($"/vbmai {sts}");
 
         public async Task Wait(string wait) => await Task.Delay(Convert.ToInt32(wait), Token);
 
@@ -103,7 +99,7 @@ namespace AutoDuty.Managers
             }
             catch (Exception ex)
             {
-                Svc.Log.Error(ex.ToString());
+                //Svc.Log.Error(ex.ToString());
                 return;
             }
             await Task.Delay(50, Token);
@@ -234,7 +230,6 @@ namespace AutoDuty.Managers
                 return;
 
             GameObject followTargetObject;
-            //var chat = new ECommons.Automation.Chat();
             AutoDuty.Plugin.StopForCombat = false;
             _vnavIPC.SimpleMove_PathfindAndMoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)), false);
             while ((_vnavIPC.SimpleMove_PathfindInProgress() || _vnavIPC.Path_NumWaypoints() > 0) && !Token.IsCancellationRequested)
@@ -252,7 +247,6 @@ namespace AutoDuty.Managers
             {
                 Svc.Log.Info("Boss: We were unable to determine our Boss Object");
             }
-            //chat.ExecuteCommand("/vbmai off"); // for now until vbm IPC
             //switch our class type
             switch (_player.ClassJob.GameData.Role)
             {
@@ -297,7 +291,6 @@ namespace AutoDuty.Managers
                     await Task.Delay(5);
                 }
             }
-            //chat.ExecuteCommand("/vbmai on");
             AutoDuty.Plugin.StopForCombat = true;
             _mbtIPC.SetFollowStatus(false);
         }

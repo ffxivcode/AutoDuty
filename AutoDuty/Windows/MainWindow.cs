@@ -142,9 +142,7 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.Button("Navigate Path"))
                             {
                                 LoadPath();
-                                Plugin.Stage = 1;
-                                Plugin.Started = true;
-                                Plugin.SetToken();
+                                Plugin.StartNavigation();
                             }
                         }
                         ImGui.SameLine(0, 5);
@@ -218,11 +216,11 @@ public class MainWindow : Window, IDisposable
                         else
                         {
                             if (!_vnavIPC.IsEnabled)
-                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nFor proper navigation and movement\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
                             if (!_vbmIPC.IsEnabled)
-                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nFor proper named mechanic handling\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
                             if (!_mbtIPC.IsEnabled)
-                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires MBT plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/repo.json");
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires MBT plugin to be Installed and Loaded\nFor proper AutoFollow\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/repo.json");
                         }
                         ImGui.EndListBox();
                     }
