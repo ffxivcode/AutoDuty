@@ -55,15 +55,34 @@ namespace AutoDuty.Managers
             }
         }
 
-        private async Task WaitForCombat(BattleChara player)
-        {
-            while (ObjectManager.InCombat(player) && !Token.IsCancellationRequested)
-                await Task.Delay(50, Token);
-        }
-
         public void BossMod(string sts) => _chat.ExecuteCommand($"/vbmai {sts}");
 
         public async Task Wait(string wait) => await Task.Delay(Convert.ToInt32(wait), Token);
+
+        public async Task WaitFor(string waitForWhat)
+        {
+            switch (waitForWhat)
+            {
+                case "Combat":
+                    PlayerCharacter? player;
+                    if ((player = Svc.ClientState.LocalPlayer) is null)
+                        return;
+                    while (ObjectManager.InCombat(player) && !Token.IsCancellationRequested)
+                        await Task.Delay(50, Token);
+                    break;
+                case "PlayerIsValid":
+                    do
+                        await Task.Delay(500, Token);
+                    while (!ObjectManager.IsValid && !Token.IsCancellationRequested);
+                    break;
+                case "BetweenAreas":
+                    do
+                        await Task.Delay(500, Token);
+                    while (ObjectManager.BetweenAreas && !Token.IsCancellationRequested);
+                    break;
+            }
+            
+        }
 
         public void ExitDuty(string _) => exitDuty.Invoke((char)0);
 
@@ -88,9 +107,9 @@ namespace AutoDuty.Managers
                     ClickSelectYesNo.Using(addon).Yes();
                 else
                 {
-                    if (YesorNo.Equals("YES"))
+                    if (YesorNo.ToUpper().Equals("YES"))
                         ClickSelectYesNo.Using(addon).Yes();
-                    else if (YesorNo.Equals("NO"))
+                    else if (YesorNo.ToUpper().Equals("NO"))
                         ClickSelectYesNo.Using(addon).No();
                 }
                 await Task.Delay(500, Token);
@@ -111,7 +130,9 @@ namespace AutoDuty.Managers
             if ((player = Svc.ClientState.LocalPlayer) is null)
                 return;
 
-            await WaitForCombat(player);
+            await Task.Delay(2000);
+
+            await WaitFor("Combat");
 
             try
             {
@@ -183,7 +204,7 @@ namespace AutoDuty.Managers
             PlayerCharacter? player;
             if ((player = Svc.ClientState.LocalPlayer) is null) return;
 
-            await WaitForCombat(player);
+            await WaitFor("Combat");
 
             await Task.Delay(2000, Token);
 
@@ -291,6 +312,7 @@ namespace AutoDuty.Managers
                     await Task.Delay(5);
                 }
             }
+
             AutoDuty.Plugin.StopForCombat = true;
             _mbtIPC.SetFollowStatus(false);
         }

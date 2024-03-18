@@ -23,7 +23,7 @@ using ECommons.Automation;
 
 namespace AutoDuty;
 
-// TODO: Need to add options to who they follow in combat. Need to add renav after combat and nav within range of mobs in combat, need to add shorcut checking on death and auto revive on death. Need to get Treelist callback from TaurenKey, Need to add 4-Box capability and add dungeons not in support.
+// TODO: Need to add options to who they follow in combat. need to add shorcut checking on death and auto revive on death. Need to get Treelist callback from TaurenKey, Need to add 4-Box capability and add dungeons not in support.
 
 public class AutoDuty : IDalamudPlugin
 {
@@ -87,16 +87,22 @@ public class AutoDuty : IDalamudPlugin
 
             Svc.Framework.Update += Framework_Update;
 
+            //Svc.Condition.ConditionChange += Condition_ConditionChange;
+
             SetToken();
 
             PopulateDuties();
             _mbtIPC.SetFollowStatus(false);
-
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
     }
-    
+
+    private void Condition_ConditionChange(Dalamud.Game.ClientState.Conditions.ConditionFlag flag, bool value)
+    {
+        Svc.Log.Info($"{flag} : {value}");
+    }
+
     public void Run(int clickedDuty)
     {
         Svc.Log.Info($"Running {ListBoxDutyText[clickedDuty]} {LoopTimes} Times");
@@ -210,12 +216,14 @@ public class AutoDuty : IDalamudPlugin
                     _vnavIPC.SimpleMove_PathfindAndMoveTo(destinationVector, false);
                 }
                 break;
-            //We are navigating
+            //Navigation
             case 2:
-                if (ObjectManager.InCombat(_player) && _vnavIPC.Path_GetMovementAllowed())
-                    _vnavIPC.Path_SetMovementAllowed(false);
-                else if (!ObjectManager.InCombat(_player) && !_vnavIPC.Path_GetMovementAllowed())
-                    _vnavIPC.Path_SetMovementAllowed(true);
+                if (ObjectManager.InCombat(_player))
+                {
+                    _vnavIPC.Path_Stop();
+                    Stage = 4;
+                    break;
+                }
 
                 if (!_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0)
                 {
@@ -223,6 +231,7 @@ public class AutoDuty : IDalamudPlugin
                     Indexer++;
                 }
                 break;
+            //Action
             case 3:
                 if (_task is not null)
                 {
@@ -233,6 +242,19 @@ public class AutoDuty : IDalamudPlugin
                         Indexer++;
                     }
                 }
+                break;
+            case 4:
+                if (ObjectManager.InCombat(_player))
+                {
+                    var range = ObjectManager.JobRange;
+                    if (Svc.Targets.Target != null && ObjectManager.GetBattleDistanceToPlayer(Svc.Targets.Target) > range && _vbmIPC.ForbiddenZonesCount() == 0 && !_vnavIPC.SimpleMove_PathfindInProgress())
+                    {
+                        _vnavIPC.Path_SetTolerance(range);
+                        _vnavIPC.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
+                    }
+                }
+                else
+                    Stage = 1;
                 break;
             default:
                 break;
@@ -245,6 +267,7 @@ public class AutoDuty : IDalamudPlugin
         ECommonsMain.Dispose();
         MainWindow.Dispose();
         Svc.Framework.Update -= Framework_Update;
+        //Svc.Condition.ConditionChange -= Condition_ConditionChange;
         Svc.Commands.RemoveHandler(CommandName);
     }
 

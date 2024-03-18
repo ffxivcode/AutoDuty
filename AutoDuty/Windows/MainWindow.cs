@@ -13,6 +13,8 @@ using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ImGuiNET;
+using Dalamud.Game.ClientState.Objects.Enums;
+
 namespace AutoDuty.Windows;
 
 public class MainWindow : Window, IDisposable
@@ -247,26 +249,34 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.Selectable(item.Item1))
                             {
                                 dropdownSelected = item;
-
+                                ddisboss = false;
                                 if (item.Item2.Equals("false"))
                                 {
                                     Plugin.ListBoxPOSText.Add($"{item.Item1}|");
                                 }
-                                else if (item.Item1.Equals("Boss"))
-                                {
-                                    ddisboss = true;
-                                    input = $"{_playerPosition.X}, {_playerPosition.Y}, {_playerPosition.Z}";
-                                    inputIW = 400;
-                                    showAddActionUI = true;
-                                }
                                 else
                                 {
-                                    ddisboss = false;
+                                    switch (item.Item1)
+                                    {
+                                        case "Boss":
+                                            ddisboss = true;
+                                            input = $"{_playerPosition.X}, {_playerPosition.Y}, {_playerPosition.Z}";
+                                            break;
+                                        case "MoveToObject":
+                                        case "Interactable":
+                                            input = Managers.ObjectManager.GetObjectsByRadius([.. Svc.Objects.Where(a => a.IsTargetable && !a.ObjectKind.Equals(ObjectKind.Player))], 10).FirstOrDefault()?.Name.TextValue ?? "";
+                                            break;
+                                        case "SelectYesno":
+                                            input = "Yes";
+                                            break;
+                                        default:
+                                            input = "";
+                                            break;
+                                    }
                                     inputIW = 400;
-                                    input = "";
                                     showAddActionUI = true;
+                                    inputTextName = item.Item2;
                                 }
-                                inputTextName = item.Item2;
                             }
                         }
                         ImGui.EndPopup();
