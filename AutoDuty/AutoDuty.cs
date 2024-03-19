@@ -14,7 +14,7 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using ECommons.GameHelpers;
 using AutoDuty.Managers;
 using AutoDuty.Windows;
-using Lumina.Excel.GeneratedSheets2;
+using Lumina.Excel.GeneratedSheets;
 using System.Linq;
 using AutoDuty.IPC;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -30,6 +30,8 @@ public class AutoDuty : IDalamudPlugin
     public List<string> ListBoxPOSText { get; set; } = [];
     public List<(string, uint, uint)> ListBoxDutyText { get; set; } = [];
     public int LoopTimes = 1;
+    public int CurrentLoop = 0;
+    public int CurrentTerritoryIndex;
     public string Name => "AutoDuty";
     public static AutoDuty Plugin { get; private set; }
     public bool StopForCombat = true;
@@ -42,6 +44,7 @@ public class AutoDuty : IDalamudPlugin
     public bool Running = false;
 
     private Task? _task = null;
+    private Task? _loopTask = null;
     private const string CommandName = "/autoduty";
     private MainWindow MainWindow { get; init; }
     private DirectoryInfo _configDirectory;
@@ -60,7 +63,7 @@ public class AutoDuty : IDalamudPlugin
 
             Configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.Initialize(pluginInterface);
-            
+
             _configDirectory = pluginInterface.ConfigDirectory;
             PathsDirectory = new(_configDirectory.FullName + "/paths");
 
@@ -87,6 +90,8 @@ public class AutoDuty : IDalamudPlugin
 
             Svc.Framework.Update += Framework_Update;
 
+            Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
+
             //Svc.Condition.ConditionChange += Condition_ConditionChange;
 
             SetToken();
@@ -98,6 +103,24 @@ public class AutoDuty : IDalamudPlugin
         }
     }
 
+    private void ClientState_TerritoryChanged(ushort t)
+    {
+        if (t == 0 || !Running)
+            return;
+
+        if (t != ListBoxDutyText[CurrentTerritoryIndex].Item2)
+        {
+            if (CurrentLoop < LoopTimes)
+            {
+                Stage = 99;
+                _loopTask = Task.Run(() =>RegisterDutySupport(CurrentTerritoryIndex, ListBoxDutyText[CurrentTerritoryIndex].Item2, ListBoxDutyText[CurrentTerritoryIndex].Item3));
+                CurrentLoop++;
+            }
+            else
+                Running = false;
+        }
+    }
+
     private void Condition_ConditionChange(Dalamud.Game.ClientState.Conditions.ConditionFlag flag, bool value)
     {
         Svc.Log.Info($"{flag} : {value}");
@@ -105,9 +128,14 @@ public class AutoDuty : IDalamudPlugin
 
     public void Run(int clickedDuty)
     {
+        Stage = 99;
         Svc.Log.Info($"Running {ListBoxDutyText[clickedDuty]} {LoopTimes} Times");
+        SetToken();
+        CurrentTerritoryIndex = clickedDuty;
         Running = true;
-
+        //Svc.Log.Info($"{DawnStoryIndex(clickedDuty, ListBoxDutyText[clickedDuty].Item3)}");
+        _loopTask = Task.Run(() => RegisterDutySupport(clickedDuty, ListBoxDutyText[clickedDuty].Item2, ListBoxDutyText[clickedDuty].Item3));
+        CurrentLoop = 1;
     }
     private void PopulateDuties()
     {
@@ -127,11 +155,11 @@ public class AutoDuty : IDalamudPlugin
         var list = Svc.Data.GameData.GetExcelSheet<TerritoryType>();
         if (list == null) return;
 
-        foreach ( var e in list )
+        foreach (var e in list)
         {
             ContentFinderCondition? contentFinderCondition;
             if (e.TerritoryIntendedUse == 3 && (contentFinderCondition = e.ContentFinderCondition.Value) != null && !contentFinderCondition.Name.ToString().IsNullOrEmpty())
-                ListBoxDutyText.Add((contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The") : contentFinderCondition.Name.ToString(),e.RowId,0));
+                ListBoxDutyText.Add((contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The") : contentFinderCondition.Name.ToString(), e.RowId, 0));
         }
     }
 
@@ -141,6 +169,8 @@ public class AutoDuty : IDalamudPlugin
         Started = true;
         SetToken();
         _chat.ExecuteCommand($"/vbmai on");
+        _chat.ExecuteCommand($"/rotation auto");
+        Svc.Log.Info("Starting Navigation");
     }
 
     public void SetToken()
@@ -157,14 +187,14 @@ public class AutoDuty : IDalamudPlugin
         if (!_vnavIPC.IsEnabled)
             return;
 
-        if (ExcelTerritoryHelper.Get(Svc.ClientState.TerritoryType).TerritoryIntendedUse != 3)
+        if (ExcelTerritoryHelper.Get(Svc.ClientState.TerritoryType).TerritoryIntendedUse != 3 && !Running)
             return;
 
         PlayerCharacter? _player;
         if ((_player = Svc.ClientState.LocalPlayer) is null)
             return;
 
-        if (Indexer >= ListBoxPOSText.Count)
+        if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0)
         {
             Stage = 0;
             Indexer = 0;
@@ -188,7 +218,17 @@ public class AutoDuty : IDalamudPlugin
                     else if (_task.Status != TaskStatus.Running && _task.Status != TaskStatus.WaitingForActivation)
                     {
                         _task = null;
-                        SetToken();
+                        //SetToken();
+                    }
+                }
+                if (_loopTask is not null)
+                {
+                    if (_actions.TokenSource != null && (_loopTask.Status != TaskStatus.Running || _loopTask.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
+                        _actions.TokenSource.Cancel();
+                    else if (_loopTask.Status != TaskStatus.Running && _loopTask.Status != TaskStatus.WaitingForActivation)
+                    {
+                        _loopTask = null;
+                        //SetToken();
                     }
                 }
                 if (Indexer > 0)
@@ -209,7 +249,7 @@ public class AutoDuty : IDalamudPlugin
                 {
                     Stage = 2;
                     var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
-                    if (!_vnavIPC.Path_GetMovementAllowed() )
+                    if (!_vnavIPC.Path_GetMovementAllowed())
                         _vnavIPC.Path_SetMovementAllowed(true);
                     if (_vnavIPC.Path_GetTolerance() > 0.25F)
                         _vnavIPC.Path_SetTolerance(0.25f);
@@ -256,6 +296,17 @@ public class AutoDuty : IDalamudPlugin
                 else
                     Stage = 1;
                 break;
+            //Looping
+            case 99:
+                if (_loopTask is not null)
+                {
+                    if (_loopTask.IsCompleted)
+                    {
+                        Stage = 0;
+                        _loopTask = null;
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -267,6 +318,7 @@ public class AutoDuty : IDalamudPlugin
         ECommonsMain.Dispose();
         MainWindow.Dispose();
         Svc.Framework.Update -= Framework_Update;
+        Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
         //Svc.Condition.ConditionChange -= Condition_ConditionChange;
         Svc.Commands.RemoveHandler(CommandName);
     }
@@ -284,109 +336,86 @@ public class AutoDuty : IDalamudPlugin
         WindowSystem.Draw();
     }
 
-    public unsafe void Test()
+    public async Task RegisterDutySupport(int index, uint territoryType, uint exp)
     {
-        //Just a Test function
         try
         {
-            var taskManager = new TaskManager();
-            //s2->UiModule->
-            //taskManager.Enqueue(() => OpenDawnStory());
+            if (index < 0)
+                return;
+            nint addon;
 
-            //Callback.Fire((AtkUnitBase*)GameGui.GetAddonByName("DawnStory", 1), true, 0, 84);
+            if (!ObjectManager.IsValid)
+            {
+                while (!ObjectManager.IsValid && !_actions.Token.IsCancellationRequested)
+                    await Task.Delay(50, _actions.Token);
+                await Task.Delay(2000, _actions.Token);
+            }
+            if (_actions.Token.IsCancellationRequested)
+                return;
+            if ((addon = Svc.GameGui.GetAddonByName("DawnStory")) == 0)
+            {
+                OpenDawnStory();
+                await Task.Delay(1000, _actions.Token);
+                addon = Svc.GameGui.GetAddonByName("DawnStory");
+            }
+            if (_actions.Token.IsCancellationRequested)
+                return;
+            FireCallBack(addon, true, 11, 3);
+            await Task.Delay(50, _actions.Token);
+            int indexModifier = (DawnStoryCount(addon) - 1);
+            if (_actions.Token.IsCancellationRequested)
+                return;
+            if (indexModifier < 0)
+                return;
 
-            //taskManager.DelayNext(2000);
-            // taskManager.Enqueue(() => OpenDawnStory());
-            var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("DawnStory", 1);
-            /*taskManager.Enqueue(() => OpenDawnStory());
-            taskManager.DelayNext(2000);
-            taskManager.Enqueue(() => addon = (AtkUnitBase*)GameGui.GetAddonByName("DawnStory", 1));
-            taskManager.Enqueue(() => SelectExpansionInDawnStory(addon, 1));
-            taskManager.DelayNext(2000);*/
-            taskManager.Enqueue(() => SelectDutyInDawnStory(addon, "The Vault"));
-            /*taskManager.DelayNext(2000);
-            taskManager.Enqueue(() => addon->Draw());
-            taskManager.DelayNext(2000);
-            taskManager.Enqueue(() => ClickDawnStoryRegisterForDuty(addon));*/
+            FireCallBack(addon, true, 11, exp);
+            await Task.Delay(250, _actions.Token);
+            if (_actions.Token.IsCancellationRequested)
+                return;
+            FireCallBack(addon, true, 12, DawnStoryIndex(index, exp, indexModifier));
+            await Task.Delay(250, _actions.Token);
+            if (_actions.Token.IsCancellationRequested)
+                return;
+            FireCallBack(addon, true, 14);
+            await Task.Delay(1000, _actions.Token);
+            if (_actions.Token.IsCancellationRequested)
+                return;
+            FireCallBack(Svc.GameGui.GetAddonByName("ContentsFinderConfirm", 1), true, 8);
+            while (Svc.ClientState.TerritoryType != territoryType && !_actions.Token.IsCancellationRequested)
+                await Task.Delay(50, _actions.Token);
+            while (ObjectManager.IsValid && !_actions.Token.IsCancellationRequested)
+                await Task.Delay(50, _actions.Token);
+            await Task.Delay(5000, _actions.Token);
+            if (_actions.Token.IsCancellationRequested)
+                return;
+            StartNavigation();
         }
         catch (Exception e)
         {
-            Svc.Log.Error(e.ToString());
+            //Svc.Log.Error(e.ToString());
             //throw;
         }
-
     }
-    private unsafe static void SelectExpansionInDawnStory(AtkUnitBase* addon, int expansion)
+
+    private unsafe void OpenDawnStory() => AgentModule.Instance()->GetAgentByInternalID(341)->Show();
+
+    private static unsafe void FireCallBack(nint addon, bool boolValue, params object[] args) => Callback.Fire((AtkUnitBase*)addon, boolValue, args);
+        
+    private unsafe int DawnStoryCount(nint addon)
     {
-        int expRadioButton;
-        switch (expansion)
+        var addonBase = (AtkUnitBase*)addon;
+        var atkComponentTreeListDungeons = (AtkComponentTreeList*)addonBase->UldManager.NodeList[7]->GetComponent();
+        return (int)atkComponentTreeListDungeons->Items.Size();
+    }
+    
+    private unsafe int DawnStoryIndex(int index, uint ex, int indexModifier)
+    {
+        return ex switch
         {
-            case 0:
-                expRadioButton = 39;
-                break;
-            case 1:
-                expRadioButton = 38;
-                break;
-            case 2:
-                expRadioButton = 37;
-                break;
-            case 3:
-                expRadioButton = 36;
-                break;
-            case 4:
-                expRadioButton = 35;
-                break;
-            default:
-                expRadioButton = -1;
-                break;
-        }
-
-        ClickAddonRadioButtonByNode(addon, expRadioButton);
-    }
-    public unsafe static void SelectDutyInDawnStory(AtkUnitBase* addon, string dutyName)
-    {
-        try
-        {
-            var atkComponentTreeListDungeons = (AtkComponentTreeList*)addon->UldManager.NodeList[7]->GetComponent();
-            for (ulong i = 0; i < atkComponentTreeListDungeons->Items.Size(); i++)
-            {
-                var a3 = atkComponentTreeListDungeons->Items.Get(i).Value->Renderer->AtkComponentButton.ButtonTextNode->NodeText;
-                if (a3.ToString().Equals(dutyName))
-                {
-                    var item = atkComponentTreeListDungeons->GetItem((uint)i);
-                    if (item != null)
-                    {
-                        atkComponentTreeListDungeons->SelectItem((uint)i, true);
-                        atkComponentTreeListDungeons->AtkComponentList.SelectItem((int)i, true);
-                        atkComponentTreeListDungeons->AtkComponentList.DispatchItemEvent((int)i, AtkEventType.MouseClick);
-                        var atkEvent = item->Renderer->AtkComponentButton.AtkComponentBase.AtkResNode->AtkEventManager.Event;
-                        var atkEventType = atkEvent->Type;
-                        var atkEventParam = (int)atkEvent->Param;
-
-                        addon->ReceiveEvent(AtkEventType.MouseClick, 3, atkEvent);
-                        return;
-                    }
-                }
-            }
-        }
-        catch (Exception e) { Svc.Log.Info($"{e}"); }
-    }
-    public unsafe static void OpenDawnStory() => AgentModule.Instance()->GetAgentByInternalID(341)->Show();
-
-    public unsafe static void ClickDawnStoryRegisterForDuty(AtkUnitBase* addon) => ClickAddonButtonByNode(addon, 84);
-
-    public unsafe static void ClickAddonButtonByNode(AtkUnitBase* addon, int node)
-    {
-        if (node == -1)
-            return;
-
-        addon->ReceiveEvent(((AtkComponentButton*)addon->UldManager.NodeList[node]->GetComponent())->AtkComponentBase.OwnerNode->AtkResNode.AtkEventManager.Event->Type, (int)(AtkComponentButton*)addon->UldManager.NodeList[node]->GetComponent()->OwnerNode->AtkResNode.AtkEventManager.Event->Param, (AtkEvent*)((AtkComponentButton*)addon->UldManager.NodeList[node]->GetComponent()->OwnerNode->AtkResNode.AtkEventManager.Event));
-    }
-    public unsafe static void ClickAddonRadioButtonByNode(AtkUnitBase* addon, int node)
-    {
-        if (node == -1)
-            return;
-
-        addon->ReceiveEvent(((AtkComponentRadioButton*)addon->UldManager.NodeList[node]->GetComponent())->AtkComponentBase.OwnerNode->AtkResNode.AtkEventManager.Event->Type, (int)(AtkComponentRadioButton*)addon->UldManager.NodeList[node]->GetComponent()->OwnerNode->AtkResNode.AtkEventManager.Event->Param, (AtkEvent*)((AtkComponentRadioButton*)addon->UldManager.NodeList[node]->GetComponent()->OwnerNode->AtkResNode.AtkEventManager.Event));
+            0 or 1 or 2 => indexModifier + index,
+            3 => index - (43 - indexModifier),
+            4 => index,
+            _ => -1,
+        };
     }
 }

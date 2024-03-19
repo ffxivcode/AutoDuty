@@ -84,7 +84,11 @@ namespace AutoDuty.Managers
             
         }
 
-        public void ExitDuty(string _) => exitDuty.Invoke((char)0);
+        public void ExitDuty(string _)
+        {
+            _chat.ExecuteCommand($"/rotation cancel");
+            exitDuty.Invoke((char)0);
+        }
 
         public async Task SelectYesno(string YesorNo)
         {
@@ -358,7 +362,7 @@ namespace AutoDuty.Managers
             Red = 0x1E8A8C,
             Green = 0x1E8A8D,
         }
-        public string GlobalStringStore;
+        public string? GlobalStringStore;
 
         public async Task DutySpecificCode(string stage)
         {

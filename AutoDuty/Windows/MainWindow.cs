@@ -116,6 +116,32 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
+        if (Plugin.Running)
+        {
+            ImGui.TextColored(new Vector4(0, 0f, 200f, 1), $"AutoDuty - Running ({Plugin.ListBoxDutyText[Plugin.CurrentTerritoryIndex].Item1}) {Plugin.CurrentLoop} of {Plugin.LoopTimes} Times");
+            if (ImGui.Button("Stop"))
+            {
+                Plugin.Stage = 0;
+                Plugin.Running = false;
+                Plugin.CurrentLoop = 0;
+                SizeConstraints = new WindowSizeConstraints
+                {
+                    MinimumSize = new Vector2(425, 375),
+                    MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
+                };
+                Size = new Vector2(425, 375);
+                return;
+            }
+            ImGui.SameLine(0, 5);
+            ImGui.TextColored(new Vector4(0, 255f, 0, 1), Svc.ClientState.TerritoryType == Plugin.ListBoxDutyText[Plugin.CurrentTerritoryIndex].Item2 ? $"Step: {Plugin.ListBoxPOSText[Plugin.Indexer]}" : $"Loading");
+            SizeConstraints = new WindowSizeConstraints
+            {
+                MinimumSize = new Vector2(325, 85),
+                MaximumSize = new Vector2(325, 85)
+            };
+            Size = new Vector2(325, 85);
+            return;
+        }
         SetPlayerPosition();
 
         var _pathFileExists = File.Exists(_pathFile);
@@ -185,20 +211,39 @@ public class MainWindow : Window, IDisposable
                 }
                 else
                 {
-                    ImGui.TextColored(new Vector4(255,0,0,1),"Please enter a duty with a completed path file or complete one");
-                    ImGui.TextColored(new Vector4(0, 255, 0, 1), "Below is for future use (F Game UI Interaction)");
-                    using (var d1 = ImRaii.Disabled(Plugin.Running || true))
+                    using (var d2 = ImRaii.Disabled(_clickedDuty == -1))
                     {
-                        using (var d2 = ImRaii.Disabled(_clickedDuty == -1))
+                        if (!Plugin.Running)
                         {
                             if (ImGui.Button("Run"))
                             {
-                                Plugin.Run(_clickedDuty);
+                                if (File.Exists($"{Plugin.PathsDirectory}/{Plugin.ListBoxDutyText[_clickedDuty].Item2}.json"))
+                                    Plugin.Run(_clickedDuty);
                             }
+                        }
+                        else
+                        {
+                            if (ImGui.Button("Stop"))
+                            {
+                                Plugin.Stage = 0;
+                                Plugin.Running = false;
+                                Plugin.CurrentLoop = 0;
+                                SizeConstraints = new WindowSizeConstraints
+                                {
+                                    MinimumSize = new Vector2(425, 375),
+                                    MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
+                                };
+                                Size = new Vector2(425, 375);
+                            }
+                        }
+                    }
+                    using (var d1 = ImRaii.Disabled(Plugin.Running))
+                    {
+                        using (var d2 = ImRaii.Disabled(_clickedDuty == -1))
+                        {
                             ImGui.SameLine(0, 15);
                             ImGui.InputInt("Times", ref Plugin.LoopTimes);
                         }
-
                         if (!ImGui.BeginListBox("##DutyList", new Vector2(-1, -1))) return;
 
                         if (_vnavIPC.IsEnabled && _vbmIPC.IsEnabled && _mbtIPC.IsEnabled)
