@@ -97,7 +97,7 @@ public class AutoDuty : IDalamudPlugin
             SetToken();
 
             PopulateDuties();
-            _mbtIPC.SetFollowStatus(false);
+
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
