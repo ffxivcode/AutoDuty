@@ -20,6 +20,7 @@ using AutoDuty.IPC;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons.Automation;
+using System.Runtime.CompilerServices;
 
 namespace AutoDuty;
 
@@ -184,6 +185,9 @@ public class AutoDuty : IDalamudPlugin
             return;
 
         if (!_vnavIPC.IsEnabled)
+            return;
+
+        if (!ObjectManager.IsValid)
             return;
 
         PlayerCharacter? _player;
