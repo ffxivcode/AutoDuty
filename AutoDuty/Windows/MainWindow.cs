@@ -133,13 +133,28 @@ public class MainWindow : Window, IDisposable
                 return;
             }
             ImGui.SameLine(0, 5);
+            if (Plugin.Stage == 5)
+            {
+                if (ImGui.Button("Resume"))
+                {
+                    Plugin.Stage = 1;
+                }
+            }
+            else
+            {
+                if (ImGui.Button("Pause"))
+                {
+                    Plugin.Stage = 5;
+                }
+            }
+            ImGui.SameLine(0, 5);
             ImGui.TextColored(new Vector4(0, 255f, 0, 1), Svc.ClientState.TerritoryType == Plugin.ListBoxDutyText[Plugin.CurrentTerritoryIndex].Item2 ? $"Step: {Plugin.ListBoxPOSText[Plugin.Indexer]}" : $"Loading");
             SizeConstraints = new WindowSizeConstraints
             {
-                MinimumSize = new Vector2(325, 85),
-                MaximumSize = new Vector2(325, 85)
+                MinimumSize = new Vector2(325, 70),
+                MaximumSize = new Vector2(325, 70)
             };
-            Size = new Vector2(325, 85);
+            Size = new Vector2(325, 75);
             return;
         }
         SetPlayerPosition();
@@ -167,7 +182,7 @@ public class MainWindow : Window, IDisposable
                     {
                         using (var d2 = ImRaii.Disabled(!_inDungeon || !_pathFileExists || Plugin.Stage > 0))
                         {
-                            if (ImGui.Button("Navigate Path"))
+                            if (ImGui.Button("Start"))
                             {
                                 LoadPath();
                                 Plugin.StartNavigation();
@@ -176,9 +191,24 @@ public class MainWindow : Window, IDisposable
                         ImGui.SameLine(0, 5);
                         using (var d2 = ImRaii.Disabled(!_inDungeon || Plugin.Stage == 0))
                         {
-                            if (ImGui.Button("Stop Navigating"))
+                            if (ImGui.Button("Stop"))
                             {
                                 Plugin.Stage = 0;
+                            }
+                            ImGui.SameLine(0, 5);
+                            if (Plugin.Stage == 5)
+                            {
+                                if (ImGui.Button("Resume"))
+                                {
+                                    Plugin.Stage = 1;
+                                }
+                            }
+                            else
+                            {
+                                if (ImGui.Button("Pause"))
+                                {
+                                    Plugin.Stage = 5;
+                                }
                             }
                         }
                         if (!ImGui.BeginListBox("##MainList", new Vector2(-1, -1))) return;
@@ -234,6 +264,21 @@ public class MainWindow : Window, IDisposable
                                     MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
                                 };
                                 Size = new Vector2(425, 375);
+                            }
+                            ImGui.SameLine(0, 5);
+                            if (Plugin.Stage == 5)
+                            {
+                                if (ImGui.Button("Resume"))
+                                {
+                                    Plugin.Stage = 1;
+                                }
+                            }
+                            else
+                            {
+                                if (ImGui.Button("Pause"))
+                                {
+                                    Plugin.Stage = 5;
+                                }
                             }
                         }
                     }

@@ -23,7 +23,7 @@ using ECommons.Automation;
 
 namespace AutoDuty;
 
-// TODO: Need to add options to who they follow in combat. need to add shorcut checking on death and auto revive on death. Need to get Treelist callback from TaurenKey, Need to add 4-Box capability and add dungeons not in support.
+// TODO: Need to add options to who they follow in combat. need to add shorcut checking on death and auto revive on death. Need to get Treelist callback from TaurenKey, Need to add 4-Box capability and add dungeons not in support. Add Pause and Resume (re pathfind on resume)
 
 public class AutoDuty : IDalamudPlugin
 {
@@ -42,7 +42,6 @@ public class AutoDuty : IDalamudPlugin
     public int Indexer = 0;
     public bool Started = false;
     public bool Running = false;
-
     private Task? _task = null;
     private Task? _loopTask = null;
     private const string CommandName = "/autoduty";
@@ -76,7 +75,7 @@ public class AutoDuty : IDalamudPlugin
             _vbmIPC = new();
             _mbtIPC = new();
             _vnavIPC = new();
-            _actions = new(_vnavIPC, _vbmIPC, _mbtIPC, _chat);
+            _actions = new(this, _vnavIPC, _vbmIPC, _mbtIPC, _chat);
             MainWindow = new(this, _actions.ActionsList, _vnavIPC, _vbmIPC, _mbtIPC);
 
             WindowSystem.AddWindow(MainWindow);
@@ -283,6 +282,7 @@ public class AutoDuty : IDalamudPlugin
                     }
                 }
                 break;
+            //InCombat
             case 4:
                 if (ObjectManager.InCombat(_player))
                 {
@@ -295,6 +295,31 @@ public class AutoDuty : IDalamudPlugin
                 }
                 else
                     Stage = 1;
+                break;
+            //Paused
+            case 5:
+                if (_vnavIPC.Path_NumWaypoints() > 0)
+                    _vnavIPC.Path_Stop();
+                if (_task is not null)
+                {
+                    if (_actions.TokenSource != null && (_task.Status != TaskStatus.Running || _task.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
+                        _actions.TokenSource.Cancel();
+                    else if (_task.Status != TaskStatus.Running && _task.Status != TaskStatus.WaitingForActivation)
+                    {
+                        _task = null;
+                        //SetToken();
+                    }
+                }
+                if (_loopTask is not null)
+                {
+                    if (_actions.TokenSource != null && (_loopTask.Status != TaskStatus.Running || _loopTask.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
+                        _actions.TokenSource.Cancel();
+                    else if (_loopTask.Status != TaskStatus.Running && _loopTask.Status != TaskStatus.WaitingForActivation)
+                    {
+                        _loopTask = null;
+                        //SetToken();
+                    }
+                }
                 break;
             //Looping
             case 99:

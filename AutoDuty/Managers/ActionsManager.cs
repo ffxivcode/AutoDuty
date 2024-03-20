@@ -12,10 +12,11 @@ using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.InteropServices;
 using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.IPC;
+using Dalamud.Configuration;
 
 namespace AutoDuty.Managers
 {
-    public class ActionsManager(VNavmesh_IPCSubscriber _vnavIPC, BossMod_IPCSubscriber _vbmIPC, MBT_IPCSubscriber _mbtIPC, ECommons.Automation.Chat _chat)
+    public class ActionsManager(AutoDuty _plugin, VNavmesh_IPCSubscriber _vnavIPC, BossMod_IPCSubscriber _vbmIPC, MBT_IPCSubscriber _mbtIPC, ECommons.Automation.Chat _chat)
     {
         public readonly List<(string, string)> ActionsList =
         [
@@ -83,6 +84,8 @@ namespace AutoDuty.Managers
             }
             
         }
+
+        private bool CheckPause() => _plugin.Stage == 5;
 
         public void ExitDuty(string _)
         {
