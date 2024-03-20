@@ -186,11 +186,11 @@ public class AutoDuty : IDalamudPlugin
         if (!_vnavIPC.IsEnabled)
             return;
 
-        if (ExcelTerritoryHelper.Get(Svc.ClientState.TerritoryType).TerritoryIntendedUse != 3 && !Running)
-            return;
-
         PlayerCharacter? _player;
         if ((_player = Svc.ClientState.LocalPlayer) is null)
+            return;
+
+        if (ExcelTerritoryHelper.Get(Svc.ClientState.TerritoryType).TerritoryIntendedUse != 3 && !Running)
             return;
 
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0)
