@@ -9,6 +9,7 @@ using AutoDuty.IPC;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons;
+using ECommons.Automation;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ImGuiNET;
@@ -34,8 +35,9 @@ public class MainWindow : Window, IDisposable
     BossMod_IPCSubscriber _vbmIPC;
     VNavmesh_IPCSubscriber _vnavIPC;
     MBT_IPCSubscriber _mbtIPC;
+    TaskManager _taskManager;
 
-    public MainWindow(AutoDuty plugin, List<(string, string)> actionsList, VNavmesh_IPCSubscriber vnavIPC, BossMod_IPCSubscriber vbmIPC, MBT_IPCSubscriber mbtIPC) : base(
+    public MainWindow(AutoDuty plugin, List<(string, string)> actionsList, VNavmesh_IPCSubscriber vnavIPC, BossMod_IPCSubscriber vbmIPC, MBT_IPCSubscriber mbtIPC, TaskManager taskManager) : base(
         "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
         SizeConstraints = new WindowSizeConstraints
@@ -49,6 +51,7 @@ public class MainWindow : Window, IDisposable
         _vbmIPC = vbmIPC;
         _vnavIPC = vnavIPC;
         _mbtIPC = mbtIPC;
+        _taskManager = taskManager;
 
         OnTerritoryChange(Svc.ClientState.TerritoryType);
         Svc.ClientState.TerritoryChanged += OnTerritoryChange;
@@ -194,6 +197,7 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.Button("Stop"))
                             {
                                 Plugin.Stage = 0;
+                                _taskManager.Abort();
                             }
                             ImGui.SameLine(0, 5);
                             if (Plugin.Stage == 5)
@@ -256,6 +260,7 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.Button("Stop"))
                             {
                                 Plugin.Stage = 0;
+                                _taskManager.Abort();
                                 Plugin.Running = false;
                                 Plugin.CurrentLoop = 0;
                                 SizeConstraints = new WindowSizeConstraints

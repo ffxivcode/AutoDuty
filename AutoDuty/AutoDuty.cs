@@ -72,13 +72,13 @@ public class AutoDuty : IDalamudPlugin
 
             _taskManager = new();
             _taskManager.AbortOnTimeout = false;
-            _taskManager.TimeoutSilently = true;
+            //_taskManager.TimeoutSilently = true;
             _chat = new();
             _vbmIPC = new();
             _mbtIPC = new();
             _vnavIPC = new();
             _actions = new(this, _vnavIPC, _vbmIPC, _mbtIPC, _chat, _taskManager);
-            MainWindow = new(this, _actions.ActionsList, _vnavIPC, _vbmIPC, _mbtIPC);
+            MainWindow = new(this, _actions.ActionsList, _vnavIPC, _vbmIPC, _mbtIPC, _taskManager);
 
             WindowSystem.AddWindow(MainWindow);
 
@@ -279,7 +279,6 @@ public class AutoDuty : IDalamudPlugin
             case 5:
                 if (_vnavIPC.Path_NumWaypoints() > 0)
                     _vnavIPC.Path_Stop();
-                _taskManager.SetStepMode(true);
                 //Looping
                 break;
             case 99:
