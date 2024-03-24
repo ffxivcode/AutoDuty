@@ -2,7 +2,7 @@
   "Author": "Herculezz",
   "Name": "AutoDuty",
   "InternalName": "AutoDuty",
-  "AssemblyVersion": "0.0.0.20",
+  "AssemblyVersion": "0.0.0.21",
   "Punchline": "AutoDuty",
   "Description": "A plugin to run dungeons for you with Trust or Duty Support, Requires BossMod and vnavmesh and MBT",
   "ApplicableVersion": "any",

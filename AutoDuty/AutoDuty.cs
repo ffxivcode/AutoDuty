@@ -168,12 +168,11 @@ public class AutoDuty : IDalamudPlugin
 
     public void StartNavigation()
     {
-        _taskManager.Enqueue(() => _vnavIPC.Nav_IsReady(), int.MaxValue, "StartNavigation");
-        _taskManager.Enqueue(() => Stage = 1, "StartNavigation");
-        _taskManager.Enqueue(() => Started = true, "StartNavigation");
-        _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai on"), "StartNavigation");
-        _taskManager.Enqueue(() => _chat.ExecuteCommand($"/rotation auto"), "StartNavigation");
-        _taskManager.Enqueue(() => Svc.Log.Info("Starting Navigation"), "StartNavigation");
+        Stage = 1;
+        Started = true;
+        _chat.ExecuteCommand($"/vbmai on");
+        _chat.ExecuteCommand($"/rotation auto");
+        Svc.Log.Info("Starting Navigation");
     }
 
     public void Framework_Update(IFramework framework)
@@ -219,7 +218,7 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //We are started lets call what we need to based off our index
             case 1:
-                _taskManager.SetStepMode(false);
+                //_taskManager.SetStepMode(false);
                 if (ListBoxPOSText[Indexer].Contains('|'))
                 {
                     Stage = 3;
@@ -347,6 +346,7 @@ public class AutoDuty : IDalamudPlugin
         _taskManager.Enqueue(() => Svc.ClientState.TerritoryType == territoryType, int.MaxValue, "RegisterDutySupport");
         _taskManager.Enqueue(() => ObjectManager.IsValid, int.MaxValue, "RegisterDutySupport");
         _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterDutySupport");
+        _taskManager.Enqueue(() => _vnavIPC.Nav_IsReady(), int.MaxValue, "RegisterDutySupport");
         _taskManager.Enqueue(StartNavigation, "RegisterDutySupport");
     }
 
