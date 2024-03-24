@@ -168,11 +168,12 @@ public class AutoDuty : IDalamudPlugin
 
     public void StartNavigation()
     {
-        Stage = 1;
-        Started = true;
-        _chat.ExecuteCommand($"/vbmai on");
-        _chat.ExecuteCommand($"/rotation auto");
-        Svc.Log.Info("Starting Navigation");
+        _taskManager.Enqueue(() => _vnavIPC.Nav_IsReady(), int.MaxValue, "StartNavigation");
+        _taskManager.Enqueue(() => Stage = 1, "StartNavigation");
+        _taskManager.Enqueue(() => Started = true, "StartNavigation");
+        _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai on"), "StartNavigation");
+        _taskManager.Enqueue(() => _chat.ExecuteCommand($"/rotation auto"), "StartNavigation");
+        _taskManager.Enqueue(() => Svc.Log.Info("Starting Navigation"), "StartNavigation");
     }
 
     public void Framework_Update(IFramework framework)
