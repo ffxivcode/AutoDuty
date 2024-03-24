@@ -72,7 +72,7 @@ public class AutoDuty : IDalamudPlugin
 
             _taskManager = new();
             _taskManager.AbortOnTimeout = false;
-            //_taskManager.TimeoutSilently = true;
+            _taskManager.TimeoutSilently = true;
             _chat = new();
             _vbmIPC = new();
             _mbtIPC = new();
