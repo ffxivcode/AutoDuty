@@ -6,12 +6,10 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using Dalamud.Game.ClientState.Objects.SubKinds;
-using ECommons.GameHelpers;
 using AutoDuty.Managers;
 using AutoDuty.Windows;
 using Lumina.Excel.GeneratedSheets;
@@ -20,11 +18,10 @@ using AutoDuty.IPC;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons.Automation;
-using System.Runtime.CompilerServices;
 
 namespace AutoDuty;
 
-// TODO: Need to add options to who they follow in combat. need to add shorcut checking on death and auto revive on death. Need to get Treelist callback from TaurenKey, Need to add 4-Box capability and add dungeons not in support. Add Pause and Resume (re pathfind on resume)
+// TODO: Need to add options to who they follow in combat. need to add shorcut checking on death and auto revive on death and autorepair. Need to add 4-Box capability and add dungeons not in support.
 
 public class AutoDuty : IDalamudPlugin
 {
@@ -43,8 +40,8 @@ public class AutoDuty : IDalamudPlugin
     public int Indexer = 0;
     public bool Started = false;
     public bool Running = false;
-    private Task? _task = null;
-    private Task? _loopTask = null;
+    public PlayerCharacter? Player =null;
+
     private const string CommandName = "/autoduty";
     private MainWindow MainWindow { get; init; }
     private DirectoryInfo _configDirectory;
@@ -53,6 +50,7 @@ public class AutoDuty : IDalamudPlugin
     private BossMod_IPCSubscriber _vbmIPC;
     private VNavmesh_IPCSubscriber _vnavIPC;
     private Chat _chat;
+    private TaskManager _taskManager;
 
     public AutoDuty(DalamudPluginInterface pluginInterface)
     {
@@ -72,11 +70,14 @@ public class AutoDuty : IDalamudPlugin
             if (!PathsDirectory.Exists)
                 PathsDirectory.Create();
 
+            _taskManager = new();
+            _taskManager.AbortOnTimeout = false;
+            _taskManager.TimeoutSilently = true;
             _chat = new();
             _vbmIPC = new();
             _mbtIPC = new();
             _vnavIPC = new();
-            _actions = new(this, _vnavIPC, _vbmIPC, _mbtIPC, _chat);
+            _actions = new(this, _vnavIPC, _vbmIPC, _mbtIPC, _chat, _taskManager);
             MainWindow = new(this, _actions.ActionsList, _vnavIPC, _vbmIPC, _mbtIPC);
 
             WindowSystem.AddWindow(MainWindow);
@@ -93,8 +94,6 @@ public class AutoDuty : IDalamudPlugin
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
 
             //Svc.Condition.ConditionChange += Condition_ConditionChange;
-
-            SetToken();
 
             PopulateDuties();
 
@@ -113,11 +112,16 @@ public class AutoDuty : IDalamudPlugin
             if (CurrentLoop < LoopTimes)
             {
                 Stage = 99;
-                _loopTask = Task.Run(() =>RegisterDutySupport(CurrentTerritoryIndex, ListBoxDutyText[CurrentTerritoryIndex].Item2, ListBoxDutyText[CurrentTerritoryIndex].Item3));
+                RegisterDutySupport(CurrentTerritoryIndex, ListBoxDutyText[CurrentTerritoryIndex].Item2, ListBoxDutyText[CurrentTerritoryIndex].Item3);
                 CurrentLoop++;
             }
             else
+            {
                 Running = false;
+                CurrentLoop = 0;
+                Stage = 0;
+                MainWindow.SetWindowSize(425, 375);
+            }
         }
     }
 
@@ -130,11 +134,10 @@ public class AutoDuty : IDalamudPlugin
     {
         Stage = 99;
         Svc.Log.Info($"Running {ListBoxDutyText[clickedDuty]} {LoopTimes} Times");
-        SetToken();
         CurrentTerritoryIndex = clickedDuty;
         Running = true;
         //Svc.Log.Info($"{DawnStoryIndex(clickedDuty, ListBoxDutyText[clickedDuty].Item3)}");
-        _loopTask = Task.Run(() => RegisterDutySupport(clickedDuty, ListBoxDutyText[clickedDuty].Item2, ListBoxDutyText[clickedDuty].Item3));
+        RegisterDutySupport(clickedDuty, ListBoxDutyText[clickedDuty].Item2, ListBoxDutyText[clickedDuty].Item3);
         CurrentLoop = 1;
     }
     private void PopulateDuties()
@@ -167,20 +170,16 @@ public class AutoDuty : IDalamudPlugin
     {
         Stage = 1;
         Started = true;
-        SetToken();
         _chat.ExecuteCommand($"/vbmai on");
         _chat.ExecuteCommand($"/rotation auto");
         Svc.Log.Info("Starting Navigation");
     }
 
-    public void SetToken()
-    {
-        _actions.TokenSource = new();
-        _actions.Token = _actions.TokenSource.Token;
-    }
-
     public void Framework_Update(IFramework framework)
     {
+        if ((Player = Svc.ClientState.LocalPlayer) == null)
+            return;
+
         if (!_vbmIPC.IsEnabled)
             return;
 
@@ -188,10 +187,6 @@ public class AutoDuty : IDalamudPlugin
             return;
 
         if (!ObjectManager.IsValid)
-            return;
-
-        PlayerCharacter? _player;
-        if ((_player = Svc.ClientState.LocalPlayer) is null)
             return;
 
         if (ExcelTerritoryHelper.Get(Svc.ClientState.TerritoryType).TerritoryIntendedUse != 3 && !Running)
@@ -212,41 +207,25 @@ public class AutoDuty : IDalamudPlugin
                     Started = false;
                     _vnavIPC.Path_Stop();
                 }
+                else if (Started)
+                    Started = false;
                 if (_vnavIPC.Path_GetTolerance() > 0.25F)
                     _vnavIPC.Path_SetTolerance(0.25f);
-                if (_task is not null)
-                {
-                    if (_actions.TokenSource != null && (_task.Status != TaskStatus.Running || _task.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
-                        _actions.TokenSource.Cancel();
-                    else if (_task.Status != TaskStatus.Running && _task.Status != TaskStatus.WaitingForActivation)
-                    {
-                        _task = null;
-                        //SetToken();
-                    }
-                }
-                if (_loopTask is not null)
-                {
-                    if (_actions.TokenSource != null && (_loopTask.Status != TaskStatus.Running || _loopTask.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
-                        _actions.TokenSource.Cancel();
-                    else if (_loopTask.Status != TaskStatus.Running && _loopTask.Status != TaskStatus.WaitingForActivation)
-                    {
-                        _loopTask = null;
-                        //SetToken();
-                    }
-                }
+                if (_taskManager.IsBusy)
+                    _taskManager.Abort();
                 if (Indexer > 0)
                     Indexer = 0;
                 break;
             //We are started lets call what we need to based off our index
             case 1:
+                _taskManager.SetStepMode(false);
                 if (ListBoxPOSText[Indexer].Contains('|'))
                 {
                     Stage = 3;
                     var lst = ListBoxPOSText[Indexer].Split('|');
                     var action = lst[0];
                     var p = lst[1].Split(',');
-                    _task = null;
-                    _task = Task.Run(() => _actions.InvokeAction(action, p));
+                    _actions.InvokeAction(action, p);
                 }
                 else
                 {
@@ -261,7 +240,7 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //Navigation
             case 2:
-                if (ObjectManager.InCombat(_player))
+                if (ObjectManager.InCombat(Player))
                 {
                     _vnavIPC.Path_Stop();
                     Stage = 4;
@@ -276,19 +255,15 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //Action
             case 3:
-                if (_task is not null)
+                if (!_taskManager.IsBusy)
                 {
-                    if (_task.IsCompleted)
-                    {
-                        Stage = 1;
-                        _task = null;
-                        Indexer++;
-                    }
+                    Stage = 1;
+                    Indexer++;
                 }
                 break;
             //InCombat
             case 4:
-                if (ObjectManager.InCombat(_player))
+                if (ObjectManager.InCombat(Player))
                 {
                     var range = ObjectManager.JobRange;
                     if (Svc.Targets.Target != null && ObjectManager.GetBattleDistanceToPlayer(Svc.Targets.Target) > range && _vbmIPC.ForbiddenZonesCount() == 0 && !_vnavIPC.SimpleMove_PathfindInProgress())
@@ -304,37 +279,12 @@ public class AutoDuty : IDalamudPlugin
             case 5:
                 if (_vnavIPC.Path_NumWaypoints() > 0)
                     _vnavIPC.Path_Stop();
-                if (_task is not null)
-                {
-                    if (_actions.TokenSource != null && (_task.Status != TaskStatus.Running || _task.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
-                        _actions.TokenSource.Cancel();
-                    else if (_task.Status != TaskStatus.Running && _task.Status != TaskStatus.WaitingForActivation)
-                    {
-                        _task = null;
-                        //SetToken();
-                    }
-                }
-                if (_loopTask is not null)
-                {
-                    if (_actions.TokenSource != null && (_loopTask.Status != TaskStatus.Running || _loopTask.Status != TaskStatus.WaitingForActivation) && !_actions.Token.IsCancellationRequested)
-                        _actions.TokenSource.Cancel();
-                    else if (_loopTask.Status != TaskStatus.Running && _loopTask.Status != TaskStatus.WaitingForActivation)
-                    {
-                        _loopTask = null;
-                        //SetToken();
-                    }
-                }
+                _taskManager.SetStepMode(true);
+                //Looping
                 break;
-            //Looping
             case 99:
-                if (_loopTask is not null)
-                {
-                    if (_loopTask.IsCompleted)
-                    {
-                        Stage = 0;
-                        _loopTask = null;
-                    }
-                }
+                if (!_taskManager.IsBusy)
+                    Stage = 0;
                 break;
             default:
                 break;
@@ -359,71 +309,44 @@ public class AutoDuty : IDalamudPlugin
 
     private void DrawUI()
     {
-        if (!Player.Available)
+        if (!ObjectManager.IsValid)
             return;
 
         WindowSystem.Draw();
     }
 
-    public async Task RegisterDutySupport(int index, uint territoryType, uint exp)
+    public void RegisterDutySupport(int index, uint territoryType, uint exp)
     {
-        try
-        {
-            if (index < 0)
-                return;
-            nint addon;
+        if (index < 0)
+            return;
 
-            if (!ObjectManager.IsValid)
-            {
-                while (!ObjectManager.IsValid && !_actions.Token.IsCancellationRequested)
-                    await Task.Delay(50, _actions.Token);
-                await Task.Delay(2000, _actions.Token);
-            }
-            if (_actions.Token.IsCancellationRequested)
-                return;
-            if ((addon = Svc.GameGui.GetAddonByName("DawnStory")) == 0)
-            {
-                OpenDawnStory();
-                await Task.Delay(1000, _actions.Token);
-                addon = Svc.GameGui.GetAddonByName("DawnStory");
-            }
-            if (_actions.Token.IsCancellationRequested)
-                return;
-            FireCallBack(addon, true, 11, 3);
-            await Task.Delay(50, _actions.Token);
-            int indexModifier = (DawnStoryCount(addon) - 1);
-            if (_actions.Token.IsCancellationRequested)
-                return;
-            if (indexModifier < 0)
-                return;
+        nint addon = 0;
+        int indexModifier = 0;
 
-            FireCallBack(addon, true, 11, exp);
-            await Task.Delay(250, _actions.Token);
-            if (_actions.Token.IsCancellationRequested)
-                return;
-            FireCallBack(addon, true, 12, DawnStoryIndex(index, exp, indexModifier));
-            await Task.Delay(250, _actions.Token);
-            if (_actions.Token.IsCancellationRequested)
-                return;
-            FireCallBack(addon, true, 14);
-            await Task.Delay(1000, _actions.Token);
-            if (_actions.Token.IsCancellationRequested)
-                return;
-            FireCallBack(Svc.GameGui.GetAddonByName("ContentsFinderConfirm", 1), true, 8);
-            while (Svc.ClientState.TerritoryType != territoryType && !_actions.Token.IsCancellationRequested)
-                await Task.Delay(50, _actions.Token);
-            while (ObjectManager.IsValid && !_actions.Token.IsCancellationRequested)
-                await Task.Delay(50, _actions.Token);
-            await Task.Delay(5000, _actions.Token);
-            if (_actions.Token.IsCancellationRequested)
-                return;
-            StartNavigation();
-        }
-        catch (Exception e)
+        if (!ObjectManager.IsValid)
         {
-            //Svc.Log.Error(e.ToString());
-            //throw;
+            _taskManager.Enqueue(() => ObjectManager.IsValid, int.MaxValue, "RegisterDutySupport");
+            _taskManager.DelayNext("RegisterDutySupport", 2000);
         }
+
+        _taskManager.Enqueue(() => addon = Svc.GameGui.GetAddonByName("DawnStory"), "RegisterDutySupport");
+        _taskManager.Enqueue(() => { if (addon == 0) OpenDawnStory(); }, "RegisterDutySupport");
+        _taskManager.Enqueue(() => (addon = Svc.GameGui.GetAddonByName("DawnStory", 1)) > 0 && _actions.IsAddonReady(addon), "RegisterDutySupport");
+        _taskManager.Enqueue(() => (addon = Svc.GameGui.GetAddonByName("DawnStory")) > 0, "RegisterDutySupport");
+        _taskManager.Enqueue(() => FireCallBack(addon, true, 11, 3), "RegisterDutySupport");
+        _taskManager.DelayNext("RegisterDutySupport", 50);
+        _taskManager.Enqueue(() => indexModifier = DawnStoryCount(addon) - 1, "RegisterDutySupport");
+        _taskManager.Enqueue(() => FireCallBack(addon, true, 11, exp), "RegisterDutySupport");
+        _taskManager.DelayNext("RegisterDutySupport", 250);
+        _taskManager.Enqueue(() => FireCallBack(addon, true, 12, DawnStoryIndex(index, exp, indexModifier)), "RegisterDutySupport");
+        _taskManager.DelayNext("RegisterDutySupport", 250);
+        _taskManager.Enqueue(() => FireCallBack(addon, true, 14), "RegisterDutySupport");
+        _taskManager.DelayNext("RegisterDutySupport", 1000);
+        _taskManager.Enqueue(() => FireCallBack(Svc.GameGui.GetAddonByName("ContentsFinderConfirm", 1), true, 8), "RegisterDutySupport");
+        _taskManager.Enqueue(() => Svc.ClientState.TerritoryType == territoryType, int.MaxValue, "RegisterDutySupport");
+        _taskManager.Enqueue(() => ObjectManager.IsValid, int.MaxValue, "RegisterDutySupport");
+        _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterDutySupport");
+        _taskManager.Enqueue(StartNavigation, "RegisterDutySupport");
     }
 
     private unsafe void OpenDawnStory() => AgentModule.Instance()->GetAgentByInternalID(341)->Show();
@@ -442,8 +365,7 @@ public class AutoDuty : IDalamudPlugin
         return ex switch
         {
             0 or 1 or 2 => indexModifier + index,
-            3 => index - (43 - indexModifier),
-            4 => index,
+            3 or 4 => index - (43 - indexModifier),
             _ => -1,
         };
     }

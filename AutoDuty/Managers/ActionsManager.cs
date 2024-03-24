@@ -1,22 +1,23 @@
 ﻿using System.Reflection;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using ECommons.DalamudServices;
 using ClickLib.Clicks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.InteropServices;
 using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.IPC;
-using Dalamud.Configuration;
+using ECommons;
+using ECommons.Automation;
+using FFXIVClientStructs.FFXIV.Component.GUI;
+using ECommons.Throttlers;
+using ECommons.GameHelpers;
 
 namespace AutoDuty.Managers
 {
-    public class ActionsManager(AutoDuty _plugin, VNavmesh_IPCSubscriber _vnavIPC, BossMod_IPCSubscriber _vbmIPC, MBT_IPCSubscriber _mbtIPC, ECommons.Automation.Chat _chat)
+    public class ActionsManager(AutoDuty _plugin, VNavmesh_IPCSubscriber _vnavIPC, BossMod_IPCSubscriber _vbmIPC, MBT_IPCSubscriber _mbtIPC, Chat _chat, TaskManager _taskManager)
     {
         public readonly List<(string, string)> ActionsList =
         [
@@ -30,15 +31,14 @@ namespace AutoDuty.Managers
             ("TreasureCoffer","false"),
             ("DutySpecificCode","step #?"),
             ("BossMod","on / off"),
-            ("Target","Target what?")
+            ("Target","Target what?"),
+            ("Talk","false")
         ];
 
-        public CancellationTokenSource? TokenSource;
-        public CancellationToken Token;
         private delegate void ExitDutyDelegate(char timeout);
         private readonly ExitDutyDelegate exitDuty = Marshal.GetDelegateForFunctionPointer<ExitDutyDelegate>(Svc.SigScanner.ScanText("40 53 48 83 ec 20 48 8b 05 ?? ?? ?? ?? 0f b6 d9"));
 
-        public async Task InvokeAction(string action, object?[] p)
+        public void InvokeAction(string action, object?[] p)
         {
             try
             {
@@ -46,11 +46,10 @@ namespace AutoDuty.Managers
                 {
                     Type thisType = GetType();
                     MethodInfo? actionTask = thisType.GetMethod(action);
-                    if (actionTask != null)
-                        await (Task)actionTask.Invoke(this, p);
+                    _taskManager.Enqueue(() => actionTask?.Invoke(this, p));
                 }
             }
-            catch (Exception ex)
+            catch (Exception/* ex*/)
             {
                 //Svc.Log.Error(ex.ToString());
             }
@@ -58,31 +57,29 @@ namespace AutoDuty.Managers
 
         public void BossMod(string sts) => _chat.ExecuteCommand($"/vbmai {sts}");
 
-        public async Task Wait(string wait) => await Task.Delay(Convert.ToInt32(wait), Token);
+        public void Wait(string wait)
+        {
+            EzThrottler.Throttle("Wait", Convert.ToInt32(wait));
+            _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(wait), "Wait");
+        }
 
-        public async Task WaitFor(string waitForWhat)
+        public unsafe void WaitFor(string waitForWhat)
         {
             switch (waitForWhat)
             {
                 case "Combat":
-                    PlayerCharacter? player;
-                    if ((player = Svc.ClientState.LocalPlayer) is null)
-                        return;
-                    while (ObjectManager.InCombat(player) && !Token.IsCancellationRequested)
-                        await Task.Delay(50, Token);
+                    _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "WaitFor");
                     break;
                 case "PlayerIsValid":
-                    do
-                        await Task.Delay(500, Token);
-                    while (!ObjectManager.IsValid && !Token.IsCancellationRequested);
+                    _taskManager.Enqueue(() => !ObjectManager.IsValid, 500, "WaitFor");
+                    _taskManager.Enqueue(() => ObjectManager.IsValid, int.MaxValue, "WaitFor");
                     break;
                 case "BetweenAreas":
-                    do
-                        await Task.Delay(500, Token);
-                    while (ObjectManager.BetweenAreas && !Token.IsCancellationRequested);
+                    _taskManager.Enqueue(() => !ObjectManager.BetweenAreas, 500, "WaitFor");
+                    _taskManager.Enqueue(() => ObjectManager.BetweenAreas, int.MaxValue, "WaitFor");
                     break;
             }
-            
+
         }
 
         private bool CheckPause() => _plugin.Stage == 5;
@@ -93,239 +90,179 @@ namespace AutoDuty.Managers
             exitDuty.Invoke((char)0);
         }
 
-        public async Task SelectYesno(string YesorNo)
+        public bool TalkCheck(nint addon)
         {
-            try
+            if (addon == 0 || !IsAddonReady(addon))
+                return true;
+
+            if (EzThrottler.Check("ClickTalk"))
             {
-                nint addon;
-                int cnt = 0;
-                while ((addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) == 0 && cnt++ < 500 && !Token.IsCancellationRequested)
-                    await Task.Delay(10, Token);
+                EzThrottler.Throttle("ClickTalk", 250);
+                ClickTalk.Using(addon).Click();
+            }
+            return false;
+        }
 
-                if (addon == 0 || Token.IsCancellationRequested)
-                    return;
+        public void Talk(string _)
+        {
+            nint addon = 0;
 
-                await Task.Delay(25, Token);
+            _taskManager.Enqueue(() => (addon = Svc.GameGui.GetAddonByName("Talk", 1)) > 0, "Talk");
+            _taskManager.Enqueue(() => IsAddonReady(addon), "Talk");
+            _taskManager.Enqueue(() => TalkCheck(addon), int.MaxValue, "Talk");
+        }
 
-                if (Token.IsCancellationRequested)
-                    return;
+        public unsafe bool IsAddonReady(nint addon) => addon > 0 && GenericHelpers.IsAddonReady((AtkUnitBase*)addon);
 
-                if (YesorNo.Equals(""))
+        private bool SelectYesnoCheck(nint addon, string Yesno)
+        {
+            if (addon == 0 || !IsAddonReady(addon))
+                return true;
+
+            if (EzThrottler.Check("SelectYesno"))
+            {
+                EzThrottler.Throttle("SelectYesno", 250);
+                if (Yesno.Equals(""))
                     ClickSelectYesNo.Using(addon).Yes();
                 else
                 {
-                    if (YesorNo.ToUpper().Equals("YES"))
+                    if (Yesno.ToUpper().Equals("YES"))
                         ClickSelectYesNo.Using(addon).Yes();
-                    else if (YesorNo.ToUpper().Equals("NO"))
+                    else if (Yesno.ToUpper().Equals("NO"))
                         ClickSelectYesNo.Using(addon).No();
                 }
-                await Task.Delay(500, Token);
-                while (ObjectManager.PlayerIsCasting && !Token.IsCancellationRequested)
-                    await Task.Delay(10, Token);
             }
-            catch (Exception ex)
-            {
-                //Svc.Log.Error(ex.ToString());
-                return;
-            }
-            await Task.Delay(50, Token);
+            return false;
+        }
+        public void SelectYesno(string Yesno)
+        {
+            nint addon = 0;
+
+            _taskManager.Enqueue(() => (addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) > 0, "SelectYesno");
+            _taskManager.Enqueue(() => IsAddonReady(addon), "SelectYesno");
+            _taskManager.Enqueue(() => SelectYesnoCheck(addon, Yesno), int.MaxValue, "SelectYesno");
+            _taskManager.DelayNext("SelectYesno", 500);
+            _taskManager.Enqueue(() => !ObjectManager.PlayerIsCasting, "SelectYesno");
         }
 
-        public async Task MoveToObject(string objectName)
+        public void MoveToObject(string objectName)
         {
-            PlayerCharacter? player;
-            if ((player = Svc.ClientState.LocalPlayer) is null)
-                return;
-
-            await Task.Delay(2000);
-
-            await WaitFor("Combat");
-
-            try
-            {
-                GameObject? gameObject;
-                List<GameObject>? listGameObject;
-
-                if ((listGameObject = ObjectManager.GetObjectsByName([.. Svc.Objects], objectName)) is null)
-                    return;
-
-                if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(player.Position, o.Position)).FirstOrDefault()) is null)
-                    return;
-
-                _vnavIPC.Path_SetMovementAllowed(true);
-                _vnavIPC.SimpleMove_PathfindAndMoveTo(gameObject.Position, false);
-
-                while (_vnavIPC.SimpleMove_PathfindInProgress() || _vnavIPC.Path_NumWaypoints() > 0)
-                    await Task.Delay(10, Token);
-
-            }
-            catch (Exception ex)
-            {
-                Svc.Log.Error(ex.ToString());
-            }
+            GameObject? gameObject = null;
+            _taskManager.Enqueue(() => (gameObject = ObjectManager.GetObjectByName(objectName)) != null, "MoveToObject");
+            _taskManager.Enqueue(() => { if (gameObject != null) _vnavIPC.SimpleMove_PathfindAndMoveTo(gameObject.Position, false); }, "MoveToObject");
+            _taskManager.Enqueue(() => !_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0, int.MaxValue, "MoveToObject");
         }
 
-        public async Task TreasureCoffer(string _) => await Interactable("Treasure Coffer");
+        public void TreasureCoffer(string _) => Interactable("Treasure Coffer");
 
-        public async Task Target(string objectName)
+        private bool TargetCheck(GameObject? gameObject)
         {
-            PlayerCharacter? _player;
-            if ((_player = Svc.ClientState.LocalPlayer) is null) return;
+            if (gameObject == null || gameObject.IsTargetable || gameObject.IsValid() || Svc.Targets.Target == gameObject)
+                return true;
 
-            if (Token.IsCancellationRequested)
-                return;
-
-            await Task.Delay(5, Token);
-
-            try
+            if (EzThrottler.Check("TargetCheck"))
             {
-                var cnt = 0;
-                GameObject? gameObject;
-                List<GameObject>? listGameObject;
-                do
-                {
-                    if ((listGameObject = ObjectManager.GetObjectsByName([.. Svc.Objects], objectName)) is null)
-                        return;
-
-                    if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(_player.Position, o.Position)).FirstOrDefault()) is null)
-                        return;
-
-                    if (!gameObject.IsTargetable || !gameObject.IsValid())
-                        return;
-
-                    Svc.Targets.Target = gameObject;
-
-                    await Task.Delay(5, Token);
-                }
-                while (cnt++ < 4 && !Token.IsCancellationRequested && gameObject.IsTargetable && gameObject.IsValid());
+                EzThrottler.Throttle("TargetCheck", 25);
+                Svc.Targets.Target = gameObject;
             }
-            catch (Exception ex)
-            {
-                //Svc.Log.Error(ex.ToString());
-            }
-
-            await Task.Delay(5, Token);
-        }
-        public async Task Interactable(string objectName)
-        {
-            PlayerCharacter? player;
-            if ((player = Svc.ClientState.LocalPlayer) is null) return;
-
-            await WaitFor("Combat");
-
-            await Task.Delay(2000, Token);
-
-            if (Token.IsCancellationRequested)
-                return;
-
-            try
-            {
-                var cnt = 0;
-                GameObject? gameObject;
-                List<GameObject>? listGameObject;
-                do
-                {
-                    if ((listGameObject = ObjectManager.GetObjectsByRadius([.. Svc.Objects], 10)) is null)
-                        return;
-
-                    if ((listGameObject = ObjectManager.GetObjectsByName([.. Svc.Objects], objectName)) is null)
-                        return;
-
-                    if ((gameObject = listGameObject.OrderBy(o => Vector3.Distance(player.Position, o.Position)).FirstOrDefault()) is null)
-                        return;
-
-                    if (!gameObject.IsTargetable || !gameObject.IsValid())
-                        return;
-
-                    ObjectManager.InteractWithObject(gameObject);
-
-                    await Task.Delay(1000, Token);
-                }
-                while (cnt++ < 4 && !Token.IsCancellationRequested && gameObject.IsTargetable && gameObject.IsValid());
-            }
-            catch (Exception ex)
-            {
-                //Svc.Log.Error(ex.ToString());
-            }
-
-            await Task.Delay(1000, Token);
+            return false;
         }
 
-        public async Task Boss(string x, string y, string z)
+        public void Target(string objectName)
         {
-            PlayerCharacter? _player;
-            if ((_player = Svc.ClientState.LocalPlayer) is null)
-                return;
+            GameObject? gameObject = null;
+            _taskManager.Enqueue(() => (gameObject = ObjectManager.GetObjectByName(objectName)) != null, "Target");
+            _taskManager.Enqueue(() => TargetCheck(gameObject), "Target");
+        }
 
-            GameObject followTargetObject;
+        private bool InteractableCheck(GameObject? gameObject)
+        {
+            nint addon = Svc.GameGui.GetAddonByName("SelectYesno", 1);
+            if (addon > 0)
+            {
+                SelectYesno("Yes");
+                return true;
+            }
+            if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid())
+                return true;
+
+            if (EzThrottler.Check("Interactable"))
+            {
+                EzThrottler.Throttle("Interactable", 10);
+                ObjectManager.InteractWithObject(gameObject);
+            }
+            return false;
+        }
+        public unsafe void Interactable(string objectName)
+        {
+            GameObject? gameObject = null;
+            _taskManager.Enqueue(() => (gameObject = ObjectManager.GetObjectByNameAndRadius(objectName)) != null, "Interactable");
+            _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable");
+            _taskManager.Enqueue(() => Player.Character->IsCasting, 500, "Interactable");
+            _taskManager.Enqueue(() => !Player.Character->IsCasting, "Interactable");
+        }
+
+        private bool BossCheck(GameObject? bossObject)
+        {
+
+            if (!Svc.Condition[ConditionFlag.InCombat] || (bossObject?.IsDead ?? false))
+                return true;
+            if (EzThrottler.Check("Boss"))
+            {
+                EzThrottler.Throttle("Boss", 10);
+
+                if ((_vbmIPC.IsMoving() || _vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus())
+                    _mbtIPC.SetFollowStatus(false);
+                else if (!_mbtIPC.GetFollowStatus() && !_vbmIPC.IsMoving() && _vbmIPC.ForbiddenZonesCount() == 0)
+                    _mbtIPC.SetFollowStatus(true);
+            }
+            return false;
+        }
+
+        public void Boss(string x, string y, string z)
+        {
+            GameObject? followTargetObject = null;
+            BattleChara? bossObject = null;
             AutoDuty.Plugin.StopForCombat = false;
             _vnavIPC.SimpleMove_PathfindAndMoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)), false);
-            while ((_vnavIPC.SimpleMove_PathfindInProgress() || _vnavIPC.Path_NumWaypoints() > 0) && !Token.IsCancellationRequested)
-                await Task.Delay(10, Token);
-            await Task.Delay(5000, Token);
-            if (Token.IsCancellationRequested)
-                return;
+            _taskManager.Enqueue(() => (!_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0) || !_taskManager.IsBusy, int.MaxValue, "Boss");
+            _taskManager.DelayNext("Boss", 5000);
+
             //get our BossObject
-            var bossObject = GetBossObject();
-            if (bossObject != null)
-            {
-                Svc.Log.Info("Boss: " + bossObject.Name);
-            }
-            else
-            {
-                Svc.Log.Info("Boss: We were unable to determine our Boss Object");
-            }
+            _taskManager.Enqueue(() => bossObject = GetBossObject(), "Boss");
+
             //switch our class type
-            switch (_player.ClassJob.GameData.Role)
+            _taskManager.Enqueue(() =>
             {
-                //tank - follow healer
-                case 1:
-                    //get our healer object
-                    followTargetObject = GetTrustHealerMemberObject();
-                    break;
-                //everyone else - follow tank
-                default:
-                    //get our tank object
-                    followTargetObject = GetTrustTankMemberObject();
-                    break;
-            }
-            if (followTargetObject != null)
-            {
-                _mbtIPC.SetFollowTarget(followTargetObject.Name.TextValue);
-                _mbtIPC.SetFollowDistance(0);
-                _mbtIPC.SetFollowStatus(true);
-            }
-            if (bossObject != null)
-            {
-                while (Svc.Condition[ConditionFlag.InCombat] && !bossObject.IsDead)
+                switch (Player.Object.ClassJob.GameData?.Role)
                 {
-                    if ((_vbmIPC.IsMoving() || _vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus() )
-                        _mbtIPC.SetFollowStatus(false);
-                    else if (!_mbtIPC.GetFollowStatus() && !_vbmIPC.IsMoving() && _vbmIPC.ForbiddenZonesCount() == 0)
-                        _mbtIPC.SetFollowStatus(true);
-
-                    await Task.Delay(5);
+                    //tank - follow healer
+                    case 1:
+                        //get our healer object
+                        followTargetObject = GetTrustHealerMemberObject();
+                        break;
+                    //everyone else - follow tank
+                    default:
+                        //get our tank object
+                        followTargetObject = GetTrustTankMemberObject();
+                        break;
                 }
-            }
-            else
-            {
-                while (Svc.Condition[ConditionFlag.InCombat])
+                if (followTargetObject != null)
                 {
-                    if ((_vbmIPC.IsMoving() || _vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus())
-                        _mbtIPC.SetFollowStatus(false);
-                    else if (!_mbtIPC.GetFollowStatus() && !_vbmIPC.IsMoving() && _vbmIPC.ForbiddenZonesCount() == 0)
-                        _mbtIPC.SetFollowStatus(true);
-
-                    await Task.Delay(5);
+                    _mbtIPC.SetFollowTarget(followTargetObject.Name.TextValue);
+                    _mbtIPC.SetFollowDistance(0);
+                    _mbtIPC.SetFollowStatus(true);
                 }
-            }
-
-            AutoDuty.Plugin.StopForCombat = true;
-            _mbtIPC.SetFollowStatus(false);
+            }, "Boss");
+            _taskManager.Enqueue(() => BossCheck(bossObject), int.MaxValue, "Boss");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.StopForCombat = true, "Boss");
+            _taskManager.Enqueue(() => _mbtIPC.SetFollowStatus(false), "Boss");
         }
         private static BattleChara? GetBossObject()
         {
-            var battleCharas = ObjectManager.GetObjectsByRadius([.. Svc.Objects], 30).OfType<BattleChara>();
+            var battleCharas = ObjectManager.GetObjectsByRadius(30)?.OfType<BattleChara>();
+            if (battleCharas == null)
+                return null;
             BattleChara? bossObject = default;
             foreach (var battleChara in battleCharas)
             {
@@ -339,7 +276,7 @@ namespace AutoDuty.Managers
         {
             try
             {
-                return Svc.Buddies.First(s => s.GameObject.Name.ToString().Contains("Marauder") || s.GameObject.Name.ToString().Contains("") || s.GameObject.Name.ToString().Contains("Ysayle") || s.GameObject.Name.ToString().Contains("Temple Knight") || s.GameObject.Name.ToString().Contains("Haurchefant") || s.GameObject.Name.ToString().Contains("Pero Roggo") || s.GameObject.Name.ToString().Contains("Aymeric") || s.GameObject.Name.ToString().Contains("House Fortemps Knight") || s.GameObject.Name.ToString().Contains("Carvallain") || s.GameObject.Name.ToString().Contains("Gosetsu") || s.GameObject.Name.ToString().Contains("Hien") || s.GameObject.Name.ToString().Contains("Resistance Fighter") || s.GameObject.Name.ToString().Contains("Arenvald") || s.GameObject.Name.ToString().Contains("Emet-Selch") || s.GameObject.Name.ToString().Contains("Venat") || s.GameObject.Name.ToString().Contains("Varshahn") || s.GameObject.Name.ToString().Contains("Thancred") || s.GameObject.Name.ToString().Contains("G'raha Tia") || s.GameObject.Name.ToString().Contains("Crystal Exarch")).GameObject;
+                return Svc.Buddies.FirstOrDefault(s => s.GameObject.Name.ToString().Contains("Marauder") || s.GameObject.Name.ToString().Contains("") || s.GameObject.Name.ToString().Contains("Ysayle") || s.GameObject.Name.ToString().Contains("Temple Knight") || s.GameObject.Name.ToString().Contains("Haurchefant") || s.GameObject.Name.ToString().Contains("Pero Roggo") || s.GameObject.Name.ToString().Contains("Aymeric") || s.GameObject.Name.ToString().Contains("House Fortemps Knight") || s.GameObject.Name.ToString().Contains("Carvallain") || s.GameObject.Name.ToString().Contains("Gosetsu") || s.GameObject.Name.ToString().Contains("Hien") || s.GameObject.Name.ToString().Contains("Resistance Fighter") || s.GameObject.Name.ToString().Contains("Arenvald") || s.GameObject.Name.ToString().Contains("Emet-Selch") || s.GameObject.Name.ToString().Contains("Venat") || s.GameObject.Name.ToString().Contains("Varshahn") || s.GameObject.Name.ToString().Contains("Thancred") || s.GameObject.Name.ToString().Contains("G'raha Tia") || s.GameObject.Name.ToString().Contains("Crystal Exarch"))?.GameObject;
             }
             catch (Exception ex)
             {
@@ -351,7 +288,7 @@ namespace AutoDuty.Managers
         {
             try
             {
-                return Svc.Buddies.First(s => s.GameObject.Name.ToString().Contains("Conjurer") || s.GameObject.Name.ToString().Contains("Temple Chirurgeon") || s.GameObject.Name.ToString().Contains("Mol Youth") || s.GameObject.Name.ToString().Contains("Doman Shaman") || s.GameObject.Name.ToString().Contains("Venat") || s.GameObject.Name.ToString().Contains("Alphinaud") || s.GameObject.Name.ToString().Contains("Urianger") || s.GameObject.Name.ToString().Contains("Y'shtola") || s.GameObject.Name.ToString().Contains("Crystal Exarch") || s.GameObject.Name.ToString().Contains("G'raha Tia")).GameObject;
+                return Svc.Buddies.FirstOrDefault(s => s.GameObject.Name.ToString().Contains("Conjurer") || s.GameObject.Name.ToString().Contains("Temple Chirurgeon") || s.GameObject.Name.ToString().Contains("Mol Youth") || s.GameObject.Name.ToString().Contains("Doman Shaman") || s.GameObject.Name.ToString().Contains("Venat") || s.GameObject.Name.ToString().Contains("Alphinaud") || s.GameObject.Name.ToString().Contains("Urianger") || s.GameObject.Name.ToString().Contains("Y'shtola") || s.GameObject.Name.ToString().Contains("Crystal Exarch") || s.GameObject.Name.ToString().Contains("G'raha Tia"))?.GameObject;
             }
             catch (Exception ex)
             {
@@ -365,9 +302,9 @@ namespace AutoDuty.Managers
             Red = 0x1E8A8C,
             Green = 0x1E8A8D,
         }
-        public string? GlobalStringStore;
+        private string? GlobalStringStore;
 
-        public async Task DutySpecificCode(string stage)
+        public void DutySpecificCode(string stage)
         {
             switch (Svc.ClientState.TerritoryType)
             {
@@ -384,36 +321,14 @@ namespace AutoDuty.Managers
                             }
                             break;
                         case "2":
-                            var a = Svc.Objects.Where(a => a.Name.ToString().Equals(GlobalStringStore + " Coral Formation")).First();
+                            var a = Svc.Objects.Where(a => a.Name.TextValue.Equals(GlobalStringStore + " Coral Formation")).FirstOrDefault();
                             if (a != null)
                             {
                                 _vnavIPC.Path_SetTolerance(2.5f);
                                 _vnavIPC.SimpleMove_PathfindAndMoveTo(a.Position, false);
-                                while ((_vnavIPC.SimpleMove_PathfindInProgress() || _vnavIPC.Path_NumWaypoints() > 0) && !Token.IsCancellationRequested)
-                                    await Task.Delay(5, Token);
-
-                                if (Token.IsCancellationRequested)
-                                    return;
-
-                                nint addon;
-                                int cnt = 0;
-
-                                do
-                                {
-                                    ObjectManager.InteractWithObject(a);
-                                    await Task.Delay(10, Token);
-                                }
-                                while ((addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) == nint.Zero && cnt++ < 500 && !Token.IsCancellationRequested);
-
-                                if (addon == nint.Zero || Token.IsCancellationRequested)
-                                    return;
-
-                                await SelectYesno("YES");
-
-                                if (Token.IsCancellationRequested)
-                                    return;
-
-                                _vnavIPC.Path_SetTolerance(0.25f);
+                                _taskManager.Enqueue(() => (!_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0), int.MaxValue, "DutySpecificCode");
+                                _taskManager.Enqueue(() => _vnavIPC.Path_SetTolerance(0.25f), "DutySpecificCode");
+                                _taskManager.Enqueue(() => Interactable(a.Name.TextValue), "DutySpecificCode");
                             }
                             break;
                         default: break;

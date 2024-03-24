@@ -10,16 +10,25 @@ using System.Linq;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using System;
+using Dalamud.Plugin.Services;
 
 namespace AutoDuty.Managers
 {
     internal static class ObjectManager
     {
-        internal static List<GameObject> GetObjectsByRadius(List<GameObject> gameObjects, float radius) => gameObjects.Where(o => GetDistanceToPlayer(o) <= radius).ToList();
+        internal static List<GameObject>? GetObjectsByRadius(float radius) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => GetDistanceToPlayer(o) <= radius)];
 
-        internal static List<GameObject> GetObjectsByName(List<GameObject> gameObjects, string name) => gameObjects.Where(o => o.Name.ToString().ToUpper() == name.ToUpper()).ToList();
+        internal static GameObject? GetObjectByRadius(float radius) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => GetDistanceToPlayer(o) <= radius);
 
-        internal static GameObject? GetClosestObjectByName(List<GameObject> gameObjects, string name) => gameObjects.OrderBy(GetDistanceToPlayer).FirstOrDefault(p => p.Name.ToString().ToUpper().Equals(name.ToUpper()) && p.IsTargetable);
+        internal static List<GameObject>? GetObjectsByName(string name) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase))];
+
+        internal static GameObject? GetObjectByName(string name) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+
+        internal static List<GameObject>? GetObjectsByNameAndRadius(string objectName) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(g => g.Name.TextValue.Equals(objectName, StringComparison.CurrentCultureIgnoreCase) && Vector3.Distance(Player.Object.Position, g.Position) <= 10)];
+
+        internal static GameObject? GetObjectByNameAndRadius(string objectName) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(g => g.Name.TextValue.Equals(objectName, StringComparison.CurrentCultureIgnoreCase) && Vector3.Distance(Player.Object.Position, g.Position) <= 10);
+
+        internal static GameObject? GetClosestObjectByName(List<GameObject> gameObjects, string name) => gameObjects.OrderBy(GetDistanceToPlayer).FirstOrDefault(p => p.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase) && p.IsTargetable);
 
         internal unsafe static float GetDistanceToPlayer(GameObject gameObject) => Vector3.Distance(gameObject.Position, Player.GameObject->Position);
 

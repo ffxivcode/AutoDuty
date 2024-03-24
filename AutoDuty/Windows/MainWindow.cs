@@ -11,9 +11,7 @@ using Dalamud.Interface.Windowing;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
-using ECommons.GameHelpers;
 using ImGuiNET;
-using Dalamud.Game.ClientState.Objects.Enums;
 
 namespace AutoDuty.Windows;
 
@@ -54,7 +52,6 @@ public class MainWindow : Window, IDisposable
 
         OnTerritoryChange(Svc.ClientState.TerritoryType);
         Svc.ClientState.TerritoryChanged += OnTerritoryChange;
-        
     }
 
     private void AddAction(string action)
@@ -86,10 +83,10 @@ public class MainWindow : Window, IDisposable
             Plugin.ListBoxPOSText.Clear();
     }
 
-    private unsafe void SetPlayerPosition()
+    private void SetPlayerPosition()
     {
-        if (Player.Available)
-            _playerPosition = Player.GameObject->Position;
+        if (Plugin.Player != null)
+            _playerPosition = Plugin.Player.Position;
         else
             _playerPosition = new Vector3(0, 0, 0);
     }
@@ -113,7 +110,15 @@ public class MainWindow : Window, IDisposable
             //throw;
         }
     }
-
+    public void SetWindowSize(int x, int y)
+    {
+        SizeConstraints = new WindowSizeConstraints
+        {
+            MinimumSize = new Vector2(x, y),
+            MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
+        };
+        Size = new Vector2(x, y);
+    }
     public override void Draw()
     {
         if (Plugin.Running)
@@ -124,12 +129,7 @@ public class MainWindow : Window, IDisposable
                 Plugin.Stage = 0;
                 Plugin.Running = false;
                 Plugin.CurrentLoop = 0;
-                SizeConstraints = new WindowSizeConstraints
-                {
-                    MinimumSize = new Vector2(425, 375),
-                    MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
-                };
-                Size = new Vector2(425, 375);
+                SetWindowSize(425, 375);
                 return;
             }
             ImGui.SameLine(0, 5);
@@ -354,7 +354,7 @@ public class MainWindow : Window, IDisposable
                                             break;
                                         case "MoveToObject":
                                         case "Interactable":
-                                            input = Managers.ObjectManager.GetObjectsByRadius([.. Svc.Objects.Where(a => a.IsTargetable && !a.ObjectKind.Equals(ObjectKind.Player))], 10).FirstOrDefault()?.Name.TextValue ?? "";
+                                            input = "";
                                             break;
                                         case "SelectYesno":
                                             input = "Yes";
@@ -381,6 +381,7 @@ public class MainWindow : Window, IDisposable
                     {
                         try
                         {
+                            Svc.Log.Info($"Saving {_pathFile}");
                             string json = JsonSerializer.Serialize(Plugin.ListBoxPOSText);
                             File.WriteAllText(_pathFile, json);
                         }
