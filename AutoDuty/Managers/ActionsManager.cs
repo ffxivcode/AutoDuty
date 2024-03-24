@@ -14,6 +14,11 @@ using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons.Throttlers;
 using ECommons.GameHelpers;
+using ECommons.Reflection;
+using Lumina.Excel.GeneratedSheets;
+using ECommons.GameFunctions;
+using ECommons.ExcelServices;
+using static Lumina.Data.Parsing.Layer.LayerCommon;
 
 namespace AutoDuty.Managers
 {
@@ -272,36 +277,18 @@ namespace AutoDuty.Managers
 
             return bossObject;
         }
-        private static GameObject? GetTrustTankMemberObject()
-        {
-            try
-            {
-                return Svc.Buddies.FirstOrDefault(s => s.GameObject.Name.ToString().Contains("Marauder") || s.GameObject.Name.ToString().Contains("") || s.GameObject.Name.ToString().Contains("Ysayle") || s.GameObject.Name.ToString().Contains("Temple Knight") || s.GameObject.Name.ToString().Contains("Haurchefant") || s.GameObject.Name.ToString().Contains("Pero Roggo") || s.GameObject.Name.ToString().Contains("Aymeric") || s.GameObject.Name.ToString().Contains("House Fortemps Knight") || s.GameObject.Name.ToString().Contains("Carvallain") || s.GameObject.Name.ToString().Contains("Gosetsu") || s.GameObject.Name.ToString().Contains("Hien") || s.GameObject.Name.ToString().Contains("Resistance Fighter") || s.GameObject.Name.ToString().Contains("Arenvald") || s.GameObject.Name.ToString().Contains("Emet-Selch") || s.GameObject.Name.ToString().Contains("Venat") || s.GameObject.Name.ToString().Contains("Varshahn") || s.GameObject.Name.ToString().Contains("Thancred") || s.GameObject.Name.ToString().Contains("G'raha Tia") || s.GameObject.Name.ToString().Contains("Crystal Exarch"))?.GameObject;
-            }
-            catch (Exception ex)
-            {
-                Svc.Log.Error(ex.ToString());
-                return null;
-            }
-        }
-        private static GameObject? GetTrustHealerMemberObject()
-        {
-            try
-            {
-                return Svc.Buddies.FirstOrDefault(s => s.GameObject.Name.ToString().Contains("Conjurer") || s.GameObject.Name.ToString().Contains("Temple Chirurgeon") || s.GameObject.Name.ToString().Contains("Mol Youth") || s.GameObject.Name.ToString().Contains("Doman Shaman") || s.GameObject.Name.ToString().Contains("Venat") || s.GameObject.Name.ToString().Contains("Alphinaud") || s.GameObject.Name.ToString().Contains("Urianger") || s.GameObject.Name.ToString().Contains("Y'shtola") || s.GameObject.Name.ToString().Contains("Crystal Exarch") || s.GameObject.Name.ToString().Contains("G'raha Tia"))?.GameObject;
-            }
-            catch (Exception ex)
-            {
-                Svc.Log.Error(ex.ToString());
-                return null;
-            }
-        }
+
+        public GameObject? GetTrustTankMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 1)?.GameObject;
+
+        public GameObject? GetTrustHealerMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 4)?.GameObject;
+
         public enum OID : uint
         {
             Blue = 0x1E8554,
             Red = 0x1E8A8C,
             Green = 0x1E8A8D,
         }
+
         private string? GlobalStringStore;
 
         public void DutySpecificCode(string stage)

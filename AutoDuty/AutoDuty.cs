@@ -96,7 +96,6 @@ public class AutoDuty : IDalamudPlugin
             //Svc.Condition.ConditionChange += Condition_ConditionChange;
 
             PopulateDuties();
-
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
