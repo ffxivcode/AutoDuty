@@ -20,7 +20,7 @@ using ECommons.Automation;
 
 namespace AutoDuty;
 
-// TODO: Need to add options to who they follow in combat. need to add shorcut checking on death and auto revive on death and autorepair. Need to add 4-Box capability and add dungeons not in support.
+// TODO: Need to add options to who they follow in combat. need to add shorcut checking on death and auto revive on death. Need to add 4-Box capability and add dungeons not in support and squadron queueing.
 
 public class AutoDuty : IDalamudPlugin
 {
