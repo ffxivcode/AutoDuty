@@ -36,7 +36,9 @@ public class MainWindow : Window, IDisposable
     VNavmesh_IPCSubscriber _vnavIPC;
     MBT_IPCSubscriber _mbtIPC;
     TaskManager _taskManager;
-
+    bool _scrollBottom = false;
+    int currentIndex = -1;
+    float currentY = 0;
     public MainWindow(AutoDuty plugin, List<(string, string)> actionsList, VNavmesh_IPCSubscriber vnavIPC, BossMod_IPCSubscriber vbmIPC, MBT_IPCSubscriber mbtIPC, TaskManager taskManager) : base(
         "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
@@ -59,6 +61,7 @@ public class MainWindow : Window, IDisposable
 
     private void AddAction(string action)
     {
+        _scrollBottom = true;
         if (action.Contains("Boss"))
         {
             Plugin.ListBoxPOSText.Add($"Boss|{_playerPosition.X}, {_playerPosition.Y}, {_playerPosition.Z}");
@@ -122,7 +125,7 @@ public class MainWindow : Window, IDisposable
         };
         Size = new Vector2(x, y);
     }
-    public override void Draw()
+    public unsafe override void Draw()
     {
         if (Plugin.Running)
         {
@@ -190,6 +193,7 @@ public class MainWindow : Window, IDisposable
                             {
                                 LoadPath();
                                 Plugin.StartNavigation();
+                                currentIndex = -1;
                             }
                         }
                         ImGui.SameLine(0, 5);
@@ -228,6 +232,20 @@ public class MainWindow : Window, IDisposable
                                 else
                                     v4 = new Vector4(255, 255, 255, 1);
                                 ImGui.TextColored(v4, item.name);
+                            }
+                            if (currentIndex != Plugin.Indexer && currentIndex > -1)
+                            {
+                                //currentY = ImGui.GetScrollY();
+                                var lineHeight = ImGui.GetTextLineHeightWithSpacing();
+                                currentIndex = Plugin.Indexer;
+                                if (currentIndex > 1)
+                                    ImGui.SetScrollY((currentIndex - 1) * lineHeight);
+                                //currentY = ImGui.GetScrollY();
+                            }
+                            else if (currentIndex == -1)
+                            {
+                                currentIndex = 0;
+                                ImGui.SetScrollY(currentIndex);
                             }
                             if (_inDungeon && !_pathFileExists)
                                 ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(_territoryType).Split('|')[1].Trim()}\n({_territoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory}\nPlease download from:\n{pathsURL}\nor Create in the Build Tab");
@@ -332,6 +350,7 @@ public class MainWindow : Window, IDisposable
                     ImGui.Text("Build Path:");
                     if (ImGui.Button("Add POS"))
                     {
+                        _scrollBottom = true;
                         Plugin.ListBoxPOSText.Add($"{_playerPosition.X}, {_playerPosition.Y}, {_playerPosition.Z}");
                     }
                     ImGui.SameLine(0, 5);
@@ -425,17 +444,26 @@ public class MainWindow : Window, IDisposable
                             // Do stuff on Selectable() double click.
                             if (item.Split('|')[0].Equals("Wait") || item.Split('|')[0].Equals("Interactable") || item.Split('|')[0].Equals("Boss") || item.Split('|')[0].Equals("SelectYesno") || item.Split('|')[0].Equals("MoveToObject") || item.Split('|')[0].Equals("WaitFor"))
                             {
-                                //do nothing
+
+                                //
                             }
                             //else
                             //  Plugin.TeleportPOS(new Vector3(float.Parse(item.Split(',')[0]), float.Parse(item.Split(',')[1]), float.Parse(item.Split(',')[2])));
                         }
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                        {
                             Plugin.ListBoxPOSText.Remove(item);
+                            _scrollBottom = true;
+                        }
                         else if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
                         {
+                            ((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)AutoDuty.Plugin.Player.Address)->SetPosition(float.Parse(item.Split(',')[0]), float.Parse(item.Split(',')[1]), float.Parse(item.Split(',')[2]));
                             //Add a inputbox that when this is selected it puts this item in the input box and allows direct modification of items
                         }
+                    }
+                    if (_scrollBottom)
+                    {
+                        ImGui.SetScrollHereY(1.0f);
                     }
                     ImGui.EndListBox();
                     ImGui.EndTabItem();

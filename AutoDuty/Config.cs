@@ -7,7 +7,7 @@ namespace AutoDuty;
 [Serializable]
 public class Configuration : IPluginConfiguration
 {
-    public int Version { get; set; } = 23;
+    public int Version { get; set; } = 24;
     public int AutoRepairPct { get; set; } = 50;
 
     public bool AutoRepair { get; set; } = true;

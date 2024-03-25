@@ -61,8 +61,12 @@ namespace AutoDuty.Managers
 
         public void Wait(string wait)
         {
-            EzThrottler.Throttle("Wait", Convert.ToInt32(wait));
+            if (AutoDuty.Plugin.Player == null)
+                return;
+            _taskManager.Enqueue(() => !ObjectManager.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
+            _taskManager.Enqueue(() => EzThrottler.Throttle("Wait", Convert.ToInt32(wait)), "Wait");
             _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(wait), "Wait");
+            _taskManager.Enqueue(() => !ObjectManager.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
         }
 
         public unsafe void WaitFor(string waitForWhat)
@@ -221,9 +225,9 @@ namespace AutoDuty.Managers
             {
                 EzThrottler.Throttle("Boss", 10);
 
-                if ((_vbmIPC.IsMoving() || _vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus())
+                if ((_vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus())
                     _mbtIPC.SetFollowStatus(false);
-                else if (!_mbtIPC.GetFollowStatus() && !_vbmIPC.IsMoving() && _vbmIPC.ForbiddenZonesCount() == 0)
+                else if (!_mbtIPC.GetFollowStatus() && _vbmIPC.ForbiddenZonesCount() == 0)
                     _mbtIPC.SetFollowStatus(true);
             }
             return false;
@@ -285,7 +289,11 @@ namespace AutoDuty.Managers
 
         public GameObject? GetTrustTankMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 1)?.GameObject;
 
-        public GameObject? GetTrustHealerMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 4)?.GameObject;
+        public GameObject? GetTrustHealerMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 2)?.GameObject;
+
+        public GameObject? GetTrustRangedDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 3)?.GameObject;
+
+        public GameObject? GetTrustMeleeDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 4)?.GameObject;
 
         public enum OID : uint
         {

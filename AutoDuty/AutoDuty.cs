@@ -20,7 +20,12 @@ using ECommons.Automation;
 
 namespace AutoDuty;
 
-// TODO: Need to add options to who they follow in combat. need to add shorcut checking on death and auto revive on death. Need to add 4-Box capability and add dungeons not in support and squadron queueing.
+// TODO: Need to add options to who they follow in combat.
+// need to add shorcut checking on death and auto revive on death.
+// Need to add 4-Box capability and add dungeons not in support
+// and squadron queueing.
+// Need to expand AutoRepair to include checks for if we are in the Barracks or the Inn room and go directly from there, also check level and stuff to see if you are eligible for self repair. and check for dark matter
+// Add auto GC turn in and Auto desyth
 
 public class AutoDuty : IDalamudPlugin
 {
@@ -363,6 +368,9 @@ public class AutoDuty : IDalamudPlugin
         _taskManager.Enqueue(() => FireCallBack(addon, true, 11, 3), "RegisterDutySupport");
         _taskManager.DelayNext("RegisterDutySupport", 50);
         _taskManager.Enqueue(() => indexModifier = DawnStoryCount(addon) - 1, "RegisterDutySupport");
+        _taskManager.Enqueue(() => FireCallBack(addon, true, 11, 4), "RegisterDutySupport");
+        _taskManager.DelayNext("RegisterDutySupport", 50);
+        _taskManager.Enqueue(() => indexModifier += DawnStoryCount(addon) - 1, "RegisterDutySupport");
         _taskManager.Enqueue(() => FireCallBack(addon, true, 11, exp), "RegisterDutySupport");
         _taskManager.DelayNext("RegisterDutySupport", 250);
         _taskManager.Enqueue(() => FireCallBack(addon, true, 12, DawnStoryIndex(index, exp, indexModifier)), "RegisterDutySupport");
