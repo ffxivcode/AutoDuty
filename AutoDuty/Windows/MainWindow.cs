@@ -151,6 +151,7 @@ public class MainWindow : Window, IDisposable
                 }
             }
             ImGui.SameLine(0, 5);
+            
             ImGui.TextColored(new Vector4(0, 255f, 0, 1), Svc.ClientState.TerritoryType == Plugin.ListBoxDutyText[Plugin.CurrentTerritoryIndex].Item2 ? $"Step: {Plugin.ListBoxPOSText[Plugin.Indexer]}" : $"Loading");
             SizeConstraints = new WindowSizeConstraints
             {
@@ -441,6 +442,11 @@ public class MainWindow : Window, IDisposable
                 }
             }
             ImGui.EndTabBar();
+        }
+        ImGui.SameLine(0, 5);
+        if (ImGui.Button("Config"))
+        {
+            Plugin.OpenConfigUI();
         }
     }
 }

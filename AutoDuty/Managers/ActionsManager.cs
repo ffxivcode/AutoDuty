@@ -48,10 +48,12 @@ namespace AutoDuty.Managers
                     MethodInfo? actionTask = thisType.GetMethod(action);
                     _taskManager.Enqueue(() => actionTask?.Invoke(this, p));
                 }
+                else
+                    Svc.Log.Error("no action");
             }
-            catch (Exception/* ex*/)
+            catch (Exception ex)
             {
-                //Svc.Log.Error(ex.ToString());
+                Svc.Log.Error(ex.ToString());
             }
         }
 
@@ -70,13 +72,21 @@ namespace AutoDuty.Managers
                 case "Combat":
                     _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "WaitFor");
                     break;
-                case "PlayerIsValid":
+                case "IsValid":
                     _taskManager.Enqueue(() => !ObjectManager.IsValid, 500, "WaitFor");
                     _taskManager.Enqueue(() => ObjectManager.IsValid, int.MaxValue, "WaitFor");
                     break;
                 case "BetweenAreas":
                     _taskManager.Enqueue(() => !ObjectManager.BetweenAreas, 500, "WaitFor");
                     _taskManager.Enqueue(() => ObjectManager.BetweenAreas, int.MaxValue, "WaitFor");
+                    break;
+                case "IsOccupied":
+                    _taskManager.Enqueue(() => !ObjectManager.BetweenAreas, 500, "WaitFor");
+                    _taskManager.Enqueue(() => ObjectManager.BetweenAreas, int.MaxValue, "WaitFor");
+                    break;
+                case "IsReady":
+                    _taskManager.Enqueue(() => !ObjectManager.IsReady, 500, "WaitFor");
+                    _taskManager.Enqueue(() => ObjectManager.IsReady, int.MaxValue, "WaitFor");
                     break;
             }
 
@@ -225,7 +235,7 @@ namespace AutoDuty.Managers
             BattleChara? bossObject = null;
             AutoDuty.Plugin.StopForCombat = false;
             _vnavIPC.SimpleMove_PathfindAndMoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)), false);
-            _taskManager.Enqueue(() => (!_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0) || !_taskManager.IsBusy, int.MaxValue, "Boss");
+            _taskManager.Enqueue(() => (!_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0), int.MaxValue, "Boss");
             _taskManager.DelayNext("Boss", 5000);
 
             //get our BossObject

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using ECommons;
 using ECommons.DalamudServices;
-using ECommons.ExcelServices;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using AutoDuty.Managers;
 using AutoDuty.Windows;
@@ -44,6 +43,7 @@ public class AutoDuty : IDalamudPlugin
 
     private const string CommandName = "/autoduty";
     private MainWindow MainWindow { get; init; }
+    private ConfigWindow ConfigWindow { get; init; }
     private DirectoryInfo _configDirectory;
     private ActionsManager _actions;
     private MBT_IPCSubscriber _mbtIPC;
@@ -51,6 +51,7 @@ public class AutoDuty : IDalamudPlugin
     private VNavmesh_IPCSubscriber _vnavIPC;
     private Chat _chat;
     private TaskManager _taskManager;
+    private RepairManager _repairManager;
 
     public AutoDuty(DalamudPluginInterface pluginInterface)
     {
@@ -70,37 +71,44 @@ public class AutoDuty : IDalamudPlugin
             if (!PathsDirectory.Exists)
                 PathsDirectory.Create();
 
-            _taskManager = new();
-            _taskManager.AbortOnTimeout = false;
-            _taskManager.TimeoutSilently = true;
+            _taskManager = new()
+            {
+                AbortOnTimeout = false,
+                TimeoutSilently = true
+            };
             _chat = new();
             _vbmIPC = new();
             _mbtIPC = new();
             _vnavIPC = new();
-            _actions = new(this, _vnavIPC, _vbmIPC, _mbtIPC, _chat, _taskManager);
+            _actions = new(this, _vnavIPC, _vbmIPC, _mbtIPC, _chat, _taskManager); 
+            _repairManager = new(_taskManager, _vnavIPC, _actions);
             MainWindow = new(this, _actions.ActionsList, _vnavIPC, _vbmIPC, _mbtIPC, _taskManager);
+            ConfigWindow = new(this);
 
             WindowSystem.AddWindow(MainWindow);
+            WindowSystem.AddWindow(ConfigWindow);
 
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
-                HelpMessage = "Open main window"
+                HelpMessage = "\n/mbt->opens main window\n" +
+                "/mbt config or cfg->opens config window\n"
             });
-
+             
             pluginInterface.UiBuilder.Draw += DrawUI;
+            pluginInterface.UiBuilder.OpenConfigUi += OpenConfigUI;
+            pluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
 
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
-
-            //Svc.Condition.ConditionChange += Condition_ConditionChange;
+            Svc.Condition.ConditionChange += Condition_ConditionChange;
 
             PopulateDuties();
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
     }
-
+    
     private void ClientState_TerritoryChanged(ushort t)
     {
         if (t == 0 || !Running)
@@ -110,9 +118,12 @@ public class AutoDuty : IDalamudPlugin
         {
             if (CurrentLoop < LoopTimes)
             {
-                Stage = 99;
-                RegisterDutySupport(CurrentTerritoryIndex, ListBoxDutyText[CurrentTerritoryIndex].Item2, ListBoxDutyText[CurrentTerritoryIndex].Item3);
-                CurrentLoop++;
+                _taskManager.Enqueue(() => Stage = 99, "Loop");
+                _taskManager.Enqueue(() => !ObjectManager.IsReady, 500, "Loop");
+                _taskManager.Enqueue(() => ObjectManager.IsReady, int.MaxValue, "Loop");
+                _taskManager.Enqueue(_repairManager.Repair, int.MaxValue, "Loop");
+                _taskManager.Enqueue(() => RegisterDutySupport(CurrentTerritoryIndex, ListBoxDutyText[CurrentTerritoryIndex].Item2, ListBoxDutyText[CurrentTerritoryIndex].Item3), int.MaxValue, "Loop");
+                _taskManager.Enqueue(() => CurrentLoop++, "Loop");
             }
             else
             {
@@ -126,16 +137,17 @@ public class AutoDuty : IDalamudPlugin
 
     private void Condition_ConditionChange(Dalamud.Game.ClientState.Conditions.ConditionFlag flag, bool value)
     {
-        Svc.Log.Info($"{flag} : {value}");
+        Svc.Log.Debug($"{flag} : {value}");
     }
 
     public void Run(int clickedDuty)
     {
         Stage = 99;
         Svc.Log.Info($"Running {ListBoxDutyText[clickedDuty]} {LoopTimes} Times");
+        
         CurrentTerritoryIndex = clickedDuty;
         Running = true;
-        //Svc.Log.Info($"{DawnStoryIndex(clickedDuty, ListBoxDutyText[clickedDuty].Item3)}");
+        _repairManager.Repair();
         RegisterDutySupport(clickedDuty, ListBoxDutyText[clickedDuty].Item2, ListBoxDutyText[clickedDuty].Item3);
         CurrentLoop = 1;
     }
@@ -188,8 +200,8 @@ public class AutoDuty : IDalamudPlugin
         if (!ObjectManager.IsValid)
             return;
 
-        if (ExcelTerritoryHelper.Get(Svc.ClientState.TerritoryType).TerritoryIntendedUse != 3 && !Running)
-            return;
+        //if (ExcelTerritoryHelper.Get(Svc.ClientState.TerritoryType).TerritoryIntendedUse != 3 && !Running)
+            //return;
 
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0)
         {
@@ -296,21 +308,38 @@ public class AutoDuty : IDalamudPlugin
         MainWindow.Dispose();
         Svc.Framework.Update -= Framework_Update;
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
-        //Svc.Condition.ConditionChange -= Condition_ConditionChange;
+        Svc.Condition.ConditionChange -= Condition_ConditionChange;
         Svc.Commands.RemoveHandler(CommandName);
     }
 
     private void OnCommand(string command, string args)
     {
-        MainWindow.IsOpen = true;
+        // in response to the slash command
+        switch (args)
+        {
+            case "config" or "cfg":
+                OpenConfigUI(); break;
+            default:
+                OpenMainUI(); break;
+        }
+        OpenMainUI();
     }
 
     private void DrawUI()
     {
-        if (!ObjectManager.IsValid)
-            return;
-
         WindowSystem.Draw();
+    }
+
+    public void OpenConfigUI()
+    {
+        if (ConfigWindow != null)
+            ConfigWindow.IsOpen = true;
+    }
+
+    public void OpenMainUI()
+    {
+        if (MainWindow != null)
+            MainWindow.IsOpen = true;
     }
 
     public void RegisterDutySupport(int index, uint territoryType, uint exp)
@@ -350,8 +379,13 @@ public class AutoDuty : IDalamudPlugin
 
     private unsafe void OpenDawnStory() => AgentModule.Instance()->GetAgentByInternalID(341)->Show();
 
-    private static unsafe void FireCallBack(nint addon, bool boolValue, params object[] args) => Callback.Fire((AtkUnitBase*)addon, boolValue, args);
-        
+    private static unsafe void FireCallBack(nint addon, bool boolValue, params object[] args)
+    {
+        var addonPtr = (AtkUnitBase*)addon;
+        if (addon == 0 || addonPtr is null) return;
+        Callback.Fire(addonPtr, boolValue, args);
+    }
+
     private unsafe int DawnStoryCount(nint addon)
     {
         var addonBase = (AtkUnitBase*)addon;

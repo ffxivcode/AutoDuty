@@ -155,14 +155,27 @@ namespace AutoDuty.Managers
             Sage = 40,
         }
         internal static unsafe bool BetweenAreas => Svc.Condition.Any()
-        && Svc.Condition[ConditionFlag.BetweenAreas]
-        && Svc.Condition[ConditionFlag.BetweenAreas51];
+        && (Svc.Condition[ConditionFlag.BetweenAreas]
+        || Svc.Condition[ConditionFlag.BetweenAreas51]);
 
         internal static unsafe bool IsValid => Svc.Condition.Any()
         && !Svc.Condition[ConditionFlag.BetweenAreas]
         && !Svc.Condition[ConditionFlag.BetweenAreas51]
         && Player.Available
         && Player.Interactable;
+
+        internal static unsafe bool IsReady => !BetweenAreas && IsValid && !IsOccupied;
+
+        internal static unsafe bool IsOccupied => Svc.Condition.Any()
+        && (Svc.Condition[ConditionFlag.Occupied]
+        || Svc.Condition[ConditionFlag.Occupied30]
+        || Svc.Condition[ConditionFlag.Occupied33]
+        || Svc.Condition[ConditionFlag.Occupied39]
+        || Svc.Condition[ConditionFlag.Occupied38]
+        || Svc.Condition[ConditionFlag.OccupiedInEvent]
+        || Svc.Condition[ConditionFlag.OccupiedInEvent]
+        || Svc.Condition[ConditionFlag.OccupiedInQuestEvent]
+        || Svc.Condition[ConditionFlag.OccupiedSummoningBell]);
 
         internal static unsafe bool InCombat(this BattleChara battleChara) => battleChara.Struct()->Character.InCombat;
         
