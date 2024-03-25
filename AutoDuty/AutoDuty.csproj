@@ -30,7 +30,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
     <ProjectReference Include="..\ClickLib\ClickLib\ClickLib.csproj" />
     <PackageReference Include="DalamudPackager" Version="2.1.12" />
     <Reference Include="FFXIVClientStructs">
