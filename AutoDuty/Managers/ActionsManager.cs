@@ -225,7 +225,7 @@ namespace AutoDuty.Managers
             {
                 EzThrottler.Throttle("Boss", 10);
 
-                if ((_vbmIPC.ForbiddenZonesCount() > 0) && _mbtIPC.GetFollowStatus())
+                if (_vbmIPC.ForbiddenZonesCount() > 0 && _mbtIPC.GetFollowStatus())
                     _mbtIPC.SetFollowStatus(false);
                 else if (!_mbtIPC.GetFollowStatus() && _vbmIPC.ForbiddenZonesCount() == 0)
                     _mbtIPC.SetFollowStatus(true);
@@ -289,11 +289,11 @@ namespace AutoDuty.Managers
 
         public GameObject? GetTrustTankMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 1)?.GameObject;
 
-        public GameObject? GetTrustHealerMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 2)?.GameObject;
+        public GameObject? GetTrustHealerMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 4)?.GameObject;
 
         public GameObject? GetTrustRangedDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 3)?.GameObject;
 
-        public GameObject? GetTrustMeleeDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 4)?.GameObject;
+        public GameObject? GetTrustMeleeDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 2)?.GameObject;
 
         public enum OID : uint
         {

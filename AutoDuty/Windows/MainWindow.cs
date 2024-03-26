@@ -39,6 +39,9 @@ public class MainWindow : Window, IDisposable
     bool _scrollBottom = false;
     int currentIndex = -1;
     float currentY = 0;
+    bool _showPopup = false;
+    string _popupText = "";
+    string _popupTitle = "";
     public MainWindow(AutoDuty plugin, List<(string, string)> actionsList, VNavmesh_IPCSubscriber vnavIPC, BossMod_IPCSubscriber vbmIPC, MBT_IPCSubscriber mbtIPC, TaskManager taskManager) : base(
         "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
@@ -125,8 +128,50 @@ public class MainWindow : Window, IDisposable
         };
         Size = new Vector2(x, y);
     }
+    public static void CenteredText(string text)
+    {
+        float windowWidth = ImGui.GetWindowSize().X;
+        float textWidth = ImGui.CalcTextSize(text).X;
+
+        ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f);
+        ImGui.Text(text);
+    }
+    public static bool CenteredButton(string label, float percentWidth, float xIndent = 0)
+    {
+        var buttonWidth = ImGui.GetContentRegionAvail().X * percentWidth;
+        ImGui.SetCursorPosX(xIndent + (ImGui.GetContentRegionAvail().X - buttonWidth) / 2f);
+        return ImGui.Button(label, new Vector2(buttonWidth, 35f));
+    }
+    private void ShowPopup(string popupTitle, string popupText)
+    {
+        _popupTitle = popupTitle;
+        _popupText = popupText;
+        _showPopup = true;
+    }
+    private void DrawPopup()
+    {
+        if (_showPopup)
+        {
+            ImGui.OpenPopup(_popupTitle);
+        }
+        Vector2 textSize = ImGui.CalcTextSize(_popupText);
+        ImGui.SetNextWindowSize(new Vector2(textSize.X + 25, textSize.Y + 100));
+        if (ImGui.BeginPopupModal(_popupTitle, ref _showPopup, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoMove))
+        {
+            CenteredText(_popupText);
+            ImGui.Spacing();
+            if (CenteredButton("OK", .5f, 15))
+            {
+                _showPopup = false;
+                ImGui.CloseCurrentPopup();
+            }
+
+            ImGui.EndPopup();
+        }
+    }
     public unsafe override void Draw()
     {
+        DrawPopup();
         if (Plugin.Running)
         {
             ImGui.TextColored(new Vector4(0, 0f, 200f, 1), $"AutoDuty - Running ({Plugin.ListBoxDutyText[Plugin.CurrentTerritoryIndex].Item1}) {Plugin.CurrentLoop} of {Plugin.LoopTimes} Times");
@@ -272,6 +317,8 @@ public class MainWindow : Window, IDisposable
                             {
                                 if (File.Exists($"{Plugin.PathsDirectory}/{Plugin.ListBoxDutyText[_clickedDuty].Item2}.json"))
                                     Plugin.Run(_clickedDuty);
+                                else
+                                    ShowPopup("Error", "No path was found");
                             }
                         }
                         else
