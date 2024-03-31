@@ -1,7 +1,9 @@
 ﻿using ECommons;
 using ECommons.Automation;
+using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using System;
 
 namespace AutoDuty.Helpers
 {
@@ -13,7 +15,14 @@ namespace AutoDuty.Helpers
         {
             var addonPtr = addon;
             if (addon == null || addonPtr is null) return;
-            Callback.Fire(addonPtr, boolValue, args);
+            try
+            {
+                Callback.Fire(addonPtr, boolValue, args);
+            }
+            catch (Exception ex) 
+            { 
+                Svc.Log.Error($"{ex}");
+            }
         }
 
         internal static bool ClickSelectString(ushort index)
