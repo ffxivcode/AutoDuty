@@ -87,7 +87,6 @@ namespace AutoDuty.Helpers
                 var readerTelepotTown = new ReaderTelepotTown(addon);
                 for (int i = 0; i < readerTelepotTown.DestinationData.Count; i++)
                 {
-                    Svc.Log.Info($"{readerTelepotTown.DestinationName[i].Name}  {readerTelepotTown.DestinationData[i].CallbackData}");
                     if (aethernetName == readerTelepotTown.DestinationName[i].Name)
                         return readerTelepotTown.DestinationData[i].CallbackData;
                 }
