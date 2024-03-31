@@ -325,7 +325,9 @@ public class MainWindow : Window, IDisposable
                         {
                             if (ImGui.Button("Run"))
                             {
-                                if (!Plugin.Support && !Plugin.Trust && !Plugin.Squadron && !Plugin.Regular)
+                                if (Plugin.Regular)
+                                    ShowPopup("Error", "This has not yet been implemented");
+                                else if (!Plugin.Support && !Plugin.Trust && !Plugin.Squadron && !Plugin.Regular)
                                     ShowPopup("Error", "You must select a version\nof the dungeon to run");
                                 else if (File.Exists($"{Plugin.PathsDirectory}/{_contentManager.ListContent[_clickedDuty].TerritoryType}.json"))
                                     Plugin.Run(_clickedDuty);
