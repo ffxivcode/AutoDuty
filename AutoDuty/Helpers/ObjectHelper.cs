@@ -10,12 +10,18 @@ using System.Linq;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using System;
-using Dalamud.Plugin.Services;
+using Dalamud.Game.ClientState.Objects.Enums;
+using ECommons;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
-namespace AutoDuty.Managers
+namespace AutoDuty.Helpers
 {
-    internal static class ObjectManager
+    internal static class ObjectHelper
     {
+        internal static List<GameObject>? GetObjectsByObjectKind(ObjectKind objectKind) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.ObjectKind == objectKind)];
+
+        internal static GameObject? GetObjectByObjectKind(ObjectKind objectKind) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.ObjectKind == objectKind);
+
         internal static List<GameObject>? GetObjectsByRadius(float radius) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => GetDistanceToPlayer(o) <= radius)];
 
         internal static GameObject? GetObjectByRadius(float radius) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => GetDistanceToPlayer(o) <= radius);
@@ -23,6 +29,10 @@ namespace AutoDuty.Managers
         internal static List<GameObject>? GetObjectsByName(string name) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase))];
 
         internal static GameObject? GetObjectByName(string name) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+
+        internal static List<GameObject>? GetObjectsByPartialName(string name) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.Name.TextValue.Contains(name, StringComparison.CurrentCultureIgnoreCase))];
+
+        internal static GameObject? GetObjectByPartialName(string name) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.Name.TextValue.Contains(name, StringComparison.CurrentCultureIgnoreCase));
 
         internal static List<GameObject>? GetObjectsByNameAndRadius(string objectName) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(g => g.Name.TextValue.Equals(objectName, StringComparison.CurrentCultureIgnoreCase) && Vector3.Distance(Player.Object.Position, g.Position) <= 10)];
 
@@ -154,9 +164,6 @@ namespace AutoDuty.Managers
             Reaper = 39,
             Sage = 40,
         }
-        internal static unsafe bool BetweenAreas => Svc.Condition.Any()
-        && (Svc.Condition[ConditionFlag.BetweenAreas]
-        || Svc.Condition[ConditionFlag.BetweenAreas51]);
 
         internal static unsafe bool IsValid => Svc.Condition.Any()
         && !Svc.Condition[ConditionFlag.BetweenAreas]
@@ -164,33 +171,37 @@ namespace AutoDuty.Managers
         && Player.Available
         && Player.Interactable;
 
-        internal static unsafe bool IsReady => !BetweenAreas && IsValid && !IsOccupied;
+        internal static bool IsJumping => Svc.Condition.Any()
+        && (Svc.Condition[ConditionFlag.Jumping]
+        || Svc.Condition[ConditionFlag.Jumping61]);
 
-        internal static unsafe bool IsOccupied => Svc.Condition.Any()
-        && (Svc.Condition[ConditionFlag.Occupied]
-        || Svc.Condition[ConditionFlag.Occupied30]
-        || Svc.Condition[ConditionFlag.Occupied33]
-        || Svc.Condition[ConditionFlag.Occupied39]
-        || Svc.Condition[ConditionFlag.Occupied38]
-        || Svc.Condition[ConditionFlag.OccupiedInEvent]
-        || Svc.Condition[ConditionFlag.OccupiedInEvent]
-        || Svc.Condition[ConditionFlag.OccupiedInQuestEvent]
-        || Svc.Condition[ConditionFlag.OccupiedSummoningBell]);
+        internal static unsafe bool IsReady => IsValid && !IsOccupied;
+
+        internal static unsafe bool IsOccupied => GenericHelpers.IsOccupied();
 
         internal static unsafe bool InCombat(this BattleChara battleChara) => battleChara.Struct()->Character.InCombat;
-        
-        internal static unsafe void InteractWithObject(GameObject gameObject)
+
+        internal static unsafe void InteractWithObject(GameObject? gameObject)
         {
             try
             {
-                if (gameObject == null || !gameObject.IsTargetable) return;
+                if (gameObject == null || !gameObject.IsTargetable) 
+                    return;
+
                 var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
                 TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //Svc.Log.Error(ex.ToString());
+                //Svc.Log.Info($"InteractWithObject: Exception: {ex}");
             }
+        }
+        internal static unsafe AtkUnitBase* InteractWithObjectUntilAddon(GameObject? gameObject, string addonName)
+        {
+            if (GenericHelpers.TryGetAddonByName<AtkUnitBase>(addonName, out var addon) && GenericHelpers.IsAddonReady(addon))
+                return addon;
+            InteractWithObject(gameObject);
+            return null;
         }
 
         internal static unsafe bool PlayerIsCasting => Player.Character->IsCasting;

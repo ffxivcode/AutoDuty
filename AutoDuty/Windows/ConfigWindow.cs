@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
@@ -15,9 +16,8 @@ public class ConfigWindow : Window, IDisposable
         ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
         ImGuiWindowFlags.NoScrollWithMouse)
     {
-        this.Size = new Vector2(232, 180);
+        this.Size = new Vector2(232, 270);
         this.SizeCondition = ImGuiCond.Always;
-
         this.Configuration = plugin.Configuration;
     }
 
@@ -28,80 +28,101 @@ public class ConfigWindow : Window, IDisposable
         var autoRepair = Configuration.AutoRepair;
         var autoRepairSelf = Configuration.AutoRepairSelf;
         var autoRepairCity = Configuration.AutoRepairCity;
-        var autoRepairLimsa = Configuration.AutoRepairLimsa;
-        var autoRepairUldah = Configuration.AutoRepairUldah;
-        var autoRepairGridania = Configuration.AutoRepairGridania;
+        var autoRepairReturnToInn = Configuration.AutoRepairReturnToInn;
+        var autoRepairReturnToBarracks = Configuration.AutoRepairReturnToBarracks;
         var autoRepairPct = Configuration.AutoRepairPct;
+        var retireToInnBeforeLoops = Configuration.RetireToInnBeforeLoops;
+        var retireToBarracksBeforeLoops = Configuration.RetireToBarracksBeforeLoops;
+        var autoDesynth = Configuration.AutoDesynth;
+        var autoGCTurnin = Configuration.AutoGCTurnin;
+        var autoGCTurninSlotsLeft = Configuration.AutoGCTurninSlotsLeft;
+
+        if (ImGui.Checkbox("Retire to Inn before Looping", ref retireToInnBeforeLoops))
+        {
+            this.Configuration.RetireToInnBeforeLoops = retireToInnBeforeLoops;
+            this.Configuration.RetireToBarracksBeforeLoops = false;
+            retireToBarracksBeforeLoops = false;
+            this.Configuration.Save();
+        }
+        if (ImGui.Checkbox("Retire to Baracks before Looping", ref retireToBarracksBeforeLoops))
+        {
+            this.Configuration.RetireToBarracksBeforeLoops = retireToBarracksBeforeLoops;
+            this.Configuration.RetireToInnBeforeLoops = false;
+            retireToInnBeforeLoops = false;
+            this.Configuration.Save();
+        }
+        ImGui.Separator();
         if (ImGui.Checkbox("AutoRepair Enabled", ref autoRepair))
         {
             this.Configuration.AutoRepair = autoRepair;
             this.Configuration.Save();
         }
+
         using (var d1 = ImRaii.Disabled(!autoRepair))
         {
-            //ImGui.SameLine(0, 5);
-            if (ImGui.SliderInt("Repair@", ref autoRepairPct, 1, 100,"%d%%"))
+            if (ImGui.SliderInt("Repair@", ref autoRepairPct, 1, 100, "%d%%"))
             {
                 this.Configuration.AutoRepairPct = autoRepairPct;
                 this.Configuration.Save();
             }
-                //("Percent", ref autoRepairPct);
+
+            if (ImGui.Checkbox("Self AutoRepair", ref autoRepairSelf))
+            {
+                this.Configuration.AutoRepairSelf = autoRepairSelf;
+                this.Configuration.AutoRepairCity = false;
+                autoRepairCity = false;
+                this.Configuration.Save();
+            }
+
+            if (ImGui.Checkbox("AutoRepair at City", ref autoRepairCity))
+            {
+                this.Configuration.AutoRepairCity = autoRepairCity;
+                this.Configuration.AutoRepairSelf = false;
+                autoRepairSelf = false;
+                this.Configuration.Save();
+            }
+
             using (var d2 = ImRaii.Disabled(!autoRepairCity))
             {
-                if (ImGui.Checkbox("Self AutoRepair", ref autoRepairSelf))
+                if (ImGui.Checkbox("Return to Inn", ref autoRepairReturnToInn))
                 {
-                    this.Configuration.AutoRepairSelf = autoRepairSelf;
-                    this.Configuration.AutoRepairCity = false;
-                    autoRepairCity = false;
+                    this.Configuration.AutoRepairReturnToInn = autoRepairReturnToInn;
+                    this.Configuration.AutoRepairReturnToBarracks = false;
+                    autoRepairReturnToBarracks = false;
+                    this.Configuration.Save();
+                }
+                if (ImGui.Checkbox("Return to Baracks", ref autoRepairReturnToBarracks))
+                {
+                    this.Configuration.AutoRepairReturnToBarracks = autoRepairReturnToBarracks;
+                    this.Configuration.AutoRepairReturnToInn = false;
+                    autoRepairReturnToInn = false;
                     this.Configuration.Save();
                 }
             }
-            using (var d3 = ImRaii.Disabled(!autoRepairSelf))
+        }
+        //disabled until implemented
+        using (var d1 = ImRaii.Disabled(true))
+        {
+            ImGui.Separator();
+            if (ImGui.Checkbox("Auto Desynth", ref autoDesynth))
             {
-                if (ImGui.Checkbox("AutoRepair at City", ref autoRepairCity))
-                {
-                    this.Configuration.AutoRepairCity = autoRepairCity;
-                    this.Configuration.AutoRepairSelf = false;
-                    autoRepairSelf = false;
-                    this.Configuration.Save();
-                }
+                this.Configuration.AutoDesynth = autoDesynth;
+                this.Configuration.AutoGCTurnin = false;
+                autoGCTurnin = false;
+                this.Configuration.Save();
             }
-            using (var d4 = ImRaii.Disabled(!autoRepairCity))
+            if (ImGui.Checkbox("Auto GC Turnin", ref autoGCTurnin))
             {
-                if (ImGui.Checkbox("AutoRepair at Limsa", ref autoRepairLimsa))
+                this.Configuration.AutoGCTurnin = autoGCTurnin;
+                this.Configuration.AutoDesynth = false;
+                autoDesynth = false;
+                this.Configuration.Save();
+            }
+            using (var d2 = ImRaii.Disabled(!autoGCTurnin))
+            {
+                if (ImGui.SliderInt("@ Slots Left", ref autoGCTurninSlotsLeft, 1, 180))
                 {
-                    this.Configuration.AutoRepairLimsa = autoRepairLimsa;
-                    if (autoRepairLimsa)
-                    {
-                        this.Configuration.AutoRepairUldah = false;
-                        this.Configuration.AutoRepairGridania = false;
-                        autoRepairUldah = false;
-                        autoRepairGridania = false;
-                    }
-                    this.Configuration.Save();
-                }
-                if (ImGui.Checkbox("AutoRepair at Uldah", ref autoRepairUldah))
-                {
-                    this.Configuration.AutoRepairUldah = autoRepairUldah;
-                    if (autoRepairUldah)
-                    {
-                        this.Configuration.AutoRepairLimsa = false;
-                        this.Configuration.AutoRepairGridania = false;
-                        autoRepairLimsa = false;
-                        autoRepairGridania = false;
-                    }
-                    this.Configuration.Save();
-                }
-                if (ImGui.Checkbox("AutoRepair at Gridania", ref autoRepairGridania))
-                {
-                    this.Configuration.AutoRepairGridania = autoRepairGridania;
-                    if (autoRepairGridania)
-                    {
-                        this.Configuration.AutoRepairUldah = false;
-                        this.Configuration.AutoRepairLimsa = false;
-                        autoRepairUldah = false;
-                        autoRepairLimsa = false;
-                    }
+                    this.Configuration.AutoGCTurninSlotsLeft = autoGCTurninSlotsLeft;
                     this.Configuration.Save();
                 }
             }

@@ -14,10 +14,12 @@ using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons.Throttlers;
 using ECommons.GameHelpers;
+using AutoDuty.Helpers;
+using AutoDuty.External;
 
 namespace AutoDuty.Managers
 {
-    public class ActionsManager(AutoDuty _plugin, VNavmesh_IPCSubscriber _vnavIPC, BossMod_IPCSubscriber _vbmIPC, MBT_IPCSubscriber _mbtIPC, Chat _chat, TaskManager _taskManager)
+    public class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
     {
         public readonly List<(string, string)> ActionsList =
         [
@@ -32,7 +34,6 @@ namespace AutoDuty.Managers
             ("DutySpecificCode","step #?"),
             ("BossMod","on / off"),
             ("Target","Target what?"),
-            ("Talk","false")
         ];
 
         private delegate void ExitDutyDelegate(char timeout);
@@ -63,10 +64,10 @@ namespace AutoDuty.Managers
         {
             if (AutoDuty.Plugin.Player == null)
                 return;
-            _taskManager.Enqueue(() => !ObjectManager.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
+            _taskManager.Enqueue(() => !ObjectHelper.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
             _taskManager.Enqueue(() => EzThrottler.Throttle("Wait", Convert.ToInt32(wait)), "Wait");
             _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(wait), "Wait");
-            _taskManager.Enqueue(() => !ObjectManager.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
+            _taskManager.Enqueue(() => !ObjectHelper.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
         }
 
         public unsafe void WaitFor(string waitForWhat)
@@ -77,20 +78,16 @@ namespace AutoDuty.Managers
                     _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "WaitFor");
                     break;
                 case "IsValid":
-                    _taskManager.Enqueue(() => !ObjectManager.IsValid, 500, "WaitFor");
-                    _taskManager.Enqueue(() => ObjectManager.IsValid, int.MaxValue, "WaitFor");
-                    break;
-                case "BetweenAreas":
-                    _taskManager.Enqueue(() => !ObjectManager.BetweenAreas, 500, "WaitFor");
-                    _taskManager.Enqueue(() => ObjectManager.BetweenAreas, int.MaxValue, "WaitFor");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500, "WaitFor");
+                    _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "WaitFor");
                     break;
                 case "IsOccupied":
-                    _taskManager.Enqueue(() => !ObjectManager.BetweenAreas, 500, "WaitFor");
-                    _taskManager.Enqueue(() => ObjectManager.BetweenAreas, int.MaxValue, "WaitFor");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, 500, "WaitFor");
+                    _taskManager.Enqueue(() => ObjectHelper.IsOccupied, int.MaxValue, "WaitFor");
                     break;
                 case "IsReady":
-                    _taskManager.Enqueue(() => !ObjectManager.IsReady, 500, "WaitFor");
-                    _taskManager.Enqueue(() => ObjectManager.IsReady, int.MaxValue, "WaitFor");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "WaitFor");
+                    _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "WaitFor");
                     break;
             }
 
@@ -102,28 +99,6 @@ namespace AutoDuty.Managers
         {
             _chat.ExecuteCommand($"/rotation cancel");
             exitDuty.Invoke((char)0);
-        }
-
-        public bool TalkCheck(nint addon)
-        {
-            if (addon == 0 || !IsAddonReady(addon))
-                return true;
-
-            if (EzThrottler.Check("ClickTalk"))
-            {
-                EzThrottler.Throttle("ClickTalk", 250);
-                ClickTalk.Using(addon).Click();
-            }
-            return false;
-        }
-
-        public void Talk(string _)
-        {
-            nint addon = 0;
-
-            _taskManager.Enqueue(() => (addon = Svc.GameGui.GetAddonByName("Talk", 1)) > 0, "Talk");
-            _taskManager.Enqueue(() => IsAddonReady(addon), "Talk");
-            _taskManager.Enqueue(() => TalkCheck(addon), int.MaxValue, "Talk");
         }
 
         public unsafe bool IsAddonReady(nint addon) => addon > 0 && GenericHelpers.IsAddonReady((AtkUnitBase*)addon);
@@ -156,15 +131,15 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => IsAddonReady(addon), "SelectYesno");
             _taskManager.Enqueue(() => SelectYesnoCheck(addon, Yesno), int.MaxValue, "SelectYesno");
             _taskManager.DelayNext("SelectYesno", 500);
-            _taskManager.Enqueue(() => !ObjectManager.PlayerIsCasting, "SelectYesno");
+            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "SelectYesno");
         }
 
         public void MoveToObject(string objectName)
         {
             GameObject? gameObject = null;
-            _taskManager.Enqueue(() => (gameObject = ObjectManager.GetObjectByName(objectName)) != null, "MoveToObject");
-            _taskManager.Enqueue(() => { if (gameObject != null) _vnavIPC.SimpleMove_PathfindAndMoveTo(gameObject.Position, false); }, "MoveToObject");
-            _taskManager.Enqueue(() => !_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0, int.MaxValue, "MoveToObject");
+            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(objectName)) != null, "MoveToObject");
+            _taskManager.Enqueue(() => { if (gameObject != null) VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(gameObject.Position, false); }, "MoveToObject");
+            _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0, int.MaxValue, "MoveToObject");
         }
 
         public void TreasureCoffer(string _) => Interactable("Treasure Coffer");
@@ -185,7 +160,7 @@ namespace AutoDuty.Managers
         public void Target(string objectName)
         {
             GameObject? gameObject = null;
-            _taskManager.Enqueue(() => (gameObject = ObjectManager.GetObjectByName(objectName)) != null, "Target");
+            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(objectName)) != null, "Target");
             _taskManager.Enqueue(() => TargetCheck(gameObject), "Target");
         }
 
@@ -203,14 +178,14 @@ namespace AutoDuty.Managers
             if (EzThrottler.Check("Interactable"))
             {
                 EzThrottler.Throttle("Interactable", 10);
-                ObjectManager.InteractWithObject(gameObject);
+                ObjectHelper.InteractWithObject(gameObject);
             }
             return false;
         }
         public unsafe void Interactable(string objectName)
         {
             GameObject? gameObject = null;
-            _taskManager.Enqueue(() => (gameObject = ObjectManager.GetObjectByNameAndRadius(objectName)) != null, "Interactable");
+            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByNameAndRadius(objectName)) != null, "Interactable");
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable");
             _taskManager.Enqueue(() => Player.Character->IsCasting, 500, "Interactable");
             _taskManager.Enqueue(() => !Player.Character->IsCasting, "Interactable");
@@ -225,21 +200,24 @@ namespace AutoDuty.Managers
             {
                 EzThrottler.Throttle("Boss", 10);
 
-                if (_vbmIPC.ForbiddenZonesCount() > 0 && _mbtIPC.GetFollowStatus())
-                    _mbtIPC.SetFollowStatus(false);
-                else if (!_mbtIPC.GetFollowStatus() && _vbmIPC.ForbiddenZonesCount() == 0)
-                    _mbtIPC.SetFollowStatus(true);
+                if (BossMod_IPCSubscriber.ForbiddenZonesCount() > 0)
+                    SetFollowStatus(false);
+                else if (BossMod_IPCSubscriber.ForbiddenZonesCount() == 0)
+                    SetFollowStatus(true);
             }
             return false;
         }
+        
+        GameObject FollowTarget;
+        float FollowDistance;
 
         public void Boss(string x, string y, string z)
         {
             GameObject? followTargetObject = null;
             BattleChara? bossObject = null;
             AutoDuty.Plugin.StopForCombat = false;
-            _vnavIPC.SimpleMove_PathfindAndMoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)), false);
-            _taskManager.Enqueue(() => (!_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0), int.MaxValue, "Boss");
+            VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)), false);
+            _taskManager.Enqueue(() => (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0), int.MaxValue, "Boss");
             _taskManager.DelayNext("Boss", 5000);
 
             //get our BossObject
@@ -263,24 +241,53 @@ namespace AutoDuty.Managers
                 }
                 if (followTargetObject != null)
                 {
-                    _mbtIPC.SetFollowTarget(followTargetObject.Name.TextValue);
-                    _mbtIPC.SetFollowDistance(0);
-                    _mbtIPC.SetFollowStatus(true);
+                    SetFollowTarget(followTargetObject);
+                    SetFollowDistance(0);
+                    SetFollowStatus(true);
                 }
             }, "Boss");
             _taskManager.Enqueue(() => BossCheck(bossObject), int.MaxValue, "Boss");
             _taskManager.Enqueue(() => AutoDuty.Plugin.StopForCombat = true, "Boss");
-            _taskManager.Enqueue(() => _mbtIPC.SetFollowStatus(false), "Boss");
+            _taskManager.Enqueue(() => SetFollowStatus(false), "Boss");
         }
+
+        private OverrideMovement _overrideMovement = new();
+
+        private void SetFollowStatus(bool on)
+        {
+            if (on)
+            {
+                if (_overrideMovement.Precision != FollowDistance + 0.1f)
+                    _overrideMovement.Precision = FollowDistance + 0.1f;
+
+                _overrideMovement.DesiredPosition = FollowTarget.Position;
+            }
+            else
+            {
+                if (_overrideMovement.DesiredPosition != null)
+                    _overrideMovement.DesiredPosition = null;
+            }
+        }
+
+        private void SetFollowTarget(GameObject gameObject)
+        {
+            FollowTarget = gameObject;
+        }
+
+        private void SetFollowDistance(float f)
+        {
+            FollowDistance = f;
+        }
+
         private static BattleChara? GetBossObject()
         {
-            var battleCharas = ObjectManager.GetObjectsByRadius(30)?.OfType<BattleChara>();
+            var battleCharas = ObjectHelper.GetObjectsByRadius(30)?.OfType<BattleChara>();
             if (battleCharas == null)
                 return null;
             BattleChara? bossObject = default;
             foreach (var battleChara in battleCharas)
             {
-                if (ObjectManager.IsBossFromIcon(battleChara))
+                if (ObjectHelper.IsBossFromIcon(battleChara))
                     bossObject = battleChara;
             }
 
@@ -324,10 +331,10 @@ namespace AutoDuty.Managers
                             var a = Svc.Objects.Where(a => a.Name.TextValue.Equals(GlobalStringStore + " Coral Formation")).FirstOrDefault();
                             if (a != null)
                             {
-                                _vnavIPC.Path_SetTolerance(2.5f);
-                                _vnavIPC.SimpleMove_PathfindAndMoveTo(a.Position, false);
-                                _taskManager.Enqueue(() => (!_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0), int.MaxValue, "DutySpecificCode");
-                                _taskManager.Enqueue(() => _vnavIPC.Path_SetTolerance(0.25f), "DutySpecificCode");
+                                VNavmesh_IPCSubscriber.Path_SetTolerance(2.5f);
+                                VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(a.Position, false);
+                                _taskManager.Enqueue(() => (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0), int.MaxValue, "DutySpecificCode");
+                                _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f), "DutySpecificCode");
                                 _taskManager.Enqueue(() => Interactable(a.Name.TextValue), "DutySpecificCode");
                             }
                             break;

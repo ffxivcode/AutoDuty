@@ -1,15 +1,22 @@
-﻿using AutoDuty.IPC;
-using ClickLib.Clicks;
+﻿using AutoDuty.External;
+using AutoDuty.Helpers;
+using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Objects.Types;
+using ECommons;
 using ECommons.Automation;
 using ECommons.DalamudServices;
+using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.GeneratedSheets;
+using System.Linq;
 using System.Numerics;
 
 namespace AutoDuty.Managers
 {
-    internal class RepairManager(TaskManager _taskManager, VNavmesh_IPCSubscriber _vnavIPC, ActionsManager _actions)
+    internal class RepairManager(TaskManager _taskManager)
     {
         public unsafe static float LowestEquippedCondition()
         {
@@ -17,63 +24,186 @@ namespace AutoDuty.Managers
             uint itemLowestCondition = 60000;
             for (int i = 0; i < 13; i++)
             {
-                Svc.Log.Info($"{equipedItems->Items[i].Condition}");
                 if (itemLowestCondition > equipedItems->Items[i].Condition)
                     itemLowestCondition = equipedItems->Items[i].Condition;
             }
 
             return itemLowestCondition / 300f;
         }
+        //artisan
+        internal unsafe static bool CanRepairItem(uint itemID)
+        {
+            var item = Svc.Data.Excel.GetSheet<Item>()?.GetRow(itemID);
 
+            if (item == null)
+                return false;
+
+            if (item.ClassJobRepair.Row > 0)
+            {
+                var actualJob = (Job)(item.ClassJobRepair.Row);
+                var repairItem = item.ItemRepair.Value?.Item;
+
+                if (repairItem == null)
+                    return false;
+
+                if (!HasDarkMatterOrBetter(repairItem.Row))
+                    return false;
+
+                /*var jobLevel = ((FFXIVClientStructs.FFXIV.Client.Game.Character.Character*)AutoDuty.Plugin.Player.Address)->CharacterData.JobLevel(actualJob);
+                if (Math.Max(item.LevelEquip - 10, 1) <= jobLevel)
+                    return true;*/
+            }
+
+            return false;
+        }
+
+        internal unsafe static bool HasDarkMatterOrBetter(uint darkMatterID)
+        {
+            var repairResources = Svc.Data.Excel.GetSheet<ItemRepairResource>();
+            foreach (var dm in repairResources)
+            {
+                if (dm.Item.Row < darkMatterID)
+                    continue;
+
+                if (InventoryManager.Instance()->GetInventoryItemCount(dm.Item.Row) > 0)
+                    return true;
+            }
+            return false;
+        }
         public unsafe void Repair()
         {
             if (AutoDuty.Plugin.Configuration.AutoRepair && LowestEquippedCondition() <= AutoDuty.Plugin.Configuration.AutoRepairPct)
             {
+                AutoDuty.Plugin.Repairing = true;
+                ExecSkipTalk.IsEnabled = true;
                 if (AutoDuty.Plugin.Configuration.AutoRepairCity)
                 {
-                    if (AutoDuty.Plugin.Configuration.AutoRepairLimsa)
-                        RepairTasks(129, [new Vector3(-247.06625f, 16.2f, 50.961113f)], "Alistair", false);
-                    else if (AutoDuty.Plugin.Configuration.AutoRepairUldah)
-                        RepairTasks(130, [new Vector3(-112.40048f, 3.9999998f, -104.43906f), new Vector3(-155.58505f, 12, -24.212015f)], "Hehezofu", false);
-                    else if (AutoDuty.Plugin.Configuration.AutoRepairGridania)
-                        RepairTasks(132, [new Vector3(34.23728f, -7.8000317f, 94.41259f), new Vector3(25.467928f, -8.000013f, 93.7083f)], "Erkenbaud", false);
+                    switch(UIState.Instance()->PlayerState.GrandCompany)
+                    {
+                        //Limsa=1,129, Gridania=2,132, Uldah=3,130 -- Goto Limsa if no GC
+                        case 1:
+                            RepairTasks(129, [new Vector3(17.715698f, 40.200005f, 3.9520264f)], "Leofrun", [new Vector3(15.42688f, 39.99999f, 12.466553f)], "Mytesyn", [new Vector3(98.00867f, 41.275635f, 62.790894f)], false, "The Aftcastle", 128);
+                            break;
+                        case 2:
+                            RepairTasks(132, [new Vector3(34.23728f, -7.8000317f, 94.41259f), new Vector3(24.826416f, -8, 93.18677f)], "Erkenbaud", [new Vector3(23.697266f, -8.1026f, 100.053345f)], "Antoinaut", [new Vector3(-80.00789f, -0.5001702f, -6.6672616f)]);
+                            break;
+                        case 3:
+                            RepairTasks(130, [new Vector3(32.85266f, 6.999999f, -81.31531f)], "Zuzutyro", [new Vector3(29.495605f, 7.4500003f, -78.324646f)], "Otopa Pottopa", [new Vector3(-153.30743f, 5.2338257f, -98.039246f)]);
+                            break;
+                        default:
+                            RepairTasks(129, [new Vector3(17.715698f, 40.200005f, 3.9520264f)], "Leofrun", [new Vector3(15.42688f, 39.99999f, 12.466553f)], "Mytesyn", [new Vector3(98.00867f, 41.275635f, 62.790894f)], false, "The Aftcastle", 128);
+                            break;
+                    }
                 }
                 else if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
-                    RepairTasks(0, [Vector3.Zero], "", true);
+                    RepairTasks(0, [Vector3.Zero], "", [Vector3.Zero], "", [Vector3.Zero], true);
             }
         }
 
-        public unsafe void RepairTasks(uint territoryType, Vector3[] vendorPosition, string vendorName, bool selfRepair)
+        public unsafe void RepairTasks(uint territoryType, Vector3[] vendorPositions, string vendorName, Vector3[] innKeepPositions, string innKeepName, Vector3[] barracksDoorPositions, bool selfRepair=false, string aethernetName = "", uint aethernetToTerritoryType = 0)
         {
-            nint addon = 0;
+            AtkUnitBase* addon = null;
+            GameObject? gameObject = null;
+
             if (selfRepair)
-                _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 6));
+                _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 6), "Repair");
             else
             {
-                GameObject? gameObject = null;
-                _taskManager.Enqueue(() => ObjectManager.IsReady, "Repair");
-                _taskManager.Enqueue(() => { if (Svc.ClientState.TerritoryType != territoryType) TeleportManager.TeleportCity(territoryType); }, "Repair");
-                _taskManager.Enqueue(() => Svc.ClientState.TerritoryType == territoryType, int.MaxValue, "Repair");
-                _taskManager.Enqueue(() => ObjectManager.IsReady, int.MaxValue, "Repair");
-                _taskManager.Enqueue(() => _vnavIPC.Nav_IsReady(), int.MaxValue, "Repair");
-                foreach (var position in vendorPosition)
+                if (((Svc.ClientState.TerritoryType == 536 || Svc.ClientState.TerritoryType == 177) && territoryType == 129) || ((Svc.ClientState.TerritoryType == 534 || Svc.ClientState.TerritoryType == 179) && territoryType == 132) || ((Svc.ClientState.TerritoryType == 535 || Svc.ClientState.TerritoryType == 178) && territoryType == 130))
                 {
-                    _taskManager.Enqueue(() => _vnavIPC.SimpleMove_PathfindAndMoveTo(position, false), "Repair");
-                    _taskManager.Enqueue(() => (!_vnavIPC.SimpleMove_PathfindInProgress() && _vnavIPC.Path_NumWaypoints() == 0), int.MaxValue, "Repair");
+                    _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
+                    if (Svc.ClientState.TerritoryType == 536 || Svc.ClientState.TerritoryType == 534 || Svc.ClientState.TerritoryType == 535)
+                        _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Exit to Maelstrom Command")) != null, "Repair");
+                    else
+                        _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Heavy Oaken Door")) != null, "Repair");
+                    _taskManager.Enqueue(() => MovementHelper.Move(gameObject?.Position ?? Vector3.Zero, 0.25f, 2f), int.MaxValue, "Repair");
+                    _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), int.MaxValue, "Repair");
+                    _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Repair");
+                    _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "Repair");
+                    _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Repair");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Repair");
+                    _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
                 }
-                _taskManager.Enqueue(() => (gameObject = ObjectManager.GetObjectByNameAndRadius(vendorName)) != null, "Repair");
-                _taskManager.Enqueue(() => { if (gameObject != null) ObjectManager.InteractWithObject(gameObject); });
+                else
+                {
+                    if (Svc.ClientState.TerritoryType != territoryType && Svc.ClientState.TerritoryType != aethernetToTerritoryType)
+                    {
+                        _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
+                        _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");
+                        _taskManager.Enqueue(() => TeleportHelper.TeleportGCCity(), int.MaxValue, "Repair");
+                        _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting && !ObjectHelper.IsReady, "Repair");
+                        _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
+                    }
+                    if (!aethernetName.IsNullOrEmpty())
+                    {
+                        _taskManager.Enqueue(() => TeleportHelper.MoveToClosestAetheryte(aethernetToTerritoryType));
+                        _taskManager.Enqueue(() => !ObjectHelper.IsJumping, 500, "Repair");
+                        _taskManager.Enqueue(() => TeleportHelper.TeleportAethernet(aethernetName, aethernetToTerritoryType), int.MaxValue, "Repair");
+                        _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Repair");
+                        _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
+                    }
+                }
+                foreach (var v in vendorPositions.Select((Value, Index) => (Value, Index)))
+                {
+                    if ((v.Index + 1) == vendorPositions.Length)
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Repair");
+                    else
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Repair");
+                    _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), int.MaxValue, "Repair");
+                }
+                _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");
+                _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Repair");
+                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(ObjectHelper.GetObjectByName(vendorName), "Repair") != null, "Repair");
             }
-            _taskManager.Enqueue(() => (addon = Svc.GameGui.GetAddonByName("Repair", 1)) > 0 && _actions.IsAddonReady(addon), "Repair");
-            _taskManager.DelayNext("Repair", 250);
-            _taskManager.Enqueue(() => { new ClickRepair(addon).RepairAll(); }, "Repair");
-            _taskManager.DelayNext("Repair", 250);
-            _taskManager.Enqueue(() => (addon = Svc.GameGui.GetAddonByName("SelectYesno", 1)) > 0 && _actions.IsAddonReady(addon), "Repair");
-            _taskManager.Enqueue(() => ClickSelectYesNo.Using(addon).Yes(), "Repair");
-            _taskManager.DelayNext("Repair", 250);
-            _taskManager.Enqueue(() => !ObjectManager.IsOccupied);
-            _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalID(41)->Hide(), "Repair");
-            
+            _taskManager.Enqueue(() => AddonHelper.ClickRepair(), "Repair");
+            _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Repair");
+            if (selfRepair)
+                _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Repair");
+
+            _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalID((uint)AgentId.Repair)->Hide(), "Repair"); 
+            if (AutoDuty.Plugin.Configuration.AutoRepairReturnToInn)
+            {
+                foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
+                {
+                    if ((v.Index + 1) == innKeepPositions.Length)
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Repair");
+                    else
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Repair");
+                    _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Repair");
+                }
+                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Repair");
+                _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");
+                _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Repair");
+                _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(innKeepName)) != null, "Repair");
+                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "Talk") != null, "Repair");
+                _taskManager.Enqueue(() => AddonHelper.ClickSelectString(0), "Repair");
+                _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Repair");
+                _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
+            }
+            else if (AutoDuty.Plugin.Configuration.AutoRepairReturnToBarracks)
+            {
+                foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
+                {
+                    if ((v.Index + 1) == barracksDoorPositions.Length)
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Repair");
+                    else
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Repair");
+                    _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Repair");
+                }
+                _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");
+                _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Repair");
+                _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Entrance to the Barracks")) != null, "Repair");
+                _taskManager.DelayNext("Repair", 50);
+                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "Repair");
+                _taskManager.DelayNext("Repair", 50);
+                _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Repair");
+                _taskManager.DelayNext("Repair", 50);
+                _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Repair");
+                _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
+            }
+            _taskManager.Enqueue(() => { AutoDuty.Plugin.Repairing = false; }, "Repair");
+            _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "Repair");
         }
     }
 }

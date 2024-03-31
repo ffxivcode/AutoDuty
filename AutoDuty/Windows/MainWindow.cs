@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Text.Json;
 using AutoDuty.IPC;
+using AutoDuty.Managers;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons;
@@ -13,6 +14,7 @@ using ECommons.Automation;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ImGuiNET;
+using static AutoDuty.Managers.ContentManager;
 
 namespace AutoDuty.Windows;
 
@@ -32,17 +34,17 @@ public class MainWindow : Window, IDisposable
     bool ddisboss = false;
     readonly List<(string, string)> _actionsList;
     int _clickedDuty = -1;
-    BossMod_IPCSubscriber _vbmIPC;
-    VNavmesh_IPCSubscriber _vnavIPC;
-    MBT_IPCSubscriber _mbtIPC;
     TaskManager _taskManager;
+    ContentManager _contentManager;
     bool _scrollBottom = false;
     int currentIndex = -1;
     float currentY = 0;
     bool _showPopup = false;
     string _popupText = "";
     string _popupTitle = "";
-    public MainWindow(AutoDuty plugin, List<(string, string)> actionsList, VNavmesh_IPCSubscriber vnavIPC, BossMod_IPCSubscriber vbmIPC, MBT_IPCSubscriber mbtIPC, TaskManager taskManager) : base(
+    bool anyItemClicked = false;
+    int dutyListSelected = -1;
+    public MainWindow(AutoDuty plugin, List<(string, string)> actionsList, TaskManager taskManager, ContentManager contentManager) : base(
         "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
         SizeConstraints = new WindowSizeConstraints
@@ -53,10 +55,8 @@ public class MainWindow : Window, IDisposable
 
         Plugin = plugin;
         _actionsList = actionsList;
-        _vbmIPC = vbmIPC;
-        _vnavIPC = vnavIPC;
-        _mbtIPC = mbtIPC;
         _taskManager = taskManager;
+        _contentManager = contentManager;
 
         OnTerritoryChange(Svc.ClientState.TerritoryType);
         Svc.ClientState.TerritoryChanged += OnTerritoryChange;
@@ -174,12 +174,10 @@ public class MainWindow : Window, IDisposable
         DrawPopup();
         if (Plugin.Running)
         {
-            ImGui.TextColored(new Vector4(0, 0f, 200f, 1), $"AutoDuty - Running ({Plugin.ListBoxDutyText[Plugin.CurrentTerritoryIndex].Item1}) {Plugin.CurrentLoop} of {Plugin.LoopTimes} Times");
+            ImGui.TextColored(new Vector4(0, 0f, 200f, 1), $"AutoDuty - Running ({_contentManager.ListContent[Plugin.CurrentTerritoryIndex].Name}) {Plugin.CurrentLoop} of {Plugin.LoopTimes} Times");
             if (ImGui.Button("Stop"))
             {
                 Plugin.Stage = 0;
-                Plugin.Running = false;
-                Plugin.CurrentLoop = 0;
                 SetWindowSize(425, 375);
                 return;
             }
@@ -200,7 +198,7 @@ public class MainWindow : Window, IDisposable
             }
             ImGui.SameLine(0, 5);
             
-            ImGui.TextColored(new Vector4(0, 255f, 0, 1), Svc.ClientState.TerritoryType == Plugin.ListBoxDutyText[Plugin.CurrentTerritoryIndex].Item2 ? $"Step: {Plugin.ListBoxPOSText[Plugin.Indexer]}" : $"Loading");
+            ImGui.TextColored(new Vector4(0, 255f, 0, 1), Svc.ClientState.TerritoryType == _contentManager.ListContent[Plugin.CurrentTerritoryIndex].TerritoryType ? $"Step: {Plugin.ListBoxPOSText[Plugin.Indexer]}" : Plugin.Repairing? $"Repairing" : $"Loading");
             SizeConstraints = new WindowSizeConstraints
             {
                 MinimumSize = new Vector2(325, 70),
@@ -208,6 +206,11 @@ public class MainWindow : Window, IDisposable
             };
             Size = new Vector2(325, 75);
             return;
+        }
+        else
+        {
+            if (Size != new Vector2(425, 375))
+                SetWindowSize(425, 375);
         }
         SetPlayerPosition();
 
@@ -219,7 +222,7 @@ public class MainWindow : Window, IDisposable
             {
                 if (_inDungeon)
                 {
-                    var progress = _vnavIPC.Nav_BuildProgress();
+                    var progress = VNavmesh_IPCSubscriber.Nav_BuildProgress();
                     if (progress >= 0)
                     {
                         ImGui.Text(TerritoryName.GetTerritoryName(_territoryType).Split('|')[1].Trim() + " Mesh Loading: ");
@@ -230,7 +233,7 @@ public class MainWindow : Window, IDisposable
                     ImGui.Spacing();
                     ImGui.Separator();
                     ImGui.Spacing();
-                    using (var d = ImRaii.Disabled(!_inDungeon || !_vnavIPC.Nav_IsReady() || !_vbmIPC.IsEnabled || !_vnavIPC.IsEnabled || !_mbtIPC.IsEnabled))
+                    using (var d = ImRaii.Disabled(!_inDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled))
                     {
                         using (var d2 = ImRaii.Disabled(!_inDungeon || !_pathFileExists || Plugin.Stage > 0))
                         {
@@ -247,7 +250,6 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.Button("Stop"))
                             {
                                 Plugin.Stage = 0;
-                                _taskManager.Abort();
                             }
                             ImGui.SameLine(0, 5);
                             if (Plugin.Stage == 5)
@@ -267,18 +269,28 @@ public class MainWindow : Window, IDisposable
                         }
                         if (!ImGui.BeginListBox("##MainList", new Vector2(-1, -1))) return;
 
-                        if (_vnavIPC.IsEnabled && _vbmIPC.IsEnabled && _mbtIPC.IsEnabled)
+                        if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                         {
+                            anyItemClicked = false;
                             foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
                             {
                                 Vector4 v4 = new();
-                                if (item.index == Plugin.Indexer && Plugin.Stage > 0)
+                                if (item.index == Plugin.Indexer)
                                     v4 = new Vector4(0, 255, 0, 1);
                                 else
                                     v4 = new Vector4(255, 255, 255, 1);
                                 ImGui.TextColored(v4, item.name);
+                                if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
+                                {
+                                    Svc.Log.Info("Clicked");
+                                    Plugin.Indexer = item.index;
+                                    anyItemClicked = true;
+                                    Plugin.MainListClicked = true;
+                                }
                             }
-                            if (currentIndex != Plugin.Indexer && currentIndex > -1)
+                            //if (!anyItemClicked && Plugin.Stage == 0 && Plugin.Indexer > 0)
+                              //  Plugin.Indexer = 0;
+                            if (currentIndex != Plugin.Indexer && currentIndex > -1 && Plugin.Stage > 0)
                             {
                                 //currentY = ImGui.GetScrollY();
                                 var lineHeight = ImGui.GetTextLineHeightWithSpacing();
@@ -287,7 +299,7 @@ public class MainWindow : Window, IDisposable
                                     ImGui.SetScrollY((currentIndex - 1) * lineHeight);
                                 //currentY = ImGui.GetScrollY();
                             }
-                            else if (currentIndex == -1)
+                            else if (currentIndex == -1 && Plugin.Stage > 0)
                             {
                                 currentIndex = 0;
                                 ImGui.SetScrollY(currentIndex);
@@ -297,12 +309,10 @@ public class MainWindow : Window, IDisposable
                         }
                         else
                         {
-                            if (!_vnavIPC.IsEnabled)
+                            if (!VNavmesh_IPCSubscriber.IsEnabled)
                                 ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
-                            if (!_vbmIPC.IsEnabled)
+                            if (!BossMod_IPCSubscriber.IsEnabled)
                                 ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
-                            if (!_mbtIPC.IsEnabled)
-                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires MBT plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/repo.json");
                         }
                         ImGui.EndListBox();
                     }
@@ -315,7 +325,9 @@ public class MainWindow : Window, IDisposable
                         {
                             if (ImGui.Button("Run"))
                             {
-                                if (File.Exists($"{Plugin.PathsDirectory}/{Plugin.ListBoxDutyText[_clickedDuty].Item2}.json"))
+                                if (!Plugin.Support && !Plugin.Trust && !Plugin.Squadron && !Plugin.Regular)
+                                    ShowPopup("Error", "You must select a version\nof the dungeon to run");
+                                else if (File.Exists($"{Plugin.PathsDirectory}/{_contentManager.ListContent[_clickedDuty].TerritoryType}.json"))
                                     Plugin.Run(_clickedDuty);
                                 else
                                     ShowPopup("Error", "No path was found");
@@ -326,7 +338,6 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.Button("Stop"))
                             {
                                 Plugin.Stage = 0;
-                                _taskManager.Abort();
                                 Plugin.Running = false;
                                 Plugin.CurrentLoop = 0;
                                 SizeConstraints = new WindowSizeConstraints
@@ -360,30 +371,115 @@ public class MainWindow : Window, IDisposable
                             ImGui.SameLine(0, 15);
                             ImGui.InputInt("Times", ref Plugin.LoopTimes);
                         }
+                        if (ImGui.Checkbox("Support", ref Plugin.Support))
+                        {
+                            if (Plugin.Support)
+                            {
+                                Plugin.Trust = false;
+                                Plugin.Squadron = false;
+                                Plugin.Regular = false;
+                                _clickedDuty = -1;
+                                dutyListSelected = -1;
+                            }
+                        }
+                        ImGui.SameLine(0, 5);
+                        if (ImGui.Checkbox("Trust", ref Plugin.Trust))
+                        {
+                            if (Plugin.Trust)
+                            {
+                                Plugin.Support = false;
+                                Plugin.Squadron = false;
+                                Plugin.Regular = false;
+                                _clickedDuty = -1;
+                                dutyListSelected = -1;
+                            }
+                        }
+                        ImGui.SameLine(0, 5);
+                        if (ImGui.Checkbox("Squadron", ref Plugin.Squadron))
+                        {
+                            if (Plugin.Squadron)
+                            {
+                                Plugin.Support = false;
+                                Plugin.Trust = false;
+                                Plugin.Regular = false;
+                                _clickedDuty = -1;
+                                dutyListSelected = -1;
+                            }
+                        }
+                        ImGui.SameLine(0, 5);
+                        if (ImGui.Checkbox("Regular", ref Plugin.Regular))
+                        {
+                            if (Plugin.Regular)
+                            {
+                                Plugin.Support = false;
+                                Plugin.Trust = false;
+                                Plugin.Squadron = false;
+                                _clickedDuty = -1;
+                                dutyListSelected = -1;
+                            }
+                        }
                         if (!ImGui.BeginListBox("##DutyList", new Vector2(-1, -1))) return;
 
-                        if (_vnavIPC.IsEnabled && _vbmIPC.IsEnabled && _mbtIPC.IsEnabled)
+                        if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                         {
-                            foreach (var item in Plugin.ListBoxDutyText.Select((Value, Index) => (Value, Index)))
+                            List<Content> list = [];
+                            if (Plugin.Support)
+                                list = _contentManager.ListContent.Where(x => x.DawnContent).ToList();
+                            else if (Plugin.Trust)
+                                list = _contentManager.ListContent.Where(x => x.DawnContent && x.ExVersion > 2).ToList();
+                            else if (Plugin.Squadron)
+                                list = _contentManager.ListContent.Where(x => x.GCArmyContent).ToList();
+                            else if (Plugin.Regular)
+                                list = _contentManager.ListContent;
+
+                            if (list.Count > 0)
                             {
-                                Vector4 v4 = new();
-                                if (ImGui.IsItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
-                                    _clickedDuty = item.Index - 1;
-                                if (_clickedDuty == item.Index)
-                                    v4 = new Vector4(0, 255, 0, 1);
-                                else
-                                    v4 = new Vector4(255, 255, 255, 1);
-                                ImGui.TextColored(v4, item.Value.Item1);
+                                foreach (var item in list.Select((Value, Index) => (Value, Index)))
+                                {
+                                    using (var d2 = ImRaii.Disabled(item.Value.ClassJobLevelRequired > Plugin.Player?.Level))
+                                    {
+                                        if (ImGui.Selectable(item.Value.Name, dutyListSelected == item.Index))
+                                        {
+                                            dutyListSelected = item.Index;
+                                            _clickedDuty = _contentManager.ListContent.FindIndex(a => a.Name == item.Value.Name);
+                                            Svc.Log.Info($"{item.Value.Name} : {item.Value.GCArmyIndex}");
+                                            Svc.Log.Info($"{_contentManager.ListContent[_clickedDuty].Name} : {_contentManager.ListContent[_clickedDuty].GCArmyIndex}");
+                                        }
+                                    }
+                                    //ImGui.PopStyleColor();
+
+                                    /*if (ImGui.IsItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+                                    {
+
+                                        _clickedDuty = _contentManager.ListContent.FindIndex(a => a.Name == item.Value.Name) -1; 
+                                        Svc.Log.Info($"{item.Value.Name} : {_clickedDuty} = {_contentManager.ListContent.FindIndex(a => a.Name == item.Value.Name)}");
+                                    }
+                                    if (_clickedDuty == _contentManager.ListContent.FindIndex(a => a.Name == item.Value.Name)) { }
+                                    //v4 = new Vector4(0, 255, 0, 1);
+                                    else
+                                    {
+                                        //v4 = new Vector4(255, 255, 255, 1);
+                                    }
+                                    using (var d2 = ImRaii.Disabled(item.Value.ClassJobLevelRequired > Plugin.Player?.Level))
+                                    {
+                                        if (item.Value.ClassJobLevelRequired > Plugin.Player?.Level) { }
+                                            //v4 = new Vector4(0, 0, 0, 1);
+                                        //ImGui.TextColored(v4, $"{item.Value.Name}");
+                                    }*/
+                                }
+                            }
+                            else
+                            {
+                                ImGui.TextColored(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
+                                _clickedDuty = -1;
                             }
                         }
                         else
                         {
-                            if (!_vnavIPC.IsEnabled)
+                            if (!VNavmesh_IPCSubscriber.IsEnabled)
                                 ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nFor proper navigation and movement\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
-                            if (!_vbmIPC.IsEnabled)
+                            if (!BossMod_IPCSubscriber.IsEnabled)
                                 ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nFor proper named mechanic handling\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
-                            if (!_mbtIPC.IsEnabled)
-                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires MBT plugin to be Installed and Loaded\nFor proper AutoFollow\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/repo.json");
                         }
                         ImGui.EndListBox();
                     }
@@ -423,10 +519,6 @@ public class MainWindow : Window, IDisposable
                                         case "Boss":
                                             ddisboss = true;
                                             input = $"{_playerPosition.X}, {_playerPosition.Y}, {_playerPosition.Z}";
-                                            break;
-                                        case "MoveToObject":
-                                        case "Interactable":
-                                            input = "";
                                             break;
                                         case "SelectYesno":
                                             input = "Yes";
@@ -484,18 +576,23 @@ public class MainWindow : Window, IDisposable
                     if (!ImGui.BeginListBox("##BuildList", new Vector2(-1, -1))) return;
                     foreach (var item in Plugin.ListBoxPOSText)
                     {
+                        ImGui.PushStyleColor(ImGuiCol.Text, ImGui.ColorConvertFloat4ToU32(new Vector4(0, 1, 0, 1)));
+                        //ImGui.PushStyleColor(new Vector4(0, 255, 0, 1));
+                        
                         ImGui.Selectable(item, ImGui.IsItemClicked(ImGuiMouseButton.Right) || ImGui.IsItemClicked(ImGuiMouseButton.Left));
-
+                        ImGui.PopStyleColor();
                         if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                         {
                             // Do stuff on Selectable() double click.
                             if (item.Split('|')[0].Equals("Wait") || item.Split('|')[0].Equals("Interactable") || item.Split('|')[0].Equals("Boss") || item.Split('|')[0].Equals("SelectYesno") || item.Split('|')[0].Equals("MoveToObject") || item.Split('|')[0].Equals("WaitFor"))
                             {
-
-                                //
+                                //do nothing
                             }
-                            //else
-                            //  Plugin.TeleportPOS(new Vector3(float.Parse(item.Split(',')[0]), float.Parse(item.Split(',')[1]), float.Parse(item.Split(',')[2])));
+                            else
+                            {
+                                if (AutoDuty.Plugin.Player != null)
+                                    ((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)AutoDuty.Plugin.Player.Address)->SetPosition(float.Parse(item.Split(',')[0]), float.Parse(item.Split(',')[1]), float.Parse(item.Split(',')[2]));
+                            }
                         }
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                         {
@@ -504,13 +601,14 @@ public class MainWindow : Window, IDisposable
                         }
                         else if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
                         {
-                            ((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)AutoDuty.Plugin.Player.Address)->SetPosition(float.Parse(item.Split(',')[0]), float.Parse(item.Split(',')[1]), float.Parse(item.Split(',')[2]));
+                           
                             //Add a inputbox that when this is selected it puts this item in the input box and allows direct modification of items
                         }
                     }
                     if (_scrollBottom)
                     {
                         ImGui.SetScrollHereY(1.0f);
+                        _scrollBottom = false;
                     }
                     ImGui.EndListBox();
                     ImGui.EndTabItem();
