@@ -114,8 +114,8 @@ public class AutoDuty : IDalamudPlugin
 
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
-                HelpMessage = "\n/mbt->opens main window\n" +
-                "/mbt config or cfg->opens config window\n"
+                HelpMessage = "\n/autoduty->opens main window\n" +
+                "/autoduty config or cfg->opens config window\n"
             });
 
             pluginInterface.UiBuilder.Draw += DrawUI;
@@ -123,11 +123,11 @@ public class AutoDuty : IDalamudPlugin
             pluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
-            //Svc.DutyState.DutyWiped += DutyState_DutyWiped;
-            //Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
-            //Svc.DutyState.DutyStarted += DutyState_DutyStarted;
-            //Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
-            //Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
+            Svc.DutyState.DutyWiped += DutyState_DutyWiped;
+            Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
+            Svc.DutyState.DutyStarted += DutyState_DutyStarted;
+            Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
+            Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
