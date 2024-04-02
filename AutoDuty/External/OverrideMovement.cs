@@ -24,7 +24,7 @@ internal unsafe struct PlayerMoveControllerFlyInput
     [FieldOffset(0x15)] public byte HaveBackwardOrStrafe;
 }
 
-internal unsafe class OverrideMovement : IDisposable
+public unsafe class OverrideMovement : IDisposable
 {
     public bool IgnoreUserInput { get; set; }
     public Action? ActionIfUserInput { get; set; }

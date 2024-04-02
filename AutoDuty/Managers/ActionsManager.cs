@@ -19,7 +19,7 @@ using AutoDuty.External;
 
 namespace AutoDuty.Managers
 {
-    public class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
+    public class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager, OverrideMovement _overrideMovement)
     {
         public readonly List<(string, string)> ActionsList =
         [
@@ -250,8 +250,6 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.StopForCombat = true, "Boss");
             _taskManager.Enqueue(() => SetFollowStatus(false), "Boss");
         }
-
-        private OverrideMovement _overrideMovement = new();
 
         private void SetFollowStatus(bool on)
         {

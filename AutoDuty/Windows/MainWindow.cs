@@ -592,8 +592,8 @@ public class MainWindow : Window, IDisposable
                             }
                             else
                             {
-                                if (AutoDuty.Plugin.Player != null)
-                                    ((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)AutoDuty.Plugin.Player.Address)->SetPosition(float.Parse(item.Split(',')[0]), float.Parse(item.Split(',')[1]), float.Parse(item.Split(',')[2]));
+                                //if (AutoDuty.Plugin.Player != null)
+                                //    ((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)AutoDuty.Plugin.Player.Address)->SetPosition(float.Parse(item.Split(',')[0]), float.Parse(item.Split(',')[1]), float.Parse(item.Split(',')[2]));
                             }
                         }
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))

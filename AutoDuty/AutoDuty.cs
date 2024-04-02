@@ -52,6 +52,9 @@ public class AutoDuty : IDalamudPlugin
     public bool Regular = false;
     public bool Repairing = false;
     public bool Goto = false;
+    public event EventHandler? DutyWiped;
+    public event EventHandler? DutyRecommenced;
+
     private const string CommandName = "/autoduty";
     private MainWindow MainWindow { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
@@ -66,6 +69,8 @@ public class AutoDuty : IDalamudPlugin
     private TrustManager _trustManager;
     private SquadronManager _squadronManager;
     private OverrideAFK _overrideAFK;
+    private OverrideMovement _overrideMovement;
+
     public AutoDuty(DalamudPluginInterface pluginInterface)
     {
         try
@@ -92,13 +97,14 @@ public class AutoDuty : IDalamudPlugin
             };
             _chat = new();
             _contentManager = new();
+            _overrideMovement = new();
             _contentManager.PopulateDuties();
             _repairManager = new(_taskManager);
             _gotoManager = new(_taskManager);
             _dutySupportManager = new(_taskManager);
             _trustManager = new(_taskManager);
             _squadronManager = new(_taskManager);
-            _actions = new(this, _chat, _taskManager);
+            _actions = new(this, _chat, _taskManager, _overrideMovement);
             MainWindow = new(this, _actions.ActionsList, _taskManager, _contentManager);
             ConfigWindow = new(this);
             OverrideCamera = new();
@@ -117,11 +123,50 @@ public class AutoDuty : IDalamudPlugin
             pluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
-
-            Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
+            //Svc.DutyState.DutyWiped += DutyState_DutyWiped;
+            //Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
+            //Svc.DutyState.DutyStarted += DutyState_DutyStarted;
+            //Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
+            //Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
+        }
+    }
+
+    private void DutyState_DutyCompleted(object? sender, ushort e)
+    {
+        Svc.Log.Info($"DutyCompleted {e}");
+    }
+
+    private void DutyState_DutyStarted(object? sender, ushort e)
+    {
+        Svc.Log.Info($"DutyDutyStarted {e}");
+    }
+
+    private void DutyState_DutyRecommenced(object? sender, ushort e)
+    {
+        try
+        {
+            Svc.Log.Info($"DutyRecommenced {e}");
+            DutyRecommenced?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            Svc.Log.Error(ex, "Unhandled exception when invoking DutyEventService.DutyRecommenced");
+        }
+    }
+
+    private void DutyState_DutyWiped(object? sender, ushort e)
+    {
+        try
+        {
+            Svc.Log.Info($"DutyWiped {e}");
+            DutyWiped?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            Svc.Log.Error(ex, "Unhandled exception when invoking DutyEventService.DutyWiped");
         }
     }
 
@@ -339,7 +384,13 @@ public class AutoDuty : IDalamudPlugin
         ECommonsMain.Dispose();
         ExecSkipTalk.Shutdown();
         MainWindow.Dispose();
+        OverrideCamera.Dispose();
+        _overrideMovement.Dispose();
         Svc.Framework.Update -= Framework_Update;
+        Svc.DutyState.DutyWiped -= DutyState_DutyWiped;
+        Svc.DutyState.DutyRecommenced -= DutyState_DutyRecommenced;
+        Svc.DutyState.DutyStarted -= DutyState_DutyStarted;
+        Svc.DutyState.DutyCompleted -= DutyState_DutyCompleted;
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
         Svc.Condition.ConditionChange -= Condition_ConditionChange;
         Svc.Commands.RemoveHandler(CommandName);
