@@ -76,7 +76,7 @@ public class AutoDuty : IDalamudPlugin
         try
         {
             Plugin = this;
-            ECommonsMain.Init(pluginInterface, this, Module.All);
+            ECommonsMain.Init(pluginInterface, this, Module.DalamudReflector | Module.ObjectFunctions);
             ExecSkipTalk.Init();
 
             Configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
