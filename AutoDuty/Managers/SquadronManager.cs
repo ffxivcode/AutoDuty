@@ -11,12 +11,12 @@ namespace AutoDuty.Managers
 {
     internal class SquadronManager(TaskManager _taskManager)
     {
-        internal unsafe void RegisterSquadron(ContentManager.Content content)
+        internal unsafe void RegisterSquadron(ContentHelper.Content content)
         {
             if (content.GCArmyIndex < 0)
                 return;
-            Svc.Log.Info($"Queueing Squadron: {content.Name} with index {content.GCArmyIndex}");
-            
+            Svc.Log.Info($"Queueing Squadron: {content.Name}");
+            AutoDuty.Plugin.Action = $"Step: Queueing Squadron: {content.Name}";
 
             AtkUnitBase* addon = null;
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = true; }, "RegisterSquadron");
@@ -37,7 +37,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterSquadron");
             _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "RegisterSquadron");
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "RegisterSquadron");
-            _taskManager.Enqueue(AutoDuty.Plugin.StartNavigation, "RegisterSquadron");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterSquadron");
         }
         internal bool SeenAddon = false;
         internal unsafe bool OpenSquadron(AtkUnitBase* aub)
@@ -46,7 +46,7 @@ namespace AutoDuty.Managers
             if (aub != null)
                 return true;
 
-            if ((gameObject = ObjectHelper.GetObjectByPartialName("Squadron Sergeant")) == null || !MovementHelper.Move(gameObject, 0.25f, 6f))
+            if ((gameObject = ObjectHelper.GetObjectByPartialName("Squadron Sergeant")) == null || !MovementHelper.PathfindAndMove(gameObject, 0.25f, 6f))
                 return false;
 
             if (SeenAddon && AddonHelper.ClickSelectString(0))

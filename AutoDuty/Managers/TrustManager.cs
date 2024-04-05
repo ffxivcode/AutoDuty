@@ -10,11 +10,12 @@ namespace AutoDuty.Managers
 {
     internal class TrustManager(TaskManager _taskManager)
     {
-        internal unsafe void RegisterTrust(ContentManager.Content content)
+        internal unsafe void RegisterTrust(ContentHelper.Content content)
         {
             if (content.DawnIndex < 1)
                 return;
-            Svc.Log.Info($"Queueing Trust: {content.Name} with index {content.DawnIndex}");
+            Svc.Log.Info($"Queueing Trust: {content.Name}");
+            AutoDuty.Plugin.Action = $"Step: Queueing Trust: {content.Name}";
             AtkUnitBase* addon = null;
 
             if (!ObjectHelper.IsValid)
@@ -37,7 +38,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterTrust");
             _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterTrust");
             _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "RegisterTrust");
-            _taskManager.Enqueue(AutoDuty.Plugin.StartNavigation, "RegisterTrust");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterTrust");
         }
 
         private unsafe void OpenDawn() => AgentModule.Instance()->GetAgentByInternalID(340)->Show();
