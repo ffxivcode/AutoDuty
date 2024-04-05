@@ -44,7 +44,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterDutySupport");
             _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterDutySupport");
             _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "RegisterDutySupport");
-            _taskManager.Enqueue(AutoDuty.Plugin.StartNavigation, "RegisterDutySupport");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterDutySupport");
         }
 
         private unsafe void OpenDawnStory() => AgentModule.Instance()->GetAgentByInternalID(341)->Show();

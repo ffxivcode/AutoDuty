@@ -196,7 +196,7 @@ public class AutoDuty : IDalamudPlugin
         CurrentLoop = 1;
     }
 
-    public void StartNavigation()
+    public void StartNavigation(bool startFromZero)
     {
         Stage = 1;
         Started = true;
@@ -204,6 +204,8 @@ public class AutoDuty : IDalamudPlugin
         _chat.ExecuteCommand($"/vbmai on");
         _chat.ExecuteCommand($"/rotation auto");
         Svc.Log.Info("Starting Navigation");
+        if (startFromZero)
+            Indexer = 0;
     }
 
     public void Framework_Update(IFramework framework)
