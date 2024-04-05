@@ -98,6 +98,7 @@ public class AutoDuty : IDalamudPlugin
             _chat = new();
             _contentManager = new();
             _overrideMovement = new();
+            _overrideAFK = new();
             _contentManager.PopulateDuties();
             _repairManager = new(_taskManager);
             _gotoManager = new(_taskManager);
@@ -209,7 +210,7 @@ public class AutoDuty : IDalamudPlugin
     {
         if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
-
+        
         if ((Player = Svc.ClientState.LocalPlayer) == null)
             return;
 
@@ -230,6 +231,7 @@ public class AutoDuty : IDalamudPlugin
             Stage = 0;
             Indexer = 0;
         }
+        
         switch (Stage)
         {
             //AutoDuty is stopped or has not started
