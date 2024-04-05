@@ -140,6 +140,8 @@ public class AutoDuty : IDalamudPlugin
         {
             if (CurrentLoop < LoopTimes)
             {
+                if (_taskManager.IsBusy)
+                    _taskManager.Abort();
                 _taskManager.Enqueue(() => Stage = 99, "Loop");
                 _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Loop");
                 _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");

@@ -240,7 +240,7 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.Button("Start"))
                             {
                                 LoadPath();
-                                Plugin.StartNavigation();
+                                Plugin.StartNavigation(!Plugin.MainListClicked);
                                 currentIndex = -1;
                             }
                         }

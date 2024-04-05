@@ -54,7 +54,7 @@ namespace AutoDuty.Managers
             }
             catch (Exception ex)
             {
-                Svc.Log.Error(ex.ToString());
+                //Svc.Log.Error(ex.ToString());
             }
         }
 
