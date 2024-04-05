@@ -123,50 +123,10 @@ public class AutoDuty : IDalamudPlugin
             pluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
-            Svc.DutyState.DutyWiped += DutyState_DutyWiped;
-            Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
-            Svc.DutyState.DutyStarted += DutyState_DutyStarted;
-            Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
-        }
-    }
-
-    private void DutyState_DutyCompleted(object? sender, ushort e)
-    {
-        Svc.Log.Info($"DutyCompleted {e}");
-    }
-
-    private void DutyState_DutyStarted(object? sender, ushort e)
-    {
-        Svc.Log.Info($"DutyDutyStarted {e}");
-    }
-
-    private void DutyState_DutyRecommenced(object? sender, ushort e)
-    {
-        try
-        {
-            Svc.Log.Info($"DutyRecommenced {e}");
-            DutyRecommenced?.Invoke(this, EventArgs.Empty);
-        }
-        catch (Exception ex)
-        {
-            Svc.Log.Error(ex, "Unhandled exception when invoking DutyEventService.DutyRecommenced");
-        }
-    }
-
-    private void DutyState_DutyWiped(object? sender, ushort e)
-    {
-        try
-        {
-            Svc.Log.Info($"DutyWiped {e}");
-            DutyWiped?.Invoke(this, EventArgs.Empty);
-        }
-        catch (Exception ex)
-        {
-            Svc.Log.Error(ex, "Unhandled exception when invoking DutyEventService.DutyWiped");
         }
     }
 
@@ -387,10 +347,6 @@ public class AutoDuty : IDalamudPlugin
         OverrideCamera.Dispose();
         _overrideMovement.Dispose();
         Svc.Framework.Update -= Framework_Update;
-        Svc.DutyState.DutyWiped -= DutyState_DutyWiped;
-        Svc.DutyState.DutyRecommenced -= DutyState_DutyRecommenced;
-        Svc.DutyState.DutyStarted -= DutyState_DutyStarted;
-        Svc.DutyState.DutyCompleted -= DutyState_DutyCompleted;
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
         Svc.Condition.ConditionChange -= Condition_ConditionChange;
         Svc.Commands.RemoveHandler(CommandName);
