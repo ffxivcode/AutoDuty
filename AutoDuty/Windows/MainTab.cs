@@ -220,10 +220,6 @@ namespace AutoDuty.Windows
                             Plugin.CurrentTerritoryContent = null;
                             dutyListSelected = -1;
                         }
-                    }
-                    if (Plugin.Regular)
-                    {
-                        ImGui.SameLine(0, 5);
                         ImGui.Checkbox("Unsynced", ref Plugin.Unsynced);
                     }
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(-1, -1))) return;
