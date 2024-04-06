@@ -30,15 +30,14 @@ namespace AutoDuty;
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
 // Add auto GC turn in and Auto desynth
 // make config saving per character
-// Need to figure out how to handle Cleave's Since they are up all the time and ForbiddenZonesCount will be 1 or more
+// Mostly just need to modify and change paths, other than that i think we are there.
 
 public class AutoDuty : IDalamudPlugin
 {
     internal List<string> ListBoxPOSText { get; set; } = [];
     internal int LoopTimes = 1;
     internal int CurrentLoop = 0;
-    internal int CurrentTerritoryIndex;
-    internal uint CurrentTerritoryType = 0;
+    internal ContentHelper.Content? CurrentTerritoryContent = null;
     internal string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
@@ -60,6 +59,7 @@ public class AutoDuty : IDalamudPlugin
     internal bool Trust = false;
     internal bool Squadron = false;
     internal bool Regular = false;
+    internal bool Unsynced = false;
     internal bool Repairing = false;
     internal bool Goto = false;
     internal bool InDungeon = false;
@@ -165,15 +165,16 @@ public class AutoDuty : IDalamudPlugin
 
     private void ClientState_TerritoryChanged(ushort t)
     {
-        CurrentTerritoryType = t;
-
-        if (t == 0)
+        if (t == 0 || CurrentTerritoryContent == null)
             return;
 
-        InDungeon = ExcelTerritoryHelper.Get(CurrentTerritoryType).TerritoryIntendedUse == 3;
-        PathFile = $"{Plugin.PathsDirectory}/{CurrentTerritoryType}.json";
+        InDungeon = ExcelTerritoryHelper.Get(t).TerritoryIntendedUse == 3;
+        if (InDungeon && ContentHelper.DictionaryContent.TryGetValue(t, out var territoryContent))
+            PathFile = $"{Plugin.PathsDirectory.FullName}/({t}) {territoryContent.Name}.json";
+        else
+            PathFile = "";
 
-        if (File.Exists(PathFile))
+        if (!PathFile.IsNullOrEmpty() && File.Exists(PathFile)) 
             LoadPath();
         else
             ListBoxPOSText.Clear();
@@ -181,7 +182,8 @@ public class AutoDuty : IDalamudPlugin
         if (!Running || Repairing || Goto)
             return;
 
-        if (t != ContentHelper.ListContent[CurrentTerritoryIndex].TerritoryType)
+
+        if (t != CurrentTerritoryContent.TerritoryType)
         {
             if (CurrentLoop < LoopTimes)
             {
@@ -190,13 +192,13 @@ public class AutoDuty : IDalamudPlugin
                 _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");
                 _taskManager.Enqueue(_repairManager.Repair, int.MaxValue, "Loop");
                 if (Trust)
-                    _taskManager.Enqueue(() => _trustManager.RegisterTrust(ContentHelper.ListContent[CurrentTerritoryIndex]), int.MaxValue, "Loop");
+                    _taskManager.Enqueue(() => _trustManager.RegisterTrust(CurrentTerritoryContent), int.MaxValue, "Loop");
                 else if (Support)
-                    _taskManager.Enqueue(() => _dutySupportManager.RegisterDutySupport(ContentHelper.ListContent[CurrentTerritoryIndex]), int.MaxValue, "Loop");
+                    _taskManager.Enqueue(() => _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent), int.MaxValue, "Loop");
                 else if (Squadron)
                 {
                     _gotoManager.Goto(true, false);
-                    _taskManager.Enqueue(() => _squadronManager.RegisterSquadron(ContentHelper.ListContent[CurrentTerritoryIndex]), int.MaxValue, "Loop");
+                    _taskManager.Enqueue(() => _squadronManager.RegisterSquadron(CurrentTerritoryContent), int.MaxValue, "Loop");
                 }
                 _taskManager.Enqueue(() => CurrentLoop++, "Loop");
             }
@@ -205,7 +207,7 @@ public class AutoDuty : IDalamudPlugin
                 Running = false;
                 CurrentLoop = 0;
                 Stage = 0;
-                MainWindow.SetWindowSize(425, 375);
+                MainWindow.SetWindowSize(new Vector2(425, 375));
             }
         }
     }
@@ -220,23 +222,25 @@ public class AutoDuty : IDalamudPlugin
         }
     }
 
-    public void Run(int clickedDuty)
+    public void Run()
     {
+        if (CurrentTerritoryContent == null)
+            return;
+
         Stage = 99;
-        Svc.Log.Info($"Running {ContentHelper.ListContent[clickedDuty].Name} {LoopTimes} Times");
+        Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {LoopTimes} Times");
         Running = true;
-        CurrentTerritoryIndex = clickedDuty;
         if (!Squadron)
             _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops);
         _repairManager.Repair();
         if (Trust)
-            _trustManager.RegisterTrust(ContentHelper.ListContent[clickedDuty]);
+            _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Support)
-            _dutySupportManager.RegisterDutySupport(ContentHelper.ListContent[clickedDuty]);
+            _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
         else if (Squadron)
         {
             _gotoManager.Goto(true, false);
-            _squadronManager.RegisterSquadron(ContentHelper.ListContent[clickedDuty]);
+            _squadronManager.RegisterSquadron(CurrentTerritoryContent);
         }
         CurrentLoop = 1;
     }
@@ -353,7 +357,7 @@ public class AutoDuty : IDalamudPlugin
         if (!ObjectHelper.IsValid)
             return;
 
-        if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0)
+        if (CurrentTerritoryContent == null && Svc.ClientState.TerritoryType !=0)
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
         if (EzThrottler.Throttle("ClosestInteractableEventObject", 25))
@@ -616,7 +620,7 @@ public class AutoDuty : IDalamudPlugin
                 if (Plugin.Goto)
                     Action = $"Step: Retiring";
                 else
-                    Action = $"Step: Looping: {ContentHelper.ListContent[CurrentTerritoryIndex].Name} {CurrentLoop} of {LoopTimes}";
+                    Action = $"Step: Looping: {CurrentTerritoryContent?.Name} {CurrentLoop} of {LoopTimes}";
                 if (!_taskManager.IsBusy && ObjectHelper.IsValid)
                     Stage = 0;
                 break;

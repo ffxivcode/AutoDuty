@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using System;
 using ECommons.DalamudServices;
-using ClickLib.Clicks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -16,7 +15,6 @@ using ECommons.Throttlers;
 using ECommons.GameHelpers;
 using AutoDuty.Helpers;
 using AutoDuty.External;
-using System.Diagnostics;
 
 namespace AutoDuty.Managers
 {
@@ -30,7 +28,7 @@ namespace AutoDuty.Managers
             ("Interactable","interact with?"),
             ("SelectYesno","yes or no?"),
             ("MoveToObject","Object Name?"),
-            ("ExitDuty","false"),
+            ("MoveToInteract","Object Name?"),
             ("DutySpecificCode","step #?"),
             ("BossMod","on / off"),
             ("Target","Target what?"),
@@ -133,9 +131,20 @@ namespace AutoDuty.Managers
             GameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"MoveToObject: {objectName}";
             _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(objectName)) != null, "MoveToObject");
-            _taskManager.Enqueue(() => { if (gameObject != null) VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(gameObject.Position, false); }, "MoveToObject");
-            _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0, int.MaxValue, "MoveToObject");
+            _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(gameObject), int.MaxValue, "MoveToObject");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+        }
+
+        public void MoveToInteract(string objectName)
+        {
+            GameObject? gameObject = null;
+            AutoDuty.Plugin.Action = $"MoveToInteract: {objectName}";
+            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(objectName)) != null, "MoveToInteract");
+            _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(gameObject), int.MaxValue, "MoveToInteract");
+            _taskManager.Enqueue(() => InteractableCheck(gameObject), "MoveToInteract");
+            _taskManager.Enqueue(() => ObjectHelper.PlayerIsCasting, 500, "MoveToInteract");
+            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "MoveToInteract");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "", "MoveToInteract");
         }
 
         public void TreasureCoffer(string _) 

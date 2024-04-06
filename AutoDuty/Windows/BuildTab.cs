@@ -19,10 +19,12 @@ namespace AutoDuty.Windows
         private static bool _scrollBottom = false;
         private static string _input = "";
         private static string _action = "";
-        private static string inputTextName = "";
-        private static int inputIW = 200;
-        private static bool showAddActionUI = false;
-        private static (string, string) dropdownSelected = ("", "");
+        private static string _inputTextName = "";
+        private static bool _dontMove = false;
+        private static int _inputIW = 200;
+        private static bool _showAddActionUI = false;
+        private static (string, string) _dropdownSelected = ("", "");
+        
 
         private static void AddAction(string action)
         {
@@ -30,11 +32,12 @@ namespace AutoDuty.Windows
             Plugin.ListBoxPOSText.Add(action);
             _input = "";
             _action = "";
+            _dontMove = false;
         }
         internal static void Draw()
         {
             using var d = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage > 0 || Plugin.Player == null);
-            ImGui.Text($"Build Path: {(TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryType).Contains('|') ? TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryType).Split('|')[1].Trim() : TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryType))} ({Plugin.CurrentTerritoryType})");
+            ImGui.Text($"Build Path: {(TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType).Contains('|') ? TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType).Split('|')[1].Trim() : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))} ({Svc.ClientState.TerritoryType})");
             if (ImGui.Button("Add POS"))
             {
                 _scrollBottom = true;
@@ -53,7 +56,7 @@ namespace AutoDuty.Windows
                 {
                     if (ImGui.Selectable(item.Item1))
                     {
-                        dropdownSelected = item;
+                        _dropdownSelected = item;
                         switch (item.Item1)
                         {
                             case "ExitDuty":
@@ -63,6 +66,7 @@ namespace AutoDuty.Windows
                                 _input = "Yes";
                                 break;
                             case "MoveToObject":
+                            case "MoveToInteract":
                             case "Interactable":
                                 _input = Plugin.ClosestInteractableEventObject?.Name.TextValue ?? "";
                                 break;
@@ -74,11 +78,11 @@ namespace AutoDuty.Windows
                                 _action = $"{item.Item1}|{Plugin.PlayerPosition.X:0.00}, {Plugin.PlayerPosition.Y:0.00}, {Plugin.PlayerPosition.Z:0.00}|";
                                 break;
                         }
-                        inputIW = 400;
+                        _inputIW = 400;
                         if (item.Item2.Equals("false"))
                             AddAction(_action);
-                        showAddActionUI = !item.Item2.Equals("false");
-                        inputTextName = item.Item2;
+                        _showAddActionUI = !item.Item2.Equals("false");
+                        _inputTextName = item.Item2;
                     }
                 }
                 ImGui.EndPopup();
@@ -108,10 +112,10 @@ namespace AutoDuty.Windows
             {
                 Plugin.LoadPath();
             }
-            if (showAddActionUI)
+            if (_showAddActionUI)
             {
-                ImGui.PushItemWidth(inputIW);
-                ImGui.InputText(inputTextName, ref _input, 50);
+                ImGui.PushItemWidth(_inputIW);
+                ImGui.InputText(_inputTextName, ref _input, 50);
                 ImGui.SameLine(0, 5);
                 if (ImGui.Button("Add"))
                 {
@@ -120,9 +124,14 @@ namespace AutoDuty.Windows
                         MainWindow.ShowPopup("Error", "You must enter an input");
                         return;
                     }
-                    AddAction($"{dropdownSelected.Item1}|{Plugin.PlayerPosition.X:0.00}, {Plugin.PlayerPosition.Y:0.00}, {Plugin.PlayerPosition.Z:0.00}|{_input}");
-                    showAddActionUI = false;
+                    if (_dontMove)
+                        AddAction($"{_dropdownSelected.Item1}|0, 0, 0|{_input}");
+                    else
+                        AddAction($"{_dropdownSelected.Item1}|{Plugin.PlayerPosition.X:0.00}, {Plugin.PlayerPosition.Y:0.00}, {Plugin.PlayerPosition.Z:0.00}|{_input}");
+                    _showAddActionUI = false;
                 }
+                ImGui.SameLine(0, 5);
+                ImGui.Checkbox("Dont Move", ref _dontMove);
             }
             if (!ImGui.BeginListBox("##BuildList", new Vector2(-1, -1))) return;
             try

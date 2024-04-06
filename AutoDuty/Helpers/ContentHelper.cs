@@ -8,7 +8,7 @@ namespace AutoDuty.Helpers
 {
     internal static class ContentHelper
     {
-        internal static List<Content> ListContent { get; set; } = [];
+        internal static Dictionary<uint, Content> DictionaryContent { get; set; } = [];
 
         private static List<uint> ListGCArmyContent { get; set; } = [162, 1039, 1041, 1042, 171, 172, 159, 160, 349, 362, 188, 1064, 1066, 430, 510];
 
@@ -60,10 +60,10 @@ namespace AutoDuty.Helpers
                 };
                 if (content.DawnContent && listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).Any())
                     content.DawnIndex = listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId < 24 ? (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId : (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId - 200;
-                ListContent.Add(content);
+                DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);
             }
 
-            ListContent = [.. ListContent.OrderBy(content => content.ExVersion).ThenBy(content => content.ClassJobLevelRequired).ThenBy(content => content.ItemLevelRequired)];
+            DictionaryContent = [.. DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.ItemLevelRequired)];
         }
     }
 }

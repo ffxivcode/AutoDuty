@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Drawing;
 using System.Numerics;
 using AutoDuty.Helpers;
 using Dalamud.Interface.Windowing;
+using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 
@@ -16,12 +18,12 @@ public class MainWindow : Window, IDisposable
     private string openTabName = "";
 
     public MainWindow(AutoDuty plugin) : base(
-        "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoResize)
     {
         SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(425, 375),
-            MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
+            MaximumSize = new Vector2(425, 375)
         };
         
         Plugin = plugin;
@@ -37,14 +39,16 @@ public class MainWindow : Window, IDisposable
     {
     }
 
-    internal void SetWindowSize(int x, int y)
+    internal void SetWindowSize(Vector2 size, Vector2 min = default, Vector2 max = default)
     {
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(x, y),
-            MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
+            MinimumSize = min == default ? size : min,
+            MaximumSize = max == default ? size : max
         };
-        Size = new Vector2(x, y);
+        Size = size;
+        if (min != max && Flags.HasFlag(ImGuiWindowFlags.NoResize))
+            Flags = Flags -= ImGuiWindowFlags.NoResize;
     }
 
     public static void CenteredText(string text)
@@ -96,13 +100,13 @@ public class MainWindow : Window, IDisposable
     {
         DrawPopup();
 
-        if (Plugin.Running)
+        if (Plugin.Running && Plugin.CurrentTerritoryContent != null)
         {
-            ImGui.TextColored(new Vector4(0, 0f, 200f, 1), $"AutoDuty - Running ({ContentHelper.ListContent[Plugin.CurrentTerritoryIndex].Name}) {Plugin.CurrentLoop} of {Plugin.LoopTimes} Times");
+            ImGui.TextColored(new Vector4(0, 0f, 200f, 1), $"AutoDuty - Running ({Plugin.CurrentTerritoryContent.Name}) {Plugin.CurrentLoop} of {Plugin.LoopTimes} Times");
             if (ImGui.Button("Stop"))
             {
                 Plugin.Stage = 0;
-                SetWindowSize(425, 375);
+                SetWindowSize(new Vector2(425, 375));
                 return;
             }
             ImGui.SameLine(0, 5);
@@ -124,19 +128,12 @@ public class MainWindow : Window, IDisposable
             
             ImGui.TextColored(new Vector4(0, 255f, 0, 1), Plugin.Action);
 
-            SizeConstraints = new WindowSizeConstraints
-            {
-                MinimumSize = new Vector2(325, 70),
-                MaximumSize = new Vector2(325, 70)
-            };
-            Size = new Vector2(325, 75);
+            if (Size != new Vector2(325, 70))
+                SetWindowSize(new Vector2(325, 70));
             return;
         }
-        else
-        {
-            if (Size != new Vector2(425, 375))
-                SetWindowSize(425, 375);
-        }
+        else if(Size != new Vector2(425, 375))
+            SetWindowSize(new Vector2(425, 375));
 
         KoFiButton.DrawRight();
         ImGuiEx.EzTabBar("MainTab", true, openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false));

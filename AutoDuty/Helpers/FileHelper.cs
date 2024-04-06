@@ -38,9 +38,9 @@ namespace AutoDuty.Helpers
         private static void Update() 
         {
             PathFileExists = [];
-            foreach (var t in ContentHelper.ListContent)
+            foreach (var t in ContentHelper.DictionaryContent)
             {
-                PathFileExists.TryAdd(t.TerritoryType, File.Exists($"{Plugin.PathsDirectory.FullName}/{t.TerritoryType}.json"));
+                PathFileExists.TryAdd(t.Value.TerritoryType, File.Exists($"{Plugin.PathsDirectory.FullName}/({t.Value.TerritoryType}) {t.Value.Name}.json"));
             }
         }
 
