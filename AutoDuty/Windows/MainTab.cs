@@ -227,11 +227,11 @@ namespace AutoDuty.Windows
                     {
                         Dictionary<uint, ContentHelper.Content> dictionary = [];
                         if (Plugin.Support)
-                            dictionary = (Dictionary<uint, ContentHelper.Content>)ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent);
+                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
                         else if (Plugin.Trust)
-                            dictionary = (Dictionary<uint, ContentHelper.Content>)ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent && x.Value.ExVersion > 2);
+                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent && x.Value.ExVersion > 2).ToDictionary();
                         else if (Plugin.Squadron)
-                            dictionary = (Dictionary<uint, ContentHelper.Content>)ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent);
+                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
                         else if (Plugin.Regular)
                             dictionary = ContentHelper.DictionaryContent;
 

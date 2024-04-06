@@ -63,7 +63,7 @@ namespace AutoDuty.Helpers
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);
             }
 
-            DictionaryContent = (Dictionary<uint, Content>)DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.ItemLevelRequired);
+            DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.ItemLevelRequired).ToDictionary();
         }
     }
 }

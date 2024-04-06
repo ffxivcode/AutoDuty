@@ -9,6 +9,7 @@ using System.Numerics;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using AutoDuty.Helpers;
 
 namespace AutoDuty.Windows
 {
@@ -37,7 +38,7 @@ namespace AutoDuty.Windows
         internal static void Draw()
         {
             using var d = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage > 0 || Plugin.Player == null);
-            ImGui.Text($"Build Path: {(TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType).Contains('|') ? TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType).Split('|')[1].Trim() : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))} ({Svc.ClientState.TerritoryType})");
+            ImGui.Text($"Build Path: ({Svc.ClientState.TerritoryType}) {(ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content) ? content.Name : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))}");
             if (ImGui.Button("Add POS"))
             {
                 _scrollBottom = true;

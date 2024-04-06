@@ -38,6 +38,7 @@ public class AutoDuty : IDalamudPlugin
     internal int LoopTimes = 1;
     internal int CurrentLoop = 0;
     internal ContentHelper.Content? CurrentTerritoryContent = null;
+    internal uint CurrentTerritoryType = 0;
     internal string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
@@ -165,8 +166,16 @@ public class AutoDuty : IDalamudPlugin
 
     private void ClientState_TerritoryChanged(ushort t)
     {
-        if (t == 0 || CurrentTerritoryContent == null)
+        CurrentTerritoryType = t;
+
+        if (t == 0)
             return;
+
+        if (CurrentTerritoryContent == null)
+        {
+            if (ContentHelper.DictionaryContent.TryGetValue(t, out var content))
+                CurrentTerritoryContent = content;
+        }
 
         InDungeon = ExcelTerritoryHelper.Get(t).TerritoryIntendedUse == 3;
         if (InDungeon && ContentHelper.DictionaryContent.TryGetValue(t, out var territoryContent))
@@ -179,9 +188,8 @@ public class AutoDuty : IDalamudPlugin
         else
             ListBoxPOSText.Clear();
 
-        if (!Running || Repairing || Goto)
+        if (!Running || Repairing || Goto || CurrentTerritoryContent == null)
             return;
-
 
         if (t != CurrentTerritoryContent.TerritoryType)
         {
@@ -357,7 +365,7 @@ public class AutoDuty : IDalamudPlugin
         if (!ObjectHelper.IsValid)
             return;
 
-        if (CurrentTerritoryContent == null && Svc.ClientState.TerritoryType !=0)
+        if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0)
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
         if (EzThrottler.Throttle("ClosestInteractableEventObject", 25))
