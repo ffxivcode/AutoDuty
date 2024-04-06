@@ -232,8 +232,14 @@ public class AutoDuty : IDalamudPlugin
 
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0)
         {
-            Stage = 0;
+            if (Plugin.Running && CurrentLoop <= LoopTimes)
+            {
+                return;
+            }
+            else
+                Stage = 0;
             Indexer = 0;
+            return;
         }
         
         switch (Stage)
@@ -307,6 +313,7 @@ public class AutoDuty : IDalamudPlugin
                 {
                     Stage = 1;
                     Indexer++;
+                    return;
                 }
                 break;
             //InCombat
@@ -336,6 +343,8 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //Looping
             case 99:
+                if (!ObjectHelper.IsValid)
+                    return;
                 if (!_taskManager.IsBusy && ObjectHelper.IsValid)
                     Stage = 0;
                 break;

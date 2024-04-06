@@ -47,6 +47,7 @@ namespace AutoDuty.Managers
                 {
                     Type thisType = GetType();
                     MethodInfo? actionTask = thisType.GetMethod(action);
+                    _taskManager.DelayNext(250);
                     _taskManager.Enqueue(() => actionTask?.Invoke(this, p));
                 }
                 else
