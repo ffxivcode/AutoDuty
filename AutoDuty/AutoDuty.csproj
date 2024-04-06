@@ -28,6 +28,12 @@
    <PropertyGroup Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'">
     <DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
   </PropertyGroup>
+  
+   <ItemGroup>
+     <Compile Remove="Paths\**" />
+     <EmbeddedResource Remove="Paths\**" />
+     <None Remove="Paths\**" />
+   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
@@ -60,9 +66,5 @@
       <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
       <Private>false</Private>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Paths\" />
   </ItemGroup>
 </Project>

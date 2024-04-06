@@ -55,6 +55,7 @@ public class AutoDuty : IDalamudPlugin
     internal GameObject? ClosestInteractableEventObject = null;
     internal GameObject? ClosestTargetableBattleNpc = null;
     internal OverrideCamera OverrideCamera;
+    internal MainWindow MainWindow { get; init; }
     internal bool Support = false;
     internal bool Trust = false;
     internal bool Squadron = false;
@@ -67,7 +68,6 @@ public class AutoDuty : IDalamudPlugin
     internal string PathFile = "";
 
     private const string CommandName = "/autoduty";
-    internal MainWindow MainWindow { get; init; }
     private DirectoryInfo _configDirectory;
     private ActionsManager _actions;
     private Chat _chat;
@@ -666,9 +666,10 @@ public class AutoDuty : IDalamudPlugin
     public void OpenConfigUI()
     {
         if (MainWindow != null)
+        {
             MainWindow.IsOpen = true;
-
-        MainWindow.OpenConfig();
+            MainWindow.OpenConfig();
+        }
     }
 
     public void OpenMainUI()

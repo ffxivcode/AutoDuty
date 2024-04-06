@@ -13,7 +13,6 @@ namespace AutoDuty.Windows
 {
     internal static class MainTab
     {
-        private static ContentHelper.Content? _clickedDuty = null;
         private static int currentIndex = -1;
         private static int dutyListSelected = -1;
         private static string pathsURL = "https://github.com/ffxivcode/DalamudPlugins/tree/main/AutoDuty/Paths";
