@@ -382,6 +382,8 @@ public class AutoDuty : IDalamudPlugin
 
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0)
         {
+            //we finished lets exit the duty
+            _actions.ExitDuty("");
             Stage = 0;
             Indexer = -1;
         }
