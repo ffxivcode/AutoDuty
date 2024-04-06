@@ -274,7 +274,7 @@ public class AutoDuty : IDalamudPlugin
                 else
                 {
                     Stage = 2;
-                    var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
+                    var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture));
                     if (!VNavmesh_IPCSubscriber.Path_GetMovementAllowed())
                         VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
                     if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)

@@ -216,7 +216,7 @@ namespace AutoDuty.Managers
             GameObject? followTargetObject = null;
             BattleChara? bossObject = null;
             AutoDuty.Plugin.StopForCombat = false;
-            VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(new Vector3(float.Parse(x), float.Parse(y), float.Parse(z)), false);
+            VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(new Vector3(float.Parse(x, System.Globalization.CultureInfo.InvariantCulture), float.Parse(y, System.Globalization.CultureInfo.InvariantCulture), float.Parse(z, System.Globalization.CultureInfo.InvariantCulture)), false);
             _taskManager.Enqueue(() => (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0), int.MaxValue, "Boss");
             _taskManager.DelayNext("Boss", 5000);
 
