@@ -56,6 +56,7 @@ namespace AutoDuty.Helpers
                 return false;
 
             VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
+            VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
             VNavmesh_IPCSubscriber.Path_SetTolerance(tollerance);
             VNavmesh_IPCSubscriber.Path_MoveTo(moveWaypoints, fly);
 
@@ -107,7 +108,6 @@ namespace AutoDuty.Helpers
 
             if (!VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && MoveWaypoints.Count == 0 && PathfindTask == null)
             {
-                VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
                 VNavmesh_IPCSubscriber.Path_SetTolerance(tollerance);
                 Pathfind(Player.Object.Position, position, false);
                 return false;
@@ -117,6 +117,8 @@ namespace AutoDuty.Helpers
             {
                 MoveWaypoints = PathfindTask.Result;
                 PathfindTask = null;
+                VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
+                VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
                 VNavmesh_IPCSubscriber.Path_MoveTo(MoveWaypoints, fly);
                 return false;
             }

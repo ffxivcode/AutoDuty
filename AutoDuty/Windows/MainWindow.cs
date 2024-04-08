@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Drawing;
 using System.Numerics;
-using AutoDuty.Helpers;
+using ClickLib;
+using Dalamud.Interface;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
+using ECommons;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
@@ -18,16 +20,17 @@ public class MainWindow : Window, IDisposable
     private string openTabName = "";
 
     public MainWindow(AutoDuty plugin) : base(
-        "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoResize)
+        "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize)
     {
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(425, 375),
-            MaximumSize = new Vector2(425, 375)
+            MinimumSize = new Vector2(10, 10),
+            MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
         
         Plugin = plugin;
-        KoFiButton.DonateLink = "https://ko-fi.com/Herculezz";
+        TitleBarButtons.Add(new() { Icon = FontAwesomeIcon.Cog, IconOffset = new(1), Click = _ => OpenConfig() });
+        TitleBarButtons.Add(new() { ShowTooltip = () => ImGui.SetTooltip("Support Herculezz on Ko-fi"), Icon = FontAwesomeIcon.Donate, IconOffset = new(-5, 1), Click = _ => GenericHelpers.ShellStart("https://ko-fi.com/Herculezz") });
     }
 
     internal void OpenConfig()
@@ -37,18 +40,6 @@ public class MainWindow : Window, IDisposable
 
     public void Dispose()
     {
-    }
-
-    internal void SetWindowSize(Vector2 size, Vector2 min = default, Vector2 max = default)
-    {
-        SizeConstraints = new WindowSizeConstraints
-        {
-            MinimumSize = min == default ? size : min,
-            MaximumSize = max == default ? size : max
-        };
-        Size = size;
-        if (min != max && Flags.HasFlag(ImGuiWindowFlags.NoResize))
-            Flags = Flags -= ImGuiWindowFlags.NoResize;
     }
 
     public static void CenteredText(string text)
@@ -102,11 +93,10 @@ public class MainWindow : Window, IDisposable
 
         if (Plugin.Running && Plugin.CurrentTerritoryContent != null)
         {
-            ImGui.TextColored(new Vector4(0, 0f, 200f, 1), $"AutoDuty - Running ({Plugin.CurrentTerritoryContent.Name}) {Plugin.CurrentLoop} of {Plugin.LoopTimes} Times");
+            ImGui.TextColored(new Vector4(0, 0f, 200f, 1), $"AutoDuty - Running ({Plugin.CurrentTerritoryContent.Name}) {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Times");
             if (ImGui.Button("Stop"))
             {
                 Plugin.Stage = 0;
-                SetWindowSize(new Vector2(425, 375));
                 return;
             }
             ImGui.SameLine(0, 5);
@@ -127,16 +117,11 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine(0, 5);
             
             ImGui.TextColored(new Vector4(0, 255f, 0, 1), Plugin.Action);
-
-            if (Size != new Vector2(325, 70))
-                SetWindowSize(new Vector2(325, 70));
+            
             return;
         }
-        else if(Size != new Vector2(425, 375))
-            SetWindowSize(new Vector2(425, 375));
 
-        KoFiButton.DrawRight();
-        ImGuiEx.EzTabBar("MainTab", true, openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false));
+        ImGuiEx.EzTabBar("MainTab", false, openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false));
         openTabName = "";
     }
 }

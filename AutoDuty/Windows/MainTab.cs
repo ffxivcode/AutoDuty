@@ -8,17 +8,26 @@ using System.Numerics;
 using System.Linq;
 using AutoDuty.Helpers;
 using System.Collections.Immutable;
+using ECommons.DalamudServices;
 
 namespace AutoDuty.Windows
 {
     internal static class MainTab
     {
-        private static int currentIndex = -1;
-        private static int dutyListSelected = -1;
-        private static string pathsURL = "https://github.com/ffxivcode/DalamudPlugins/tree/main/AutoDuty/Paths";
+        private static int _currentIndex = -1;
+        private static int _dutyListSelected = -1;
+        private static readonly string _pathsURL = "https://github.com/ffxivcode/DalamudPlugins/tree/main/AutoDuty/Paths";
 
         internal static void Draw()
         {
+            var _loopTimes = Plugin.Configuration.LoopTimes;
+            var _support = Plugin.Configuration.Support;
+            var _trust = Plugin.Configuration.Trust;
+            var _squadron = Plugin.Configuration.Squadron;
+            var _regular = Plugin.Configuration.Regular;
+            var _unsynced = Plugin.Configuration.Unsynced;
+            var _hideUnavailableDuties = Plugin.Configuration.HideUnavailableDuties;
+
             if (Plugin.InDungeon && Plugin.CurrentTerritoryContent != null)
             {
                 var progress = VNavmesh_IPCSubscriber.Nav_BuildProgress();
@@ -40,7 +49,7 @@ namespace AutoDuty.Windows
                         {
                             Plugin.LoadPath();
                             Plugin.StartNavigation(!Plugin.MainListClicked);
-                            currentIndex = -1;
+                            _currentIndex = -1;
                         }
                     }
                     ImGui.SameLine(0, 5);
@@ -68,10 +77,10 @@ namespace AutoDuty.Windows
                         if (Plugin.Started)
                         {
                             ImGui.SameLine(0, 5);
-                            ImGui.TextColored(new Vector4(0, 255f, 0, 1), Plugin.Action);
+                            ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
                         }
                     }
-                    if (!ImGui.BeginListBox("##MainList", new Vector2(-1, -1))) return;
+                    if (!ImGui.BeginListBox("##MainList", new Vector2(850, 575))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
@@ -97,20 +106,20 @@ namespace AutoDuty.Windows
                                 }
                             }
                         }
-                        if (currentIndex != Plugin.Indexer && currentIndex > -1 && Plugin.Stage > 0)
+                        if (_currentIndex != Plugin.Indexer && _currentIndex > -1 && Plugin.Stage > 0)
                         {
                             var lineHeight = ImGui.GetTextLineHeightWithSpacing();
-                            currentIndex = Plugin.Indexer;
-                            if (currentIndex > 1)
-                                ImGui.SetScrollY((currentIndex - 1) * lineHeight);
+                            _currentIndex = Plugin.Indexer;
+                            if (_currentIndex > 1)
+                                ImGui.SetScrollY((_currentIndex - 1) * lineHeight);
                         }
-                        else if (currentIndex == -1 && Plugin.Stage > 0)
+                        else if (_currentIndex == -1 && Plugin.Stage > 0)
                         {
-                            currentIndex = 0;
-                            ImGui.SetScrollY(currentIndex);
+                            _currentIndex = 0;
+                            ImGui.SetScrollY(_currentIndex);
                         }
-                        if (Plugin.InDungeon && !FileHelper.PathFileExists.GetValueOrDefault(Plugin.CurrentTerritoryContent.TerritoryType))
-                            ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryContent.TerritoryType).Split('|')[1].Trim()}\n({Plugin.CurrentTerritoryContent.TerritoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory.FullName.Replace('\\','/')}\nPlease download from:\n{pathsURL}\nor Create in the Build Tab");
+                        if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count <1 && !FileHelper.PathFileExists.GetValueOrDefault(Plugin.CurrentTerritoryContent.TerritoryType))
+                            ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryContent.TerritoryType).Split('|')[1].Trim()}\n({Plugin.CurrentTerritoryContent.TerritoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory.FullName.Replace('\\','/')}\nPlease download from:\n{_pathsURL}\nor Create in the Build Tab");
                     }
                     else
                     {
@@ -130,10 +139,16 @@ namespace AutoDuty.Windows
                     {
                         if (ImGui.Button("Run"))
                         {
-                            if (Plugin.Regular || Plugin.Trust)
+                            if (Plugin.Configuration.Regular || Plugin.Configuration.Trust)
                                 MainWindow.ShowPopup("Error", "This has not yet been implemented");
-                            else if (!Plugin.Support && !Plugin.Trust && !Plugin.Squadron && !Plugin.Regular)
-                                MainWindow.ShowPopup("Error", "You must select a version\nof the dungeon to run"); 
+                            else if (!Plugin.Configuration.Support && !Plugin.Configuration.Trust && !Plugin.Configuration.Squadron && !Plugin.Configuration.Regular)
+                                MainWindow.ShowPopup("Error", "You must select a version\nof the dungeon to run");
+                            else if (Svc.Party.PartyId > 0 && (Plugin.Configuration.Support || Plugin.Configuration.Squadron || Plugin.Configuration.Trust))
+                                MainWindow.ShowPopup("Error", "You must not be in a party to run Support, Squadron or Trust");
+                            else if (Svc.Party.PartyId == 0 && Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced)
+                                MainWindow.ShowPopup("Error", "You must be in a group of 4 to run Regular Duties");
+                            else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !ObjectHelper.PartyValidation())
+                                MainWindow.ShowPopup("Error", "You must have the correcty party makeup to run Regular Duties");
                             else if (FileHelper.PathFileExists.GetValueOrDefault(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
                                 Plugin.Run();
                             else
@@ -145,9 +160,6 @@ namespace AutoDuty.Windows
                         if (ImGui.Button("Stop"))
                         {
                             Plugin.Stage = 0;
-                            Plugin.Running = false;
-                            Plugin.CurrentLoop = 0;
-                            Plugin.MainWindow.SetWindowSize(new Vector2(425, 375));
                         }
                         ImGui.SameLine(0, 5);
                         if (Plugin.Stage == 5)
@@ -171,68 +183,97 @@ namespace AutoDuty.Windows
                     using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                     {
                         ImGui.SameLine(0, 15);
-                        ImGui.InputInt("Times", ref Plugin.LoopTimes);
-                    }
-                    if (ImGui.Checkbox("Support", ref Plugin.Support))
-                    {
-                        if (Plugin.Support)
+                        if (ImGui.InputInt("Times", ref _loopTimes))
                         {
-                            Plugin.Trust = false;
-                            Plugin.Squadron = false;
-                            Plugin.Regular = false;
+                            Plugin.Configuration.LoopTimes = _loopTimes;
+                            Plugin.Configuration.Save();
+                        }
+                    }
+                    if (ImGui.Checkbox("Support", ref _support))
+                    {
+                        if (_support)
+                        {
+                            Plugin.Configuration.Support = _support;
+                            Plugin.Configuration.Trust = false;
+                            Plugin.Configuration.Squadron = false;
+                            Plugin.Configuration.Regular = false;
                             Plugin.CurrentTerritoryContent = null;
-                            dutyListSelected = -1;
+                            _dutyListSelected = -1;
+                            Plugin.Configuration.Save();
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Trust", ref Plugin.Trust))
+                    if (ImGui.Checkbox("Trust", ref _trust))
                     {
-                        if (Plugin.Trust)
+                        if (_trust)
                         {
-                            Plugin.Support = false;
-                            Plugin.Squadron = false;
-                            Plugin.Regular = false;
+                            Plugin.Configuration.Trust = _trust;
+                            Plugin.Configuration.Support = false;
+                            Plugin.Configuration.Squadron = false;
+                            Plugin.Configuration.Regular = false;
                             Plugin.CurrentTerritoryContent = null;
-                            dutyListSelected = -1;
+                            _dutyListSelected = -1;
+                            Plugin.Configuration.Save();
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Squadron", ref Plugin.Squadron))
+                    if (ImGui.Checkbox("Squadron", ref _squadron))
                     {
-                        if (Plugin.Squadron)
+                        if (_squadron)
                         {
-                            Plugin.Support = false;
-                            Plugin.Trust = false;
-                            Plugin.Regular = false;
+                            Plugin.Configuration.Squadron = _squadron;
+                            Plugin.Configuration.Support = false;
+                            Plugin.Configuration.Trust = false;
+                            Plugin.Configuration.Regular = false;
                             Plugin.CurrentTerritoryContent = null;
-                            dutyListSelected = -1;
+                            _dutyListSelected = -1;
+                            Plugin.Configuration.Save();
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Regular", ref Plugin.Regular))
+                    if (ImGui.Checkbox("Regular", ref _regular))
                     {
-                        if (Plugin.Regular)
+                        if (_regular)
                         {
-                            Plugin.Support = false;
-                            Plugin.Trust = false;
-                            Plugin.Squadron = false;
+                            Plugin.Configuration.Regular = _regular;
+                            Plugin.Configuration.Support = false;
+                            Plugin.Configuration.Trust = false;
+                            Plugin.Configuration.Squadron = false;
                             Plugin.CurrentTerritoryContent = null;
-                            dutyListSelected = -1;
+                            _dutyListSelected = -1;
+                            Plugin.Configuration.Save();
                         }
-                        ImGui.Checkbox("Unsynced", ref Plugin.Unsynced);
                     }
-                    if (!ImGui.BeginListBox("##DutyList", new Vector2(-1, -1))) return;
+                    if (Plugin.Configuration.Regular)
+                    {
+                        ImGui.SameLine(0, 5);
+                        if (ImGui.Checkbox("Unsynced", ref _unsynced))
+                        {
+                            Plugin.Configuration.Unsynced = _unsynced;
+                            Plugin.Configuration.Save();
+                        }
+                    }
+                    if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular)
+                    {
+                        //ImGui.SameLine(0, 5);
+                        if (ImGui.Checkbox("Hide Unavailable Duties", ref _hideUnavailableDuties))
+                        {
+                            Plugin.Configuration.HideUnavailableDuties = _hideUnavailableDuties;
+                            Plugin.Configuration.Save();
+                        }
+                    }
+                    if (!ImGui.BeginListBox("##DutyList", new Vector2(850, 575))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
                         Dictionary<uint, ContentHelper.Content> dictionary = [];
-                        if (Plugin.Support)
+                        if (Plugin.Configuration.Support)
                             dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
-                        else if (Plugin.Trust)
+                        else if (Plugin.Configuration.Trust)
                             dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent && x.Value.ExVersion > 2).ToDictionary();
-                        else if (Plugin.Squadron)
+                        else if (Plugin.Configuration.Squadron)
                             dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
-                        else if (Plugin.Regular)
+                        else if (Plugin.Configuration.Regular)
                             dictionary = ContentHelper.DictionaryContent;
 
                         if (dictionary.Count > 0)
@@ -241,9 +282,11 @@ namespace AutoDuty.Windows
                             {
                                 using (var d2 = ImRaii.Disabled(item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.PathFileExists.GetValueOrDefault(item.Value.Value.TerritoryType)))
                                 {
-                                    if (ImGui.Selectable($"({item.Value.Value.TerritoryType}) {item.Value.Value.Name}", dutyListSelected == item.Index))
+                                    if (Plugin.Configuration.HideUnavailableDuties && (item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.PathFileExists.GetValueOrDefault(item.Value.Value.TerritoryType)))
+                                        continue;
+                                    if (ImGui.Selectable($"({item.Value.Value.TerritoryType}) {item.Value.Value.Name}", _dutyListSelected == item.Index))
                                     {
-                                        dutyListSelected = item.Index;
+                                        _dutyListSelected = item.Index;
                                         Plugin.CurrentTerritoryContent = item.Value.Value;
                                     }
                                 }

@@ -12,9 +12,11 @@ public class Configuration : IPluginConfiguration
     public int Version { get; set; } = 32;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
+    public int LoopTimes { get; set; } = 1;
 
+    public bool AutoExitDuty { get; set; } = true;
     public bool LootTreasure { get; set; } = true;
-    public bool LootBossTreasureOnly { get; set; } = true;
+    public bool LootBossTreasureOnly { get; set; } = false;
     public bool AutoRepair { get; set; } = false;
     public bool AutoRepairSelf { get; set; } = false;
     public bool AutoRepairCity { get; set; } = true;
@@ -24,6 +26,12 @@ public class Configuration : IPluginConfiguration
     public bool RetireToBarracksBeforeLoops { get; set; } = false;
     public bool AutoDesynth { get; set; } = false;
     public bool AutoGCTurnin { get; set; } = false;
+    public bool Support { get; set; } = false;
+    public bool Trust { get; set; } = false;
+    public bool Squadron { get; set; } = false;
+    public bool Regular { get; set; } = false;
+    public bool Unsynced { get; set; } = false;
+    public bool HideUnavailableDuties { get; set; } = false;
 
     [NonSerialized]
     private DalamudPluginInterface? PluginInterface;
@@ -45,7 +53,9 @@ public static class ConfigTab
 
     public static void Draw()
     {
-        var lootTreasure = Configuration.LootTreasure;
+        var autoExitDuty = Configuration.AutoExitDuty;
+        var lootTreasure = Configuration.LootTreasure; 
+        var lootBossTreasureOnly = Configuration.LootBossTreasureOnly;
         var autoRepair = Configuration.AutoRepair;
         var autoRepairSelf = Configuration.AutoRepairSelf;
         var autoRepairCity = Configuration.AutoRepairCity;
@@ -58,10 +68,23 @@ public static class ConfigTab
         var autoGCTurnin = Configuration.AutoGCTurnin;
         var autoGCTurninSlotsLeft = Configuration.AutoGCTurninSlotsLeft;
 
+        if (ImGui.Checkbox("Auto Exit Duty on Completion", ref autoExitDuty))
+        {
+            Configuration.AutoExitDuty = autoExitDuty;
+            Configuration.Save();
+        }
         if (ImGui.Checkbox("Loot Treasure Coffers", ref lootTreasure))
         {
             Configuration.LootTreasure = lootTreasure;
             Configuration.Save();
+        }
+        using (var d1 = ImRaii.Disabled(!lootTreasure))
+        {
+            if (ImGui.Checkbox("Loot Boss Treasure Only", ref lootBossTreasureOnly))
+            {
+                Configuration.LootBossTreasureOnly = lootBossTreasureOnly;
+                Configuration.Save();
+            }
         }
         if (ImGui.Checkbox("Retire to Inn before Looping", ref retireToInnBeforeLoops))
         {

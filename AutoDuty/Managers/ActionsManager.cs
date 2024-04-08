@@ -72,7 +72,7 @@ namespace AutoDuty.Managers
             if (AutoDuty.Plugin.Player == null)
                 return;
             AutoDuty.Plugin.Action = $"Wait: {wait}";
-            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/rotation auto"), int.MaxValue, "Wait");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/rotation auto"), "Wait");
             _taskManager.Enqueue(() => !ObjectHelper.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
             _taskManager.Enqueue(() => EzThrottler.Throttle("Wait", Convert.ToInt32(wait)), "Wait");
             _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(wait), "Wait");
@@ -262,26 +262,34 @@ namespace AutoDuty.Managers
             }
             return false;
         }
-        
+        private bool BossMoveCheck(Vector3 bossV3)
+        {
+            if (AutoDuty.Plugin.BossObject != null && AutoDuty.Plugin.BossObject.InCombat())
+            {
+                MovementHelper.Stop();
+                return true;
+            }
+            return MovementHelper.PathfindAndMove(bossV3);
+        }
+            
         GameObject FollowTarget;
         float FollowDistance;
 
         public void Boss(Vector3 bossV3)
         {
             Svc.Log.Info($"Starting Action Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? "null"}");
-            
-            //need to check boss for HasModule IPC and turn off follow and engage where we want to be checks (tanks near center, dps and healers behind or side, and melee same but in range)
             _chat.ExecuteCommand($"/rotation auto");
             GameObject? followTargetObject = null;
             GameObject? treasureCofferObject = null;
             var hasModule = false;
             var numForbiddenZonesToIgnore = 0;
             //AutoDuty.Plugin.StopForCombat = false;
-            _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(bossV3), int.MaxValue, "Boss");
-            _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0, int.MaxValue, "Boss");
+            //_taskManager.Enqueue(() => Svc.Log.Info($"PathfindandMove: {bossV3}"));
+            _taskManager.Enqueue(() => BossMoveCheck(bossV3), "Boss");
+            // _taskManager.Enqueue(() => Svc.Log.Info($"dont pathfindandmove getting bossobj"));
             if (AutoDuty.Plugin.BossObject == null)
                 _taskManager.Enqueue(() => (AutoDuty.Plugin.BossObject = ObjectHelper.GetBossObject()) != null, "Boss");
-
+            //_taskManager.Enqueue(() => Svc.Log.Info($"donegetting boss obj checking for module"));
             //check if our Boss has a Module
             _taskManager.Enqueue(() =>
             {
@@ -302,8 +310,10 @@ namespace AutoDuty.Managers
                         numForbiddenZonesToIgnore++;
                 }
             });
+            //_taskManager.Enqueue(() => Svc.Log.Info($"done checking for module setting action"));
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? ""} : VBM Module: {hasModule}");
             //switch our class type
+            //_taskManager.Enqueue(() => Svc.Log.Info($"done setting action setting folowobj"));
             _taskManager.Enqueue(() =>
             {
                 if (hasModule)
@@ -311,7 +321,23 @@ namespace AutoDuty.Managers
                     followTargetObject = AutoDuty.Plugin.BossObject;
                     return;
                 }
-                followTargetObject = GetTrustMeleeDpsMemberObject() ? GetTrustRangedDpsMemberObject() : GetTrustMeleeDpsMemberObject();
+                switch (Player.Object.ClassJob.GameData?.Role)
+                {
+                    //tank
+                    case 1:
+                        followTargetObject = GetTrustMeleeDpsMemberObject() ?? GetTrustRangedDpsMemberObject();
+                        break;
+                    //melee
+                    case 2:
+                        followTargetObject = GetTrustMeleeDpsMemberObject() ?? GetTrustTankMemberObject();
+                        break;
+                    //ranged or healer
+                    case 3 or 4:
+                        followTargetObject = GetTrustRangedDpsMemberObject() ?? GetTrustMeleeDpsMemberObject();
+                        break;
+                }
+                
+                //Svc.Log.Info($"FT:{followTargetObject?.Name.TextValue ?? "null"}");
                 if (followTargetObject != null)
                 {
                     SetFollowTarget(followTargetObject);
@@ -319,18 +345,26 @@ namespace AutoDuty.Managers
                     SetFollowStatus(true);
                 }
             }, "Boss");
+            //_taskManager.Enqueue(() => Svc.Log.Info($"done setting followobj: {followTargetObject?.Name.TextValue ?? "null"} bosshcekc"));
             _taskManager.Enqueue(() => BossCheck(hasModule, bossV3, numForbiddenZonesToIgnore), int.MaxValue, "Boss");
+            //_taskManager.Enqueue(() => Svc.Log.Info($"done boss check setting stopforcombat"));
             _taskManager.Enqueue(() => AutoDuty.Plugin.StopForCombat = true, "Boss");
+            //_taskManager.Enqueue(() => Svc.Log.Info($"done stopforcombat settingfollowstatus"));
             _taskManager.Enqueue(() => SetFollowStatus(false), "Boss");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.BossObject = null, "Boss");
+            //_taskManager.Enqueue(() => Svc.Log.Info($"done settiing follow status setting bossobject null"));
+            _taskManager.Enqueue(() => { AutoDuty.Plugin.BossObject = null; }, "Boss");
+            //_taskManager.Enqueue(() => Svc.Log.Info($"done bossobject looting trasure"));
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
                 _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null);
                 _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(treasureCofferObject, 0.25f, 1f));
                 _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilNotTargetable(treasureCofferObject));
             }
-            _taskManager.Enqueue(() => Svc.Log.Info("Done Boss Action"));
+           // _taskManager.Enqueue(() => Svc.Log.Info($"done looting treasure log"));
+            //_taskManager.Enqueue(() => Svc.Log.Info("Done Boss Action"));
+           // _taskManager.Enqueue(() => Svc.Log.Info($"done log setting action"));
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+            //_taskManager.Enqueue(() => Svc.Log.Info($"done setting action"));
         }
 
         private void MoveTo(Vector3 position, float tollerance)

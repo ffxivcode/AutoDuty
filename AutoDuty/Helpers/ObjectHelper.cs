@@ -217,7 +217,7 @@ namespace AutoDuty.Helpers
             {
                 if (gameObject == null || !gameObject.IsTargetable) 
                     return;
-
+                MovementHelper.Face(gameObject.Position);
                 var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
                 TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
             }
@@ -260,5 +260,35 @@ namespace AutoDuty.Helpers
         }
 
         internal static unsafe bool PlayerIsCasting => Player.Character->IsCasting;
+
+        internal static bool PartyValidation()
+        {
+            if (Svc.Party.Count < 4)
+                return false;
+
+            var healer = false;
+            var tank = false;
+            var dpsCount = 0;
+
+            foreach (var item in Svc.Party)
+            {
+                switch (item.ClassJob.GameData?.Role)
+                {
+                    case 1:
+                        tank = true;
+                        break;
+                    case 2:
+                    case 3:
+                        dpsCount++;
+                        break;
+                    case 4:
+                        healer = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return (tank && healer && dpsCount > 1);
+        }
     }
 }

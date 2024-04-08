@@ -48,7 +48,7 @@ namespace AutoDuty.Helpers
 
                 var content = new Content
                 {
-                    Name = contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The") : contentFinderCondition.Name.ToString(),
+                    Name = contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The").Replace("--","-") : contentFinderCondition.Name.ToString().Replace("--","-"),
                     TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
                     ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                     ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
