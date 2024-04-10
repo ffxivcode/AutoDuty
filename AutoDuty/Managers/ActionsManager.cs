@@ -247,7 +247,6 @@ namespace AutoDuty.Managers
         }
         private bool BossMoveCheck(Vector3 bossV3)
         {
-            Svc.Log.Info($"BossMove {bossV3}");
             if (AutoDuty.Plugin.BossObject != null && AutoDuty.Plugin.BossObject.InCombat())
             {
                 MovementHelper.Stop();
