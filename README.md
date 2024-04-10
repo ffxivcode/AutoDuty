@@ -1,6 +1,6 @@
 AutoDuty:
 
-Run's Duty Support or Trust Dungeons for you (Requires vnavmesh, BossMod and MBT)
+Run's Duty Support or Trust Dungeons for you (Requires vnavmesh, BossMod)
 
 Current Paths:
 
