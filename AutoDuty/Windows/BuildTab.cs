@@ -87,7 +87,6 @@ namespace AutoDuty.Windows
                                 _input = "Yes";
                                 break;
                             case "MoveToObject":
-                            case "MoveToInteract":
                             case "Interactable":
                                 _input = Plugin.ClosestInteractableEventObject?.Name.TextValue ?? "";
                                 break;

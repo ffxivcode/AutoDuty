@@ -30,7 +30,7 @@ namespace AutoDuty.Windows
 
             if (Plugin.InDungeon && Plugin.CurrentTerritoryContent != null)
             {
-                var progress = VNavmesh_IPCSubscriber.Nav_BuildProgress();
+                var progress = VNavmesh_IPCSubscriber.IsEnabled ? VNavmesh_IPCSubscriber.Nav_BuildProgress() : 0;
                 if (progress >= 0)
                 {
                     ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loading: ");
@@ -41,7 +41,7 @@ namespace AutoDuty.Windows
                 ImGui.Spacing();
                 ImGui.Separator();
                 ImGui.Spacing();
-                using (var d = ImRaii.Disabled(!Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled))
+                using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
                     using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.PathFileExists.GetValueOrDefault(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
                     {

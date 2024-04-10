@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Numerics;
-using ClickLib;
 using Dalamud.Interface;
-using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
 using ECommons;
-using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 
@@ -90,7 +87,6 @@ public class MainWindow : Window, IDisposable
     public unsafe override void Draw()
     {
         DrawPopup();
-
         if (Plugin.Running && Plugin.CurrentTerritoryContent != null)
         {
             ImGui.TextColored(new Vector4(0, 0f, 200f, 1), $"AutoDuty - Running ({Plugin.CurrentTerritoryContent.Name}) {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Times");

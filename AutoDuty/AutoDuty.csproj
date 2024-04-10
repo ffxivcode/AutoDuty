@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors></Authors>
     <Company></Company>
-    <Version>0.0.0.32</Version>
+    <Version>0.0.0.36</Version>
     <Description>AutoDuty</Description>
     <Copyright></Copyright>
     <PackageProjectUrl></PackageProjectUrl>
@@ -28,12 +28,6 @@
    <PropertyGroup Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'">
     <DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
   </PropertyGroup>
-  
-   <ItemGroup>
-     <Compile Remove="Paths\**" />
-     <EmbeddedResource Remove="Paths\**" />
-     <None Remove="Paths\**" />
-   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
@@ -67,4 +61,8 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(ProjectDir)Paths\*&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
+  </Target>
 </Project>

@@ -31,8 +31,9 @@ namespace AutoDuty;
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
 // Add auto GC turn in and Auto desynth
 // make config saving per character
-
-
+// gotta figure out the bug that is locking up the clients
+// gotta figure out why self repair waits 20s before queueing
+// drap drop on build is jacked when theres scrolling
 // WISHLIST for VBM:
 // Generic (Non Module) jousting respects navmesh out of bounds (or dynamically just adds forbiddenzones as Obstacles using Detour) (or at very least, vbm NavigationDecision can use ClosestPointonMesh in it's decision making) (or just spit balling here as no idea if even possible, add Everywhere non tiled as ForbiddenZones /shrug)
 // Generic Jousting (for non forbiddenzone AoE, where it just runs to edge of arena and keeps running (happens very often)) is toggleable (so i can turn it the fuck off)
@@ -47,6 +48,8 @@ public class AutoDuty : IDalamudPlugin
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
     internal DirectoryInfo PathsDirectory;
+    internal FileInfo AssemblyFileInfo;
+    internal DirectoryInfo? AssemblyDirectoryInfo;
     internal Configuration Configuration { get; init; }
     internal WindowSystem WindowSystem = new("AutoDuty");
     internal int Stage = 0;
@@ -82,10 +85,9 @@ public class AutoDuty : IDalamudPlugin
     private bool _dead = false;
     private GameObject? treasureCofferGameObject = null;
     private string _action = "";
+    private float _actionTollerance = 0.25f;
     private List<object> _actionParams = [];
     private List<object> _actionPosition = [];
-    private int _pathfindFailures = 0;
-    private bool _pathfindFailureTriggeredClosestPoint = false;
     private bool _stopped = false;
 
     public AutoDuty(DalamudPluginInterface pluginInterface)
@@ -101,6 +103,8 @@ public class AutoDuty : IDalamudPlugin
 
             _configDirectory = pluginInterface.ConfigDirectory;
             PathsDirectory = new(_configDirectory.FullName + "/paths");
+            AssemblyFileInfo = pluginInterface.AssemblyLocation;
+            AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
 
             if (!_configDirectory.Exists)
                 _configDirectory.Create();
@@ -114,6 +118,7 @@ public class AutoDuty : IDalamudPlugin
             };
 
             ContentHelper.PopulateDuties();
+            FileHelper.OnStart();
             FileHelper.Init();
             _chat = new();
             _overrideMovement = new();
@@ -432,16 +437,17 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //We are started lets call what we need to based off our index
             case 1:
-                if (!ObjectHelper.IsReady || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer > ListBoxPOSText.Count)
+                if (!ObjectHelper.IsReady || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                //Action = $"Step: {(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
+                Action = $"Step: {(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
                 //Backwards Compatibility
                 if (ListBoxPOSText[Indexer].Contains('|'))
                 {
                     _actionPosition = [];
                     _actionParams = [.. ListBoxPOSText[Indexer].Split('|')];
                     _action = (string)_actionParams[0];
+                    _actionTollerance = _action == "Interactable" ? 2f : 0.25f;
                     //Backwards Compatibility
                     if (_actionParams.Count < 3)
                     {
@@ -495,44 +501,20 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //Navigation
             case 2:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer > ListBoxPOSText.Count)
+                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
                 Action = $"Step: {Plugin.ListBoxPOSText[Indexer]}";
                 if (MovementHelper.PathfindTask != null && MovementHelper.PathfindTask.IsCompleted)
                 {
-                    if (MovementHelper.MoveWaypoints.Count == 0 && MovementHelper.PathfindTask.Result.Count > 0)
+                    if (MovementHelper.PathfindTask.Result.Count == 0)
                     {
-                        MovementHelper.MoveWaypoints = MovementHelper.PathfindTask.Result;
-                        _pathfindFailures = 0;
-                    }
-                    else
-                    {
-                        if (_pathfindFailures >= 5 && !_pathfindFailureTriggeredClosestPoint)
-                        {
-                            //we failed 5 times trying to find a path, lets find our closest mesh point and move there
-                            var pos = VNavmesh_IPCSubscriber.Query_Mesh_NearestPoint(Player.Position, 10, 10);
-                            if (!MovementHelper.Pathfind(Player.Position, pos, false))
-                                return;
-                            _pathfindFailureTriggeredClosestPoint = true;
-                            _pathfindFailures = 0;
-                            return;
-                        }    
-                        else if (_pathfindFailures >= 5 && !_pathfindFailureTriggeredClosestPoint)
-                        {
-                            MainWindow.ShowPopup("", "");
-                            Running = false;
-                            Started = false;
-                            Indexer = 0;
-                            MainListClicked = false;
-
-                            Stage = 0;
-                        }
-                        MovementHelper.PathfindTask = null;
-                        _pathfindFailures++;
-                        Stage = 1;
-                        EzThrottler.Throttle("PathFindFailure");
+                        MainWindow.ShowPopup("Error", "vnavmesh was unable to find a path");
+                        StopAndResetALL();
                         return;
                     }
+
+                    if (MovementHelper.MoveWaypoints.Count == 0 && MovementHelper.PathfindTask.Result.Count > 0)
+                        MovementHelper.MoveWaypoints = MovementHelper.PathfindTask.Result;
 
                     if (MovementHelper.MoveWaypoints.Count > 1 && MovementHelper.MoveWaypoints[^1] == MovementHelper.MoveWaypoints[^2])
                         MovementHelper.MoveWaypoints.RemoveAt(MovementHelper.MoveWaypoints.Count - 1);
@@ -544,6 +526,9 @@ public class AutoDuty : IDalamudPlugin
 
                     return;
                 }
+
+                if (VNavmesh_IPCSubscriber.Path_NumWaypoints() == 1 && _actionTollerance > 0.25f)
+                    VNavmesh_IPCSubscriber.Path_SetTolerance(_actionTollerance);
 
                 if (ObjectHelper.InCombat(Player))
                 {
@@ -559,7 +544,7 @@ public class AutoDuty : IDalamudPlugin
                     return;
                 }
 
-                if (!VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && MovementHelper.MoveWaypoints.Count == 0 && MovementHelper.PathfindTask == null)
+                if ((_actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) <= _actionTollerance) || (!VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && MovementHelper.MoveWaypoints.Count == 0 && MovementHelper.PathfindTask == null))
                 {
                     if (_action.IsNullOrEmpty())
                     {
@@ -574,7 +559,7 @@ public class AutoDuty : IDalamudPlugin
                     }
                     return;
                 }
-                if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
+                if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
                 {
                     BossObject = ObjectHelper.GetBossObject(25);
                     if (BossObject != null)
@@ -602,20 +587,21 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //Action
             case 3:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer > ListBoxPOSText.Count)
+                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
                 if (!_taskManager.IsBusy)
                 {
                     Stage = 1;
                     Indexer++;
+                    return;
                 }
                 break;
             //InCombat
             case 4:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer > ListBoxPOSText.Count)
+                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
                 Action = $"Step: Waiting For Combat";
-                if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss"))
+                if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
                 {
                     BossObject = ObjectHelper.GetBossObject(25);
                     if (BossObject != null)
@@ -660,7 +646,7 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //Paused
             case 5:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer > ListBoxPOSText.Count)
+                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
                 Action = $"Paused";
                 if (VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
@@ -668,14 +654,14 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //OnDeath
             case 6:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer > ListBoxPOSText.Count)
+                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
                 Action = $"Died";
                 //litterally do nothing, until i code auto revive
                 break;
             //OnRevive
             case 7:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer > ListBoxPOSText.Count)
+                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
                 Action = $"Revived";
                 if (!_taskManager.IsBusy && ObjectHelper.IsValid)
@@ -683,7 +669,7 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //TreasureCoffer
             case 8:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer > ListBoxPOSText.Count)
+                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
                 Action = $"Step: Looting Treasure";
                 if (VNavmesh_IPCSubscriber.Path_IsRunning())
@@ -695,7 +681,7 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //ActionInvoke
             case 9:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer > ListBoxPOSText.Count)
+                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
                 if (!_taskManager.IsBusy && !_action.IsNullOrEmpty())
                 {
@@ -705,6 +691,7 @@ public class AutoDuty : IDalamudPlugin
                     _action = "";
                     _actionParams = [];
                     _actionPosition = [];
+                    _actionTollerance = 0.25f;
                 }
                 if (_taskManager.IsBusy)
                 {
@@ -749,9 +736,6 @@ public class AutoDuty : IDalamudPlugin
             _taskManager.Abort();
         if (ExecSkipTalk.IsEnabled)
             ExecSkipTalk.IsEnabled = false;
-        //MainWindow.SizeCondition = ImGuiNET.ImGuiCond.;
-        //MainWindow.Size = new Vector2(425, 375);
-        
     }
 
     public void Dispose()
