@@ -288,6 +288,8 @@ namespace AutoDuty.Managers
                         numForbiddenZonesToIgnore++;
                     if (BossMod_IPCSubscriber.ActiveModuleHasComponent("Positioning"))
                         numForbiddenZonesToIgnore++;
+                    if (BossMod_IPCSubscriber.ActiveModuleHasComponent("RonkanFire"))
+                        numForbiddenZonesToIgnore = 4;
                 }
             }, "Boss");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? ""}", "Boss");
