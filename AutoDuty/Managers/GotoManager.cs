@@ -50,7 +50,7 @@ namespace AutoDuty.Managers
                     _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Exit to Maelstrom Command")) != null, "Goto");
                 else
                     _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Heavy Oaken Door")) != null, "Goto");
-                _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(gameObject?.Position ?? Vector3.Zero, 0.25f, 2f), int.MaxValue, "Goto");
+                _taskManager.Enqueue(() => MovementHelper.Move(gameObject?.Position ?? Vector3.Zero, 0.25f, 2f), int.MaxValue, "Goto");
                 _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), int.MaxValue, "Goto");
                 _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
                 _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
@@ -83,9 +83,9 @@ namespace AutoDuty.Managers
                 foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
                 {
                     if ((v.Index + 1) == innKeepPositions.Length)
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value, 0.25f, 7f), int.MaxValue, "Goto");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Goto");
                     else
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value), int.MaxValue, "Goto");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
                     _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
                 }
                 _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
@@ -102,9 +102,9 @@ namespace AutoDuty.Managers
                 foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
                 {
                     if ((v.Index + 1) == barracksDoorPositions.Length)
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value, 0.25f, 3f), int.MaxValue, "Goto");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Goto");
                     else
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value), int.MaxValue, "Goto");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
                     _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
                 }
                 _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");

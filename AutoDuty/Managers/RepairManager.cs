@@ -119,7 +119,7 @@ namespace AutoDuty.Managers
                         _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Exit to Maelstrom Command")) != null, "Repair");
                     else
                         _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Heavy Oaken Door")) != null, "Repair");
-                    _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(gameObject?.Position ?? Vector3.Zero, 0.25f, 2f), int.MaxValue, "Repair");
+                    _taskManager.Enqueue(() => MovementHelper.Move(gameObject?.Position ?? Vector3.Zero, 0.25f, 2f), int.MaxValue, "Repair");
                     _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), int.MaxValue, "Repair");
                     _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");
                     _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Repair");
@@ -150,9 +150,9 @@ namespace AutoDuty.Managers
                 foreach (var v in vendorPositions.Select((Value, Index) => (Value, Index)))
                 {
                     if ((v.Index + 1) == vendorPositions.Length)
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value, 0.25f, 7f), int.MaxValue, "Repair");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Repair");
                     else
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value), int.MaxValue, "Repair");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Repair");
                     _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), int.MaxValue, "Repair");
                 }
                 _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");
@@ -170,9 +170,9 @@ namespace AutoDuty.Managers
                 foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
                 {
                     if ((v.Index + 1) == innKeepPositions.Length)
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value, 0.25f, 7f), int.MaxValue, "Repair");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Repair");
                     else
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value), int.MaxValue, "Repair");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Repair");
                     _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Repair");
                 }
                 _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Repair");
@@ -189,9 +189,9 @@ namespace AutoDuty.Managers
                 foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
                 {
                     if ((v.Index + 1) == barracksDoorPositions.Length)
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value, 0.25f, 3f), int.MaxValue, "Repair");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Repair");
                     else
-                        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(v.Value), int.MaxValue, "Repair");
+                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Repair");
                     _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Repair");
                 }
                 _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");

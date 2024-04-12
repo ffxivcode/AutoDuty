@@ -116,6 +116,24 @@ namespace AutoDuty.Helpers
             }
         }
 
+        internal static float AoEJobRange
+        {
+            get
+            {
+                float radius = 12;
+                if (!Player.Available) return radius;
+                switch (Svc.Data.GetExcelSheet<ClassJob>()?.GetRow(
+                    Player.Object.ClassJob.Id)?.GetJobRole() ?? JobRole.None)
+                {
+                    case JobRole.Tank:
+                    case JobRole.Melee:
+                        radius = 3;
+                        break;
+                }
+                return radius;
+            }
+        }
+
         internal static JobRole GetJobRole(this ClassJob job)
         {
             var role = (JobRole)job.Role;

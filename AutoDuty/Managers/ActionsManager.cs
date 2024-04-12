@@ -121,7 +121,7 @@ namespace AutoDuty.Managers
             GameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"MoveToObject: {objectName}";
             _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(objectName)) != null, "MoveToObject");
-            _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(gameObject), int.MaxValue, "MoveToObject");
+            _taskManager.Enqueue(() => MovementHelper.Move(gameObject), int.MaxValue, "MoveToObject");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
@@ -166,7 +166,7 @@ namespace AutoDuty.Managers
             if (EzThrottler.Throttle("Interactable", 250))
             {
                 if (ObjectHelper.GetBattleDistanceToPlayer(gameObject) > 2f)
-                    MovementHelper.Move([gameObject.Position], 2f, false);
+                    MovementHelper.Move(gameObject, 0.25f, 2f, false);
                 else if (!VNavmesh_IPCSubscriber.Path_IsRunning())
                     ObjectHelper.InteractWithObject(gameObject);
             }
@@ -249,10 +249,10 @@ namespace AutoDuty.Managers
         {
             if (AutoDuty.Plugin.BossObject != null && AutoDuty.Plugin.BossObject.InCombat())
             {
-                MovementHelper.Stop();
+                VNavmesh_IPCSubscriber.Path_Stop();
                 return true;
             }
-            return MovementHelper.PathfindAndMove(bossV3);
+            return MovementHelper.Move(bossV3);
         }
             
         GameObject FollowTarget;
@@ -330,7 +330,7 @@ namespace AutoDuty.Managers
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
                 _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null, "Boss");
-                _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(treasureCofferObject, 0.25f, 1f), int.MaxValue, "Boss");
+                _taskManager.Enqueue(() => MovementHelper.Move(treasureCofferObject, 0.25f, 1f), int.MaxValue, "Boss");
                 _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilNotTargetable(treasureCofferObject), "Boss");
             }
             _taskManager.DelayNext("Boss", 500);
@@ -413,13 +413,13 @@ namespace AutoDuty.Managers
                             break;
                         case "2":
                             _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(GlobalStringStore + " Coral Formation")) != null, "DutySpecificCode");
-                            _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(gameObject, 0.25f, 2.5f), "DutySpecificCode");
+                            _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
                             _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "DutySpecificCode");
                             _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "DutySpecificCode");
                             break;
                         case "3":
                             _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Inconspicuous Switch")) != null, "DutySpecificCode");
-                            _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(gameObject, 0.25f, 2.5f), "DutySpecificCode");
+                            _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
                             _taskManager.DelayNext("DutySpecificCode", 1000);
                             _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
                             break;

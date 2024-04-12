@@ -46,7 +46,7 @@ namespace AutoDuty.Managers
             if (aub != null)
                 return true;
 
-            if ((gameObject = ObjectHelper.GetObjectByPartialName("Squadron Sergeant")) == null || !MovementHelper.PathfindAndMove(gameObject, 0.25f, 6f))
+            if ((gameObject = ObjectHelper.GetObjectByPartialName("Squadron Sergeant")) == null || !MovementHelper.Move(gameObject, 0.25f, 6f))
                 return false;
 
             if (SeenAddon && AddonHelper.ClickSelectString(0))

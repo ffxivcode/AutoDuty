@@ -6,21 +6,11 @@ using AutoDuty.External;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using System.Collections.Generic;
-using ECommons.Throttlers;
-using System.Threading.Tasks;
-using ECommons;
-using System.Threading;
 
 namespace AutoDuty.Helpers
 {
     internal static class MovementHelper
     {
-        internal static List<Vector3> MoveWaypoints = [];
-        internal static Task<List<Vector3>>? PathfindTask = null;
-        internal static CancellationTokenSource CancellationTokenSource = new();
-        internal static CancellationToken CancellationToken = CancellationTokenSource.Token;
-
         internal static void Face(Vector3 pos)
         {
             AutoDuty.Plugin.OverrideCamera.Enabled = true;
@@ -29,77 +19,17 @@ namespace AutoDuty.Helpers
             AutoDuty.Plugin.OverrideCamera.DesiredAltitude = -30.Degrees();
         }
 
-        internal static void ResetPathfindTask()
-        {
-            PathfindTask?.Dispose();
-            PathfindTask = null;
-            CancellationTokenSource = new();
-            CancellationToken = CancellationTokenSource.Token;
-        }
-
-        internal static void Stop()
-        {
-            VNavmesh_IPCSubscriber.Path_Stop();
-            MoveWaypoints = [];
-            if (PathfindTask != null && !PathfindTask.IsCanceled)
-            {
-                if (!PathfindTask.IsCompleted && !CancellationToken.IsCancellationRequested)
-                    CancellationTokenSource.Cancel();
-                else if (PathfindTask.IsCompleted)
-                    ResetPathfindTask();
-            }
-            else
-                ResetPathfindTask();
-        }
-
-        internal static bool Pathfind(Vector3 to, Vector3 from, bool fly = false)
-        {
-            if (!(PathfindTask?.IsCompleted ?? true))
-                return false;
-
-            if (PathfindTask?.IsCanceled ?? false)
-            {
-                ResetPathfindTask();
-                return false;
-            }
-
-            PathfindTask = Task.Run(() => VNavmesh_IPCSubscriber.Nav_PathfindCancelable(to, from, fly, CancellationToken), CancellationToken);
-            return true;
-        }
-
-        internal static bool Move(List<Vector3> moveWaypoints, float tollerance = 0.25f, bool fly = false)
-        {
-            if (moveWaypoints.Count == 0 || VNavmesh_IPCSubscriber.Path_IsRunning() || CancellationToken.IsCancellationRequested)
-                return false;
-
-            VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
-            VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
-            VNavmesh_IPCSubscriber.Path_SetTolerance(tollerance);
-            VNavmesh_IPCSubscriber.Path_MoveTo(moveWaypoints, fly);
-
-            return true;
-        }
-
-        internal static bool PathfindAndMove(GameObject? gameObject, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
+        internal static bool Move(GameObject? gameObject, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
         {
             if (gameObject == null)
                 return true;
 
-            return PathfindAndMove(gameObject.Position, tollerance, lastPointTollerance, fly);
+            return Move(gameObject.Position, tollerance, lastPointTollerance, fly);
         }
-        
-        internal unsafe static bool PathfindAndMove(Vector3 position, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
-        { 
-            if (!EzThrottler.Throttle("Move", 250))
-                return false;
 
-            if (PathfindTask?.IsCanceled ?? false)
-            {
-                ResetPathfindTask();
-                return false;
-            }
-
-            if (!ObjectHelper.IsReady || !VNavmesh_IPCSubscriber.Nav_IsReady())
+        internal unsafe static bool Move(Vector3 position, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
+        {
+            if (!ObjectHelper.IsValid)
                 return false;
 
             if (position == Vector3.Zero || Vector3.Distance(Player.Object.Position, position) <= lastPointTollerance)
@@ -107,12 +37,10 @@ namespace AutoDuty.Helpers
                 if (position != Vector3.Zero)
                 {
                     Face(position);
-                    Stop();
+                    VNavmesh_IPCSubscriber.Path_Stop();
                 }
-                MoveWaypoints = [];
                 return true;
             }
-
             if (AgentMap.Instance()->IsPlayerMoving == 1 && !Player.Object.InCombat() && Vector3.Distance(Player.Object.Position, position) >= 10)
             {
                 //sprint
@@ -123,30 +51,17 @@ namespace AutoDuty.Helpers
                 if (ActionManager.Instance()->GetActionStatus(ActionType.Action, 7557) == 0 && ActionManager.Instance()->QueuedActionId != 7557 && !ObjectHelper.PlayerIsCasting && !Player.Object.StatusList.Any(x => x.StatusId == 1199))
                     ActionManager.Instance()->UseAction(ActionType.Action, 7557);
             }
-            if (MoveWaypoints.Count > VNavmesh_IPCSubscriber.Path_NumWaypoints())
-                MoveWaypoints.TryDequeue(out _);
-
             if (VNavmesh_IPCSubscriber.Path_NumWaypoints() == 1)
                 VNavmesh_IPCSubscriber.Path_SetTolerance(lastPointTollerance);
 
-            if (!VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && MoveWaypoints.Count == 0 && PathfindTask == null)
+            if (!ObjectHelper.IsReady || !VNavmesh_IPCSubscriber.Nav_IsReady() || VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() || VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
+                return false;
+
+            if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() || VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
             {
                 VNavmesh_IPCSubscriber.Path_SetTolerance(tollerance);
-                Pathfind(Player.Object.Position, position, false);
-                return false;
+                VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(position, fly);
             }
-
-            if (!VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning() && PathfindTask != null && PathfindTask.IsCompleted && !CancellationToken.IsCancellationRequested)
-            {
-                MoveWaypoints = PathfindTask.Result;
-                PathfindTask.Dispose();
-                PathfindTask = null;
-                VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
-                VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
-                VNavmesh_IPCSubscriber.Path_MoveTo(MoveWaypoints, fly);
-                return false;
-            }
-
             return false;
         }
     }

@@ -244,7 +244,7 @@ public class AutoDuty : IDalamudPlugin
         if (Stage != 3 && value && Started && (flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas51))
         {
             Stage = 1;
-            MovementHelper.Stop();
+            VNavmesh_IPCSubscriber.Path_Stop();
         }
     }
 
@@ -332,7 +332,7 @@ public class AutoDuty : IDalamudPlugin
     {
         _dead = true;
         if (VNavmesh_IPCSubscriber.Path_IsRunning())
-            MovementHelper.Stop();
+            VNavmesh_IPCSubscriber.Path_Stop();
         if (_taskManager.IsBusy)
             _taskManager.Abort();
         Stage = 6;
@@ -349,7 +349,7 @@ public class AutoDuty : IDalamudPlugin
         var oldindex = Indexer;
         Indexer = FindWaypoint();
         //Svc.Log.Info($"We Revived: we died at Index: {oldindex} and now are moving to index: {Indexer} which should be right after previous boss, and the shortcut is {gameObject.Name} at {ObjectHelper.GetDistanceToPlayer(gameObject)} Distance, moving there.");
-        _taskManager.Enqueue(() => MovementHelper.PathfindAndMove(gameObject, 0.25f, 2));
+        _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2));
         _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno"), int.MaxValue);
         _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
         _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500);
@@ -408,9 +408,6 @@ public class AutoDuty : IDalamudPlugin
     }
     public void Framework_Update(IFramework framework)
     {
-        if (!EzThrottler.Check("FrameworkThrottler"))
-            return;
-
         if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
 
@@ -473,10 +470,7 @@ public class AutoDuty : IDalamudPlugin
             //We are started lets call what we need to based off our index
             case 1:
                 if (!ObjectHelper.IsReady || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
 
                 Action = $"Step: {(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
                 //Backwards Compatibility
@@ -486,6 +480,12 @@ public class AutoDuty : IDalamudPlugin
                     _actionParams = [.. ListBoxPOSText[Indexer].Split('|')];
                     _action = (string)_actionParams[0];
                     _actionTollerance = _action == "Interactable" ? 2f : 0.25f;
+
+                    if (!VNavmesh_IPCSubscriber.Path_GetMovementAllowed())
+                        VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
+                    if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
+                        VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
+
                     //Backwards Compatibility
                     if (_actionParams.Count < 3)
                     {
@@ -498,22 +498,29 @@ public class AutoDuty : IDalamudPlugin
                             return;
                         }
                     }
+
                     if (!((string)_actionParams[1]).All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
                     {
                         MainWindow.ShowPopup("Error", $"Error in line {Indexer} of path file\nFormat: Action|123, 0, 321|ActionParams(if needed)");
                         StopAndResetALL();
                         return;
                     }
+
                     var destinationVector = new Vector3(float.Parse(((string)_actionParams[1]).Split(',')[0]), float.Parse(((string)_actionParams[1]).Split(',')[1]), float.Parse(((string)_actionParams[1]).Split(',')[2]));;
                     _actionPosition.Add(destinationVector);
                     _actionParams.RemoveRange(0, 2);
+
                     if (destinationVector == Vector3.Zero)
                     {
                         Stage = 9;
                         return;
                     }
-                    if (MovementHelper.Pathfind(Player.Position, destinationVector, false))
+
+                    if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+                    {
+                        VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
                         Stage = 2;
+                    }
                 }
                 //also backwards compat
                 else
@@ -528,87 +535,49 @@ public class AutoDuty : IDalamudPlugin
                         Stage = 0;
                         return;
                     }
+
                     var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
-                    if (!VNavmesh_IPCSubscriber.Path_GetMovementAllowed())
-                        VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
-                    if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
-                        VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
-                    if (MovementHelper.Pathfind(Player.Position, destinationVector, false))
+
+                    if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+                    {
+                        VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
                         Stage = 2;
+                    }
                 }
                 break;
             //Navigation
             case 2:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
+
                 Action = $"Step: {Plugin.ListBoxPOSText[Indexer]}";
-                if (MovementHelper.PathfindTask != null && MovementHelper.PathfindTask.IsCompleted)
-                {
-                    if (MovementHelper.PathfindTask.IsCanceled)
-                    {
-                        MovementHelper.ResetPathfindTask();
-                        return;
-                    }
-                    if (MovementHelper.PathfindTask.Result.Count == 0)
-                    {
-                        MainWindow.ShowPopup("Error", "vnavmesh was unable to find a path");
-                        StopAndResetALL();
-                        return;
-                    }
-
-                    if (MovementHelper.MoveWaypoints.Count == 0 && MovementHelper.PathfindTask.Result.Count > 0)
-                        MovementHelper.MoveWaypoints = MovementHelper.PathfindTask.Result;
-
-                    if (MovementHelper.MoveWaypoints.Count > 1 && MovementHelper.MoveWaypoints[^1] == MovementHelper.MoveWaypoints[^2])
-                        MovementHelper.MoveWaypoints.RemoveAt(MovementHelper.MoveWaypoints.Count - 1);
-
-                    if (MovementHelper.Move(MovementHelper.MoveWaypoints))
-                        MovementHelper.ResetPathfindTask();
-
-                    return;
-                }
-
-                if (VNavmesh_IPCSubscriber.Path_NumWaypoints() == 1 && _actionTollerance > 0.25f)
-                    VNavmesh_IPCSubscriber.Path_SetTolerance(_actionTollerance);
-
                 if (ObjectHelper.InCombat(Player))
                 {
-                    MovementHelper.Stop();
+                    VNavmesh_IPCSubscriber.Path_Stop();
                     _chat.ExecuteCommand($"/rotation auto");
                     Stage = 4;
-                    return;
+                    break;
                 }
 
-                if (VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && MovementHelper.MoveWaypoints.Count > VNavmesh_IPCSubscriber.Path_NumWaypoints() && MovementHelper.MoveWaypoints.Count != 1)
-                {
-                    MovementHelper.MoveWaypoints.TryDequeue(out _);
-                    return;
-                }
-
-                if ((_actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) <= _actionTollerance) || (!VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && MovementHelper.MoveWaypoints.Count == 0 && MovementHelper.PathfindTask == null))
+                if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
                 {
                     if (_action.IsNullOrEmpty())
                     {
-                        MovementHelper.MoveWaypoints = [];
                         Stage = 1;
                         Indexer++;
                     }
                     else
-                    {
-                        MovementHelper.MoveWaypoints = [];
                         Stage = 9;
-                    }
+
                     return;
                 }
+
                 if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
                 {
                     BossObject = ObjectHelper.GetBossObject(25);
                     if (BossObject != null)
                     {
-                        MovementHelper.Stop();
+                        VNavmesh_IPCSubscriber.Path_Stop();
                         _actionParams = _actionPosition;
                         Stage = 9;
                         return;
@@ -619,7 +588,7 @@ public class AutoDuty : IDalamudPlugin
                     treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) <= Plugin.Configuration.TreasureCofferScanDistance);
                     if (treasureCofferGameObject == null || !treasureCofferGameObject.IsTargetable)
                         return;
-                    MovementHelper.Stop();
+                    VNavmesh_IPCSubscriber.Path_Stop();
                     Stage = 8;
                     return;
                 }
@@ -627,10 +596,8 @@ public class AutoDuty : IDalamudPlugin
             //Action
             case 3:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
+
                 if (!_taskManager.IsBusy)
                 {
                     Stage = 1;
@@ -641,17 +608,15 @@ public class AutoDuty : IDalamudPlugin
             //InCombat
             case 4:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
+
                 Action = $"Step: Waiting For Combat";
                 if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
                 {
                     BossObject = ObjectHelper.GetBossObject(25);
                     if (BossObject != null)
                     {
-                        MovementHelper.Stop();
+                        VNavmesh_IPCSubscriber.Path_Stop();
                         _actionParams = _actionPosition;
                         Stage = 9;
                         return;
@@ -660,28 +625,6 @@ public class AutoDuty : IDalamudPlugin
 
                 if (ObjectHelper.InCombat(Player))
                 {
-                    if (Svc.Targets.Target != null && !Svc.Targets.Target.IsDead && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0)
-                    {
-                        if (!VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && MovementHelper.PathfindTask?.Status != TaskStatus.Running && !MovementHelper.CancellationToken.IsCancellationRequested)
-                        {
-                            if (MovementHelper.MoveWaypoints.Count == 0 && MovementHelper.PathfindTask?.Result.Count > 0)
-                                MovementHelper.Move(MovementHelper.PathfindTask.Result);
-                            else
-                                MovementHelper.Pathfind(Player.Position, Svc.Targets.Target.Position, false);
-
-                            EzThrottler.Throttle("FrameworkThrottler", 25);
-                            return;
-                        }
-                    }
-                    else if (VNavmesh_IPCSubscriber.Path_IsRunning() && !VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && MovementHelper.PathfindTask?.Status != TaskStatus.Running && !MovementHelper.CancellationToken.IsCancellationRequested)
-                        MovementHelper.Stop();
-
-                    /*if (Svc.Targets.Target != null && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0 && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
-                    {
-                        VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
-                        VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
-                    }*/
-
                     if (Svc.Targets.Target == null && EzThrottler.Throttle("TargetCheck"))
                     {
                         //find and target closest attackable npc, if we are not targeting
@@ -690,41 +633,50 @@ public class AutoDuty : IDalamudPlugin
                         if (gos != null)
                             Svc.Targets.Target = gos;
                     }
+
+                    if (Svc.Targets.Target != null && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0 && (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange || ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange))
+                    {
+                        if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2)
+                            VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.AoEJobRange);
+                        else
+                            VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
+                        if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+                            VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
+                    }
+                    else
+                    {
+                        VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
+                        VNavmesh_IPCSubscriber.Path_Stop();
+                    }
                 }
-                else if (!ObjectHelper.InCombat(Player) && !VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && MovementHelper.PathfindTask?.Status != TaskStatus.Running && !MovementHelper.CancellationToken.IsCancellationRequested)
+                else if (!ObjectHelper.InCombat(Player) && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
                 {
-                    MovementHelper.Stop();
+                    VNavmesh_IPCSubscriber.Path_Stop();
                     Stage = 1;
                 }
                 break;
             //Paused
             case 5:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
+
                 Action = $"Paused";
                 if (VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
-                    MovementHelper.Stop();
+                    VNavmesh_IPCSubscriber.Path_Stop();
                 break;
             //OnDeath
             case 6:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
+
                 Action = $"Died";
                 //litterally do nothing, until i code auto revive
                 break;
             //OnRevive
             case 7:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
+
                 Action = $"Revived";
                 if (!_taskManager.IsBusy && ObjectHelper.IsValid)
                     Stage = 1;
@@ -732,32 +684,44 @@ public class AutoDuty : IDalamudPlugin
             //TreasureCoffer
             case 8:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
+
                 Action = $"Step: Looting Treasure";
                 if (ObjectHelper.InCombat(Player))
                 {
-                    MovementHelper.Stop();
+                    VNavmesh_IPCSubscriber.Path_Stop();
                     _chat.ExecuteCommand($"/rotation auto");
                     Stage = 4;
                     return;
                 }
-                if (!MovementHelper.PathfindAndMove(treasureCofferGameObject, 0.25f, 2f, false))
-                    return;
-                if (EzThrottler.Throttle("TreasureCofferInteract", 250))
-                    ObjectHelper.InteractWithObject(treasureCofferGameObject);
+
                 if (treasureCofferGameObject == null || !treasureCofferGameObject.IsTargetable)
+                {
                     Stage = 1;
+                    return;
+                }
+
+                if (ObjectHelper.GetDistanceToPlayer(treasureCofferGameObject) > 2 && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
+                {
+                    VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
+                    VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(treasureCofferGameObject.Position, false);
+                }
+
+                if (ObjectHelper.GetDistanceToPlayer(treasureCofferGameObject) <= 2)
+                {
+                    if (VNavmesh_IPCSubscriber.Path_IsRunning())
+                        VNavmesh_IPCSubscriber.Path_Stop();
+
+                    if (EzThrottler.Throttle("TreasureCofferInteract", 250))
+                        ObjectHelper.InteractWithObject(treasureCofferGameObject);
+                }
+                
                 break;
             //ActionInvoke
             case 9:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
+
                 if (!_taskManager.IsBusy && !_action.IsNullOrEmpty())
                 {
                     if (_action.Equals("Boss"))
@@ -769,17 +733,14 @@ public class AutoDuty : IDalamudPlugin
                     _actionTollerance = 0.25f;
                 }
                 if (_taskManager.IsBusy)
-                {
                     Stage = 3;
-                }
+
                 break;
             //Looping
             case 99:
                 if (!ObjectHelper.IsReady)
-                {
-                    EzThrottler.Throttle("FrameworkThrottler", 25);
                     return;
-                }
+
                 if (Plugin.Repairing)
                     Action = $"Step: Repairing";
                 if (Plugin.Goto)
@@ -804,7 +765,7 @@ public class AutoDuty : IDalamudPlugin
         CurrentLoop = 0;
         Goto = false;
         Repairing = false;
-        MovementHelper.Stop();
+        VNavmesh_IPCSubscriber.Path_Stop();
         _overrideMovement.DesiredPosition = null;
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
