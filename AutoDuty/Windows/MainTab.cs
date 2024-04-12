@@ -37,13 +37,13 @@ namespace AutoDuty.Windows
                     ImGui.ProgressBar(progress, new(200, 0));
                 }
                 else
-                    ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loaded Path: {(FileHelper.PathFileExists.GetValueOrDefault(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
+                    ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loaded Path: {(FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out _) ? "Loaded" : "None")}");
                 ImGui.Spacing();
                 ImGui.Separator();
                 ImGui.Spacing();
                 using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
-                    using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.PathFileExists.GetValueOrDefault(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
+                    using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out _) || Plugin.Stage > 0))
                     {
                         if (ImGui.Button("Start"))
                         {
@@ -118,7 +118,7 @@ namespace AutoDuty.Windows
                             _currentIndex = 0;
                             ImGui.SetScrollY(_currentIndex);
                         }
-                        if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count <1 && !FileHelper.PathFileExists.GetValueOrDefault(Plugin.CurrentTerritoryContent.TerritoryType))
+                        if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count <1 && !FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out _))
                             ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryContent.TerritoryType).Split('|')[1].Trim()}\n({Plugin.CurrentTerritoryContent.TerritoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory.FullName.Replace('\\','/')}\nPlease download from:\n{_pathsURL}\nor Create in the Build Tab");
                     }
                     else
@@ -149,7 +149,7 @@ namespace AutoDuty.Windows
                                 MainWindow.ShowPopup("Error", "You must be in a group of 4 to run Regular Duties");
                             else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !ObjectHelper.PartyValidation())
                                 MainWindow.ShowPopup("Error", "You must have the correcty party makeup to run Regular Duties");
-                            else if (FileHelper.PathFileExists.GetValueOrDefault(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
+                            else if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0, out _))
                                 Plugin.Run();
                             else
                                 MainWindow.ShowPopup("Error", "No path was found");
@@ -188,6 +188,28 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.LoopTimes = _loopTimes;
                             Plugin.Configuration.Save();
                         }
+                    }
+                    ImGui.SameLine(0, 5);
+                    if (ImGui.Button("Goto"))
+                    {
+                        ImGui.OpenPopup("GotoPopup");
+                    }
+
+                    if (ImGui.BeginPopup("GotoPopup"))
+                    {
+                        if (ImGui.Selectable("Baracks"))
+                        {
+                            Plugin.GotoAction("Baracks");
+                        }
+                        if (ImGui.Selectable("Inn"))
+                        {
+                            Plugin.GotoAction("Inn");
+                        }
+                        if (ImGui.Selectable("Repair"))
+                        {
+                            Plugin.GotoAction("Repair");
+                        }
+                        ImGui.EndPopup();
                     }
                     if (ImGui.Checkbox("Support", ref _support))
                     {
@@ -280,9 +302,9 @@ namespace AutoDuty.Windows
                         {
                             foreach (var item in dictionary.Select((Value, Index) => (Value, Index)))
                             {
-                                using (var d2 = ImRaii.Disabled(item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.PathFileExists.GetValueOrDefault(item.Value.Value.TerritoryType)))
+                                using (var d2 = ImRaii.Disabled(item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.DictionaryPathFiles.TryGetValue(item.Value.Value.TerritoryType, out _)))
                                 {
-                                    if (Plugin.Configuration.HideUnavailableDuties && (item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.PathFileExists.GetValueOrDefault(item.Value.Value.TerritoryType)))
+                                    if (Plugin.Configuration.HideUnavailableDuties && (item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.DictionaryPathFiles.TryGetValue(item.Value.Value.TerritoryType, out _)))
                                         continue;
                                     if (ImGui.Selectable($"({item.Value.Value.TerritoryType}) {item.Value.Value.Name}", _dutyListSelected == item.Index))
                                     {

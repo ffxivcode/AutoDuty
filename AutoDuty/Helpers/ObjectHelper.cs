@@ -102,7 +102,7 @@ namespace AutoDuty.Helpers
         {
             get
             {
-                float radius = 15;
+                float radius = 25;
                 if (!Player.Available) return radius;
                 switch (Svc.Data.GetExcelSheet<ClassJob>()?.GetRow(
                     Player.Object.ClassJob.Id)?.GetJobRole() ?? JobRole.None)

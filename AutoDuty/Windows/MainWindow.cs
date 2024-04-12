@@ -117,7 +117,7 @@ public class MainWindow : Window, IDisposable
             return;
         }
 
-        ImGuiEx.EzTabBar("MainTab", false, openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false));
+        ImGuiEx.EzTabBar("MainTab", false, openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false));
         openTabName = "";
     }
 }

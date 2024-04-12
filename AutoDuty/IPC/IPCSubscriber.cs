@@ -38,7 +38,7 @@ namespace AutoDuty.IPC
         [EzIPC("vnavmesh.Nav.Reload", applyPrefix: false)] internal static readonly Action Nav_Reload;
         [EzIPC("vnavmesh.Nav.Rebuild", applyPrefix: false)] internal static readonly Action Nav_Rebuild;
         [EzIPC("vnavmesh.Nav.Pathfind", applyPrefix: false)] internal static readonly Func<Vector3, Vector3, bool, Task<List<Vector3>>> Nav_Pathfind;
-        [EzIPC("vnavmesh.Nav.PathfindCancelable", applyPrefix: false)] internal static readonly Func<Vector3, Vector3, bool, CancellationToken, List<Vector3>> Nav_PathfindCancelable;
+        [EzIPC("vnavmesh.Nav.PathfindCancelable", applyPrefix: false)] internal static readonly Func<Vector3, Vector3, bool, CancellationToken, Task<List<Vector3>>> Nav_PathfindCancelable;
         [EzIPC("vnavmesh.Nav.PathfindCancelAll", applyPrefix: false)] internal static readonly Action Nav_PathfindCancelAll;
         [EzIPC("vnavmesh.Nav.PathfindInProgress", applyPrefix: false)] internal static readonly Func<bool> Nav_PathfindInProgress;
         [EzIPC("vnavmesh.Nav.PathfindNumQueued", applyPrefix: false)] internal static readonly Func<int> Nav_PathfindNumQueued;

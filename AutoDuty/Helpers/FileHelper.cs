@@ -10,7 +10,7 @@ namespace AutoDuty.Helpers
 {
     internal static class FileHelper
     {
-        internal static Dictionary<uint, bool> PathFileExists = [];
+        internal static Dictionary<uint, string> DictionaryPathFiles = [];
         internal static readonly FileSystemWatcher FileSystemWatcher = new(Plugin.PathsDirectory.FullName)
 
         {
@@ -50,7 +50,7 @@ namespace AutoDuty.Helpers
                 .Where(s => s.Name.StartsWith('('));
                 foreach (var file in files)
                 {
-                    if (!File.Exists($"{Plugin.PathsDirectory.FullName}/{file.Name}") || !BitConverter.ToString(CalculateMD5(file.FullName)).Replace("-", "").Equals(BitConverter.ToString(CalculateMD5($"{Plugin.PathsDirectory.FullName}/{file.Name}")).Replace("-", ""), StringComparison.InvariantCultureIgnoreCase))
+                    if (!Plugin.Configuration.DoNotUpdatePathFiles.Contains(file.Name) && (!File.Exists($"{Plugin.PathsDirectory.FullName}/{file.Name}") || !BitConverter.ToString(CalculateMD5(file.FullName)).Replace("-", "").Equals(BitConverter.ToString(CalculateMD5($"{Plugin.PathsDirectory.FullName}/{file.Name}")).Replace("-", ""), StringComparison.InvariantCultureIgnoreCase)))
                     {
                         file.MoveTo($"{Plugin.PathsDirectory.FullName}/{file.Name}", true);
                         Svc.Log.Info($"Moved: {file.Name}");
@@ -78,10 +78,11 @@ namespace AutoDuty.Helpers
 
         private static void Update() 
         {
-            PathFileExists = [];
+            DictionaryPathFiles = [];
             foreach (var t in ContentHelper.DictionaryContent)
             {
-                PathFileExists.TryAdd(t.Value.TerritoryType, File.Exists($"{Plugin.PathsDirectory.FullName}/({t.Value.TerritoryType}) {t.Value.Name}.json"));
+                if (File.Exists($"{Plugin.PathsDirectory.FullName}/({t.Value.TerritoryType}) {t.Value.Name}.json"))
+                    DictionaryPathFiles.TryAdd(t.Value.TerritoryType, $"({t.Value.TerritoryType}) {t.Value.Name}.json");
             }
         }
 

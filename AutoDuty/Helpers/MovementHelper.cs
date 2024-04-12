@@ -7,18 +7,19 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using System.Collections.Generic;
-using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using System.Threading.Tasks;
 using ECommons;
+using System.Threading;
 
 namespace AutoDuty.Helpers
 {
     internal static class MovementHelper
     {
         internal static List<Vector3> MoveWaypoints = [];
-
         internal static Task<List<Vector3>>? PathfindTask = null;
+        internal static CancellationTokenSource CancellationTokenSource = new();
+        internal static CancellationToken CancellationToken = CancellationTokenSource.Token;
 
         internal static void Face(Vector3 pos)
         {
@@ -28,31 +29,47 @@ namespace AutoDuty.Helpers
             AutoDuty.Plugin.OverrideCamera.DesiredAltitude = -30.Degrees();
         }
 
+        internal static void ResetPathfindTask()
+        {
+            PathfindTask?.Dispose();
+            PathfindTask = null;
+            CancellationTokenSource = new();
+            CancellationToken = CancellationTokenSource.Token;
+        }
+
         internal static void Stop()
         {
             VNavmesh_IPCSubscriber.Path_Stop();
             MoveWaypoints = [];
-            if (PathfindTask != null)
+            if (PathfindTask != null && !PathfindTask.IsCanceled)
             {
-                if (!PathfindTask.IsCompleted)
-                    PathfindTask.Wait();
-                PathfindTask.Dispose();
-                PathfindTask = null;
+                if (!PathfindTask.IsCompleted && !CancellationToken.IsCancellationRequested)
+                    CancellationTokenSource.Cancel();
+                else if (PathfindTask.IsCompleted)
+                    ResetPathfindTask();
             }
+            else
+                ResetPathfindTask();
         }
 
         internal static bool Pathfind(Vector3 to, Vector3 from, bool fly = false)
         {
-            if (PathfindTask != null || (!PathfindTask?.IsCompleted ?? false))
+            if (!(PathfindTask?.IsCompleted ?? true))
                 return false;
 
-            PathfindTask = Task.Run(() => VNavmesh_IPCSubscriber.Nav_Pathfind(to, from, fly));
+            if (PathfindTask?.IsCanceled ?? false)
+            {
+                ResetPathfindTask();
+                return false;
+            }
+
+            PathfindTask = Task.Run(() => VNavmesh_IPCSubscriber.Nav_PathfindCancelable(to, from, fly, CancellationToken), CancellationToken);
             return true;
         }
 
         internal static bool Move(List<Vector3> moveWaypoints, float tollerance = 0.25f, bool fly = false)
         {
-            if (moveWaypoints.Count == 0 || VNavmesh_IPCSubscriber.Path_IsRunning())
+            if (moveWaypoints.Count == 0 || VNavmesh_IPCSubscriber.Path_IsRunning() || CancellationToken.IsCancellationRequested)
                 return false;
 
             VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
@@ -75,6 +92,12 @@ namespace AutoDuty.Helpers
         { 
             if (!EzThrottler.Throttle("Move", 250))
                 return false;
+
+            if (PathfindTask?.IsCanceled ?? false)
+            {
+                ResetPathfindTask();
+                return false;
+            }
 
             if (!ObjectHelper.IsReady || !VNavmesh_IPCSubscriber.Nav_IsReady())
                 return false;
@@ -113,9 +136,10 @@ namespace AutoDuty.Helpers
                 return false;
             }
 
-            if (!VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning() && PathfindTask != null && PathfindTask.IsCompleted)
+            if (!VNavmesh_IPCSubscriber.Nav_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning() && PathfindTask != null && PathfindTask.IsCompleted && !CancellationToken.IsCancellationRequested)
             {
                 MoveWaypoints = PathfindTask.Result;
+                PathfindTask.Dispose();
                 PathfindTask = null;
                 VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
                 VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);

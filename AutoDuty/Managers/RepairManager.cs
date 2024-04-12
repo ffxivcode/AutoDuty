@@ -70,13 +70,16 @@ namespace AutoDuty.Managers
             }
             return false;
         }
-        public unsafe void Repair()
+
+        bool _returnAfter = true;
+        public unsafe void Repair(bool forceCity = false, bool returnAfter = true)
         {
+            _returnAfter = returnAfter;
             if (AutoDuty.Plugin.Configuration.AutoRepair && LowestEquippedCondition() <= AutoDuty.Plugin.Configuration.AutoRepairPct)
             {
                 AutoDuty.Plugin.Repairing = true;
                 ExecSkipTalk.IsEnabled = true;
-                if (AutoDuty.Plugin.Configuration.AutoRepairCity)
+                if (AutoDuty.Plugin.Configuration.AutoRepairCity || forceCity)
                 {
                     switch(UIState.Instance()->PlayerState.GrandCompany)
                     {
@@ -95,7 +98,7 @@ namespace AutoDuty.Managers
                             break;
                     }
                 }
-                else if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
+                else if (AutoDuty.Plugin.Configuration.AutoRepairSelf && !forceCity)
                     RepairTasks(0, [Vector3.Zero], "", [Vector3.Zero], "", [Vector3.Zero], true);
             }
         }
@@ -162,7 +165,7 @@ namespace AutoDuty.Managers
                 _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Repair");
 
             _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalID((uint)AgentId.Repair)->Hide(), "Repair"); 
-            if (AutoDuty.Plugin.Configuration.AutoRepairReturnToInn)
+            if (AutoDuty.Plugin.Configuration.AutoRepairReturnToInn && _returnAfter)
             {
                 foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
                 {
@@ -181,7 +184,7 @@ namespace AutoDuty.Managers
                 _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Repair");
                 _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
             }
-            else if (AutoDuty.Plugin.Configuration.AutoRepairReturnToBarracks)
+            else if (AutoDuty.Plugin.Configuration.AutoRepairReturnToBarracks && _returnAfter)
             {
                 foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
                 {

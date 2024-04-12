@@ -3,16 +3,20 @@ using Dalamud.Interface.Utility.Raii;
 using Dalamud.Plugin;
 using ImGuiNET;
 using System;
+using System.Collections.Generic;
 
 namespace AutoDuty.Windows;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
 {
+    public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
+
     public int Version { get; set; } = 36;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
+    public int TreasureCofferScanDistance { get; set; } = 25;
 
     public bool AutoExitDuty { get; set; } = true;
     public bool LootTreasure { get; set; } = true;
@@ -26,6 +30,7 @@ public class Configuration : IPluginConfiguration
     public bool RetireToBarracksBeforeLoops { get; set; } = false;
     public bool AutoDesynth { get; set; } = false;
     public bool AutoGCTurnin { get; set; } = false;
+    public bool AutoGCTurninAfterEveryLoop { get; set; } = false;
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
@@ -54,7 +59,8 @@ public static class ConfigTab
     public static void Draw()
     {
         var autoExitDuty = Configuration.AutoExitDuty;
-        var lootTreasure = Configuration.LootTreasure; 
+        var lootTreasure = Configuration.LootTreasure;
+        var treasureCofferScanDistance = Configuration.TreasureCofferScanDistance;
         var lootBossTreasureOnly = Configuration.LootBossTreasureOnly;
         var autoRepair = Configuration.AutoRepair;
         var autoRepairSelf = Configuration.AutoRepairSelf;
@@ -67,6 +73,7 @@ public static class ConfigTab
         var autoDesynth = Configuration.AutoDesynth;
         var autoGCTurnin = Configuration.AutoGCTurnin;
         var autoGCTurninSlotsLeft = Configuration.AutoGCTurninSlotsLeft;
+        var autoGCTurninAfterEveryLoop = Configuration.AutoGCTurninAfterEveryLoop;
 
         if (ImGui.Checkbox("Auto Exit Duty on Completion", ref autoExitDuty))
         {
@@ -78,6 +85,12 @@ public static class ConfigTab
             Configuration.LootTreasure = lootTreasure;
             Configuration.Save();
         }
+        if (ImGui.SliderInt("Scan Distance", ref treasureCofferScanDistance, 1, 100))
+        {
+            Configuration.TreasureCofferScanDistance = treasureCofferScanDistance;
+            Configuration.Save();
+        }
+
         using (var d1 = ImRaii.Disabled(!lootTreasure))
         {
             if (ImGui.Checkbox("Loot Boss Treasure Only", ref lootBossTreasureOnly))
@@ -167,7 +180,13 @@ public static class ConfigTab
                 autoDesynth = false;
                 Configuration.Save();
             }
-            using (var d2 = ImRaii.Disabled(!autoGCTurnin))
+            if (ImGui.Checkbox("After Every Loop", ref autoGCTurninAfterEveryLoop))
+            {
+                Configuration.AutoGCTurninAfterEveryLoop = autoGCTurninAfterEveryLoop;
+                Configuration.Save();
+            }
+            
+            using (var d2 = ImRaii.Disabled(!autoGCTurnin || autoGCTurninAfterEveryLoop))
             {
                 if (ImGui.SliderInt("@ Slots Left", ref autoGCTurninSlotsLeft, 1, 180))
                 {

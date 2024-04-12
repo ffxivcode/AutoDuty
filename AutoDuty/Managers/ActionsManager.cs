@@ -324,7 +324,7 @@ namespace AutoDuty.Managers
             }, "Boss");
             _taskManager.Enqueue(() => Svc.Condition[ConditionFlag.InCombat], "Boss");
             _taskManager.Enqueue(() => BossCheck(hasModule, bossV3, numForbiddenZonesToIgnore), int.MaxValue, "Boss");  
-            _taskManager.Enqueue(() => AutoDuty.Plugin.StopForCombat = true, "Boss");
+            _taskManager.Enqueue(() => { AutoDuty.Plugin.StopForCombat = true; }, "Boss");
             _taskManager.Enqueue(() => SetFollowStatus(false), "Boss");
             _taskManager.Enqueue(() => { AutoDuty.Plugin.BossObject = null; }, "Boss");
             if (AutoDuty.Plugin.Configuration.LootTreasure)
@@ -334,7 +334,7 @@ namespace AutoDuty.Managers
                 _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilNotTargetable(treasureCofferObject), "Boss");
             }
             _taskManager.DelayNext("Boss", 500);
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "", "Boss");
+            _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss");
         }
 
         private void MoveTo(Vector3 position, float tollerance)
