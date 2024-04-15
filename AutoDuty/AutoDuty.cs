@@ -22,7 +22,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using System.Text.Json;
 using System.Text;
 using ECommons.GameFunctions;
-using System.Threading.Tasks;
+using Lumina.Excel.GeneratedSheets;
 
 namespace AutoDuty;
 
@@ -31,10 +31,10 @@ namespace AutoDuty;
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
 // Add auto GC turn in and Auto desynth
 // make config saving per character
-// gotta figure out the bug that is locking up the clients  (still, might just revert to navsimplemove for incombat and treasure) 
 // gotta figure out why self repair waits 20s before queueing
 // gotta figure out again why 10s after boss
 // gotta figure out why sometimes it doesnt goto the trasure and sometimes doesnt mvoe after between areas
+// need to figure out GetStaticFoP for DataCenter.Status in RSR
 // drap drop on build is jacked when theres scrolling
 
 // WISHLIST for VBM:
@@ -133,7 +133,7 @@ public class AutoDuty : IDalamudPlugin
             _squadronManager = new(_taskManager);
             _actions = new(this, _chat, _taskManager, _overrideMovement);
             BuildTab.ActionsList = _actions.ActionsList;
-            MainWindow = new(this);
+            MainWindow = new();
             OverrideCamera = new();
 
             WindowSystem.AddWindow(MainWindow);
@@ -233,7 +233,7 @@ public class AutoDuty : IDalamudPlugin
                 Running = false;
                 CurrentLoop = 0;
                 Stage = 0;
-                MainWindow.Size = new Vector2(425, 375);
+                MainWindow.OpenTab("Main");
             }
         }
     }
@@ -252,13 +252,13 @@ public class AutoDuty : IDalamudPlugin
     {
         if (where.IsNullOrEmpty())
             return;
-
+        MainWindow.OpenTab("Mini");
         Stage = 99;
         Svc.Log.Info($"Going To: {where}");
         Running = true;
         switch (where)
         {
-            case "Baracks":
+            case "Barracks":
                 _gotoManager.Goto(true, false);
                 _taskManager.Enqueue(() => Stage = 0, "Goto");
                 break;
@@ -277,16 +277,29 @@ public class AutoDuty : IDalamudPlugin
         }
     }
 
-    public void Run()
+    public void Run(uint territoryType = 0, int loops = 0)
     {
+        if (territoryType > 0)
+        {
+            if (ContentHelper.DictionaryContent.TryGetValue(territoryType, out var content))
+                CurrentTerritoryContent = content;
+            else
+            {
+                Svc.Log.Error($"({territoryType}) is not in our Dictionary as a compatible Duty");
+                return;
+            }
+        }
+
+        if (loops > 0)
+            Configuration.LoopTimes = loops;
+
         if (CurrentTerritoryContent == null)
             return;
 
+        MainWindow.OpenTab("Mini");
         Stage = 99;
-        //MainWindow.SizeCondition = ImGuiNET.ImGuiCond.Once;
-        //MainWindow.Size = new Vector2(325, 75);
-        Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         Running = true;
+        Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         if (!Configuration.Squadron)
             _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops);
         _repairManager.Repair();
@@ -317,6 +330,7 @@ public class AutoDuty : IDalamudPlugin
             MainWindow.ShowPopup("Error", "Unable to load content for Territory");
             return;
         }
+        MainWindow.OpenTab("Mini");
         MainListClicked = false;
         Stage = 1;
         Started = true;
@@ -343,7 +357,10 @@ public class AutoDuty : IDalamudPlugin
         _dead = false;
         GameObject? gameObject = ObjectHelper.GetObjectByName("Shortcut");
         if (gameObject == null || !gameObject.IsTargetable)
+        {
+            Stage = 1;
             return;
+        }
 
         Stage = 7;
         var oldindex = Indexer;
@@ -362,7 +379,7 @@ public class AutoDuty : IDalamudPlugin
     {
         if (Indexer == 0)
         {
-            Svc.Log.Info($"Finding Closest Waypoint {ListBoxPOSText.Count}");
+            //Svc.Log.Info($"Finding Closest Waypoint {ListBoxPOSText.Count}");
             float closestWaypointDistance = float.MaxValue;
             int closestWaypointIndex = -1;
             float currentDistance = 0;
@@ -371,8 +388,8 @@ public class AutoDuty : IDalamudPlugin
             {
                 if (ListBoxPOSText[i].Contains("Boss|") && ListBoxPOSText[i].Replace("Boss|", "").All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
                 {
-                    currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[2])));
-                    Svc.Log.Info($"cd: {currentDistance}");
+                    currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
+                    //Svc.Log.Info($"cd: {currentDistance}");
                     if (currentDistance < closestWaypointDistance)
                     {
                         closestWaypointDistance = currentDistance;
@@ -381,22 +398,22 @@ public class AutoDuty : IDalamudPlugin
                 }
                 else if (ListBoxPOSText[i].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
                 {
-                    currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2])));
-                    Svc.Log.Info($"cd: {currentDistance}");
+                    currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
+                    //Svc.Log.Info($"cd: {currentDistance}");
                     if (currentDistance < closestWaypointDistance)
                     {
-                        closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2])));
+                        closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
                         closestWaypointIndex = i;
                     }
                 }
             }
-            Svc.Log.Info($"Closest Waypoint was {closestWaypointIndex}");
+            //Svc.Log.Info($"Closest Waypoint was {closestWaypointIndex}");
             return closestWaypointIndex + 1;
         }
 
         if (Indexer != -1)
         {
-            Svc.Log.Info("Finding Last Boss");
+            //Svc.Log.Info("Finding Last Boss");
             for (int i = Indexer; i >= 0; i--)
             {
                 if (ListBoxPOSText[i].Contains("Boss|") && i != Indexer)
@@ -506,7 +523,7 @@ public class AutoDuty : IDalamudPlugin
                         return;
                     }
 
-                    var destinationVector = new Vector3(float.Parse(((string)_actionParams[1]).Split(',')[0]), float.Parse(((string)_actionParams[1]).Split(',')[1]), float.Parse(((string)_actionParams[1]).Split(',')[2]));;
+                    var destinationVector = new Vector3(float.Parse(((string)_actionParams[1]).Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(((string)_actionParams[1]).Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(((string)_actionParams[1]).Split(',')[2], System.Globalization.CultureInfo.InvariantCulture));;
                     _actionPosition.Add(destinationVector);
                     _actionParams.RemoveRange(0, 2);
 
@@ -536,7 +553,7 @@ public class AutoDuty : IDalamudPlugin
                         return;
                     }
 
-                    var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
+                    var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture));
 
                     if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
                     {
@@ -743,9 +760,7 @@ public class AutoDuty : IDalamudPlugin
 
                 if (Plugin.Repairing)
                     Action = $"Step: Repairing";
-                if (Plugin.Goto)
-                    Action = $"Step: Retiring";
-                else
+                else if (!Plugin.Goto)
                     Action = $"Step: Looping: {CurrentTerritoryContent?.Name} {CurrentLoop} of {Configuration.LoopTimes}";
                 if (!_taskManager.IsBusy && ObjectHelper.IsValid && Svc.ClientState.TerritoryType == CurrentTerritoryContent?.TerritoryType)
                     Stage = 1;
@@ -767,6 +782,7 @@ public class AutoDuty : IDalamudPlugin
         Repairing = false;
         VNavmesh_IPCSubscriber.Path_Stop();
         _overrideMovement.DesiredPosition = null;
+        MainWindow.OpenTab("Main");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
@@ -816,7 +832,7 @@ public class AutoDuty : IDalamudPlugin
         if (MainWindow != null)
         {
             MainWindow.IsOpen = true;
-            MainWindow.OpenConfig();
+            MainWindow.OpenTab("Config");
         }
     }
 

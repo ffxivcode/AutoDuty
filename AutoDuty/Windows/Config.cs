@@ -106,7 +106,7 @@ public static class ConfigTab
             retireToBarracksBeforeLoops = false;
             Configuration.Save();
         }
-        if (ImGui.Checkbox("Retire to Baracks before Looping", ref retireToBarracksBeforeLoops))
+        if (ImGui.Checkbox("Retire to Barracks before Looping", ref retireToBarracksBeforeLoops))
         {
             Configuration.RetireToBarracksBeforeLoops = retireToBarracksBeforeLoops;
             Configuration.RetireToInnBeforeLoops = false;
@@ -153,7 +153,7 @@ public static class ConfigTab
                     autoRepairReturnToBarracks = false;
                     Configuration.Save();
                 }
-                if (ImGui.Checkbox("Return to Baracks", ref autoRepairReturnToBarracks))
+                if (ImGui.Checkbox("Return to Barracks", ref autoRepairReturnToBarracks))
                 {
                     Configuration.AutoRepairReturnToBarracks = autoRepairReturnToBarracks;
                     Configuration.AutoRepairReturnToInn = false;

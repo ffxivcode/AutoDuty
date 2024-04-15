@@ -14,8 +14,8 @@ namespace AutoDuty.Managers
         {
             if (content.DawnIndex < 1)
                 return;
-            Svc.Log.Info($"Queueing Trust: {content.Name}");
-            AutoDuty.Plugin.Action = $"Step: Queueing Trust: {content.Name}";
+            _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.Name}"), "RegisterTrust");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Trust: {content.Name}", "RegisterTrust");
             AtkUnitBase* addon = null;
 
             if (!ObjectHelper.IsValid)

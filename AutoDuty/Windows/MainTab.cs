@@ -197,9 +197,9 @@ namespace AutoDuty.Windows
 
                     if (ImGui.BeginPopup("GotoPopup"))
                     {
-                        if (ImGui.Selectable("Baracks"))
+                        if (ImGui.Selectable("Barracks"))
                         {
-                            Plugin.GotoAction("Baracks");
+                            Plugin.GotoAction("Barracks");
                         }
                         if (ImGui.Selectable("Inn"))
                         {

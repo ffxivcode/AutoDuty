@@ -323,18 +323,24 @@ namespace AutoDuty.Managers
                 }
             }, "Boss");
             _taskManager.Enqueue(() => Svc.Condition[ConditionFlag.InCombat], "Boss");
-            _taskManager.Enqueue(() => BossCheck(hasModule, bossV3, numForbiddenZonesToIgnore), int.MaxValue, "Boss");  
+            _taskManager.Enqueue(() => BossCheck(hasModule, bossV3, numForbiddenZonesToIgnore), int.MaxValue, "Boss");
+            _taskManager.Enqueue(() => Svc.Log.Info("aFTERbc"));
             _taskManager.Enqueue(() => { AutoDuty.Plugin.StopForCombat = true; }, "Boss");
+            _taskManager.Enqueue(() => Svc.Log.Info("AfterSettingSFC"));
             _taskManager.Enqueue(() => SetFollowStatus(false), "Boss");
+            _taskManager.Enqueue(() => Svc.Log.Info("AfterSFS"));
             _taskManager.Enqueue(() => { AutoDuty.Plugin.BossObject = null; }, "Boss");
+            _taskManager.Enqueue(() => Svc.Log.Info("AfterBON"));
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
                 _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null, "Boss");
                 _taskManager.Enqueue(() => MovementHelper.Move(treasureCofferObject, 0.25f, 1f), int.MaxValue, "Boss");
                 _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilNotTargetable(treasureCofferObject), "Boss");
             }
+            _taskManager.Enqueue(() => Svc.Log.Info("AfterLT"));
             _taskManager.DelayNext("Boss", 500);
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss");
+            _taskManager.Enqueue(() => Svc.Log.Info("AfterActionSet"));
         }
 
         private void MoveTo(Vector3 position, float tollerance)

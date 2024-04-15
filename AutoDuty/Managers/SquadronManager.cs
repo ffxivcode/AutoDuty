@@ -15,8 +15,8 @@ namespace AutoDuty.Managers
         {
             if (content.GCArmyIndex < 0)
                 return;
-            Svc.Log.Info($"Queueing Squadron: {content.Name}");
-            AutoDuty.Plugin.Action = $"Step: Queueing Squadron: {content.Name}";
+            _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Squadron: {content.Name}"), "RegisterSquadron");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Squadron: {content.Name}", "RegisterSquadron");
 
             AtkUnitBase* addon = null;
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = true; }, "RegisterSquadron");
