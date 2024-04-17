@@ -37,7 +37,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterTrust");
             _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterTrust");
             _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "RegisterTrust");
-            _taskManager.Enqueue(AutoDuty.Plugin.StartNavigation, "RegisterTrust");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterTrust");
         }
 
         private unsafe void OpenDawn() => AgentModule.Instance()->GetAgentByInternalID(340)->Show();

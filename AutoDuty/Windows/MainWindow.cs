@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Text.Json;
+using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using AutoDuty.Managers;
 using Dalamud.Interface.Utility.Raii;
@@ -198,7 +199,8 @@ public class MainWindow : Window, IDisposable
             }
             ImGui.SameLine(0, 5);
             
-            ImGui.TextColored(new Vector4(0, 255f, 0, 1), Svc.ClientState.TerritoryType == _contentManager.ListContent[Plugin.CurrentTerritoryIndex].TerritoryType ? $"Step: {Plugin.ListBoxPOSText[Plugin.Indexer]}" : Plugin.Repairing? $"Repairing" : $"Loading");
+            //if (ObjectHelper.IsValid && Svc.ClientState.TerritoryType != 0 && Plugin.CurrentTerritoryIndex > -1 && Plugin.ListBoxPOSText.Count > 0 && Plugin.Indexer <= Plugin.ListBoxPOSText.Count && Plugin.CurrentTerritoryIndex <= _contentManager.ListContent.Count && Plugin.Indexer > -1)
+                //ImGui.TextColored(new Vector4(0, 255f, 0, 1),  Svc.ClientState.TerritoryType == _contentManager.ListContent[Plugin.CurrentTerritoryIndex].TerritoryType ? $"Step: {(Plugin.Indexer <= Plugin.ListBoxPOSText.Count ? Plugin.ListBoxPOSText[Plugin.Indexer] : "")}" : Plugin.Repairing? $"Repairing" : $"Loading");
             SizeConstraints = new WindowSizeConstraints
             {
                 MinimumSize = new Vector2(325, 70),
@@ -240,7 +242,7 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.Button("Start"))
                             {
                                 LoadPath();
-                                Plugin.StartNavigation();
+                                Plugin.StartNavigation(!Plugin.MainListClicked);
                                 currentIndex = -1;
                             }
                         }

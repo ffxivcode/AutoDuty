@@ -37,7 +37,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterSquadron");
             _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "RegisterSquadron");
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "RegisterSquadron");
-            _taskManager.Enqueue(AutoDuty.Plugin.StartNavigation, "RegisterSquadron");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterSquadron");
         }
         internal bool SeenAddon = false;
         internal unsafe bool OpenSquadron(AtkUnitBase* aub)

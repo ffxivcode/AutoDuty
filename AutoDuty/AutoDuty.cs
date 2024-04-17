@@ -98,6 +98,7 @@ public class AutoDuty : IDalamudPlugin
             _chat = new();
             _contentManager = new();
             _overrideMovement = new();
+            _overrideAFK = new();
             _contentManager.PopulateDuties();
             _repairManager = new(_taskManager);
             _gotoManager = new(_taskManager);
@@ -123,50 +124,10 @@ public class AutoDuty : IDalamudPlugin
             pluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
-            Svc.DutyState.DutyWiped += DutyState_DutyWiped;
-            Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
-            Svc.DutyState.DutyStarted += DutyState_DutyStarted;
-            Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
-        }
-    }
-
-    private void DutyState_DutyCompleted(object? sender, ushort e)
-    {
-        Svc.Log.Info($"DutyCompleted {e}");
-    }
-
-    private void DutyState_DutyStarted(object? sender, ushort e)
-    {
-        Svc.Log.Info($"DutyDutyStarted {e}");
-    }
-
-    private void DutyState_DutyRecommenced(object? sender, ushort e)
-    {
-        try
-        {
-            Svc.Log.Info($"DutyRecommenced {e}");
-            DutyRecommenced?.Invoke(this, EventArgs.Empty);
-        }
-        catch (Exception ex)
-        {
-            Svc.Log.Error(ex, "Unhandled exception when invoking DutyEventService.DutyRecommenced");
-        }
-    }
-
-    private void DutyState_DutyWiped(object? sender, ushort e)
-    {
-        try
-        {
-            Svc.Log.Info($"DutyWiped {e}");
-            DutyWiped?.Invoke(this, EventArgs.Empty);
-        }
-        catch (Exception ex)
-        {
-            Svc.Log.Error(ex, "Unhandled exception when invoking DutyEventService.DutyWiped");
         }
     }
 
@@ -179,6 +140,8 @@ public class AutoDuty : IDalamudPlugin
         {
             if (CurrentLoop < LoopTimes)
             {
+                if (_taskManager.IsBusy)
+                    _taskManager.Abort();
                 _taskManager.Enqueue(() => Stage = 99, "Loop");
                 _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Loop");
                 _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");
@@ -235,7 +198,7 @@ public class AutoDuty : IDalamudPlugin
         CurrentLoop = 1;
     }
 
-    public void StartNavigation()
+    public void StartNavigation(bool startFromZero)
     {
         Stage = 1;
         Started = true;
@@ -243,13 +206,15 @@ public class AutoDuty : IDalamudPlugin
         _chat.ExecuteCommand($"/vbmai on");
         _chat.ExecuteCommand($"/rotation auto");
         Svc.Log.Info("Starting Navigation");
+        if (startFromZero)
+            Indexer = 0;
     }
 
     public void Framework_Update(IFramework framework)
     {
         if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
-
+        
         if ((Player = Svc.ClientState.LocalPlayer) == null)
             return;
 
@@ -267,9 +232,16 @@ public class AutoDuty : IDalamudPlugin
 
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0)
         {
-            Stage = 0;
+            if (Plugin.Running && CurrentLoop <= LoopTimes)
+            {
+                return;
+            }
+            else
+                Stage = 0;
             Indexer = 0;
+            return;
         }
+        
         switch (Stage)
         {
             //AutoDuty is stopped or has not started
@@ -308,7 +280,7 @@ public class AutoDuty : IDalamudPlugin
                 else
                 {
                     Stage = 2;
-                    var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0]), float.Parse(ListBoxPOSText[Indexer].Split(',')[1]), float.Parse(ListBoxPOSText[Indexer].Split(',')[2]));
+                    var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture));
                     if (!VNavmesh_IPCSubscriber.Path_GetMovementAllowed())
                         VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
                     if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
@@ -341,6 +313,7 @@ public class AutoDuty : IDalamudPlugin
                 {
                     Stage = 1;
                     Indexer++;
+                    return;
                 }
                 break;
             //InCombat
@@ -370,6 +343,8 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //Looping
             case 99:
+                if (!ObjectHelper.IsValid)
+                    return;
                 if (!_taskManager.IsBusy && ObjectHelper.IsValid)
                     Stage = 0;
                 break;
@@ -387,10 +362,6 @@ public class AutoDuty : IDalamudPlugin
         OverrideCamera.Dispose();
         _overrideMovement.Dispose();
         Svc.Framework.Update -= Framework_Update;
-        Svc.DutyState.DutyWiped -= DutyState_DutyWiped;
-        Svc.DutyState.DutyRecommenced -= DutyState_DutyRecommenced;
-        Svc.DutyState.DutyStarted -= DutyState_DutyStarted;
-        Svc.DutyState.DutyCompleted -= DutyState_DutyCompleted;
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
         Svc.Condition.ConditionChange -= Condition_ConditionChange;
         Svc.Commands.RemoveHandler(CommandName);
