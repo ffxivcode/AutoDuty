@@ -233,7 +233,7 @@ namespace AutoDuty.Helpers
             {
                 if (gameObject == null || !gameObject.IsTargetable) 
                     return;
-                MovementHelper.Face(gameObject.Position);
+                AutoDuty.Plugin.OverrideCamera.Face(gameObject.Position);
                 var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
                 TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
             }

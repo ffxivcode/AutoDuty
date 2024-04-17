@@ -18,7 +18,7 @@ using AutoDuty.External;
 
 namespace AutoDuty.Managers
 {
-    internal class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager, FollowManager _followManager)
+    internal class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
     {
         public readonly List<(string, string)> ActionsList =
         [
@@ -184,7 +184,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
-        private bool BossCheck(bool hasModule, Vector3 bossV3, int numForbiddenZonesToIgnore)
+        private bool BossCheck(bool hasModule, Vector3 bossV3, int numForbiddenZonesToIgnore, GameObject? followTargetObject)
         {
             if (((AutoDuty.Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
                 return true;
@@ -196,11 +196,11 @@ namespace AutoDuty.Managers
                     hasModule = BossMod_IPCSubscriber.HasModule(AutoDuty.Plugin.BossObject);
                 }
                 if (BossMod_IPCSubscriber.ForbiddenZonesCount() > numForbiddenZonesToIgnore)
-                    _followManager.SetFollowStatus(false);
+                    FollowHelper.SetFollow(null);
                 else if (BossMod_IPCSubscriber.ForbiddenZonesCount() <= numForbiddenZonesToIgnore)
                 {
                     if (!hasModule)
-                        _followManager.SetFollowStatus(true);
+                        FollowHelper.SetFollow(followTargetObject);
                     else
                     {
                         GameObject? healerGameObject;
@@ -209,7 +209,7 @@ namespace AutoDuty.Managers
                             //tank - try to stay within 10 of boss waypoint, or move to boss if loose aggro
                             case 1:
                                 if (AutoDuty.Plugin.BossObject != null && AutoDuty.Plugin.BossObject.TargetObject != Player.Object)
-                                    Follow(AutoDuty.Plugin.BossObject, 3f);
+                                    FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 3f);
                                 else if (ObjectHelper.GetDistanceToPlayer(bossV3) > 10)
                                     MovementHelper.Move(bossV3, 0.25f, 10f);
                                 break;
@@ -218,26 +218,26 @@ namespace AutoDuty.Managers
                             case 4:
                                 var tankGameObject = ObjectHelper.GetTankPartyMember();
                                 if (tankGameObject != null && ObjectHelper.GetDistanceToPlayer(tankGameObject) > 15)
-                                    Follow(tankGameObject, 15);
+                                    FollowHelper.SetFollow(tankGameObject, 15);
                                 else if (AutoDuty.Plugin.BossObject != null && ECommons.GameFunctions.ObjectFunctions.GetAttackableEnemyCountAroundPoint(AutoDuty.Plugin.BossObject.Position, 8) <= 2)
-                                    Follow(AutoDuty.Plugin.BossObject, 15);
+                                    FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 15);
                                 else if (AutoDuty.Plugin.BossObject != null)
-                                    Follow(AutoDuty.Plugin.BossObject, 3);
+                                    FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 3);
                                 break;
                             //everyone else - stay in range of healer then try to stay behind/flanked (later implementation)
                             case 2:
                                 healerGameObject = ObjectHelper.GetHealerPartyMember();
                                 if (healerGameObject != null && ObjectHelper.GetDistanceToPlayer(healerGameObject) > 15)
-                                    Follow(healerGameObject, 15);
+                                    FollowHelper.SetFollow(healerGameObject, 15);
                                 else if (AutoDuty.Plugin.BossObject != null)
-                                        Follow(AutoDuty.Plugin.BossObject, 3);
+                                    FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 3);
                                 break;
                             default:
                                 healerGameObject = ObjectHelper.GetHealerPartyMember();
                                 if (healerGameObject != null && ObjectHelper.GetDistanceToPlayer(healerGameObject) > 15)
-                                    Follow(healerGameObject, 15);
+                                    FollowHelper.SetFollow(healerGameObject, 15);
                                 else if (AutoDuty.Plugin.BossObject != null)
-                                    Follow(AutoDuty.Plugin.BossObject, 15);
+                                    FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 15);
                                 break;
                         }
                     }
@@ -312,13 +312,12 @@ namespace AutoDuty.Managers
                         followTargetObject = GetTrustRangedDpsMemberObject() ?? GetTrustMeleeDpsMemberObject();
                         break;
                 }
-
-                Follow(followTargetObject, 0);
+                FollowHelper.SetFollow(followTargetObject, 0);
             }, "Boss");
             _taskManager.Enqueue(() => Svc.Condition[ConditionFlag.InCombat], "Boss");
-            _taskManager.Enqueue(() => BossCheck(hasModule, bossV3, numForbiddenZonesToIgnore), int.MaxValue, "Boss");
+            _taskManager.Enqueue(() => BossCheck(hasModule, bossV3, numForbiddenZonesToIgnore, followTargetObject), int.MaxValue, "Boss");
             _taskManager.Enqueue(() => { AutoDuty.Plugin.StopForCombat = true; }, "Boss");
-            _taskManager.Enqueue(() => Follow(null), "Boss");
+            _taskManager.Enqueue(() => FollowHelper.SetFollow(null), "Boss");
             _taskManager.Enqueue(() => { AutoDuty.Plugin.BossObject = null; }, "Boss");
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
@@ -328,18 +327,6 @@ namespace AutoDuty.Managers
             }
             _taskManager.DelayNext("Boss", 500);
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss");
-        }
-
-        private void Follow(GameObject? gameObject, float tollerance = 0.25f)
-        {
-            if (gameObject == null || ObjectHelper.GetDistanceToPlayer(gameObject.Position) <= tollerance)
-                _followManager.SetFollowStatus(false);
-            else
-            {
-                _followManager.SetFollowDistance(tollerance);
-                _followManager.SetFollowTarget(gameObject);
-                _followManager.SetFollowStatus(true);
-            }
         }
 
         public GameObject? GetTrustTankMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 1)?.GameObject;

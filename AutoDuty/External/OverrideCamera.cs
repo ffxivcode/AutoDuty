@@ -2,8 +2,10 @@
 using Dalamud.Hooking;
 using Dalamud.Utility.Signatures;
 using ECommons.DalamudServices;
+using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace AutoDuty.External;
@@ -23,6 +25,14 @@ public unsafe struct CameraEx
 
 public unsafe class OverrideCamera : IDisposable
 {
+    internal void Face(Vector3 pos)
+    {
+        Enabled = true;
+        SpeedH = SpeedV = 360.Degrees();
+        DesiredAzimuth = Angle.FromDirectionXZ(pos - Player.Object.Position) + 180.Degrees();
+        DesiredAltitude = -30.Degrees();
+    }
+
     public bool Enabled
     {
         get => _rmiCameraHook.IsEnabled;

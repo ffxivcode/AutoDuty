@@ -2,7 +2,6 @@
 using System.Numerics;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.GameHelpers;
-using AutoDuty.External;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -11,14 +10,6 @@ namespace AutoDuty.Helpers
 {
     internal static class MovementHelper
     {
-        internal static void Face(Vector3 pos)
-        {
-            AutoDuty.Plugin.OverrideCamera.Enabled = true;
-            AutoDuty.Plugin.OverrideCamera.SpeedH = AutoDuty.Plugin.OverrideCamera.SpeedV = 360.Degrees();
-            AutoDuty.Plugin.OverrideCamera.DesiredAzimuth = Angle.FromDirectionXZ(pos - Player.Object.Position) + 180.Degrees();
-            AutoDuty.Plugin.OverrideCamera.DesiredAltitude = -30.Degrees();
-        }
-
         internal static bool Move(GameObject? gameObject, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
         {
             if (gameObject == null)
@@ -36,7 +27,7 @@ namespace AutoDuty.Helpers
             {
                 if (position != Vector3.Zero)
                 {
-                    Face(position);
+                    AutoDuty.Plugin.OverrideCamera.Face(position);
                     VNavmesh_IPCSubscriber.Path_Stop();
                 }
                 return true;

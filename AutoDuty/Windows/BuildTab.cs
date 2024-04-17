@@ -29,6 +29,8 @@ namespace AutoDuty.Windows
         private static string _addActionButton = "Add"; 
         private static bool _dragDrop = false;
 
+        private static string GetPlayerPosition => $"{Plugin.PlayerPosition.X.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Plugin.PlayerPosition.Y.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Plugin.PlayerPosition.Z.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}";
+
         private static void ClearAll()
         {
             _input = "";
@@ -58,7 +60,7 @@ namespace AutoDuty.Windows
             if (ImGui.Button("Add POS"))
             {
                 _scrollBottom = true;
-                Plugin.ListBoxPOSText.Add($"MoveTo|{Plugin.PlayerPosition.X:0.00}, {Plugin.PlayerPosition.Y:0.00}, {Plugin.PlayerPosition.Z:0.00}|");
+                Plugin.ListBoxPOSText.Add($"MoveTo|{GetPlayerPosition}|");
             }
             ImGui.SameLine(0, 5);
             if (ImGui.Button("Add Action"))
@@ -95,7 +97,7 @@ namespace AutoDuty.Windows
                                 break;
                             default:
                                 _input = "";
-                                _action = $"{item.Item1}|{Plugin.PlayerPosition.X:0.00}, {Plugin.PlayerPosition.Y:0.00}, {Plugin.PlayerPosition.Z:0.00}|";
+                                _action = $"{item.Item1}|{GetPlayerPosition}|";
                                 break;
                         }
                         _inputIW = 400;
@@ -160,7 +162,7 @@ namespace AutoDuty.Windows
                     else if (_dontMove)
                         AddAction($"{_dropdownSelected.Item1}|0, 0, 0|{_input}");
                     else
-                        AddAction($"{_dropdownSelected.Item1}|{Plugin.PlayerPosition.X:0.00}, {Plugin.PlayerPosition.Y:0.00}, {Plugin.PlayerPosition.Z:0.00}|{_input}");
+                        AddAction($"{_dropdownSelected.Item1}|{GetPlayerPosition}|{_input}");
                 }
                 ImGui.SameLine(0, 5);
                 ImGui.Checkbox("Dont Move", ref _dontMove);

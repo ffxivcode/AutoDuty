@@ -79,9 +79,7 @@ public class AutoDuty : IDalamudPlugin
     private RegularDutyManager _regularDutyManager;
     private TrustManager _trustManager;
     private SquadronManager _squadronManager;
-    private FollowManager _followManager;
     private OverrideAFK _overrideAFK;
-    private OverrideMovement _overrideMovement;
     private bool _dead = false;
     private GameObject? treasureCofferGameObject = null;
     private string _action = "";
@@ -124,16 +122,14 @@ public class AutoDuty : IDalamudPlugin
             FileHelper.OnStart();
             FileHelper.Init();
             _chat = new();
-            _overrideMovement = new();
             _overrideAFK = new();
-            _followManager = new(_overrideMovement);
             _repairManager = new(_taskManager);
             _gotoManager = new(_taskManager);
             _dutySupportManager = new(_taskManager);
             _regularDutyManager = new(_taskManager);
             _trustManager = new(_taskManager);
             _squadronManager = new(_taskManager);
-            _actions = new(this, _chat, _taskManager, _followManager);
+            _actions = new(this, _chat, _taskManager);
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
@@ -173,13 +169,11 @@ public class AutoDuty : IDalamudPlugin
         {
             case "Follow":
                 if (messageArray[1] == "OFF")
-                    _followManager.SetFollowStatus(false);
+                    FollowHelper.SetFollow(null);
                 var gameObject = ObjectHelper.GetObjectByName(messageArray[1]);
-                if (gameObject == null || (_followManager.GetFollowStatus() && gameObject.Name.TextValue == messageArray[1]))
+                if (gameObject == null || (FollowHelper.IsFollowing && gameObject.Name.TextValue == messageArray[1]))
                     return;
-                _followManager.SetFollowTarget(gameObject);
-                _followManager.SetFollowDistance(0.25f);
-                _followManager.SetFollowStatus(true);
+                FollowHelper.SetFollow(gameObject);
                 break;
             case "Action":
                 break;
@@ -723,7 +717,7 @@ public class AutoDuty : IDalamudPlugin
                 Action = $"Paused";
                 if (VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
                     VNavmesh_IPCSubscriber.Path_Stop();
-                _followManager.SetFollowStatus(false);
+                FollowHelper.SetFollow(null);
                 break;
             //OnDeath
             case 6:
@@ -841,7 +835,7 @@ public class AutoDuty : IDalamudPlugin
         if (ExecSkipTalk.IsEnabled)
             ExecSkipTalk.IsEnabled = false;
         VNavmesh_IPCSubscriber.Path_Stop();
-        _followManager.SetFollowStatus(false);
+        FollowHelper.SetFollow(null);
     }
 
     public void Dispose()
@@ -852,7 +846,6 @@ public class AutoDuty : IDalamudPlugin
         ExecSkipTalk.Shutdown();
         MainWindow.Dispose();
         OverrideCamera.Dispose();
-        _overrideMovement.Dispose();
         Svc.Framework.Update -= Framework_Update;
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
         Svc.Condition.ConditionChange -= Condition_ConditionChange;
