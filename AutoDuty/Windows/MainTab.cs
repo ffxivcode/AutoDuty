@@ -7,7 +7,6 @@ using static AutoDuty.AutoDuty;
 using System.Numerics;
 using System.Linq;
 using AutoDuty.Helpers;
-using System.Collections.Immutable;
 using ECommons.DalamudServices;
 
 namespace AutoDuty.Windows
@@ -139,7 +138,7 @@ namespace AutoDuty.Windows
                     {
                         if (ImGui.Button("Run"))
                         {
-                            if (Plugin.Configuration.Regular || Plugin.Configuration.Trust)
+                            if (Plugin.Configuration.Trust)
                                 MainWindow.ShowPopup("Error", "This has not yet been implemented");
                             else if (!Plugin.Configuration.Support && !Plugin.Configuration.Trust && !Plugin.Configuration.Squadron && !Plugin.Configuration.Regular)
                                 MainWindow.ShowPopup("Error", "You must select a version\nof the dungeon to run");
@@ -225,17 +224,20 @@ namespace AutoDuty.Windows
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Trust", ref _trust))
+                    using (var dt = ImRaii.Disabled(true))
                     {
-                        if (_trust)
+                        if (ImGui.Checkbox("Trust", ref _trust))
                         {
-                            Plugin.Configuration.Trust = _trust;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.CurrentTerritoryContent = null;
-                            _dutyListSelected = -1;
-                            Plugin.Configuration.Save();
+                            if (_trust)
+                            {
+                                Plugin.Configuration.Trust = _trust;
+                                Plugin.Configuration.Support = false;
+                                Plugin.Configuration.Squadron = false;
+                                Plugin.Configuration.Regular = false;
+                                Plugin.CurrentTerritoryContent = null;
+                                _dutyListSelected = -1;
+                                Plugin.Configuration.Save();
+                            }
                         }
                     }
                     ImGui.SameLine(0, 5);

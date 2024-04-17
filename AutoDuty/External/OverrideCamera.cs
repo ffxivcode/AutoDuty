@@ -1,10 +1,11 @@
-﻿using Dalamud.Hooking;
+﻿//Entire file from vnavmesh
+using Dalamud.Hooking;
 using Dalamud.Utility.Signatures;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using System;
 using System.Runtime.InteropServices;
-//From vnavmesh
+
 namespace AutoDuty.External;
 
 [StructLayout(LayoutKind.Explicit, Size = 0x2B0)]

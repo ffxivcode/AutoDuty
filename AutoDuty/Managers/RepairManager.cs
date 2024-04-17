@@ -104,15 +104,11 @@ namespace AutoDuty.Managers
                 _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Repair");
                 _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(ObjectHelper.GetObjectByName(vendorName), "Repair") != null, "Repair");
             }
-            _taskManager.Enqueue(() => Svc.Log.Info("ClickRepair"));
             _taskManager.Enqueue(() => AddonHelper.ClickRepair(), "Repair");
-            _taskManager.Enqueue(() => Svc.Log.Info("ClickSelectYesno"));
             _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Repair");
-            _taskManager.Enqueue(() => Svc.Log.Info("IsOccupied"));
             if (selfRepair)
                 _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Repair");
-
-            _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalID((uint)AgentId.Repair)->Hide(), "Repair"); 
+            _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalID((uint)AgentId.Repair)->Hide(), "Repair");
             if (AutoDuty.Plugin.Configuration.AutoRepairReturnToInn && _returnAfter)
             {
                 foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
@@ -153,11 +149,8 @@ namespace AutoDuty.Managers
                 _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Repair");
                 _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
             }
-            _taskManager.Enqueue(() => Svc.Log.Info("AfterCloseRepairWindow"));
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Repairing = false; }, "Repair");
-            _taskManager.Enqueue(() => Svc.Log.Info("AfterSRF"));
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "Repair");
-            _taskManager.Enqueue(() => Svc.Log.Info("AfterESCIEF"));
         }
     }
 }

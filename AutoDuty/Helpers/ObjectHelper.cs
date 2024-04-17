@@ -39,8 +39,6 @@ namespace AutoDuty.Helpers
 
         internal static GameObject? GetObjectByNameAndRadius(string objectName) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(g => g.Name.TextValue.Equals(objectName, StringComparison.CurrentCultureIgnoreCase) && Vector3.Distance(Player.Object.Position, g.Position) <= 10);
 
-        internal static GameObject? GetClosestObjectByName(List<GameObject> gameObjects, string name) => gameObjects.OrderBy(GetDistanceToPlayer).FirstOrDefault(p => p.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase) && p.IsTargetable);
-
         internal static BattleChara? GetBossObject(int radius = 100) => GetObjectsByRadius(radius)?.OfType<BattleChara>().FirstOrDefault(b => IsBossFromIcon(b) || BossMod_IPCSubscriber.HasModule(b));
 
         internal unsafe static float GetDistanceToPlayer(GameObject gameObject) => GetDistanceToPlayer(gameObject.Position);

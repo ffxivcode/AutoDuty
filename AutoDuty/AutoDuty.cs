@@ -22,19 +22,14 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using System.Text.Json;
 using System.Text;
 using ECommons.GameFunctions;
-using Lumina.Excel.GeneratedSheets;
+using TinyIpc.Messaging;
 
 namespace AutoDuty;
 
 // TODO:
-// Need to add 4-Box capability and unsynced support
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
 // Add auto GC turn in and Auto desynth
 // make config saving per character
-// gotta figure out why self repair waits 20s before queueing
-// gotta figure out again why 10s after boss
-// gotta figure out why sometimes it doesnt goto the trasure and sometimes doesnt mvoe after between areas
-// need to figure out GetStaticFoP for DataCenter.Status in RSR
 // drap drop on build is jacked when theres scrolling
 
 // WISHLIST for VBM:
@@ -81,8 +76,10 @@ public class AutoDuty : IDalamudPlugin
     private RepairManager _repairManager;
     private GotoManager _gotoManager;
     private DutySupportManager _dutySupportManager;
+    private RegularDutyManager _regularDutyManager;
     private TrustManager _trustManager;
     private SquadronManager _squadronManager;
+    private FollowManager _followManager;
     private OverrideAFK _overrideAFK;
     private OverrideMovement _overrideMovement;
     private bool _dead = false;
@@ -92,6 +89,9 @@ public class AutoDuty : IDalamudPlugin
     private List<object> _actionParams = [];
     private List<object> _actionPosition = [];
     private bool _stopped = false;
+    private TinyMessageBus _messageBusSend = new("AutoDutyBroadcaster");
+    private TinyMessageBus _messageBusReceive = new("AutoDutyBroadcaster");
+    private bool _messageSender = false;
 
     public AutoDuty(DalamudPluginInterface pluginInterface)
     {
@@ -126,12 +126,16 @@ public class AutoDuty : IDalamudPlugin
             _chat = new();
             _overrideMovement = new();
             _overrideAFK = new();
+            _followManager = new(_overrideMovement);
             _repairManager = new(_taskManager);
             _gotoManager = new(_taskManager);
             _dutySupportManager = new(_taskManager);
+            _regularDutyManager = new(_taskManager);
             _trustManager = new(_taskManager);
             _squadronManager = new(_taskManager);
-            _actions = new(this, _chat, _taskManager, _overrideMovement);
+            _actions = new(this, _chat, _taskManager, _followManager);
+            _messageBusReceive.MessageReceived +=
+                (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
             MainWindow = new();
             OverrideCamera = new();
@@ -140,8 +144,10 @@ public class AutoDuty : IDalamudPlugin
 
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
-                HelpMessage = "\n/autoduty->opens main window\n" +
-                "/autoduty config or cfg->opens config window\n"
+                HelpMessage = "\n/autoduty -> opens main window\n" +
+                "/autoduty config or cfg -> opens config window\n" +
+                "/autoduty start -> starts autoduty when in a Duty\n" +
+                "/autoduty stop -> stops everything\n"
             });
 
             pluginInterface.UiBuilder.Draw += DrawUI;
@@ -153,6 +159,32 @@ public class AutoDuty : IDalamudPlugin
             Svc.Condition.ConditionChange += Condition_ConditionChange;
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
+        }
+    }
+
+    private void MessageReceived(string message)
+    {
+        if (Svc.ClientState.LocalPlayer is null || message.IsNullOrEmpty() || _messageSender)
+            return;
+
+        var messageArray = message.Split('|');
+
+        switch (messageArray[0])
+        {
+            case "Follow":
+                if (messageArray[1] == "OFF")
+                    _followManager.SetFollowStatus(false);
+                var gameObject = ObjectHelper.GetObjectByName(messageArray[1]);
+                if (gameObject == null || (_followManager.GetFollowStatus() && gameObject.Name.TextValue == messageArray[1]))
+                    return;
+                _followManager.SetFollowTarget(gameObject);
+                _followManager.SetFollowDistance(0.25f);
+                _followManager.SetFollowStatus(true);
+                break;
+            case "Action":
+                break;
+            default:
+                break;
         }
     }
 
@@ -241,7 +273,7 @@ public class AutoDuty : IDalamudPlugin
     private void Condition_ConditionChange(Dalamud.Game.ClientState.Conditions.ConditionFlag flag, bool value)
     {
         //Svc.Log.Debug($"{flag} : {value}");
-        if (Stage != 3 && value && Started && (flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas51))
+        if (Stage != 3 && value && Started && (flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas51 || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.Jumping61))
         {
             Stage = 1;
             VNavmesh_IPCSubscriber.Path_Stop();
@@ -307,6 +339,8 @@ public class AutoDuty : IDalamudPlugin
             _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Configuration.Support)
             _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
+        else if (Configuration.Regular)
+            _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
         else if (Configuration.Squadron)
         {
             _gotoManager.Goto(true, false);
@@ -315,7 +349,7 @@ public class AutoDuty : IDalamudPlugin
         CurrentLoop = 1;
     }
 
-    public void StartNavigation(bool startFromZero)
+    public void StartNavigation(bool startFromZero = true)
     {
         if (ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content))
         {
@@ -336,7 +370,7 @@ public class AutoDuty : IDalamudPlugin
         Started = true;
         ExecSkipTalk.IsEnabled = true;
         _chat.ExecuteCommand($"/vbmai on");
-        _chat.ExecuteCommand($"/rotation auto");
+        ReflectionHelper.RotationSolver_Reflection.RotationAuto();
         Svc.Log.Info("Starting Navigation");
         if (startFromZero)
             Indexer = 0;
@@ -567,16 +601,22 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
+                if (Configuration.Regular && Svc.Party.PartyId > 0)
+                {
+                    _messageSender = true;
+                    _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes($"Follow|{Player.Name}"));
+                }
+                
                 Action = $"Step: {Plugin.ListBoxPOSText[Indexer]}";
                 if (ObjectHelper.InCombat(Player))
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
-                    _chat.ExecuteCommand($"/rotation auto");
+                    ReflectionHelper.RotationSolver_Reflection.RotationAuto();
                     Stage = 4;
                     break;
                 }
 
-                if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
+                if ((!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0) || (!_action.IsNullOrEmpty() && _actionPosition.Count > 0 && _actionTollerance > 0.25f && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) <= _actionTollerance))
                 {
                     if (_action.IsNullOrEmpty())
                     {
@@ -584,7 +624,10 @@ public class AutoDuty : IDalamudPlugin
                         Indexer++;
                     }
                     else
+                    {
+                        VNavmesh_IPCSubscriber.Path_Stop();
                         Stage = 9;
+                    }
 
                     return;
                 }
@@ -680,6 +723,7 @@ public class AutoDuty : IDalamudPlugin
                 Action = $"Paused";
                 if (VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
                     VNavmesh_IPCSubscriber.Path_Stop();
+                _followManager.SetFollowStatus(false);
                 break;
             //OnDeath
             case 6:
@@ -707,7 +751,7 @@ public class AutoDuty : IDalamudPlugin
                 if (ObjectHelper.InCombat(Player))
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
-                    _chat.ExecuteCommand($"/rotation auto");
+                    ReflectionHelper.RotationSolver_Reflection.RotationAuto();
                     Stage = 4;
                     return;
                 }
@@ -742,7 +786,14 @@ public class AutoDuty : IDalamudPlugin
                 if (!_taskManager.IsBusy && !_action.IsNullOrEmpty())
                 {
                     if (_action.Equals("Boss"))
+                    {
+                        if (Configuration.Regular && Svc.Party.PartyId > 0)
+                        {
+                            _messageSender = true;
+                            _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes($"Follow|OFF"));
+                        }
                         _actionParams = _actionPosition;
+                    }
                     _actions.InvokeAction(_action, [.. _actionParams]);
                     _action = "";
                     _actionParams = [];
@@ -780,8 +831,6 @@ public class AutoDuty : IDalamudPlugin
         CurrentLoop = 0;
         Goto = false;
         Repairing = false;
-        VNavmesh_IPCSubscriber.Path_Stop();
-        _overrideMovement.DesiredPosition = null;
         MainWindow.OpenTab("Main");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
@@ -791,6 +840,8 @@ public class AutoDuty : IDalamudPlugin
             _taskManager.Abort();
         if (ExecSkipTalk.IsEnabled)
             ExecSkipTalk.IsEnabled = false;
+        VNavmesh_IPCSubscriber.Path_Stop();
+        _followManager.SetFollowStatus(false);
     }
 
     public void Dispose()
@@ -815,6 +866,12 @@ public class AutoDuty : IDalamudPlugin
         {
             case "config" or "cfg":
                 OpenConfigUI(); 
+                break;
+            case "start":
+                StartNavigation();
+                break;
+            case "stop":
+                StopAndResetALL();
                 break;
             default:
                 OpenMainUI(); 

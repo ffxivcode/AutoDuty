@@ -28,6 +28,8 @@ namespace AutoDuty.Helpers
 
             internal int DawnIndex { get; set; } = -1;
 
+            internal uint ContentFinderCondition { get; set; }
+
             internal bool TrustContent { get; set; } = false;
 
             internal bool GCArmyContent { get; set; } = false;
@@ -48,8 +50,9 @@ namespace AutoDuty.Helpers
 
                 var content = new Content
                 {
-                    Name = contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The").Replace("--","-") : contentFinderCondition.Name.ToString().Replace("--","-"),
+                    Name = contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The").Replace("--", "-") : contentFinderCondition.Name.ToString().Replace("--", "-"),
                     TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
+                    ContentFinderCondition = contentFinderCondition.RowId,
                     ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                     ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
                     ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
