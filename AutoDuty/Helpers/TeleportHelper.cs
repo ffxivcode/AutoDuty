@@ -47,7 +47,7 @@ namespace AutoDuty.Helpers
             if ((gameObject = ObjectHelper.GetObjectByObjectKind(ObjectKind.Aetheryte)) == null)
                 return false;
 
-            return MovementHelper.Move(gameObject, 0.25f, 9f);
+            return MovementHelper.Move(gameObject, 0.25f, 7f);
         }
 
         internal static bool TeleportAethernet(string aethernetName, uint toTerritoryType)

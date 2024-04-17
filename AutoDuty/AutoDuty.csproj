@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors></Authors>
     <Company></Company>
-    <Version>0.0.0.35</Version>
+    <Version>0.0.0.37</Version>
     <Description>AutoDuty</Description>
     <Copyright></Copyright>
     <PackageProjectUrl></PackageProjectUrl>
@@ -33,6 +33,7 @@
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
     <ProjectReference Include="..\ClickLib\ClickLib\ClickLib.csproj" />
     <PackageReference Include="DalamudPackager" Version="2.1.12" />
+    <PackageReference Include="TinyIpc" Version="4.3.0" />
     <Reference Include="FFXIVClientStructs">
       <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
       <Private>false</Private>
@@ -61,4 +62,8 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(ProjectDir)Paths\*&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
+  </Target>
 </Project>

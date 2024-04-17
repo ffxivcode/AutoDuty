@@ -18,6 +18,7 @@ namespace AutoDuty.Helpers
             AutoDuty.Plugin.OverrideCamera.DesiredAzimuth = Angle.FromDirectionXZ(pos - Player.Object.Position) + 180.Degrees();
             AutoDuty.Plugin.OverrideCamera.DesiredAltitude = -30.Degrees();
         }
+
         internal static bool Move(GameObject? gameObject, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
         {
             if (gameObject == null)
@@ -25,7 +26,7 @@ namespace AutoDuty.Helpers
 
             return Move(gameObject.Position, tollerance, lastPointTollerance, fly);
         }
-        //need to add a stuck check
+
         internal unsafe static bool Move(Vector3 position, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
         {
             if (!ObjectHelper.IsValid)

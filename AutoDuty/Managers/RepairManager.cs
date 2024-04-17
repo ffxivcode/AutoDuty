@@ -5,12 +5,10 @@ using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
 using ECommons.Automation;
 using ECommons.DalamudServices;
-using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel.GeneratedSheets;
 using System.Linq;
 using System.Numerics;
 
@@ -18,65 +16,15 @@ namespace AutoDuty.Managers
 {
     internal class RepairManager(TaskManager _taskManager)
     {
-        public unsafe static float LowestEquippedCondition()
+        bool _returnAfter = true;
+        public unsafe void Repair(bool forceCity = false, bool returnAfter = true)
         {
-            var equipedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
-            uint itemLowestCondition = 60000;
-            for (int i = 0; i < 13; i++)
-            {
-                if (itemLowestCondition > equipedItems->Items[i].Condition)
-                    itemLowestCondition = equipedItems->Items[i].Condition;
-            }
-
-            return itemLowestCondition / 300f;
-        }
-        //artisan
-        internal unsafe static bool CanRepairItem(uint itemID)
-        {
-            var item = Svc.Data.Excel.GetSheet<Item>()?.GetRow(itemID);
-
-            if (item == null)
-                return false;
-
-            if (item.ClassJobRepair.Row > 0)
-            {
-                var actualJob = (Job)(item.ClassJobRepair.Row);
-                var repairItem = item.ItemRepair.Value?.Item;
-
-                if (repairItem == null)
-                    return false;
-
-                if (!HasDarkMatterOrBetter(repairItem.Row))
-                    return false;
-
-                /*var jobLevel = ((FFXIVClientStructs.FFXIV.Client.Game.Character.Character*)AutoDuty.Plugin.Player.Address)->CharacterData.JobLevel(actualJob);
-                if (Math.Max(item.LevelEquip - 10, 1) <= jobLevel)
-                    return true;*/
-            }
-
-            return false;
-        }
-
-        internal unsafe static bool HasDarkMatterOrBetter(uint darkMatterID)
-        {
-            var repairResources = Svc.Data.Excel.GetSheet<ItemRepairResource>();
-            foreach (var dm in repairResources)
-            {
-                if (dm.Item.Row < darkMatterID)
-                    continue;
-
-                if (InventoryManager.Instance()->GetInventoryItemCount(dm.Item.Row) > 0)
-                    return true;
-            }
-            return false;
-        }
-        public unsafe void Repair()
-        {
-            if (AutoDuty.Plugin.Configuration.AutoRepair && LowestEquippedCondition() <= AutoDuty.Plugin.Configuration.AutoRepairPct)
+            _returnAfter = returnAfter;
+            if (AutoDuty.Plugin.Configuration.AutoRepair && InventoryHelper.LowestEquippedCondition() <= AutoDuty.Plugin.Configuration.AutoRepairPct)
             {
                 AutoDuty.Plugin.Repairing = true;
                 ExecSkipTalk.IsEnabled = true;
-                if (AutoDuty.Plugin.Configuration.AutoRepairCity)
+                if (AutoDuty.Plugin.Configuration.AutoRepairCity || forceCity)
                 {
                     switch(UIState.Instance()->PlayerState.GrandCompany)
                     {
@@ -95,7 +43,7 @@ namespace AutoDuty.Managers
                             break;
                     }
                 }
-                else if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
+                else if (AutoDuty.Plugin.Configuration.AutoRepairSelf && !forceCity)
                     RepairTasks(0, [Vector3.Zero], "", [Vector3.Zero], "", [Vector3.Zero], true);
             }
         }
@@ -160,9 +108,8 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Repair");
             if (selfRepair)
                 _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Repair");
-
-            _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalID((uint)AgentId.Repair)->Hide(), "Repair"); 
-            if (AutoDuty.Plugin.Configuration.AutoRepairReturnToInn)
+            _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalID((uint)AgentId.Repair)->Hide(), "Repair");
+            if (AutoDuty.Plugin.Configuration.AutoRepairReturnToInn && _returnAfter)
             {
                 foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
                 {
@@ -181,7 +128,7 @@ namespace AutoDuty.Managers
                 _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Repair");
                 _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
             }
-            else if (AutoDuty.Plugin.Configuration.AutoRepairReturnToBarracks)
+            else if (AutoDuty.Plugin.Configuration.AutoRepairReturnToBarracks && _returnAfter)
             {
                 foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
                 {

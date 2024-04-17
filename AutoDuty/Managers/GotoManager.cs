@@ -18,6 +18,7 @@ namespace AutoDuty.Managers
         {
             if ((gotoBarracks && Svc.ClientState.TerritoryType != 536 && Svc.ClientState.TerritoryType != 534 && Svc.ClientState.TerritoryType != 535) || (gotoInn && Svc.ClientState.TerritoryType != 177 && Svc.ClientState.TerritoryType != 179 && Svc.ClientState.TerritoryType != 178))
             {
+                AutoDuty.Plugin.Action = $"Going to: {(gotoBarracks ? "Barracks" : "Inn")}";
                 AutoDuty.Plugin.Goto = true;
                 ExecSkipTalk.IsEnabled = true;
                 switch (UIState.Instance()->PlayerState.GrandCompany)

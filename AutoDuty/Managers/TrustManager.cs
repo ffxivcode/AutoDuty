@@ -10,11 +10,12 @@ namespace AutoDuty.Managers
 {
     internal class TrustManager(TaskManager _taskManager)
     {
-        internal unsafe void RegisterTrust(ContentManager.Content content)
+        internal unsafe void RegisterTrust(ContentHelper.Content content)
         {
             if (content.DawnIndex < 1)
                 return;
-            Svc.Log.Info($"Queueing Trust: {content.Name} with index {content.DawnIndex}");
+            _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.Name}"), "RegisterTrust");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Trust: {content.Name}", "RegisterTrust");
             AtkUnitBase* addon = null;
 
             if (!ObjectHelper.IsValid)

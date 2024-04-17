@@ -3,7 +3,6 @@ using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.GameFunctions;
-using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,8 @@ using System;
 using Dalamud.Game.ClientState.Objects.Enums;
 using ECommons;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using ECommons.Throttlers;
+using AutoDuty.IPC;
 
 namespace AutoDuty.Helpers
 {
@@ -38,9 +39,45 @@ namespace AutoDuty.Helpers
 
         internal static GameObject? GetObjectByNameAndRadius(string objectName) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(g => g.Name.TextValue.Equals(objectName, StringComparison.CurrentCultureIgnoreCase) && Vector3.Distance(Player.Object.Position, g.Position) <= 10);
 
-        internal static GameObject? GetClosestObjectByName(List<GameObject> gameObjects, string name) => gameObjects.OrderBy(GetDistanceToPlayer).FirstOrDefault(p => p.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase) && p.IsTargetable);
+        internal static BattleChara? GetBossObject(int radius = 100) => GetObjectsByRadius(radius)?.OfType<BattleChara>().FirstOrDefault(b => IsBossFromIcon(b) || BossMod_IPCSubscriber.HasModule(b));
 
-        internal unsafe static float GetDistanceToPlayer(GameObject gameObject) => Vector3.Distance(gameObject.Position, Player.GameObject->Position);
+        internal unsafe static float GetDistanceToPlayer(GameObject gameObject) => GetDistanceToPlayer(gameObject.Position);
+
+        internal unsafe static float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.GameObject->Position);
+
+        internal unsafe static GameObject? GetTankPartyMember()
+        {
+            if (Svc.Party.PartyId == 0)
+                return null;
+
+            if (Player.Object.ClassJob.GameData?.Role == 1)
+                return Player.Object;
+
+            foreach (var partyMember in Svc.Party)
+            {
+                if (partyMember.ClassJob.GameData?.Role == 1)
+                    return partyMember.GameObject;
+            }
+
+            return null;
+        }
+
+        internal unsafe static GameObject? GetHealerPartyMember()
+        {
+            if (Svc.Party.PartyId == 0)
+                return null;
+
+            if (Player.Object.ClassJob.GameData?.Role == 4)
+                return Player.Object;
+
+            foreach (var partyMember in Svc.Party)
+            {
+                if (partyMember.ClassJob.GameData?.Role == 4)
+                    return partyMember.GameObject;
+            }
+
+            return null;
+        }
 
         //RotationSolver
         internal unsafe static float GetBattleDistanceToPlayer(GameObject gameObject)
@@ -54,25 +91,34 @@ namespace AutoDuty.Helpers
             return distance;
         }
 
-        internal static BNpcBase? GetObjectNPC(GameObject gameObject) => GetSheet<BNpcBase>()?.GetRow(gameObject.DataId) ?? null;
-
-        internal static ExcelSheet<T>? GetSheet<T>() where T : ExcelRow => Svc.Data.GetExcelSheet<T>();
+        internal static BNpcBase? GetObjectNPC(GameObject gameObject) => Svc.Data.GetExcelSheet<BNpcBase>()?.GetRow(gameObject.DataId) ?? null;
 
         //From RotationSolver
-        internal static bool IsBossFromIcon(BattleChara battleChara)
-        {
-            if (battleChara == null) return false;
+        internal static bool IsBossFromIcon(GameObject gameObject) => GetObjectNPC(gameObject)?.Rank is 1 or 2 or 6;
 
-            //Icon
-            if (GetObjectNPC(battleChara)?.Rank is 1 or 2 /*or 4*/ or 6) return true;
-
-            return false;
-        }
         internal static float JobRange
         {
             get
             {
-                float radius = 15;
+                float radius = 25;
+                if (!Player.Available) return radius;
+                switch (Svc.Data.GetExcelSheet<ClassJob>()?.GetRow(
+                    Player.Object.ClassJob.Id)?.GetJobRole() ?? JobRole.None)
+                {
+                    case JobRole.Tank:
+                    case JobRole.Melee:
+                        radius = 3;
+                        break;
+                }
+                return radius;
+            }
+        }
+
+        internal static float AoEJobRange
+        {
+            get
+            {
+                float radius = 12;
                 if (!Player.Available) return radius;
                 switch (Svc.Data.GetExcelSheet<ClassJob>()?.GetRow(
                     Player.Object.ClassJob.Id)?.GetJobRole() ?? JobRole.None)
@@ -187,7 +233,7 @@ namespace AutoDuty.Helpers
             {
                 if (gameObject == null || !gameObject.IsTargetable) 
                     return;
-
+                MovementHelper.Face(gameObject.Position);
                 var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
                 TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
             }
@@ -200,10 +246,65 @@ namespace AutoDuty.Helpers
         {
             if (GenericHelpers.TryGetAddonByName<AtkUnitBase>(addonName, out var addon) && GenericHelpers.IsAddonReady(addon))
                 return addon;
-            InteractWithObject(gameObject);
+
+            if (EzThrottler.Throttle("InteractWithObjectUntilAddon"))
+                InteractWithObject(gameObject);
+            
             return null;
         }
 
+        internal static unsafe bool InteractWithObjectUntilNotValid(GameObject? gameObject)
+        {
+            if (gameObject == null || !IsValid)
+                return true;
+
+            if (EzThrottler.Throttle("InteractWithObjectUntilNotValid"))
+                InteractWithObject(gameObject);
+            
+            return false;
+        }
+
+        internal static unsafe bool InteractWithObjectUntilNotTargetable(GameObject? gameObject)
+        {
+            if (gameObject == null || !gameObject.IsTargetable)
+                return true;
+
+            if (EzThrottler.Throttle("InteractWithObjectUntilNotTargetable"))
+                InteractWithObject(gameObject);
+
+            return false;
+        }
+
         internal static unsafe bool PlayerIsCasting => Player.Character->IsCasting;
+
+        internal static bool PartyValidation()
+        {
+            if (Svc.Party.Count < 4)
+                return false;
+
+            var healer = false;
+            var tank = false;
+            var dpsCount = 0;
+
+            foreach (var item in Svc.Party)
+            {
+                switch (item.ClassJob.GameData?.Role)
+                {
+                    case 1:
+                        tank = true;
+                        break;
+                    case 2:
+                    case 3:
+                        dpsCount++;
+                        break;
+                    case 4:
+                        healer = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return (tank && healer && dpsCount > 1);
+        }
     }
 }
