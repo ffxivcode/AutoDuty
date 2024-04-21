@@ -81,7 +81,7 @@ namespace AutoDuty.Windows
                     }
                     if (!ImGui.BeginListBox("##MainList", new Vector2(850, 575))) return;
 
-                    if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
+                    if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled && ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
                     {
                         foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
                         {
@@ -126,6 +126,8 @@ namespace AutoDuty.Windows
                             ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
                         if (!BossMod_IPCSubscriber.IsEnabled)
                             ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+                            ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires Rotation Solver plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json");
                     }
                     ImGui.EndListBox();
                 }

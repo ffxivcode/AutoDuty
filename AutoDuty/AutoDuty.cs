@@ -470,6 +470,9 @@ public class AutoDuty : IDalamudPlugin
         if (!VNavmesh_IPCSubscriber.IsEnabled)
             return;
 
+        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+            return;
+
         if (!ObjectHelper.IsValid)
             return;
 
@@ -492,7 +495,10 @@ public class AutoDuty : IDalamudPlugin
         {
             //we finished lets exit the duty
             if (Configuration.AutoExitDuty || Running)
+            {
                 _actions.ExitDuty("");
+                ReflectionHelper.RotationSolver_Reflection.RotationStop();
+            }
             if (!Running)
                 Stage = 0;
             else
