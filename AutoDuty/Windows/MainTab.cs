@@ -140,9 +140,7 @@ namespace AutoDuty.Windows
                     {
                         if (ImGui.Button("Run"))
                         {
-                            if (Plugin.Configuration.Trust)
-                                MainWindow.ShowPopup("Error", "This has not yet been implemented");
-                            else if (!Plugin.Configuration.Support && !Plugin.Configuration.Trust && !Plugin.Configuration.Squadron && !Plugin.Configuration.Regular)
+                            if (!Plugin.Configuration.Support && !Plugin.Configuration.Trust && !Plugin.Configuration.Squadron && !Plugin.Configuration.Regular)
                                 MainWindow.ShowPopup("Error", "You must select a version\nof the dungeon to run");
                             else if (Svc.Party.PartyId > 0 && (Plugin.Configuration.Support || Plugin.Configuration.Squadron || Plugin.Configuration.Trust))
                                 MainWindow.ShowPopup("Error", "You must not be in a party to run Support, Squadron or Trust");
@@ -226,20 +224,17 @@ namespace AutoDuty.Windows
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    using (var dt = ImRaii.Disabled(true))
+                    if (ImGui.Checkbox("Trust", ref _trust))
                     {
-                        if (ImGui.Checkbox("Trust", ref _trust))
+                        if (_trust)
                         {
-                            if (_trust)
-                            {
-                                Plugin.Configuration.Trust = _trust;
-                                Plugin.Configuration.Support = false;
-                                Plugin.Configuration.Squadron = false;
-                                Plugin.Configuration.Regular = false;
-                                Plugin.CurrentTerritoryContent = null;
-                                _dutyListSelected = -1;
-                                Plugin.Configuration.Save();
-                            }
+                            Plugin.Configuration.Trust = _trust;
+                            Plugin.Configuration.Support = false;
+                            Plugin.Configuration.Squadron = false;
+                            Plugin.Configuration.Regular = false;
+                            Plugin.CurrentTerritoryContent = null;
+                            _dutyListSelected = -1;
+                            Plugin.Configuration.Save();
                         }
                     }
                     ImGui.SameLine(0, 5);
