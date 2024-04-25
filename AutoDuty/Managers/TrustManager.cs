@@ -27,7 +27,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dawn"), "RegisterTrust");
             _taskManager.Enqueue(() => { if (addon == null) OpenDawn(); }, "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
-            //_taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 11, (content.ExVersion - 4)), "RegisterTrust");
+            //_taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, (content.ExVersion - 4)), "RegisterTrust");
             _taskManager.DelayNext("RegisterTrust", 500);
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, content.DawnIndex - 1), "RegisterTrust");
             _taskManager.DelayNext("RegisterTrust", 500);
