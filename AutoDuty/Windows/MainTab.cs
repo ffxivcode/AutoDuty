@@ -24,6 +24,8 @@ namespace AutoDuty.Windows
             var _trust = Plugin.Configuration.Trust;
             var _squadron = Plugin.Configuration.Squadron;
             var _regular = Plugin.Configuration.Regular;
+            var _Trial = Plugin.Configuration.Trial;
+            var _raid = Plugin.Configuration.Raid;
             var _unsynced = Plugin.Configuration.Unsynced;
             var _hideUnavailableDuties = Plugin.Configuration.HideUnavailableDuties;
 
@@ -140,7 +142,7 @@ namespace AutoDuty.Windows
                     {
                         if (ImGui.Button("Run"))
                         {
-                            if (!Plugin.Configuration.Support && !Plugin.Configuration.Trust && !Plugin.Configuration.Squadron && !Plugin.Configuration.Regular)
+                            if (!Plugin.Configuration.Support && !Plugin.Configuration.Trust && !Plugin.Configuration.Squadron && !Plugin.Configuration.Regular && !Plugin.Configuration.Trial && !Plugin.Configuration.Raid)
                                 MainWindow.ShowPopup("Error", "You must select a version\nof the dungeon to run");
                             else if (Svc.Party.PartyId > 0 && (Plugin.Configuration.Support || Plugin.Configuration.Squadron || Plugin.Configuration.Trust))
                                 MainWindow.ShowPopup("Error", "You must not be in a party to run Support, Squadron or Trust");
@@ -215,6 +217,8 @@ namespace AutoDuty.Windows
                         if (_support)
                         {
                             Plugin.Configuration.Support = _support;
+                            Plugin.Configuration.Trial = false;
+                            Plugin.Configuration.Raid = false;
                             Plugin.Configuration.Trust = false;
                             Plugin.Configuration.Squadron = false;
                             Plugin.Configuration.Regular = false;
@@ -229,6 +233,8 @@ namespace AutoDuty.Windows
                         if (_trust)
                         {
                             Plugin.Configuration.Trust = _trust;
+                            Plugin.Configuration.Trial = false;
+                            Plugin.Configuration.Raid = false;
                             Plugin.Configuration.Support = false;
                             Plugin.Configuration.Squadron = false;
                             Plugin.Configuration.Regular = false;
@@ -243,6 +249,8 @@ namespace AutoDuty.Windows
                         if (_squadron)
                         {
                             Plugin.Configuration.Squadron = _squadron;
+                            Plugin.Configuration.Trial = false;
+                            Plugin.Configuration.Raid = false;
                             Plugin.Configuration.Support = false;
                             Plugin.Configuration.Trust = false;
                             Plugin.Configuration.Regular = false;
@@ -257,6 +265,8 @@ namespace AutoDuty.Windows
                         if (_regular)
                         {
                             Plugin.Configuration.Regular = _regular;
+                            Plugin.Configuration.Trial = false;
+                            Plugin.Configuration.Raid = false;
                             Plugin.Configuration.Support = false;
                             Plugin.Configuration.Trust = false;
                             Plugin.Configuration.Squadron = false;
@@ -265,21 +275,53 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    if (Plugin.Configuration.Regular)
+                    ImGui.SameLine(0, 5);
+                    if (ImGui.Checkbox("Trial", ref _Trial))
                     {
-                        ImGui.SameLine(0, 5);
-                        if (ImGui.Checkbox("Unsynced", ref _unsynced))
+                        if (_Trial)
                         {
-                            Plugin.Configuration.Unsynced = _unsynced;
+                            Plugin.Configuration.Trial = _Trial;
+                            Plugin.Configuration.Raid = false;
+                            Plugin.Configuration.Regular = false;
+                            Plugin.Configuration.Support = false;
+                            Plugin.Configuration.Trust = false;
+                            Plugin.Configuration.Squadron = false;
+                            Plugin.CurrentTerritoryContent = null;
+                            _dutyListSelected = -1;
                             Plugin.Configuration.Save();
                         }
                     }
-                    if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular)
+                    ImGui.SameLine(0, 5);
+                    if (ImGui.Checkbox("Raid", ref _raid))
+                    {
+                        if (_raid)
+                        {
+                            Plugin.Configuration.Raid = _raid;
+                            Plugin.Configuration.Trial = false;
+                            Plugin.Configuration.Regular = false;
+                            Plugin.Configuration.Support = false;
+                            Plugin.Configuration.Trust = false;
+                            Plugin.Configuration.Squadron = false;
+                            Plugin.CurrentTerritoryContent = null;
+                            _dutyListSelected = -1;
+                            Plugin.Configuration.Save();
+                        }
+                    }
+                    if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
                     {
                         //ImGui.SameLine(0, 5);
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref _hideUnavailableDuties))
                         {
                             Plugin.Configuration.HideUnavailableDuties = _hideUnavailableDuties;
+                            Plugin.Configuration.Save();
+                        }
+                    }
+                    if (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
+                    {
+                        ImGui.SameLine(0, 5);
+                        if (ImGui.Checkbox("Unsynced", ref _unsynced))
+                        {
+                            Plugin.Configuration.Unsynced = _unsynced;
                             Plugin.Configuration.Save();
                         }
                     }
@@ -295,7 +337,11 @@ namespace AutoDuty.Windows
                         else if (Plugin.Configuration.Squadron)
                             dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
                         else if (Plugin.Configuration.Regular)
-                            dictionary = ContentHelper.DictionaryContent;
+                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 2).ToDictionary();
+                        else if (Plugin.Configuration.Trial)
+                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 4).ToDictionary();
+                        else if (Plugin.Configuration.Raid)
+                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 5).ToDictionary();
 
                         if (dictionary.Count > 0)
                         {

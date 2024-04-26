@@ -252,6 +252,8 @@ public class AutoDuty : IDalamudPlugin
                     _gotoManager.Goto(true, false);
                     _taskManager.Enqueue(() => _squadronManager.RegisterSquadron(CurrentTerritoryContent), int.MaxValue, "Loop");
                 }
+                else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
+                    _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
                 _taskManager.Enqueue(() => CurrentLoop++, "Loop");
             }
             else
@@ -333,7 +335,7 @@ public class AutoDuty : IDalamudPlugin
             _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Configuration.Support)
             _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
-        else if (Configuration.Regular)
+        else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
             _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
         else if (Configuration.Squadron)
         {

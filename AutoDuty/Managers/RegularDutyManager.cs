@@ -1,5 +1,6 @@
 ﻿using AutoDuty.Helpers;
 using AutoDuty.IPC;
+using Dalamud.Configuration;
 using ECommons;
 using ECommons.Automation;
 using ECommons.DalamudServices;
@@ -8,6 +9,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.GeneratedSheets;
 using static AutoDuty.Helpers.ContentHelper;
 
 namespace AutoDuty.Managers
@@ -50,10 +52,41 @@ namespace AutoDuty.Managers
             if (GenericHelpers.TryGetAddonByName(addonName, out AtkUnitBase* addon) && GenericHelpers.IsAddonReady(addon))
                 return (nint)addon;
 
-            AddonHelper.FireCallBack(addonContentsFider, true, 3, ((AddonContentsFinder*)addonContentsFider)->SelectedRow - (1 + (content.ExVersion * 2)));
+            AddonHelper.FireCallBack(addonContentsFider, true, 3, ((AddonContentsFinder*)addonContentsFider)->SelectedRow - IndexMod(content));
             AddonHelper.FireCallBack(addonContentsFider, true, 12, 0);
 
             return 0;
+        }
+
+        internal static unsafe uint IndexMod(Content content)
+        {
+            uint indexMod = 0;
+            uint ex = content.ExVersion == 4 ? 0 : content.ExVersion;
+
+            switch (content.ContentType)
+            {
+                case 5:
+                    indexMod = ex;
+                    indexMod += (ex + 1) * 3;
+                    if (content.ContentMemberType == 4)
+                        indexMod -= 2;
+                    else if (content.ContentMemberType == 3 && content.Name != null && !content.Name.Contains("(Savage)"))
+                        indexMod -= 1;
+                    break;
+                case 4:
+                    indexMod = ex;
+                    indexMod += (ex + 1) * 2;
+                    if (content.Name != null && !content.Name.Contains("(Extreme)") && !content.Name.Contains("The Minstrel's Balad"))
+                        indexMod -= 1;
+                    break;
+                case 2:
+                    indexMod = 1 + (ex * 2);
+                    break;
+                default:
+                    break;
+            }
+
+            return indexMod;
         }
     }
 }

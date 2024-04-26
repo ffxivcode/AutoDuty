@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Numerics;
 using Dalamud.Interface;
-using Dalamud.Interface.ImGuiNotification;
-using Dalamud.Interface.Internal.Notifications;
 using Dalamud.Interface.Windowing;
 using ECommons;
-using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
-using ECommons.Reflection;
 using ECommons.Schedulers;
-using ECommons.Throttlers;
 using ImGuiNET;
 
 namespace AutoDuty.Windows;

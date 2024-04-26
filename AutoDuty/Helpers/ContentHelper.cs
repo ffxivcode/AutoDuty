@@ -30,6 +30,10 @@ namespace AutoDuty.Helpers
 
             internal uint ContentFinderCondition { get; set; }
 
+            internal uint ContentType { get; set; }
+
+            internal uint ContentMemberType { get; set; }
+
             internal bool TrustContent { get; set; } = false;
 
             internal bool GCArmyContent { get; set; } = false;
@@ -45,13 +49,15 @@ namespace AutoDuty.Helpers
 
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
-                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || contentFinderCondition.ContentType.Value.RowId != 2 || contentFinderCondition.Name.ToString().IsNullOrEmpty())
+                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || ( contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 ) || contentFinderCondition.Name.ToString().IsNullOrEmpty())
                     continue;
 
                 var content = new Content
                 {
-                    Name = contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The").Replace("--", "-") : contentFinderCondition.Name.ToString().Replace("--", "-"),
+                    Name = contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The").Replace("--", "-").Replace("<italic(0)>","").Replace("<italic(1)>", "") : contentFinderCondition.Name.ToString().Replace("--", "-").Replace("<italic(0)>", "").Replace("<italic(1)>", ""),
                     TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
+                    ContentType = contentFinderCondition.ContentType.Value.RowId,
+                    ContentMemberType = contentFinderCondition.ContentMemberType.Value?.RowId ?? 0,
                     ContentFinderCondition = contentFinderCondition.RowId,
                     ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                     ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
@@ -66,7 +72,7 @@ namespace AutoDuty.Helpers
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);
             }
 
-            DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.ItemLevelRequired).ToDictionary();
+            DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.TerritoryType).ToDictionary();
         }
     }
 }

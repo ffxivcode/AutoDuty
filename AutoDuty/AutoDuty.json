@@ -2,7 +2,7 @@
   "Author": "Herculezz",
   "Name": "AutoDuty",
   "InternalName": "AutoDuty",
-  "AssemblyVersion": "0.0.0.40",
+  "AssemblyVersion": "0.0.0.41",
   "Punchline": "AutoDuty",
   "Description": "A plugin to run dungeons for you with Trust, Duty Support, Squadrons and Regular, Requires BossMod, vnavmesh and Rotation Solver (Recommend Reborn Fork)",
   "ApplicableVersion": "any",

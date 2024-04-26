@@ -12,7 +12,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 40;
+    public int Version { get; set; } = 41;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
@@ -35,6 +35,8 @@ public class Configuration : IPluginConfiguration
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
     public bool Regular { get; set; } = false;
+    public bool Trial { get; set; } = false;
+    public bool Raid { get; set; } = false;
     public bool Unsynced { get; set; } = false;
     public bool HideUnavailableDuties { get; set; } = false;
 
