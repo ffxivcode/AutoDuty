@@ -206,6 +206,10 @@ namespace AutoDuty.Windows
                         {
                             Plugin.GotoAction("Inn");
                         }
+                        if (ImGui.Selectable("GCSupply"))
+                        {
+                            Plugin.GotoAction("GCSupply");
+                        }
                         if (ImGui.Selectable("Repair"))
                         {
                             Plugin.GotoAction("Repair");
@@ -228,6 +232,7 @@ namespace AutoDuty.Windows
                         }
                     }
                     ImGui.SameLine(0, 5);
+                    /*
                     if (ImGui.Checkbox("Trust", ref _trust))
                     {
                         if (_trust)
@@ -243,7 +248,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    ImGui.SameLine(0, 5);
+                    ImGui.SameLine(0, 5);*/
                     if (ImGui.Checkbox("Squadron", ref _squadron))
                     {
                         if (_squadron)

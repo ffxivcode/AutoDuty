@@ -249,7 +249,7 @@ public class AutoDuty : IDalamudPlugin
                     _taskManager.Enqueue(() => _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent), int.MaxValue, "Loop");
                 else if (Configuration.Squadron)
                 {
-                    _gotoManager.Goto(true, false);
+                    _gotoManager.Goto(true, false, false);
                     _taskManager.Enqueue(() => _squadronManager.RegisterSquadron(CurrentTerritoryContent), int.MaxValue, "Loop");
                 }
                 else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
@@ -287,11 +287,15 @@ public class AutoDuty : IDalamudPlugin
         switch (where)
         {
             case "Barracks":
-                _gotoManager.Goto(true, false);
+                _gotoManager.Goto(true, false, false);
                 _taskManager.Enqueue(() => Stage = 0, "Goto");
                 break;
             case "Inn":
-                _gotoManager.Goto(false, true);
+                _gotoManager.Goto(false, true, false);
+                _taskManager.Enqueue(() => Stage = 0, "Goto");
+                break;
+            case "GCSupply":
+                _gotoManager.Goto(false, false, true);
                 _taskManager.Enqueue(() => Stage = 0, "Goto");
                 break;
             case "Repair":
@@ -329,7 +333,7 @@ public class AutoDuty : IDalamudPlugin
         Running = true;
         Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         if (!Configuration.Squadron)
-            _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops);
+            _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false);
         _repairManager.Repair();
         if (Configuration.Trust)
             _trustManager.RegisterTrust(CurrentTerritoryContent);
@@ -339,7 +343,7 @@ public class AutoDuty : IDalamudPlugin
             _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
         else if (Configuration.Squadron)
         {
-            _gotoManager.Goto(true, false);
+            _gotoManager.Goto(true, false, false);
             _squadronManager.RegisterSquadron(CurrentTerritoryContent);
         }
         CurrentLoop = 1;
@@ -863,7 +867,7 @@ public class AutoDuty : IDalamudPlugin
     private unsafe void OnCommand(string command, string args)
     {
         // in response to the slash command
-        switch (args)
+        switch (args.Split(" ")[0])
         {
             case "config" or "cfg":
                 OpenConfigUI(); 
@@ -873,6 +877,9 @@ public class AutoDuty : IDalamudPlugin
                 break;
             case "stop":
                 StopAndResetALL();
+                break;
+            case "goto":
+                GotoAction(args.Replace("goto ",""));
                 break;
             default:
                 OpenMainUI(); 

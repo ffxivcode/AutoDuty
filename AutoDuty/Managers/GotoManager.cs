@@ -14,9 +14,68 @@ namespace AutoDuty.Managers
 {
     internal class GotoManager(TaskManager _taskManager)
     {
-        public unsafe void Goto(bool gotoBarracks, bool gotoInn) 
+        private GameObject? gameObject = null;
+
+        public unsafe void GotoGCSupply(Vector3[] gcSupplyPositions)
         {
-            if ((gotoBarracks && Svc.ClientState.TerritoryType != 536 && Svc.ClientState.TerritoryType != 534 && Svc.ClientState.TerritoryType != 535) || (gotoInn && Svc.ClientState.TerritoryType != 177 && Svc.ClientState.TerritoryType != 179 && Svc.ClientState.TerritoryType != 178))
+            foreach (var v in gcSupplyPositions.Select((Value, Index) => (Value, Index)))
+            {
+                if ((v.Index + 1) == gcSupplyPositions.Length)
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Goto");
+                else
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
+                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
+            }
+            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
+            _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
+        }
+
+        public unsafe void GotoBarracks(Vector3[] barracksDoorPositions)
+        {
+            foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
+            {
+                if ((v.Index + 1) == barracksDoorPositions.Length)
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Goto");
+                else
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
+                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
+            }
+            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
+            _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
+            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Entrance to the Barracks")) != null, "Goto");
+            _taskManager.DelayNext("Goto", 50);
+            _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "Goto");
+            _taskManager.DelayNext("Goto", 50);
+            _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Goto");
+            _taskManager.DelayNext("Goto", 50);
+            _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
+            _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
+        }
+
+        public unsafe void GotoInn(Vector3[] innKeepPositions, string innKeepName)
+        {
+
+            foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
+            {
+                if ((v.Index + 1) == innKeepPositions.Length)
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Goto");
+                else
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
+                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
+            }
+            _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
+            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
+            _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
+            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(innKeepName)) != null, "Goto");
+            _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "Talk") != null, "Goto");
+            _taskManager.Enqueue(() => AddonHelper.ClickSelectString(0));
+            _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
+            _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
+        }
+
+        public unsafe void Goto(bool gotoBarracks, bool gotoInn, bool gotoGCSupply) 
+        {
+            if ((gotoBarracks && Svc.ClientState.TerritoryType != 536 && Svc.ClientState.TerritoryType != 534 && Svc.ClientState.TerritoryType != 535) || (gotoInn && Svc.ClientState.TerritoryType != 177 && Svc.ClientState.TerritoryType != 179 && Svc.ClientState.TerritoryType != 178) || gotoGCSupply)
             {
                 AutoDuty.Plugin.Action = $"Going to: {(gotoBarracks ? "Barracks" : "Inn")}";
                 AutoDuty.Plugin.Goto = true;
@@ -25,24 +84,23 @@ namespace AutoDuty.Managers
                 {
                     //Limsa=1,129, Gridania=2,132, Uldah=3,130 -- Goto Limsa if no GC
                     case 1:
-                        GotoTasks(129, [new Vector3(15.42688f, 39.99999f, 12.466553f)], "Mytesyn", [new Vector3(98.00867f, 41.275635f, 62.790894f)], gotoBarracks, gotoInn, "The Aftcastle", 128);
+                        GotoTasks(129, [new Vector3(15.42688f, 39.99999f, 12.466553f)], "Mytesyn", [new Vector3(98.00867f, 41.275635f, 62.790894f)], [new Vector3(94.02183f, 40.27537f, 74.475525f)], gotoBarracks, gotoInn, gotoGCSupply, "The Aftcastle", 128);
                         break;
                     case 2:
-                        GotoTasks(132, [new Vector3(23.697266f, -8.1026f, 100.053345f)], "Antoinaut", [new Vector3(-80.00789f, -0.5001702f, -6.6672616f)], gotoBarracks, gotoInn);
+                        GotoTasks(132, [new Vector3(23.697266f, -8.1026f, 100.053345f)], "Antoinaut", [new Vector3(-80.00789f, -0.5001702f, -6.6672616f)], [new Vector3(-68.678566f, -0.5015295f, -8.470145f)], gotoBarracks, gotoInn, gotoGCSupply);
                         break;
                     case 3:
-                        GotoTasks(130, [new Vector3(29.495605f, 7.4500003f, -78.324646f)], "Otopa Pottopa", [new Vector3(-153.30743f, 5.2338257f, -98.039246f)], gotoBarracks, gotoInn);
+                        GotoTasks(130, [new Vector3(29.495605f, 7.4500003f, -78.324646f)], "Otopa Pottopa", [new Vector3(-153.30743f, 5.2338257f, -98.039246f)], [new Vector3(-142.82619f, 4.0999994f, -106.31349f)], gotoBarracks, gotoInn, gotoGCSupply);
                         break;
                     default:
-                        GotoTasks(130, [new Vector3(29.495605f, 7.4500003f, -78.324646f)], "Otopa Pottopa", [new Vector3(-153.30743f, 5.2338257f, -98.039246f)], gotoBarracks, gotoInn);
+                        GotoTasks(130, [new Vector3(29.495605f, 7.4500003f, -78.324646f)], "Otopa Pottopa", [new Vector3(-153.30743f, 5.2338257f, -98.039246f)], [new Vector3(-142.82619f, 4.0999994f, -106.31349f)], gotoBarracks, gotoInn, gotoGCSupply);
                         break;
                 }
             }
         }
-        public unsafe void GotoTasks(uint territoryType, Vector3[] innKeepPositions, string innKeepName, Vector3[] barracksDoorPositions, bool gotoBarracks, bool gotoInn, string aethernetName = "", uint aethernetToTerritoryType = 0)
+        public unsafe void GotoTasks(uint territoryType, Vector3[] innKeepPositions, string innKeepName, Vector3[] barracksDoorPositions, Vector3[] gcSupplyPositions, bool gotoBarracks, bool gotoInn, bool gotoGCSupply, string aethernetName = "", uint aethernetToTerritoryType = 0)
         {
             AtkUnitBase* addon = null;
-            GameObject? gameObject = null;
 
             if ((((Svc.ClientState.TerritoryType == 536 && gotoInn) || (Svc.ClientState.TerritoryType == 177 && gotoBarracks)) && territoryType == 129) || (((Svc.ClientState.TerritoryType == 534 && gotoInn) || (Svc.ClientState.TerritoryType == 179 && gotoBarracks)) && territoryType == 132) || (((Svc.ClientState.TerritoryType == 535 && gotoInn) || (Svc.ClientState.TerritoryType == 178 && gotoBarracks)) && territoryType == 130))
             {
@@ -80,45 +138,12 @@ namespace AutoDuty.Managers
                 }
             }
             if (gotoInn)
-            {
-                foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
-                {
-                    if ((v.Index + 1) == innKeepPositions.Length)
-                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Goto");
-                    else
-                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
-                    _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
-                }
-                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
-                _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
-                _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
-                _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(innKeepName)) != null, "Goto");
-                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "Talk") != null, "Goto");
-                _taskManager.Enqueue(() => AddonHelper.ClickSelectString(0));
-                _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
-                _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
-            }
+                GotoInn(innKeepPositions, innKeepName);
             else if (gotoBarracks)
-            {
-                foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
-                {
-                    if ((v.Index + 1) == barracksDoorPositions.Length)
-                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Goto");
-                    else
-                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
-                    _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
-                }
-                _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
-                _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
-                _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Entrance to the Barracks")) != null, "Goto");
-                _taskManager.DelayNext("Goto", 50);
-                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "Goto");
-                _taskManager.DelayNext("Goto", 50);
-                _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Goto");
-                _taskManager.DelayNext("Goto", 50);
-                _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
-                _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
-            }
+                GotoBarracks(barracksDoorPositions);
+            else if (gotoGCSupply)
+                GotoGCSupply(gcSupplyPositions);
+
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Goto = false; }, "Goto");
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "Goto");
         }
