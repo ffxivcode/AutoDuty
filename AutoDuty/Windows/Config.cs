@@ -185,25 +185,26 @@ public static class ConfigTab
             autoDesynth = false;
             Configuration.Save();
         }
-
-        if (ImGui.Checkbox("After Every Loop", ref autoGCTurninAfterEveryLoop))
+        using (var d2 = ImRaii.Disabled(!autoGCTurnin))
         {
-            Configuration.AutoGCTurninAfterEveryLoop = autoGCTurninAfterEveryLoop;
-            Configuration.Save();
-        }
-        //ImGuiEx.SetNextItemWidthScaled(50);
-        if (ImGui.InputText("ItemID to Buy when Max Seals", ref autoGCTurninItemToBuyId, 10))
-        {
-            Configuration.AutoGCTurninItemToBuyId = autoGCTurninItemToBuyId;
-            Configuration.Save();
-        }
-
-        using (var d2 = ImRaii.Disabled(!autoGCTurnin || autoGCTurninAfterEveryLoop))
-        {
-            if (ImGui.SliderInt("@ Slots Left", ref autoGCTurninSlotsLeft, 1, 180))
+            if (ImGui.Checkbox("After Every Loop", ref autoGCTurninAfterEveryLoop))
             {
-                Configuration.AutoGCTurninSlotsLeft = autoGCTurninSlotsLeft;
+                Configuration.AutoGCTurninAfterEveryLoop = autoGCTurninAfterEveryLoop;
                 Configuration.Save();
+            }
+            //ImGuiEx.SetNextItemWidthScaled(50);
+            if (ImGui.InputText("ItemID to Buy when Max Seals", ref autoGCTurninItemToBuyId, 10))
+            {
+                Configuration.AutoGCTurninItemToBuyId = autoGCTurninItemToBuyId;
+                Configuration.Save();
+            }
+            using (var d3 = ImRaii.Disabled(autoGCTurninAfterEveryLoop))
+            {
+                if (ImGui.SliderInt("@ Slots Left", ref autoGCTurninSlotsLeft, 1, 180))
+                {
+                    Configuration.AutoGCTurninSlotsLeft = autoGCTurninSlotsLeft;
+                    Configuration.Save();
+                }
             }
         }
     }
