@@ -195,7 +195,11 @@ namespace AutoDuty.Windows
                     {
                         ImGui.OpenPopup("GotoPopup");
                     }
-
+                    ImGui.SameLine(0, 5);
+                    if (ImGui.Button("TurnIn"))
+                    {
+                        GCTurninHelper.Invoke();
+                    }
                     if (ImGui.BeginPopup("GotoPopup"))
                     {
                         if (ImGui.Selectable("Barracks"))

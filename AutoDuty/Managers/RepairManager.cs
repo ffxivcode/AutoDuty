@@ -3,7 +3,7 @@ using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
-using ECommons.Automation;
+using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;

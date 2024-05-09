@@ -31,6 +31,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoDesynth { get; set; } = false;
     public bool AutoGCTurnin { get; set; } = false;
     public bool AutoGCTurninAfterEveryLoop { get; set; } = false;
+    public string AutoGCTurninItemToBuyId { get; set; } = "0";
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
@@ -76,6 +77,7 @@ public static class ConfigTab
         var autoGCTurnin = Configuration.AutoGCTurnin;
         var autoGCTurninSlotsLeft = Configuration.AutoGCTurninSlotsLeft;
         var autoGCTurninAfterEveryLoop = Configuration.AutoGCTurninAfterEveryLoop;
+        string autoGCTurninItemToBuyId = Configuration.AutoGCTurninItemToBuyId;
 
         if (ImGui.Checkbox("Auto Exit Duty on Completion", ref autoExitDuty))
         {
@@ -175,26 +177,33 @@ public static class ConfigTab
                 autoGCTurnin = false;
                 Configuration.Save();
             }
-            if (ImGui.Checkbox("Auto GC Turnin", ref autoGCTurnin))
+        }
+        if (ImGui.Checkbox("Auto GC Turnin", ref autoGCTurnin))
+        {
+            Configuration.AutoGCTurnin = autoGCTurnin;
+            Configuration.AutoDesynth = false;
+            autoDesynth = false;
+            Configuration.Save();
+        }
+
+        if (ImGui.Checkbox("After Every Loop", ref autoGCTurninAfterEveryLoop))
+        {
+            Configuration.AutoGCTurninAfterEveryLoop = autoGCTurninAfterEveryLoop;
+            Configuration.Save();
+        }
+        //ImGuiEx.SetNextItemWidthScaled(50);
+        if (ImGui.InputText("ItemID to Buy when Max Seals", ref autoGCTurninItemToBuyId, 10))
+        {
+            Configuration.AutoGCTurninItemToBuyId = autoGCTurninItemToBuyId;
+            Configuration.Save();
+        }
+
+        using (var d2 = ImRaii.Disabled(!autoGCTurnin || autoGCTurninAfterEveryLoop))
+        {
+            if (ImGui.SliderInt("@ Slots Left", ref autoGCTurninSlotsLeft, 1, 180))
             {
-                Configuration.AutoGCTurnin = autoGCTurnin;
-                Configuration.AutoDesynth = false;
-                autoDesynth = false;
+                Configuration.AutoGCTurninSlotsLeft = autoGCTurninSlotsLeft;
                 Configuration.Save();
-            }
-            if (ImGui.Checkbox("After Every Loop", ref autoGCTurninAfterEveryLoop))
-            {
-                Configuration.AutoGCTurninAfterEveryLoop = autoGCTurninAfterEveryLoop;
-                Configuration.Save();
-            }
-            
-            using (var d2 = ImRaii.Disabled(!autoGCTurnin || autoGCTurninAfterEveryLoop))
-            {
-                if (ImGui.SliderInt("@ Slots Left", ref autoGCTurninSlotsLeft, 1, 180))
-                {
-                    Configuration.AutoGCTurninSlotsLeft = autoGCTurninSlotsLeft;
-                    Configuration.Save();
-                }
             }
         }
     }

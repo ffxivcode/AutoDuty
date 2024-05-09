@@ -12,7 +12,7 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using AutoDuty.Managers;
 using AutoDuty.Windows;
 using AutoDuty.IPC;
-using ECommons.Automation;
+using ECommons.Automation.LegacyTaskManager;
 using AutoDuty.External;
 using AutoDuty.Helpers;
 using ECommons.Throttlers;
@@ -23,6 +23,9 @@ using System.Text.Json;
 using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
+using ECommons.Automation;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using System.Runtime.CompilerServices;
 
 namespace AutoDuty;
 
@@ -65,6 +68,7 @@ public class AutoDuty : IDalamudPlugin
     internal bool Repairing = false;
     internal bool Goto = false;
     internal bool InDungeon = false;
+    internal bool GCTurninComplete = false;
     internal string Action = "";
     internal string PathFile = "";
 
@@ -335,6 +339,8 @@ public class AutoDuty : IDalamudPlugin
         if (!Configuration.Squadron)
             _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false);
         _repairManager.Repair();
+        if (Configuration.AutoGCTurnin && (InventoryHelper.SlotsFree <= Configuration.AutoGCTurninSlotsLeft || Configuration.AutoGCTurninAfterEveryLoop))
+            InvokeGCTurnin();
         if (Configuration.Trust)
             _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Configuration.Support)
@@ -347,6 +353,12 @@ public class AutoDuty : IDalamudPlugin
             _squadronManager.RegisterSquadron(CurrentTerritoryContent);
         }
         CurrentLoop = 1;
+    }
+
+    private void InvokeGCTurnin()
+    {
+        _taskManager.Enqueue(() => GCTurninComplete, int.MaxValue, "GCTurnin");
+        GCTurninHelper.Invoke();
     }
 
     public void StartNavigation(bool startFromZero = true)
@@ -880,6 +892,9 @@ public class AutoDuty : IDalamudPlugin
                 break;
             case "goto":
                 GotoAction(args.Replace("goto ",""));
+                break;
+            case "turnin":
+                GCTurninHelper.Invoke();
                 break;
             default:
                 OpenMainUI(); 

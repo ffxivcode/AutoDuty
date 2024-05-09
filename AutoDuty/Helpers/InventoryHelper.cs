@@ -1,15 +1,19 @@
 ﻿using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina.Excel.GeneratedSheets;
-using System;
 using System.Linq;
 
 namespace AutoDuty.Helpers
 {
-    internal static class InventoryHelper
+    internal unsafe static class InventoryHelper
     {
-        public unsafe static uint CurrentItemLevel()
+        internal static uint SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();
+        internal static uint MySeals => InventoryManager.Instance()->GetCompanySeals(PlayerState.Instance()->GrandCompany);
+        internal static uint MaxSeals => InventoryManager.Instance()->GetMaxCompanySeals(PlayerState.Instance()->GrandCompany);
+
+        internal static uint CurrentItemLevel()
         {
             var equipedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
             uint itemLevelTotal = 0;
@@ -39,7 +43,7 @@ namespace AutoDuty.Helpers
             return itemLevelTotal / 12;
         }
 
-        public unsafe static float LowestEquippedCondition()
+        internal static float LowestEquippedCondition()
         {
             var equipedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
             uint itemLowestCondition = 60000;
@@ -51,8 +55,9 @@ namespace AutoDuty.Helpers
 
             return itemLowestCondition / 300f;
         }
+
         //artisan
-        internal unsafe static bool CanRepairItem(uint itemID)
+        internal static bool CanRepairItem(uint itemID)
         {
             var item = Svc.Data.Excel.GetSheet<Item>()?.GetRow(itemID);
 
@@ -78,10 +83,11 @@ namespace AutoDuty.Helpers
             return false;
         }
 
-        internal unsafe static bool HasDarkMatterOrBetter(uint darkMatterID)
+        //artisan
+        internal static bool HasDarkMatterOrBetter(uint darkMatterID)
         {
             var repairResources = Svc.Data.Excel.GetSheet<ItemRepairResource>();
-            foreach (var dm in repairResources)
+            foreach (var dm in repairResources!)
             {
                 if (dm.Item.Row < darkMatterID)
                     continue;

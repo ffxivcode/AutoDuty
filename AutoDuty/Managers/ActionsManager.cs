@@ -9,12 +9,12 @@ using System.Runtime.InteropServices;
 using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.IPC;
 using ECommons;
-using ECommons.Automation;
+using ECommons.Automation.LegacyTaskManager;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons.Throttlers;
 using ECommons.GameHelpers;
 using AutoDuty.Helpers;
-using AutoDuty.External;
+using ECommons.Automation;
 
 namespace AutoDuty.Managers
 {
@@ -31,6 +31,7 @@ namespace AutoDuty.Managers
             ("DutySpecificCode","step #?"),
             ("BossMod","on / off"),
             ("Target","Target what?"),
+            ("ChatCommand","Command with args?"),
         ];
 
         private delegate void ExitDutyDelegate(char timeout);
@@ -56,6 +57,15 @@ namespace AutoDuty.Managers
         }
 
         public void BossMod(string sts) => _chat.ExecuteCommand($"/vbmai {sts}");
+
+        public void ChatCommand(string commandAndArgs)
+        {
+            if (AutoDuty.Plugin.Player == null)
+                return;
+            AutoDuty.Plugin.Action = $"ChatCommand: {commandAndArgs}";
+            _taskManager.Enqueue(() => _chat.ExecuteCommand(commandAndArgs), "ChatCommand");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+        }
 
         public void Wait(string wait)
         {

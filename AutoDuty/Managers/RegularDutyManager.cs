@@ -1,15 +1,13 @@
 ﻿using AutoDuty.Helpers;
 using AutoDuty.IPC;
-using Dalamud.Configuration;
 using ECommons;
-using ECommons.Automation;
+using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel.GeneratedSheets;
 using static AutoDuty.Helpers.ContentHelper;
 
 namespace AutoDuty.Managers

@@ -1,7 +1,7 @@
 ﻿using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using ECommons;
-using ECommons.Automation;
+using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;

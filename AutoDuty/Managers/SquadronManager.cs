@@ -3,7 +3,7 @@ using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
-using ECommons.Automation;
+using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -49,14 +49,23 @@ namespace AutoDuty.Managers
             if ((gameObject = ObjectHelper.GetObjectByPartialName("Squadron Sergeant")) == null || !MovementHelper.Move(gameObject, 0.25f, 6f))
                 return false;
 
+            if (GenericHelpers.TryGetAddonByName("GcArmyExpeditionResult", out AtkUnitBase* addon))
+            {
+                AddonHelper.FireCallBack(addon, true, 0);
+                return false;
+            }
+
             if (SeenAddon && AddonHelper.ClickSelectString(0))
             {
                 SeenAddon = false;
                 return true;
             }
-            
-            if (!SeenAddon && ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectString") == null)
+
+            if (!SeenAddon && !GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* _))
+            {
+                ObjectHelper.InteractWithObject(gameObject);
                 return false;
+            }
             else
                 SeenAddon = true;
 
