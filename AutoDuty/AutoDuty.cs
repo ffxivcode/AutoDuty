@@ -24,14 +24,13 @@ using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
 using ECommons.Automation;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using System.Runtime.CompilerServices;
 
 namespace AutoDuty;
 
 // TODO:
+// GCTurnin is nearly complete, seems to be working great, but need to Modify the goto and repair managers so their checks for territorytype are done within the queue.
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
-// Add auto GC turn in and Auto desynth
+// Add Auto desynth
 // make config saving per character
 // drap drop on build is jacked when theres scrolling
 
@@ -71,12 +70,12 @@ public class AutoDuty : IDalamudPlugin
     internal bool GCTurninComplete = false;
     internal string Action = "";
     internal string PathFile = "";
+    internal TaskManager TaskManager;
 
     private const string CommandName = "/autoduty";
     private DirectoryInfo _configDirectory;
     private ActionsManager _actions;
     private Chat _chat;
-    private TaskManager _taskManager;
     private RepairManager _repairManager;
     private GotoManager _gotoManager;
     private DutySupportManager _dutySupportManager;
@@ -116,7 +115,7 @@ public class AutoDuty : IDalamudPlugin
             if (!PathsDirectory.Exists)
                 PathsDirectory.Create();
 
-            _taskManager = new()
+            TaskManager = new()
             {
                 AbortOnTimeout = false,
                 TimeoutSilently = true
@@ -127,13 +126,13 @@ public class AutoDuty : IDalamudPlugin
             FileHelper.Init();
             _chat = new();
             _overrideAFK = new();
-            _repairManager = new(_taskManager);
-            _gotoManager = new(_taskManager);
-            _dutySupportManager = new(_taskManager);
-            _regularDutyManager = new(_taskManager);
-            _trustManager = new(_taskManager);
-            _squadronManager = new(_taskManager);
-            _actions = new(this, _chat, _taskManager);
+            _repairManager = new(TaskManager);
+            _gotoManager = new(TaskManager);
+            _dutySupportManager = new(TaskManager);
+            _regularDutyManager = new(TaskManager);
+            _trustManager = new(TaskManager);
+            _squadronManager = new(TaskManager);
+            _actions = new(this, _chat, TaskManager);
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
@@ -243,22 +242,22 @@ public class AutoDuty : IDalamudPlugin
         {
             if (CurrentLoop < Configuration.LoopTimes)
             {
-                _taskManager.Enqueue(() => Stage = 99, "Loop");
-                _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Loop");
-                _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");
-                _taskManager.Enqueue(() => _repairManager.Repair(), int.MaxValue, "Loop");
+                TaskManager.Enqueue(() => Stage = 99, "Loop");
+                TaskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Loop");
+                TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");
+                TaskManager.Enqueue(() => _repairManager.Repair(), int.MaxValue, "Loop");
                 if (Configuration.Trust)
-                    _taskManager.Enqueue(() => _trustManager.RegisterTrust(CurrentTerritoryContent), int.MaxValue, "Loop");
+                    TaskManager.Enqueue(() => _trustManager.RegisterTrust(CurrentTerritoryContent), int.MaxValue, "Loop");
                 else if (Configuration.Support)
-                    _taskManager.Enqueue(() => _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent), int.MaxValue, "Loop");
+                    TaskManager.Enqueue(() => _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent), int.MaxValue, "Loop");
                 else if (Configuration.Squadron)
                 {
                     _gotoManager.Goto(true, false, false);
-                    _taskManager.Enqueue(() => _squadronManager.RegisterSquadron(CurrentTerritoryContent), int.MaxValue, "Loop");
+                    TaskManager.Enqueue(() => _squadronManager.RegisterSquadron(CurrentTerritoryContent), int.MaxValue, "Loop");
                 }
                 else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
                     _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
-                _taskManager.Enqueue(() => CurrentLoop++, "Loop");
+                TaskManager.Enqueue(() => CurrentLoop++, "Loop");
             }
             else
             {
@@ -292,23 +291,23 @@ public class AutoDuty : IDalamudPlugin
         {
             case "Barracks":
                 _gotoManager.Goto(true, false, false);
-                _taskManager.Enqueue(() => Stage = 0, "Goto");
+                TaskManager.Enqueue(() => Stage = 0, "Goto");
                 break;
             case "Inn":
                 _gotoManager.Goto(false, true, false);
-                _taskManager.Enqueue(() => Stage = 0, "Goto");
+                TaskManager.Enqueue(() => Stage = 0, "Goto");
                 break;
             case "GCSupply":
                 _gotoManager.Goto(false, false, true);
-                _taskManager.Enqueue(() => Stage = 0, "Goto");
+                TaskManager.Enqueue(() => Stage = 0, "Goto");
                 break;
             case "Repair":
                 _repairManager.Repair(true, false);
-                _taskManager.Enqueue(() => Stage = 0, "Goto");
+                TaskManager.Enqueue(() => Stage = 0, "Goto");
                 break;
             default:
                 MainWindow.ShowPopup("Error", $"{where} is not a valid Goto Destination");
-                _taskManager.Enqueue(() => Stage = 0, "Goto");
+                TaskManager.Enqueue(() => Stage = 0, "Goto");
                 break;
         }
     }
@@ -336,11 +335,11 @@ public class AutoDuty : IDalamudPlugin
         Stage = 99;
         Running = true;
         Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
+        if (Configuration.AutoGCTurnin && (InventoryHelper.SlotsFree <= Configuration.AutoGCTurninSlotsLeft || Configuration.AutoGCTurninAfterEveryLoop))
+            InvokeGCTurnin();
         if (!Configuration.Squadron)
             _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false);
         _repairManager.Repair();
-        if (Configuration.AutoGCTurnin && (InventoryHelper.SlotsFree <= Configuration.AutoGCTurninSlotsLeft || Configuration.AutoGCTurninAfterEveryLoop))
-            InvokeGCTurnin();
         if (Configuration.Trust)
             _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Configuration.Support)
@@ -357,7 +356,8 @@ public class AutoDuty : IDalamudPlugin
 
     private void InvokeGCTurnin()
     {
-        _taskManager.Enqueue(() => GCTurninComplete, int.MaxValue, "GCTurnin");
+        GCTurninComplete = false;
+        TaskManager.Enqueue(() => GCTurninComplete, int.MaxValue, "GCTurnin");
         GCTurninHelper.Invoke();
     }
 
@@ -393,8 +393,8 @@ public class AutoDuty : IDalamudPlugin
         _dead = true;
         if (VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
-        if (_taskManager.IsBusy)
-            _taskManager.Abort();
+        if (TaskManager.IsBusy)
+            TaskManager.Abort();
         Stage = 6;
     }
 
@@ -412,13 +412,13 @@ public class AutoDuty : IDalamudPlugin
         var oldindex = Indexer;
         Indexer = FindWaypoint();
         //Svc.Log.Info($"We Revived: we died at Index: {oldindex} and now are moving to index: {Indexer} which should be right after previous boss, and the shortcut is {gameObject.Name} at {ObjectHelper.GetDistanceToPlayer(gameObject)} Distance, moving there.");
-        _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2));
-        _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno"), int.MaxValue);
-        _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
-        _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500);
-        _taskManager.Enqueue(() => ObjectHelper.IsValid);
-        _taskManager.Enqueue(() => { if (Indexer == 0) Indexer = FindWaypoint(); });
-        _taskManager.Enqueue(() => Stage = 1);
+        TaskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2));
+        TaskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno"), int.MaxValue);
+        TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
+        TaskManager.Enqueue(() => !ObjectHelper.IsValid, 500);
+        TaskManager.Enqueue(() => ObjectHelper.IsValid);
+        TaskManager.Enqueue(() => { if (Indexer == 0) Indexer = FindWaypoint(); });
+        TaskManager.Enqueue(() => Stage = 1);
     }
 
     private int FindWaypoint()
@@ -471,6 +471,7 @@ public class AutoDuty : IDalamudPlugin
     }
     public void Framework_Update(IFramework framework)
     {
+        Svc.Log.Information($"{Goto} :: {GCTurninComplete} :: {TaskManager.NumQueuedTasks} :: {TaskManager.CurrentTaskName}");
         if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
 
@@ -676,7 +677,7 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                if (!_taskManager.IsBusy)
+                if (!TaskManager.IsBusy)
                 {
                     Stage = 1;
                     Indexer++;
@@ -757,7 +758,7 @@ public class AutoDuty : IDalamudPlugin
                     return;
 
                 Action = $"Revived";
-                if (!_taskManager.IsBusy && ObjectHelper.IsValid)
+                if (!TaskManager.IsBusy && ObjectHelper.IsValid)
                     Stage = 1;
                 break;
             //TreasureCoffer
@@ -801,7 +802,7 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                if (!_taskManager.IsBusy && !_action.IsNullOrEmpty())
+                if (!TaskManager.IsBusy && !_action.IsNullOrEmpty())
                 {
                     if (_action.Equals("Boss"))
                     {
@@ -818,7 +819,7 @@ public class AutoDuty : IDalamudPlugin
                     _actionPosition = [];
                     _actionTollerance = 0.25f;
                 }
-                if (_taskManager.IsBusy)
+                if (TaskManager.IsBusy)
                     Stage = 3;
 
                 break;
@@ -831,7 +832,7 @@ public class AutoDuty : IDalamudPlugin
                     Action = $"Step: Repairing";
                 else if (!Plugin.Goto)
                     Action = $"Step: Looping: {CurrentTerritoryContent?.Name} {CurrentLoop} of {Configuration.LoopTimes}";
-                if (!_taskManager.IsBusy && ObjectHelper.IsValid && Svc.ClientState.TerritoryType == CurrentTerritoryContent?.TerritoryType)
+                if (!TaskManager.IsBusy && ObjectHelper.IsValid && Svc.ClientState.TerritoryType == CurrentTerritoryContent?.TerritoryType)
                     Stage = 1;
                 break;
             default:
@@ -854,12 +855,13 @@ public class AutoDuty : IDalamudPlugin
             Indexer = -1;
         if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
-        if (_taskManager.IsBusy)
-            _taskManager.Abort();
+        if (TaskManager.IsBusy)
+            TaskManager.Abort();
         if (ExecSkipTalk.IsEnabled)
             ExecSkipTalk.IsEnabled = false;
         VNavmesh_IPCSubscriber.Path_Stop();
         FollowHelper.SetFollow(null);
+        GCTurninHelper.Stop();
     }
 
     public void Dispose()
@@ -871,6 +873,7 @@ public class AutoDuty : IDalamudPlugin
         MainWindow.Dispose();
         OverrideCamera.Dispose();
         Svc.Framework.Update -= Framework_Update;
+        GCTurninHelper.Stop();
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
         Svc.Condition.ConditionChange -= Condition_ConditionChange;
         Svc.Commands.RemoveHandler(CommandName);

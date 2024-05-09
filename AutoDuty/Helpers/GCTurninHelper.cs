@@ -1,13 +1,16 @@
 ﻿using AutoDuty.IPC;
+using AutoDuty.Managers;
 using AutoDuty.Windows;
 using ClickLib.Clicks;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Memory;
 using Dalamud.Plugin.Services;
 using ECommons;
+using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.Schedulers;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -17,9 +20,13 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke() => Svc.Framework.Update += GCTurninUpdate;
 
+        internal static void Stop() => Svc.Framework.Update -= GCTurninUpdate;
+
         private static GameObject? personnelOfficer = null;
 
         private static GameObject? quartermaster = null;
+
+        private static readonly TaskManager taskManager =  new();
 
         private unsafe static void GCTurninComplete()
         {
@@ -36,11 +43,21 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void GCTurninUpdate(IFramework framework)
         {
-            if (!EzThrottler.Throttle("Turnin", 50))
+            if (!EzThrottler.Throttle("Turnin", 50) || taskManager.IsBusy)
                 return;
 
             if ((personnelOfficer = ObjectHelper.GetObjectByPartialName("Personnel Officer")) == null)
+            {
+                //UIState.Instance()->PlayerState.GrandCompany)
+                //Limsa=1,129, Gridania=2,132, Uldah=3,130
+                if ((UIState.Instance()->PlayerState.GrandCompany == 1 && Svc.ClientState.TerritoryType != 128) || (UIState.Instance()->PlayerState.GrandCompany == 2 && Svc.ClientState.TerritoryType != 132) || (UIState.Instance()->PlayerState.GrandCompany == 3 && Svc.ClientState.TerritoryType != 130))
+                {
+                    //Goto GCSupply
+                    var g = new GotoManager(taskManager);
+                    g.Goto(false, false, true);
+                }
                 return;
+            }
 
             if ((quartermaster = ObjectHelper.GetObjectByPartialName("Quartermaster")) == null)
                 return;

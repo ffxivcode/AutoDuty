@@ -77,7 +77,7 @@ namespace AutoDuty.Managers
         {
             if ((gotoBarracks && Svc.ClientState.TerritoryType != 536 && Svc.ClientState.TerritoryType != 534 && Svc.ClientState.TerritoryType != 535) || (gotoInn && Svc.ClientState.TerritoryType != 177 && Svc.ClientState.TerritoryType != 179 && Svc.ClientState.TerritoryType != 178) || gotoGCSupply)
             {
-                AutoDuty.Plugin.Action = $"Going to: {(gotoBarracks ? "Barracks" : "Inn")}";
+                AutoDuty.Plugin.Action = $"Going to: {(gotoBarracks ? "Barracks" : (gotoGCSupply ? "GCSupply" : "Inn"))}";
                 AutoDuty.Plugin.Goto = true;
                 ExecSkipTalk.IsEnabled = true;
                 switch (UIState.Instance()->PlayerState.GrandCompany)
@@ -102,7 +102,7 @@ namespace AutoDuty.Managers
         {
             AtkUnitBase* addon = null;
 
-            if ((((Svc.ClientState.TerritoryType == 536 && gotoInn) || (Svc.ClientState.TerritoryType == 177 && gotoBarracks)) && territoryType == 129) || (((Svc.ClientState.TerritoryType == 534 && gotoInn) || (Svc.ClientState.TerritoryType == 179 && gotoBarracks)) && territoryType == 132) || (((Svc.ClientState.TerritoryType == 535 && gotoInn) || (Svc.ClientState.TerritoryType == 178 && gotoBarracks)) && territoryType == 130))
+            if ((((Svc.ClientState.TerritoryType == 536 && (gotoInn || gotoGCSupply)) || (Svc.ClientState.TerritoryType == 177 && (gotoBarracks || gotoGCSupply))) && territoryType == 129) || (((Svc.ClientState.TerritoryType == 534 && (gotoInn || gotoGCSupply)) || (Svc.ClientState.TerritoryType == 179 && (gotoBarracks || gotoGCSupply))) && territoryType == 132) || (((Svc.ClientState.TerritoryType == 535 && (gotoInn || gotoGCSupply)) || (Svc.ClientState.TerritoryType == 178 && (gotoBarracks || gotoGCSupply))) && territoryType == 130))
             {
                 _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
                 if (Svc.ClientState.TerritoryType == 536 || Svc.ClientState.TerritoryType == 534 || Svc.ClientState.TerritoryType == 535)

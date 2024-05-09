@@ -157,7 +157,7 @@ namespace AutoDuty.Managers
         {
             GameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"Target: {objectName}";
-            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(objectName)) != null, "Target");
+            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByPartialName(objectName)) != null, "Target");
             _taskManager.Enqueue(() => TargetCheck(gameObject), "Target");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
