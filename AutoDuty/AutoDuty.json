@@ -1,18 +1,25 @@
 {
   "Author": "Herculezz",
   "Name": "AutoDuty",
-  "InternalName": "AutoDuty",
-  "AssemblyVersion": "0.0.0.42",
   "Punchline": "AutoDuty",
   "Description": "A plugin to run dungeons for you with Trust, Duty Support, Squadrons and Regular, Requires BossMod, vnavmesh and Rotation Solver (Recommend Reborn Fork)",
+  "Tags": [],
+  "InternalName": "AutoDuty",
+  "RepoUrl": "https://github.com/ffxivcode/AutoDuty",
+  "DownloadCount": 80,
+  "LastUpdate": 1715201170245,
+  "DownloadLinkInstall": "https://puni.sh/api/plugins/download/54/AutoDuty/versions/latest.zip",
+  "DownloadLinkUpdate": "https://puni.sh/api/plugins/download/54/AutoDuty/versions/latest.zip",
+  "AssemblyVersion": "0.0.0.43",
   "ApplicableVersion": "any",
-  "RepoUrl": "",
-  "DalamudApiLevel": 9,
-  "DownloadLinkInstall": "https://github.com/ffxivcode/DalamudPlugins/raw/main/AutoDuty/latest.zip",
-  "DownloadLinkUpdate": "https://github.com/ffxivcode/DalamudPlugins/raw/main/AutoDuty/latest.zip",
+  "DalamudApiLevel": "9",
+  "Changelog": "",
+  "IconUrl": "https://s3.puni.sh/media/plugin/54/icon-5fl06291wa6.png",
   "ImageUrls": [
-    "https://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/AutoDuty/AutoDuty1.png",
-    "https://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/AutoDuty/AutoDuty2.png"
-  ],
-  "IconUrl": "https://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/AutoDuty/AutoDutyi.png"
-}       
+    "https://s3.puni.sh/media/plugin/54/image-hvrwdgkl8q.png",
+    "https://s3.puni.sh/media/plugin/54/image-1yeu6th0q97.png",
+    "https://s3.puni.sh/media/plugin/54/image-z6g4ics19sr.png",
+    "https://s3.puni.sh/media/plugin/54/image-r78u17g2a2.png",
+    "https://s3.puni.sh/media/plugin/54/image-ck6e8juvxq.png"
+  ]
+}

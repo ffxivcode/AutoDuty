@@ -12,7 +12,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 42;
+    public int Version { get; set; } = 43;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
@@ -177,33 +177,34 @@ public static class ConfigTab
                 autoGCTurnin = false;
                 Configuration.Save();
             }
-        }
-        if (ImGui.Checkbox("Auto GC Turnin", ref autoGCTurnin))
-        {
-            Configuration.AutoGCTurnin = autoGCTurnin;
-            Configuration.AutoDesynth = false;
-            autoDesynth = false;
-            Configuration.Save();
-        }
-        using (var d2 = ImRaii.Disabled(!autoGCTurnin))
-        {
-            if (ImGui.Checkbox("After Every Loop", ref autoGCTurninAfterEveryLoop))
+        
+            if (ImGui.Checkbox("Auto GC Turnin", ref autoGCTurnin))
             {
-                Configuration.AutoGCTurninAfterEveryLoop = autoGCTurninAfterEveryLoop;
+                Configuration.AutoGCTurnin = autoGCTurnin;
+                Configuration.AutoDesynth = false;
+                autoDesynth = false;
                 Configuration.Save();
             }
-            //ImGuiEx.SetNextItemWidthScaled(50);
-            if (ImGui.InputText("ItemID to Buy when Max Seals", ref autoGCTurninItemToBuyId, 10))
+            using (var d2 = ImRaii.Disabled(!autoGCTurnin))
             {
-                Configuration.AutoGCTurninItemToBuyId = autoGCTurninItemToBuyId;
-                Configuration.Save();
-            }
-            using (var d3 = ImRaii.Disabled(autoGCTurninAfterEveryLoop))
-            {
-                if (ImGui.SliderInt("@ Slots Left", ref autoGCTurninSlotsLeft, 1, 180))
+                if (ImGui.Checkbox("After Every Loop", ref autoGCTurninAfterEveryLoop))
                 {
-                    Configuration.AutoGCTurninSlotsLeft = autoGCTurninSlotsLeft;
+                    Configuration.AutoGCTurninAfterEveryLoop = autoGCTurninAfterEveryLoop;
                     Configuration.Save();
+                }
+                //ImGuiEx.SetNextItemWidthScaled(50);
+                if (ImGui.InputText("ItemID to Buy when Max Seals", ref autoGCTurninItemToBuyId, 10))
+                {
+                    Configuration.AutoGCTurninItemToBuyId = autoGCTurninItemToBuyId;
+                    Configuration.Save();
+                }
+                using (var d3 = ImRaii.Disabled(autoGCTurninAfterEveryLoop))
+                {
+                    if (ImGui.SliderInt("@ Slots Left", ref autoGCTurninSlotsLeft, 1, 180))
+                    {
+                        Configuration.AutoGCTurninSlotsLeft = autoGCTurninSlotsLeft;
+                        Configuration.Save();
+                    }
                 }
             }
         }

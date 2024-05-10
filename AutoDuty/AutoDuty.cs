@@ -146,7 +146,8 @@ public class AutoDuty : IDalamudPlugin
                 HelpMessage = "\n/autoduty -> opens main window\n" +
                 "/autoduty config or cfg -> opens config window\n" +
                 "/autoduty start -> starts autoduty when in a Duty\n" +
-                "/autoduty stop -> stops everything\n"
+                "/autoduty stop -> stops everything\n" +
+                "/autoduty turnin -> GC Turnin\n"
             });
 
             pluginInterface.UiBuilder.Draw += DrawUI;
@@ -471,7 +472,6 @@ public class AutoDuty : IDalamudPlugin
     }
     public void Framework_Update(IFramework framework)
     {
-        Svc.Log.Information($"{Goto} :: {GCTurninComplete} :: {TaskManager.NumQueuedTasks} :: {TaskManager.CurrentTaskName}");
         if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
 
