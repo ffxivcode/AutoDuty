@@ -32,6 +32,7 @@ namespace AutoDuty.Managers
             ("BossMod","on / off"),
             ("Target","Target what?"),
             ("ChatCommand","Command with args?"),
+            ("StopForCombat","True/False")
         ];
 
         private delegate void ExitDutyDelegate(char timeout);
@@ -57,6 +58,15 @@ namespace AutoDuty.Managers
         }
 
         public void BossMod(string sts) => _chat.ExecuteCommand($"/vbmai {sts}");
+
+        public void StopForCombat(string TrueFalse)
+        {
+            if (AutoDuty.Plugin.Player == null)
+                return;
+            AutoDuty.Plugin.Action = $"StopForCombat: {TrueFalse}";
+            AutoDuty.Plugin.StopForCombat = TrueFalse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
+            //AutoDuty.Plugin.Action = "";
+        }
 
         public void ChatCommand(string commandAndArgs)
         {
