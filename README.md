@@ -10,4 +10,4 @@ To Contribute Path Files just create a pull request or issue either works
 
 Repo URL:
 
-https://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/repo.json
+[https://raw.githubusercontent.com/ffxivcode/DalamudPlugins/main/repo.json](https://puni.sh/api/repository/herc)
