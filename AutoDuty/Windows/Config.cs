@@ -12,7 +12,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 44;
+    public int Version { get; set; } = 45;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
@@ -20,7 +20,7 @@ public class Configuration : IPluginConfiguration
 
     public bool AutoExitDuty { get; set; } = true;
     public bool LootTreasure { get; set; } = true;
-    public bool LootBossTreasureOnly { get; set; } = false;
+    public bool LootBossTreasureOnly { get; set; } = true;
     public bool AutoRepair { get; set; } = false;
     public bool AutoRepairSelf { get; set; } = false;
     public bool AutoRepairCity { get; set; } = true;
@@ -89,13 +89,17 @@ public static class ConfigTab
             Configuration.LootTreasure = lootTreasure;
             Configuration.Save();
         }
-        if (ImGui.SliderInt("Scan Distance", ref treasureCofferScanDistance, 1, 100))
+        //disabled for now
+        using (var d0 = ImRaii.Disabled(true))
         {
-            Configuration.TreasureCofferScanDistance = treasureCofferScanDistance;
-            Configuration.Save();
+            if (ImGui.SliderInt("Scan Distance", ref treasureCofferScanDistance, 1, 100))
+            {
+                Configuration.TreasureCofferScanDistance = treasureCofferScanDistance;
+                Configuration.Save();
+            }
         }
-
-        using (var d1 = ImRaii.Disabled(!lootTreasure))
+        //disabled for now
+        using (var d1 = ImRaii.Disabled(!lootTreasure || true))
         {
             if (ImGui.Checkbox("Loot Boss Treasure Only", ref lootBossTreasureOnly))
             {

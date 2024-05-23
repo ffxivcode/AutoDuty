@@ -662,7 +662,7 @@ public class AutoDuty : IDalamudPlugin
                         return;
                     }
                 }
-                if (Configuration.LootTreasure && !Configuration.LootBossTreasureOnly && EzThrottler.Throttle("TreasureCofferCheck", 25))
+                /*if (Configuration.LootTreasure && !Configuration.LootBossTreasureOnly && EzThrottler.Throttle("TreasureCofferCheck", 25))
                 {
                     treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) <= Plugin.Configuration.TreasureCofferScanDistance);
                     if (treasureCofferGameObject == null || !treasureCofferGameObject.IsTargetable)
@@ -670,7 +670,7 @@ public class AutoDuty : IDalamudPlugin
                     VNavmesh_IPCSubscriber.Path_Stop();
                     Stage = 8;
                     return;
-                }
+                }*/
                 break;
             //Action
             case 3:
@@ -763,7 +763,7 @@ public class AutoDuty : IDalamudPlugin
                 break;
             //TreasureCoffer
             case 8:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
+                //if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
                 Action = $"Step: Looting Treasure";

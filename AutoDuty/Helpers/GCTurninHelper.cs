@@ -170,7 +170,7 @@ namespace AutoDuty.Helpers
         {
             try
             {
-                atkComponentList->GetItemRenderer(index)->
+                //atkComponentList->GetItemRenderer(index)->
                 //atkComponentList->GetItemRenderer(index)->AtkComponentButton.ClickAddonButton(addon);
             }
             catch (Exception e) { Svc.Log.Info($"{e}"); }
