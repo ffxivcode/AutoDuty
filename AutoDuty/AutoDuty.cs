@@ -899,6 +899,9 @@ public class AutoDuty : IDalamudPlugin
             case "turnin":
                 GCTurninHelper.Invoke();
                 break;
+            case "item":
+                GCTurninHelper.InvokeTest(uint.Parse(args.Replace("item ", "")));
+                break;
             default:
                 OpenMainUI(); 
                 break;
