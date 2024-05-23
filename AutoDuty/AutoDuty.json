@@ -10,7 +10,7 @@
   "LastUpdate": 1715201170245,
   "DownloadLinkInstall": "https://puni.sh/api/plugins/download/54/AutoDuty/versions/latest.zip",
   "DownloadLinkUpdate": "https://puni.sh/api/plugins/download/54/AutoDuty/versions/latest.zip",
-  "AssemblyVersion": "0.0.0.45",
+  "AssemblyVersion": "0.0.0.46",
   "ApplicableVersion": "any",
   "DalamudApiLevel": "9",
   "Changelog": "",

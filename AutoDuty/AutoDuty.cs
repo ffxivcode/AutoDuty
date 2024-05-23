@@ -24,6 +24,7 @@ using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
 using ECommons.Automation;
+using Dalamud.Interface.Utility.Table;
 
 namespace AutoDuty;
 
@@ -383,6 +384,8 @@ public class AutoDuty : IDalamudPlugin
         Started = true;
         ExecSkipTalk.IsEnabled = true;
         _chat.ExecuteCommand($"/vbmai on");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        
         ReflectionHelper.RotationSolver_Reflection.RotationAuto();
         Svc.Log.Info("Starting Navigation");
         if (startFromZero)
