@@ -15,6 +15,7 @@ using ECommons.Throttlers;
 using ECommons.GameHelpers;
 using AutoDuty.Helpers;
 using ECommons.Automation;
+using AutoDuty.Windows;
 
 namespace AutoDuty.Managers
 {
@@ -26,6 +27,7 @@ namespace AutoDuty.Managers
             ("WaitFor","for?"),
             ("Boss","false"),
             ("Interactable","interact with?"),
+            ("TreasureCoffer","false"),
             ("SelectYesno","yes or no?"),
             ("MoveToObject","Object Name?"),
             ("DutySpecificCode","step #?"),
@@ -147,6 +149,8 @@ namespace AutoDuty.Managers
 
         public void TreasureCoffer(string _) 
         {
+            if (AutoDuty.Plugin.Configuration.LootTreasure && !AutoDuty.Plugin.Configuration.LootBossTreasureOnly)
+                Interactable("Treasure Coffer");
             return;
         }
 

@@ -12,13 +12,15 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 46;
+    public int Version { get; set; } = 47;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
 
     public bool AutoExitDuty { get; set; } = true;
+    public bool AutoKillClient { get; set; } = false;
+    public bool AutoLogout { get; set; } = false;
     public bool LootTreasure { get; set; } = true;
     public bool LootBossTreasureOnly { get; set; } = true;
     public bool AutoRepair { get; set; } = false;
@@ -62,6 +64,8 @@ public static class ConfigTab
     public static void Draw()
     {
         var autoExitDuty = Configuration.AutoExitDuty;
+        var autoKillClient = Configuration.AutoKillClient;
+        var autoLogout = Configuration.AutoLogout;
         var lootTreasure = Configuration.LootTreasure;
         var treasureCofferScanDistance = Configuration.TreasureCofferScanDistance;
         var lootBossTreasureOnly = Configuration.LootBossTreasureOnly;
@@ -79,17 +83,30 @@ public static class ConfigTab
         var autoGCTurninAfterEveryLoop = Configuration.AutoGCTurninAfterEveryLoop;
         string autoGCTurninItemToBuyId = Configuration.AutoGCTurninItemToBuyId;
 
-        if (ImGui.Checkbox("Auto Exit Duty on Completion", ref autoExitDuty))
+        if (ImGui.Checkbox("Auto Kill Client on Completion of Looping", ref autoKillClient))
+        {
+            Configuration.AutoKillClient = autoKillClient;
+            Configuration.AutoLogout = false;
+            Configuration.Save();
+        }
+        if (ImGui.Checkbox("Auto Logout on Completion of Looping", ref autoLogout))
+        {
+            Configuration.AutoLogout = autoLogout;
+            Configuration.AutoKillClient = false;
+            Configuration.Save();
+        }
+        if (ImGui.Checkbox("Auto Exit Duty on Completion of Dungeon", ref autoExitDuty))
         {
             Configuration.AutoExitDuty = autoExitDuty;
             Configuration.Save();
         }
+
         if (ImGui.Checkbox("Loot Treasure Coffers", ref lootTreasure))
         {
             Configuration.LootTreasure = lootTreasure;
             Configuration.Save();
         }
-        //disabled for now
+        /*/disabled for now
         using (var d0 = ImRaii.Disabled(true))
         {
             if (ImGui.SliderInt("Scan Distance", ref treasureCofferScanDistance, 1, 100))
@@ -97,9 +114,8 @@ public static class ConfigTab
                 Configuration.TreasureCofferScanDistance = treasureCofferScanDistance;
                 Configuration.Save();
             }
-        }
-        //disabled for now
-        using (var d1 = ImRaii.Disabled(!lootTreasure || true))
+        }*/
+        using (var d1 = ImRaii.Disabled(!lootTreasure))
         {
             if (ImGui.Checkbox("Loot Boss Treasure Only", ref lootBossTreasureOnly))
             {
@@ -170,7 +186,7 @@ public static class ConfigTab
                 }
             }
         }
-        //disabled until implemented
+        /*/disabled until implemented
         using (var d1 = ImRaii.Disabled(true))
         {
             ImGui.Separator();
@@ -211,6 +227,6 @@ public static class ConfigTab
                     }
                 }
             }
-        }
+        }*/
     }
 }

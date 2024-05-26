@@ -25,6 +25,8 @@ using ECommons.GameFunctions;
 using TinyIpc.Messaging;
 using ECommons.Automation;
 using Dalamud.Interface.Utility.Table;
+using ECommons.Schedulers;
+using ClickLib.Clicks;
 
 namespace AutoDuty;
 
@@ -263,10 +265,26 @@ public class AutoDuty : IDalamudPlugin
             }
             else
             {
-                Running = false;
-                CurrentLoop = 0;
-                Stage = 0;
-                MainWindow.OpenTab("Main");
+                if (Configuration.AutoKillClient)
+                    _chat.ExecuteCommand($"/xlkill");
+                else if (Configuration.AutoLogout)
+                {
+                    TaskManager.Enqueue(() => ObjectHelper.IsReady);
+                    TaskManager.DelayNext(2000);
+                    TaskManager.Enqueue(() => _chat.ExecuteCommand($"/logout"));
+                    TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
+                    TaskManager.Enqueue(() => Running = false);
+                    TaskManager.Enqueue(() => CurrentLoop = 0);
+                    TaskManager.Enqueue(() => Stage = 0);
+                    TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
+                }
+                else
+                { 
+                    Running = false;
+                    CurrentLoop = 0;
+                    Stage = 0;
+                    MainWindow.OpenTab("Main");
+                }
             }
         }
     }
