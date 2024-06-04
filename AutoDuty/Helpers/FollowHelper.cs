@@ -3,6 +3,8 @@ using Dalamud.Plugin.Services;
 using ECommons.DalamudServices;
 using static Dalamud.Game.ClientState.Keys.VirtualKey;
 using static FFXIVClientStructs.FFXIV.Client.UI.KeyStateFlags;
+using System.Numerics;
+using System.Collections.Generic; 
 
 namespace AutoDuty.Helpers
 {
@@ -48,11 +50,13 @@ namespace AutoDuty.Helpers
 
             if (ObjectHelper.GetDistanceToPlayer(_followTarget) >= _followDistance)
             {
-                AutoDuty.Plugin.OverrideCamera.Face(_followTarget.Position);
-                InputHelper.SetKeyValue(W, Down);
+                //AutoDuty.Plugin.OverrideCamera.Face(_followTarget.Position);
+                //InputHelper.SetKeyValue(W, Down);
+                List<Vector3> _followTargetList = [_followTarget.Position];
+                VNavmesh_IPCSubscriber.Path_MoveTo(_followTargetList,false);
             }
-            else
-                InputHelper.SetKeyValue(W, Released);
+            //else
+                //InputHelper.SetKeyValue(W, Released);
         }
     }
 }
