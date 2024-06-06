@@ -15,7 +15,7 @@ namespace AutoDuty.IPC
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod");
 
-        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("BossMod");
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("BossMod") || IPCSubscriber_Common.IsReady("BossModReborn");
 
         [EzIPC] internal static readonly Func<bool> IsMoving;
         [EzIPC] internal static readonly Func<int> ForbiddenZonesCount;
