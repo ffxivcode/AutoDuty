@@ -1,8 +1,13 @@
-﻿using Dalamud.Configuration;
+﻿﻿using static AutoDuty.AutoDuty;
+using Dalamud.Configuration;
+using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Plugin;
+using ECommons.DalamudServices;
 using ImGuiNET;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Collections.Generic;
 
 namespace AutoDuty.Windows;
@@ -21,6 +26,8 @@ public class Configuration : IPluginConfiguration
     public bool AutoExitDuty { get; set; } = true;
     public bool AutoKillClient { get; set; } = false;
     public bool AutoLogout { get; set; } = false;
+    public bool PlaySound { get; set; } = false;
+    public string SelectedSound { get; set; } = "Moogle";
     public bool LootTreasure { get; set; } = true;
     public bool LootBossTreasureOnly { get; set; } = true;
     public bool AutoRepair { get; set; } = false;
@@ -66,6 +73,8 @@ public static class ConfigTab
         var autoExitDuty = Configuration.AutoExitDuty;
         var autoKillClient = Configuration.AutoKillClient;
         var autoLogout = Configuration.AutoLogout;
+        var playSound = Configuration.PlaySound;
+        var selectedSound = Configuration.SelectedSound;
         var lootTreasure = Configuration.LootTreasure;
         var treasureCofferScanDistance = Configuration.TreasureCofferScanDistance;
         var lootBossTreasureOnly = Configuration.LootBossTreasureOnly;
@@ -101,6 +110,33 @@ public static class ConfigTab
             Configuration.Save();
         }
 
+        if (ImGui.Checkbox("Play Sound on End of Dungeon Loop", ref playSound))
+        {
+            Configuration.PlaySound = playSound;
+            Configuration.Save();
+        }
+        if (playSound)
+        {
+            ImGui.Text("Select Sound");
+            if (ImGui.BeginCombo("###SelectSound", selectedSound))
+            {
+                string path = Path.Combine(Svc.PluginInterface.AssemblyLocation.Directory.FullName, "Sounds");
+                foreach (var file in new DirectoryInfo(path).GetFiles())
+                {
+                    if (ImGui.Selectable($"{Path.GetFileNameWithoutExtension(file.FullName)}", selectedSound == Path.GetFileNameWithoutExtension(file.FullName)))
+                    {
+                        Configuration.SelectedSound = Path.GetFileNameWithoutExtension(file.FullName);
+                        Configuration.Save();
+                    }
+                }
+                ImGui.EndCombo();
+            }
+            if (ImGui.Button("Open Sound Folder"))
+            {
+                Process.Start("explorer.exe", @$"{Path.Combine(Svc.PluginInterface.AssemblyLocation.Directory.FullName, "Sounds")}");
+            }
+            ImGuiComponents.HelpMarker("Drop any MP3 files into the sound folder to add your own custom sounds.");
+        }
         if (ImGui.Checkbox("Loot Treasure Coffers", ref lootTreasure))
         {
             Configuration.LootTreasure = lootTreasure;

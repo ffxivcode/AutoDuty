@@ -33,6 +33,8 @@
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
     <ProjectReference Include="..\ClickLib\ClickLib\ClickLib.csproj" />
     <PackageReference Include="DalamudPackager" Version="2.1.12" />
+    <PackageReference Include="NAudio" Version="2.1.0" />
+		<PackageReference Include="NAudio.Lame" Version="2.0.1" />
     <PackageReference Include="TinyIpc" Version="4.3.0" />
     <Reference Include="FFXIVClientStructs">
       <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>

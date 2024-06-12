@@ -27,6 +27,8 @@ using ECommons.Automation;
 using Dalamud.Interface.Utility.Table;
 using ECommons.Schedulers;
 using ClickLib.Clicks;
+using NAudio.Wave;
+using static AutoDuty.Helpers.ContentHelper;
 
 namespace AutoDuty;
 
@@ -265,6 +267,8 @@ public class AutoDuty : IDalamudPlugin
             }
             else
             {
+                if (Configuration.PlaySound)
+                    PlaySound();
                 if (Configuration.AutoKillClient)
                     _chat.ExecuteCommand($"/xlkill");
                 else if (Configuration.AutoLogout)
@@ -883,6 +887,23 @@ public class AutoDuty : IDalamudPlugin
         VNavmesh_IPCSubscriber.Path_Stop();
         FollowHelper.SetFollow(null);
         GCTurninHelper.Stop();
+    }
+
+    private readonly object _lockObj = new();  //From Saucy
+
+    private void PlaySound()
+    {
+        lock (_lockObj)
+        {
+            string sound = Configuration.SelectedSound;
+            string path = Path.Combine(Svc.PluginInterface.AssemblyLocation.Directory.FullName, "Sounds", $"{sound}.mp3");
+            if (!File.Exists(path)) return;
+            var reader = new Mp3FileReader(path);
+            var waveOut = new WaveOutEvent();
+
+            waveOut.Init(reader);
+            waveOut.Play();
+        }
     }
 
     public void Dispose()
