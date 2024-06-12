@@ -91,6 +91,6 @@ public class MainWindow : Window, IDisposable
     {
         DrawPopup();
 
-        ImGuiEx.EzTabBar("MainTab", false, openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Mini", MiniTab.Draw, null, false));
+        ImGuiEx.EzTabBar("MainTab", "Thank Me", openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Mini", MiniTab.Draw, null, false));
     }
 }
