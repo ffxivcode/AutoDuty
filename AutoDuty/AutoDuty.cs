@@ -267,8 +267,6 @@ public class AutoDuty : IDalamudPlugin
             }
             else
             {
-                if (Configuration.PlaySound)
-                    PlaySound();
                 if (Configuration.AutoKillClient)
                     _chat.ExecuteCommand($"/xlkill");
                 else if (Configuration.AutoLogout)
@@ -283,7 +281,9 @@ public class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
                 }
                 else
-                { 
+                {
+                    if(Configuration.PlaySound)
+                        PlaySound();
                     Running = false;
                     CurrentLoop = 0;
                     Stage = 0;
@@ -544,7 +544,11 @@ public class AutoDuty : IDalamudPlugin
                 ReflectionHelper.RotationSolver_Reflection.RotationStop();
             }
             if (!Running)
+            {
                 Stage = 0;
+                if (Configuration.PlaySound)
+                    PlaySound();
+            }
             else
                 Stage = 99;
             Indexer = -1;
