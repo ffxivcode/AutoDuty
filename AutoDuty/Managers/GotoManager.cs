@@ -1,4 +1,4 @@
-﻿using AutoDuty.External;
+using AutoDuty.External;
 using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Objects.Types;
@@ -73,27 +73,62 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
         }
 
-        public unsafe void Goto(bool gotoBarracks, bool gotoInn, bool gotoGCSupply) 
+        public unsafe void Goto(bool gotoBarracks, bool gotoInn, bool gotoGCSupply)
         {
-            if ((gotoBarracks && Svc.ClientState.TerritoryType != 536 && Svc.ClientState.TerritoryType != 534 && Svc.ClientState.TerritoryType != 535) || (gotoInn && Svc.ClientState.TerritoryType != 177 && Svc.ClientState.TerritoryType != 179 && Svc.ClientState.TerritoryType != 178) || gotoGCSupply)
+            if ((gotoBarracks && Svc.ClientState.TerritoryType != 536 && Svc.ClientState.TerritoryType != 534 && Svc.ClientState.TerritoryType != 535) ||
+                (gotoInn && Svc.ClientState.TerritoryType != 177 && Svc.ClientState.TerritoryType != 179 && Svc.ClientState.TerritoryType != 178) ||
+                gotoGCSupply)
             {
                 AutoDuty.Plugin.Action = $"Going to: {(gotoBarracks ? "Barracks" : (gotoGCSupply ? "GCSupply" : "Inn"))}";
                 AutoDuty.Plugin.Goto = true;
                 ExecSkipTalk.IsEnabled = true;
+
+                Vector3 additionalWaypoint = new Vector3(-0.0f, 40.1f, 35.2f);
+
                 switch (UIState.Instance()->PlayerState.GrandCompany)
                 {
-                    //Limsa=1,129, Gridania=2,132, Uldah=3,130 -- Goto Limsa if no GC
+                    // Limsa=1,129, Gridania=2,132, Uldah=3,130 -- Goto Limsa if no GC
                     case 1:
-                        GotoTasks(129, [new Vector3(15.42688f, 39.99999f, 12.466553f)], "Mytesyn", [new Vector3(98.00867f, 41.275635f, 62.790894f)], [new Vector3(94.02183f, 40.27537f, 74.475525f)], gotoBarracks, gotoInn, gotoGCSupply, "The Aftcastle", 128);
+                        GotoTasks(129,
+                                  new[] { additionalWaypoint, new Vector3(15.42688f, 39.99999f, 12.466553f) },
+                                  "Mytesyn",
+                                  new[] { new Vector3(98.00867f, 41.275635f, 62.790894f) },
+                                  new[] { new Vector3(94.02183f, 40.27537f, 74.475525f) },
+                                  gotoBarracks,
+                                  gotoInn,
+                                  gotoGCSupply,
+                                  "The Aftcastle",
+                                  128);
                         break;
                     case 2:
-                        GotoTasks(132, [new Vector3(23.697266f, -8.1026f, 100.053345f)], "Antoinaut", [new Vector3(-80.00789f, -0.5001702f, -6.6672616f)], [new Vector3(-68.678566f, -0.5015295f, -8.470145f)], gotoBarracks, gotoInn, gotoGCSupply);
+                        GotoTasks(132,
+                                  new[] { new Vector3(23.697266f, -8.1026f, 100.053345f) },
+                                  "Antoinaut",
+                                  new[] { new Vector3(-80.00789f, -0.5001702f, -6.6672616f) },
+                                  new[] { new Vector3(-68.678566f, -0.5015295f, -8.470145f) },
+                                  gotoBarracks,
+                                  gotoInn,
+                                  gotoGCSupply);
                         break;
                     case 3:
-                        GotoTasks(130, [new Vector3(29.495605f, 7.4500003f, -78.324646f)], "Otopa Pottopa", [new Vector3(-153.30743f, 5.2338257f, -98.039246f)], [new Vector3(-142.82619f, 4.0999994f, -106.31349f)], gotoBarracks, gotoInn, gotoGCSupply);
+                        GotoTasks(130,
+                                  new[] { new Vector3(29.495605f, 7.4500003f, -78.324646f) },
+                                  "Otopa Pottopa",
+                                  new[] { new Vector3(-153.30743f, 5.2338257f, -98.039246f) },
+                                  new[] { new Vector3(-142.82619f, 4.0999994f, -106.31349f) },
+                                  gotoBarracks,
+                                  gotoInn,
+                                  gotoGCSupply);
                         break;
                     default:
-                        GotoTasks(130, [new Vector3(29.495605f, 7.4500003f, -78.324646f)], "Otopa Pottopa", [new Vector3(-153.30743f, 5.2338257f, -98.039246f)], [new Vector3(-142.82619f, 4.0999994f, -106.31349f)], gotoBarracks, gotoInn, gotoGCSupply);
+                        GotoTasks(130,
+                                  new[] { new Vector3(29.495605f, 7.4500003f, -78.324646f) },
+                                  "Otopa Pottopa",
+                                  new[] { new Vector3(-153.30743f, 5.2338257f, -98.039246f) },
+                                  new[] { new Vector3(-142.82619f, 4.0999994f, -106.31349f) },
+                                  gotoBarracks,
+                                  gotoInn,
+                                  gotoGCSupply);
                         break;
                 }
             }
