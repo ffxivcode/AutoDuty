@@ -150,6 +150,8 @@ public class AutoDuty : IDalamudPlugin
                 "/autoduty config or cfg -> opens config window\n" +
                 "/autoduty start -> starts autoduty when in a Duty\n" +
                 "/autoduty stop -> stops everything\n" +
+                "/autoduty pause -> pause route\n" +
+                "/autoduty resume -> resume route\n" +
                 "/autoduty turnin -> GC Turnin\n"
             });
 
@@ -913,6 +915,12 @@ public class AutoDuty : IDalamudPlugin
                 break;
             case "stop":
                 StopAndResetALL();
+                break;
+            case "pause":
+                Plugin.Stage = 5;
+                break;
+            case "resume":
+                Plugin.Stage = 1;
                 break;
             case "goto":
                 GotoAction(args.Replace("goto ",""));
