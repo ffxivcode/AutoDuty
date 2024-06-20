@@ -55,6 +55,7 @@ namespace AutoDuty.Helpers
                 //InputHelper.SetKeyValue(W, Down);
                 List<Vector3> _followTargetList = [_followTarget.Position];
                 VNavmesh_IPCSubscriber.Path_MoveTo(_followTargetList,false);
+                VNavmesh_IPCSubscriber.Path_Stop();
             }
             //else
                 //InputHelper.SetKeyValue(W, Released);
