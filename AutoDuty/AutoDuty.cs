@@ -650,7 +650,7 @@ public class AutoDuty : IDalamudPlugin
                 }
                 
                 Action = $"Step: {Plugin.ListBoxPOSText[Indexer]}";
-                if (ObjectHelper.InCombat(Player))
+                if (ObjectHelper.InCombat(Player) && AutoDuty.Plugin.StopForCombat)
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
                     ReflectionHelper.RotationSolver_Reflection.RotationAuto();
