@@ -1,0 +1,1 @@
+["ChatCommand|0, 0, 0|/bmrai off","Boss|-39.06, 114.71, -4.01|","Wait|-39.97, 114.71, 1.96|2000","Interactable|0, 0, 0|Cranial Hatch","Wait|0, 0, 0|1000","Wait|-40.09, 114.71, 2.81|500","Interactable|0, 0, 0|Ingress","Wait|0, 0, 0|9000","Wait|0.75, -250.29, -241.15|2000","ChatCommand|0, 0, 0|/targetenemy","ChatCommand|0, 0, 0|/ac Auto-attack","Boss|-0.24, -250.29, -238.17|"]
