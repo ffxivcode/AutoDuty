@@ -19,33 +19,33 @@ namespace AutoDuty.Helpers
 {
     internal static class ObjectHelper
     {
-        internal static List<GameObject>? GetObjectsByObjectKind(ObjectKind objectKind) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.ObjectKind == objectKind)];
+        internal static List<IGameObject>? GetObjectsByObjectKind(ObjectKind objectKind) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.ObjectKind == objectKind)];
 
-        internal static GameObject? GetObjectByObjectKind(ObjectKind objectKind) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.ObjectKind == objectKind);
+        internal static IGameObject? GetObjectByObjectKind(ObjectKind objectKind) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.ObjectKind == objectKind);
 
-        internal static List<GameObject>? GetObjectsByRadius(float radius) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => GetDistanceToPlayer(o) <= radius)];
+        internal static List<IGameObject>? GetObjectsByRadius(float radius) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => GetDistanceToPlayer(o) <= radius)];
 
-        internal static GameObject? GetObjectByRadius(float radius) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => GetDistanceToPlayer(o) <= radius);
+        internal static IGameObject? GetObjectByRadius(float radius) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => GetDistanceToPlayer(o) <= radius);
 
-        internal static List<GameObject>? GetObjectsByName(string name) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase))];
+        internal static List<IGameObject>? GetObjectsByName(string name) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase))];
 
-        internal static GameObject? GetObjectByName(string name) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+        internal static IGameObject? GetObjectByName(string name) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 
-        internal static List<GameObject>? GetObjectsByPartialName(string name) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.Name.TextValue.Contains(name, StringComparison.CurrentCultureIgnoreCase))];
+        internal static List<IGameObject>? GetObjectsByPartialName(string name) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.Name.TextValue.Contains(name, StringComparison.CurrentCultureIgnoreCase))];
 
-        internal static GameObject? GetObjectByPartialName(string name) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.Name.TextValue.Contains(name, StringComparison.CurrentCultureIgnoreCase));
+        internal static IGameObject? GetObjectByPartialName(string name) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.Name.TextValue.Contains(name, StringComparison.CurrentCultureIgnoreCase));
 
-        internal static List<GameObject>? GetObjectsByNameAndRadius(string objectName) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(g => g.Name.TextValue.Equals(objectName, StringComparison.CurrentCultureIgnoreCase) && Vector3.Distance(Player.Object.Position, g.Position) <= 10)];
+        internal static List<IGameObject>? GetObjectsByNameAndRadius(string objectName) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(g => g.Name.TextValue.Equals(objectName, StringComparison.CurrentCultureIgnoreCase) && Vector3.Distance(Player.Object.Position, g.Position) <= 10)];
 
-        internal static GameObject? GetObjectByNameAndRadius(string objectName) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(g => g.Name.TextValue.Equals(objectName, StringComparison.CurrentCultureIgnoreCase) && Vector3.Distance(Player.Object.Position, g.Position) <= 10);
+        internal static IGameObject? GetObjectByNameAndRadius(string objectName) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(g => g.Name.TextValue.Equals(objectName, StringComparison.CurrentCultureIgnoreCase) && Vector3.Distance(Player.Object.Position, g.Position) <= 10);
 
-        internal static BattleChara? GetBossObject(int radius = 100) => GetObjectsByRadius(radius)?.OfType<BattleChara>().FirstOrDefault(b => IsBossFromIcon(b) || BossMod_IPCSubscriber.HasModule(b));
+        internal static IBattleChara? GetBossObject(int radius = 100) => GetObjectsByRadius(radius)?.OfType<IBattleChara>().FirstOrDefault(b => IsBossFromIcon(b) || BossMod_IPCSubscriber.HasModule(b));
 
-        internal unsafe static float GetDistanceToPlayer(GameObject gameObject) => GetDistanceToPlayer(gameObject.Position);
+        internal unsafe static float GetDistanceToPlayer(IGameObject gameObject) => GetDistanceToPlayer(gameObject.Position);
 
-        internal unsafe static float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.GameObject->Position);
+        internal unsafe static float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.IGameObject->Position);
 
-        internal unsafe static GameObject? GetTankPartyMember()
+        internal unsafe static IGameObject? GetTankPartyMember()
         {
             if (Svc.Party.PartyId == 0)
                 return null;
@@ -62,7 +62,7 @@ namespace AutoDuty.Helpers
             return null;
         }
 
-        internal unsafe static GameObject? GetHealerPartyMember()
+        internal unsafe static IGameObject? GetHealerPartyMember()
         {
             if (Svc.Party.PartyId == 0)
                 return null;
@@ -80,7 +80,7 @@ namespace AutoDuty.Helpers
         }
 
         //RotationSolver
-        internal unsafe static float GetBattleDistanceToPlayer(GameObject gameObject)
+        internal unsafe static float GetBattleDistanceToPlayer(IGameObject gameObject)
         {
             if (gameObject == null) return float.MaxValue;
             var player = Player.Object;
@@ -91,10 +91,10 @@ namespace AutoDuty.Helpers
             return distance;
         }
 
-        internal static BNpcBase? GetObjectNPC(GameObject gameObject) => Svc.Data.GetExcelSheet<BNpcBase>()?.GetRow(gameObject.DataId) ?? null;
+        internal static BNpcBase? GetObjectNPC(IGameObject gameObject) => Svc.Data.GetExcelSheet<BNpcBase>()?.GetRow(gameObject.DataId) ?? null;
 
         //From RotationSolver
-        internal static bool IsBossFromIcon(GameObject gameObject) => GetObjectNPC(gameObject)?.Rank is 1 or 2 or 6;
+        internal static bool IsBossFromIcon(IGameObject gameObject) => GetObjectNPC(gameObject)?.Rank is 1 or 2 or 6;
 
         internal static float JobRange
         {
@@ -225,9 +225,9 @@ namespace AutoDuty.Helpers
 
         internal static unsafe bool IsOccupied => GenericHelpers.IsOccupied();
 
-        internal static unsafe bool InCombat(this BattleChara battleChara) => battleChara.Struct()->Character.InCombat;
+        internal static unsafe bool InCombat(this IBattleChara battleChara) => battleChara.Struct()->Character.InCombat;
 
-        internal static unsafe void InteractWithObject(GameObject? gameObject)
+        internal static unsafe void InteractWithObject(IGameObject? gameObject)
         {
             try
             {
@@ -242,7 +242,7 @@ namespace AutoDuty.Helpers
                 //Svc.Log.Info($"InteractWithObject: Exception: {ex}");
             }
         }
-        internal static unsafe AtkUnitBase* InteractWithObjectUntilAddon(GameObject? gameObject, string addonName)
+        internal static unsafe AtkUnitBase* InteractWithObjectUntilAddon(IGameObject? gameObject, string addonName)
         {
             if (GenericHelpers.TryGetAddonByName<AtkUnitBase>(addonName, out var addon) && GenericHelpers.IsAddonReady(addon))
                 return addon;
@@ -253,7 +253,7 @@ namespace AutoDuty.Helpers
             return null;
         }
 
-        internal static unsafe bool InteractWithObjectUntilNotValid(GameObject? gameObject)
+        internal static unsafe bool InteractWithObjectUntilNotValid(IGameObject? gameObject)
         {
             if (gameObject == null || !IsValid)
                 return true;
@@ -264,7 +264,7 @@ namespace AutoDuty.Helpers
             return false;
         }
 
-        internal static unsafe bool InteractWithObjectUntilNotTargetable(GameObject? gameObject)
+        internal static unsafe bool InteractWithObjectUntilNotTargetable(IGameObject? gameObject)
         {
             if (gameObject == null || !gameObject.IsTargetable)
                 return true;

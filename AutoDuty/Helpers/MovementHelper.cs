@@ -10,7 +10,7 @@ namespace AutoDuty.Helpers
 {
     internal static class MovementHelper
     {
-        internal static bool Move(GameObject? gameObject, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
+        internal static bool Move(IGameObject? gameObject, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
         {
             if (gameObject == null)
                 return true;

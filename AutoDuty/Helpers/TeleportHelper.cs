@@ -43,7 +43,7 @@ namespace AutoDuty.Helpers
             if (Svc.ClientState.TerritoryType == territortyType)
                 return true;
 
-            GameObject? gameObject = null;
+            IGameObject? gameObject = null;
             if ((gameObject = ObjectHelper.GetObjectByObjectKind(ObjectKind.Aetheryte)) == null)
                 return false;
 
@@ -57,7 +57,7 @@ namespace AutoDuty.Helpers
 
             if (!GenericHelpers.TryGetAddonByName("TelepotTown", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon))
             {
-                GameObject? gameObject;
+                IGameObject? gameObject;
                 if ((gameObject = ObjectHelper.GetObjectByObjectKind(ObjectKind.Aetheryte)) == null)
                     return false;
 

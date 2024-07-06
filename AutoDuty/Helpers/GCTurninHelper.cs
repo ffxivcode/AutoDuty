@@ -27,9 +27,9 @@ namespace AutoDuty.Helpers
 
         internal static void Stop() => Svc.Framework.Update -= GCTurninUpdate;
 
-        private static GameObject? personnelOfficer = null;
+        private static IGameObject? personnelOfficer = null;
 
-        private static GameObject? quartermaster = null;
+        private static IGameObject? quartermaster = null;
 
         private static readonly TaskManager taskManager =  new();
 
@@ -227,7 +227,7 @@ namespace AutoDuty.Helpers
                     return;
                 }
 
-                if (addonGrandCompanySupplyList->ListEmptyTextNode->AtkResNode.IsVisible || addonGrandCompanySupplyList->ExpertDeliveryList->ListLength == 0)
+                if (addonGrandCompanySupplyList->ListEmptyTextNode->AtkResNode.IsVisible() || addonGrandCompanySupplyList->ExpertDeliveryList->ListLength == 0)
                 {
                     Svc.Log.Info("GCTurnin Complete");
                     GCTurninComplete();

@@ -48,7 +48,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterDutySupport");
         }
 
-        private unsafe void OpenDawnStory() => AgentModule.Instance()->GetAgentByInternalID(341)->Show();
+        private unsafe void OpenDawnStory() => AgentModule.Instance()->GetAgentByInternalId(AgentId.DawnStory)->Show();
 
 
 

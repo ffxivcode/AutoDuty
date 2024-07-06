@@ -23,7 +23,7 @@ namespace AutoDuty.Helpers
             for (int i = 0; i < 13; i++)
             {
                 var slot = equipedItems->Items[i].Slot;
-                var itemId = equipedItems->Items[i].ItemID;
+                var itemId = equipedItems->Items[i].ItemId;
                 var item = Svc.Data.GetExcelSheet<Item>()?.FirstOrDefault(item => item.RowId == itemId);
                 var itemLevel = item?.LevelItem.Value?.RowId ?? 0;
                 var itemName = item?.Name.RawString ?? "";

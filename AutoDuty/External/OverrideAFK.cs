@@ -21,7 +21,7 @@ internal unsafe class OverrideAFK
     public OverrideAFK()
     {
         var uiModule = UIModule.Instance();
-        var uiModuleVtbl = (void**)uiModule->VTable;
+        var uiModuleVtbl = (void**)uiModule->VirtualTable;
         var getAfkModule = (delegate* unmanaged[Stdcall]<UIModule*, AfkModule*>)uiModuleVtbl[55];
         _module = getAfkModule(uiModule);
     }

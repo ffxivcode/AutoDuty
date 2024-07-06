@@ -14,7 +14,7 @@ namespace AutoDuty.Managers
 {
     internal class GotoManager(TaskManager _taskManager)
     {
-        private GameObject? gameObject = null;
+        private IGameObject? gameObject = null;
 
         public unsafe void GotoGCSupply(Vector3[] gcSupplyPositions)
         {

@@ -140,7 +140,7 @@ namespace AutoDuty.Managers
 
         public void MoveToObject(string objectName)
         {
-            GameObject? gameObject = null;
+            IGameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"MoveToObject: {objectName}";
             _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(objectName)) != null, "MoveToObject");
             _taskManager.Enqueue(() => MovementHelper.Move(gameObject), int.MaxValue, "MoveToObject");
@@ -154,7 +154,7 @@ namespace AutoDuty.Managers
             return;
         }
 
-        private bool TargetCheck(GameObject? gameObject)
+        private bool TargetCheck(IGameObject? gameObject)
         {
             if (gameObject == null || gameObject.IsTargetable || gameObject.IsValid() || Svc.Targets.Target == gameObject)
                 return true;
@@ -169,14 +169,14 @@ namespace AutoDuty.Managers
 
         public void Target(string objectName)
         {
-            GameObject? gameObject = null;
+            IGameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"Target: {objectName}";
             _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByPartialName(objectName)) != null, "Target");
             _taskManager.Enqueue(() => TargetCheck(gameObject), "Target");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
-        private bool InteractableCheck(GameObject? gameObject)
+        private bool InteractableCheck(IGameObject? gameObject)
         {
             nint addon = Svc.GameGui.GetAddonByName("SelectYesno", 1);
             if (addon > 0)
@@ -199,7 +199,7 @@ namespace AutoDuty.Managers
         }
         public unsafe void Interactable(string objectName)
         {
-            GameObject? gameObject = null;
+            IGameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"Interactable: {objectName}";
             _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(objectName)) != null, "Interactable");
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable");
@@ -208,7 +208,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
-        private bool BossCheck(bool hasModule, Vector3 bossV3, int numForbiddenZonesToIgnore, GameObject? followTargetObject)
+        private bool BossCheck(bool hasModule, Vector3 bossV3, int numForbiddenZonesToIgnore, IGameObject? followTargetObject)
         {
             if (((AutoDuty.Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
                 return true;
@@ -216,7 +216,7 @@ namespace AutoDuty.Managers
             {
                 if (AutoDuty.Plugin.BossObject == null && Svc.Targets.Target != null)
                 {
-                    AutoDuty.Plugin.BossObject = (BattleChara?)Svc.Targets.Target;
+                    AutoDuty.Plugin.BossObject = (IBattleChara?)Svc.Targets.Target;
                     hasModule = BossMod_IPCSubscriber.HasModule(AutoDuty.Plugin.BossObject);
                 }
                 if (BossMod_IPCSubscriber.ForbiddenZonesCount() > numForbiddenZonesToIgnore)
@@ -227,7 +227,7 @@ namespace AutoDuty.Managers
                         FollowHelper.SetFollow(followTargetObject);
                     else
                     {
-                        GameObject? healerGameObject;
+                        IGameObject? healerGameObject;
                         switch (Player.Object.ClassJob.GameData?.Role)
                         {
                             //tank - try to stay within 10 of boss waypoint, or move to boss if loose aggro
@@ -283,8 +283,8 @@ namespace AutoDuty.Managers
         {
             Svc.Log.Info($"Starting Action Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? "null"}");
             ReflectionHelper.RotationSolver_Reflection.RotationAuto();
-            GameObject? followTargetObject = null;
-            GameObject? treasureCofferObject = null;
+            IGameObject? followTargetObject = null;
+            IGameObject? treasureCofferObject = null;
             var hasModule = false;
             var numForbiddenZonesToIgnore = 0;
             _taskManager.Enqueue(() => BossMoveCheck(bossV3), "Boss");
@@ -299,7 +299,7 @@ namespace AutoDuty.Managers
                 }
                 else if (Svc.Targets.Target != null)
                 {
-                    AutoDuty.Plugin.BossObject = (BattleChara)Svc.Targets.Target;
+                    AutoDuty.Plugin.BossObject = (IBattleChara)Svc.Targets.Target;
                     hasModule = BossMod_IPCSubscriber.HasModule(AutoDuty.Plugin.BossObject);
                 }
                 if (hasModule)
@@ -353,13 +353,13 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss");
         }
 
-        public GameObject? GetTrustTankMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 1)?.GameObject;
+        public IGameObject? GetTrustTankMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is ICharacter chara && chara.ClassJob.GameData?.Role == 1)?.GameObject;
 
-        public GameObject? GetTrustHealerMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 4)?.GameObject;
+        public IGameObject? GetTrustHealerMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is ICharacter chara && chara.ClassJob.GameData?.Role == 4)?.GameObject;
 
-        public GameObject? GetTrustRangedDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 3)?.GameObject;
+        public IGameObject? GetTrustRangedDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is ICharacter chara && chara.ClassJob.GameData?.Role == 3)?.GameObject;
 
-        public GameObject? GetTrustMeleeDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is Character chara && chara.ClassJob.GameData?.Role == 2)?.GameObject;
+        public IGameObject? GetTrustMeleeDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is ICharacter chara && chara.ClassJob.GameData?.Role == 2)?.GameObject;
 
         public enum OID : uint
         {
@@ -376,7 +376,7 @@ namespace AutoDuty.Managers
             {
                 //Sastasha - From BossMod
                 case 1036:
-                    GameObject? gameObject = null;
+                    IGameObject? gameObject = null;
                     switch (stage)
                     {
                         case "1":

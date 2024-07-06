@@ -51,7 +51,7 @@ namespace AutoDuty.Managers
         public unsafe void RepairTasks(uint territoryType, Vector3[] vendorPositions, string vendorName, Vector3[] innKeepPositions, string innKeepName, Vector3[] barracksDoorPositions, bool selfRepair=false, string aethernetName = "", uint aethernetToTerritoryType = 0)
         {
             AtkUnitBase* addon = null;
-            GameObject? gameObject = null;
+            IGameObject? gameObject = null;
 
             if (selfRepair)
                 _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 6), "Repair");
@@ -108,7 +108,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Repair");
             if (selfRepair)
                 _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Repair");
-            _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalID((uint)AgentId.Repair)->Hide(), "Repair");
+            _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalId(AgentId.Repair)->Hide(), "Repair");
             if (AutoDuty.Plugin.Configuration.AutoRepairReturnToInn && _returnAfter)
             {
                 foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))

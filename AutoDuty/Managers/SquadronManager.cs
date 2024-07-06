@@ -42,7 +42,7 @@ namespace AutoDuty.Managers
         internal bool SeenAddon = false;
         internal unsafe bool OpenSquadron(AtkUnitBase* aub)
         {
-            GameObject? gameObject;
+            IGameObject? gameObject;
             if (aub != null)
                 return true;
 

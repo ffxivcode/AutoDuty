@@ -11,7 +11,7 @@ namespace AutoDuty.Helpers
 {
     internal static class FollowHelper
     {
-        private static GameObject? _followTarget = null;
+        private static IGameObject? _followTarget = null;
         private static float _followDistance = 0.25f;
 
         private static bool _enabled
@@ -31,16 +31,20 @@ namespace AutoDuty.Helpers
 
         internal static bool IsFollowing => _enabled;
 
-        internal static void SetFollow(GameObject? gameObject, float followDistance = 0)
+        internal static void SetFollow(IGameObject? gameObject, float followDistance = 0)
         {
-            _enabled = _followTarget = gameObject;
             if (gameObject != null)
+            {
                 _followTarget = gameObject;
+                _enabled = true;
+            }
+            else
+                _enabled = false;
             if (followDistance > 0)
                 _followDistance = followDistance;
         } 
 
-        internal static void SetFollowTarget(GameObject? gameObject) => _followTarget = gameObject;
+        internal static void SetFollowTarget(IGameObject? gameObject) => _followTarget = gameObject;
 
         internal static void SetFollowDistance(float f) => _followDistance = f + 0.1f;
 

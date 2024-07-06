@@ -24,9 +24,6 @@ using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
 using ECommons.Automation;
-using Dalamud.Interface.Utility.Table;
-using ECommons.Schedulers;
-using ClickLib.Clicks;
 
 namespace AutoDuty;
 
@@ -60,11 +57,11 @@ public class AutoDuty : IDalamudPlugin
     internal bool MainListClicked = false;
     internal bool Started = false;
     internal bool Running = false;
-    internal PlayerCharacter? Player = null;
+    internal IPlayerCharacter? Player = null;
     internal Vector3 PlayerPosition = Vector3.Zero;
-    internal BattleChara? BossObject;
-    internal GameObject? ClosestInteractableEventObject = null;
-    internal GameObject? ClosestTargetableBattleNpc = null;
+    internal IBattleChara? BossObject;
+    internal IGameObject? ClosestInteractableEventObject = null;
+    internal IGameObject? ClosestTargetableBattleNpc = null;
     internal OverrideCamera OverrideCamera;
     internal MainWindow MainWindow { get; init; }
     internal bool Repairing = false;
@@ -87,7 +84,7 @@ public class AutoDuty : IDalamudPlugin
     private SquadronManager _squadronManager;
     private OverrideAFK _overrideAFK;
     private bool _dead = false;
-    private GameObject? treasureCofferGameObject = null;
+    private IGameObject? treasureCofferGameObject = null;
     private string _action = "";
     private float _actionTollerance = 0.25f;
     private List<object> _actionParams = [];
@@ -97,7 +94,7 @@ public class AutoDuty : IDalamudPlugin
     private TinyMessageBus _messageBusReceive = new("AutoDutyBroadcaster");
     private bool _messageSender = false;
 
-    public AutoDuty(DalamudPluginInterface pluginInterface)
+    public AutoDuty(IDalamudPluginInterface pluginInterface)
     {
         try
         {
@@ -425,7 +422,7 @@ public class AutoDuty : IDalamudPlugin
     private unsafe void OnRevive()
     {
         _dead = false;
-        GameObject? gameObject = ObjectHelper.GetObjectByName("Shortcut");
+        IGameObject? gameObject = ObjectHelper.GetObjectByName("Shortcut");
         if (gameObject == null || !gameObject.IsTargetable)
         {
             Stage = 1;

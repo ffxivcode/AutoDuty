@@ -41,7 +41,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterTrust");
         }
 
-        private unsafe void OpenDawn() => AgentModule.Instance()->GetAgentByInternalID(340)->Show();
+        private unsafe void OpenDawn() => AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Show();
 
     }
 }

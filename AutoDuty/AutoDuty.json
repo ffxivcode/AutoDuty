@@ -8,9 +8,9 @@
   "RepoUrl": "https://github.com/ffxivcode/AutoDuty",
   "DownloadLinkInstall": "https://puni.sh/api/plugins/download/54/AutoDuty/versions/latest.zip",
   "DownloadLinkUpdate": "https://puni.sh/api/plugins/download/54/AutoDuty/versions/latest.zip",
-  "AssemblyVersion": "0.0.0.49",
+  "AssemblyVersion": "0.0.0.50",
   "ApplicableVersion": "any",
-  "DalamudApiLevel": "9",
+  "DalamudApiLevel": "10",
   "Changelog": "",
   "IconUrl": "https://s3.puni.sh/media/plugin/54/icon-5fl06291wa6.png",
   "ImageUrls": [
