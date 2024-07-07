@@ -16,6 +16,7 @@ using ECommons.GameHelpers;
 using AutoDuty.Helpers;
 using ECommons.Automation;
 using AutoDuty.Windows;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace AutoDuty.Managers
 {
@@ -37,8 +38,8 @@ namespace AutoDuty.Managers
             ("StopForCombat","True/False")
         ];
 
-        private delegate void ExitDutyDelegate(char timeout);
-        private readonly ExitDutyDelegate exitDuty = Marshal.GetDelegateForFunctionPointer<ExitDutyDelegate>(Svc.SigScanner.ScanText("40 53 48 83 ec 20 48 8b 05 ?? ?? ?? ?? 0f b6 d9"));
+        //private delegate void ExitDutyDelegate(char timeout);
+        //private readonly ExitDutyDelegate exitDuty = Marshal.GetDelegateForFunctionPointer<ExitDutyDelegate>(Svc.SigScanner.ScanText("40 53 48 83 ec 20 48 8b 05 ?? ?? ?? ?? 0f b6 d9"));
 
         public void InvokeAction(string action, object?[] p)
         {
@@ -121,11 +122,22 @@ namespace AutoDuty.Managers
 
         private bool CheckPause() => _plugin.Stage == 5;
 
-        public void ExitDuty(string _)
+        public unsafe void ExitDuty(string _)
         {
             _chat.ExecuteCommand($"/rotation cancel");
-            exitDuty.Invoke((char)0);
+            //exitDuty.Invoke((char)0);
+            AtkUnitBase* addon = null;
+            TaskManager exitDutyTaskManager = new();
+            exitDutyTaskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("ContentsFinderMenu"), "ExitDuty");
+            exitDutyTaskManager.Enqueue(() => { if (addon == null) OpenContentsFinderMenu(); }, "ExitDuty");
+            exitDutyTaskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out addon) && GenericHelpers.IsAddonReady(addon), "ExitDuty");
+            exitDutyTaskManager.DelayNext("ExitDuty", 50);
+            exitDutyTaskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 0), "ExitDuty");
+            exitDutyTaskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("SelectYesno", out addon) && GenericHelpers.IsAddonReady(addon), "ExitDuty");
+            exitDutyTaskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 0), "ExitDuty");
         }
+
+        private unsafe void OpenContentsFinderMenu() => AgentModule.Instance()->GetAgentByInternalId(AgentId.ContentsFinderMenu)->Show();
 
         public unsafe bool IsAddonReady(nint addon) => addon > 0 && GenericHelpers.IsAddonReady((AtkUnitBase*)addon);
 
