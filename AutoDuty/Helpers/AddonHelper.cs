@@ -54,7 +54,7 @@ namespace AutoDuty.Helpers
                 return true;
             }
 
-            if (EzThrottler.Throttle("ClickYesno4", 50))
+            if (EzThrottler.Throttle("ClickYesno", 50))
             {
                 if (yes)
                     ClickLib.Clicks.ClickSelectYesNo.Using((nint)addon).Yes();
