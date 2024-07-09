@@ -2,7 +2,6 @@
 using ECommons;
 using ECommons.Automation;
 using ECommons.DalamudServices;
-using ClickLib.Clicks;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Collections.Generic;
 using ECommons.UIHelpers;
@@ -64,7 +63,7 @@ namespace AutoDuty.Helpers
                 if ((addon = ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectString")) == null)
                     return false;
 
-                ClickSelectString.Using((nint)addon).SelectItem(0);
+                Callback.Fire(addon, true, 0);
             }
 
             if (EzThrottler.Throttle("TeleportAethernet", 250))

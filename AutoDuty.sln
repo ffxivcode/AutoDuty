@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoDuty", "AutoDuty\AutoDu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECommons", "ECommons\ECommons\ECommons.csproj", "{73021CBC-C5A5-45E9-AA47-095D190AAA1A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClickLib", "ClickLib\ClickLib\ClickLib.csproj", "{ED936CAB-73C4-48E0-9507-B472A2714495}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,14 +31,6 @@ Global
 		{73021CBC-C5A5-45E9-AA47-095D190AAA1A}.Release|Any CPU.Build.0 = Release|x64
 		{73021CBC-C5A5-45E9-AA47-095D190AAA1A}.Release|x64.ActiveCfg = Release|x64
 		{73021CBC-C5A5-45E9-AA47-095D190AAA1A}.Release|x64.Build.0 = Release|x64
-		{ED936CAB-73C4-48E0-9507-B472A2714495}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{ED936CAB-73C4-48E0-9507-B472A2714495}.Debug|Any CPU.Build.0 = Debug|x64
-		{ED936CAB-73C4-48E0-9507-B472A2714495}.Debug|x64.ActiveCfg = Debug|x64
-		{ED936CAB-73C4-48E0-9507-B472A2714495}.Debug|x64.Build.0 = Debug|x64
-		{ED936CAB-73C4-48E0-9507-B472A2714495}.Release|Any CPU.ActiveCfg = Release|x64
-		{ED936CAB-73C4-48E0-9507-B472A2714495}.Release|Any CPU.Build.0 = Release|x64
-		{ED936CAB-73C4-48E0-9507-B472A2714495}.Release|x64.ActiveCfg = Release|x64
-		{ED936CAB-73C4-48E0-9507-B472A2714495}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

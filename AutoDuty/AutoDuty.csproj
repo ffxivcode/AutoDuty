@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors></Authors>
     <Company></Company>
-    <Version>0.0.0.52</Version>
+    <Version>0.0.0.53</Version>
     <Description>AutoDuty</Description>
     <Copyright></Copyright>
     <PackageProjectUrl></PackageProjectUrl>
@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
-    <ProjectReference Include="..\ClickLib\ClickLib\ClickLib.csproj" />
     <PackageReference Include="DalamudPackager" Version="2.1.13" />
     <PackageReference Include="TinyIpc" Version="4.3.1" />
     <Reference Include="FFXIVClientStructs">

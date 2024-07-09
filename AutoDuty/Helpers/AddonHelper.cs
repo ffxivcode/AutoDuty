@@ -37,7 +37,7 @@ namespace AutoDuty.Helpers
                 return true;
             }
             if (EzThrottler.Throttle("ClickSelectString", 50))
-                ClickLib.Clicks.ClickSelectString.Using((nint)addon).SelectItem(index);
+                AddonHelper.FireCallBack(addon, true, index);
             SeenAddon = true;
             return false;
         }
@@ -57,9 +57,9 @@ namespace AutoDuty.Helpers
             if (EzThrottler.Throttle("ClickYesno", 50))
             {
                 if (yes)
-                    ClickLib.Clicks.ClickSelectYesNo.Using((nint)addon).Yes();
+                    AddonHelper.FireCallBack(addon, true, 0);
                 else
-                    ClickLib.Clicks.ClickSelectYesNo.Using((nint)addon).No();
+                    AddonHelper.FireCallBack(addon, true, 1);
             }
             SeenAddon = true;
             return false;
@@ -75,7 +75,7 @@ namespace AutoDuty.Helpers
                 return true;
             }
             if (EzThrottler.Throttle("Repair", 50))
-                new ClickLib.Clicks.ClickRepair((nint)addon).RepairAll();
+                AddonHelper.FireCallBack(addon, true, 0); ;
             SeenAddon = true;
             return false;
         }

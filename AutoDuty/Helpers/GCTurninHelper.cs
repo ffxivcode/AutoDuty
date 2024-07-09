@@ -1,7 +1,6 @@
 ﻿using AutoDuty.IPC;
 using AutoDuty.Managers;
 using AutoDuty.Windows;
-using ClickLib.Clicks;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Memory;
 using Dalamud.Plugin.Services;
@@ -210,7 +209,7 @@ namespace AutoDuty.Helpers
             }
 
             if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString) && GenericHelpers.IsAddonReady(addonSelectString))
-                ClickSelectString.Using((nint)addonSelectString).SelectItem1();
+                AddonHelper.FireCallBack(addonSelectString, true, 1);
             else if (GenericHelpers.TryGetAddonByName("GrandCompanySupplyReward", out AtkUnitBase* addonGrandCompanySupplyRewardAtkUnitBase) && GenericHelpers.IsAddonReady(addonGrandCompanySupplyRewardAtkUnitBase))
                 AddonHelper.FireCallBack(addonGrandCompanySupplyRewardAtkUnitBase, true, 0);
             else if (GenericHelpers.TryGetAddonByName("GrandCompanySupplyList", out AtkUnitBase* addonGrandCompanySupplyListAtkUnitBase) && GenericHelpers.IsAddonReady(addonGrandCompanySupplyListAtkUnitBase))
