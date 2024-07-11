@@ -12,6 +12,11 @@ namespace AutoDuty.Managers
     {
         internal unsafe void RegisterDutySupport(ContentHelper.Content content)
         {
+            if (content.ExVersion == 5)
+            {
+                content.DawnIndex = content.DawnIndex + 200;
+            } // THIS FUCKING SUCKS BUT SHOULD MAKE IT WORK IN THE INTERIM, DT DUNGEONS START AT INDEX 23, BUT IT IS LOADING INTO DUTYSUPPORTMANAGER AS -176 AND I DONT KNOW WHY
+
             if (content.DawnIndex < 0)
                 return;
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Duty Support: {content.Name}"), "RegisterDutySupport");
