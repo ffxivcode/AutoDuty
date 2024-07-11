@@ -48,7 +48,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => indexModifier += DawnStoryCount((nint)addon) - 1, "RegisterDutySupport");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 11, content.ExVersion), "RegisterDutySupport");
             _taskManager.DelayNext("RegisterDutySupport", 250);
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 12, DawnStoryIndex(TempIndex,, content.ExVersion, indexModifier)), "RegisterDutySupport");
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 12, DawnStoryIndex(TempIndex, content.ExVersion, indexModifier)), "RegisterDutySupport");
             _taskManager.DelayNext("RegisterDutySupport", 250);
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 14), "RegisterDutySupport");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterDutySupport");
