@@ -12,16 +12,7 @@ namespace AutoDuty.Managers
     {
         internal unsafe void RegisterDutySupport(ContentHelper.Content content)
         {
-            int TempIndex = 0;
-            if (content.ExVersion == 5)
-            {
-                TempIndex = content.DawnIndex + 200;
-            } else
-            {
-                TempIndex = content.DawnIndex;
-            } // THIS FUCKING SUCKS BUT SHOULD MAKE IT WORK IN THE INTERIM, DT DUNGEONS START AT INDEX 23, BUT IT IS LOADING INTO DUTYSUPPORTMANAGER AS -176 AND I DONT KNOW WHY
-
-            if (TempIndex < 0)
+            if (content.DawnIndex < 0)
                 return;
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Duty Support: {content.Name}"), "RegisterDutySupport");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Duty Support: {content.Name}", "RegisterDutySupport");
@@ -48,7 +39,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => indexModifier += DawnStoryCount((nint)addon) - 1, "RegisterDutySupport");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 11, content.ExVersion), "RegisterDutySupport");
             _taskManager.DelayNext("RegisterDutySupport", 250);
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 12, DawnStoryIndex(TempIndex, content.ExVersion, indexModifier)), "RegisterDutySupport");
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 12, DawnStoryIndex(content.DawnIndex, content.ExVersion, indexModifier)), "RegisterDutySupport");
             _taskManager.DelayNext("RegisterDutySupport", 250);
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 14), "RegisterDutySupport");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterDutySupport");
