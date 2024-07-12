@@ -64,7 +64,7 @@ namespace AutoDuty.Managers
             return ex switch
             {
                 0 or 1 or 2 => indexModifier + index,
-                3 or 4 => index - 1,
+                3 or 4 or 5 => index - 1,
                 _ => -1,
             };
         }

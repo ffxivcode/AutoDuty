@@ -1,4 +1,4 @@
-﻿using ClickLib.Clicks;
+﻿using AutoDuty.Helpers;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using ECommons.DalamudServices;
@@ -28,7 +28,7 @@ internal unsafe static class ExecSkipTalk
     {
         if (IsEnabled)
         {
-            ClickTalk.Using(args.Addon).Click();
+            Tick();
         }
     }
 
@@ -38,6 +38,6 @@ internal unsafe static class ExecSkipTalk
         if (addon == IntPtr.Zero) return;
         var talkAddon = (AtkUnitBase*)addon;
         if (!IsAddonReady(talkAddon)) return;
-        ClickTalk.Using(addon).Click();
+        AddonHelper.FireCallBack(talkAddon, true);
     }
 }

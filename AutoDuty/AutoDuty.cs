@@ -402,6 +402,7 @@ public class AutoDuty : IDalamudPlugin
         ExecSkipTalk.IsEnabled = true;
         _chat.ExecuteCommand($"/vbmai on");
         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        _chat.ExecuteCommand($"/vnav aligncamera enable");
         
         ReflectionHelper.RotationSolver_Reflection.RotationAuto();
         Svc.Log.Info("Starting Navigation");
