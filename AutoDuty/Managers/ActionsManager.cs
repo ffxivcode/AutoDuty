@@ -229,7 +229,7 @@ namespace AutoDuty.Managers
                 if (AutoDuty.Plugin.BossObject == null && Svc.Targets.Target != null)
                 {
                     AutoDuty.Plugin.BossObject = (IBattleChara?)Svc.Targets.Target;
-                    hasModule = BossMod_IPCSubscriber.HasModule(AutoDuty.Plugin.BossObject);
+                    hasModule = BossMod_IPCSubscriber.HasModuleByDataId(AutoDuty.Plugin.BossObject!.DataId);
                 }
                 if (BossMod_IPCSubscriber.ForbiddenZonesCount() > numForbiddenZonesToIgnore)
                     FollowHelper.SetFollow(null);
@@ -307,12 +307,12 @@ namespace AutoDuty.Managers
             {
                 if (AutoDuty.Plugin.BossObject != null)
                 {
-                    hasModule = BossMod_IPCSubscriber.HasModule(AutoDuty.Plugin.BossObject);
+                    hasModule = BossMod_IPCSubscriber.HasModuleByDataId(AutoDuty.Plugin.BossObject!.DataId);
                 }
                 else if (Svc.Targets.Target != null)
                 {
                     AutoDuty.Plugin.BossObject = (IBattleChara)Svc.Targets.Target;
-                    hasModule = BossMod_IPCSubscriber.HasModule(AutoDuty.Plugin.BossObject);
+                    hasModule = BossMod_IPCSubscriber.HasModuleByDataId(AutoDuty.Plugin.BossObject!.DataId);
                 }
                 if (hasModule)
                 {
