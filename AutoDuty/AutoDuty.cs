@@ -872,6 +872,8 @@ public class AutoDuty : IDalamudPlugin
         Goto = false;
         Repairing = false;
         MainWindow.OpenTab("Main");
+        _chat.ExecuteCommand($"/vbmai off");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
