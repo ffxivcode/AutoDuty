@@ -19,7 +19,7 @@ namespace AutoDuty.IPC
 
         [EzIPC] internal static readonly Func<bool> IsMoving;
         [EzIPC] internal static readonly Func<int> ForbiddenZonesCount;
-        [EzIPC] internal static readonly Func<IGameObject, bool> HasModule;
+        [EzIPC] internal static readonly Func<uint, bool> HasModuleByDataId;
         [EzIPC] internal static readonly Func<string, bool> ActiveModuleHasComponent;
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentBaseList;
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentList;

@@ -81,7 +81,7 @@ namespace AutoDuty.Windows
                             ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
                         }
                     }
-                    if (!ImGui.BeginListBox("##MainList", new Vector2(850, 575))) return;
+                    if (!ImGui.BeginListBox("##MainList", new Vector2(400, 400))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled && ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
                     {
@@ -190,36 +190,6 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    ImGui.SameLine(0, 5);
-                    if (ImGui.Button("Goto"))
-                    {
-                        ImGui.OpenPopup("GotoPopup");
-                    }
-                    ImGui.SameLine(0, 5);
-                    if (ImGui.Button("TurnIn"))
-                    {
-                        GCTurninHelper.Invoke();
-                    }
-                    if (ImGui.BeginPopup("GotoPopup"))
-                    {
-                        if (ImGui.Selectable("Barracks"))
-                        {
-                            Plugin.GotoAction("Barracks");
-                        }
-                        if (ImGui.Selectable("Inn"))
-                        {
-                            Plugin.GotoAction("Inn");
-                        }
-                        if (ImGui.Selectable("GCSupply"))
-                        {
-                            Plugin.GotoAction("GCSupply");
-                        }
-                        if (ImGui.Selectable("Repair"))
-                        {
-                            Plugin.GotoAction("Repair");
-                        }
-                        ImGui.EndPopup();
-                    }
                     if (ImGui.Checkbox("Support", ref _support))
                     {
                         if (_support)
@@ -235,8 +205,8 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    ImGui.SameLine(0, 5);
                     /*
+                    ImGui.SameLine(0, 5);
                     if (ImGui.Checkbox("Trust", ref _trust))
                     {
                         if (_trust)
@@ -252,7 +222,8 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    ImGui.SameLine(0, 5);*/
+                    */
+                    ImGui.SameLine(0, 5);
                     if (ImGui.Checkbox("Squadron", ref _squadron))
                     {
                         if (_squadron)
@@ -268,7 +239,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    ImGui.SameLine(0, 5);
+                    //ImGui.SameLine(0, 5);
                     if (ImGui.Checkbox("Regular", ref _regular))
                     {
                         if (_regular)
@@ -316,9 +287,39 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
+                    //ImGui.SameLine(0, 5);
+                    if (ImGui.Button("Goto"))
+                    {
+                        ImGui.OpenPopup("GotoPopup");
+                    }
+                    ImGui.SameLine(0, 5);
+                    if (ImGui.Button("TurnIn"))
+                    {
+                        GCTurninHelper.Invoke();
+                    }
+                    if (ImGui.BeginPopup("GotoPopup"))
+                    {
+                        if (ImGui.Selectable("Barracks"))
+                        {
+                            Plugin.GotoAction("Barracks");
+                        }
+                        if (ImGui.Selectable("Inn"))
+                        {
+                            Plugin.GotoAction("Inn");
+                        }
+                        if (ImGui.Selectable("GCSupply"))
+                        {
+                            Plugin.GotoAction("GCSupply");
+                        }
+                        if (ImGui.Selectable("Repair"))
+                        {
+                            Plugin.GotoAction("Repair");
+                        }
+                        ImGui.EndPopup();
+                    }
                     if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
                     {
-                        //ImGui.SameLine(0, 5);
+                        ImGui.SameLine(0, 5);
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref _hideUnavailableDuties))
                         {
                             Plugin.Configuration.HideUnavailableDuties = _hideUnavailableDuties;
@@ -334,7 +335,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    if (!ImGui.BeginListBox("##DutyList", new Vector2(850, 575))) return;
+                    if (!ImGui.BeginListBox("##DutyList", new Vector2(400, 400))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
