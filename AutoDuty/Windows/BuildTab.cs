@@ -100,7 +100,7 @@ namespace AutoDuty.Windows
                                 _action = $"{item.Item1}|{GetPlayerPosition}|";
                                 break;
                         }
-                        _inputIW = 400;
+                        _inputIW = 200;
                         if (item.Item2.Equals("false"))
                             AddAction(_action);
                         _addActionButton = "Add";
@@ -170,7 +170,7 @@ namespace AutoDuty.Windows
                 ImGui.Separator();
                 ImGui.Spacing();
             }
-            if (!ImGui.BeginListBox("##BuildList", new Vector2(850, 575))) return;
+            if (!ImGui.BeginListBox("##BuildList", new Vector2(400, 575))) return;
             try
             {
                 if (Plugin.InDungeon)
@@ -197,7 +197,7 @@ namespace AutoDuty.Windows
                                 _addActionButton = "Modify";
                                 _inputTextName = "";
                                 _input = item.Value;
-                                _inputIW = 850;
+                                _inputIW = 300;
                             }
                         }
                         if (ImGui.IsItemActive() && !ImGui.IsItemHovered())

@@ -50,7 +50,7 @@ namespace AutoDuty.Windows
             if (ImGui.Checkbox($"Do not overwrite on update", ref _checked))
                 CheckBoxOnChange();
 
-            if (!ImGui.BeginListBox("##DutyList", new Vector2(850, 575))) return;
+            if (!ImGui.BeginListBox("##DutyList", new Vector2(400, 400))) return;
 
             foreach (var pathFileKVP in FileHelper.DictionaryPathFiles.Select((Value, Index) => (Value, Index)))
             {
