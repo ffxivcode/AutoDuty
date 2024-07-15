@@ -14,6 +14,12 @@ namespace AutoDuty.Managers
         {
             if (content.DawnIndex < 1)
                 return;
+            if (content.DawnIndex >= 17) //Skips Trials mistakenly present in the Trusts list because I (Vera) can't figure out how to parse them out in ContentHelper.cs
+                content.DawnIndex--;
+            if (content.DawnIndex >= 26)
+                content.DawnIndex--;
+            if (content.DawnIndex >= 30)
+                content.DawnIndex--;
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.Name}"), "RegisterTrust");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Trust: {content.Name}", "RegisterTrust");
             AtkUnitBase* addon = null;
@@ -27,7 +33,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dawn"), "RegisterTrust");
             _taskManager.Enqueue(() => { if (addon == null) OpenDawn(); }, "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
-            //_taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, (content.ExVersion - 4)), "RegisterTrust");
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, (content.ExVersion)), "RegisterTrust");
             _taskManager.DelayNext("RegisterTrust", 500);
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, content.DawnIndex - 1), "RegisterTrust");
             _taskManager.DelayNext("RegisterTrust", 500);
