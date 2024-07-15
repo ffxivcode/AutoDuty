@@ -204,8 +204,7 @@ namespace AutoDuty.Windows
                             _dutyListSelected = -1;
                             Plugin.Configuration.Save();
                         }
-                    }
-                    /*
+                    }                
                     ImGui.SameLine(0, 5);
                     if (ImGui.Checkbox("Trust", ref _trust))
                     {
@@ -221,8 +220,7 @@ namespace AutoDuty.Windows
                             _dutyListSelected = -1;
                             Plugin.Configuration.Save();
                         }
-                    }
-                    */
+                    } 
                     ImGui.SameLine(0, 5);
                     if (ImGui.Checkbox("Squadron", ref _squadron))
                     {
