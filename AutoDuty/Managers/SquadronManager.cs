@@ -2,18 +2,20 @@
 using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using static AutoDuty.Helpers.ContentHelper;
-using static FFXIVClientStructs.FFXIV.Client.UI.RaptureAtkModule.Delegates;
+
 
 namespace AutoDuty.Managers
 {
     internal class SquadronManager(TaskManager _taskManager)
     {
+
+        internal bool InteractedWithSergeant = false;
+        internal bool OpeningMissions = false;
+        internal bool ViewingMissions = false;
         internal unsafe void RegisterSquadron(ContentHelper.Content content)
         {
             if (content.GCArmyIndex < 0)
@@ -26,6 +28,8 @@ namespace AutoDuty.Managers
 
             AtkUnitBase* addon = null;
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = true; }, "RegisterSquadron");
+
+            //Fallback or check if the ObjectHelper functionality is unavailable
             if (!ObjectHelper.IsValid)
             {
                 Svc.Log.Info("ObjectHelper was invalid, making it valid.");
@@ -33,113 +37,128 @@ namespace AutoDuty.Managers
                 Svc.Log.Info("Delaying next Enqueue by 2s");
                 _taskManager.DelayNext("RegisterSquadron", 2000);
             }
-            Svc.Log.Info("Defining addon as GcArmyCapture");
+
+            //Defining the GUI for the squadron duty finder
             _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("GcArmyCapture"), "RegisterSquadron");
-            Svc.Log.Info("Run OpenSquadron(addon)");
+            
+            // Run logic to open the squadron duty finder
             _taskManager.Enqueue(() => OpenSquadron(addon), "RegisterSquadron");
-            Svc.Log.Info("Check if the addon (GcArmyCapture) is ready and open");
+
+            // Check if we're viewing missions to select (dungeons)
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("GcArmyCapture", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterSquadron");
-            Svc.Log.Info("First callback fired to select the dungeon");
+            
+            // Not sure on what this callback does.
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 11, content.GCArmyIndex), "RegisterSquadron");
-            Svc.Log.Info("Second callback fired to open dungeon");
+
+            // Not sure on what this callback does.
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 13), "RegisterSquadron");
-            Svc.Log.Info("ContentsFinderConfirm?, this might initiate the dungeon");
+            
+            // Not sure what this does but I assume its selecting the desired dungeon
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterSquadron");
-            Svc.Log.Info("Another callback triggered, what is it?");
+
+            // Callback fired for what I assume is registering for the duty
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterSquadron");
-            Svc.Log.Info("Looking at current territory");
+
+            // Check if we're in a valid map for the dungeon / paths
             _taskManager.Enqueue(() => Svc.ClientState.TerritoryType == content.TerritoryType, int.MaxValue, "RegisterSquadron");
-            Svc.Log.Info("ObjectHelper set to isValid (or theres a check, and a maxValue is defined)");
+
+            // Idk what this does
             _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterSquadron");
-            Svc.Log.Info("Duty has started");
-            _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterSquadron");
-            Svc.Log.Info("check if navmesh is ready");
+
+            // Check if we've started the Duty
+            _taskManager.Enqueue(() => {
+                if (Svc.DutyState.IsDutyStarted)
+                {
+                    // Reset states because duty has started, this is for looping
+                    Svc.Log.Info("Resetting states for loop.");
+                    InteractedWithSergeant = false;
+                    OpeningMissions = false;
+                    ViewingMissions = false;
+                    return true; // Return true to continue the task sequence
+                }
+                Svc.Log.Info("Duty hasn't started, we shouldn't be at this step.");
+                return false; // Return false if duty has not started
+            }, "RegisterSquadron");
+
+            // Check if Navmesh is ready
             _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "RegisterSquadron");
-            Svc.Log.Info("Skip talk is set to false");
+
+            // Reset ExecSkipTalk to false
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "RegisterSquadron");
-            Svc.Log.Info("Start navigating");
+
+            // Start the dungeon!
             _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterSquadron");
+            
         }
         
-        internal bool SeenAddon = false;
-        internal string? CurrentWindow = null;
+
+        // Try to open the squadron menu by finding the squadron manager until specific GUI window checks are passed
         internal unsafe bool OpenSquadron(AtkUnitBase* aub)
         {
-            SeenAddon = false;
-            AtkUnitBase* sargeantWindow = null;
-            Svc.Log.Info($"SeenAddon_STATE : {SeenAddon}");
-            Svc.Log.Info("Opening Squadron");
-            IGameObject? gameObject;
+            ViewingMissions = false;
+            OpeningMissions = false;
+            InteractedWithSergeant = false;
+            AtkUnitBase* sergeantListMenu = null;
+            AtkUnitBase* expeditionResultScreen = null;
 
             if (aub != null)
             {
-                Svc.Log.Info($"Value of aub is not equal to null, so we will return");
                 return true;
             }
-            
 
-            Svc.Log.Info("Running ObjectHelper, it should be enabled here right?");
-            Svc.Log.Info($"So what is it? {ObjectHelper.IsValid}");
-            Svc.Log.Info("We're going to try get the squadron sergeant, otherwise move closer");
-            if ((gameObject = ObjectHelper.GetObjectByPartialName("Squadron Sergeant")) == null || !MovementHelper.Move(gameObject, 0.25f, 6f))
-                return false;
-            Svc.Log.Info($"Sergeant, {gameObject}");
-
-            if (GenericHelpers.TryGetAddonByName("GcArmyExpeditionResult", out AtkUnitBase* addon))
+            if (GenericHelpers.TryGetAddonByName("GcArmyCapture", out AtkUnitBase* addon))
             {
-                Svc.Log.Info("EXPEDITION_RESULT: If we're in the mission success screen, close it");
-                AddonHelper.FireCallBack(addon, true, 0);
+                // Viewing missions, move on to the next step for registering
+                ViewingMissions = true;
+                Svc.Log.Info("ViewingMissions: TRUE");
+                return true;
+            }
+
+            // Attempt to get the squadron sergeant once and reuse the result
+            IGameObject? gameObject = ObjectHelper.GetObjectByPartialName("Squadron Sergeant");
+            if (gameObject == null || !MovementHelper.Move(gameObject, 0.25f, 6f))
+            {
                 return false;
             }
 
+            // Check if the GcArmyExpeditionResult addon is open
+            if (GenericHelpers.TryGetAddonByName("GcArmyExpeditionResult", out expeditionResultScreen))
+            {
+                Svc.Log.Info("Viewing expedition result");
+                // Close the expedition result menu
+                AddonHelper.FireCallBack(expeditionResultScreen, true, 0);
+                // Reset states so we try to open the squadron view again until we hit the squadron duty GUI
+                OpeningMissions = false;
+                InteractedWithSergeant = false;
+                ViewingMissions = false;
+                return false; // Exit to retry interaction
+            }
+
+            // Check if the SelectString addon is open (List Menu for "Command Missions", "Squadron Missions", etc.)
             if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* _))
             {
-                Svc.Log.Info("We can SelectString NOW");
-                sargeantWindow = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SelectString");
-                AddonHelper.FireCallBack(sargeantWindow, true, 0);
+                // Successfully interacted with the Sergeant
+                InteractedWithSergeant = true;
+                sergeantListMenu = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SelectString");
+                AddonHelper.FireCallBack(sergeantListMenu, true, 0);
                 AddonHelper.ClickSelectString(0);
-            }
-
-            
-            if (SeenAddon && AddonHelper.ClickSelectString(0))
-            {
-                Svc.Log.Info("If SeenAddon is true, then click the select string and update state");
-                Svc.Log.Info("Clicking a select string, I assume for Command Missions");
-                Svc.Log.Info("SeenAddon_STATE: Setting this to false");
-                SeenAddon = false;
-                return true;
-            }
-
-            if (!SeenAddon && !GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* _))
-            {
-                Svc.Log.Info("Interacting with Sergeant");
-                Svc.Log.Info($"Value of CurrentWindow, {CurrentWindow}");
-                ObjectHelper.InteractWithObject(gameObject);
-                
-                // Check if Svc.GameGui is not null before calling ToString() on it
-                if (Svc.GameGui != null)
-                {
-                    string gameGuiString = Svc.GameGui.ToString() ?? "No window";
-                    
-                    
-
-                    // Check if gameGuiString is not null before assigning it to CurrentWindow
-                    if (!string.IsNullOrEmpty(gameGuiString))
-                    {
-                        CurrentWindow = gameGuiString;
-                    }
-                    else
-                    {
-
-                        CurrentWindow = "No window"; 
-                    }
-                }
+                OpeningMissions = true; // Set the opened missions state to true
                 return false;
             }
-            else
-                
-                Svc.Log.Info("SeenAddon_STATE: True");
-                SeenAddon = true;
+
+            // Continuously check if we've interacted with the sergeant until we open up the SelectString list menu
+            // Check if we have interacted with the sergeant
+            if (!InteractedWithSergeant)
+            {
+                Svc.Log.Info("Interacting with Sergeant");
+                ObjectHelper.InteractWithObject(gameObject);
+                if (GenericHelpers.TryGetAddonByName("GcArmyCapture", out addon))
+                {
+                    InteractedWithSergeant = true;
+                }
+                    
+                return false;
+            }
 
             return false;
         }
