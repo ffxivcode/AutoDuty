@@ -76,7 +76,6 @@ namespace AutoDuty.Managers
                     ViewingMissions = false;
                     return true; // Return true to continue the task sequence
                 }
-                Svc.Log.Info("Duty hasn't started, we shouldn't be at this step.");
                 return false; // Return false if duty has not started
             }, "RegisterSquadron");
 
@@ -150,7 +149,6 @@ namespace AutoDuty.Managers
             // Check if we have interacted with the sergeant
             if (!InteractedWithSergeant)
             {
-                Svc.Log.Info("Interacting with Sergeant");
                 ObjectHelper.InteractWithObject(gameObject);
                 if (GenericHelpers.TryGetAddonByName("GcArmyCapture", out addon))
                 {
