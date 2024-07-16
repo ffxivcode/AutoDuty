@@ -238,7 +238,7 @@ public class AutoDuty : IDalamudPlugin
 
         LoadPath();
 
-        if (!Running || Repairing || Goto || CurrentTerritoryContent == null)
+        if (!Running || GCTurninHelper.GCTurninRunning || Repairing || Goto || CurrentTerritoryContent == null)
             return;
 
         if (t != CurrentTerritoryContent.TerritoryType)
@@ -249,6 +249,11 @@ public class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Loop");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");
                 TaskManager.Enqueue(() => _repairManager.Repair(), int.MaxValue, "Loop");
+                TaskManager.Enqueue(() => { GCTurninHelper.Invoke(); }, "Loop");
+                TaskManager.DelayNext("Loop", 50);
+                TaskManager.Enqueue(() => !GCTurninHelper.GCTurninRunning, int.MaxValue, "Loop");
+                if (!Configuration.Squadron)
+                    TaskManager.Enqueue(() => _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false), int.MaxValue, "Loop");
                 if (Configuration.Trust)
                     TaskManager.Enqueue(() => _trustManager.RegisterTrust(CurrentTerritoryContent), int.MaxValue, "Loop");
                 else if (Configuration.Support)
@@ -354,11 +359,9 @@ public class AutoDuty : IDalamudPlugin
         Stage = 99;
         Running = true;
         Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
-        if (Configuration.AutoGCTurnin && (InventoryHelper.SlotsFree <= Configuration.AutoGCTurninSlotsLeft || Configuration.AutoGCTurninAfterEveryLoop))
-            InvokeGCTurnin();
+        _repairManager.Repair();
         if (!Configuration.Squadron)
             _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false);
-        _repairManager.Repair();
         if (Configuration.Trust)
             _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Configuration.Support)
@@ -371,13 +374,6 @@ public class AutoDuty : IDalamudPlugin
             _squadronManager.RegisterSquadron(CurrentTerritoryContent);
         }
         CurrentLoop = 1;
-    }
-
-    private void InvokeGCTurnin()
-    {
-        GCTurninComplete = false;
-        TaskManager.Enqueue(() => GCTurninComplete, int.MaxValue, "GCTurnin");
-        GCTurninHelper.Invoke();
     }
 
     public void StartNavigation(bool startFromZero = true)
@@ -927,9 +923,6 @@ public class AutoDuty : IDalamudPlugin
                 break;
             case "turnin":
                 GCTurninHelper.Invoke();
-                break;
-            case "item":
-                GCTurninHelper.InvokeTest(uint.Parse(args.Replace("item ", "")));
                 break;
             default:
                 OpenMainUI(); 

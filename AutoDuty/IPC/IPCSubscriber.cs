@@ -1,5 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
-using ECommons.DalamudServices;
+﻿using ECommons.DalamudServices;
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
 using System;
@@ -23,6 +22,19 @@ namespace AutoDuty.IPC
         [EzIPC] internal static readonly Func<string, bool> ActiveModuleHasComponent;
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentBaseList;
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentList;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
+    internal static class Deliveroo_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Deliveroo_IPCSubscriber), "Deliveroo");
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Deliveroo");
+
+        [EzIPC] internal static readonly Func<bool> IsTurnInRunning;
+        //[EzIPC] internal static readonly Action TurnInStarted;
+        //[EzIPC] internal static readonly Action TurnInStopped;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }

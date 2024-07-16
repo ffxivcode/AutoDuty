@@ -109,46 +109,6 @@ namespace AutoDuty.Managers
             if (selfRepair)
                 _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Repair");
             _taskManager.Enqueue(() => AgentModule.Instance()->GetAgentByInternalId(AgentId.Repair)->Hide(), "Repair");
-            if (AutoDuty.Plugin.Configuration.AutoRepairReturnToInn && _returnAfter)
-            {
-                foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
-                {
-                    if ((v.Index + 1) == innKeepPositions.Length)
-                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Repair");
-                    else
-                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Repair");
-                    _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Repair");
-                }
-                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Repair");
-                _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");
-                _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Repair");
-                _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(innKeepName)) != null, "Repair");
-                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "Talk") != null, "Repair");
-                _taskManager.Enqueue(() => AddonHelper.ClickSelectString(0), "Repair");
-                _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Repair");
-                _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
-            }
-            else if (AutoDuty.Plugin.Configuration.AutoRepairReturnToBarracks && _returnAfter)
-            {
-                foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
-                {
-                    if ((v.Index + 1) == barracksDoorPositions.Length)
-                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Repair");
-                    else
-                        _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Repair");
-                    _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Repair");
-                }
-                _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Repair");
-                _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Repair");
-                _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Entrance to the Barracks")) != null, "Repair");
-                _taskManager.DelayNext("Repair", 50);
-                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "Repair");
-                _taskManager.DelayNext("Repair", 50);
-                _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Repair");
-                _taskManager.DelayNext("Repair", 50);
-                _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Repair");
-                _taskManager.Enqueue(() => ObjectHelper.IsReady, "Repair");
-            }
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Repairing = false; }, "Repair");
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "Repair");
         }

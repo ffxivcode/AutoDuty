@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Linq;
 using AutoDuty.Helpers;
 using ECommons.DalamudServices;
+using ECommons.ImGuiMethods;
 
 namespace AutoDuty.Windows
 {
@@ -16,6 +17,19 @@ namespace AutoDuty.Windows
         private static int _currentIndex = -1;
         private static int _dutyListSelected = -1;
         private static readonly string _pathsURL = "https://github.com/ffxivcode/DalamudPlugins/tree/main/AutoDuty/Paths";
+
+        private static void ToolTip(string text)
+        {
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
+                ImGuiEx.Text(text);
+                ImGui.PopTextWrapPos();
+                ImGui.EndTooltip();
+                ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+            }
+        }
 
         internal static void Draw()
         {
@@ -291,10 +305,21 @@ namespace AutoDuty.Windows
                         ImGui.OpenPopup("GotoPopup");
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Button("TurnIn"))
-                    {
-                        GCTurninHelper.Invoke();
-                    }
+                    //using (var TI = ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
+                    //{
+                        if (ImGui.Button("TurnIn"))
+                        {
+                            if (Deliveroo_IPCSubscriber.IsEnabled)
+                                GCTurninHelper.Invoke();
+                            else
+                                MainWindow.ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                        }
+                        
+                    //}
+                    if (Deliveroo_IPCSubscriber.IsEnabled)
+                        ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
+                    if (!Deliveroo_IPCSubscriber.IsEnabled)
+                        ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
                     if (ImGui.BeginPopup("GotoPopup"))
                     {
                         if (ImGui.Selectable("Barracks"))

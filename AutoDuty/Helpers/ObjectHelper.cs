@@ -43,7 +43,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static float GetDistanceToPlayer(IGameObject gameObject) => GetDistanceToPlayer(gameObject.Position);
 
-        internal unsafe static float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.IGameObject->Position);
+        internal unsafe static float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.GameObject->Position);
 
         internal unsafe static IGameObject? GetTankPartyMember()
         {
