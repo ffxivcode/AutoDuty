@@ -25,7 +25,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static bool ClickSelectString(ushort index)
+        internal static bool ClickSelectString(int index)
         {
             if ((!GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon)) && !SeenAddon)
             {

@@ -3,6 +3,7 @@ using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using ECommons;
+using ECommons.Funding;
 using ECommons.ImGuiMethods;
 using ECommons.Schedulers;
 using ImGuiNET;
@@ -27,8 +28,10 @@ public class MainWindow : Window, IDisposable
         
         TitleBarButtons.Add(new() { Icon = FontAwesomeIcon.Cog, IconOffset = new(1, 1), Click = _ => OpenTab("Config") });
         TitleBarButtons.Add(new() { ShowTooltip = () => ImGui.SetTooltip("Support Herculezz on Ko-fi"), Icon = FontAwesomeIcon.Heart, IconOffset = new(1, 1), Click = _ => GenericHelpers.ShellStart("https://ko-fi.com/Herculezz") });
-        //KoFiButton.DonateLink = "https://ko-fi.com/Herculezz";
-        //KoFiButton.Text = "Support AutoDuty";
+        PatreonBanner.DonateLink = "https://ko-fi.com/Herculezz";
+        PatreonBanner.Text = "Support AutoDuty";
+        PatreonBanner.TooltipText = "Left click to support Herculezz in the Development of AutoDuty on Kofi";
+        PatreonBanner.RightClickMenu = false;
     }
 
     internal void OpenTab(string tabName)
@@ -95,7 +98,7 @@ public class MainWindow : Window, IDisposable
         
         ImGuiEx.EzTabBar("MainTab", "Thanks", openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Mini", MiniTab.Draw, null, false));
         ImGui.SameLine();
-        //KoFiButton.DrawButton();
+        PatreonBanner.DrawButton();
         
     }
 }
