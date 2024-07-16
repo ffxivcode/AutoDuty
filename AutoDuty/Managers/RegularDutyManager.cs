@@ -28,7 +28,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AgentContentsFinder.Instance()->OpenRegularDuty(content.ContentFinderCondition), "RegisterRegularDuty");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinder", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterRegularDuty");
             _taskManager.Enqueue(() => AgentContentsFinder.Instance()->SelectedDutyId == content.ContentFinderCondition, "RegisterRegularDuty");
-            _taskManager.Enqueue(() => ((AddonContentsFinder*)addon)->DutyList->Items.Size() > 0, "RegisterRegularDuty");
+            _taskManager.Enqueue(() => ((AddonContentsFinder*)addon)->DutyList->Items.LongCount > 0, "RegisterRegularDuty");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 12, 1), "RegisterRegularDuty");
             _taskManager.Enqueue(() => ContentsFinder.Instance()->IsUnrestrictedParty = AutoDuty.Plugin.Configuration.Unsynced, "RegisterRegularDuty");
             _taskManager.Enqueue(() => FireUntilAddon(content, addon, "ContentsFinderConfirm"));
@@ -36,10 +36,6 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterRegularDuty");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterRegularDuty");
             _taskManager.Enqueue(() => Svc.ClientState.TerritoryType == content.TerritoryType, int.MaxValue, "RegisterRegularDuty");
-            _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterRegularDuty");
-            _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterRegularDuty");
-            _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "RegisterRegularDuty");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterRegularDuty");
         }
 
         internal unsafe nint FireUntilAddon(Content content, AtkUnitBase* addonContentsFider, string addonName)
@@ -74,7 +70,7 @@ namespace AutoDuty.Managers
                 case 4:
                     indexMod = ex;
                     indexMod += (ex + 1) * 2;
-                    if (content.Name != null && !content.Name.Contains("(Extreme)") && !content.Name.Contains("The Minstrel's Balad"))
+                    if (content.Name != null && !content.Name.Contains("(Extreme)") && !content.Name.Contains("The Minstrel's Ballad"))
                         indexMod -= 1;
                     break;
                 case 2:

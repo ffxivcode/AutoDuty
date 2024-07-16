@@ -81,8 +81,8 @@ namespace AutoDuty.Helpers
             DictionaryPathFiles = [];
             foreach (var t in ContentHelper.DictionaryContent)
             {
-                if (File.Exists($"{Plugin.PathsDirectory.FullName}/({t.Value.TerritoryType}) {t.Value.Name}.json"))
-                    DictionaryPathFiles.TryAdd(t.Value.TerritoryType, $"({t.Value.TerritoryType}) {t.Value.Name}.json");
+                if (File.Exists($"{Plugin.PathsDirectory.FullName}/({t.Value.TerritoryType}) {t.Value.Name?.Replace(":", "")}.json"))
+                    DictionaryPathFiles.TryAdd(t.Value.TerritoryType, $"({t.Value.TerritoryType}) {t.Value.Name?.Replace(":", "")}.json");
             }
         }
 
