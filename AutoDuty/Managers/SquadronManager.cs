@@ -47,22 +47,22 @@ namespace AutoDuty.Managers
             // Check if we're viewing missions to select (dungeons)
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("GcArmyCapture", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterSquadron");
             
-            // Not sure on what this callback does.
+            // Select Mission
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 11, content.GCArmyIndex), "RegisterSquadron");
 
-            // Not sure on what this callback does.
+            // click ok
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 13), "RegisterSquadron");
             
-            // Not sure what this does but I assume its selecting the desired dungeon
+            // retrieve the ContentsFinderConfirm addon
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterSquadron");
 
-            // Callback fired for what I assume is registering for the duty
+            // Confirm Duty
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterSquadron");
 
             // Check if we're in a valid map for the dungeon / paths
             _taskManager.Enqueue(() => Svc.ClientState.TerritoryType == content.TerritoryType, int.MaxValue, "RegisterSquadron");
 
-            // Idk what this does
+            // Wait for the player to be Valid
             _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterSquadron");
 
             // Check if we've started the Duty
@@ -113,7 +113,7 @@ namespace AutoDuty.Managers
                 return true;
             }
 
-            // Attempt to get the squadron sergeant once and reuse the result
+            // Attempt to get the squadron sergeant once and reuse the result --- This still sets this every call I will change this to one and done later.
             IGameObject? gameObject = ObjectHelper.GetObjectByPartialName("Squadron Sergeant");
             if (gameObject == null || !MovementHelper.Move(gameObject, 0.25f, 6f))
             {
