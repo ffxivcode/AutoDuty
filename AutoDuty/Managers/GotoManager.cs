@@ -67,7 +67,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
             _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
             _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(innKeepName)) != null, "Goto");
-            _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "Talk") != null, "Goto");
+            _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectString") != null, "Goto");
             _taskManager.Enqueue(() => AddonHelper.ClickSelectString(0));
             _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
             _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
