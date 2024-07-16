@@ -21,8 +21,8 @@ namespace AutoDuty.Managers
                 indexModifier++;
             if (content.DawnIndex >= 30)
                 indexModifier++;
-            _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.Name}"), "RegisterTrust");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Trust: {content.Name}", "RegisterTrust");
+            _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.DisplayName}"), "RegisterTrust");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Trust: {content.DisplayName}", "RegisterTrust");
             AtkUnitBase* addon = null;
 
             if (!ObjectHelper.IsValid)
