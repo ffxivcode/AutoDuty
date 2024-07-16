@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Data;
+
     internal static class ContentHelper
     {
         internal static Dictionary<uint, Content> DictionaryContent { get; set; } = [];
@@ -15,6 +17,8 @@ namespace AutoDuty.Helpers
         internal class Content
         {
             internal string? Name { get; set; }
+
+            internal string? DisplayName { get; set; }
 
             internal uint TerritoryType { get; set; }
 
@@ -43,18 +47,23 @@ namespace AutoDuty.Helpers
 
         internal static void PopulateDuties()
         {
-            var listContentFinderCondition = Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>();
+            var listContentFinderCondition = Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>(Language.English);
+            var listContentFinderConditionDisplay =
+                Svc.Data.GameData.Options.DefaultExcelLanguage == Language.English ?
+                                                        listContentFinderCondition :
+                                                        Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>() ?? listContentFinderCondition;
+
             var listDawnContent = Svc.Data.GameData.GetExcelSheet<DawnContent>();
             if (listContentFinderCondition == null || listDawnContent == null) return;
 
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
-                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || ( contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 ) || contentFinderCondition.Name.ToString().IsNullOrEmpty())
+                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5) || contentFinderCondition.Name.ToString().IsNullOrEmpty())
                     continue;
 
                 var content = new Content
                 {
-                    Name = contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The").Replace("--", "-").Replace("<italic(0)>","").Replace("<italic(1)>", "") : contentFinderCondition.Name.ToString().Replace("--", "-").Replace("<italic(0)>", "").Replace("<italic(1)>", ""),
+                    Name = contentFinderCondition.Name.ToString()[..3].Equals("the") ? contentFinderCondition.Name.ToString().ReplaceFirst("the", "The").Replace("--", "-").Replace("<italic(0)>", "").Replace("<italic(1)>", "") : contentFinderCondition.Name.ToString().Replace("--", "-").Replace("<italic(0)>", "").Replace("<italic(1)>", ""),
                     TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
                     ContentType = contentFinderCondition.ContentType.Value.RowId,
                     ContentMemberType = contentFinderCondition.ContentMemberType.Value?.RowId ?? 0,
@@ -67,6 +76,8 @@ namespace AutoDuty.Helpers
                     GCArmyContent = ListGCArmyContent.Any(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
                     GCArmyIndex = ListGCArmyContent.FindIndex(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId)
                 };
+                content.DisplayName = listContentFinderConditionDisplay?.GetRow(contentFinderCondition.RowId)?.Name ?? content.Name;
+
                 if (content.DawnContent && listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).Any())
                     content.DawnIndex = listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId < 32 ? (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId : (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId - 200;
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);

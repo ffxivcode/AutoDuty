@@ -353,7 +353,7 @@ public class AutoDuty : IDalamudPlugin
         MainWindow.OpenTab("Mini");
         Stage = 99;
         Running = true;
-        Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
+        Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
         if (Configuration.AutoGCTurnin && (InventoryHelper.SlotsFree <= Configuration.AutoGCTurninSlotsLeft || Configuration.AutoGCTurninAfterEveryLoop))
             InvokeGCTurnin();
         if (!Configuration.Squadron)
@@ -852,7 +852,7 @@ public class AutoDuty : IDalamudPlugin
                 if (Plugin.Repairing)
                     Action = $"Step: Repairing";
                 else if (!Plugin.Goto)
-                    Action = $"Step: Looping: {CurrentTerritoryContent?.Name} {CurrentLoop} of {Configuration.LoopTimes}";
+                    Action = $"Step: Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
                 if (!TaskManager.IsBusy && ObjectHelper.IsValid && Svc.ClientState.TerritoryType == CurrentTerritoryContent?.TerritoryType)
                     Stage = 1;
                 break;
