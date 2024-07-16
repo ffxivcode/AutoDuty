@@ -17,9 +17,9 @@ namespace AutoDuty.Managers
             int indexModifier = 1;
             if (content.DawnIndex >= 17) //Skips Trials mistakenly present in the Trusts list because I (Vera) can't figure out how to parse them out in ContentHelper.cs
                 indexModifier++;
-            if (content.DawnIndex >= 25)
+            if (content.DawnIndex >= 26)
                 indexModifier++;
-            if (content.DawnIndex >= 28)
+            if (content.DawnIndex >= 30)
                 indexModifier++;
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.Name}"), "RegisterTrust");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Trust: {content.Name}", "RegisterTrust");
