@@ -45,10 +45,6 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterDutySupport");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterDutySupport");
             _taskManager.Enqueue(() => Svc.ClientState.TerritoryType == content.TerritoryType, int.MaxValue, "RegisterDutySupport");
-            _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterDutySupport");
-            _taskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "RegisterDutySupport");
-            _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "RegisterDutySupport");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterDutySupport");
         }
 
         private unsafe void OpenDawnStory() => AgentModule.Instance()->GetAgentByInternalId(AgentId.DawnStory)->Show();

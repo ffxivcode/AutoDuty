@@ -62,32 +62,21 @@ namespace AutoDuty.Managers
             // Check if we're in a valid map for the dungeon / paths
             _taskManager.Enqueue(() => Svc.ClientState.TerritoryType == content.TerritoryType, int.MaxValue, "RegisterSquadron");
 
-            // Wait for the player to be Valid
-            _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterSquadron");
-
-            // Check if we've started the Duty
             _taskManager.Enqueue(() => {
-                if (Svc.DutyState.IsDutyStarted)
+                if (Svc.ClientState.TerritoryType == content.TerritoryType)
                 {
-                    // Reset states because duty has started, this is for looping
+                    // Reset states because we queued the correct duty, this is for looping
                     Svc.Log.Info("Resetting states for loop.");
                     InteractedWithSergeant = false;
                     OpeningMissions = false;
                     ViewingMissions = false;
                     return true; // Return true to continue the task sequence
                 }
-                return false; // Return false if duty has not started
+                return false; // Return false if we are not in correct duty
             }, "RegisterSquadron");
-
-            // Check if Navmesh is ready
-            _taskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "RegisterSquadron");
 
             // Reset ExecSkipTalk to false
             _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "RegisterSquadron");
-
-            // Start the dungeon!
-            _taskManager.Enqueue(() => AutoDuty.Plugin.StartNavigation(true), "RegisterSquadron");
-            
         }
         
 

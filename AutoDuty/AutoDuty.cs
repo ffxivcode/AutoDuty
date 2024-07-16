@@ -189,6 +189,11 @@ public class AutoDuty : IDalamudPlugin
         }
     }
 
+    internal void ExitDuty()
+    {
+        _actions.ExitDuty("");
+    }
+
     internal void LoadPath()
     {
         try
@@ -209,7 +214,7 @@ public class AutoDuty : IDalamudPlugin
 
             InDungeon = true;
 
-            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name}.json";
+            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":","")}.json";
    
             ListBoxPOSText.Clear();
             if (!File.Exists(PathFile))
@@ -246,9 +251,9 @@ public class AutoDuty : IDalamudPlugin
         {
             if (CurrentLoop < Configuration.LoopTimes)
             {
-                TaskManager.Enqueue(() => Stage = 99, "Loop");
                 TaskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Loop");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");
+                TaskManager.Enqueue(() => Stage = 99, "Loop");
                 TaskManager.Enqueue(() => _repairManager.Repair(), int.MaxValue, "Loop");
                 TaskManager.Enqueue(() => { if (Configuration.AutoGCTurnin) GCTurninHelper.Invoke(); }, "Loop");
                 TaskManager.DelayNext("Loop", 50);
@@ -269,6 +274,7 @@ public class AutoDuty : IDalamudPlugin
                 }
                 else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
                     _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
+                
                 TaskManager.Enqueue(() => CurrentLoop++, "Loop");
             }
             else
@@ -363,20 +369,27 @@ public class AutoDuty : IDalamudPlugin
         Stage = 99;
         Running = true;
         Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
-        _repairManager.Repair();
-        if (!Configuration.Squadron)
-            _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false);
-        if (Configuration.Trust)
-            _trustManager.RegisterTrust(CurrentTerritoryContent);
-        else if (Configuration.Support)
-            _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
-        else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
-            _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
-        else if (Configuration.Squadron)
+        if (!InDungeon)
         {
-            _gotoManager.Goto(true, false, false);
-            _squadronManager.RegisterSquadron(CurrentTerritoryContent);
+            _repairManager.Repair();
+            if (!Configuration.Squadron)
+                _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false);
+            if (Configuration.Trust)
+                _trustManager.RegisterTrust(CurrentTerritoryContent);
+            else if (Configuration.Support)
+                _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
+            else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
+                _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
+            else if (Configuration.Squadron)
+            {
+                _gotoManager.Goto(true, false, false);
+                _squadronManager.RegisterSquadron(CurrentTerritoryContent);
+            }
         }
+        TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Run");
+        TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Run");
+        TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run");
+        TaskManager.Enqueue(() => StartNavigation(true), "Run");
         CurrentLoop = 1;
     }
 
@@ -385,7 +398,7 @@ public class AutoDuty : IDalamudPlugin
         if (ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content))
         {
             CurrentTerritoryContent = content;
-            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.Name}.json";
+            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.Name.Replace(":", "")}.json";
             LoadPath();
         }
         else
@@ -536,13 +549,13 @@ public class AutoDuty : IDalamudPlugin
             //we finished lets exit the duty
             if (Configuration.AutoExitDuty || Running)
             {
-                _actions.ExitDuty("");
+                ExitDuty();
+                Started = false;
                 ReflectionHelper.RotationSolver_Reflection.RotationStop();
             }
             if (!Running)
                 Stage = 0;
-            else
-                Stage = 99;
+
             Indexer = -1;
         }
         if (Stage > 0)
@@ -853,8 +866,8 @@ public class AutoDuty : IDalamudPlugin
                     Action = $"Step: Repairing";
                 else if (!Plugin.Goto)
                     Action = $"Step: Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
-                if (!TaskManager.IsBusy && ObjectHelper.IsValid && Svc.ClientState.TerritoryType == CurrentTerritoryContent?.TerritoryType)
-                    Stage = 1;
+                if (!TaskManager.IsBusy && ObjectHelper.IsValid && Svc.DutyState.IsDutyStarted && Svc.ClientState.TerritoryType == CurrentTerritoryContent?.TerritoryType && VNavmesh_IPCSubscriber.Nav_IsReady())
+                    StartNavigation(true);
                 break;
             default:
                 break;

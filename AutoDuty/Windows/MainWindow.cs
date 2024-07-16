@@ -47,6 +47,19 @@ public class MainWindow : Window, IDisposable
     {
     }
 
+    internal static void ToolTip(string text)
+    {
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.BeginTooltip();
+            ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
+            ImGuiEx.Text(text);
+            ImGui.PopTextWrapPos();
+            ImGui.EndTooltip();
+            ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+        }
+    }
+
     internal static void CenteredText(string text)
     {
         float windowWidth = ImGui.GetWindowSize().X;

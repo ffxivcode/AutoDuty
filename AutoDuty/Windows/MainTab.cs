@@ -19,19 +19,6 @@ namespace AutoDuty.Windows
         private static int _dutyListSelected = -1;
         private static readonly string _pathsURL = "https://github.com/ffxivcode/DalamudPlugins/tree/main/AutoDuty/Paths";
 
-        private static void ToolTip(string text)
-        {
-            if (ImGui.IsItemHovered())
-            {
-                ImGui.BeginTooltip();
-                ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
-                ImGuiEx.Text(text);
-                ImGui.PopTextWrapPos();
-                ImGui.EndTooltip();
-                ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-            }
-        }
-
         internal static void Draw()
         {
             var _loopTimes = Plugin.Configuration.LoopTimes;
@@ -64,10 +51,18 @@ namespace AutoDuty.Windows
                         if (ImGui.Button("Start"))
                         {
                             Plugin.LoadPath();
-                            Plugin.StartNavigation(!Plugin.MainListClicked);
                             _currentIndex = -1;
+                            Plugin.Run(Svc.ClientState.TerritoryType);
                         }
+                        ImGui.SameLine(0, 15);
                     }
+                    ImGui.PushItemWidth(150);
+                    if (ImGui.InputInt("Times", ref _loopTimes))
+                    {
+                        Plugin.Configuration.LoopTimes = _loopTimes;
+                        Plugin.Configuration.Save();
+                    }
+                    ImGui.PopItemWidth();
                     ImGui.SameLine(0, 5);
                     using (var d2 = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage == 0))
                     {
@@ -321,9 +316,9 @@ namespace AutoDuty.Windows
                                 MainWindow.ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
                         }
                         if (Deliveroo_IPCSubscriber.IsEnabled)
-                            ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
+                            MainWindow.ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
                         else
-                            ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                            MainWindow.ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
                     }
                     ImGui.SameLine(0, 5);
                     if (DesynthHelper.DesynthRunning)
@@ -335,7 +330,7 @@ namespace AutoDuty.Windows
                     {
                         if (ImGui.Button("Desynth"))
                             DesynthHelper.Invoke();
-                        ToolTip("Click to Desynth all Items in Inventory");
+                        MainWindow.ToolTip("Click to Desynth all Items in Inventory");
                     }
                     if (ImGui.BeginPopup("GotoPopup"))
                     {

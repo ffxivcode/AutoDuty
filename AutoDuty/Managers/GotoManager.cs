@@ -80,6 +80,12 @@ namespace AutoDuty.Managers
                 AutoDuty.Plugin.Action = $"Going to: {(gotoBarracks ? "Barracks" : (gotoGCSupply ? "GCSupply" : "Inn"))}";
                 AutoDuty.Plugin.Goto = true;
                 ExecSkipTalk.IsEnabled = true;
+                if (AutoDuty.Plugin.InDungeon)
+                {
+                    AutoDuty.Plugin.ExitDuty();
+                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
+                    _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
+                }
                 switch (UIState.Instance()->PlayerState.GrandCompany)
                 {
                     //Limsa=1,129, Gridania=2,132, Uldah=3,130 -- Goto Limsa if no GC
