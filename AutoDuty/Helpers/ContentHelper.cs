@@ -7,6 +7,7 @@ using System.Linq;
 namespace AutoDuty.Helpers
 {
     using Lumina.Data;
+    using Lumina.Excel.GeneratedSheets2;
     using Lumina.Text;
 
     internal static class ContentHelper
@@ -54,11 +55,15 @@ namespace AutoDuty.Helpers
                                                         listContentFinderCondition :
                                                         Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>() ?? listContentFinderCondition;
 
-            var listDawnContent = Svc.Data.GameData.GetExcelSheet<DawnContent>();
+            var listDawnContent = Svc.Data.GameData.GetExcelSheet<DawnContent>(Language.English);
+
+
             if (listContentFinderCondition == null || listDawnContent == null) return;
+
 
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
+
                 if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5) || contentFinderCondition.Name.ToString().IsNullOrEmpty())
                     continue;
 
@@ -92,6 +97,7 @@ namespace AutoDuty.Helpers
 
                 if (content.DawnContent && listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).Any())
                     content.DawnIndex = listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId < 32 ? (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId : (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId - 200;
+                
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);
             }
 
