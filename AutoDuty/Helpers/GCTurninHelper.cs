@@ -12,17 +12,36 @@ namespace AutoDuty.Helpers
 {
     internal static class GCTurninHelper
     {
-        internal static void Invoke() => Svc.Framework.Update += GCTurninUpdate;
+        internal static void Invoke() 
+        {
+            if (!Deliveroo_IPCSubscriber.IsEnabled)
+                Svc.Log.Info("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+            else if (!GCTurninRunning)
+            {
+                Svc.Log.Info("GCTurnin Started");
+                GCTurninRunning = true;
+                Svc.Framework.Update += GCTurninUpdate;
+            }
+        }
 
-        internal static void Stop() => Svc.Framework.Update -= GCTurninUpdate;
+        internal static void Stop() 
+        {
+            taskManager.Abort();
+            gotoManager = null;
+            deliverooStarted = false;
+            GCTurninRunning = false;
+            Svc.Framework.Update -= GCTurninUpdate;
+        }
 
         internal static bool GCTurninRunning = false;
+
+        private static GotoManager? gotoManager = null;
 
         private static IGameObject? personnelOfficer = null;
 
         private static IGameObject? quartermaster = null;
 
-        private static readonly TaskManager taskManager =  new();
+        private static readonly TaskManager taskManager = new();
 
         private static bool deliverooStarted = false;
 
@@ -30,17 +49,6 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void GCTurninUpdate(IFramework framework)
         {
-            if (!AutoDuty.Plugin.Configuration.AutoGCTurnin || !Deliveroo_IPCSubscriber.IsEnabled)
-            {
-                Svc.Log.Info("GCTurnin or Deliveroo Not Enabled");
-                Stop();
-                return;
-            }
-            else if (!GCTurninRunning)
-            {
-                Svc.Log.Info("GCTurnin Started");
-                GCTurninRunning = true;
-            }
             if (!EzThrottler.Throttle("Turnin", 50))
                 return;
 
@@ -51,12 +59,12 @@ namespace AutoDuty.Helpers
             {
                 //UIState.Instance()->PlayerState.GrandCompany)
                 //Limsa=1,129, Gridania=2,132, Uldah=3,130
-                AutoDuty.Plugin.Goto = true;
                 if ((UIState.Instance()->PlayerState.GrandCompany == 1 && Svc.ClientState.TerritoryType != 128) || (UIState.Instance()->PlayerState.GrandCompany == 2 && Svc.ClientState.TerritoryType != 132) || (UIState.Instance()->PlayerState.GrandCompany == 3 && Svc.ClientState.TerritoryType != 130))
                 {
                     //Goto GCSupply
-                    var g = new GotoManager(taskManager);
-                    g.Goto(false, false, true);
+                    AutoDuty.Plugin.Goto = true;
+                    gotoManager = new(taskManager);
+                    gotoManager.Goto(false, false, true);
                 }
                 return;
             }
@@ -84,8 +92,6 @@ namespace AutoDuty.Helpers
             }
             else if (!Deliveroo_IPCSubscriber.IsTurnInRunning() && deliverooStarted)
             {
-                deliverooStarted = false;
-                GCTurninRunning = false;
                 Svc.Log.Info("GCTurnin Finished");
                 Stop();
                 return;

@@ -24,6 +24,7 @@ using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
 using ECommons.Automation;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace AutoDuty;
 
@@ -238,7 +239,7 @@ public class AutoDuty : IDalamudPlugin
 
         LoadPath();
 
-        if (!Running || GCTurninHelper.GCTurninRunning || Repairing || Goto || CurrentTerritoryContent == null)
+        if (!Running || GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || Repairing || Goto || CurrentTerritoryContent == null)
             return;
 
         if (t != CurrentTerritoryContent.TerritoryType)
@@ -249,9 +250,12 @@ public class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Loop");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");
                 TaskManager.Enqueue(() => _repairManager.Repair(), int.MaxValue, "Loop");
-                TaskManager.Enqueue(() => { GCTurninHelper.Invoke(); }, "Loop");
+                TaskManager.Enqueue(() => { if (Configuration.AutoGCTurnin) GCTurninHelper.Invoke(); }, "Loop");
                 TaskManager.DelayNext("Loop", 50);
                 TaskManager.Enqueue(() => !GCTurninHelper.GCTurninRunning, int.MaxValue, "Loop");
+                TaskManager.Enqueue(() => { if (Configuration.AutoDesynth) DesynthHelper.Invoke(); }, "Loop");
+                TaskManager.DelayNext("Loop", 50);
+                TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop");
                 if (!Configuration.Squadron)
                     TaskManager.Enqueue(() => _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false), int.MaxValue, "Loop");
                 if (Configuration.Trust)
@@ -878,9 +882,11 @@ public class AutoDuty : IDalamudPlugin
             TaskManager.Abort();
         if (ExecSkipTalk.IsEnabled)
             ExecSkipTalk.IsEnabled = false;
-        VNavmesh_IPCSubscriber.Path_Stop();
         FollowHelper.SetFollow(null);
         GCTurninHelper.Stop();
+        DesynthHelper.Stop();
+        VNavmesh_IPCSubscriber.Path_Stop();
+        Action = "";
     }
 
     public void Dispose()
@@ -923,6 +929,10 @@ public class AutoDuty : IDalamudPlugin
                 break;
             case "turnin":
                 GCTurninHelper.Invoke();
+                break;
+            case "desynth":
+                //DesynthHelper.Invoke();
+                Svc.Log.Info($"{AgentSalvage.Instance()->SelectedCategory}");
                 break;
             default:
                 OpenMainUI(); 

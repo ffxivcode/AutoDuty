@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Linq;
 using AutoDuty.Helpers;
 using System.Diagnostics;
+using Dalamud.Interface.Utility;
 
 namespace AutoDuty.Windows
 {
@@ -50,7 +51,7 @@ namespace AutoDuty.Windows
             if (ImGui.Checkbox($"Do not overwrite on update", ref _checked))
                 CheckBoxOnChange();
 
-            if (!ImGui.BeginListBox("##DutyList", new Vector2(400, 400))) return;
+            if (!ImGui.BeginListBox("##DutyList", new Vector2(500 * ImGuiHelpers.GlobalScale, 400 * ImGuiHelpers.GlobalScale))) return;
 
             foreach (var pathFileKVP in FileHelper.DictionaryPathFiles.Select((Value, Index) => (Value, Index)))
             {

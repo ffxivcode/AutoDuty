@@ -13,7 +13,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 58;
+    public int Version { get; set; } = 59;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
@@ -161,14 +161,13 @@ public static class ConfigTab
             }
         }
         ImGui.Separator();
-        /* disabled until implemented
         if (ImGui.Checkbox("Auto Desynth", ref autoDesynth))
         {
             Configuration.AutoDesynth = autoDesynth;
             Configuration.AutoGCTurnin = false;
             autoGCTurnin = false;
             Configuration.Save();
-        }*/
+        }
         using (var autoGcTurninDisabled = ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
         {
             if (ImGui.Checkbox("Auto GC Turnin", ref autoGCTurnin))

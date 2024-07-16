@@ -9,6 +9,7 @@ using System.Linq;
 using AutoDuty.Helpers;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
+using Dalamud.Interface.Utility;
 
 namespace AutoDuty.Windows
 {
@@ -95,7 +96,7 @@ namespace AutoDuty.Windows
                             ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
                         }
                     }
-                    if (!ImGui.BeginListBox("##MainList", new Vector2(400, 400))) return;
+                    if (!ImGui.BeginListBox("##MainList", new Vector2(500 * ImGuiHelpers.GlobalScale, 400 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled && ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
                     {
@@ -305,8 +306,13 @@ namespace AutoDuty.Windows
                         ImGui.OpenPopup("GotoPopup");
                     }
                     ImGui.SameLine(0, 5);
-                    //using (var TI = ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
-                    //{
+                    if (GCTurninHelper.GCTurninRunning)
+                    {
+                        if (ImGui.Button("Stop TurnIn"))
+                            Plugin.StopAndResetALL();
+                    }
+                    else
+                    {
                         if (ImGui.Button("TurnIn"))
                         {
                             if (Deliveroo_IPCSubscriber.IsEnabled)
@@ -314,12 +320,23 @@ namespace AutoDuty.Windows
                             else
                                 MainWindow.ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
                         }
-                        
-                    //}
-                    if (Deliveroo_IPCSubscriber.IsEnabled)
-                        ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
-                    if (!Deliveroo_IPCSubscriber.IsEnabled)
-                        ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                        if (Deliveroo_IPCSubscriber.IsEnabled)
+                            ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
+                        else
+                            ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                    }
+                    ImGui.SameLine(0, 5);
+                    if (DesynthHelper.DesynthRunning)
+                    {
+                        if (ImGui.Button("Stop Desynth"))
+                            Plugin.StopAndResetALL();
+                    }
+                    else
+                    {
+                        if (ImGui.Button("Desynth"))
+                            DesynthHelper.Invoke();
+                        ToolTip("Click to Desynth all Items in Inventory");
+                    }
                     if (ImGui.BeginPopup("GotoPopup"))
                     {
                         if (ImGui.Selectable("Barracks"))
@@ -358,7 +375,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    if (!ImGui.BeginListBox("##DutyList", new Vector2(400, 400))) return;
+                    if (!ImGui.BeginListBox("##DutyList", new Vector2(500 * ImGuiHelpers.GlobalScale, 400 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {

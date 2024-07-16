@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using AutoDuty.Helpers;
+using Dalamud.Interface.Utility;
 
 namespace AutoDuty.Windows
 {
@@ -22,7 +23,7 @@ namespace AutoDuty.Windows
         private static string _action = "";
         private static string _inputTextName = "";
         private static bool _dontMove = false;
-        private static int _inputIW = 200;
+        private static float _inputIW = 200 * ImGuiHelpers.GlobalScale;
         private static bool _showAddActionUI = false;
         private static (string, string) _dropdownSelected = ("", "");
         private static int _buildListSelected = -1;
@@ -100,7 +101,7 @@ namespace AutoDuty.Windows
                                 _action = $"{item.Item1}|{GetPlayerPosition}|";
                                 break;
                         }
-                        _inputIW = 200;
+                        _inputIW = 200 * ImGuiHelpers.GlobalScale;
                         if (item.Item2.Equals("false"))
                             AddAction(_action);
                         _addActionButton = "Add";
@@ -170,7 +171,7 @@ namespace AutoDuty.Windows
                 ImGui.Separator();
                 ImGui.Spacing();
             }
-            if (!ImGui.BeginListBox("##BuildList", new Vector2(400, 575))) return;
+            if (!ImGui.BeginListBox("##BuildList", new Vector2(500 * ImGuiHelpers.GlobalScale, 575 * ImGuiHelpers.GlobalScale))) return;
             try
             {
                 if (Plugin.InDungeon)
@@ -197,7 +198,7 @@ namespace AutoDuty.Windows
                                 _addActionButton = "Modify";
                                 _inputTextName = "";
                                 _input = item.Value;
-                                _inputIW = 300;
+                                _inputIW = 300 * ImGuiHelpers.GlobalScale;
                             }
                         }
                         if (ImGui.IsItemActive() && !ImGui.IsItemHovered())
