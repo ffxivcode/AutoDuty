@@ -49,11 +49,11 @@ namespace AutoDuty.Windows
                 var progress = VNavmesh_IPCSubscriber.IsEnabled ? VNavmesh_IPCSubscriber.Nav_BuildProgress() : 0;
                 if (progress >= 0)
                 {
-                    ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loading: ");
+                    ImGui.Text($"{Plugin.CurrentTerritoryContent.DisplayName} Mesh: Loading: ");
                     ImGui.ProgressBar(progress, new(200, 0));
                 }
                 else
-                    ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loaded Path: {(FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out _) ? "Loaded" : "None")}");
+                    ImGui.Text($"{Plugin.CurrentTerritoryContent.DisplayName} Mesh: Loaded Path: {(FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out _) ? "Loaded" : "None")}");
                 ImGui.Spacing();
                 ImGui.Separator();
                 ImGui.Spacing();
@@ -401,7 +401,7 @@ namespace AutoDuty.Windows
                                 {
                                     if (Plugin.Configuration.HideUnavailableDuties && (item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.DictionaryPathFiles.TryGetValue(item.Value.Value.TerritoryType, out _)))
                                         continue;
-                                    if (ImGui.Selectable($"({item.Value.Value.TerritoryType}) {item.Value.Value.Name}", _dutyListSelected == item.Index))
+                                    if (ImGui.Selectable($"({item.Value.Value.TerritoryType}) {item.Value.Value.DisplayName}", _dutyListSelected == item.Index))
                                     {
                                         _dutyListSelected = item.Index;
                                         Plugin.CurrentTerritoryContent = item.Value.Value;

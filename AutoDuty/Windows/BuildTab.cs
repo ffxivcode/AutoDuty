@@ -54,7 +54,7 @@ namespace AutoDuty.Windows
         internal static void Draw()
         {
             using var d = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage > 0 || Plugin.Player == null);
-            ImGui.Text($"Build Path: ({Svc.ClientState.TerritoryType}) {(ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content) ? content.Name : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))}");
+            ImGui.Text($"Build Path: ({Svc.ClientState.TerritoryType}) {(ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content) ? content.DisplayName : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))}");
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
