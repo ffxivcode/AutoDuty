@@ -52,7 +52,10 @@ namespace AutoDuty.Windows
                         {
                             Plugin.LoadPath();
                             _currentIndex = -1;
-                            Plugin.Run(Svc.ClientState.TerritoryType);
+                            if (Plugin.MainListClicked)
+                                Plugin.StartNavigation(!Plugin.MainListClicked);
+                            else
+                                Plugin.Run(Svc.ClientState.TerritoryType);
                         }
                         ImGui.SameLine(0, 15);
                     }
