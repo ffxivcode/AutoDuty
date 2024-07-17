@@ -36,9 +36,8 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterRegularDuty");
             _taskManager.Enqueue(() => Svc.ClientState.TerritoryType == content.TerritoryType, int.MaxValue, "RegisterRegularDuty");
         }
-        public unsafe void OpenRegularDuty(uint cfcID) => AgentContentsFinder.Instance()->OpenRegularDuty(cfcID);
 
-        public unsafe bool SelectDuty(Content content, AddonContentsFinder* addon)
+        private unsafe bool SelectDuty(Content content, AddonContentsFinder* addon)
         {
             if (GenericHelpers.IsAddonReady(&addon->AtkUnitBase))
             {
