@@ -24,14 +24,11 @@ using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
 using ECommons.Automation;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace AutoDuty;
 
 // TODO:
-// GCTurnin is nearly complete, seems to be working great, but need to Modify the goto and repair managers so their checks for territorytype are done within the queue.
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
-// Add Auto desynth
 // make config saving per character
 // drap drop on build is jacked when theres scrolling
 
@@ -944,15 +941,14 @@ public class AutoDuty : IDalamudPlugin
                 GCTurninHelper.Invoke();
                 break;
             case "desynth":
-                //DesynthHelper.Invoke();
-                Svc.Log.Info($"{AgentSalvage.Instance()->SelectedCategory}");
+                DesynthHelper.Invoke();
                 break;
             default:
                 OpenMainUI(); 
                 break;
         }
     }
-
+    
     private void DrawUI()
     {
         WindowSystem.Draw();
