@@ -30,6 +30,8 @@ namespace AutoDuty.Windows
         private static string _addActionButton = "Add"; 
         private static bool _dragDrop = false;
 
+        private static JsonSerializerOptions _jsonSerializerOptions = new() { WriteIndented = true };
+
         private static string GetPlayerPosition => $"{Plugin.PlayerPosition.X.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Plugin.PlayerPosition.Y.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Plugin.PlayerPosition.Z.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}";
 
         private static void ClearAll()
@@ -123,7 +125,7 @@ namespace AutoDuty.Windows
                 try
                 {
                     Svc.Log.Info($"Saving {Plugin.PathFile}");
-                    string json = JsonSerializer.Serialize(Plugin.ListBoxPOSText);
+                    string json = JsonSerializer.Serialize(Plugin.ListBoxPOSText, _jsonSerializerOptions);
                     File.WriteAllText(Plugin.PathFile, json);
                 }
                 catch (Exception e)
