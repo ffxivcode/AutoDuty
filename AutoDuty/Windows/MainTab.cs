@@ -250,7 +250,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    //ImGui.SameLine(0, 5);
+                    ImGui.SameLine(0, 5);
                     if (ImGui.Checkbox("Regular", ref _regular))
                     {
                         if (_regular)
