@@ -10,6 +10,8 @@ using Dalamud.Interface.Utility;
 
 namespace AutoDuty.Windows
 {
+    using System.IO;
+
     internal static class PathsTab
     {
         private static int _selectedIndex = -1;
@@ -45,7 +47,7 @@ namespace AutoDuty.Windows
             using (var d = ImRaii.Disabled(_selectedPath.IsNullOrEmpty()))
             {
                 if (ImGui.Button("Open File"))
-                    Process.Start("notepad.exe", $"{Plugin.PathsDirectory.FullName}/{_selectedPath}");
+                    Process.Start("explorer", $"\"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{_selectedPath}\"");
             }
 
             if (ImGui.Checkbox($"Do not overwrite on update", ref _checked))
