@@ -665,7 +665,6 @@ public class AutoDuty : IDalamudPlugin
                 if (ObjectHelper.InCombat(Player) && AutoDuty.Plugin.StopForCombat)
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
-                    ReflectionHelper.RotationSolver_Reflection.RotationAuto();
                     Stage = 4;
                     break;
                 }
@@ -712,6 +711,9 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
+                if (EzThrottler.Throttle("RSCombat"))
+                    ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+
                 if (!TaskManager.IsBusy)
                 {
                     Stage = 1;
@@ -725,6 +727,10 @@ public class AutoDuty : IDalamudPlugin
                     return;
 
                 Action = $"Step: Waiting For Combat";
+
+                if (EzThrottler.Throttle("RSCombat"))
+                    ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+
                 if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
                 {
                     BossObject = ObjectHelper.GetBossObject(25);
@@ -805,7 +811,6 @@ public class AutoDuty : IDalamudPlugin
                 if (ObjectHelper.InCombat(Player))
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
-                    ReflectionHelper.RotationSolver_Reflection.RotationAuto();
                     Stage = 4;
                     return;
                 }

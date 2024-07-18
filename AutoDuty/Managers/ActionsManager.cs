@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Game.ClientState.Objects.Types;
-using System.Runtime.InteropServices;
 using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.IPC;
 using ECommons;
@@ -15,7 +14,6 @@ using ECommons.Throttlers;
 using ECommons.GameHelpers;
 using AutoDuty.Helpers;
 using ECommons.Automation;
-using AutoDuty.Windows;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace AutoDuty.Managers
@@ -34,14 +32,11 @@ namespace AutoDuty.Managers
             ("DutySpecificCode","step #?"),
             ("BossMod","on / off"),
             ("Target","Target what?"),
-            ("AutomoveFor", "how long?"),
+            ("AutoMoveFor", "how long?"),
             ("ChatCommand","Command with args?"),
             ("StopForCombat","True/False"),
             ("Revival",  "false")
         ];
-
-        //private delegate void ExitDutyDelegate(char timeout);
-        //private readonly ExitDutyDelegate exitDuty = Marshal.GetDelegateForFunctionPointer<ExitDutyDelegate>(Svc.SigScanner.ScanText("40 53 48 83 ec 20 48 8b 05 ?? ?? ?? ?? 0f b6 d9"));
 
         public void InvokeAction(string action, object?[] p)
         {
@@ -82,15 +77,15 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
-        public void AutomoveFor(string wait)
+        public void AutoMoveFor(string wait)
         {
             if (AutoDuty.Plugin.Player == null)
                 return;
             AutoDuty.Plugin.Action = $"AutoMove For {wait}";
-            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "ChatCommand");
-            _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "Wait");
-            _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(wait), "Wait");
-            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "ChatCommand");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "AutoMove");
+            _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "AutoMove");
+            _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(wait), "AutoMove");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "AutoMove");
         }
 
         public void Wait(string wait)
@@ -98,11 +93,9 @@ namespace AutoDuty.Managers
             if (AutoDuty.Plugin.Player == null)
                 return;
             AutoDuty.Plugin.Action = $"Wait: {wait}";
-            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/rotation auto"), "Wait");
             _taskManager.Enqueue(() => !ObjectHelper.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
             _taskManager.Enqueue(() => EzThrottler.Throttle("Wait", Convert.ToInt32(wait)), "Wait");
             _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(wait), "Wait");
-            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/rotation auto"), int.MaxValue, "Wait");
             _taskManager.Enqueue(() => !ObjectHelper.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
@@ -113,7 +106,6 @@ namespace AutoDuty.Managers
             switch (waitForWhat)
             {
                 case "Combat":
-                    _taskManager.Enqueue(() => _chat.ExecuteCommand($"/rotation auto"), int.MaxValue, "WaitFor");
                     _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "WaitFor");
                     break;
                 case "IsValid":
@@ -137,8 +129,8 @@ namespace AutoDuty.Managers
 
         public unsafe void ExitDuty(string _)
         {
-            _chat.ExecuteCommand($"/rotation cancel");
-            //exitDuty.Invoke((char)0);
+            ReflectionHelper.RotationSolver_Reflection.RotationStop();
+
             AtkUnitBase* addon = null;
             TaskManager exitDutyTaskManager = new();
             exitDutyTaskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("ContentsFinderMenu"), "ExitDuty");

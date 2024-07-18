@@ -112,7 +112,7 @@ namespace AutoDuty.Managers
             {
                 _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
                 if (Svc.ClientState.TerritoryType == 536 || Svc.ClientState.TerritoryType == 534 || Svc.ClientState.TerritoryType == 535)
-                    _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Exit to Maelstrom Command")) != null, "Goto");
+                    _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByPartialName("Exit to ")) != null, "Goto");
                 else
                     _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Heavy Oaken Door")) != null, "Goto");
                 _taskManager.Enqueue(() => MovementHelper.Move(gameObject?.Position ?? Vector3.Zero, 0.25f, 2f), int.MaxValue, "Goto");
