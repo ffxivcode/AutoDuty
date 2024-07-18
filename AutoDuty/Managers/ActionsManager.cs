@@ -34,6 +34,7 @@ namespace AutoDuty.Managers
             ("DutySpecificCode","step #?"),
             ("BossMod","on / off"),
             ("Target","Target what?"),
+            ("AutomoveFor", "how long?"),
             ("ChatCommand","Command with args?"),
             ("StopForCombat","True/False")
         ];
@@ -78,6 +79,17 @@ namespace AutoDuty.Managers
             AutoDuty.Plugin.Action = $"ChatCommand: {commandAndArgs}";
             _taskManager.Enqueue(() => _chat.ExecuteCommand(commandAndArgs), "ChatCommand");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+        }
+
+        public void AutomoveFor(string wait)
+        {
+            if (AutoDuty.Plugin.Player == null)
+                return;
+            AutoDuty.Plugin.Action = $"AutoMove For {wait}";
+            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "ChatCommand");
+            _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "Wait");
+            _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(wait), "Wait");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "ChatCommand");
         }
 
         public void Wait(string wait)
