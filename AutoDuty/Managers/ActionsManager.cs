@@ -35,7 +35,8 @@ namespace AutoDuty.Managers
             ("BossMod","on / off"),
             ("Target","Target what?"),
             ("ChatCommand","Command with args?"),
-            ("StopForCombat","True/False")
+            ("StopForCombat","True/False"),
+            ("Revival",  "false")
         ];
 
         //private delegate void ExitDutyDelegate(char timeout);
@@ -363,6 +364,11 @@ namespace AutoDuty.Managers
             }
             _taskManager.DelayNext("Boss", 500);
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss");
+        }
+
+        public void Revival()
+        {
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
         public IGameObject? GetTrustTankMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is ICharacter chara && chara.ClassJob.GameData?.Role == 1)?.GameObject;
