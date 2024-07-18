@@ -464,17 +464,19 @@ public class AutoDuty : IDalamudPlugin
 
             for (int i = 0; i < ListBoxPOSText.Count; i++)
             {
-                if (ListBoxPOSText[i].Contains("Boss|") && ListBoxPOSText[i].Replace("Boss|", "").All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
+                string node = this.ListBoxPOSText[i];
+
+                if (node.Contains("Boss|") && node.Replace("Boss|", "").All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
                 {
                     currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
                     //Svc.Log.Info($"cd: {currentDistance}");
                     if (currentDistance < closestWaypointDistance)
                     {
                         closestWaypointDistance = currentDistance;
-                        closestWaypointIndex = i;
+                        closestWaypointIndex    = i;
                     }
                 }
-                else if (ListBoxPOSText[i].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
+                else if (node.All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
                 {
                     currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
                     //Svc.Log.Info($"cd: {currentDistance}");
@@ -496,6 +498,8 @@ public class AutoDuty : IDalamudPlugin
             {
                 if (ListBoxPOSText[i].Contains("Boss|") && i != Indexer)
                     return i + 1;
+                if (ListBoxPOSText[i].Contains("Revival|") && i != Indexer)
+                    return i;
             }
         }
 
