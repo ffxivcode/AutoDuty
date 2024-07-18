@@ -10,7 +10,7 @@ namespace AutoDuty.Helpers
 {
     internal static class FileHelper
     {
-        internal static Dictionary<uint, string> DictionaryPathFiles = [];
+        internal static Dictionary<uint, List<string>?> DictionaryPathFiles = [];
         internal static readonly FileSystemWatcher FileSystemWatcher = new(Plugin.PathsDirectory.FullName)
 
         {
@@ -81,8 +81,18 @@ namespace AutoDuty.Helpers
             DictionaryPathFiles = [];
             foreach (var t in ContentHelper.DictionaryContent)
             {
-                if (File.Exists($"{Plugin.PathsDirectory.FullName}/({t.Value.TerritoryType}) {t.Value.Name?.Replace(":", "")}.json"))
-                    DictionaryPathFiles.TryAdd(t.Value.TerritoryType, $"({t.Value.TerritoryType}) {t.Value.Name?.Replace(":", "")}.json");
+                IEnumerable<FileInfo> files = Plugin.PathsDirectory.EnumerateFiles($"({t.Value.TerritoryType})*.json", SearchOption.TopDirectoryOnly);
+
+                foreach (FileInfo file in files)
+                {
+                    string fileName = file.Name.Replace(":", "");
+                    if (fileName.StartsWith($"({t.Value.TerritoryType})"))
+                    {
+                        if(!DictionaryPathFiles.ContainsKey(t.Value.TerritoryType))
+                            DictionaryPathFiles.Add(t.Value.TerritoryType, []);
+                        DictionaryPathFiles[t.Value.TerritoryType]!.Add(fileName);
+                    }
+                }
             }
         }
 

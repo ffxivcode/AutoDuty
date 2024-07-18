@@ -42,6 +42,7 @@ public class AutoDuty : IDalamudPlugin
     internal int CurrentLoop = 0;
     internal ContentHelper.Content? CurrentTerritoryContent = null;
     internal uint CurrentTerritoryType = 0;
+    internal int CurrentPath = 0;
     internal string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
@@ -160,6 +161,8 @@ public class AutoDuty : IDalamudPlugin
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
+
+        this.OpenMainUI(); //todo definitely remove
     }
 
     private void MessageReceived(string message)
@@ -206,14 +209,18 @@ public class AutoDuty : IDalamudPlugin
                     PathFile = "";
                     return;
                 }
-                    
             }
 
             InDungeon = true;
-
-            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":","")}.json";
-   
             ListBoxPOSText.Clear();
+            if (!FileHelper.DictionaryPathFiles.TryGetValue(Svc.ClientState.TerritoryType, out List<string>? curPaths))
+            {
+                this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
+                return;
+            }
+
+            this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{curPaths![Math.Min(curPaths.Count - 1, Plugin.CurrentPath)]}";
+
             if (!File.Exists(PathFile))
                 return;
                 

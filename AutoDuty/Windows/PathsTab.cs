@@ -57,24 +57,37 @@ namespace AutoDuty.Windows
 
             foreach (var pathFileKVP in FileHelper.DictionaryPathFiles.Select((Value, Index) => (Value, Index)))
             {
-                if (ImGui.Selectable(pathFileKVP.Value.Value, pathFileKVP.Index == _selectedIndex))
+                bool   multiple = false;
+                string dutyText = $"({pathFileKVP.Value.Key}) {ContentHelper.DictionaryContent[pathFileKVP.Value.Key].DisplayName}";
+                if (pathFileKVP.Value.Value.Count > 1)
                 {
-                    if (pathFileKVP.Index == _selectedIndex)
-                    {
-                        _selectedIndex = -1;
-                        _selectedPath = "";
-                    }
-                    else
-                    {
-                        if (Plugin.Configuration.DoNotUpdatePathFiles.Contains(pathFileKVP.Value.Value))
-                            _checked = true;
-                        else
-                            _checked = false;
+                    multiple = true;
+                    ImGui.Text(dutyText);
+                    ImGui.BeginGroup();
+                    ImGui.Indent(20);
+                }
 
-                        _selectedIndex = pathFileKVP.Index;
-                        _selectedPath = pathFileKVP.Value.Value;
+                foreach (string path in pathFileKVP.Value.Value)
+                {
+                    if (ImGui.Selectable(multiple ? path : $"{dutyText} => {path}", pathFileKVP.Index == _selectedIndex))
+                    {
+                        if (path == _selectedPath)
+                        {
+                            _selectedIndex = -1;
+                            _selectedPath  = "";
+                        }
+                        else
+                        {
+                            _checked = Plugin.Configuration.DoNotUpdatePathFiles.Contains(path);
+
+                            _selectedIndex = pathFileKVP.Index;
+                            _selectedPath  = path;
+                        }
                     }
                 }
+
+                if (multiple)
+                    ImGui.EndGroup();
             }
 
             ImGui.EndListBox();

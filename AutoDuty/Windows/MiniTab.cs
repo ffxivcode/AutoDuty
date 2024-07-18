@@ -16,7 +16,7 @@ namespace AutoDuty.Windows
             var _loopTimes = Plugin.Configuration.LoopTimes;
             ImGui.TextColored(new Vector4(93/255f, 226/255f, 231/255f, 1), $"AutoDuty - Running ({Plugin.CurrentTerritoryContent?.DisplayName}){(Plugin.Running ? $" {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Times" : "")}");
             ImGui.TextColored(new Vector4(0, 255f, 0, 1), Plugin.Action);
-            using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.TryGetValue(Svc.ClientState.TerritoryType, out _) || Plugin.Stage > 0))
+            using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Svc.ClientState.TerritoryType) || Plugin.Stage > 0))
             {
                 if (ImGui.Button("Start"))
                 {
