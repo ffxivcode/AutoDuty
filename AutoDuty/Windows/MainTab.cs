@@ -42,14 +42,15 @@ namespace AutoDuty.Windows
                 }
                 else
                     ImGui.Text($"{Plugin.CurrentTerritoryContent.DisplayName} Mesh: Loaded Path: {(FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
-                ImGui.Spacing();
+                ImGui.SameLine();
 
                 if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out List<string>? curPaths))
                 {
                     if (curPaths!.Count > 1)
                         if (ImGui.Combo("##SelectedPath", ref Plugin.CurrentPath, [.. curPaths], curPaths.Count))
                             Plugin.LoadPath();
-                }
+                } else
+                    Svc.Log.Info("no paths found ?");
 
                 ImGui.Separator();
                 ImGui.Spacing();
