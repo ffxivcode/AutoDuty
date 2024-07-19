@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Numerics;
+using AutoDuty.Helpers;
+using AutoDuty.IPC;
 using Dalamud.Interface;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons;
 using ECommons.Funding;
 using ECommons.ImGuiMethods;
 using ECommons.Schedulers;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.STD.Helper;
 using ImGuiNET;
+using static AutoDuty.AutoDuty;
 
 namespace AutoDuty.Windows;
 
@@ -45,6 +51,134 @@ public class MainWindow : Window, IDisposable
 
     public void Dispose()
     {
+    }
+
+    internal static void Start()
+    {
+        ImGui.SameLine(0, 5);
+    }
+
+    internal static void StopResumePause()
+    {
+        using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started) || Plugin.CurrentTerritoryContent == null))
+        {
+            if (ImGui.Button("Stop"))
+            {
+                Plugin.MainWindow.OpenTab("Main");
+                Plugin.Stage = 0;
+                return;
+            }
+            ImGui.SameLine(0, 5);
+            if (Plugin.Stage == 5)
+            {
+                if (ImGui.Button("Resume"))
+                {
+                    Plugin.Stage = 1;
+                }
+            }
+            else
+            {
+                if (ImGui.Button("Pause"))
+                {
+                    Plugin.Stage = 5;
+                }
+            }
+        }
+    }
+
+    internal static void GotoAndActions()
+    {
+        using (var d2 = ImRaii.Disabled(Plugin.Running || Plugin.Started))
+        {
+            using (var GotoDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning))
+            {
+                if (ImGui.Button("Goto"))
+                {
+                    ImGui.OpenPopup("GotoPopup");
+                }
+            }
+            ImGui.SameLine(0, 5);
+            using (var GCTurninDisabled = ImRaii.Disabled(DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || Plugin.Goto))
+            {
+                if (GCTurninHelper.GCTurninRunning)
+                {
+                    if (ImGui.Button("Stop TurnIn"))
+                        Plugin.StopAndResetALL();
+                }
+                else
+                {
+                    if (ImGui.Button("TurnIn"))
+                    {
+                        if (Deliveroo_IPCSubscriber.IsEnabled)
+                            GCTurninHelper.Invoke();
+                        else
+                            ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                    }
+                    if (Deliveroo_IPCSubscriber.IsEnabled)
+                        ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
+                    else
+                        ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                }
+            }
+            ImGui.SameLine(0, 5);
+            using (var DesynthDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || Plugin.Goto))
+            {
+                if (DesynthHelper.DesynthRunning)
+                {
+                    if (ImGui.Button("Stop Desynth"))
+                        Plugin.StopAndResetALL();
+                }
+                else
+                {
+                    if (ImGui.Button("Desynth"))
+                        DesynthHelper.Invoke();
+                    ToolTip("Click to Desynth all Items in Inventory");
+                }
+            }
+            ImGui.SameLine(0, 5);
+            using (var ExtractDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || Plugin.Goto))
+            {
+                if (ExtractHelper.ExtractRunning)
+                {
+                    if (ImGui.Button("Stop Extract"))
+                        Plugin.StopAndResetALL();
+                }
+                else
+                {
+                    if (ImGui.Button("Extract"))
+                    {
+                        if (QuestManager.IsQuestComplete(66174))
+                            ExtractHelper.Invoke();
+                        else
+                            ShowPopup("Missing Quest Completion", "Materia Extraction requires having completed quest: Forging the Spirit");
+                    }
+                    if (QuestManager.IsQuestComplete(66174))
+                        ToolTip("Click to Extract Materia");
+                    else
+                        ToolTip("Materia Extraction requires having completed quest: Forging the Spirit");
+                }
+            }
+            if (ImGui.BeginPopup("GotoPopup"))
+            {
+                if (ImGui.Selectable("Barracks"))
+                {
+                    Plugin.GotoAction("Barracks");
+                }
+                if (ImGui.Selectable("Inn"))
+                {
+                    Plugin.GotoAction("Inn");
+                }
+                if (ImGui.Selectable("GCSupply"))
+                {
+                    Plugin.GotoAction("GCSupply");
+                }
+                if (ImGui.Selectable("Repair"))
+                {
+                    Plugin.GotoAction("Repair");
+                }
+                ImGui.EndPopup();
+            }
+        }
     }
 
     internal static void ToolTip(string text)
