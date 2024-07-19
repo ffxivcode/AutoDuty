@@ -179,7 +179,7 @@ namespace AutoDuty.Windows
                 ImGui.Separator();
                 ImGui.Spacing();
             }
-            if (!ImGui.BeginListBox("##BuildList", new Vector2(500 * ImGuiHelpers.GlobalScale, 575 * ImGuiHelpers.GlobalScale))) return;
+            if (!ImGui.BeginListBox("##BuildList", new Vector2(450 * ImGuiHelpers.GlobalScale, 575 * ImGuiHelpers.GlobalScale))) return;
             try
             {
                 if (Plugin.InDungeon)
