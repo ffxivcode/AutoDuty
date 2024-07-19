@@ -63,7 +63,7 @@ namespace AutoDuty.Windows
             ImGui.SameLine();
             string path     = Path.GetFileName(Plugin.PathFile).Replace(idText, string.Empty).Replace(".json", string.Empty);
             string pathOrg = path;
-            if (ImGui.InputText(string.Empty, ref path, 100) && !path.Equals(pathOrg))
+            if (ImGui.InputText("##BuildPathFileName", ref path, 100) && !path.Equals(pathOrg))
                 Plugin.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{idText}{path}.json";
             ImGui.SameLine();
             ImGui.Text($".json");
