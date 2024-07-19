@@ -45,20 +45,20 @@ namespace AutoDuty.Windows
                     ImGui.Text($"{Plugin.CurrentTerritoryContent.DisplayName} Mesh: Loaded Path: {(FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
                 ImGui.SameLine();
 
-                if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out List<string>? curPaths))
-                {
-                    if (curPaths!.Count > 1)
-                        if (ImGui.Combo("##SelectedPath", ref Plugin.CurrentPath, [.. curPaths], curPaths.Count))
-                            Plugin.LoadPath();
-                } else
-                    Svc.Log.Info("no paths found ?");
-
-                ImGui.Separator();
-                ImGui.Spacing();
                 using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
                     using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
                     {
+                        if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out List<string>? curPaths))
+                        {
+                            if (curPaths!.Count > 1)
+                                if (ImGui.Combo("##SelectedPath", ref Plugin.CurrentPath, [.. curPaths], curPaths.Count))
+                                    Plugin.LoadPath();
+                        }
+
+                        ImGui.Separator();
+                        ImGui.Spacing();
+
                         if (ImGui.Button("Start"))
                         {
                             Plugin.LoadPath();
