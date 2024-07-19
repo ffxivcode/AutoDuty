@@ -437,10 +437,12 @@ public class AutoDuty : IDalamudPlugin
     private unsafe void OnRevive()
     {
         _dead = false;
+        TaskManager.DelayNext(5000);
+        TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
         IGameObject? gameObject = ObjectHelper.GetObjectByName("Shortcut");
         if (gameObject == null || !gameObject.IsTargetable)
         {
-            Stage = 1;
+            TaskManager.Enqueue(() => { Stage = 1; } );
             return;
         }
 
