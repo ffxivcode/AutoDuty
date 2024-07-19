@@ -209,7 +209,7 @@ namespace AutoDuty.Managers
             if (EzThrottler.Throttle("Interactable", 250))
             {
                 if (ObjectHelper.GetBattleDistanceToPlayer(gameObject) > 2f)
-                    MovementHelper.Move(gameObject, 0.25f, 2f, false);
+                    MovementHelper.Move(gameObject, 1.5f, 2f, false);
                 else if (!VNavmesh_IPCSubscriber.Path_IsRunning())
                     ObjectHelper.InteractWithObject(gameObject);
             }
