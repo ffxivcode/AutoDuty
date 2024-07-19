@@ -69,7 +69,7 @@ namespace AutoDuty.Windows
 
                 foreach (string path in pathFileKVP.Value.Value)
                 {
-                    if (ImGui.Selectable(multiple ? path : $"{dutyText} => {path}", pathFileKVP.Index == _selectedIndex))
+                    if (ImGui.Selectable(multiple ? path : $"{dutyText} => {path}", pathFileKVP.Index == _selectedIndex && path == _selectedPath))
                     {
                         if (path == _selectedPath)
                         {
