@@ -233,7 +233,6 @@ public class AutoDuty : IDalamudPlugin
 
     private void ClientState_TerritoryChanged(ushort t)
     {
-        Action = "";
         CurrentTerritoryType = t;
         MainListClicked = false;
 
@@ -242,8 +241,10 @@ public class AutoDuty : IDalamudPlugin
 
         LoadPath();
 
-        if (!Running || GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || Repairing || Goto || CurrentTerritoryContent == null)
+        if (!Running || GCTurninHelper.GCTurninRunning || Repairing || Goto || CurrentTerritoryContent == null)
             return;
+
+        Action = "";
 
         if (t != CurrentTerritoryContent.TerritoryType)
         {

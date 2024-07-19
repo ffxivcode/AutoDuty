@@ -16,6 +16,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Desynth Started");
                 DesynthRunning = true;
+                AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
             }
         }
@@ -23,6 +24,7 @@ namespace AutoDuty.Helpers
         internal static void Stop()
         {
             DesynthRunning = false;
+            AutoDuty.Plugin.Action = "";
             Svc.Framework.Update -= DesynthUpdate;
         }
 
