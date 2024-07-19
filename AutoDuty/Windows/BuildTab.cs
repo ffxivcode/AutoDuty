@@ -14,6 +14,10 @@ using Dalamud.Interface.Utility;
 
 namespace AutoDuty.Windows
 {
+    using Dalamud.Game.ClientState.Objects.Enums;
+    using Dalamud.Game.ClientState.Objects.Types;
+    using ECommons.GameHelpers;
+
     internal static class BuildTab
     {
         internal static List<(string, string)>? ActionsList { get; set; }
@@ -103,7 +107,9 @@ namespace AutoDuty.Windows
                                 break;
                             case "MoveToObject":
                             case "Interactable":
-                                _input = Plugin.ClosestInteractableEventObject?.Name.TextValue ?? "";
+                                IGameObject? targetObject = Player.Object.TargetObject;
+                                IGameObject? gameObject   = (targetObject?.ObjectKind == ObjectKind.EventObj ? targetObject : null) ?? Plugin.ClosestInteractableEventObject;
+                                _input = gameObject != null ? $"{gameObject.DataId} ({gameObject.Name})" : string.Empty;
                                 break;
                             case "Target":
                                 _input = Plugin.ClosestTargetableBattleNpc?.Name.TextValue ?? "";

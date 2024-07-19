@@ -13,7 +13,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 64;
+    public int Version { get; set; } = 66;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
@@ -29,6 +29,9 @@ public class Configuration : IPluginConfiguration
     public bool AutoRepairCity { get; set; } = true;
     public bool RetireToInnBeforeLoops { get; set; } = true;
     public bool RetireToBarracksBeforeLoops { get; set; } = false;
+    public bool AutoExtract { get; set; } = false;
+    public bool AutoExtractEquipped { get; set; } = true;
+    public bool AutoExtractAll { get; set; } = false;
     public bool AutoDesynth { get; set; } = false;
     public bool AutoGCTurnin { get; set; } = false;
     public bool Support { get; set; } = false;
@@ -72,6 +75,9 @@ public static class ConfigTab
         var autoRepairPct = Configuration.AutoRepairPct;
         var retireToInnBeforeLoops = Configuration.RetireToInnBeforeLoops;
         var retireToBarracksBeforeLoops = Configuration.RetireToBarracksBeforeLoops;
+        var autoExtract = Configuration.AutoExtract;
+        var autoExtractEquipped = Configuration.AutoExtractEquipped;
+        var autoExtractAll = Configuration.AutoExtractAll;
         var autoDesynth = Configuration.AutoDesynth;
         var autoGCTurnin = Configuration.AutoGCTurnin;
 
@@ -161,6 +167,43 @@ public static class ConfigTab
             }
         }
         ImGui.Separator();
+        if (ImGui.Checkbox("Auto Extract", ref autoExtract))
+        {
+            Configuration.AutoExtract = autoExtract;
+            Configuration.Save();
+        }
+        if (ImGui.Checkbox("Extract Equipped Only", ref autoExtractEquipped))
+        {
+            if (autoExtractEquipped)
+            {
+                Configuration.AutoExtractEquipped = true;
+                Configuration.AutoExtractAll = false;
+                autoExtractAll = false;
+            }
+            else
+            {
+                Configuration.AutoExtractAll = true;
+                Configuration.AutoExtractEquipped = false;
+                autoExtractAll = true;
+            }
+            Configuration.Save();
+        }
+        if (ImGui.Checkbox("Extract All", ref autoExtractAll))
+        {
+            if (autoExtractAll)
+            {
+                Configuration.AutoExtractAll = true;
+                Configuration.AutoExtractEquipped = false;
+                autoExtractEquipped = false;
+            }
+            else
+            {
+                Configuration.AutoExtractAll = false;
+                Configuration.AutoExtractEquipped = true;
+                autoExtractEquipped = true;
+            }
+            Configuration.Save();
+        }
         if (ImGui.Checkbox("Auto Desynth", ref autoDesynth))
         {
             Configuration.AutoDesynth = autoDesynth;

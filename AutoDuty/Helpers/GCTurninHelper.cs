@@ -41,7 +41,10 @@ namespace AutoDuty.Helpers
 
         private static IGameObject? quartermaster = null;
 
-        private static readonly TaskManager taskManager = new();
+        private static readonly TaskManager taskManager = new() {
+            AbortOnTimeout = false,
+            TimeoutSilently = true
+        };
 
         private static bool deliverooStarted = false;
 
