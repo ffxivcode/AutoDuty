@@ -10,6 +10,7 @@ using AutoDuty.Helpers;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using Dalamud.Interface.Utility;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Windows
 {
@@ -69,25 +70,7 @@ namespace AutoDuty.Windows
                     ImGui.SameLine(0, 5);
                     using (var d2 = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage == 0))
                     {
-                        if (ImGui.Button("Stop"))
-                        {
-                            Plugin.Stage = 0;
-                        }
-                        ImGui.SameLine(0, 5);
-                        if (Plugin.Stage == 5)
-                        {
-                            if (ImGui.Button("Resume"))
-                            {
-                                Plugin.Stage = 1;
-                            }
-                        }
-                        else
-                        {
-                            if (ImGui.Button("Pause"))
-                            {
-                                Plugin.Stage = 5;
-                            }
-                        }
+                        MainWindow.StopResumePause();
                         if (Plugin.Started)
                         {
                             ImGui.SameLine(0, 5);
@@ -170,27 +153,7 @@ namespace AutoDuty.Windows
                         }
                     }
                     else
-                    {
-                        if (ImGui.Button("Stop"))
-                        {
-                            Plugin.Stage = 0;
-                        }
-                        ImGui.SameLine(0, 5);
-                        if (Plugin.Stage == 5)
-                        {
-                            if (ImGui.Button("Resume"))
-                            {
-                                Plugin.Stage = 1;
-                            }
-                        }
-                        else
-                        {
-                            if (ImGui.Button("Pause"))
-                            {
-                                Plugin.Stage = 5;
-                            }
-                        }
-                    }
+                        MainWindow.StopResumePause();
                 }
                 using (var d1 = ImRaii.Disabled(Plugin.Running))
                 {
@@ -299,62 +262,7 @@ namespace AutoDuty.Windows
                         }
                     }
                     //ImGui.SameLine(0, 5);
-                    if (ImGui.Button("Goto"))
-                    {
-                        ImGui.OpenPopup("GotoPopup");
-                    }
-                    ImGui.SameLine(0, 5);
-                    if (GCTurninHelper.GCTurninRunning)
-                    {
-                        if (ImGui.Button("Stop TurnIn"))
-                            Plugin.StopAndResetALL();
-                    }
-                    else
-                    {
-                        if (ImGui.Button("TurnIn"))
-                        {
-                            if (Deliveroo_IPCSubscriber.IsEnabled)
-                                GCTurninHelper.Invoke();
-                            else
-                                MainWindow.ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
-                        }
-                        if (Deliveroo_IPCSubscriber.IsEnabled)
-                            MainWindow.ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
-                        else
-                            MainWindow.ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
-                    }
-                    ImGui.SameLine(0, 5);
-                    if (DesynthHelper.DesynthRunning)
-                    {
-                        if (ImGui.Button("Stop Desynth"))
-                            Plugin.StopAndResetALL();
-                    }
-                    else
-                    {
-                        if (ImGui.Button("Desynth"))
-                            DesynthHelper.Invoke();
-                        MainWindow.ToolTip("Click to Desynth all Items in Inventory");
-                    }
-                    if (ImGui.BeginPopup("GotoPopup"))
-                    {
-                        if (ImGui.Selectable("Barracks"))
-                        {
-                            Plugin.GotoAction("Barracks");
-                        }
-                        if (ImGui.Selectable("Inn"))
-                        {
-                            Plugin.GotoAction("Inn");
-                        }
-                        if (ImGui.Selectable("GCSupply"))
-                        {
-                            Plugin.GotoAction("GCSupply");
-                        }
-                        if (ImGui.Selectable("Repair"))
-                        {
-                            Plugin.GotoAction("Repair");
-                        }
-                        ImGui.EndPopup();
-                    }
+                    MainWindow.GotoAndActions();
                     if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
                     {
                         ImGui.SameLine(0, 5);

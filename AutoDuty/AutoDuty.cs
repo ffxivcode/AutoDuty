@@ -24,6 +24,7 @@ using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
 using ECommons.Automation;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty;
 
@@ -252,6 +253,9 @@ public class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");
                 TaskManager.Enqueue(() => Stage = 99, "Loop");
                 TaskManager.Enqueue(() => _repairManager.Repair(), int.MaxValue, "Loop");
+                TaskManager.Enqueue(() => { if (Configuration.AutoExtract) ExtractHelper.Invoke(); }, "Loop");
+                TaskManager.DelayNext("Loop", 50);
+                TaskManager.Enqueue(() => !ExtractHelper.ExtractRunning, int.MaxValue, "Loop");
                 TaskManager.Enqueue(() => { if (Configuration.AutoGCTurnin) GCTurninHelper.Invoke(); }, "Loop");
                 TaskManager.DelayNext("Loop", 50);
                 TaskManager.Enqueue(() => !GCTurninHelper.GCTurninRunning, int.MaxValue, "Loop");
@@ -902,6 +906,7 @@ public class AutoDuty : IDalamudPlugin
         if (ExecSkipTalk.IsEnabled)
             ExecSkipTalk.IsEnabled = false;
         FollowHelper.SetFollow(null);
+        ExtractHelper.Stop();
         GCTurninHelper.Stop();
         DesynthHelper.Stop();
         VNavmesh_IPCSubscriber.Path_Stop();
@@ -951,6 +956,15 @@ public class AutoDuty : IDalamudPlugin
                 break;
             case "desynth":
                 DesynthHelper.Invoke();
+                break; 
+            case "extract":
+                if (QuestManager.IsQuestComplete(66174))
+                    ExtractHelper.Invoke();
+                else
+                    Svc.Log.Info("Materia Extraction requires having completed quest: Forging the Spirit");
+                break;
+            case "t":
+                Svc.Log.Info($"{ObjectHelper.GetBattleDistanceToPlayer((ObjectHelper.GetObjectByName(args.Replace("t ", ""))))} : {ObjectHelper.GetDistanceToPlayer((ObjectHelper.GetObjectByName(args.Replace("t ", ""))))}");
                 break;
             default:
                 OpenMainUI(); 
