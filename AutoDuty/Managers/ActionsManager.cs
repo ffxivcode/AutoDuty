@@ -67,7 +67,16 @@ namespace AutoDuty.Managers
                 return;
             AutoDuty.Plugin.Action = $"StopForCombat: {TrueFalse}";
             AutoDuty.Plugin.StopForCombat = TrueFalse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
-            //AutoDuty.Plugin.Action = "";
+            switch (TrueFalse)
+            {
+                case "True":
+                    _taskManager.Enqueue(() => _chat.ExecuteCommand("/bmrai followtarget on"), "StopForCombat");
+                    break;
+                case "False":
+                    _taskManager.Enqueue(() => _chat.ExecuteCommand("/bmrai followtarget off"), "StopForCombat");
+                    break;            
+                    //AutoDuty.Plugin.Action = "";
+            }
         }
 
         public void ChatCommand(string commandAndArgs)
