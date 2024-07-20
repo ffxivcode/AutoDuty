@@ -61,7 +61,7 @@ namespace AutoDuty.Windows
             {
                 bool   multiple = false;
 
-                const string idColor   = "<0,0,1>";
+                const string idColor   = "<0.5,0.5,1>";
                 const string dutyColor = "<0,1,0>";
 
                 string dutyText = $"({idColor}{pathFileKVP.Value.Key}</>) {dutyColor}{ContentHelper.DictionaryContent[pathFileKVP.Value.Key].DisplayName}</>";
@@ -97,7 +97,7 @@ namespace AutoDuty.Windows
 
                     Match pathMatch = RegexHelper.PathFileRegex().Match(path);
 
-                    string pathUI = pathMatch.Success ? $"{pathMatch.Groups[1]}{idColor}{pathMatch.Groups[2]}</>{pathMatch.Groups[3]}<0.8,0.8,0.8>{pathMatch.Groups[4]}</><0.5,0.5,0.5>{pathMatch.Groups[5]}</>" : path;
+                    string pathUI = pathMatch.Success ? $"{pathMatch.Groups[1]}{idColor}{pathMatch.Groups[2]}</>{pathMatch.Groups[3]}<0.8,0.8,1>{pathMatch.Groups[4]}</><0.8,0.8,0.8>{pathMatch.Groups[5]}</><0.5,0.5,0.5>{pathMatch.Groups[6]}</>" : path;
 
                     ColoredText(multiple ? $"{pathUI}" : $"{dutyText} => {pathUI}");
                 }
@@ -161,7 +161,7 @@ namespace AutoDuty.Windows
 
                                         first = false;
 
-                                        Vector4 color = new Vector4(r, g, b, a);
+                                        Vector4 color = new(r, g, b, a);
                                         ImGui.TextColored(color, coloredText);
 
                                         //Svc.Log.Debug("colored: " + coloredText + " in: " + color);
