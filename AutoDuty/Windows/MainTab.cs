@@ -77,7 +77,7 @@ namespace AutoDuty.Windows
                             ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
                         }
                     }
-                    if (!ImGui.BeginListBox("##MainList", new Vector2(450 * ImGuiHelpers.GlobalScale, 575 * ImGuiHelpers.GlobalScale))) return;
+                    if (!ImGui.BeginListBox("##MainList", new Vector2(450 * ImGuiHelpers.GlobalScale, 525 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled && ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
                     {
@@ -161,7 +161,7 @@ namespace AutoDuty.Windows
                     using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                     {
                         ImGui.SameLine(0, 15);
-                        ImGui.PushItemWidth(300);
+                        ImGui.PushItemWidth(250);
                         if (ImGui.InputInt("Times", ref _loopTimes))
                         {
                             Plugin.Configuration.LoopTimes = _loopTimes;
@@ -284,7 +284,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    if (!ImGui.BeginListBox("##DutyList", new Vector2(450 * ImGuiHelpers.GlobalScale, 575 * ImGuiHelpers.GlobalScale))) return;
+                    if (!ImGui.BeginListBox("##DutyList", new Vector2(450 * ImGuiHelpers.GlobalScale, 525 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
