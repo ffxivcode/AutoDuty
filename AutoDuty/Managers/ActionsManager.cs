@@ -15,6 +15,7 @@ using ECommons.GameHelpers;
 using AutoDuty.Helpers;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Managers
 {
@@ -66,25 +67,17 @@ namespace AutoDuty.Managers
         {
             if (AutoDuty.Plugin.Player == null)
                 return;
+
+            var boolTrueFalse = TrueFalse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
             AutoDuty.Plugin.Action = $"StopForCombat: {TrueFalse}";
-            AutoDuty.Plugin.StopForCombat = TrueFalse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
-            switch (TrueFalse)
-            {
-                case "True":
-                    _taskManager.Enqueue(() => _chat.ExecuteCommand("/bmrai followtarget on"), "StopForCombat");
-                    break;
-                case "False":
-                    _taskManager.Enqueue(() => _chat.ExecuteCommand("/bmrai followtarget off"), "StopForCombat");
-                    break;            
-                    //AutoDuty.Plugin.Action = "";
-            }
+            AutoDuty.Plugin.StopForCombat = boolTrueFalse;
+            _chat.ExecuteCommand($"/bmrai followtarget {(boolTrueFalse ? "on" : "off")}");
         }
 
         public unsafe void ForceAttack()
         {
             ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16);
             ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1);
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
         
         public void ChatCommand(string commandAndArgs)
