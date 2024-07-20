@@ -43,7 +43,9 @@ namespace AutoDuty.Windows
                 }
                 else
                     ImGui.Text($"{Plugin.CurrentTerritoryContent.DisplayName} Mesh: Loaded Path: {(FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
-                ImGui.SameLine();
+
+                ImGui.Separator();
+                ImGui.Spacing();
 
                 using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
@@ -55,9 +57,6 @@ namespace AutoDuty.Windows
                                 if (ImGui.Combo("##SelectedPath", ref Plugin.CurrentPath, [.. curPaths], curPaths.Count))
                                     Plugin.LoadPath();
                         }
-
-                        ImGui.Separator();
-                        ImGui.Spacing();
 
                         if (ImGui.Button("Start"))
                         {
