@@ -24,6 +24,7 @@ namespace AutoDuty.Helpers
                     stoppingCategory = 6;
                 else
                     stoppingCategory = 0;
+                AutoDuty.Plugin.Action = "Extracting Materia";
                 Svc.Framework.Update += ExtractUpdate;
             }
         }
@@ -33,6 +34,7 @@ namespace AutoDuty.Helpers
             ExtractRunning = false;
             currentCategory = 0;
             switchedCategory = false;
+            AutoDuty.Plugin.Action = "";
             Svc.Framework.Update -= ExtractUpdate;
         }
 

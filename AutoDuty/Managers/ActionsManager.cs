@@ -15,6 +15,7 @@ using ECommons.GameHelpers;
 using AutoDuty.Helpers;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Managers
 {
@@ -37,7 +38,8 @@ namespace AutoDuty.Managers
             ("AutoMoveFor", "how long?"),
             ("ChatCommand","Command with args?"),
             ("StopForCombat","True/False"),
-            ("Revival",  "false")
+            ("Revival",  "false"),
+            ("ForceAttack",  "false")
         ];
 
         public void InvokeAction(string action, object?[] p)
@@ -65,11 +67,19 @@ namespace AutoDuty.Managers
         {
             if (AutoDuty.Plugin.Player == null)
                 return;
+
+            var boolTrueFalse = TrueFalse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
             AutoDuty.Plugin.Action = $"StopForCombat: {TrueFalse}";
-            AutoDuty.Plugin.StopForCombat = TrueFalse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
-            //AutoDuty.Plugin.Action = "";
+            AutoDuty.Plugin.StopForCombat = boolTrueFalse;
+            _chat.ExecuteCommand($"/bmrai followtarget {(boolTrueFalse ? "on" : "off")}");
         }
 
+        public unsafe void ForceAttack()
+        {
+            ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16);
+            ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1);
+        }
+        
         public void ChatCommand(string commandAndArgs)
         {
             if (AutoDuty.Plugin.Player == null)

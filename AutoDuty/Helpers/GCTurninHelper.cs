@@ -30,6 +30,7 @@ namespace AutoDuty.Helpers
             gotoManager = null;
             deliverooStarted = false;
             GCTurninRunning = false;
+            AutoDuty.Plugin.Action = "";
             Svc.Framework.Update -= GCTurninUpdate;
         }
 
@@ -57,6 +58,8 @@ namespace AutoDuty.Helpers
 
             if (AutoDuty.Plugin.Goto)
                 return;
+
+            AutoDuty.Plugin.Action = "GC Turning In";
 
             if (!AutoDuty.Plugin.Goto && (personnelOfficer = ObjectHelper.GetObjectByPartialName("Personnel Officer")) == null)
             {
