@@ -37,7 +37,8 @@ namespace AutoDuty.Managers
             ("AutoMoveFor", "how long?"),
             ("ChatCommand","Command with args?"),
             ("StopForCombat","True/False"),
-            ("Revival",  "false")
+            ("Revival",  "false"),
+            ("ForceAttack",  "false")
         ];
 
         public void InvokeAction(string action, object?[] p)
@@ -67,9 +68,25 @@ namespace AutoDuty.Managers
                 return;
             AutoDuty.Plugin.Action = $"StopForCombat: {TrueFalse}";
             AutoDuty.Plugin.StopForCombat = TrueFalse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
-            //AutoDuty.Plugin.Action = "";
+            switch (TrueFalse)
+            {
+                case "True":
+                    _taskManager.Enqueue(() => _chat.ExecuteCommand("/bmrai followtarget on"), "StopForCombat");
+                    break;
+                case "False":
+                    _taskManager.Enqueue(() => _chat.ExecuteCommand("/bmrai followtarget off"), "StopForCombat");
+                    break;            
+                    //AutoDuty.Plugin.Action = "";
+            }
         }
 
+        public unsafe void ForceAttack()
+        {
+            ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16);
+            ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1);
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+        }
+        
         public void ChatCommand(string commandAndArgs)
         {
             if (AutoDuty.Plugin.Player == null)
