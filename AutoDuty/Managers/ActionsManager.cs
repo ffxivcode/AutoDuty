@@ -37,7 +37,8 @@ namespace AutoDuty.Managers
             ("AutoMoveFor", "how long?"),
             ("ChatCommand","Command with args?"),
             ("StopForCombat","True/False"),
-            ("Revival",  "false")
+            ("Revival",  "false"),
+            ("ForceAttack",  "false")
         ];
 
         public void InvokeAction(string action, object?[] p)
@@ -70,6 +71,13 @@ namespace AutoDuty.Managers
             //AutoDuty.Plugin.Action = "";
         }
 
+        public unsafe void ForceAttack()
+        {
+            ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16);
+            ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1);
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+        }
+        
         public void ChatCommand(string commandAndArgs)
         {
             if (AutoDuty.Plugin.Player == null)
