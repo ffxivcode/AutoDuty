@@ -67,7 +67,7 @@ namespace AutoDuty.Windows
                         Plugin.Configuration.Save();
                     }
                     ImGui.PopItemWidth();
-                    ImGui.SameLine(0, 5);
+                    //ImGui.SameLine(0, 5);
                     using (var d2 = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage == 0))
                     {
                         MainWindow.StopResumePause();
@@ -77,7 +77,7 @@ namespace AutoDuty.Windows
                             ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
                         }
                     }
-                    if (!ImGui.BeginListBox("##MainList", new Vector2(500 * ImGuiHelpers.GlobalScale, 400 * ImGuiHelpers.GlobalScale))) return;
+                    if (!ImGui.BeginListBox("##MainList", new Vector2(450 * ImGuiHelpers.GlobalScale, 525 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled && ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
                     {
@@ -136,6 +136,7 @@ namespace AutoDuty.Windows
                 {
                     if (!Plugin.Running)
                     {
+                        MainWindow.GotoAndActions();
                         if (ImGui.Button("Run"))
                         {
                             if (!Plugin.Configuration.Support && !Plugin.Configuration.Trust && !Plugin.Configuration.Squadron && !Plugin.Configuration.Regular && !Plugin.Configuration.Trial && !Plugin.Configuration.Raid)
@@ -160,11 +161,13 @@ namespace AutoDuty.Windows
                     using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                     {
                         ImGui.SameLine(0, 15);
+                        ImGui.PushItemWidth(250);
                         if (ImGui.InputInt("Times", ref _loopTimes))
                         {
                             Plugin.Configuration.LoopTimes = _loopTimes;
                             Plugin.Configuration.Save();
                         }
+                        ImGui.PopItemWidth();
                     }
                     if (ImGui.Checkbox("Support", ref _support))
                     {
@@ -262,10 +265,10 @@ namespace AutoDuty.Windows
                         }
                     }
                     //ImGui.SameLine(0, 5);
-                    MainWindow.GotoAndActions();
+                    //MainWindow.GotoAndActions();
                     if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
                     {
-                        ImGui.SameLine(0, 5);
+                        //ImGui.SameLine(0, 5);
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref _hideUnavailableDuties))
                         {
                             Plugin.Configuration.HideUnavailableDuties = _hideUnavailableDuties;
@@ -281,7 +284,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    if (!ImGui.BeginListBox("##DutyList", new Vector2(500 * ImGuiHelpers.GlobalScale, 400 * ImGuiHelpers.GlobalScale))) return;
+                    if (!ImGui.BeginListBox("##DutyList", new Vector2(450 * ImGuiHelpers.GlobalScale, 525 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {

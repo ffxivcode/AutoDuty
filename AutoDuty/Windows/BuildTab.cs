@@ -152,7 +152,7 @@ namespace AutoDuty.Windows
                 ImGui.Separator();
                 ImGui.Spacing();
                 ImGui.PushItemWidth(_inputIW);
-                ImGui.InputText(_inputTextName, ref _input, 50);
+                ImGui.InputText(_inputTextName, ref _input, 100);
                 if (!_dropdownSelected.Item1.IsNullOrEmpty() && !_dropdownSelected.Item2.IsNullOrEmpty())
                     ImGui.SameLine(0, 5);
                 if (ImGui.Button(_addActionButton))
@@ -179,7 +179,7 @@ namespace AutoDuty.Windows
                 ImGui.Separator();
                 ImGui.Spacing();
             }
-            if (!ImGui.BeginListBox("##BuildList", new Vector2(500 * ImGuiHelpers.GlobalScale, 575 * ImGuiHelpers.GlobalScale))) return;
+            if (!ImGui.BeginListBox("##BuildList", new Vector2(450 * ImGuiHelpers.GlobalScale, 575 * ImGuiHelpers.GlobalScale))) return;
             try
             {
                 if (Plugin.InDungeon)
@@ -206,7 +206,7 @@ namespace AutoDuty.Windows
                                 _addActionButton = "Modify";
                                 _inputTextName = "";
                                 _input = item.Value;
-                                _inputIW = 300 * ImGuiHelpers.GlobalScale;
+                                _inputIW = 400 * ImGuiHelpers.GlobalScale;
                             }
                         }
                         if (ImGui.IsItemActive() && !ImGui.IsItemHovered())
