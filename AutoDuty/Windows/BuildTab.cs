@@ -152,7 +152,7 @@ namespace AutoDuty.Windows
                 ImGui.Separator();
                 ImGui.Spacing();
                 ImGui.PushItemWidth(_inputIW);
-                ImGui.InputText(_inputTextName, ref _input, 50);
+                ImGui.InputText(_inputTextName, ref _input, 100);
                 if (!_dropdownSelected.Item1.IsNullOrEmpty() && !_dropdownSelected.Item2.IsNullOrEmpty())
                     ImGui.SameLine(0, 5);
                 if (ImGui.Button(_addActionButton))
@@ -206,7 +206,7 @@ namespace AutoDuty.Windows
                                 _addActionButton = "Modify";
                                 _inputTextName = "";
                                 _input = item.Value;
-                                _inputIW = 300 * ImGuiHelpers.GlobalScale;
+                                _inputIW = 400 * ImGuiHelpers.GlobalScale;
                             }
                         }
                         if (ImGui.IsItemActive() && !ImGui.IsItemHovered())
