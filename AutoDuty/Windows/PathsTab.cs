@@ -10,12 +10,9 @@ using Dalamud.Interface.Utility;
 
 namespace AutoDuty.Windows
 {
-    using System.ComponentModel;
     using System.Globalization;
     using System.IO;
-    using System.Net.Mime;
     using System.Text.RegularExpressions;
-    using ECommons.DalamudServices;
 
     internal static class PathsTab
     {
@@ -98,7 +95,7 @@ namespace AutoDuty.Windows
                     ImGui.SetItemAllowOverlap();
                     ImGui.SameLine(multiple ? 20 : 1);
 
-                    Match pathMatch = Regex.Match(path, @"(\()([0-9]{3,4})(\))(.*)(\.json)");
+                    Match pathMatch = RegexHelper.PathFileRegex().Match(path);
 
                     string pathUI = pathMatch.Success ? $"{pathMatch.Groups[1]}{idColor}{pathMatch.Groups[2]}</>{pathMatch.Groups[3]}<0.8,0.8,0.8>{pathMatch.Groups[4]}</><0.5,0.5,0.5>{pathMatch.Groups[5]}</>" : path;
 
@@ -114,7 +111,7 @@ namespace AutoDuty.Windows
 
         public static void ColoredText(string text)
         {
-            Match regex = Regex.Match(text, @"([^<]*)?(?><?([0-9\. ]*\,[0-9\. ]*\,[0-9\. ]*)>([^<]*)<\/>)?");
+            Match regex = RegexHelper.ColoredTextRegex().Match(text);
 
             void SameLine() => ImGui.SameLine(0, 0);
 
