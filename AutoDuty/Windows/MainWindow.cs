@@ -245,7 +245,7 @@ public class MainWindow : Window, IDisposable
         
         ImGuiEx.EzTabBar("MainTab", "Thanks", openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Mini", MiniTab.Draw, null, false));
         ImGui.SameLine();
-        PatreonBanner.DrawRight();
+        PatreonBanner.DrawButton();
         
     }
 }
