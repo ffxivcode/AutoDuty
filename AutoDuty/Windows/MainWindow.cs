@@ -244,7 +244,7 @@ public class MainWindow : Window, IDisposable
         DrawPopup();
         
         ImGuiEx.EzTabBar("MainTab", "Thanks", openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Mini", MiniTab.Draw, null, false));
-        ImGui.SameLine();
+        ImGui.SameLine(ImGui.GetWindowWidth() - ImGui.CalcTextSize(PatreonBanner.Text).X * 1.16f);
         PatreonBanner.DrawButton();
         
     }
