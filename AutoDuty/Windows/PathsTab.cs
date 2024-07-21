@@ -36,6 +36,8 @@ namespace AutoDuty.Windows
 
         internal static void Draw()
         {
+            if (MainWindow.CurrentTabName != "Paths")
+                MainWindow.CurrentTabName = "Paths";
             ImGui.Text($"Path Files");
             ImGui.Spacing();
             ImGui.Separator();

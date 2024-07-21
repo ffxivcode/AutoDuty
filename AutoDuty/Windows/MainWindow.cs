@@ -6,11 +6,12 @@ using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons;
+using ECommons.EzSharedDataManager;
 using ECommons.Funding;
 using ECommons.ImGuiMethods;
 using ECommons.Schedulers;
+using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.STD.Helper;
 using ImGuiNET;
 using static AutoDuty.AutoDuty;
 
@@ -18,11 +19,13 @@ namespace AutoDuty.Windows;
 
 public class MainWindow : Window, IDisposable
 {
+    internal static string CurrentTabName = "";
+
     private static bool _showPopup = false;
     private static string _popupText = "";
     private static string _popupTitle = "";
     private string openTabName = "";
-
+    
     public MainWindow() : base(
         "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize)
     {
@@ -34,10 +37,6 @@ public class MainWindow : Window, IDisposable
         
         TitleBarButtons.Add(new() { Icon = FontAwesomeIcon.Cog, IconOffset = new(1, 1), Click = _ => OpenTab("Config") });
         TitleBarButtons.Add(new() { ShowTooltip = () => ImGui.SetTooltip("Support Herculezz on Ko-fi"), Icon = FontAwesomeIcon.Heart, IconOffset = new(1, 1), Click = _ => GenericHelpers.ShellStart("https://ko-fi.com/Herculezz") });
-        PatreonBanner.DonateLink = "https://ko-fi.com/Herculezz";
-        PatreonBanner.Text = "Support AutoDuty";
-        PatreonBanner.TooltipText = "Left click to support Herculezz in the Development of AutoDuty on Kofi";
-        PatreonBanner.RightClickMenu = false;
     }
 
     internal void OpenTab(string tabName)
@@ -60,7 +59,7 @@ public class MainWindow : Window, IDisposable
 
     internal static void StopResumePause()
     {
-        using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started) || Plugin.CurrentTerritoryContent == null))
+        using (var d = ImRaii.Disabled(!Plugin.Running && !Plugin.Started && !Plugin.Goto))
         {
             if (ImGui.Button("Stop"))
             {
@@ -69,7 +68,10 @@ public class MainWindow : Window, IDisposable
                 return;
             }
             ImGui.SameLine(0, 5);
-            if (Plugin.Stage == 5)
+        }
+        using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started && !Plugin.Goto) || Plugin.CurrentTerritoryContent == null))
+            {
+                if (Plugin.Stage == 5)
             {
                 if (ImGui.Button("Resume"))
                 {
@@ -239,13 +241,71 @@ public class MainWindow : Window, IDisposable
         }
     }
 
+    private void KofiLink()
+    {
+        OpenTab(CurrentTabName);
+        if (EzThrottler.Throttle("KofiLink", 15000))
+        {
+            _ = new TickScheduler(delegate
+            {
+                GenericHelpers.ShellStart("https://ko-fi.com/Herculezz");
+            }, 500);
+        }
+    }
+
+    //ECommons
+    static uint ColorNormal
+    {
+        get
+        {
+            var vector1 = ImGuiEx.Vector4FromRGB(0x022594);
+            var vector2 = ImGuiEx.Vector4FromRGB(0x940238);
+
+            var gen = GradientColor.Get(vector1, vector2).ToUint();
+            var data = EzSharedData.GetOrCreate<uint[]>("ECommonsPatreonBannerRandomColor", [gen]);
+            if (!GradientColor.IsColorInRange(data[0].ToVector4(), vector1, vector2))
+            {
+                data[0] = gen;
+            }
+            return data[0];
+        }
+    }
+    public static void EzTabBar(string id, string KoFiTransparent, string openTabName, ImGuiTabBarFlags flags, params (string name, Action function, Vector4? color, bool child)[] tabs)
+    {
+        ImGui.BeginTabBar(id, flags);
+        foreach (var x in tabs)
+        {
+            if (x.name == null) continue;
+            if (x.color != null)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Tab, x.color.Value);
+            }
+            if (ImGuiEx.BeginTabItem(x.name, openTabName == x.name ? ImGuiTabItemFlags.SetSelected : ImGuiTabItemFlags.None))
+            {
+                if (x.color != null)
+                {
+                    ImGui.PopStyleColor();
+                }
+                if (x.child) ImGui.BeginChild(x.name + "child");
+                x.function();
+                if (x.child) ImGui.EndChild();
+                ImGui.EndTabItem();
+            }
+            else
+            {
+                if (x.color != null)
+                {
+                    ImGui.PopStyleColor();
+                }
+            }
+        }
+        if (KoFiTransparent != null) PatreonBanner.RightTransparentTab();
+        ImGui.EndTabBar();
+    }
     public override void Draw()
     {
         DrawPopup();
         
-        ImGuiEx.EzTabBar("MainTab", "Thanks", openTabName, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Mini", MiniTab.Draw, null, false));
-        ImGui.SameLine();
-        PatreonBanner.DrawButton();
-        
+        EzTabBar("MainTab", null, openTabName, ImGuiTabBarFlags.None, ("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Mini", MiniTab.Draw, null, false), ("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false));
     }
 }

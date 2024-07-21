@@ -51,6 +51,12 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("Extract", 250))
                 return;
 
+            if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
+            {
+                Stop();
+                return;
+            }
+
             if (ObjectHelper.IsOccupied)
                 return;
 

@@ -2,6 +2,7 @@
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -34,6 +35,12 @@ namespace AutoDuty.Helpers
         {
             if (!EzThrottler.Throttle("Desynth", 250))
                 return;
+
+            if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
+            {
+                Stop();
+                return;
+            }
 
             if (ObjectHelper.IsOccupied)
                 return;

@@ -25,6 +25,7 @@ using ECommons.GameFunctions;
 using TinyIpc.Messaging;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using ImGuiNET;
 
 namespace AutoDuty;
 
@@ -966,8 +967,9 @@ public class AutoDuty : IDalamudPlugin
                 else
                     Svc.Log.Info("Materia Extraction requires having completed quest: Forging the Spirit");
                 break;
-            case "t":
-                Svc.Log.Info($"{ObjectHelper.GetBattleDistanceToPlayer((ObjectHelper.GetObjectByName(args.Replace("t ", ""))))} : {ObjectHelper.GetDistanceToPlayer((ObjectHelper.GetObjectByName(args.Replace("t ", ""))))}");
+            case "dataid":
+                Svc.Log.Info($"{ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "")?.DataId}");
+                ImGui.SetClipboardText($"{ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "")?.DataId}");
                 break;
             default:
                 OpenMainUI(); 
