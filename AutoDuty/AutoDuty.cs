@@ -44,7 +44,7 @@ public class AutoDuty : IDalamudPlugin
     internal int CurrentLoop = 0;
     internal ContentHelper.Content? CurrentTerritoryContent = null;
     internal uint CurrentTerritoryType = 0;
-    internal int CurrentPath = 0;
+    internal int CurrentPath = -1;
     internal string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
@@ -221,7 +221,10 @@ public class AutoDuty : IDalamudPlugin
                 return;
             }
 
-            this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{curPaths![Math.Min(curPaths.Count - 1, Plugin.CurrentPath)]}";
+            if(Plugin.CurrentPath < 0 && Svc.ClientState.LocalPlayer != null)
+                Plugin.CurrentPath = MultiPathHelper.BestPathIndex();
+            //Svc.Log.Info("Loading Path: " + Plugin.CurrentPath);
+            this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{curPaths![Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1)]}";
 
             if (!File.Exists(PathFile))
                 return;

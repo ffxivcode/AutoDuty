@@ -15,6 +15,8 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Windows
 {
+    using System;
+
     internal static class MainTab
     {
         private static int _currentIndex = -1;
@@ -55,9 +57,15 @@ namespace AutoDuty.Windows
                     {
                         if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out List<string>? curPaths))
                         {
-                            if (curPaths!.Count > 1)
-                                if (ImGui.Combo("##SelectedPath", ref Plugin.CurrentPath, [.. curPaths], curPaths.Count))
+                            if (curPaths.Count > 1)
+                            {
+                                int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
+                                if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths], curPaths.Count))
+                                {
+                                    Plugin.CurrentPath = curPath;
                                     Plugin.LoadPath();
+                                }
+                            }
                         }
 
                         if (ImGui.Button("Start"))
@@ -327,7 +335,7 @@ namespace AutoDuty.Windows
                                     {
                                         _dutyListSelected = item.Index;
                                         Plugin.CurrentTerritoryContent = item.Value.Value;
-                                        Plugin.CurrentPath = 0;
+                                        Plugin.CurrentPath = -1;
                                     }
                                 }
                             }

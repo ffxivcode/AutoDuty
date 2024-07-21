@@ -10,7 +10,7 @@ namespace AutoDuty.Helpers
 {
     internal static class FileHelper
     {
-        internal static Dictionary<uint, List<string>?> DictionaryPathFiles = [];
+        internal static Dictionary<uint, List<string>> DictionaryPathFiles = [];
         internal static readonly FileSystemWatcher FileSystemWatcher = new(Plugin.PathsDirectory.FullName)
 
         {
