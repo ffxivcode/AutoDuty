@@ -16,6 +16,9 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 namespace AutoDuty.Windows
 {
     using System;
+    using ECommons.ExcelServices;
+    using ECommons.GameHelpers;
+    using Lumina.Excel.GeneratedSheets;
 
     internal static class MainTab
     {
@@ -62,8 +65,22 @@ namespace AutoDuty.Windows
                                 int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
                                 if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths], curPaths.Count))
                                 {
+                                    if(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryType))
+                                        Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryType, []);
+
+                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPath;
+                                    Plugin.Configuration.Save();
                                     Plugin.CurrentPath = curPath;
                                     Plugin.LoadPath();
+                                }
+                                ImGui.SameLine();
+                                
+                                using var d2 = ImRaii.Disabled(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryType) ||
+                                                               !Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryType].ContainsKey(Svc.ClientState.LocalPlayer.GetJob()));
+                                if (ImGui.Button("Clear Saved Path"))
+                                {
+                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryType].Remove(Svc.ClientState.LocalPlayer.GetJob());
+                                    Plugin.Configuration.Save();
                                 }
                             }
                         }
@@ -333,9 +350,9 @@ namespace AutoDuty.Windows
                                         continue;
                                     if (ImGui.Selectable($"({item.Value.Value.TerritoryType}) {item.Value.Value.DisplayName}", _dutyListSelected == item.Index))
                                     {
-                                        _dutyListSelected = item.Index;
+                                        _dutyListSelected              = item.Index;
                                         Plugin.CurrentTerritoryContent = item.Value.Value;
-                                        Plugin.CurrentPath = -1;
+                                        Plugin.CurrentPath             = -1;
                                     }
                                 }
                             }

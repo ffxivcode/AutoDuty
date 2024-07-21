@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 namespace AutoDuty.Windows;
 
+using System.Linq;
+using ECommons.ExcelServices;
+
 [Serializable]
 public class Configuration : IPluginConfiguration
 {
@@ -42,6 +45,8 @@ public class Configuration : IPluginConfiguration
     public bool Raid { get; set; } = false;
     public bool Unsynced { get; set; } = false;
     public bool HideUnavailableDuties { get; set; } = false;
+
+    public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
 
     [NonSerialized]
     private IDalamudPluginInterface? PluginInterface;
@@ -231,6 +236,14 @@ public static class ConfigTab
                 ImGui.Text("Get @ https://git.carvel.li/liza/plugin-repo");
             }
         }
-       
+
+        using (var savedPathsDisabled = ImRaii.Disabled(!Configuration.PathSelections.Any(kvp => kvp.Value.Any())))
+        {
+            if (ImGui.Button("Clear all saved path selections"))
+            {
+                Configuration.PathSelections.Clear();
+                Configuration.Save();
+            }
+        }
     }
 }
