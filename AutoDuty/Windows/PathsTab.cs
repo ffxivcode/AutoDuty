@@ -13,6 +13,7 @@ namespace AutoDuty.Windows
     using System.Globalization;
     using System.IO;
     using System.Text.RegularExpressions;
+    using ECommons.DalamudServices;
 
     internal static class PathsTab
     {
@@ -77,7 +78,7 @@ namespace AutoDuty.Windows
 
                 foreach (string path in pathFileKVP.Value.Value)
                 {
-                    if (ImGui.Selectable(string.Empty, pathFileKVP.Index == _selectedIndex && path == _selectedPath))
+                    if (ImGui.Selectable("###PathList"+path, pathFileKVP.Index == _selectedIndex && path == _selectedPath))
                     {
                         if (path == _selectedPath)
                         {
