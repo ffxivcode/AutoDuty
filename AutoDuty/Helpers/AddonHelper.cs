@@ -1,5 +1,6 @@
 ﻿using ECommons;
 using ECommons.Automation;
+using ECommons.Automation.UIInput;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -79,5 +80,8 @@ namespace AutoDuty.Helpers
             SeenAddon = true;
             return false;
         }
+
+        public static void ClickCheckboxButton(this AtkComponentCheckBox target, AtkComponentBase* addon, uint which, EventType type = EventType.CHANGE)
+        => ClickHelper.ClickAddonComponent(addon, target.OwnerNode, which, type);
     }
 }

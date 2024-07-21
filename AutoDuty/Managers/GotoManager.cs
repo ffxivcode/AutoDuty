@@ -15,19 +15,20 @@ namespace AutoDuty.Managers
     internal class GotoManager(TaskManager _taskManager)
     {
         private IGameObject? gameObject = null;
-
+        private int grandCompany = 0;
+        
         public unsafe void GotoGCSupply(Vector3[] gcSupplyPositions)
         {
             foreach (var v in gcSupplyPositions.Select((Value, Index) => (Value, Index)))
             {
                 if ((v.Index + 1) == gcSupplyPositions.Length)
-                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Goto");
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Goto-Move");
                 else
-                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
-                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto-Move");
+                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto-WaitPathNotRunning");
             }
-            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
-            _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
+            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto-WaitPlayerNotCasting");
+            _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto-WaitPlayerNotJumping");
         }
 
         public unsafe void GotoBarracks(Vector3[] barracksDoorPositions)
@@ -35,42 +36,41 @@ namespace AutoDuty.Managers
             foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
             {
                 if ((v.Index + 1) == barracksDoorPositions.Length)
-                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Goto");
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 3f), int.MaxValue, "Goto-Move");
                 else
-                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
-                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto-Move");
+                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto-WaitPathNotRunning");
             }
-            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
-            _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
-            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Entrance to the Barracks")) != null, "Goto");
-            _taskManager.DelayNext("Goto", 50);
-            _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "Goto");
-            _taskManager.DelayNext("Goto", 50);
-            _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Goto");
-            _taskManager.DelayNext("Goto", 50);
-            _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
-            _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
+            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto-WaitPlayerNotCasting");
+            _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto-WaitPlayerNotJumping");
+            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Entrance to the Barracks")) != null, "Goto-GetBarracksDoorGameObject");
+            _taskManager.DelayNext("Goto-Delay", 50);
+            _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "Goto-InteractGameObject");
+            _taskManager.DelayNext("Goto-Delay", 50);
+            _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Goto-ClickSelectYesNo");
+            _taskManager.DelayNext("Goto-Delay", 50);
+            _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto-WaitPlayerNotReady");
+            _taskManager.Enqueue(() => ObjectHelper.IsReady, 30000, "Goto-WaitPlayerReady");
         }
 
         public unsafe void GotoInn(Vector3[] innKeepPositions, string innKeepName)
         {
-
             foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
             {
                 if ((v.Index + 1) == innKeepPositions.Length)
-                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Goto");
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value, 0.25f, 7f), int.MaxValue, "Goto-Move");
                 else
-                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto");
-                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
+                    _taskManager.Enqueue(() => MovementHelper.Move(v.Value), int.MaxValue, "Goto-Move");
+                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto-WaitPathNotRunning");
             }
-            _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto");
-            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
-            _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
-            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(innKeepName)) != null, "Goto");
-            _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectString") != null, "Goto");
-            _taskManager.Enqueue(() => AddonHelper.ClickSelectString(0));
-            _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
-            _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
+            _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), "Goto-WaitPathNotRunning");
+            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto-WaitPlayerNotCasting");
+            _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto-WaitPlayerNotJumping");
+            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(innKeepName)) != null, "Goto-GetInnKeepObject");
+            _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectString") != null, 30000, "Goto-InteractInnKeep");
+            _taskManager.Enqueue(() => AddonHelper.ClickSelectString(0), 30000, "Goto-ClickSelectString");
+            _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto-WaitPlayerNotReady");
+            _taskManager.Enqueue(() => ObjectHelper.IsReady, 30000, "Goto-WaitPlayerReady");
         }
 
         public unsafe void Goto(bool gotoBarracks, bool gotoInn, bool gotoGCSupply) 
@@ -83,10 +83,13 @@ namespace AutoDuty.Managers
                 if (AutoDuty.Plugin.InDungeon)
                 {
                     AutoDuty.Plugin.ExitDuty();
-                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
-                    _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto-WaitPlayerNotReady");
+                    _taskManager.Enqueue(() => ObjectHelper.IsReady, 30000, "Goto-WaitPlayerReady");
                 }
-                switch (UIState.Instance()->PlayerState.GrandCompany)
+
+                grandCompany = UIState.Instance()->PlayerState.GrandCompany;
+
+                switch (grandCompany)
                 {
                     //Limsa=1,129, Gridania=2,132, Uldah=3,130 -- Goto Limsa if no GC
                     case 1:
@@ -112,35 +115,36 @@ namespace AutoDuty.Managers
             {
                 _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
                 if (Svc.ClientState.TerritoryType == 536 || Svc.ClientState.TerritoryType == 534 || Svc.ClientState.TerritoryType == 535)
-                    _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByPartialName("Exit to ")) != null, "Goto");
+                    _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByPartialName("Exit to ")) != null, "Goto-GetBarracksDoorGameObject");
                 else
-                    _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Heavy Oaken Door")) != null, "Goto");
-                _taskManager.Enqueue(() => MovementHelper.Move(gameObject?.Position ?? Vector3.Zero, 0.25f, 2f), int.MaxValue, "Goto");
-                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), int.MaxValue, "Goto");
-                _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
-                _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto");
-                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "Goto");
-                _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Goto");
-                _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
-                _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
+                    _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Heavy Oaken Door")) != null, "Goto-GetInnDoorGameObject");
+                _taskManager.Enqueue(() => MovementHelper.Move(gameObject?.Position ?? Vector3.Zero, 0.25f, 2f), int.MaxValue, "Goto-MoveToGameObject");
+                _taskManager.Enqueue(() => !VNavmesh_IPCSubscriber.Path_IsRunning(), int.MaxValue, "Goto-WaitTilPathNotRunning");
+                _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto-WaitPlayerNotCasting");
+                _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto-WaitPlayerNotJumping");
+                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "Goto-InteractGameObject");
+                _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "Goto-SelectYesNo");
+                _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto-WaitPlayerNotReady");
+                _taskManager.Enqueue(() => ObjectHelper.IsReady, 30000, "Goto-WaitPlayerReady");
             }
             else
             {
                 if (Svc.ClientState.TerritoryType != territoryType && Svc.ClientState.TerritoryType != aethernetToTerritoryType)
                 {
-                    _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
-                    _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto");
-                    _taskManager.Enqueue(() => TeleportHelper.TeleportGCCity(), int.MaxValue, "Goto");
-                    _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting && !ObjectHelper.IsReady, "Goto");
-                    _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
+                    _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto-WaitPlayerReady");
+                    _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Goto-WaitPlayerNotCasting");
+                    _taskManager.Enqueue(() => TeleportHelper.TeleportGCCity(), int.MaxValue, "Goto-TeleportGCCityy");
+                    _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting && !ObjectHelper.IsReady, "Goto-WaitPlayerNotCastingAndNotReady");
+                    _taskManager.Enqueue(() => ObjectHelper.IsReady, 30000, "Goto-WaitPlayerReady");
                 }
+
                 if (!aethernetName.IsNullOrEmpty())
                 {
-                    _taskManager.Enqueue(() => TeleportHelper.MoveToClosestAetheryte(aethernetToTerritoryType));
-                    _taskManager.Enqueue(() => !ObjectHelper.IsJumping, 500, "Goto");
-                    _taskManager.Enqueue(() => TeleportHelper.TeleportAethernet(aethernetName, aethernetToTerritoryType), int.MaxValue, "Goto");
-                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto");
-                    _taskManager.Enqueue(() => ObjectHelper.IsReady, "Goto");
+                    _taskManager.Enqueue(() => TeleportHelper.MoveToClosestAetheryte(aethernetToTerritoryType), "Goto-MoveToClosestAetheryte");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsJumping, 500, "Goto-WaitPlayerNotJumping");
+                    _taskManager.Enqueue(() => TeleportHelper.TeleportAethernet(aethernetName, aethernetToTerritoryType), int.MaxValue, "Goto-TeleportAethernet");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Goto-WaitPlayerNotReady");
+                    _taskManager.Enqueue(() => ObjectHelper.IsReady, 30000, "Goto-WaitPlayerReady");
                 }
             }
             if (gotoInn)
@@ -150,8 +154,8 @@ namespace AutoDuty.Managers
             else if (gotoGCSupply)
                 GotoGCSupply(gcSupplyPositions);
 
-            _taskManager.Enqueue(() => { AutoDuty.Plugin.Goto = false; }, "Goto");
-            _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "Goto");
+            _taskManager.Enqueue(() => { AutoDuty.Plugin.Goto = false; }, "Goto-SetGotoFalse");
+            _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "Goto-SetSkipTalkFalse");
         }
     }
 }

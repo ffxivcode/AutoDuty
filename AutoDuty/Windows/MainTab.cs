@@ -23,6 +23,8 @@ namespace AutoDuty.Windows
         
         internal static void Draw()
         {
+            if (MainWindow.CurrentTabName != "Main")
+                MainWindow.CurrentTabName = "Main";
             var _loopTimes = Plugin.Configuration.LoopTimes;
             var _support = Plugin.Configuration.Support;
             var _trust = Plugin.Configuration.Trust;
@@ -141,11 +143,13 @@ namespace AutoDuty.Windows
             }
             else
             {
+                if (!Plugin.Running)
+                    MainWindow.GotoAndActions();
+
                 using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                 {
                     if (!Plugin.Running)
                     {
-                        MainWindow.GotoAndActions();
                         if (ImGui.Button("Run"))
                         {
                             if (!Plugin.Configuration.Support && !Plugin.Configuration.Trust && !Plugin.Configuration.Squadron && !Plugin.Configuration.Regular && !Plugin.Configuration.Trial && !Plugin.Configuration.Raid)

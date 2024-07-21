@@ -63,6 +63,8 @@ public static class ConfigTab
 
     public static void Draw()
     {
+        if (MainWindow.CurrentTabName != "Config")
+            MainWindow.CurrentTabName = "Config";
         var autoExitDuty = Configuration.AutoExitDuty;
         var autoKillClient = Configuration.AutoKillClient;
         var autoLogout = Configuration.AutoLogout;
