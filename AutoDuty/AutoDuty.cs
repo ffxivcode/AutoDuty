@@ -295,6 +295,13 @@ public class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => Stage = 0);
                     TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
                 }
+                else if (Configuration.AutoARMultiEnable) {
+                    TaskManager.Enqueue(() => _chat.ExecuteCommand($"/ays multi"));
+                    TaskManager.Enqueue(() => Running = false);
+                    TaskManager.Enqueue(() => CurrentLoop = 0);
+                    TaskManager.Enqueue(() => Stage = 0);
+                    TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
+                }
                 else
                 { 
                     Running = false;
