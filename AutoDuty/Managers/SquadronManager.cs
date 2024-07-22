@@ -1,6 +1,5 @@
 ﻿using AutoDuty.External;
 using AutoDuty.Helpers;
-using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
 using ECommons.Automation.LegacyTaskManager;
