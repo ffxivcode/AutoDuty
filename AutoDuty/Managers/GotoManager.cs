@@ -16,8 +16,11 @@ namespace AutoDuty.Managers
     {
         private IGameObject? gameObject = null;
         private int grandCompany = 0;
-        
-        public unsafe void GotoGCSupply(Vector3[] gcSupplyPositions)
+
+        private unsafe void GotoRepair()
+        { }
+
+        private unsafe void GotoGCSupply(Vector3[] gcSupplyPositions)
         {
             foreach (var v in gcSupplyPositions.Select((Value, Index) => (Value, Index)))
             {
@@ -31,7 +34,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => !ObjectHelper.IsJumping, "Goto-WaitPlayerNotJumping");
         }
 
-        public unsafe void GotoBarracks(Vector3[] barracksDoorPositions)
+        private unsafe void GotoBarracks(Vector3[] barracksDoorPositions)
         {
             foreach (var v in barracksDoorPositions.Select((Value, Index) => (Value, Index)))
             {
@@ -53,7 +56,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => ObjectHelper.IsReady, 30000, "Goto-WaitPlayerReady");
         }
 
-        public unsafe void GotoInn(Vector3[] innKeepPositions, string innKeepName)
+        private unsafe void GotoInn(Vector3[] innKeepPositions, string innKeepName)
         {
             foreach (var v in innKeepPositions.Select((Value, Index) => (Value, Index)))
             {
@@ -73,7 +76,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => ObjectHelper.IsReady, 30000, "Goto-WaitPlayerReady");
         }
 
-        public unsafe void Goto(bool gotoBarracks, bool gotoInn, bool gotoGCSupply) 
+        internal unsafe void Goto(bool gotoBarracks, bool gotoInn, bool gotoGCSupply) 
         {
             if ((gotoBarracks && Svc.ClientState.TerritoryType != 536 && Svc.ClientState.TerritoryType != 534 && Svc.ClientState.TerritoryType != 535) || (gotoInn && Svc.ClientState.TerritoryType != 177 && Svc.ClientState.TerritoryType != 179 && Svc.ClientState.TerritoryType != 178) || gotoGCSupply)
             {
@@ -107,7 +110,7 @@ namespace AutoDuty.Managers
                 }
             }
         }
-        public unsafe void GotoTasks(uint territoryType, Vector3[] innKeepPositions, string innKeepName, Vector3[] barracksDoorPositions, Vector3[] gcSupplyPositions, bool gotoBarracks, bool gotoInn, bool gotoGCSupply, string aethernetName = "", uint aethernetToTerritoryType = 0)
+        private unsafe void GotoTasks(uint territoryType, Vector3[] innKeepPositions, string innKeepName, Vector3[] barracksDoorPositions, Vector3[] gcSupplyPositions, bool gotoBarracks, bool gotoInn, bool gotoGCSupply, string aethernetName = "", uint aethernetToTerritoryType = 0)
         {
             AtkUnitBase* addon = null;
 
