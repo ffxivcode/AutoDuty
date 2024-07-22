@@ -249,7 +249,7 @@ public class AutoDuty : IDalamudPlugin
 
         if (t == 0)
             return;
-
+        this.CurrentPath = -1;
         LoadPath();
 
         if (!Running || GCTurninHelper.GCTurninRunning || Repairing || Goto || CurrentTerritoryContent == null)
