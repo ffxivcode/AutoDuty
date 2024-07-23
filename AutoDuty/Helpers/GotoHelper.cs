@@ -36,8 +36,8 @@ namespace AutoDuty.Helpers
             _tollerance = 0.25f;
             _lastPointTollerance = 0.25f;
             AutoDuty.Plugin.Action = "";
-            if (YesAlready_IPCSubscriber.IsEnabled)
-                YesAlready_IPCSubscriber.SetPluginEnabled(true);
+            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool GotoRunning = false;
@@ -97,8 +97,8 @@ namespace AutoDuty.Helpers
                         }
                         else
                         {
-                            if (YesAlready_IPCSubscriber.IsEnabled)
-                                YesAlready_IPCSubscriber.SetPluginEnabled(false);
+                            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
                             if (TeleportHelper.MoveToClosestAetheryte(_territoryType))
                                 TeleportHelper.TeleportAethernet(aetheryte.AethernetName.Value?.Name ?? "", _territoryType);
                         }

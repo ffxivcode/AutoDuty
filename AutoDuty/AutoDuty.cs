@@ -532,6 +532,7 @@ public class AutoDuty : IDalamudPlugin
     int currenrStage = -1;
     public void Framework_Update(IFramework framework)
     {
+        //Svc.Log.Info($"{ReflectionHelper.YesAlready_Reflection.GetState}");
         if (currenrStage != Stage)
         {
             Svc.Log.Info($"Stage = {Stage}");
@@ -598,7 +599,7 @@ public class AutoDuty : IDalamudPlugin
             case 0:
                 if (EzThrottler.Throttle("Stop", 25) && !_stopped)
                 {
-                    StopAndResetALL();
+                   //StopAndResetALL();
                     _stopped = true;
                     Action = "Stopped";
                 }

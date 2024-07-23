@@ -26,7 +26,8 @@ namespace AutoDuty.Helpers
                     stoppingCategory = 0;
                 AutoDuty.Plugin.Action = "Extracting Materia";
                 Svc.Framework.Update += ExtractUpdate;
-                YesAlready_IPCSubscriber.SetPluginEnabled(false);
+                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -37,7 +38,8 @@ namespace AutoDuty.Helpers
             switchedCategory = false;
             AutoDuty.Plugin.Action = "";
             Svc.Framework.Update -= ExtractUpdate;
-            YesAlready_IPCSubscriber.SetPluginEnabled(true);
+            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool ExtractRunning = false;

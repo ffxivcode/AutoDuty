@@ -23,8 +23,8 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany})");
                 GotoInnRunning = true;
                 Svc.Framework.Update += GotoInnUpdate;
-                if (YesAlready_IPCSubscriber.IsEnabled)
-                    YesAlready_IPCSubscriber.SetPluginEnabled(false);
+                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -36,8 +36,8 @@ namespace AutoDuty.Helpers
             GotoInnRunning = false;
             _whichGrandCompany = 0;
             AutoDuty.Plugin.Action = "";
-            if (YesAlready_IPCSubscriber.IsEnabled)
-                YesAlready_IPCSubscriber.SetPluginEnabled(true);
+            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool GotoInnRunning = false;

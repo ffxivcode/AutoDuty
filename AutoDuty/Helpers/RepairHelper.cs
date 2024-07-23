@@ -24,8 +24,8 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Repair Started");
                 RepairRunning = true;
                 Svc.Framework.Update += RepairUpdate;
-                if (YesAlready_IPCSubscriber.IsEnabled)
-                    YesAlready_IPCSubscriber.SetPluginEnabled(false);
+                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -38,8 +38,8 @@ namespace AutoDuty.Helpers
             _seenAddon = false;
             AutoDuty.Plugin.Action = "";
             AgentModule.Instance()->GetAgentByInternalId(AgentId.Repair)->Hide();
-            if (YesAlready_IPCSubscriber.IsEnabled)
-                YesAlready_IPCSubscriber.SetPluginEnabled(true);
+            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool RepairRunning = false;

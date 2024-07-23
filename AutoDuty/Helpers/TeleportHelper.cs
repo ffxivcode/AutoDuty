@@ -54,7 +54,7 @@ namespace AutoDuty.Helpers
             if (aethernetName.IsNullOrEmpty() || !ObjectHelper.IsValid)
                 return true;
 
-            YesAlready_IPCSubscriber.SetPluginEnabled(false);
+            ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
 
             if (!GenericHelpers.TryGetAddonByName("TelepotTown", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon))
             {
