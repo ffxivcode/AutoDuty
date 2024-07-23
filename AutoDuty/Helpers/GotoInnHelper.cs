@@ -5,6 +5,7 @@ using System.Numerics;
 using System;
 using Dalamud.Game.ClientState.Objects.Types;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using AutoDuty.IPC;
 
 namespace AutoDuty.Helpers
 {
@@ -22,6 +23,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany})");
                 GotoInnRunning = true;
                 Svc.Framework.Update += GotoInnUpdate;
+                YesAlready_IPCSubscriber.SetPluginEnabled(false);
             }
         }
 
@@ -33,6 +35,7 @@ namespace AutoDuty.Helpers
             GotoInnRunning = false;
             _whichGrandCompany = 0;
             AutoDuty.Plugin.Action = "";
+            YesAlready_IPCSubscriber.SetPluginEnabled(true);
         }
 
         internal static bool GotoInnRunning = false;

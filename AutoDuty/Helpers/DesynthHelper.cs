@@ -1,4 +1,5 @@
-﻿using Dalamud.Plugin.Services;
+﻿using AutoDuty.IPC;
+using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
@@ -19,6 +20,7 @@ namespace AutoDuty.Helpers
                 DesynthRunning = true;
                 AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
+                YesAlready_IPCSubscriber.SetPluginEnabled(false);
             }
         }
 
@@ -27,6 +29,7 @@ namespace AutoDuty.Helpers
             DesynthRunning = false;
             AutoDuty.Plugin.Action = "";
             Svc.Framework.Update -= DesynthUpdate;
+            YesAlready_IPCSubscriber.SetPluginEnabled(true);
         }
 
         internal static bool DesynthRunning = false;

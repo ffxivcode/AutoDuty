@@ -5,6 +5,7 @@ using System.Numerics;
 using System;
 using Dalamud.Game.ClientState.Objects.Types;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using AutoDuty.IPC;
 
 namespace AutoDuty.Helpers
 {
@@ -17,6 +18,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Barracks Started");
                 GotoBarracksRunning = true;
                 Svc.Framework.Update += GotoBarracksUpdate;
+                YesAlready_IPCSubscriber.SetPluginEnabled(false);
             }
         }
 
@@ -27,6 +29,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= GotoBarracksUpdate;
             GotoBarracksRunning = false;
             AutoDuty.Plugin.Action = "";
+            YesAlready_IPCSubscriber.SetPluginEnabled(true);
         }
 
         internal static bool GotoBarracksRunning = false;

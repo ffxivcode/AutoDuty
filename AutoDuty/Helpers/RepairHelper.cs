@@ -9,6 +9,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Dalamud.Game.ClientState.Conditions;
+using AutoDuty.IPC;
 
 //still need to test self repair
 
@@ -23,6 +24,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Repair Started");
                 RepairRunning = true;
                 Svc.Framework.Update += RepairUpdate;
+                YesAlready_IPCSubscriber.SetPluginEnabled(false);
             }
         }
 
@@ -35,6 +37,7 @@ namespace AutoDuty.Helpers
             _seenAddon = false;
             AutoDuty.Plugin.Action = "";
             AgentModule.Instance()->GetAgentByInternalId(AgentId.Repair)->Hide();
+            YesAlready_IPCSubscriber.SetPluginEnabled(true);
         }
 
         internal static bool RepairRunning = false;

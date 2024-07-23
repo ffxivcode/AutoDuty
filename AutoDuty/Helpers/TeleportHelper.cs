@@ -8,6 +8,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Objects.Enums;
 using ECommons.Throttlers;
+using AutoDuty.IPC;
 
 namespace AutoDuty.Helpers
 {
@@ -52,6 +53,8 @@ namespace AutoDuty.Helpers
         {
             if (aethernetName.IsNullOrEmpty() || !ObjectHelper.IsValid)
                 return true;
+
+            YesAlready_IPCSubscriber.SetPluginEnabled(false);
 
             if (!GenericHelpers.TryGetAddonByName("TelepotTown", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon))
             {
