@@ -39,7 +39,9 @@ namespace AutoDuty.Managers
             ("ChatCommand","Command with args?"),
             ("StopForCombat","True/False"),
             ("Revival",  "false"),
-            ("ForceAttack",  "false")
+            ("ForceAttack",  "false"),
+            ("Jump", "automove for how long before"),
+            ("PausePandora", "Which feature | how long")
         ];
 
         public void InvokeAction(string action, object?[] p)
@@ -78,6 +80,27 @@ namespace AutoDuty.Managers
         {
             ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16);
             ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1);
+        }
+
+        public unsafe void Jump(string automoveTime)
+        {
+            AutoDuty.Plugin.Action = $"Jumping";
+
+            if (int.TryParse(automoveTime, out int wait) && wait > 0)
+            {
+                _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "Jump Move");
+                _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "AutoMove");
+                _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(wait), "AutoMove");
+            }
+
+            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2), "Jump");
+
+            if(wait > 0)
+            {
+                _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(100)), "AutoMove");
+                _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"),                           Convert.ToInt32(100), "AutoMove");
+                _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"),                   "Jump Move");
+            }
         }
         
         public void ChatCommand(string commandAndArgs)
@@ -388,6 +411,12 @@ namespace AutoDuty.Managers
             }
             _taskManager.DelayNext("Boss", 500);
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss");
+        }
+
+        public void PausePandora(string featureName, string intMs)
+        {
+            if(PandorasBox_IPCSubscriber.IsEnabled)
+                _taskManager.Enqueue(() => PandorasBox_IPCSubscriber.PauseFeature(featureName, int.Parse(intMs)));
         }
 
         public void Revival()
