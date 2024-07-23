@@ -1,12 +1,11 @@
 ﻿using AutoDuty.IPC;
-using AutoDuty.Managers;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin.Services;
 using ECommons.Automation;
-using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using System.Numerics;
 
 namespace AutoDuty.Helpers
 {
@@ -26,8 +25,8 @@ namespace AutoDuty.Helpers
 
         internal static void Stop() 
         {
-            taskManager.Abort();
-            gotoManager = null;
+            if (GCTurninRunning)
+                Svc.Log.Info("GCTurnin Finished");
             deliverooStarted = false;
             GCTurninRunning = false;
             AutoDuty.Plugin.Action = "";
@@ -35,20 +34,11 @@ namespace AutoDuty.Helpers
         }
 
         internal static bool GCTurninRunning = false;
-
-        private static GotoManager? gotoManager = null;
-
+        internal unsafe static Vector3 GCSupplyLocation => UIState.Instance()->PlayerState.GrandCompany == 1 ? new Vector3(94.02183f, 40.27537f, 74.475525f) : (UIState.Instance()->PlayerState.GrandCompany == 2 ? new Vector3(-68.678566f, -0.5015295f, -8.470145f) : new Vector3(-142.82619f, 4.0999994f, -106.31349f));
+        
         private static IGameObject? personnelOfficer = null;
-
         private static IGameObject? quartermaster = null;
-
-        private static readonly TaskManager taskManager = new() {
-            AbortOnTimeout = false,
-            TimeoutSilently = true
-        };
-
         private static bool deliverooStarted = false;
-
         private static Chat chat = new();
 
         internal static unsafe void GCTurninUpdate(IFramework framework)
@@ -56,22 +46,14 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("Turnin", 50))
                 return;
 
-            if (AutoDuty.Plugin.Goto)
+            if (GotoHelper.GotoRunning)
                 return;
 
             AutoDuty.Plugin.Action = "GC Turning In";
 
-            if (!AutoDuty.Plugin.Goto && (personnelOfficer = ObjectHelper.GetObjectByPartialName("Personnel Officer")) == null)
+            if (!GotoHelper.GotoRunning && (personnelOfficer = ObjectHelper.GetObjectByPartialName("Personnel Officer")) == null)
             {
-                //UIState.Instance()->PlayerState.GrandCompany)
-                //Limsa=1,129, Gridania=2,132, Uldah=3,130
-                if ((UIState.Instance()->PlayerState.GrandCompany == 1 && Svc.ClientState.TerritoryType != 128) || (UIState.Instance()->PlayerState.GrandCompany == 2 && Svc.ClientState.TerritoryType != 132) || (UIState.Instance()->PlayerState.GrandCompany == 3 && Svc.ClientState.TerritoryType != 130))
-                {
-                    //Goto GCSupply
-                    AutoDuty.Plugin.Goto = true;
-                    gotoManager = new(taskManager);
-                    gotoManager.Goto(false, false, true);
-                }
+                GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany), [GCSupplyLocation], 0.25f, 3f);
                 return;
             }
 
@@ -97,11 +79,7 @@ namespace AutoDuty.Helpers
                 return;
             }
             else if (!Deliveroo_IPCSubscriber.IsTurnInRunning() && deliverooStarted)
-            {
-                Svc.Log.Info("GCTurnin Finished");
                 Stop();
-                return;
-            }
         }
     }
 }

@@ -6,12 +6,14 @@ using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons;
+using ECommons.DalamudServices;
 using ECommons.EzSharedDataManager;
 using ECommons.Funding;
 using ECommons.ImGuiMethods;
 using ECommons.Schedulers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using ImGuiNET;
 using static AutoDuty.AutoDuty;
 
@@ -164,19 +166,19 @@ public class MainWindow : Window, IDisposable
             {
                 if (ImGui.Selectable("Barracks"))
                 {
-                    Plugin.GotoAction("Barracks");
+                    GotoBarracksHelper.Invoke();
                 }
                 if (ImGui.Selectable("Inn"))
                 {
-                    Plugin.GotoAction("Inn");
+                    GotoInnHelper.Invoke();
                 }
                 if (ImGui.Selectable("GCSupply"))
                 {
-                    Plugin.GotoAction("GCSupply");
+                    GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
                 }
                 if (ImGui.Selectable("Repair"))
                 {
-                    Plugin.GotoAction("Repair");
+                    RepairHelper.Invoke();
                 }
                 ImGui.EndPopup();
             }

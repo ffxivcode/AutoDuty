@@ -38,7 +38,7 @@ namespace AutoDuty.Helpers
                 return true;
             }
             if (EzThrottler.Throttle("ClickSelectString", 50))
-                AddonHelper.FireCallBack(addon, true, index);
+                FireCallBack(addon, true, index);
             SeenAddon = true;
             return false;
         }
@@ -58,9 +58,9 @@ namespace AutoDuty.Helpers
             if (EzThrottler.Throttle("ClickYesno", 50))
             {
                 if (yes)
-                    AddonHelper.FireCallBack(addon, true, 0);
+                    FireCallBack(addon, true, 0);
                 else
-                    AddonHelper.FireCallBack(addon, true, 1);
+                    FireCallBack(addon, true, 1);
             }
             SeenAddon = true;
             return false;
@@ -70,13 +70,29 @@ namespace AutoDuty.Helpers
         {
             if ((!GenericHelpers.TryGetAddonByName("Repair", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon)) && !SeenAddon)
                 return false;
-            if (SeenAddon && (!GenericHelpers.TryGetAddonByName("Repair", out addon) || !GenericHelpers.IsAddonReady(addon)) || GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* _))
+            if (SeenAddon && (!GenericHelpers.TryGetAddonByName("Repair", out addon) || !GenericHelpers.IsAddonReady(addon)))
             {
                 SeenAddon = false;
                 return true;
             }
             if (EzThrottler.Throttle("Repair", 50))
-                AddonHelper.FireCallBack(addon, true, 0); ;
+                FireCallBack(addon, true, 0); ;
+            SeenAddon = true;
+            return false;
+        }
+
+        internal static bool ClickTalk()
+        {
+            if ((!GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon)) && !SeenAddon)
+                return false;
+            if (SeenAddon && (!GenericHelpers.TryGetAddonByName("Talk", out addon) || !GenericHelpers.IsAddonReady(addon)))
+            {
+                SeenAddon = false;
+                return true;
+            }
+            if (EzThrottler.Throttle("ClickTalk", 50))
+                FireCallBack(addon, true);
+
             SeenAddon = true;
             return false;
         }
