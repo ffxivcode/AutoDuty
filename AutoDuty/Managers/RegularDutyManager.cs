@@ -1,6 +1,5 @@
 ﻿using AutoDuty.Helpers;
 using ECommons;
-using ECommons.Automation.UIInput;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;

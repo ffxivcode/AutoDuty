@@ -1,6 +1,5 @@
 ﻿using AutoDuty.External;
 using AutoDuty.Helpers;
-using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
 using ECommons.Automation.LegacyTaskManager;
@@ -20,7 +19,7 @@ namespace AutoDuty.Managers
         {
             if (content.GCArmyIndex < 0)
             {
-                Svc.Log.Info("GCArmyIndex was < than 0");
+                _taskManager.Enqueue(() => Svc.Log.Info("GCArmyIndex was < than 0"), "RegisterSquadron");
                 return;
             }
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Squadron: {content.DisplayName}"), "RegisterSquadron");

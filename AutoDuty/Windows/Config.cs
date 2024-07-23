@@ -16,7 +16,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 68;
+    public int Version { get; set; } = 70;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
@@ -25,6 +25,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoExitDuty { get; set; } = true;
     public bool AutoKillClient { get; set; } = false;
     public bool AutoLogout { get; set; } = false;
+    public bool AutoARMultiEnable { get; set; } = false;
     public bool LootTreasure { get; set; } = true;
     public bool LootBossTreasureOnly { get; set; } = true;
     public bool AutoRepair { get; set; } = false;
@@ -73,6 +74,7 @@ public static class ConfigTab
         var autoExitDuty = Configuration.AutoExitDuty;
         var autoKillClient = Configuration.AutoKillClient;
         var autoLogout = Configuration.AutoLogout;
+        var autoARMultiEnable = Configuration.AutoARMultiEnable;
         var lootTreasure = Configuration.LootTreasure;
         var treasureCofferScanDistance = Configuration.TreasureCofferScanDistance;
         var lootBossTreasureOnly = Configuration.LootBossTreasureOnly;
@@ -98,6 +100,11 @@ public static class ConfigTab
         {
             Configuration.AutoLogout = autoLogout;
             Configuration.AutoKillClient = false;
+            Configuration.Save();
+        }
+        if (ImGui.Checkbox("Enable AutoRetainer Multi on Completion of Looping", ref autoARMultiEnable))
+        {
+            Configuration.AutoARMultiEnable = autoARMultiEnable;
             Configuration.Save();
         }
         if (ImGui.Checkbox("Auto Exit Duty on Completion of Dungeon", ref autoExitDuty))

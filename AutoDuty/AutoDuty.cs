@@ -26,6 +26,7 @@ using TinyIpc.Messaging;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace AutoDuty;
 
@@ -241,9 +242,11 @@ public class AutoDuty : IDalamudPlugin
             //throw;
         }
     }
-
+    
     private void ClientState_TerritoryChanged(ushort t)
     {
+        Svc.Log.Debug($"ClientState_TerritoryChanged: t={t}");
+       
         CurrentTerritoryType = t;
         MainListClicked = false;
 
@@ -261,34 +264,34 @@ public class AutoDuty : IDalamudPlugin
         {
             if (CurrentLoop < Configuration.LoopTimes)
             {
-                TaskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "Loop");
-                TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop");
-                TaskManager.Enqueue(() => Stage = 99, "Loop");
-                TaskManager.Enqueue(() => _repairManager.Repair(), int.MaxValue, "Loop");
-                TaskManager.Enqueue(() => { if (Configuration.AutoExtract) ExtractHelper.Invoke(); }, "Loop");
-                TaskManager.DelayNext("Loop", 50);
-                TaskManager.Enqueue(() => !ExtractHelper.ExtractRunning, int.MaxValue, "Loop");
-                TaskManager.Enqueue(() => { if (Configuration.AutoGCTurnin) GCTurninHelper.Invoke(); }, "Loop");
-                TaskManager.DelayNext("Loop", 50);
-                TaskManager.Enqueue(() => !GCTurninHelper.GCTurninRunning, int.MaxValue, "Loop");
-                TaskManager.Enqueue(() => { if (Configuration.AutoDesynth) DesynthHelper.Invoke(); }, "Loop");
-                TaskManager.DelayNext("Loop", 50);
-                TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop");
+                TaskManager.Enqueue(() => Stage = 99, "Loop-SetStage=99");
+                TaskManager.Enqueue(() => Started = false, "Loop-SetStarted=false");
+                TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
+                TaskManager.Enqueue(() => _repairManager.Repair(), int.MaxValue, "Loop-Repair");
+                TaskManager.Enqueue(() => { if (Configuration.AutoExtract) ExtractHelper.Invoke(); }, "Loop-AutoExtract");
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => !ExtractHelper.ExtractRunning, int.MaxValue, "Loop-WaitAutoExtractComplete");
+                TaskManager.Enqueue(() => { if (Configuration.AutoGCTurnin) GCTurninHelper.Invoke(); }, "Loop-AutoGCTurnin");
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => !GCTurninHelper.GCTurninRunning, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
+                TaskManager.Enqueue(() => { if (Configuration.AutoDesynth) DesynthHelper.Invoke(); }, "Loop-AutoDesynth");
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop-WaitAutoDesynthComplete");
                 if (!Configuration.Squadron)
-                    TaskManager.Enqueue(() => _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false), int.MaxValue, "Loop");
+                    _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false);
                 if (Configuration.Trust)
-                    TaskManager.Enqueue(() => _trustManager.RegisterTrust(CurrentTerritoryContent), int.MaxValue, "Loop");
+                    _trustManager.RegisterTrust(CurrentTerritoryContent);
                 else if (Configuration.Support)
-                    TaskManager.Enqueue(() => _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent), int.MaxValue, "Loop");
+                    _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
                 else if (Configuration.Squadron)
                 {
                     _gotoManager.Goto(true, false, false);
-                    TaskManager.Enqueue(() => _squadronManager.RegisterSquadron(CurrentTerritoryContent), int.MaxValue, "Loop");
+                    _squadronManager.RegisterSquadron(CurrentTerritoryContent);
                 }
                 else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
                     _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
-                
-                TaskManager.Enqueue(() => CurrentLoop++, "Loop");
+                TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
+                TaskManager.Enqueue(() => !ObjectHelper.IsReady, "Loop-WaitPlayerNotReady");
             }
             else
             {
@@ -300,6 +303,13 @@ public class AutoDuty : IDalamudPlugin
                     TaskManager.DelayNext(2000);
                     TaskManager.Enqueue(() => _chat.ExecuteCommand($"/logout"));
                     TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
+                    TaskManager.Enqueue(() => Running = false);
+                    TaskManager.Enqueue(() => CurrentLoop = 0);
+                    TaskManager.Enqueue(() => Stage = 0);
+                    TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
+                }
+                else if (Configuration.AutoARMultiEnable) {
+                    TaskManager.Enqueue(() => _chat.ExecuteCommand($"/ays multi"));
                     TaskManager.Enqueue(() => Running = false);
                     TaskManager.Enqueue(() => CurrentLoop = 0);
                     TaskManager.Enqueue(() => Stage = 0);
@@ -361,6 +371,7 @@ public class AutoDuty : IDalamudPlugin
 
     public void Run(uint territoryType = 0, int loops = 0)
     {
+        Svc.Log.Debug($"Run: territoryType={territoryType} loops={loops}");
         if (territoryType > 0)
         {
             if (ContentHelper.DictionaryContent.TryGetValue(territoryType, out var content))
@@ -408,10 +419,11 @@ public class AutoDuty : IDalamudPlugin
 
     public void StartNavigation(bool startFromZero = true)
     {
+        Svc.Log.Debug($"StartNavigation: startFromZero={startFromZero}");
         if (ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content))
         {
             CurrentTerritoryContent = content;
-            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.Name.Replace(":", "")}.json";
+            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.Name?.Replace(":", "")}.json";
             LoadPath();
         }
         else
@@ -523,8 +535,16 @@ public class AutoDuty : IDalamudPlugin
 
         return 0;
     }
+
+    int currenrStage = -1;
     public void Framework_Update(IFramework framework)
     {
+        if (currenrStage != Stage)
+        {
+            Svc.Log.Info($"Stage = {Stage}");
+            currenrStage = Stage;
+        }
+        
         if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
 
@@ -772,7 +792,7 @@ public class AutoDuty : IDalamudPlugin
                             Svc.Targets.Target = gos;
                     }
 
-                    if (Svc.Targets.Target != null && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0 && (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange || ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange))
+                    if (false && Svc.Targets.Target != null && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0 && (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange || ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange))
                     {
                         if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2)
                             VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.AoEJobRange);

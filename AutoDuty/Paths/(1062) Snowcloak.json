@@ -1,1 +1,12 @@
-["MoveTo|71.93, 5.68, -44.44|","Interactable|0, 0, 0|Tiny Key","MoveTo|56.94, 4.48, -46.18|","Interactable|0, 0, 0|Door to Silence","Boss|56.21, -2.50, -88.61|","MoveTo|-25.20, -9.54, -173.80|","Boss|-99.25, 10.50, -117.27|","Boss|-57.98, 28.40, -8.94|","MoveTo|-71.10, 40.74, 65.24|","Interactable|0, 0, 0|Finger of the Apostate","MoveTo|-51.00, 40.45, 64.94|","Interactable|0, 0, 0|Door to Oblivion","Boss|1.61, 40.07, 66.47|"]
+[
+  "Interactable|71.93, 5.68, -44.44|2004225 (Tiny Key)",
+  "MoveTo|56.94, 4.48, -46.18|",
+  "Interactable|56.94, 4.48, -46.18|2004203 (Door to Silence)",
+  "Boss|56.21, -2.50, -88.61|",
+  "MoveTo|-25.20, -9.54, -173.80|",
+  "Boss|-99.25, 10.50, -117.27|",
+  "Boss|-57.98, 28.40, -8.94|",
+  "Interactable|-71.10, 40.74, 65.24|2004226 (Finger of the Apostate)",
+  "Interactable|-51.00, 40.45, 64.94|2004224 (Door to Oblivion)",
+  "Boss|1.61, 40.07, 66.47|"
+]
