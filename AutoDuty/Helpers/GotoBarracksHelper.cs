@@ -18,7 +18,8 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Barracks Started");
                 GotoBarracksRunning = true;
                 Svc.Framework.Update += GotoBarracksUpdate;
-                YesAlready_IPCSubscriber.SetPluginEnabled(false);
+                if (YesAlready_IPCSubscriber.IsEnabled)
+                    YesAlready_IPCSubscriber.SetPluginEnabled(false);
             }
         }
 
@@ -29,7 +30,8 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= GotoBarracksUpdate;
             GotoBarracksRunning = false;
             AutoDuty.Plugin.Action = "";
-            YesAlready_IPCSubscriber.SetPluginEnabled(true);
+            if (YesAlready_IPCSubscriber.IsEnabled)
+                YesAlready_IPCSubscriber.SetPluginEnabled(true);
         }
 
         internal static bool GotoBarracksRunning = false;

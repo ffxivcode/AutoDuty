@@ -20,7 +20,8 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info("GCTurnin Started");
                 GCTurninRunning = true;
                 Svc.Framework.Update += GCTurninUpdate;
-                YesAlready_IPCSubscriber.SetPluginEnabled(false);
+                if (YesAlready_IPCSubscriber.IsEnabled)
+                    YesAlready_IPCSubscriber.SetPluginEnabled(false);
             }
         }
 
@@ -32,7 +33,8 @@ namespace AutoDuty.Helpers
             GCTurninRunning = false;
             AutoDuty.Plugin.Action = "";
             Svc.Framework.Update -= GCTurninUpdate;
-            YesAlready_IPCSubscriber.SetPluginEnabled(true);
+            if (YesAlready_IPCSubscriber.IsEnabled)
+                YesAlready_IPCSubscriber.SetPluginEnabled(true);
         }
 
         internal static bool GCTurninRunning = false;
