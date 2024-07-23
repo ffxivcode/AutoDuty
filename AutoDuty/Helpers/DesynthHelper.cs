@@ -1,4 +1,5 @@
-﻿using Dalamud.Plugin.Services;
+﻿using AutoDuty.Helpers;
+using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
@@ -19,6 +20,8 @@ namespace AutoDuty.Helpers
                 DesynthRunning = true;
                 AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
+                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -27,6 +30,8 @@ namespace AutoDuty.Helpers
             DesynthRunning = false;
             AutoDuty.Plugin.Action = "";
             Svc.Framework.Update -= DesynthUpdate;
+            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool DesynthRunning = false;

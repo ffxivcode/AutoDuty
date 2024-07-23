@@ -238,7 +238,7 @@ namespace AutoDuty.Managers
             Match  match = Regex.Match(objectName, @"([0-9]{3,})");
             string id    = match.Success ? match.Captures.First().Value : string.Empty;
 
-            _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectById(id) : null ) ?? ObjectHelper.GetObjectByName(objectName)) != null, "Interactable");
+            _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null ) ?? ObjectHelper.GetObjectByName(objectName)) != null, "Interactable");
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable");
             _taskManager.Enqueue(() => Player.Character->IsCasting, 500, "Interactable");
             _taskManager.Enqueue(() => !Player.Character->IsCasting, "Interactable");

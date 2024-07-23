@@ -1,4 +1,5 @@
-﻿using ECommons.Automation;
+﻿using Dalamud.Plugin;
+using ECommons.Automation;
 using ECommons.Reflection;
 using System.Reflection;
 #nullable disable
@@ -7,10 +8,21 @@ namespace AutoDuty.Helpers
 {
     internal class ReflectionHelper
     {
-        internal static class RotationSolver_Reflection
-        {
-            private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+        private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
+        internal static class YesAlready_Reflection
+        {
+            internal static bool IsEnabled => DalamudReflector.TryGetDalamudPlugin("YesAlready", out _, false, true);
+
+            internal static void SetPluginEnabled(bool trueFalse)
+            {
+                if (DalamudReflector.TryGetDalamudPlugin("YesAlready", out var pl, false, true))
+                    pl.GetFoP("Config").SetFoP("Enabled", trueFalse);
+            }
+        }
+
+        internal static class RotationSolver_Reflection
+        { 
             internal static bool RotationSolverEnabled => DalamudReflector.TryGetDalamudPlugin("RotationSolver", out _, false, true);
 
             internal static bool GetState => DalamudReflector.TryGetDalamudPlugin("RotationSolver", out var pl, false, true) && (bool)Assembly.GetAssembly(pl.GetType()).GetType("RotationSolver.Commands.RSCommands").GetField("_lastState", All).GetValue(null);

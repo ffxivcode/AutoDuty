@@ -1,6 +1,4 @@
-﻿using Dalamud.Configuration;
-using ECommons.EzIpcManager;
-using Lumina.Excel.GeneratedSheets;
+﻿using ECommons.EzIpcManager;
 #nullable disable
 
 namespace AutoDuty.IPC

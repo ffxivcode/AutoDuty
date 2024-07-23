@@ -1,7 +1,6 @@
 ﻿using FFXIVClientStructs.FFXIV.Client.Game;
 using ECommons;
 using ECommons.Automation;
-using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Collections.Generic;
 using ECommons.UIHelpers;
@@ -9,6 +8,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Objects.Enums;
 using ECommons.Throttlers;
+using AutoDuty.IPC;
 
 namespace AutoDuty.Helpers
 {
@@ -37,10 +37,10 @@ namespace AutoDuty.Helpers
             return false;
         }
 
-        internal static bool MoveToClosestAetheryte(uint territortyType)
+        internal static bool MoveToClosestAetheryte(uint toTerritoryType)
         {
-            if (Svc.ClientState.TerritoryType == territortyType)
-                return true;
+            //if (Svc.ClientState.TerritoryType == toTerritoryType)
+              //  return true;
 
             IGameObject? gameObject = null;
             if ((gameObject = ObjectHelper.GetObjectByObjectKind(ObjectKind.Aetheryte)) == null)
@@ -51,8 +51,10 @@ namespace AutoDuty.Helpers
 
         internal static bool TeleportAethernet(string aethernetName, uint toTerritoryType)
         {
-            if (aethernetName.IsNullOrEmpty() || Svc.ClientState.TerritoryType == toTerritoryType || !ObjectHelper.IsValid)
+            if (aethernetName.IsNullOrEmpty() || !ObjectHelper.IsValid)
                 return true;
+
+            ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
 
             if (!GenericHelpers.TryGetAddonByName("TelepotTown", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon))
             {

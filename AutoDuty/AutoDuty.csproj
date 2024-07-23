@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors></Authors>
     <Company></Company>
-    <Version>0.0.0.70</Version>
+    <Version>0.0.0.72</Version>
     <Description>AutoDuty</Description>
     <Copyright></Copyright>
     <PackageProjectUrl></PackageProjectUrl>
@@ -42,7 +42,7 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="Dalamud.Common">
-      <HintPath>$(appdata)\XIVLauncher\addon\Hooks\dev\Dalamud.Common.dll</HintPath>
+      <HintPath>$(DalamudLibPath)Dalamud.Common.dll</HintPath>
     </Reference>
     <Reference Include="ImGui.NET">
       <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>

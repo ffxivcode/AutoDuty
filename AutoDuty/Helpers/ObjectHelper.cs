@@ -14,6 +14,7 @@ using ECommons;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons.Throttlers;
 using AutoDuty.IPC;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace AutoDuty.Helpers
 {
@@ -31,7 +32,7 @@ namespace AutoDuty.Helpers
 
         internal static IGameObject? GetObjectByName(string name) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.Name.TextValue.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 
-        internal static IGameObject? GetObjectById(string id) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.DataId.ToString().Equals(id, StringComparison.CurrentCultureIgnoreCase));
+        internal static IGameObject? GetObjectByDataId(uint id) => Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(o => o.DataId == id);
 
         internal static List<IGameObject>? GetObjectsByPartialName(string name) => [.. Svc.Objects.OrderBy(GetDistanceToPlayer).Where(o => o.Name.TextValue.Contains(name, StringComparison.CurrentCultureIgnoreCase))];
 
@@ -97,6 +98,10 @@ namespace AutoDuty.Helpers
 
         //From RotationSolver
         internal static bool IsBossFromIcon(IGameObject gameObject) => GetObjectNPC(gameObject)?.Rank is 1 or 2 or 6;
+
+        internal unsafe static uint GrandCompanyTerritoryType(uint grandCompany) => grandCompany == 1 ? 128u : (grandCompany == 2 ? 132u : 130u);
+
+        internal unsafe static uint GrandCompany => UIState.Instance()->PlayerState.GrandCompany;
 
         internal static float JobRange
         {

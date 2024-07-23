@@ -25,6 +25,18 @@ namespace AutoDuty.IPC
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
+    
+    /* Seem's YesAlready is not Initializing this
+    internal static class YesAlready_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(YesAlready_IPCSubscriber), "YesAlready");
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("YesAlready");
+
+        [EzIPC("YesAlready.SetPluginEnabled", applyPrefix: false)] internal static readonly Action<bool> SetPluginEnabled;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }*/
 
     internal static class Deliveroo_IPCSubscriber
     {

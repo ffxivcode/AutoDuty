@@ -77,8 +77,6 @@ public class AutoDuty : IDalamudPlugin
     private DirectoryInfo _configDirectory;
     private ActionsManager _actions;
     private Chat _chat;
-    private RepairManager _repairManager;
-    private GotoManager _gotoManager;
     private DutySupportManager _dutySupportManager;
     private RegularDutyManager _regularDutyManager;
     private TrustManager _trustManager;
@@ -127,8 +125,6 @@ public class AutoDuty : IDalamudPlugin
             FileHelper.Init();
             _chat = new();
             _overrideAFK = new();
-            _repairManager = new(TaskManager);
-            _gotoManager = new(TaskManager);
             _dutySupportManager = new(TaskManager);
             _regularDutyManager = new(TaskManager);
             _trustManager = new(TaskManager);
@@ -233,7 +229,7 @@ public class AutoDuty : IDalamudPlugin
         }
     }
     
-    private void ClientState_TerritoryChanged(ushort t)
+    private unsafe void ClientState_TerritoryChanged(ushort t)
     {
         Svc.Log.Debug($"ClientState_TerritoryChanged: t={t}");
        
@@ -257,25 +253,49 @@ public class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => Stage = 99, "Loop-SetStage=99");
                 TaskManager.Enqueue(() => Started = false, "Loop-SetStarted=false");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
-                TaskManager.Enqueue(() => _repairManager.Repair(), int.MaxValue, "Loop-Repair");
-                TaskManager.Enqueue(() => { if (Configuration.AutoExtract) ExtractHelper.Invoke(); }, "Loop-AutoExtract");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => !ExtractHelper.ExtractRunning, int.MaxValue, "Loop-WaitAutoExtractComplete");
-                TaskManager.Enqueue(() => { if (Configuration.AutoGCTurnin) GCTurninHelper.Invoke(); }, "Loop-AutoGCTurnin");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => !GCTurninHelper.GCTurninRunning, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
-                TaskManager.Enqueue(() => { if (Configuration.AutoDesynth) DesynthHelper.Invoke(); }, "Loop-AutoDesynth");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop-WaitAutoDesynthComplete");
+                if (Configuration.AutoRepair && InventoryHelper.LowestEquippedCondition() <= Configuration.AutoRepairPct)
+                {
+                    TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Loop-WaitAutoRepairComplete");
+                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,"Loop-WaitANotIsOccupied");
+                }
+                if (Configuration.AutoExtract && (QuestManager.IsQuestComplete(66174)))
+                {
+                    TaskManager.Enqueue(() => ExtractHelper.Invoke(), "Loop-AutoExtract");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => !ExtractHelper.ExtractRunning, int.MaxValue, "Loop-WaitAutoExtractComplete");
+                }
+                if (Configuration.AutoGCTurnin && UIState.Instance()->PlayerState.GetGrandCompanyRank() > 5)
+                {
+                    TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => !GCTurninHelper.GCTurninRunning, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
+                }
+                if (Configuration.AutoDesynth)
+                {
+                    TaskManager.Enqueue(() => DesynthHelper.Invoke(), "Loop-AutoDesynth");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop-WaitAutoDesynthComplete");
+                }
                 if (!Configuration.Squadron)
-                    _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false);
+                {
+                    if (Configuration.RetireToBarracksBeforeLoops)
+                        TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
+                    else if (Configuration.RetireToInnBeforeLoops)
+                        TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Loop-GotoInnInvoke");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
+                }
                 if (Configuration.Trust)
                     _trustManager.RegisterTrust(CurrentTerritoryContent);
                 else if (Configuration.Support)
                     _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
                 else if (Configuration.Squadron)
                 {
-                    _gotoManager.Goto(true, false, false);
+                    TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
                     _squadronManager.RegisterSquadron(CurrentTerritoryContent);
                 }
                 else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
@@ -326,39 +346,6 @@ public class AutoDuty : IDalamudPlugin
         }
     }
 
-    public void GotoAction(string where)
-    {
-        if (where.IsNullOrEmpty())
-            return;
-        MainWindow.OpenTab("Mini");
-        Stage = 99;
-        Svc.Log.Info($"Going To: {where}");
-        Running = true;
-        switch (where)
-        {
-            case "Barracks":
-                _gotoManager.Goto(true, false, false);
-                TaskManager.Enqueue(() => Stage = 0, "Goto");
-                break;
-            case "Inn":
-                _gotoManager.Goto(false, true, false);
-                TaskManager.Enqueue(() => Stage = 0, "Goto");
-                break;
-            case "GCSupply":
-                _gotoManager.Goto(false, false, true);
-                TaskManager.Enqueue(() => Stage = 0, "Goto");
-                break;
-            case "Repair":
-                _repairManager.Repair(true, false);
-                TaskManager.Enqueue(() => Stage = 0, "Goto");
-                break;
-            default:
-                MainWindow.ShowPopup("Error", $"{where} is not a valid Goto Destination");
-                TaskManager.Enqueue(() => Stage = 0, "Goto");
-                break;
-        }
-    }
-
     public void Run(uint territoryType = 0, int loops = 0)
     {
         Svc.Log.Debug($"Run: territoryType={territoryType} loops={loops}");
@@ -385,9 +372,22 @@ public class AutoDuty : IDalamudPlugin
         Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
-            _repairManager.Repair();
+            if (Configuration.AutoRepair && InventoryHelper.LowestEquippedCondition() <= Configuration.AutoRepairPct)
+            {
+                TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
+                TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Run-WaitAutoRepairComplete");
+                TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitANotIsOccupied");
+            }
             if (!Configuration.Squadron)
-                _gotoManager.Goto(Configuration.RetireToBarracksBeforeLoops, Configuration.RetireToInnBeforeLoops, false);
+            {
+                if (Configuration.RetireToBarracksBeforeLoops)
+                    TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
+                else if (Configuration.RetireToInnBeforeLoops)
+                    TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Run-GotoInnInvoke");
+                TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
+            }
             if (Configuration.Trust)
                 _trustManager.RegisterTrust(CurrentTerritoryContent);
             else if (Configuration.Support)
@@ -396,10 +396,13 @@ public class AutoDuty : IDalamudPlugin
                 _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
             else if (Configuration.Squadron)
             {
-                _gotoManager.Goto(true, false, false);
+                TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
+                TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
                 _squadronManager.RegisterSquadron(CurrentTerritoryContent);
             }
         }
+        TaskManager.Enqueue(() => !ObjectHelper.IsValid, "Run");
         TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Run");
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Run");
         TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run");
@@ -529,6 +532,7 @@ public class AutoDuty : IDalamudPlugin
     int currenrStage = -1;
     public void Framework_Update(IFramework framework)
     {
+        //Svc.Log.Info($"{ReflectionHelper.YesAlready_Reflection.GetState}");
         if (currenrStage != Stage)
         {
             Svc.Log.Info($"Stage = {Stage}");
@@ -595,7 +599,7 @@ public class AutoDuty : IDalamudPlugin
             case 0:
                 if (EzThrottler.Throttle("Stop", 25) && !_stopped)
                 {
-                    StopAndResetALL();
+                   //StopAndResetALL();
                     _stopped = true;
                     Action = "Stopped";
                 }
@@ -933,6 +937,10 @@ public class AutoDuty : IDalamudPlugin
         ExtractHelper.Stop();
         GCTurninHelper.Stop();
         DesynthHelper.Stop();
+        GotoHelper.Stop();
+        GotoInnHelper.Stop();
+        GotoBarracksHelper.Stop();
+        RepairHelper.Stop();
         VNavmesh_IPCSubscriber.Path_Stop();
         Action = "";
     }
@@ -958,7 +966,7 @@ public class AutoDuty : IDalamudPlugin
         switch (args.Split(" ")[0])
         {
             case "config" or "cfg":
-                OpenConfigUI(); 
+                OpenConfigUI();
                 break;
             case "start":
                 StartNavigation();
@@ -973,14 +981,36 @@ public class AutoDuty : IDalamudPlugin
                 Plugin.Stage = 1;
                 break;
             case "goto":
-                GotoAction(args.Replace("goto ",""));
+                var argsss = args.ToUpper().Split(" ");
+                switch (argsss[1])
+                {
+                    case "INN":
+                        GotoInnHelper.Invoke(argsss.Length > 2 ? Convert.ToUInt32(argsss[2]) : UIState.Instance()->PlayerState.GrandCompany);
+                        break;
+                    case "BARRACKS":
+                        GotoBarracksHelper.Invoke();
+                        break;
+                    case "GCSUPPLY":
+                        GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
+                        break;
+                    default:
+                        break;
+                }
+                //GotoAction(args.Replace("goto ", ""));
                 break;
             case "turnin":
-                GCTurninHelper.Invoke();
+                if (UIState.Instance()->PlayerState.GetGrandCompanyRank() > 5)
+                    GCTurninHelper.Invoke();
+                else
+                    Svc.Log.Info("GC Turnin requires GC Rang 6 or Higher");
                 break;
             case "desynth":
                 DesynthHelper.Invoke();
-                break; 
+                break;
+            case "repair":
+                if (InventoryHelper.LowestEquippedCondition() < Configuration.AutoRepairPct)
+                    RepairHelper.Invoke();
+                break;
             case "extract":
                 if (QuestManager.IsQuestComplete(66174))
                     ExtractHelper.Invoke();
@@ -990,6 +1020,13 @@ public class AutoDuty : IDalamudPlugin
             case "dataid":
                 Svc.Log.Info($"{ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "")?.DataId}");
                 ImGui.SetClipboardText($"{ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "")?.DataId}");
+                break;
+            case "moveto":
+                var argss = args.Replace("moveto ", "").Split("|");
+                var vs = argss[1].Split(", ");
+                var v3 = new Vector3(float.Parse(vs[0]), float.Parse(vs[1]), float.Parse(vs[2]));
+
+                GotoHelper.Invoke(Convert.ToUInt32(argss[0]), [v3], argss.Length > 2 ? float.Parse(argss[2]) : 0.25f, argss.Length > 3 ? float.Parse(argss[3]) : 0.25f);
                 break;
             default:
                 OpenMainUI(); 
