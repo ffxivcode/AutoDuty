@@ -529,14 +529,14 @@ public class AutoDuty : IDalamudPlugin
         return 0;
     }
 
-    int currenrStage = -1;
+    int currentStage = -1;
     public void Framework_Update(IFramework framework)
     {
         //Svc.Log.Info($"{ReflectionHelper.YesAlready_Reflection.GetState}");
-        if (currenrStage != Stage)
+        if (currentStage != Stage)
         {
             Svc.Log.Info($"Stage = {Stage}");
-            currenrStage = Stage;
+            currentStage = Stage;
         }
         
         if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
@@ -599,7 +599,7 @@ public class AutoDuty : IDalamudPlugin
             case 0:
                 if (EzThrottler.Throttle("Stop", 25) && !_stopped)
                 {
-                   //StopAndResetALL();
+                   StopAndResetALL();
                     _stopped = true;
                     Action = "Stopped";
                 }
@@ -947,14 +947,14 @@ public class AutoDuty : IDalamudPlugin
 
     public void Dispose()
     {
+        StopAndResetALL();
+        Svc.Framework.Update -= Framework_Update;
         FileHelper.FileSystemWatcher.Dispose();
         WindowSystem.RemoveAllWindows();
         ECommonsMain.Dispose();
         ExecSkipTalk.Shutdown();
         MainWindow.Dispose();
         OverrideCamera.Dispose();
-        Svc.Framework.Update -= Framework_Update;
-        GCTurninHelper.Stop();
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
         Svc.Condition.ConditionChange -= Condition_ConditionChange;
         Svc.Commands.RemoveHandler(CommandName);
