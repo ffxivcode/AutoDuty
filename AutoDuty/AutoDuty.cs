@@ -164,8 +164,6 @@ public class AutoDuty : IDalamudPlugin
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
-
-        this.OpenMainUI(); //todo definitely remove
     }
 
     private void MessageReceived(string message)
