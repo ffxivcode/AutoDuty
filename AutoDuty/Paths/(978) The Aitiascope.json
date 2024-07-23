@@ -2,6 +2,7 @@
   "ChatCommand|0, 0, 0|/bmrai follow Thancred",
   "ChatCommand|-5.86, 164.00, 501.72|/bmrai follow Alisaie",
   "Boss|-5.89, 164.00, 471.86|",
+  "PausePandora|0, 0, 0|Auto-interact with Objects in Instance|10000",
   "MoveTo|4.53, 164.00, 479.93|",
   "MoveTo|4.41, 164.00, 465.57|",
   "MoveTo|-6.11, 164.00, 466.25|",
