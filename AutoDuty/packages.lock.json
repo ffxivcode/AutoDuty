@@ -21,11 +21,6 @@
           "Microsoft.IO.RecyclableMemoryStream": "3.0.0"
         }
       },
-      "ILRepack": {
-        "type": "Transitive",
-        "resolved": "2.0.18",
-        "contentHash": "sR5Aj3JLDbA8JwESfWYfigSz5k1oNSHPN434W1LX8sboWJYEOSQP/KkvZGmJKPgajzSUKkl2jDar3LPZiMFU4Q=="
-      },
       "MessagePack": {
         "type": "Transitive",
         "resolved": "2.5.140",
@@ -78,22 +73,10 @@
         "resolved": "17.6.3",
         "contentHash": "N0ZIanl1QCgvUumEL1laasU0a7sOE5ZwLZVTn0pAePnfhq8P7SvTjF8Axq+CnavuQkmdQpGNXQ1efZtu5kDFbA=="
       },
-      "Reloaded.Memory": {
-        "type": "Transitive",
-        "resolved": "7.1.0",
-        "contentHash": "4Y5tCsRWdW/shj9W7RqJq37LStuW1VVtjxsBp4LKZilPcjudeQg9k+u+6fnDgacCEJiG3S2EtcaiNtVMTdaSnQ=="
-      },
       "System.Runtime.CompilerServices.Unsafe": {
         "type": "Transitive",
         "resolved": "6.0.0",
         "contentHash": "/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg=="
-      },
-      "clicklib": {
-        "type": "Project",
-        "dependencies": {
-          "ILRepack": "[2.0.18, )",
-          "Reloaded.Memory": "[7.1.0, )"
-        }
       },
       "ecommons": {
         "type": "Project"
