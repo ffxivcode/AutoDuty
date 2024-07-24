@@ -310,7 +310,11 @@ public class AutoDuty : IDalamudPlugin
                 else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
                     _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
                 TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
-                TaskManager.Enqueue(() => !ObjectHelper.IsReady, "Loop-WaitPlayerNotReady");
+                TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
+                TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Loop-WaitPlayerValid");
+                TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Loop-WaitDutyStarted");
+                TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Loop-WaitNavReady");
+                TaskManager.Enqueue(() => Plugin.StartNavigation(true), "Loop-StartNavigation");
             }
             else
             {
@@ -917,11 +921,7 @@ public class AutoDuty : IDalamudPlugin
                     return;
 
                 if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning)
-                {
                     Action = $"Step: Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
-                    if (!TaskManager.IsBusy && ObjectHelper.IsValid && Svc.DutyState.IsDutyStarted && Svc.ClientState.TerritoryType == CurrentTerritoryContent?.TerritoryType && VNavmesh_IPCSubscriber.Nav_IsReady())
-                        StartNavigation(true);
-                }
                 break;
             default:
                 break;
