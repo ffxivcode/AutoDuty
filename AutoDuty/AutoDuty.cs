@@ -45,6 +45,7 @@ public class AutoDuty : IDalamudPlugin
     internal int CurrentLoop = 0;
     internal ContentHelper.Content? CurrentTerritoryContent = null;
     internal uint CurrentTerritoryType = 0;
+    internal int CurrentPath = -1;
     internal string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
@@ -202,14 +203,21 @@ public class AutoDuty : IDalamudPlugin
                     PathFile = "";
                     return;
                 }
-                    
             }
 
             InDungeon = true;
-
-            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":","")}.json";
-   
             ListBoxPOSText.Clear();
+            if (!FileHelper.DictionaryPathFiles.TryGetValue(Svc.ClientState.TerritoryType, out List<string>? curPaths))
+            {
+                this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
+                return;
+            }
+
+            if(Plugin.CurrentPath < 0 && Svc.ClientState.LocalPlayer != null)
+                Plugin.CurrentPath = MultiPathHelper.BestPathIndex();
+            //Svc.Log.Info("Loading Path: " + Plugin.CurrentPath);
+            this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{curPaths![Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1)]}";
+
             if (!File.Exists(PathFile))
                 return;
                 
@@ -235,7 +243,7 @@ public class AutoDuty : IDalamudPlugin
 
         if (t == 0)
             return;
-
+        this.CurrentPath = -1;
         LoadPath();
 
         if (!Running || GCTurninHelper.GCTurninRunning || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || CurrentTerritoryContent == null)

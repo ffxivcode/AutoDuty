@@ -63,6 +63,16 @@ namespace AutoDuty.Windows
                 MainWindow.CurrentTabName = "Build";
             using var d = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage > 0 || Plugin.Player == null);
             ImGui.Text($"Build Path: ({Svc.ClientState.TerritoryType}) {(ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content) ? content.DisplayName : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))}");
+
+            string idText = $"({Svc.ClientState.TerritoryType}) ";
+            ImGui.Text(idText);
+            ImGui.SameLine();
+            string path     = Path.GetFileName(Plugin.PathFile).Replace(idText, string.Empty).Replace(".json", string.Empty);
+            string pathOrg = path;
+            if (ImGui.InputText("##BuildPathFileName", ref path, 100) && !path.Equals(pathOrg))
+                Plugin.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{idText}{path}.json";
+            ImGui.SameLine();
+            ImGui.Text($".json");
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();

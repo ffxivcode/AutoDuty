@@ -10,16 +10,22 @@ using AutoDuty.Helpers;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using Dalamud.Interface.Utility;
+using System.IO;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Windows
 {
+    using System;
+    using ECommons.ExcelServices;
+    using ECommons.GameHelpers;
+    using Lumina.Excel.GeneratedSheets;
+
     internal static class MainTab
     {
         private static int _currentIndex = -1;
         private static int _dutyListSelected = -1;
         private static readonly string _pathsURL = "https://github.com/ffxivcode/DalamudPlugins/tree/main/AutoDuty/Paths";
-
+        
         internal static void Draw()
         {
             if (MainWindow.CurrentTabName != "Main")
@@ -43,14 +49,42 @@ namespace AutoDuty.Windows
                     ImGui.ProgressBar(progress, new(200, 0));
                 }
                 else
-                    ImGui.Text($"{Plugin.CurrentTerritoryContent.DisplayName} Mesh: Loaded Path: {(FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out _) ? "Loaded" : "None")}");
-                ImGui.Spacing();
+                    ImGui.Text($"{Plugin.CurrentTerritoryContent.DisplayName} Mesh: Loaded Path: {(FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
+
                 ImGui.Separator();
                 ImGui.Spacing();
+
                 using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
-                    using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out _) || Plugin.Stage > 0))
+                    using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
                     {
+                        if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out List<string>? curPaths))
+                        {
+                            if (curPaths.Count > 1)
+                            {
+                                int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
+                                if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths], curPaths.Count))
+                                {
+                                    if(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryType))
+                                        Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryType, []);
+
+                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPath;
+                                    Plugin.Configuration.Save();
+                                    Plugin.CurrentPath = curPath;
+                                    Plugin.LoadPath();
+                                }
+                                ImGui.SameLine();
+                                
+                                using var d2 = ImRaii.Disabled(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryType) ||
+                                                               !Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryType].ContainsKey(Svc.ClientState.LocalPlayer.GetJob()));
+                                if (ImGui.Button("Clear Saved Path"))
+                                {
+                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryType].Remove(Svc.ClientState.LocalPlayer.GetJob());
+                                    Plugin.Configuration.Save();
+                                }
+                            }
+                        }
+
                         if (ImGui.Button("Start"))
                         {
                             Plugin.LoadPath();
@@ -117,7 +151,7 @@ namespace AutoDuty.Windows
                             _currentIndex = 0;
                             ImGui.SetScrollY(_currentIndex);
                         }
-                        if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count <1 && !FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out _))
+                        if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count <1 && !FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
                             ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryContent.TerritoryType).Split('|')[1].Trim()}\n({Plugin.CurrentTerritoryContent.TerritoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory.FullName.Replace('\\','/')}\nPlease download from:\n{_pathsURL}\nor Create in the Build Tab");
                     }
                     else
@@ -151,7 +185,7 @@ namespace AutoDuty.Windows
                                 MainWindow.ShowPopup("Error", "You must be in a group of 4 to run Regular Duties");
                             else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !ObjectHelper.PartyValidation())
                                 MainWindow.ShowPopup("Error", "You must have the correcty party makeup to run Regular Duties");
-                            else if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0, out _))
+                            else if (FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
                                 Plugin.Run();
                             else
                                 MainWindow.ShowPopup("Error", "No path was found");
@@ -310,14 +344,15 @@ namespace AutoDuty.Windows
                         {
                             foreach (var item in dictionary.Select((Value, Index) => (Value, Index)))
                             {
-                                using (var d2 = ImRaii.Disabled(item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.DictionaryPathFiles.TryGetValue(item.Value.Value.TerritoryType, out _)))
+                                using (var d2 = ImRaii.Disabled(item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.DictionaryPathFiles.ContainsKey(item.Value.Value.TerritoryType)))
                                 {
-                                    if (Plugin.Configuration.HideUnavailableDuties && (item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.DictionaryPathFiles.TryGetValue(item.Value.Value.TerritoryType, out _)))
+                                    if (Plugin.Configuration.HideUnavailableDuties && (item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.DictionaryPathFiles.ContainsKey(item.Value.Value.TerritoryType)))
                                         continue;
                                     if (ImGui.Selectable($"({item.Value.Value.TerritoryType}) {item.Value.Value.DisplayName}", _dutyListSelected == item.Index))
                                     {
-                                        _dutyListSelected = item.Index;
+                                        _dutyListSelected              = item.Index;
                                         Plugin.CurrentTerritoryContent = item.Value.Value;
+                                        Plugin.CurrentPath             = -1;
                                     }
                                 }
                             }
