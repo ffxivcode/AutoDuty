@@ -23,7 +23,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static void Stop() 
+        internal unsafe static void Stop() 
         {
             Svc.Log.Debug("ExitDutyHelper.Stop");
             if (ExitDutyRunning)
@@ -32,6 +32,7 @@ namespace AutoDuty.Helpers
             _currentTerritoryType = 0;
             AutoDuty.Plugin.Action = "";
             Svc.Framework.Update -= ExitDutyUpdate;
+            AgentModule.Instance()->GetAgentByInternalId(AgentId.ContentsFinderMenu)->Hide();
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
