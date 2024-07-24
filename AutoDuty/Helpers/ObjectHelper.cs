@@ -103,6 +103,8 @@ namespace AutoDuty.Helpers
 
         internal unsafe static uint GrandCompany => UIState.Instance()->PlayerState.GrandCompany;
 
+        internal unsafe static uint GrandCompanyRank => UIState.Instance()->PlayerState.GetGrandCompanyRank();
+
         internal static float JobRange
         {
             get

@@ -797,19 +797,22 @@ public class AutoDuty : IDalamudPlugin
                             Svc.Targets.Target = gos;
                     }
 
-                    if (false && Svc.Targets.Target != null && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0 && (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange || ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange))
+                    if (!IPCSubscriber_Common.IsReady("BossModReborn"))
                     {
-                        if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2)
-                            VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.AoEJobRange);
+                        if (false && Svc.Targets.Target != null && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0 && (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange || ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange))
+                        {
+                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2)
+                                VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.AoEJobRange);
+                            else
+                                VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
+                            if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+                                VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
+                        }
                         else
-                            VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
-                        if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
-                            VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
-                    }
-                    else
-                    {
-                        VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
-                        VNavmesh_IPCSubscriber.Path_Stop();
+                        {
+                            VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
+                            VNavmesh_IPCSubscriber.Path_Stop();
+                        }
                     }
                 }
                 else if (!ObjectHelper.InCombat(Player) && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
@@ -975,7 +978,7 @@ public class AutoDuty : IDalamudPlugin
         Svc.Commands.RemoveHandler(CommandName);
     }
 
-    private unsafe void OnCommand(string command, string args)
+    private void OnCommand(string command, string args)
     {
         // in response to the slash command
         switch (args.Split(" ")[0])
@@ -1000,13 +1003,13 @@ public class AutoDuty : IDalamudPlugin
                 switch (argsss[1])
                 {
                     case "INN":
-                        GotoInnHelper.Invoke(argsss.Length > 2 ? Convert.ToUInt32(argsss[2]) : UIState.Instance()->PlayerState.GrandCompany);
+                        GotoInnHelper.Invoke(argsss.Length > 2 ? Convert.ToUInt32(argsss[2]) : ObjectHelper.GrandCompany);
                         break;
                     case "BARRACKS":
                         GotoBarracksHelper.Invoke();
                         break;
                     case "GCSUPPLY":
-                        GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
+                        GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
                         break;
                     default:
                         break;
@@ -1014,10 +1017,10 @@ public class AutoDuty : IDalamudPlugin
                 //GotoAction(args.Replace("goto ", ""));
                 break;
             case "turnin":
-                if (UIState.Instance()->PlayerState.GetGrandCompanyRank() > 5)
+                if (ObjectHelper.GrandCompanyRank > 5)
                     GCTurninHelper.Invoke();
                 else
-                    Svc.Log.Info("GC Turnin requires GC Rang 6 or Higher");
+                    Svc.Log.Info("GC Turnin requires GC Rank 6 or Higher");
                 break;
             case "desynth":
                 DesynthHelper.Invoke();
@@ -1042,6 +1045,9 @@ public class AutoDuty : IDalamudPlugin
                 var v3 = new Vector3(float.Parse(vs[0]), float.Parse(vs[1]), float.Parse(vs[2]));
 
                 GotoHelper.Invoke(Convert.ToUInt32(argss[0]), [v3], argss.Length > 2 ? float.Parse(argss[2]) : 0.25f, argss.Length > 3 ? float.Parse(argss[3]) : 0.25f);
+                break;
+            case "exitduty":
+                ExitDutyHelper.Invoke();
                 break;
             default:
                 OpenMainUI(); 
