@@ -44,9 +44,9 @@ namespace AutoDuty.Helpers
         internal static uint InnTerritoryType(uint _grandCompany) => _grandCompany == 1 ? 177u : (_grandCompany == 2 ? 179u : 178u);
         internal static uint ExitInnDoorDataId(uint _grandCompany) => _grandCompany == 1 ? 2001010u : (_grandCompany == 2 ? 2000087u : 2001011u);
         private static uint _whichGrandCompany = 0;
-        private static IGameObject? _innKeepGameObject = null;
         private static Vector3 _innKeepLocation => _whichGrandCompany == 1 ? new Vector3(15.42688f, 39.99999f, 12.466553f) : (_whichGrandCompany == 2 ? new Vector3(25.6627f, -8f, 99.74237f) : new Vector3(28.85994f, 6.999999f, -80.12716f));
         private static uint _innKeepDataId => _whichGrandCompany == 1 ? 1000974u : (_whichGrandCompany == 2 ? 1000102u : 1001976u);
+        private unsafe static IGameObject? _innKeepGameObject => ObjectHelper.GetObjectByDataId(_innKeepDataId);
 
         internal static unsafe void GotoInnUpdate(IFramework framework)
         {
@@ -72,7 +72,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany) || (_innKeepGameObject = ObjectHelper.GetObjectByDataId(Convert.ToUInt32(_innKeepDataId))) == null || Vector3.Distance(Svc.ClientState.LocalPlayer.Position, _innKeepGameObject.Position) > 7f)
+            if (Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany) || _innKeepGameObject == null || Vector3.Distance(Svc.ClientState.LocalPlayer.Position, _innKeepGameObject.Position) > 7f)
             {
                 GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany), [_innKeepLocation], 0.25f, 5f);
                 return;
