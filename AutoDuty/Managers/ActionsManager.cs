@@ -78,8 +78,8 @@ namespace AutoDuty.Managers
 
         public unsafe void ForceAttack()
         {
-            ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16);
-            ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1);
+            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack");
+            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1), "ForceAttack");
         }
 
         public unsafe void Jump(string automoveTime)
@@ -88,18 +88,18 @@ namespace AutoDuty.Managers
 
             if (int.TryParse(automoveTime, out int wait) && wait > 0)
             {
-                _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "Jump Move");
-                _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "AutoMove");
-                _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(wait), "AutoMove");
+                _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "Jump");
+                _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "Jump");
+                _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(wait), "Jump");
             }
 
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2), "Jump");
 
             if(wait > 0)
             {
-                _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(100)), "AutoMove");
+                _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(100)), "Jump");
                 _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"),                           Convert.ToInt32(100), "AutoMove");
-                _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"),                   "Jump Move");
+                _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "Jump");
             }
         }
         

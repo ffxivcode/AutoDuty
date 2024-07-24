@@ -41,9 +41,7 @@ namespace AutoDuty.Helpers
 
         internal static bool GCTurninRunning = false;
         internal unsafe static Vector3 GCSupplyLocation => UIState.Instance()->PlayerState.GrandCompany == 1 ? new Vector3(94.02183f, 40.27537f, 74.475525f) : (UIState.Instance()->PlayerState.GrandCompany == 2 ? new Vector3(-68.678566f, -0.5015295f, -8.470145f) : new Vector3(-142.82619f, 4.0999994f, -106.31349f));
-        
-        private static IGameObject? _personnelOfficer = null;
-        private static IGameObject? _quartermaster = null;
+
         private static bool _deliverooStarted = false;
         private static Chat _chat = new();
 
@@ -77,31 +75,31 @@ namespace AutoDuty.Helpers
             }
             AutoDuty.Plugin.Action = "GC Turning In";
 
-            if (!GotoHelper.GotoRunning && (_personnelOfficer = ObjectHelper.GetObjectByPartialName("Personnel Officer")) == null)
+            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany))
             {
                 Svc.Log.Debug("Moving to GC Supply");
                 GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany), [GCSupplyLocation], 0.25f, 3f);
                 return;
             }
 
-            if (ObjectHelper.GetDistanceToPlayer(_personnelOfficer) > 5 && ObjectHelper.IsReady && VNavmesh_IPCSubscriber.Nav_IsReady() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
+            if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) > 5 && ObjectHelper.IsReady && VNavmesh_IPCSubscriber.Nav_IsReady() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
             {
                 Svc.Log.Debug("Setting Move to Personnel Officer");
-                MovementHelper.Move(_personnelOfficer, 0.25f, 5);
+                MovementHelper.Move(GCSupplyLocation, 0.25f, 5);
                 return;
             }
-            else if (ObjectHelper.GetDistanceToPlayer(_personnelOfficer) > 5 && VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
+            else if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) > 5 && VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
             {
                 Svc.Log.Debug("Moving to Personnel Officer");
                 return;
             }
-            else if (ObjectHelper.GetDistanceToPlayer(_personnelOfficer) <= 5 && VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
+            else if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) <= 5 && VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
             {
                 Svc.Log.Debug("Stopping Path");
                 VNavmesh_IPCSubscriber.Path_Stop();
                 return;
             }
-            else if (ObjectHelper.GetDistanceToPlayer(_personnelOfficer) <= 5 && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
+            else if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) <= 5 && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
             {
                 Svc.Log.Debug("Sending Chat Command /deliveroo e");
                 _chat.SendMessage("/deliveroo e");
