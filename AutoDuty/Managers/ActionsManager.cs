@@ -323,7 +323,6 @@ namespace AutoDuty.Managers
                 }
                 else
                 {
-                    Svc.Log.Info("Stopping VnavMesh");
                     VNavmesh_IPCSubscriber.Nav_PathfindCancelAll();
                     VNavmesh_IPCSubscriber.Path_Stop();
                     _chat.ExecuteCommand("/vnavmesh stop");
