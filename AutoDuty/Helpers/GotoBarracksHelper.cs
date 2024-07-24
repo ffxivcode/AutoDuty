@@ -43,6 +43,9 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void GotoBarracksUpdate(IFramework framework)
         {
+            if (AutoDuty.Plugin.Started)
+                Stop();
+
             if (!EzThrottler.Check("GotoBarracks"))
                 return;
 

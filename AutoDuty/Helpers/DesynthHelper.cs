@@ -38,6 +38,9 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void DesynthUpdate(IFramework framework)
         {
+            if (AutoDuty.Plugin.Started || AutoDuty.Plugin.InDungeon)
+                Stop();
+
             if (!EzThrottler.Throttle("Desynth", 250))
                 return;
 

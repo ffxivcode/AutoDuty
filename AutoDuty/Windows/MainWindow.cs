@@ -61,7 +61,7 @@ public class MainWindow : Window, IDisposable
 
     internal static void StopResumePause()
     {
-        using (var d = ImRaii.Disabled(!Plugin.Running && !Plugin.Started && !Plugin.Goto))
+        using (var d = ImRaii.Disabled(!Plugin.Running && !Plugin.Started && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning))
         {
             if (ImGui.Button("Stop"))
             {
@@ -71,7 +71,7 @@ public class MainWindow : Window, IDisposable
             }
             ImGui.SameLine(0, 5);
         }
-        using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started && !Plugin.Goto) || Plugin.CurrentTerritoryContent == null))
+        using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning) || Plugin.CurrentTerritoryContent == null))
             {
                 if (Plugin.Stage == 5)
             {
@@ -102,7 +102,7 @@ public class MainWindow : Window, IDisposable
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var GCTurninDisabled = ImRaii.Disabled(DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || Plugin.Goto))
+            using (var GCTurninDisabled = ImRaii.Disabled(DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || GotoHelper.GotoRunning))
             {
                 if (GCTurninHelper.GCTurninRunning)
                 {
@@ -125,7 +125,7 @@ public class MainWindow : Window, IDisposable
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var DesynthDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || Plugin.Goto))
+            using (var DesynthDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || GotoHelper.GotoRunning))
             {
                 if (DesynthHelper.DesynthRunning)
                 {
@@ -140,7 +140,7 @@ public class MainWindow : Window, IDisposable
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var ExtractDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || Plugin.Goto))
+            using (var ExtractDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || GotoHelper.GotoRunning))
             {
                 if (ExtractHelper.ExtractRunning)
                 {

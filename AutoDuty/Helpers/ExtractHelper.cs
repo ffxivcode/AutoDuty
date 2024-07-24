@@ -1,7 +1,5 @@
-﻿using AutoDuty.IPC;
-using Dalamud.Plugin.Services;
+﻿using Dalamud.Plugin.Services;
 using ECommons;
-using ECommons.Automation;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
@@ -52,6 +50,9 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void ExtractUpdate(IFramework framework)
         {
+            if (AutoDuty.Plugin.Started || AutoDuty.Plugin.InDungeon)
+                Stop();
+
             if (!EzThrottler.Throttle("Extract", 250))
                 return;
 

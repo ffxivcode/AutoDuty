@@ -65,10 +65,7 @@ public class AutoDuty : IDalamudPlugin
     internal IGameObject? ClosestTargetableBattleNpc = null;
     internal OverrideCamera OverrideCamera;
     internal MainWindow MainWindow { get; init; }
-    internal bool Repairing = false;
-    internal bool Goto = false;
     internal bool InDungeon = false;
-    internal bool GCTurninComplete = false;
     internal string Action = "";
     internal string PathFile = "";
     internal TaskManager TaskManager;
@@ -241,8 +238,11 @@ public class AutoDuty : IDalamudPlugin
 
         LoadPath();
 
-        if (!Running || GCTurninHelper.GCTurninRunning || Repairing || Goto || CurrentTerritoryContent == null)
+        if (!Running || GCTurninHelper.GCTurninRunning || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || CurrentTerritoryContent == null)
+        {
+            Svc.Log.Debug("We Changed Territories but are doing after loop actions or not running at all");
             return;
+        }
 
         Action = "";
 
@@ -250,6 +250,7 @@ public class AutoDuty : IDalamudPlugin
         {
             if (CurrentLoop < Configuration.LoopTimes)
             {
+                TaskManager.Abort();
                 TaskManager.Enqueue(() => Stage = 99, "Loop-SetStage=99");
                 TaskManager.Enqueue(() => Started = false, "Loop-SetStarted=false");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
@@ -369,6 +370,7 @@ public class AutoDuty : IDalamudPlugin
         MainWindow.OpenTab("Mini");
         Stage = 99;
         Running = true;
+        TaskManager.Abort();
         Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
@@ -401,9 +403,9 @@ public class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
                 _squadronManager.RegisterSquadron(CurrentTerritoryContent);
             }
+            TaskManager.Enqueue(() => !ObjectHelper.IsValid, "Run");
+            TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Run");
         }
-        TaskManager.Enqueue(() => !ObjectHelper.IsValid, "Run");
-        TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Run");
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Run");
         TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run");
         TaskManager.Enqueue(() => StartNavigation(true), "Run");
@@ -431,10 +433,9 @@ public class AutoDuty : IDalamudPlugin
         Stage = 1;
         Started = true;
         ExecSkipTalk.IsEnabled = true;
-        _chat.ExecuteCommand($"/vbmai on");
         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        _chat.ExecuteCommand($"/vbmai on");
         _chat.ExecuteCommand($"/vnav aligncamera enable");
-        
         ReflectionHelper.RotationSolver_Reflection.RotationAuto();
         Svc.Log.Info("Starting Navigation");
         if (startFromZero)
@@ -585,6 +586,8 @@ public class AutoDuty : IDalamudPlugin
                 ExitDuty();
                 Started = false;
                 ReflectionHelper.RotationSolver_Reflection.RotationStop();
+                _chat.ExecuteCommand($"/vbmai off");
+                _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
             }
             if (!Running)
                 Stage = 0;
@@ -900,12 +903,12 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady)
                     return;
 
-                if (Plugin.Repairing)
-                    Action = $"Step: Repairing";
-                else if (!Plugin.Goto)
+                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning)
+                {
                     Action = $"Step: Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
-                if (!TaskManager.IsBusy && ObjectHelper.IsValid && Svc.DutyState.IsDutyStarted && Svc.ClientState.TerritoryType == CurrentTerritoryContent?.TerritoryType && VNavmesh_IPCSubscriber.Nav_IsReady())
-                    StartNavigation(true);
+                    if (!TaskManager.IsBusy && ObjectHelper.IsValid && Svc.DutyState.IsDutyStarted && Svc.ClientState.TerritoryType == CurrentTerritoryContent?.TerritoryType && VNavmesh_IPCSubscriber.Nav_IsReady())
+                        StartNavigation(true);
+                }
                 break;
             default:
                 break;
@@ -920,11 +923,7 @@ public class AutoDuty : IDalamudPlugin
         Started = false;
         Stage = 0;
         CurrentLoop = 0;
-        Goto = false;
-        Repairing = false;
         MainWindow.OpenTab("Main");
-        _chat.ExecuteCommand($"/vbmai off");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
@@ -934,14 +933,22 @@ public class AutoDuty : IDalamudPlugin
         if (ExecSkipTalk.IsEnabled)
             ExecSkipTalk.IsEnabled = false;
         FollowHelper.SetFollow(null);
-        ExtractHelper.Stop();
-        GCTurninHelper.Stop();
-        DesynthHelper.Stop();
-        GotoHelper.Stop();
-        GotoInnHelper.Stop();
-        GotoBarracksHelper.Stop();
-        RepairHelper.Stop();
-        VNavmesh_IPCSubscriber.Path_Stop();
+        if (ExtractHelper.ExtractRunning)
+            ExtractHelper.Stop();
+        if (GCTurninHelper.GCTurninRunning)
+            GCTurninHelper.Stop();
+        if (DesynthHelper.DesynthRunning)
+            DesynthHelper.Stop();
+        if (GotoHelper.GotoRunning)
+            GotoHelper.Stop();
+        if (GotoInnHelper.GotoInnRunning)
+            GotoInnHelper.Stop();
+        if (GotoBarracksHelper.GotoBarracksRunning)
+            GotoBarracksHelper.Stop();
+        if (RepairHelper.RepairRunning)
+            RepairHelper.Stop();
+        if (VNavmesh_IPCSubscriber.Path_IsRunning())
+            VNavmesh_IPCSubscriber.Path_Stop();
         Action = "";
     }
 

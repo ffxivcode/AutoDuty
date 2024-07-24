@@ -9,7 +9,6 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Dalamud.Game.ClientState.Conditions;
-using AutoDuty.IPC;
 
 //still need to test self repair
 
@@ -53,6 +52,9 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void RepairUpdate(IFramework framework)
         {
+            if (AutoDuty.Plugin.Started)
+                Stop();
+
             if (!EzThrottler.Check("RepairBarracks"))
                 return;
 

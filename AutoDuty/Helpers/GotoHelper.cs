@@ -50,7 +50,9 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void GotoUpdate(IFramework framework)
         {
-            
+            if (AutoDuty.Plugin.Started)
+                Stop();
+
             if (!EzThrottler.Check("Goto"))
                 return;
 
@@ -59,8 +61,14 @@ namespace AutoDuty.Helpers
             if (Svc.ClientState.LocalPlayer == null)
                 return;
 
-            if (!ObjectHelper.IsValid || ObjectHelper.PlayerIsCasting || ObjectHelper.IsJumping || !VNavmesh_IPCSubscriber.Nav_IsReady())
+            if (!ObjectHelper.IsValid || ObjectHelper.PlayerIsCasting || ObjectHelper.IsJumping || !VNavmesh_IPCSubscriber.Nav_IsReady() || ExitDutyHelper.ExitDutyRunning)
                 return;
+
+            if (AutoDuty.Plugin.InDungeon)
+            {
+                ExitDutyHelper.Invoke();
+                return;
+            }
 
             if (Svc.ClientState.TerritoryType != _territoryType)
             {
@@ -111,15 +119,13 @@ namespace AutoDuty.Helpers
             }
             else
             {
-                
                 Aetheryte? aetheryteLoc = MapHelper.GetClosestAethernet(_territoryType, _moveLocations[0]);
                 Aetheryte? aetheryteMe = MapHelper.GetClosestAethernet(_territoryType, Svc.ClientState.LocalPlayer.Position);
-                Svc.Log.Info($"{aetheryteMe?.AethernetName.Value?.Name} : {aetheryteLoc?.AethernetName.Value?.Name}");
+
                 if (aetheryteLoc != aetheryteMe)
                 {
                     if (TeleportHelper.MoveToClosestAetheryte(_territoryType))
                     {
-                        Svc.Log.Info("at");
                         TeleportHelper.TeleportAethernet(aetheryteLoc?.AethernetName.Value?.Name ?? "", _territoryType);
                     }
                     return;

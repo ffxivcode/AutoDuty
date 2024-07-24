@@ -50,6 +50,9 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void GotoInnUpdate(IFramework framework)
         {
+            if (AutoDuty.Plugin.Started)
+                Stop();
+
             if (!EzThrottler.Check("GotoInn"))
                 return;
 
