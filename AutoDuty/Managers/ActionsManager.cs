@@ -124,15 +124,13 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "AutoMove");
         }
 
-        public void Wait(string wait)
+        public unsafe void Wait(string wait)
         {
-            if (AutoDuty.Plugin.Player == null)
-                return;
             AutoDuty.Plugin.Action = $"Wait: {wait}";
-            _taskManager.Enqueue(() => !ObjectHelper.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
+            _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
             _taskManager.Enqueue(() => EzThrottler.Throttle("Wait", Convert.ToInt32(wait)), "Wait");
             _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(wait), "Wait");
-            _taskManager.Enqueue(() => !ObjectHelper.InCombat(AutoDuty.Plugin.Player), int.MaxValue, "Wait");
+            _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
@@ -165,8 +163,8 @@ namespace AutoDuty.Managers
 
         public unsafe void ExitDuty(string _)
         {
-            _taskManager.Enqueue(() => ExitDutyHelper.Invoke(), "ExitDuty-Invoke");
-            _taskManager.Enqueue(() => !ExitDutyHelper.ExitDutyRunning, int.MaxValue, "ExitDuty-WaitExitDutyRunnning");
+            _taskManager.Enqueue(() => !Player.Character->InCombat, "ExitDuty-Invoke");
+            _taskManager.Enqueue(() => { ExitDutyHelper.Invoke(); }, "ExitDuty-Invoke");
             _taskManager.Enqueue(() => !ObjectHelper.IsReady, "ExitDuty-WaitPlayerNotReady");
             _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "ExitDuty-WaitPlayerReady");
         }

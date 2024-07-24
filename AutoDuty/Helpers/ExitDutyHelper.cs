@@ -1,61 +1,21 @@
-﻿using Dalamud.Plugin.Services;
-using ECommons.DalamudServices;
-using ECommons.Throttlers;
-using ECommons;
+﻿using FFXIVClientStructs.FFXIV.Component.GUI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using FFXIVClientStructs.FFXIV.Component.GUI;
+using ECommons;
 
 namespace AutoDuty.Helpers
 {
     internal static class ExitDutyHelper
     {
-        internal static void Invoke() 
+        internal unsafe static void Invoke()
         {
-            Svc.Log.Debug("ExitDutyHelper.Invoke");
-            if (!ExitDutyRunning)
+            AgentModule.Instance()->GetAgentByInternalId(AgentId.ContentsFinderMenu)->Show();
+            if (GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
             {
-                Svc.Log.Info("ExitDuty Started");
-                _currentTerritoryType = Svc.ClientState.TerritoryType;
-                ExitDutyRunning = true;
-                Svc.Framework.Update += ExitDutyUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
-            }
-        }
-
-        internal unsafe static void Stop() 
-        {
-            Svc.Log.Debug("ExitDutyHelper.Stop");
-            if (ExitDutyRunning)
-                Svc.Log.Info("ExitDuty Finished");
-            ExitDutyRunning = false;
-            _currentTerritoryType = 0;
-            AutoDuty.Plugin.Action = "";
-            Svc.Framework.Update -= ExitDutyUpdate;
-            AgentModule.Instance()->GetAgentByInternalId(AgentId.ContentsFinderMenu)->Hide();
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
-        }
-
-        internal static bool ExitDutyRunning = false;
-
-        private static uint _currentTerritoryType = 0;
-
-        internal static unsafe void ExitDutyUpdate(IFramework framework)
-        {
-            if (!EzThrottler.Throttle("ExitDuty", 500))
-                return;
-
-            AutoDuty.Plugin.Action = "Exiting Duty";
-
-            if (Svc.ClientState.TerritoryType != _currentTerritoryType || !ObjectHelper.IsReady)
-                Stop();
-            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
-                AddonHelper.FireCallBack(addonSelectYesno, true, 0);
-            else if (!GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
-                AgentModule.Instance()->GetAgentByInternalId(AgentId.ContentsFinderMenu)->Show();
-            else
                 AddonHelper.FireCallBack(addonContentsFinderMenu, true, 0);
+                AddonHelper.FireCallBack(addonContentsFinderMenu, false, -2);
+                GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno);
+                AddonHelper.FireCallBack(addonSelectYesno, true, 0);
+            }
         }
     }
 }

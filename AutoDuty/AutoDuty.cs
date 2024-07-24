@@ -814,6 +814,8 @@ public class AutoDuty : IDalamudPlugin
                             VNavmesh_IPCSubscriber.Path_Stop();
                         }
                     }
+                    else
+                        VNavmesh_IPCSubscriber.Path_Stop();
                 }
                 else if (!ObjectHelper.InCombat(Player) && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
                 {
