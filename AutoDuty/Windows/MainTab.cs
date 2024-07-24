@@ -40,6 +40,40 @@ namespace AutoDuty.Windows
             var _unsynced = Plugin.Configuration.Unsynced;
             var _hideUnavailableDuties = Plugin.Configuration.HideUnavailableDuties;
 
+            void DrawPathSelection()
+            {
+                using var d = ImRaii.Disabled(Plugin is { InDungeon: true, Stage: > 0 });
+                
+                if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0, out List<string>? curPaths))
+                {
+                    if (curPaths.Count > 1)
+                    {
+                        int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
+                        if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths], curPaths.Count))
+                        {
+                            if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
+                                Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryContent.TerritoryType, []);
+
+                            Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPath;
+                            Plugin.Configuration.Save();
+                            Plugin.CurrentPath = curPath;
+                            Plugin.LoadPath();
+                        }
+                        ImGui.SameLine();
+
+                        using var d2 = ImRaii.Disabled(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ||
+                                                       !Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType].ContainsKey(Svc.ClientState.LocalPlayer.GetJob()));
+                        if (ImGui.Button("Clear Saved Path"))
+                        {
+                            Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType].Remove(Svc.ClientState.LocalPlayer.GetJob());
+                            Plugin.Configuration.Save();
+                            if (!Plugin.InDungeon)
+                                Plugin.CurrentPath = MultiPathHelper.BestPathIndex();
+                        }
+                    }
+                }
+            }
+
             if (Plugin.InDungeon && Plugin.CurrentTerritoryContent != null)
             {
                 var progress = VNavmesh_IPCSubscriber.IsEnabled ? VNavmesh_IPCSubscriber.Nav_BuildProgress() : 0;
@@ -54,37 +88,12 @@ namespace AutoDuty.Windows
                 ImGui.Separator();
                 ImGui.Spacing();
 
+                DrawPathSelection();
+
                 using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
                     using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
                     {
-                        if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out List<string>? curPaths))
-                        {
-                            if (curPaths.Count > 1)
-                            {
-                                int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
-                                if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths], curPaths.Count))
-                                {
-                                    if(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryType))
-                                        Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryType, []);
-
-                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPath;
-                                    Plugin.Configuration.Save();
-                                    Plugin.CurrentPath = curPath;
-                                    Plugin.LoadPath();
-                                }
-                                ImGui.SameLine();
-                                
-                                using var d2 = ImRaii.Disabled(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryType) ||
-                                                               !Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryType].ContainsKey(Svc.ClientState.LocalPlayer.GetJob()));
-                                if (ImGui.Button("Clear Saved Path"))
-                                {
-                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryType].Remove(Svc.ClientState.LocalPlayer.GetJob());
-                                    Plugin.Configuration.Save();
-                                }
-                            }
-                        }
-
                         if (ImGui.Button("Start"))
                         {
                             Plugin.LoadPath();
@@ -312,6 +321,8 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.HideUnavailableDuties = _hideUnavailableDuties;
                             Plugin.Configuration.Save();
                         }
+
+                        DrawPathSelection();
                     }
                     if (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
                     {
