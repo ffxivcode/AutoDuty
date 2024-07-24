@@ -250,7 +250,7 @@ namespace AutoDuty.Managers
             IGameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"Interactable: {objectName}";
 
-            Match  match = Regex.Match(objectName, @"([0-9]{3,})");
+            Match match = RegexHelper.InteractionObjectIdRegex().Match(objectName);
             string id    = match.Success ? match.Captures.First().Value : string.Empty;
 
             _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null ) ?? ObjectHelper.GetObjectByName(objectName)) != null, "Interactable");
