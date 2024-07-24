@@ -10,7 +10,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
 {
-    internal unsafe static class DesynthHelper
+    internal static class DesynthHelper
     {
         internal static void Invoke()
         {

@@ -8,7 +8,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
 {
-    internal unsafe static class ExtractHelper
+    internal static class ExtractHelper
     {
         internal static void Invoke()
         {
