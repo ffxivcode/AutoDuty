@@ -63,6 +63,8 @@ namespace AutoDuty.Helpers
             if (Svc.ClientState.LocalPlayer == null)
                 return;
 
+            AutoDuty.Plugin.Action = "Repairing";
+
             if (GotoHelper.GotoRunning)
                 return;
 

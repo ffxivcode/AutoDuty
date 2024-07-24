@@ -44,6 +44,8 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("Desynth", 250))
                 return;
 
+            AutoDuty.Plugin.Action = "Desynthing Inventory";
+
             if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
             {
                 Stop();

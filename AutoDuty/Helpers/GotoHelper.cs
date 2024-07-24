@@ -14,7 +14,7 @@ namespace AutoDuty.Helpers
         {
             if (!GotoRunning)
             {
-                Svc.Log.Info($"Goto Started, Going to {territoryType} and moving to {moveLocations[moveLocations.Count - 1]} using {moveLocations.Count} pathLocations");
+                Svc.Log.Info($"Goto Started, Going to {territoryType} and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations");
                 GotoRunning = true;
                 _territoryType = territoryType;
                 _moveLocations = moveLocations;
@@ -57,6 +57,8 @@ namespace AutoDuty.Helpers
                 return;
 
             EzThrottler.Throttle("Goto", 50);
+
+            AutoDuty.Plugin.Action = $"Going to {ECommons.TerritoryName.GetTerritoryName(_territoryType)} at {_moveLocations[^1]}";
 
             if (Svc.ClientState.LocalPlayer == null)
                 return;

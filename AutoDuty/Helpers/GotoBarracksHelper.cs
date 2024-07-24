@@ -57,6 +57,8 @@ namespace AutoDuty.Helpers
             if (GotoHelper.GotoRunning)
                 return;
 
+            AutoDuty.Plugin.Action = "Retiring to Barracks";
+
             if (Svc.ClientState.TerritoryType == BarracksTerritoryType(UIState.Instance()->PlayerState.GrandCompany))
             {
                 Stop();

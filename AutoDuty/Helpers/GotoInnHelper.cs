@@ -64,6 +64,8 @@ namespace AutoDuty.Helpers
             if (GotoHelper.GotoRunning)
                 return;
 
+            AutoDuty.Plugin.Action = "Retiring to Inn";
+
             if (Svc.ClientState.TerritoryType == InnTerritoryType(_whichGrandCompany))
             {
                 Stop();

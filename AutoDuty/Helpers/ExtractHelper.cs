@@ -56,6 +56,8 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("Extract", 250))
                 return;
 
+            AutoDuty.Plugin.Action = "Extracting Materia";
+
             if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
             {
                 Stop();
