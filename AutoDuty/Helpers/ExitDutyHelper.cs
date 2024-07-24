@@ -43,12 +43,12 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void ExitDutyUpdate(IFramework framework)
         {
-            if (!EzThrottler.Throttle("ExitDuty", 250))
+            if (!EzThrottler.Throttle("ExitDuty", 500))
                 return;
 
             AutoDuty.Plugin.Action = "Exiting Duty";
 
-            if (Svc.ClientState.TerritoryType != _currentTerritoryType)
+            if (Svc.ClientState.TerritoryType != _currentTerritoryType || !ObjectHelper.IsReady)
                 Stop();
             else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
                 AddonHelper.FireCallBack(addonSelectYesno, true, 0);

@@ -251,8 +251,8 @@ public class AutoDuty : IDalamudPlugin
             if (CurrentLoop < Configuration.LoopTimes)
             {
                 TaskManager.Abort();
-                TaskManager.Enqueue(() => Stage = 99, "Loop-SetStage=99");
-                TaskManager.Enqueue(() => Started = false, "Loop-SetStarted=false");
+                TaskManager.Enqueue(() => { Stage = 99; }, "Loop-SetStage=99");
+                TaskManager.Enqueue(() => { Started = false; }, "Loop-SetStarted=false");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
                 if (Configuration.AutoRepair && InventoryHelper.LowestEquippedCondition() <= Configuration.AutoRepairPct)
                 {
