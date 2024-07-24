@@ -1,12 +1,8 @@
 AutoDuty:
 
-Run's Duty Support or Trust Dungeons for you (Requires vnavmesh and BossMod)
+Run's Duties (Requires vnavmesh and BossMod or BossModReborn and RotationSolverReborn)
 
-Current Paths:
-
-check Paths Folder
-
-To Contribute Path Files just create a pull request or issue either works
+(Someone sure needs to pretify this readme :P)
 
 Repo URL:
 
