@@ -460,8 +460,8 @@ public class AutoDuty : IDalamudPlugin
             _chat.ExecuteCommand($"/vbmai follow {Player!.Name}");
             _chat.ExecuteCommand($"/vbmai positional {(ObjectHelper.GetJobRole(Player!.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "rear" : "any")}");
         }
-
-        ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+        if (Configuration.AutoManageRSRState)
+            ReflectionHelper.RotationSolver_Reflection.RotationAuto();
         Svc.Log.Info("Starting Navigation");
         if (startFromZero)
             Indexer = 0;
@@ -609,7 +609,8 @@ public class AutoDuty : IDalamudPlugin
             {
                 ExitDuty();
                 Started = false;
-                ReflectionHelper.RotationSolver_Reflection.RotationStop();
+                if (Configuration.AutoManageRSRState)
+                    ReflectionHelper.RotationSolver_Reflection.RotationStop();
                 _chat.ExecuteCommand($"/vbmai off");
                 _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
             }
@@ -770,7 +771,7 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                if (EzThrottler.Throttle("RSCombat"))
+                if (EzThrottler.Throttle("RSCombat") && Configuration.AutoManageRSRState)
                     ReflectionHelper.RotationSolver_Reflection.RotationAuto();
 
                 if (!TaskManager.IsBusy)
@@ -787,7 +788,7 @@ public class AutoDuty : IDalamudPlugin
 
                 Action = $"Step: Waiting For Combat";
 
-                if (EzThrottler.Throttle("RSCombat"))
+                if (EzThrottler.Throttle("RSCombat") && Configuration.AutoManageRSRState)
                     ReflectionHelper.RotationSolver_Reflection.RotationAuto();
 
                 if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)

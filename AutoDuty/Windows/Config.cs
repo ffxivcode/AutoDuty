@@ -16,13 +16,14 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 82;
+    public int Version { get; set; } = 83;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
 
     public bool AutoManageBossModAISettings { get; set; } = true;
+    public bool AutoManageRSRState { get; set; } = true;
     public bool AutoExitDuty { get; set; } = true;
     public bool AutoKillClient { get; set; } = false;
     public bool AutoLogout { get; set; } = false;
@@ -72,6 +73,7 @@ public static class ConfigTab
     {
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
+        var autoManageRSRState = Configuration.AutoManageRSRState;
         var autoManageBossModAISettings = Configuration.AutoManageBossModAISettings;
         var autoExitDuty = Configuration.AutoExitDuty;
         var autoKillClient = Configuration.AutoKillClient;
@@ -92,6 +94,11 @@ public static class ConfigTab
         var autoDesynth = Configuration.AutoDesynth;
         var autoGCTurnin = Configuration.AutoGCTurnin;
         
+        if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
+        {
+            Configuration.AutoManageRSRState = autoManageRSRState;
+            Configuration.Save();
+        }
         if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref autoManageBossModAISettings))
         {
             Configuration.AutoManageBossModAISettings = autoManageBossModAISettings;
