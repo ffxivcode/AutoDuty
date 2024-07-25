@@ -16,12 +16,13 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 80;
+    public int Version { get; set; } = 81;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
 
+    public bool CustomBMRSettings { get; set; } = false;
     public bool AutoExitDuty { get; set; } = true;
     public bool AutoKillClient { get; set; } = false;
     public bool AutoLogout { get; set; } = false;
@@ -71,6 +72,7 @@ public static class ConfigTab
     {
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
+        var customBMRSettings = Configuration.CustomBMRSettings;
         var autoExitDuty = Configuration.AutoExitDuty;
         var autoKillClient = Configuration.AutoKillClient;
         var autoLogout = Configuration.AutoLogout;
@@ -89,7 +91,12 @@ public static class ConfigTab
         var autoExtractAll = Configuration.AutoExtractAll;
         var autoDesynth = Configuration.AutoDesynth;
         var autoGCTurnin = Configuration.AutoGCTurnin;
-
+        
+        if (ImGui.Checkbox("Custom BMR Settings (Don't Auto Set)", ref customBMRSettings))
+        {
+            Configuration.CustomBMRSettings = customBMRSettings;
+            Configuration.Save();
+        }
         if (ImGui.Checkbox("Auto Kill Client on Completion of Looping", ref autoKillClient))
         {
             Configuration.AutoKillClient = autoKillClient;

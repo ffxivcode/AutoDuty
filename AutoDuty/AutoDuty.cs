@@ -27,6 +27,8 @@ using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using static AutoDuty.Helpers.ContentHelper;
 
 namespace AutoDuty;
 
@@ -450,9 +452,8 @@ public class AutoDuty : IDalamudPlugin
         _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
         _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
         _chat.ExecuteCommand($"/vbmai on");
-        if (IPCSubscriber_Common.IsReady("BossModReborn"))
+        if (IPCSubscriber_Common.IsReady("BossModReborn") && !Configuration.CustomBMRSettings)
         {
-            _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
             _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
             _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule true");
             _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat false");
@@ -994,7 +995,7 @@ public class AutoDuty : IDalamudPlugin
         Svc.Commands.RemoveHandler(CommandName);
     }
 
-    private void OnCommand(string command, string args)
+    private unsafe void OnCommand(string command, string args)
     {
         // in response to the slash command
         switch (args.Split(" ")[0])
@@ -1070,7 +1071,7 @@ public class AutoDuty : IDalamudPlugin
                 break;
         }
     }
-    
+
     private void DrawUI()
     {
         WindowSystem.Draw();

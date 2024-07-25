@@ -1,1 +1,5 @@
-["Interactable|1.94, 10.58, -5.76|Treasure Coffer","Interactable|-0.18, 10.54, -8.29|Treasure Coffer","Interactable|-2.30, 10.58, -5.93|Treasure Coffer"]
+[
+  "MoveTo|0.02, 10.54, -8.32|",
+  "MoveTo|1.86, 10.62, -6.24|",
+  "MoveTo|-2.34, 10.57, -6.41|"
+]

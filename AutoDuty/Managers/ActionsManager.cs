@@ -19,6 +19,7 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Managers
 {
+    using global::AutoDuty.Windows;
     using System.Text.RegularExpressions;
 
     internal class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
@@ -378,7 +379,7 @@ namespace AutoDuty.Managers
 
                 if (hasModule)
                 {
-                    if(IPCSubscriber_Common.IsReady("BossModReborn"))
+                    if(IPCSubscriber_Common.IsReady("BossModReborn") && !AutoDuty.Plugin.Configuration.CustomBMRSettings)
                     {
                         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
                         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
@@ -411,7 +412,7 @@ namespace AutoDuty.Managers
                 }
                 if (!IPCSubscriber_Common.IsReady("BossModReborn"))
                     FollowHelper.SetFollow(followTargetObject, 0);
-                else
+                else if(!AutoDuty.Plugin.Configuration.CustomBMRSettings)
                 {
                     _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
                     _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
@@ -439,7 +440,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss-ClearActionVar");
             _taskManager.Enqueue(() =>
             {
-                if (IPCSubscriber_Common.IsReady("BossModReborn"))
+                if (IPCSubscriber_Common.IsReady("BossModReborn") && !AutoDuty.Plugin.Configuration.CustomBMRSettings)
                 {
                     _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
                     _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
