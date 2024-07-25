@@ -29,6 +29,9 @@ using ImGuiNET;
 
 namespace AutoDuty;
 
+using ECommons.ExcelServices;
+using ECommons.GameHelpers;
+
 // TODO:
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
 // make config saving per character
@@ -555,7 +558,8 @@ public class AutoDuty : IDalamudPlugin
         return 0;
     }
 
-    int currentStage = -1;
+    int         currentStage = -1;
+    private Job job;
     public void Framework_Update(IFramework framework)
     {
         if (currentStage != Stage)
@@ -572,8 +576,16 @@ public class AutoDuty : IDalamudPlugin
             PlayerPosition = Vector3.Zero;
             return;
         }
-        else
-            PlayerPosition = Player.Position;
+
+        if (!this.InDungeon && this.CurrentTerritoryContent != null)
+        {
+            Job curJob = this.Player.GetJob();
+            if (curJob != this.job)
+                this.CurrentPath = MultiPathHelper.BestPathIndex();
+            this.job = curJob;
+        }
+
+        this.PlayerPosition = this.Player.Position;
 
         if (!BossMod_IPCSubscriber.IsEnabled)
             return;
