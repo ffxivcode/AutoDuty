@@ -15,9 +15,10 @@ namespace AutoDuty.Helpers
     {
         public static int BestPathIndex()
         {
-            if (FileHelper.DictionaryPathFiles.TryGetValue(Svc.ClientState.TerritoryType, out List<string> curPaths) && curPaths.Count > 1)
+            uint territoryType = AutoDuty.Plugin.CurrentTerritoryContent.TerritoryType;
+            if (FileHelper.DictionaryPathFiles.TryGetValue(territoryType, out List<string> curPaths) && curPaths.Count > 1)
             {
-                if (AutoDuty.Plugin.Configuration.PathSelections.TryGetValue(Svc.ClientState.TerritoryType, out Dictionary<Job, int>? jobConfig))
+                if (AutoDuty.Plugin.Configuration.PathSelections.TryGetValue(territoryType, out Dictionary<Job, int>? jobConfig))
                 {
                     if (jobConfig.TryGetValue(Svc.ClientState.LocalPlayer.GetJob(), out int pathId))
                     {

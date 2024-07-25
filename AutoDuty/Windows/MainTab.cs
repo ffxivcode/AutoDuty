@@ -363,7 +363,7 @@ namespace AutoDuty.Windows
                                     {
                                         _dutyListSelected              = item.Index;
                                         Plugin.CurrentTerritoryContent = item.Value.Value;
-                                        Plugin.CurrentPath             = -1;
+                                        Plugin.CurrentPath             = MultiPathHelper.BestPathIndex();
                                     }
                                 }
                             }
