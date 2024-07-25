@@ -577,15 +577,15 @@ public class AutoDuty : IDalamudPlugin
             return;
         }
 
-        if (!this.InDungeon && this.CurrentTerritoryContent != null)
+        if (!InDungeon && CurrentTerritoryContent != null)
         {
-            Job curJob = this.Player.GetJob();
-            if (curJob != this.job)
-                this.CurrentPath = MultiPathHelper.BestPathIndex();
-            this.job = curJob;
+            Job curJob =Player.GetJob();
+            if (curJob != job)
+                CurrentPath = MultiPathHelper.BestPathIndex();
+            job = curJob;
         }
 
-        this.PlayerPosition = this.Player.Position;
+        PlayerPosition = Player.Position;
 
         if (!BossMod_IPCSubscriber.IsEnabled)
             return;
@@ -816,19 +816,22 @@ public class AutoDuty : IDalamudPlugin
 
                 if (ObjectHelper.InCombat(Player))
                 {
-                    /*if (Svc.Targets.Target == null && EzThrottler.Throttle("TargetCheck"))
+                    if (Svc.Targets.Target == null && EzThrottler.Throttle("TargetCheck"))
                     {
                         //find and target closest attackable npc, if we are not targeting
                         var gos = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateColor(o.Address) is 9 or 11 && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
 
                         if (gos != null)
                             Svc.Targets.Target = gos;
-                    }*/
+                    }
 
                     if (!IPCSubscriber_Common.IsReady("BossModReborn") || Configuration.AutoManageBossModAISettings)
                     {
                         if (Svc.Targets.Target != null && (ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange ||(ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange)))
                         {
+                            if (IPCSubscriber_Common.IsReady("BossModReborn"))
+                                VNavmesh_IPCSubscriber.Path_Stop();
+
                             if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2)
                             {
                                 if (IPCSubscriber_Common.IsReady("BossModReborn"))
@@ -843,6 +846,7 @@ public class AutoDuty : IDalamudPlugin
                                 else
                                     VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
                             }
+
                             if (!IPCSubscriber_Common.IsReady("BossModReborn") && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
                                 VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
                         }
