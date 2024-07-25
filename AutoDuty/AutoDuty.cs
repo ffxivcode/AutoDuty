@@ -314,7 +314,7 @@ public class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Loop-WaitPlayerValid");
                 TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Loop-WaitDutyStarted");
                 TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Loop-WaitNavReady");
-                TaskManager.Enqueue(() => Plugin.StartNavigation(true), "Loop-StartNavigation");
+                TaskManager.Enqueue(() => StartNavigation(true), "Loop-StartNavigation");
             }
             else
             {
@@ -445,9 +445,24 @@ public class AutoDuty : IDalamudPlugin
         Stage = 1;
         Started = true;
         ExecSkipTalk.IsEnabled = true;
-        _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
-        _chat.ExecuteCommand($"/vbmai on");
         _chat.ExecuteCommand($"/vnav aligncamera enable");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
+        _chat.ExecuteCommand($"/vbmai on");
+        if (IPCSubscriber_Common.IsReady("BossModReborn"))
+        {
+            _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+            _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
+            _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule true");
+            _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat false");
+            _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget true");
+            _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.JobRange}");
+            _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot 1");
+            _chat.ExecuteCommand($"/vbmai follow {Player!.Name}");
+            _chat.ExecuteCommand($"/vbmai positional {(ObjectHelper.GetJobRole(Player!.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "rear" : "any")}");
+        }
+
         ReflectionHelper.RotationSolver_Reflection.RotationAuto();
         Svc.Log.Info("Starting Navigation");
         if (startFromZero)
@@ -545,7 +560,6 @@ public class AutoDuty : IDalamudPlugin
     int currentStage = -1;
     public void Framework_Update(IFramework framework)
     {
-        //Svc.Log.Info($"{ReflectionHelper.YesAlready_Reflection.GetState}");
         if (currentStage != Stage)
         {
             Svc.Log.Info($"Stage = {Stage}");
@@ -709,7 +723,7 @@ public class AutoDuty : IDalamudPlugin
                 }
                 
                 Action = $"Step: {Plugin.ListBoxPOSText[Indexer]}";
-                if (ObjectHelper.InCombat(Player) && AutoDuty.Plugin.StopForCombat)
+                if (ObjectHelper.InCombat(Player) && Plugin.StopForCombat)
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
                     Stage = 4;
@@ -792,14 +806,14 @@ public class AutoDuty : IDalamudPlugin
 
                 if (ObjectHelper.InCombat(Player))
                 {
-                    if (Svc.Targets.Target == null && EzThrottler.Throttle("TargetCheck"))
+                    /*if (Svc.Targets.Target == null && EzThrottler.Throttle("TargetCheck"))
                     {
                         //find and target closest attackable npc, if we are not targeting
                         var gos = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateColor(o.Address) is 9 or 11 && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
 
                         if (gos != null)
                             Svc.Targets.Target = gos;
-                    }
+                    }*/
 
                     if (!IPCSubscriber_Common.IsReady("BossModReborn"))
                     {

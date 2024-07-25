@@ -323,7 +323,6 @@ namespace AutoDuty.Managers
                 {
                     VNavmesh_IPCSubscriber.Nav_PathfindCancelAll();
                     VNavmesh_IPCSubscriber.Path_Stop();
-                    _chat.ExecuteCommand("/vnavmesh stop");
                     FollowHelper.SetFollow(null);
                 }
             }
@@ -338,7 +337,7 @@ namespace AutoDuty.Managers
             }
             return MovementHelper.Move(bossV3);
         }
-            
+
         public void Boss(Vector3 bossV3)
         {
             Svc.Log.Info($"Starting Action Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? "null"}");
@@ -376,30 +375,53 @@ namespace AutoDuty.Managers
             //switch our class type
             _taskManager.Enqueue(() =>
             {
-                if (!IPCSubscriber_Common.IsReady("BossModReborn"))
+
+                if (hasModule)
                 {
-                    if (hasModule)
+                    if(IPCSubscriber_Common.IsReady("BossModReborn"))
                     {
+                        _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+                        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
+                        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule true");
+                        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat false");
+                        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget true");
+                        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.JobRange}");
+                        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot 1");
+                        _chat.ExecuteCommand($"/vbmai follow {Player.Name}");
+                        _chat.ExecuteCommand($"/vbmai positional {(ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "rear" : "any")}");
+                    }
+                    else
                         followTargetObject = AutoDuty.Plugin.BossObject;
-                        return;
-                    }
-                    switch (Player.Object.ClassJob.GameData?.Role)
-                    {
-                        //tank
-                        case 1:
-                            followTargetObject = GetTrustMeleeDpsMemberObject() ?? GetTrustRangedDpsMemberObject();
-                            break;
-                        //melee
-                        case 2:
-                            followTargetObject = GetTrustMeleeDpsMemberObject() ?? GetTrustTankMemberObject();
-                            break;
-                        //ranged or healer
-                        case 3 or 4:
-                            followTargetObject = GetTrustRangedDpsMemberObject() ?? GetTrustMeleeDpsMemberObject();
-                            break;
-                    }
-                    if (!IPCSubscriber_Common.IsReady("BossModReborn"))
-                        FollowHelper.SetFollow(followTargetObject, 0);
+                    return;
+                }
+                switch (Player.Object.ClassJob.GameData?.Role)
+                {
+                    //tank
+                    case 1:
+                        followTargetObject = GetTrustMeleeDpsMemberObject() ?? GetTrustRangedDpsMemberObject();
+                        break;
+                    //melee
+                    case 2:
+                        followTargetObject = GetTrustMeleeDpsMemberObject() ?? GetTrustTankMemberObject();
+                        break;
+                    //ranged or healer
+                    case 3 or 4:
+                        followTargetObject = GetTrustRangedDpsMemberObject() ?? GetTrustMeleeDpsMemberObject();
+                        break;
+                }
+                if (!IPCSubscriber_Common.IsReady("BossModReborn"))
+                    FollowHelper.SetFollow(followTargetObject, 0);
+                else
+                {
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule true");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat false");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget false");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.JobRange}");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot 1");
+                    _chat.ExecuteCommand($"/vbmai follow {followTargetObject?.Name.TextValue ?? "off"}");
+                    _chat.ExecuteCommand($"/vbmai positional {(ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "rear" : "any")}");
                 }
             }, "Boss-CheckModule2");
             _taskManager.Enqueue(() => Svc.Condition[ConditionFlag.InCombat], "Boss-WaitInCombat");
@@ -415,8 +437,22 @@ namespace AutoDuty.Managers
             }
             _taskManager.DelayNext("Boss-Delay500", 500);
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss-ClearActionVar");
+            _taskManager.Enqueue(() =>
+            {
+                if (IPCSubscriber_Common.IsReady("BossModReborn"))
+                {
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule true");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat false");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget true");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.JobRange}");
+                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot 1");
+                    _chat.ExecuteCommand($"/vbmai follow {Player.Name}");
+                    _chat.ExecuteCommand($"/vbmai positional {(ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "rear" : "any")}");
+                }
+            }, "Boss-SetFollowTargetBMR");
         }
-
         public void PausePandora(string featureName, string intMs)
         {
             if(PandorasBox_IPCSubscriber.IsEnabled)

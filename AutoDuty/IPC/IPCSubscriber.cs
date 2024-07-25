@@ -10,6 +10,19 @@ using System.Threading.Tasks;
 
 namespace AutoDuty.IPC
 {
+    internal static class Marketbuddy_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Marketbuddy_IPCSubscriber), "Marketbuddy");
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Marketbuddy");
+
+        [EzIPC] internal static readonly Func<string, bool> IsLocked;
+        [EzIPC] internal static readonly Func<string, bool> Lock;
+        [EzIPC] internal static readonly Func<string, bool> Unlock;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
     internal static class BossMod_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod");
