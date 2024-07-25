@@ -379,7 +379,7 @@ namespace AutoDuty.Managers
 
                 if (hasModule)
                 {
-                    if(IPCSubscriber_Common.IsReady("BossModReborn") && !AutoDuty.Plugin.Configuration.CustomBMRSettings)
+                    if(IPCSubscriber_Common.IsReady("BossModReborn") && AutoDuty.Plugin.Configuration.AutoManageBossModAISettings)
                     {
                         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
                         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
@@ -412,7 +412,7 @@ namespace AutoDuty.Managers
                 }
                 if (!IPCSubscriber_Common.IsReady("BossModReborn"))
                     FollowHelper.SetFollow(followTargetObject, 0);
-                else if(!AutoDuty.Plugin.Configuration.CustomBMRSettings)
+                else if(AutoDuty.Plugin.Configuration.AutoManageBossModAISettings)
                 {
                     _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
                     _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
@@ -440,7 +440,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss-ClearActionVar");
             _taskManager.Enqueue(() =>
             {
-                if (IPCSubscriber_Common.IsReady("BossModReborn") && !AutoDuty.Plugin.Configuration.CustomBMRSettings)
+                if (IPCSubscriber_Common.IsReady("BossModReborn") && AutoDuty.Plugin.Configuration.AutoManageBossModAISettings)
                 {
                     _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
                     _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");

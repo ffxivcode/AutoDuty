@@ -26,9 +26,6 @@ using TinyIpc.Messaging;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using static AutoDuty.Helpers.ContentHelper;
 
 namespace AutoDuty;
 
@@ -277,7 +274,7 @@ public class AutoDuty : IDalamudPlugin
                     TaskManager.DelayNext("Loop-Delay50", 50);
                     TaskManager.Enqueue(() => !ExtractHelper.ExtractRunning, int.MaxValue, "Loop-WaitAutoExtractComplete");
                 }
-                if (Configuration.AutoGCTurnin && UIState.Instance()->PlayerState.GetGrandCompanyRank() > 5)
+                if (Configuration.AutoGCTurnin && ObjectHelper.GrandCompanyRank > 5)
                 {
                     TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
                     TaskManager.DelayNext("Loop-Delay50", 50);
@@ -452,7 +449,7 @@ public class AutoDuty : IDalamudPlugin
         _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
         _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
         _chat.ExecuteCommand($"/vbmai on");
-        if (IPCSubscriber_Common.IsReady("BossModReborn") && !Configuration.CustomBMRSettings)
+        if (IPCSubscriber_Common.IsReady("BossModReborn") && Configuration.AutoManageBossModAISettings)
         {
             _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat true");
             _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule true");
@@ -816,7 +813,7 @@ public class AutoDuty : IDalamudPlugin
                             Svc.Targets.Target = gos;
                     }*/
 
-                    if (!IPCSubscriber_Common.IsReady("BossModReborn") || !Configuration.CustomBMRSettings)
+                    if (!IPCSubscriber_Common.IsReady("BossModReborn") || Configuration.AutoManageBossModAISettings)
                     {
                         if (Svc.Targets.Target != null && (ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange ||(ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange)))
                         {

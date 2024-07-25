@@ -22,7 +22,7 @@ public class Configuration : IPluginConfiguration
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
 
-    public bool CustomBMRSettings { get; set; } = false;
+    public bool AutoManageBossModAISettings { get; set; } = true;
     public bool AutoExitDuty { get; set; } = true;
     public bool AutoKillClient { get; set; } = false;
     public bool AutoLogout { get; set; } = false;
@@ -72,7 +72,7 @@ public static class ConfigTab
     {
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
-        var customBMRSettings = Configuration.CustomBMRSettings;
+        var autoManageBossModAISettings = Configuration.AutoManageBossModAISettings;
         var autoExitDuty = Configuration.AutoExitDuty;
         var autoKillClient = Configuration.AutoKillClient;
         var autoLogout = Configuration.AutoLogout;
@@ -92,9 +92,9 @@ public static class ConfigTab
         var autoDesynth = Configuration.AutoDesynth;
         var autoGCTurnin = Configuration.AutoGCTurnin;
         
-        if (ImGui.Checkbox("Custom BMR Settings (Don't Auto Set)", ref customBMRSettings))
+        if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref autoManageBossModAISettings))
         {
-            Configuration.CustomBMRSettings = customBMRSettings;
+            Configuration.AutoManageBossModAISettings = autoManageBossModAISettings;
             Configuration.Save();
         }
         if (ImGui.Checkbox("Auto Kill Client on Completion of Looping", ref autoKillClient))
