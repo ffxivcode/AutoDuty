@@ -816,21 +816,36 @@ public class AutoDuty : IDalamudPlugin
                             Svc.Targets.Target = gos;
                     }*/
 
-                    if (!IPCSubscriber_Common.IsReady("BossModReborn"))
+                    if (!IPCSubscriber_Common.IsReady("BossModReborn") || !Configuration.CustomBMRSettings)
                     {
-                        if (false && Svc.Targets.Target != null && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0 && (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange || ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange))
+                        if (Svc.Targets.Target != null && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0 && (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange || ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange))
                         {
                             if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2)
-                                VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.AoEJobRange);
+                            {
+                                if (IPCSubscriber_Common.IsReady("BossModReborn"))
+                                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.AoEJobRange}");
+                                else
+                                    VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.AoEJobRange);
+                            }
                             else
-                                VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
-                            if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+                            {
+                                if (IPCSubscriber_Common.IsReady("BossModReborn"))
+                                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.AoEJobRange}");
+                                else
+                                    VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
+                            }
+                            if (!IPCSubscriber_Common.IsReady("BossModReborn") && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
                                 VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
                         }
                         else
                         {
-                            VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
-                            VNavmesh_IPCSubscriber.Path_Stop();
+                            if (IPCSubscriber_Common.IsReady("BossModReborn"))
+                                VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
+                            else
+                            {
+                                VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
+                                VNavmesh_IPCSubscriber.Path_Stop();
+                            }
                         }
                     }
                     else

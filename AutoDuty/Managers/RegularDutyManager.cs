@@ -39,6 +39,7 @@ namespace AutoDuty.Managers
 
         private unsafe bool SelectDuty(Content content, AddonContentsFinder* addon)
         {
+            if (content.Name == null) return false;
             if (GenericHelpers.IsAddonReady(&addon->AtkUnitBase))
             {
                 var list = addon->AtkUnitBase.GetNodeById(52)->GetAsAtkComponentList();
@@ -49,7 +50,14 @@ namespace AutoDuty.Managers
                     var textNode = componentNode->GetTextNodeById(5)->GetAsAtkTextNode();
                     var buttonNode = componentNode->UldManager.NodeList[16]->GetAsAtkComponentCheckBox();
                     if (textNode is null || buttonNode is null) continue;
-                    if (textNode->NodeText.ToString() == content.Name)
+                    if (textNode->NodeText.ToString().EndsWith("..."))
+                    {
+                        var textnode = textNode->NodeText.ToString().Replace("...", "");
+                        var len = textnode.Length;
+                        if (content.Name.Substring(0, len).Equals(textnode))
+                            buttonNode->ClickCheckboxButton(componentNode, 0);
+                    }
+                    else if (textNode->NodeText.ToString() == content.Name)
                         buttonNode->ClickCheckboxButton(componentNode, 0);
                 }
                 return true;
