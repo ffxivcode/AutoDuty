@@ -818,9 +818,9 @@ public class AutoDuty : IDalamudPlugin
 
                     if (!IPCSubscriber_Common.IsReady("BossModReborn") || !Configuration.CustomBMRSettings)
                     {
-                        if (Svc.Targets.Target != null && BossMod_IPCSubscriber.ForbiddenZonesCount() == 0 && (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange || ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange))
+                        if (Svc.Targets.Target != null && (ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange ||(ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange)))
                         {
-                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 12) > 2)
+                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2)
                             {
                                 if (IPCSubscriber_Common.IsReady("BossModReborn"))
                                     _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.AoEJobRange}");
@@ -840,7 +840,7 @@ public class AutoDuty : IDalamudPlugin
                         else
                         {
                             if (IPCSubscriber_Common.IsReady("BossModReborn"))
-                                VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
+                                _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.JobRange}");
                             else
                             {
                                 VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
