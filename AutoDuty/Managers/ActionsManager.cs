@@ -342,7 +342,6 @@ namespace AutoDuty.Managers
         public void Boss(Vector3 bossV3)
         {
             Svc.Log.Info($"Starting Action Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? "null"}");
-            ReflectionHelper.RotationSolver_Reflection.RotationAuto();
             IGameObject? followTargetObject = null;
             IGameObject? treasureCofferObject = null;
             var hasModule = false;
