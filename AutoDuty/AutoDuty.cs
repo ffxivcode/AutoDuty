@@ -832,7 +832,7 @@ public class AutoDuty : IDalamudPlugin
                     {
                         if (IPCSubscriber_Common.IsReady("BossModReborn"))
                         {
-                            if (Svc.Targets.Target != null && (ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > Configuration.MaxDistanceToTarget || (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, Configuration.MaxDistanceToTargetAoE) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > Configuration.MaxDistanceToTargetAoE)))
+                            if (Svc.Targets.Target != null)
                             {
                                 VNavmesh_IPCSubscriber.Path_Stop();
 
