@@ -17,7 +17,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 88;
+    public int Version { get; set; } = 90;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
@@ -60,6 +60,7 @@ public class Configuration : IPluginConfiguration
     public string FollowRoleStr { get; set; } = "Healer";
     public bool MaxDistanceToTargetRoleRange { get; set; } = true;
     public int MaxDistanceToTarget { get; set; } = 3;
+    public int MaxDistanceToTargetAoE { get; set; } = 12;
     public int MaxDistanceToSlot { get; set; } = 1;
     public bool PositionalRoleBased { get; set; } = true;
     public string PositionalCustom { get; set; } = "Any";
@@ -318,6 +319,7 @@ public static class ConfigTab
             var followRoleStr = Configuration.FollowRoleStr;
             var maxDistanceToTargetRoleBased = Configuration.MaxDistanceToTargetRoleRange;
             var maxDistanceToTarget = Configuration.MaxDistanceToTarget;
+            var maxDistanceToTargetAoE = Configuration.MaxDistanceToTargetAoE;
             var maxDistanceToSlot = Configuration.MaxDistanceToSlot;
             var positionalRoleBased = Configuration.PositionalRoleBased;
             var positionalCustom = Configuration.PositionalCustom;
@@ -423,10 +425,17 @@ public static class ConfigTab
                 Configuration.Save();
             }
 
-            if (ObjectHelper.IsValid && maxDistanceToTargetRoleBased && maxDistanceToTarget != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 25))
+            if (ObjectHelper.IsValid && maxDistanceToTargetRoleBased && maxDistanceToTarget != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
             {
-                maxDistanceToTarget = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 25);
+                maxDistanceToTarget = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
                 Configuration.MaxDistanceToTarget = maxDistanceToTarget;
+                Configuration.Save();
+            }
+
+            if (ObjectHelper.IsValid && maxDistanceToTargetRoleBased && maxDistanceToTargetAoE != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
+            {
+                maxDistanceToTargetAoE = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
+                Configuration.MaxDistanceToTargetAoE = maxDistanceToTargetAoE;
                 Configuration.Save();
             }
 
@@ -436,6 +445,11 @@ public static class ConfigTab
                 if (ImGui.SliderInt("Max Distance To Target", ref maxDistanceToTarget, 1, 30))
                 {
                     Configuration.MaxDistanceToTarget = maxDistanceToTarget;
+                    Configuration.Save();
+                }
+                if (ImGui.SliderInt("Max Distance To Target AoE", ref maxDistanceToTargetAoE, 1, 10))
+                {
+                    Configuration.MaxDistanceToTargetAoE = maxDistanceToTargetAoE;
                     Configuration.Save();
                 }
                 ImGui.PopItemWidth();

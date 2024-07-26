@@ -192,8 +192,6 @@ namespace AutoDuty.Managers
 
         public void TreasureCoffer(string _) 
         {
-            if (AutoDuty.Plugin.Configuration.LootTreasure && !AutoDuty.Plugin.Configuration.LootBossTreasureOnly)
-                Interactable("Treasure Coffer");
             return;
         }
 

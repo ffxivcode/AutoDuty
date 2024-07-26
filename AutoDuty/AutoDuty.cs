@@ -561,7 +561,7 @@ public class AutoDuty : IDalamudPlugin
         return 0;
     }
 
-    int         currentStage = -1;
+    int currentStage = -1;
     private Job job;
     public void Framework_Update(IFramework framework)
     {
@@ -830,33 +830,32 @@ public class AutoDuty : IDalamudPlugin
 
                     if (!IPCSubscriber_Common.IsReady("BossModReborn") || Configuration.AutoManageBossModAISettings)
                     {
-                        if (Svc.Targets.Target != null && (ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange ||(ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange)))
+                        if (IPCSubscriber_Common.IsReady("BossModReborn"))
                         {
-                            if (IPCSubscriber_Common.IsReady("BossModReborn"))
+                            if (Svc.Targets.Target != null)
+                            {
                                 VNavmesh_IPCSubscriber.Path_Stop();
 
-                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2)
-                            {
-                                if (IPCSubscriber_Common.IsReady("BossModReborn"))
-                                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.AoEJobRange}");
+                                if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2)
+                                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTargetAoE}");
                                 else
-                                    VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.AoEJobRange);
+                                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
+
                             }
                             else
-                            {
-                                if (IPCSubscriber_Common.IsReady("BossModReborn"))
-                                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.AoEJobRange}");
-                                else
-                                    VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
-                            }
-
-                            if (!IPCSubscriber_Common.IsReady("BossModReborn") && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
-                                VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
+                                _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
                         }
                         else
                         {
-                            if (IPCSubscriber_Common.IsReady("BossModReborn"))
-                                _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.JobRange}");
+                            if (Svc.Targets.Target != null && (ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange || (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange)))
+                            {
+                                if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2)
+                                    VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.AoEJobRange);
+                                else
+                                    VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
+                                if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+                                    VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
+                            }
                             else
                             {
                                 VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
