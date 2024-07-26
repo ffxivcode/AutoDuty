@@ -5,23 +5,23 @@ using Dalamud.Plugin;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
-
-namespace AutoDuty.Windows;
-
 using System.Linq;
 using ECommons.ExcelServices;
+using AutoDuty.Helpers;
+using ECommons.GameHelpers;
+
+namespace AutoDuty.Windows;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 85;
+    public int Version { get; set; } = 86;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
-
     public bool AutoManageBossModAISettings { get; set; } = true;
     public bool AutoManageRSRState { get; set; } = true;
     public bool AutoExitDuty { get; set; } = true;
@@ -48,7 +48,20 @@ public class Configuration : IPluginConfiguration
     public bool Raid { get; set; } = false;
     public bool Unsynced { get; set; } = false;
     public bool HideUnavailableDuties { get; set; } = false;
-
+    public bool FollowDuringCombat { get; set; } = true;
+    public bool FollowDuringActiveBossModule { get; set; } = true;
+    public bool FollowOutOfCombat { get; set; } = false;
+    public bool FollowTarget { get; set; } = true;
+    public bool FollowSelf { get; set; } = true;
+    public bool FollowSlot { get; set; } = false;
+    public int FollowSlotInt { get; set; } = 1;
+    public bool FollowRole { get; set; } = false;
+    public string FollowRoleStr { get; set; } = "Healer";
+    public bool MaxDistanceToTargetRoleRange { get; set; } = true;
+    public int MaxDistanceToTargetCustom { get; set; } = 3;
+    public int MaxDistanceToSlot { get; set; } = 1;
+    public bool PositionalRoleBased { get; set; } = true;
+    public string PositionalCustom { get; set; } = "Any";
     public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
 
     [NonSerialized]
@@ -264,6 +277,199 @@ public static class ConfigTab
             {
                 Configuration.PathSelections.Clear();
                 Configuration.Save();
+            }
+        }
+    }
+
+    public static class BossModConfigTab
+    {
+        private static Configuration Configuration = AutoDuty.Plugin.Configuration;
+
+        public static void Draw()
+        {
+            if (MainWindow.CurrentTabName != "BossModConfig")
+                MainWindow.CurrentTabName = "BossModConfig";
+            var followDuringCombat = Configuration.FollowDuringCombat;
+            var followDuringActiveBossModule = Configuration.FollowDuringActiveBossModule;
+            var followOutOfCombat = Configuration.FollowOutOfCombat;
+            var followTarget = Configuration.FollowTarget;
+            var followSelf = Configuration.FollowSelf;
+            var followSlot = Configuration.FollowSlot;
+            var followSlotInt = Configuration.FollowSlotInt;
+            var followRole = Configuration.FollowRole;
+            var followRoleStr = Configuration.FollowRoleStr;
+            var maxDistanceToTargetRoleRange = Configuration.MaxDistanceToTargetRoleRange;
+            var maxDistanceToTargetCustom = Configuration.MaxDistanceToTargetCustom;
+            var maxDistanceToSlot = Configuration.MaxDistanceToSlot;
+            var positionalRoleBased = Configuration.PositionalRoleBased;
+            var positionalCustom = Configuration.PositionalCustom;
+
+            if (ImGui.Checkbox("Follow During Combat", ref followDuringCombat))
+            {
+                Configuration.FollowDuringCombat = followDuringCombat;
+                Configuration.Save();
+            }
+            if (ImGui.Checkbox("Follow During Active BossModule", ref followDuringActiveBossModule))
+            {
+                Configuration.FollowDuringActiveBossModule = followDuringActiveBossModule;
+                Configuration.Save();
+            }
+            if (ImGui.Checkbox("Follow Out Of Combat (Not Recommended)", ref followOutOfCombat))
+            {
+                Configuration.FollowOutOfCombat = followOutOfCombat;
+                Configuration.Save();
+            }
+            if (ImGui.Checkbox("Follow Target", ref followTarget))
+            {
+                Configuration.FollowTarget = followTarget;
+                Configuration.Save();
+            }
+
+            if (ImGui.Checkbox("Follow Self", ref followSelf))
+            {
+                Configuration.FollowSelf = followSelf;
+                Configuration.FollowSlot = false;
+                Configuration.FollowRole = false;
+                followRole = false;
+                Configuration.Save();
+            }
+            if (ImGui.Checkbox("Follow Slot", ref followSlot))
+            {
+                Configuration.FollowSelf = false;
+                followSelf = false;
+                Configuration.FollowSlot = followSlot;
+                followSlot = false;
+                Configuration.FollowRole = false;
+                followRole = false;
+                Configuration.Save();
+            }
+            using (var d1 = ImRaii.Disabled(!followSlot))
+            {
+                ImGui.PushItemWidth(300);
+                if (ImGui.SliderInt("Follow Slot #", ref followSlotInt, 1, 4))
+                {
+                    Configuration.FollowSlotInt = followSlotInt;
+                    Configuration.Save();
+                }
+                ImGui.PopItemWidth();
+            }
+            if (ImGui.Checkbox("Follow Role", ref followRole))
+            {
+                Configuration.FollowSelf = false;
+                followSelf = false;
+                Configuration.FollowSlot = false;
+                followSlot = false;
+                Configuration.FollowRole = followRole;
+                Configuration.Save();
+            }
+            using (var d1 = ImRaii.Disabled(!followRole))
+            {
+                ImGui.SameLine(0, 10);
+                if (ImGui.Button(followRoleStr))
+                {
+                    ImGui.OpenPopup("RolePopup");
+                }
+                if (ImGui.BeginPopup("RolePopup"))
+                {
+                    if (ImGui.Selectable("Tank"))
+                    {
+                        Configuration.FollowRoleStr = "Tank";
+                        followRoleStr = "Tank";
+                        Configuration.Save();
+                    }
+                    if (ImGui.Selectable("Melee"))
+                    {
+                        Configuration.FollowRoleStr = "Melee";
+                        followRoleStr = "Melee";
+                        Configuration.Save();
+                    }
+                    if (ImGui.Selectable("Ranged"))
+                    {
+                        Configuration.FollowRoleStr = "Ranged";
+                        followRoleStr = "Ranged";
+                        Configuration.Save();
+                    }
+                    if (ImGui.Selectable("Healer"))
+                    {
+                        Configuration.FollowRoleStr = "Healer";
+                        followRoleStr = "Healer";
+                        Configuration.Save();
+                    }
+                    ImGui.EndPopup();
+                }
+            }
+
+            if (ImGui.Checkbox("Set Max Distance To Target Based on Role", ref maxDistanceToTargetRoleRange))
+            {
+                Configuration.MaxDistanceToTargetRoleRange = maxDistanceToTargetRoleRange;
+                Configuration.Save();
+            }
+
+            using (var d1 = ImRaii.Disabled(maxDistanceToTargetRoleRange))
+            {
+                ImGui.PushItemWidth(200);
+                if (ImGui.SliderInt("Max Distance To Target", ref maxDistanceToTargetCustom, 1, 30))
+                {
+                    Configuration.MaxDistanceToTargetCustom = maxDistanceToTargetCustom;
+                    Configuration.Save();
+                }
+                ImGui.PopItemWidth();
+            }
+            ImGui.PushItemWidth(200);
+            if (ImGui.SliderInt("Max Distance To Slot", ref maxDistanceToSlot, 1, 30))
+            {
+                Configuration.MaxDistanceToSlot = maxDistanceToSlot;
+                Configuration.Save();
+            }
+            ImGui.PopItemWidth();
+
+            if (ImGui.Checkbox("Set Positional Based on Role", ref positionalRoleBased))
+            {
+                Configuration.PositionalRoleBased = positionalRoleBased;
+                Configuration.Save();
+            }
+
+            if (positionalRoleBased && positionalCustom != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any"))
+            {
+                positionalCustom = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any");
+                Configuration.PositionalCustom = positionalCustom;
+                Configuration.Save();
+            }
+
+            using (var d1 = ImRaii.Disabled(positionalRoleBased))
+            {
+                ImGui.SameLine(0, 10);
+                if (ImGui.Button(positionalCustom))
+                    ImGui.OpenPopup("PositionalPopup");
+
+                if (ImGui.BeginPopup("PositionalPopup"))
+                {
+                    if (ImGui.Selectable("Any"))
+                    {
+                        positionalCustom = "Any";
+                        Configuration.PositionalCustom = positionalCustom;
+                        Configuration.Save();
+                    }
+                    if (ImGui.Selectable("Rear"))
+                    {
+                        positionalCustom = "Rear";
+                        Configuration.PositionalCustom = positionalCustom;
+                        Configuration.Save();
+                    }
+                    if (ImGui.Selectable("Flank"))
+                    {
+                        positionalCustom = "Flank";
+                        Configuration.PositionalCustom = positionalCustom;
+                        Configuration.Save();
+                    }
+                    if (ImGui.Selectable("Front"))
+                    {
+                        positionalCustom = "Front";
+                        Configuration.PositionalCustom = positionalCustom;
+                        Configuration.Save();
+                    }
+                    ImGui.EndPopup();
+                }
             }
         }
     }

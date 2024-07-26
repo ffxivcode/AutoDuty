@@ -2,9 +2,7 @@
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using System.Numerics;
-using System;
 using Dalamud.Game.ClientState.Objects.Types;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -70,7 +68,7 @@ namespace AutoDuty.Helpers
 
             if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
             {
-                if (!ObjectHelper.IsOccupied)
+                if (!ObjectHelper.IsOccupied || (EzThrottler.Throttle("GearCheck") && InventoryHelper.LowestEquippedCondition() > AutoDuty.Plugin.Configuration.AutoRepairPct))
                 {
                     if (Svc.Condition[ConditionFlag.Occupied39])
                         Stop();

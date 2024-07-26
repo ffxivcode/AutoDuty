@@ -8,17 +8,12 @@ using System.Numerics;
 using System.Linq;
 using AutoDuty.Helpers;
 using ECommons.DalamudServices;
-using ECommons.ImGuiMethods;
 using Dalamud.Interface.Utility;
-using System.IO;
-using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Windows
 {
     using System;
-    using ECommons.ExcelServices;
     using ECommons.GameHelpers;
-    using Lumina.Excel.GeneratedSheets;
 
     internal static class MainTab
     {
@@ -106,7 +101,7 @@ namespace AutoDuty.Windows
                         ImGui.SameLine(0, 15);
                     }
                     ImGui.PushItemWidth(150);
-                    if (ImGui.InputInt("Times", ref _loopTimes))
+                    if (ImGui.SliderInt("Times", ref _loopTimes, 0 , 100))
                     {
                         Plugin.Configuration.LoopTimes = _loopTimes;
                         Plugin.Configuration.Save();
@@ -208,8 +203,8 @@ namespace AutoDuty.Windows
                     using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                     {
                         ImGui.SameLine(0, 15);
-                        ImGui.PushItemWidth(250);
-                        if (ImGui.InputInt("Times", ref _loopTimes))
+                        ImGui.PushItemWidth(350);
+                        if (ImGui.SliderInt("Times", ref _loopTimes, 0, 100))
                         {
                             Plugin.Configuration.LoopTimes = _loopTimes;
                             Plugin.Configuration.Save();

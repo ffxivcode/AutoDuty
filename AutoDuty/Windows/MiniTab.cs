@@ -35,11 +35,11 @@ namespace AutoDuty.Windows
                     Plugin.LoadPath();
                     Plugin.Run(Svc.ClientState.TerritoryType);
                 }
-                ImGui.SameLine(0, 15);
+                ImGui.SameLine(0, 5);
             }
-            ImGui.PushItemWidth(200);
+            ImGui.PushItemWidth(150);
             
-            if (ImGui.InputInt("Times", ref _loopTimes))
+            if (ImGui.SliderInt("Times", ref _loopTimes, 0, 100))
             {
                 Plugin.Configuration.LoopTimes = _loopTimes;
                 Plugin.Configuration.Save();
