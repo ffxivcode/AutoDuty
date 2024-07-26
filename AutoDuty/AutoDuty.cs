@@ -488,7 +488,8 @@ public class AutoDuty : IDalamudPlugin
         _dead = false;
         TaskManager.DelayNext(5000);
         TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
-        IGameObject? gameObject = ObjectHelper.GetObjectByName("Shortcut");
+        //IGameObject? gameObject = ObjectHelper.GetObjectByName("Shortcut");
+        IGameObject? gameObject = ObjectHelper.GetObjectByDataId(2000700);
         if (gameObject == null || !gameObject.IsTargetable)
         {
             TaskManager.Enqueue(() => { Stage = 1; } );
