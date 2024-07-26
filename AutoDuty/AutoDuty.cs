@@ -830,7 +830,7 @@ public class AutoDuty : IDalamudPlugin
 
                     if (!IPCSubscriber_Common.IsReady("BossModReborn") || Configuration.AutoManageBossModAISettings)
                     {
-                        if (!IPCSubscriber_Common.IsReady("BossModReborn"))
+                        if (IPCSubscriber_Common.IsReady("BossModReborn"))
                         {
                             if (Svc.Targets.Target != null && (ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > Configuration.MaxDistanceToTarget || (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, Configuration.MaxDistanceToTargetAoE) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > Configuration.MaxDistanceToTargetAoE)))
                             {
@@ -843,7 +843,7 @@ public class AutoDuty : IDalamudPlugin
 
                             }
                             else
-                                _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {ObjectHelper.JobRange}");
+                                _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
                         }
                         else
                         {
