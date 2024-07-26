@@ -48,6 +48,7 @@ public class Configuration : IPluginConfiguration
     public bool Raid { get; set; } = false;
     public bool Unsynced { get; set; } = false;
     public bool HideUnavailableDuties { get; set; } = false;
+    public bool HideBossModAIConfig { get; set; } = false;
     public bool FollowDuringCombat { get; set; } = true;
     public bool FollowDuringActiveBossModule { get; set; } = true;
     public bool FollowOutOfCombat { get; set; } = false;
@@ -106,7 +107,7 @@ public static class ConfigTab
         var autoExtractAll = Configuration.AutoExtractAll;
         var autoDesynth = Configuration.AutoDesynth;
         var autoGCTurnin = Configuration.AutoGCTurnin;
-        
+        var hideBossModAIConfig = Configuration.HideBossModAIConfig;
         if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
         {
             Configuration.AutoManageRSRState = autoManageRSRState;
@@ -115,7 +116,20 @@ public static class ConfigTab
         if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref autoManageBossModAISettings))
         {
             Configuration.AutoManageBossModAISettings = autoManageBossModAISettings;
+            hideBossModAIConfig = !autoManageBossModAISettings;
+            Configuration.HideBossModAIConfig = hideBossModAIConfig;
             Configuration.Save();
+        }
+        ImGui.SameLine(0, 5);
+        
+        using (var autoManageBossModAISettingsDisable = ImRaii.Disabled(!autoManageBossModAISettings))
+        {
+            if (ImGui.Button(hideBossModAIConfig ? "Show" : "Hide"))
+            {
+                hideBossModAIConfig = !hideBossModAIConfig;
+                Configuration.HideBossModAIConfig = hideBossModAIConfig;
+                Configuration.Save();
+            }
         }
         if (ImGui.Checkbox("Auto Kill Client on Completion of Looping", ref autoKillClient))
         {
@@ -129,7 +143,7 @@ public static class ConfigTab
             Configuration.AutoKillClient = false;
             Configuration.Save();
         }
-        if (ImGui.Checkbox("Enable AutoRetainer Multi on Completion of Looping", ref autoARMultiEnable))
+        if (ImGui.Checkbox("AutoRetainer Multi on Completion of Looping", ref autoARMultiEnable))
         {
             Configuration.AutoARMultiEnable = autoARMultiEnable;
             Configuration.Save();
@@ -185,12 +199,13 @@ public static class ConfigTab
 
         using (var d1 = ImRaii.Disabled(!autoRepair))
         {
+            ImGui.PushItemWidth(300);
             if (ImGui.SliderInt("Repair@", ref autoRepairPct, 1, 100, "%d%%"))
             {
                 Configuration.AutoRepairPct = autoRepairPct;
                 Configuration.Save();
             }
-
+            ImGui.PopItemWidth();
             if (ImGui.Checkbox("Self AutoRepair", ref autoRepairSelf))
             {
                 Configuration.AutoRepairSelf = autoRepairSelf;
@@ -198,7 +213,7 @@ public static class ConfigTab
                 autoRepairCity = false;
                 Configuration.Save();
             }
-
+            ImGui.SameLine(0, 5);
             if (ImGui.Checkbox("AutoRepair at City", ref autoRepairCity))
             {
                 Configuration.AutoRepairCity = autoRepairCity;
@@ -213,7 +228,8 @@ public static class ConfigTab
             Configuration.AutoExtract = autoExtract;
             Configuration.Save();
         }
-        if (ImGui.Checkbox("Extract Equipped Only", ref autoExtractEquipped))
+        ImGui.SameLine(0, 5);
+        if (ImGui.Checkbox("Extract Equipped", ref autoExtractEquipped))
         {
             if (autoExtractEquipped)
             {
@@ -229,6 +245,7 @@ public static class ConfigTab
             }
             Configuration.Save();
         }
+        ImGui.SameLine(0, 5);
         if (ImGui.Checkbox("Extract All", ref autoExtractAll))
         {
             if (autoExtractAll)
@@ -252,6 +269,7 @@ public static class ConfigTab
             autoGCTurnin = false;
             Configuration.Save();
         }
+        ImGui.SameLine(0, 5);
         using (var autoGcTurninDisabled = ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
         {
             if (ImGui.Checkbox("Auto GC Turnin", ref autoGCTurnin))

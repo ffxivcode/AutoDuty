@@ -339,9 +339,9 @@ public class MainWindow : Window, IDisposable
     {
         DrawPopup();
 
-        if (Plugin.Configuration.AutoManageBossModAISettings && !tabList.Contains(("BM-Config", BossModConfigTab.Draw, null, false)))
+        if (!Plugin.Configuration.HideBossModAIConfig && !tabList.Contains(("BM-Config", BossModConfigTab.Draw, null, false)))
             tabList.Insert(4, ("BM-Config", BossModConfigTab.Draw, null, false));
-        else if (!Plugin.Configuration.AutoManageBossModAISettings && tabList.Contains(("BM-Config", BossModConfigTab.Draw, null, false)))
+        else if (Plugin.Configuration.HideBossModAIConfig && tabList.Contains(("BM-Config", BossModConfigTab.Draw, null, false)))
             tabList.Remove(("BM-Config", BossModConfigTab.Draw, null, false));
 
 
