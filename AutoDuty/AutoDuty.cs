@@ -467,10 +467,10 @@ public class AutoDuty : IDalamudPlugin
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {(Configuration.MaxDistanceToTargetRoleRange ?ObjectHelper.JobRange : Configuration.MaxDistanceToTargetCustom)}");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlot}");
         _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player!.Name : (Configuration.FollowRole ? Configuration.FollowRoleStr : $"Slot{Configuration.FollowSlotInt}"))}");
-        _chat.ExecuteCommand($"/vbmai positional {(Configuration.PositionalRoleBased ? (ObjectHelper.GetJobRole(Player!.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any") : Configuration.PositionalCustom)}");
+        _chat.ExecuteCommand($"/vbmai positional {Configuration.PositionalCustom}");
     }
 
     private void OnDeath()

@@ -58,7 +58,7 @@ public class Configuration : IPluginConfiguration
     public bool FollowRole { get; set; } = false;
     public string FollowRoleStr { get; set; } = "Healer";
     public bool MaxDistanceToTargetRoleRange { get; set; } = true;
-    public int MaxDistanceToTargetCustom { get; set; } = 3;
+    public int MaxDistanceToTarget { get; set; } = 3;
     public int MaxDistanceToSlot { get; set; } = 1;
     public bool PositionalRoleBased { get; set; } = true;
     public string PositionalCustom { get; set; } = "Any";
@@ -298,8 +298,8 @@ public static class ConfigTab
             var followSlotInt = Configuration.FollowSlotInt;
             var followRole = Configuration.FollowRole;
             var followRoleStr = Configuration.FollowRoleStr;
-            var maxDistanceToTargetRoleRange = Configuration.MaxDistanceToTargetRoleRange;
-            var maxDistanceToTargetCustom = Configuration.MaxDistanceToTargetCustom;
+            var maxDistanceToTargetRoleBased = Configuration.MaxDistanceToTargetRoleRange;
+            var maxDistanceToTarget = Configuration.MaxDistanceToTarget;
             var maxDistanceToSlot = Configuration.MaxDistanceToSlot;
             var positionalRoleBased = Configuration.PositionalRoleBased;
             var positionalCustom = Configuration.PositionalCustom;
@@ -399,18 +399,25 @@ public static class ConfigTab
                 }
             }
 
-            if (ImGui.Checkbox("Set Max Distance To Target Based on Role", ref maxDistanceToTargetRoleRange))
+            if (ImGui.Checkbox("Set Max Distance To Target Based on Role", ref maxDistanceToTargetRoleBased))
             {
-                Configuration.MaxDistanceToTargetRoleRange = maxDistanceToTargetRoleRange;
+                Configuration.MaxDistanceToTargetRoleRange = maxDistanceToTargetRoleBased;
                 Configuration.Save();
             }
 
-            using (var d1 = ImRaii.Disabled(maxDistanceToTargetRoleRange))
+            if (ObjectHelper.IsValid && maxDistanceToTargetRoleBased && maxDistanceToTarget != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 25))
+            {
+                maxDistanceToTarget = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 25);
+                Configuration.MaxDistanceToTarget = maxDistanceToTarget;
+                Configuration.Save();
+            }
+
+            using (var d1 = ImRaii.Disabled(maxDistanceToTargetRoleBased))
             {
                 ImGui.PushItemWidth(200);
-                if (ImGui.SliderInt("Max Distance To Target", ref maxDistanceToTargetCustom, 1, 30))
+                if (ImGui.SliderInt("Max Distance To Target", ref maxDistanceToTarget, 1, 30))
                 {
-                    Configuration.MaxDistanceToTargetCustom = maxDistanceToTargetCustom;
+                    Configuration.MaxDistanceToTarget = maxDistanceToTarget;
                     Configuration.Save();
                 }
                 ImGui.PopItemWidth();
@@ -429,7 +436,7 @@ public static class ConfigTab
                 Configuration.Save();
             }
 
-            if (positionalRoleBased && positionalCustom != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any"))
+            if (ObjectHelper.IsValid && positionalRoleBased && positionalCustom != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any"))
             {
                 positionalCustom = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any");
                 Configuration.PositionalCustom = positionalCustom;
