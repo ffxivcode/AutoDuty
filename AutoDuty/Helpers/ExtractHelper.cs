@@ -18,7 +18,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Extract Materia Started");
                 ExtractRunning = true;
-                AutoDuty.Plugin.ScheduleAction(Stop, 300000);
+                SchedulerHelper.ScheduleAction("ExtractTimeOut", Stop, 300000);
                 if (AutoDuty.Plugin.Configuration.AutoExtractAll)
                     stoppingCategory = 6;
                 else
@@ -36,6 +36,7 @@ namespace AutoDuty.Helpers
             currentCategory = 0;
             switchedCategory = false;
             AutoDuty.Plugin.Action = "";
+            SchedulerHelper.DescheduleAction("ExtractTimeOut");
             Svc.Framework.Update -= ExtractUpdate;
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);

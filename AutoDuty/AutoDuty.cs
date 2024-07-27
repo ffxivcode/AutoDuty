@@ -120,7 +120,7 @@ public class AutoDuty : IDalamudPlugin
                 AbortOnTimeout = false,
                 TimeoutSilently = true
             };
-
+            
             ContentHelper.PopulateDuties();
             FileHelper.OnStart();
             FileHelper.Init();
@@ -155,6 +155,7 @@ public class AutoDuty : IDalamudPlugin
             pluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
+            Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
         }
@@ -184,14 +185,6 @@ public class AutoDuty : IDalamudPlugin
             default:
                 break;
         }
-    }
-
-    internal void ScheduleAction(Action action, int delayMS)
-    {
-        _ = new TickScheduler(delegate
-        {
-            action.Invoke();
-        }, delayMS);
     }
 
     internal void ExitDuty()
@@ -1023,6 +1016,7 @@ public class AutoDuty : IDalamudPlugin
     {
         StopAndResetALL();
         Svc.Framework.Update -= Framework_Update;
+        Svc.Framework.Update -= SchedulerHelper.ScheduleInvoker;
         FileHelper.FileSystemWatcher.Dispose();
         WindowSystem.RemoveAllWindows();
         ECommonsMain.Dispose();

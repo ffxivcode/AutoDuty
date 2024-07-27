@@ -1,5 +1,4 @@
 ﻿using AutoDuty.IPC;
-using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin.Services;
 using ECommons.Automation;
 using ECommons.DalamudServices;
@@ -20,7 +19,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("GCTurnin Started");
                 GCTurninRunning = true;
-                AutoDuty.Plugin.ScheduleAction(Stop, 600000);
+                SchedulerHelper.ScheduleAction("GCTurninTimeOut", Stop, 600000);
                 Svc.Framework.Update += GCTurninUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                     ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
@@ -36,6 +35,7 @@ namespace AutoDuty.Helpers
             GCTurninRunning = false;
             GotoHelper.Stop();
             AutoDuty.Plugin.Action = "";
+            SchedulerHelper.DescheduleAction("GCTurninTimeOut");
             Svc.Framework.Update -= GCTurninUpdate;
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);

@@ -4,6 +4,7 @@ using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -18,7 +19,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Desynth Started");
                 DesynthRunning = true;
-                AutoDuty.Plugin.ScheduleAction(Stop, 300000);
+                SchedulerHelper.ScheduleAction("DesynthTimeOut", Stop, 300000);
                 AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -30,6 +31,7 @@ namespace AutoDuty.Helpers
         {
             DesynthRunning = false;
             AutoDuty.Plugin.Action = "";
+            SchedulerHelper.DescheduleAction("DesynthTimeOut");
             Svc.Framework.Update -= DesynthUpdate;
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);

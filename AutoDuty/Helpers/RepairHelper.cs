@@ -21,9 +21,9 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Repair Started");
                 RepairRunning = true;
                 if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
-                    AutoDuty.Plugin.ScheduleAction(Stop, 300000);
+                    SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 300000);
                 else
-                    AutoDuty.Plugin.ScheduleAction(Stop, 600000);
+                    SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 600000);
                 Svc.Framework.Update += RepairUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                     ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
@@ -34,6 +34,7 @@ namespace AutoDuty.Helpers
         {
             if (RepairRunning)
                 Svc.Log.Info($"Repair Finished");
+            SchedulerHelper.DescheduleAction("RepairTimeOut");
             Svc.Framework.Update -= RepairUpdate;
             RepairRunning = false;
             _seenAddon = false;

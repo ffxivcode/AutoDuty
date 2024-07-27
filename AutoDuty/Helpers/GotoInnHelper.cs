@@ -19,6 +19,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany})");
                 GotoInnRunning = true;
+                SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                     ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
@@ -29,6 +30,7 @@ namespace AutoDuty.Helpers
         {
             if (GotoInnRunning)
                 Svc.Log.Info($"Goto Inn Finished");
+            SchedulerHelper.DescheduleAction("GotoInnTimeOut");
             Svc.Framework.Update -= GotoInnUpdate;
             GotoInnRunning = false;
             GotoHelper.Stop();
