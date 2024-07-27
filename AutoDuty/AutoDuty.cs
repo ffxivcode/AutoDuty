@@ -984,7 +984,7 @@ public class AutoDuty : IDalamudPlugin
         MainWindow.OpenTab("Main");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
-        if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
+        if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
         if (TaskManager.IsBusy)
             TaskManager.Abort();
@@ -1094,7 +1094,7 @@ public class AutoDuty : IDalamudPlugin
                 GotoHelper.Invoke(Convert.ToUInt32(argss[0]), [v3], argss.Length > 2 ? float.Parse(argss[2]) : 0.25f, argss.Length > 3 ? float.Parse(argss[3]) : 0.25f);
                 break;
             case "exitduty":
-                ExitDutyHelper.Invoke();
+                _actions.ExitDuty("");
                 break;
             default:
                 OpenMainUI(); 

@@ -27,7 +27,7 @@ public class MainWindow : Window, IDisposable
     private static string _popupText = "";
     private static string _popupTitle = "";
     private static string openTabName = "";
-    
+
     public MainWindow() : base(
         "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize)
     {
@@ -332,7 +332,7 @@ public class MainWindow : Window, IDisposable
     }
 
     private static List<(string, Action, Vector4?, bool)> tabList =
-        [("Main", MainTab.Draw, null, false),("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false),("Mini", MiniTab.Draw, null, false), ("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)
+        [("Main", MainTab.Draw, null, false),("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false),("Mini", MiniTab.Draw, null, false)
         ];
 
     public override void Draw()
@@ -344,6 +344,16 @@ public class MainWindow : Window, IDisposable
         else if (Plugin.Configuration.HideBossModAIConfig && tabList.Contains(("BM-Config", BossModConfigTab.Draw, null, false)))
             tabList.Remove(("BM-Config", BossModConfigTab.Draw, null, false));
 
+        if (CurrentTabName != "Mini" && !tabList.Contains(("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)))
+        {
+            tabList.Add(("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false));
+            tabList.Remove(("Donate", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false));
+        }
+        else if (CurrentTabName == "Mini" && !tabList.Contains(("Donate", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)))
+        {
+            tabList.Add(("Donate", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false));
+            tabList.Remove(("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false));
+        }
 
         EzTabBar("MainTab", null, openTabName, ImGuiTabBarFlags.None, tabList.ToArray());
     }

@@ -26,7 +26,8 @@ namespace AutoDuty.Windows
             }
 
             var _loopTimes = Plugin.Configuration.LoopTimes;
-            MainWindow.GotoAndActions();
+            if (!Plugin.Running && !Plugin.Started)
+                MainWindow.GotoAndActions();
 
             using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Svc.ClientState.TerritoryType) || Plugin.Stage > 0))
             {
@@ -59,7 +60,7 @@ namespace AutoDuty.Windows
                     hideText = "";
 
                 ImGui.SameLine(0, 5);
-                ImGui.TextColored(new Vector4(93 / 255f, 226 / 255f, 231 / 255f, 1), $"AutoDuty - Running ({Plugin.CurrentTerritoryContent?.DisplayName}){(Plugin.Running ? $" {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Times" : "")}");
+                ImGui.TextColored(new Vector4(93 / 255f, 226 / 255f, 231 / 255f, 1), $"{Plugin.CurrentTerritoryContent?.DisplayName}{(Plugin.Running ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}");
             }
 
             if (!hideActionText)
