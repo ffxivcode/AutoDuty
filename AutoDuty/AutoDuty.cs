@@ -1032,7 +1032,7 @@ public class AutoDuty : IDalamudPlugin
     private unsafe void OnCommand(string command, string args)
     {
         // in response to the slash command
-        switch (args.Split(" ")[0])
+        switch (args.ToLower().Split(" ")[0])
         {
             case "config" or "cfg":
                 OpenConfigUI();
@@ -1050,16 +1050,16 @@ public class AutoDuty : IDalamudPlugin
                 Plugin.Stage = 1;
                 break;
             case "goto":
-                var argsss = args.ToUpper().Split(" ");
+                var argsss = args.ToLower().Split(" ");
                 switch (argsss[1])
                 {
-                    case "INN":
+                    case "inn":
                         GotoInnHelper.Invoke(argsss.Length > 2 ? Convert.ToUInt32(argsss[2]) : ObjectHelper.GrandCompany);
                         break;
-                    case "BARRACKS":
+                    case "barracks":
                         GotoBarracksHelper.Invoke();
                         break;
-                    case "GCSUPPLY":
+                    case "gcsupply":
                         GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 2f, false);
                         break;
                     default:
