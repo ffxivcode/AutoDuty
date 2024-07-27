@@ -80,14 +80,14 @@ namespace AutoDuty.Helpers
             if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany))
             {
                 Svc.Log.Debug("Moving to GC Supply");
-                GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany), [GCSupplyLocation], 0.25f, 3f);
+                GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany), [GCSupplyLocation], 0.25f, 2f, false);
                 return;
             }
 
             if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) > 5 && ObjectHelper.IsReady && VNavmesh_IPCSubscriber.Nav_IsReady() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
             {
                 Svc.Log.Debug("Setting Move to Personnel Officer");
-                MovementHelper.Move(GCSupplyLocation, 0.25f, 5);
+                MovementHelper.Move(GCSupplyLocation, 0.25f, 2f);
                 return;
             }
             else if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) > 5 && VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)

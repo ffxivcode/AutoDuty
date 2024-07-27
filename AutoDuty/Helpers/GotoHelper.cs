@@ -10,7 +10,7 @@ namespace AutoDuty.Helpers
 {
     internal static class GotoHelper
     {
-        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f)
+        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = true)
         {
             if (!GotoRunning)
             {
@@ -20,6 +20,7 @@ namespace AutoDuty.Helpers
                 _moveLocations = moveLocations;
                 _tollerance = tollerance;
                 _lastPointTollerance = lastPointTollerance;
+                _useAethernetTravel = useAethernetTravel;
                 Svc.Framework.Update += GotoUpdate;
             }
         }
@@ -35,6 +36,7 @@ namespace AutoDuty.Helpers
             _locationIndex = 0;
             _tollerance = 0.25f;
             _lastPointTollerance = 0.25f;
+            _useAethernetTravel = true;
             AutoDuty.Plugin.Action = "";
             if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
                 VNavmesh_IPCSubscriber.Path_Stop();
@@ -49,6 +51,7 @@ namespace AutoDuty.Helpers
         private static int _locationIndex = 0;
         private static float _tollerance = 0.25f;
         private static float _lastPointTollerance = 0.25f;
+        private static bool _useAethernetTravel = true;
 
         internal unsafe static void GotoUpdate(IFramework framework)
         {
@@ -121,7 +124,7 @@ namespace AutoDuty.Helpers
                 EzThrottler.Throttle("Goto", 7500, true);
                 return;
             }
-            else
+            else if(_useAethernetTravel)
             {
                 Aetheryte? aetheryteLoc = MapHelper.GetClosestAethernet(_territoryType, _moveLocations[0]);
                 Aetheryte? aetheryteMe = MapHelper.GetClosestAethernet(_territoryType, Svc.ClientState.LocalPlayer.Position);
