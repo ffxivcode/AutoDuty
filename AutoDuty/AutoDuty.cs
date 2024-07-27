@@ -984,7 +984,7 @@ public class AutoDuty : IDalamudPlugin
         Started = false;
         Stage = 0;
         CurrentLoop = 0;
-        MainWindow.OpenTab("Main");
+        //MainWindow.OpenTab("Main");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
