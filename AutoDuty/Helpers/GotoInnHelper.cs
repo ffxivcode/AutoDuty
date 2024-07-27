@@ -74,7 +74,7 @@ namespace AutoDuty.Helpers
 
             if (Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany) || _innKeepGameObject == null || Vector3.Distance(Svc.ClientState.LocalPlayer.Position, _innKeepGameObject.Position) > 7f)
             {
-                GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany), [_innKeepLocation], 0.25f, 5f);
+                GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany), [_innKeepLocation], 0.25f, 5f, false);
                 return;
             }
             else if (ObjectHelper.IsValid)

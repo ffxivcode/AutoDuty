@@ -1060,7 +1060,7 @@ public class AutoDuty : IDalamudPlugin
                         GotoBarracksHelper.Invoke();
                         break;
                     case "GCSUPPLY":
-                        GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
+                        GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 2f, false);
                         break;
                     default:
                         break;
