@@ -20,6 +20,10 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Repair Started");
                 RepairRunning = true;
+                if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
+                    AutoDuty.Plugin.ScheduleAction(Stop, 300000);
+                else
+                    AutoDuty.Plugin.ScheduleAction(Stop, 600000);
                 Svc.Framework.Update += RepairUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                     ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);

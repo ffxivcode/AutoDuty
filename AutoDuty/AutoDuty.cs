@@ -31,6 +31,7 @@ namespace AutoDuty;
 
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
+using ECommons.Schedulers;
 
 // TODO:
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
@@ -183,6 +184,14 @@ public class AutoDuty : IDalamudPlugin
             default:
                 break;
         }
+    }
+
+    internal void ScheduleAction(Action action, int delayMS)
+    {
+        _ = new TickScheduler(delegate
+        {
+            action.Invoke();
+        }, delayMS);
     }
 
     internal void ExitDuty()
@@ -1005,7 +1014,7 @@ public class AutoDuty : IDalamudPlugin
             GotoBarracksHelper.Stop();
         if (RepairHelper.RepairRunning)
             RepairHelper.Stop();
-        if (VNavmesh_IPCSubscriber.Path_IsRunning())
+        if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
         Action = "";
     }

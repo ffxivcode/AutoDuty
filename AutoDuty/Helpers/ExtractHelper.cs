@@ -18,6 +18,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Extract Materia Started");
                 ExtractRunning = true;
+                AutoDuty.Plugin.ScheduleAction(Stop, 300000);
                 if (AutoDuty.Plugin.Configuration.AutoExtractAll)
                     stoppingCategory = 6;
                 else

@@ -36,6 +36,8 @@ namespace AutoDuty.Helpers
             _tollerance = 0.25f;
             _lastPointTollerance = 0.25f;
             AutoDuty.Plugin.Action = "";
+            if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
+                VNavmesh_IPCSubscriber.Path_Stop();
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }

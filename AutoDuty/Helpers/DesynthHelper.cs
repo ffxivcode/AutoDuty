@@ -18,6 +18,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Desynth Started");
                 DesynthRunning = true;
+                AutoDuty.Plugin.ScheduleAction(Stop, 300000);
                 AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)

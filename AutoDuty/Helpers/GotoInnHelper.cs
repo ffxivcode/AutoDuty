@@ -31,6 +31,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Inn Finished");
             Svc.Framework.Update -= GotoInnUpdate;
             GotoInnRunning = false;
+            GotoHelper.Stop();
             _whichGrandCompany = 0;
             AutoDuty.Plugin.Action = "";
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)

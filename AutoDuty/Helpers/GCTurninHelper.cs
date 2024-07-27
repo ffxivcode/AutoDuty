@@ -20,6 +20,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("GCTurnin Started");
                 GCTurninRunning = true;
+                AutoDuty.Plugin.ScheduleAction(Stop, 600000);
                 Svc.Framework.Update += GCTurninUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                     ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
@@ -33,6 +34,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info("GCTurnin Finished");
             _deliverooStarted = false;
             GCTurninRunning = false;
+            GotoHelper.Stop();
             AutoDuty.Plugin.Action = "";
             Svc.Framework.Update -= GCTurninUpdate;
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)

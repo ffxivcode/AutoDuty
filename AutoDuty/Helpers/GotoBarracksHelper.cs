@@ -14,6 +14,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Barracks Started");
                 GotoBarracksRunning = true;
+                AutoDuty.Plugin.ScheduleAction(Stop, 600000);
                 Svc.Framework.Update += GotoBarracksUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                     ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
@@ -25,6 +26,7 @@ namespace AutoDuty.Helpers
             if (GotoBarracksRunning)
                 Svc.Log.Info($"Goto Barracks Finished");
             Svc.Framework.Update -= GotoBarracksUpdate;
+            GotoHelper.Stop();
             GotoBarracksRunning = false;
             AutoDuty.Plugin.Action = "";
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
