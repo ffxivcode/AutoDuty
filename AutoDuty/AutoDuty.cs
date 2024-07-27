@@ -49,6 +49,11 @@ public class AutoDuty : IDalamudPlugin
     internal ContentHelper.Content? CurrentTerritoryContent = null;
     internal uint CurrentTerritoryType = 0;
     internal int CurrentPath = -1;
+
+    internal bool Levelling            = false;
+    internal bool LevellingEnabled => this.Configuration.Support && this.Levelling;
+
+
     internal string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
@@ -300,6 +305,17 @@ public class AutoDuty : IDalamudPlugin
                     TaskManager.DelayNext("Loop-Delay50", 50);
                     TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
                 }
+
+                if (this.LevellingEnabled)
+                {
+                    ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int _);
+                    if (duty != null)
+                    {
+                        this.CurrentTerritoryContent = duty;
+                        this.CurrentPath = MultiPathHelper.BestPathIndex();
+                    }
+                }
+
                 if (Configuration.Trust)
                     _trustManager.RegisterTrust(CurrentTerritoryContent);
                 else if (Configuration.Support)
@@ -587,7 +603,17 @@ public class AutoDuty : IDalamudPlugin
         {
             Job curJob =Player.GetJob();
             if (curJob != job)
+            {
+                if (LevellingEnabled)
+                {
+                    ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int index);
+                    Plugin.CurrentTerritoryContent = duty;
+                    this.MainListClicked           = true;
+                }
+
                 CurrentPath = MultiPathHelper.BestPathIndex();
+            }
+
             job = curJob;
         }
 

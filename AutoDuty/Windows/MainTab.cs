@@ -317,6 +317,31 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
 
+                        if (Plugin.Configuration.Support)
+                        {
+                            ImGui.SameLine();
+                            bool levelling = Plugin.Levelling;
+                            if (ImGui.Checkbox("Levelling", ref levelling))
+                            {
+                                if (levelling)
+                                {
+                                    ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int index);
+                                    if (duty != null)
+                                    {
+                                        _dutyListSelected              = index;
+                                        Plugin.CurrentTerritoryContent = duty;
+
+                                        Plugin.CurrentPath             = MultiPathHelper.BestPathIndex();
+                                        Plugin.Levelling = levelling;
+                                    }
+                                }
+                                else
+                                {
+                                    Plugin.Levelling = levelling;
+                                }
+                            }
+                        }
+
                         DrawPathSelection();
                     }
                     if (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
@@ -328,6 +353,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
+                    using var d3 = ImRaii.Disabled(Plugin.LevellingEnabled);
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(450 * ImGuiHelpers.GlobalScale, 525 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
