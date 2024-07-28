@@ -348,7 +348,7 @@ public class AutoDuty : IDalamudPlugin
             else
             {
                 CurrentLoop = Configuration.LoopTimes;
-                LoopsCompleteActions(t);
+                LoopsCompleteActions();
                 return;
             }
         }
@@ -648,8 +648,16 @@ public class AutoDuty : IDalamudPlugin
                 if (LevellingEnabled)
                 {
                     ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int index);
-                    Plugin.CurrentTerritoryContent = duty;
-                    MainListClicked           = true;
+                    if (duty != null)
+                    {
+                        Plugin.CurrentTerritoryContent = duty;
+                        MainListClicked                = true;
+                    }
+                    else
+                    {
+                        Plugin.CurrentTerritoryContent = null;
+                        this.Levelling                 = false;
+                    }
                 }
 
                 CurrentPath = MultiPathHelper.BestPathIndex();
