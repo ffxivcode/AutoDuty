@@ -250,7 +250,7 @@ public class AutoDuty : IDalamudPlugin
                                     (Configuration.StopNoRestedXP && AgentHUD.Instance()->ExpRestedExperience == 0) || 
                                     (Configuration.StopItemQty && Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value));
 
-    private unsafe void ClientState_TerritoryChanged(ushort t)
+    private void ClientState_TerritoryChanged(ushort t)
     {
         Svc.Log.Debug($"ClientState_TerritoryChanged: t={t}");
        
@@ -268,11 +268,6 @@ public class AutoDuty : IDalamudPlugin
             return;
         }
 
-        CheckLoopStateBetweenDungeons(t);
-    }
-
-    private void CheckLoopStateBetweenDungeons(ushort t)
-    {
         Action = "";
 
         if (t != CurrentTerritoryContent.TerritoryType)
