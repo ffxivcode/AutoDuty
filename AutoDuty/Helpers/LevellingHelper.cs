@@ -19,19 +19,27 @@ namespace AutoDuty.Helpers
             ContentHelper.Content? curContent = null;
 
             PlayerState* playerState = PlayerState.Instance();
+
             short        level       = playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint)AutoDuty.Plugin.Player.GetJob())?.ExpArrayIndex ?? 0];
 
             int curIndex = index = 0;
+
+            if (level < 15 || AutoDuty.Plugin.Player!.GetRole() == CombatRole.NonCombat || level >= 100)
+                return null;
+
+
             foreach ((uint id, ContentHelper.Content? content) in ContentHelper.DictionaryContent)
             {
                 if (content.DawnContent)
                 {
-                    if (content.ClassJobLevelRequired % 10 != 0 && content.ClassJobLevelRequired <= level && FileHelper.DictionaryPathFiles.ContainsKey(id))
+                    if (curContent?.ClassJobLevelRequired < content.ClassJobLevelRequired)
                     {
-                        if (curContent == null || curContent.ClassJobLevelRequired < content.ClassJobLevelRequired)
+                        if (FileHelper.DictionaryPathFiles.ContainsKey(id) && 
+                            content.ClassJobLevelRequired % 10 != 0 && 
+                            content.ClassJobLevelRequired <= level)
                         {
                             curContent = content;
-                            index = curIndex;
+                            index      = curIndex;
                         }
                     }
                     curIndex++;
