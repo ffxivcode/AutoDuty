@@ -20,13 +20,13 @@ namespace AutoDuty.Helpers
             {
                 if (AutoDuty.Plugin.Configuration.PathSelections.TryGetValue(territoryType, out Dictionary<Job, int>? jobConfig))
                 {
-                    if (jobConfig.TryGetValue(Svc.ClientState.LocalPlayer.GetJob(), out int pathId))
+                    if (jobConfig.TryGetValue(AutoDuty.Plugin.Player.GetJob(), out int pathId))
                     {
                         return pathId;
                     }
                 }
 
-                if (Svc.ClientState.LocalPlayer?.GetRole() == CombatRole.Tank)
+                if (AutoDuty.Plugin.Player?.GetRole() == CombatRole.Tank)
                 {
                     for (int index = 0; index < curPaths.Count; index++)
                     {
@@ -37,8 +37,10 @@ namespace AutoDuty.Helpers
                         }
                     }
                 }
+
                 return 0;
             }
+
             return 0;
         }
     }

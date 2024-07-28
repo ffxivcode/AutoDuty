@@ -305,21 +305,24 @@ public class AutoDuty : IDalamudPlugin
                     TaskManager.DelayNext("Loop-Delay50", 50);
                     TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
                 }
-
+                
                 if (this.LevellingEnabled)
                 {
+                    Svc.Log.Info("Leveling Enabled");
                     ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int _);
                     if (duty != null)
                     {
+                        Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
                         this.CurrentTerritoryContent = duty;
                         this.CurrentPath = MultiPathHelper.BestPathIndex();
                     }
                 }
-
                 if (Configuration.Trust)
                     _trustManager.RegisterTrust(CurrentTerritoryContent);
                 else if (Configuration.Support)
+                {
                     _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
+                }
                 else if (Configuration.Squadron)
                 {
                     TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
