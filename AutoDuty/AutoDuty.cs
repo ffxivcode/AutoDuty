@@ -51,7 +51,7 @@ public class AutoDuty : IDalamudPlugin
     internal int CurrentPath = -1;
 
     internal bool Levelling            = false;
-    internal bool LevellingEnabled => this.Configuration.Support && this.Levelling;
+    internal bool LevellingEnabled => Configuration.Support && Levelling;
 
 
     internal string Name => "AutoDuty";
@@ -218,14 +218,14 @@ public class AutoDuty : IDalamudPlugin
             ListBoxPOSText.Clear();
             if (!FileHelper.DictionaryPathFiles.TryGetValue(Svc.ClientState.TerritoryType, out List<string>? curPaths))
             {
-                this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
+                PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
                 return;
             }
 
             if(Plugin.CurrentPath < 0 && Svc.ClientState.LocalPlayer != null)
                 Plugin.CurrentPath = MultiPathHelper.BestPathIndex();
             //Svc.Log.Info("Loading Path: " + Plugin.CurrentPath);
-            this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{curPaths![Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1)]}";
+            PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{curPaths![Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1)]}";
 
             if (!File.Exists(PathFile))
                 return;
@@ -252,7 +252,7 @@ public class AutoDuty : IDalamudPlugin
 
         if (t == 0)
             return;
-        this.CurrentPath = -1;
+        CurrentPath = -1;
         LoadPath();
 
         if (!Running || GCTurninHelper.GCTurninRunning || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || CurrentTerritoryContent == null)
@@ -261,6 +261,11 @@ public class AutoDuty : IDalamudPlugin
             return;
         }
 
+        CheckLoopStateBetweenDungeons(t);
+    }
+
+    private void CheckLoopStateBetweenDungeons(ushort t)
+    {
         Action = "";
 
         if (t != CurrentTerritoryContent.TerritoryType)
@@ -268,15 +273,15 @@ public class AutoDuty : IDalamudPlugin
             if (CurrentLoop < Configuration.LoopTimes)
             {
                 TaskManager.Abort();
-                TaskManager.Enqueue(() => { Stage = 99; }, "Loop-SetStage=99");
+                TaskManager.Enqueue(() => { Stage   = 99; },    "Loop-SetStage=99");
                 TaskManager.Enqueue(() => { Started = false; }, "Loop-SetStarted=false");
-                TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
+                TaskManager.Enqueue(() => ObjectHelper.IsReady,      int.MaxValue, "Loop-WaitPlayerReady");
                 if (Configuration.AutoRepair && InventoryHelper.LowestEquippedCondition() <= Configuration.AutoRepairPct)
                 {
                     TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
                     TaskManager.DelayNext("Loop-Delay50", 50);
                     TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Loop-WaitAutoRepairComplete");
-                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,"Loop-WaitANotIsOccupied");
+                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,    "Loop-WaitANotIsOccupied");
                 }
                 if (Configuration.AutoExtract && (QuestManager.IsQuestComplete(66174)))
                 {
@@ -306,15 +311,20 @@ public class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
                 }
                 
-                if (this.LevellingEnabled)
+                if (LevellingEnabled)
                 {
                     Svc.Log.Info("Leveling Enabled");
                     ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int _);
                     if (duty != null)
                     {
                         Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
-                        this.CurrentTerritoryContent = duty;
-                        this.CurrentPath = MultiPathHelper.BestPathIndex();
+                        CurrentTerritoryContent = duty;
+                        CurrentPath             = MultiPathHelper.BestPathIndex();
+                    }
+                    else
+                    {
+                        CurrentLoop = Configuration.LoopTimes;
+                        CheckLoopStateBetweenDungeons(t);
                     }
                 }
                 if (Configuration.Trust)
@@ -332,12 +342,12 @@ public class AutoDuty : IDalamudPlugin
                 }
                 else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
                     _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
-                TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
+                TaskManager.Enqueue(() => CurrentLoop++,                                                          "Loop-IncrementCurrentLoop");
                 TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
-                TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Loop-WaitPlayerValid");
-                TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Loop-WaitDutyStarted");
-                TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Loop-WaitNavReady");
-                TaskManager.Enqueue(() => StartNavigation(true), "Loop-StartNavigation");
+                TaskManager.Enqueue(() => ObjectHelper.IsValid,                                                        int.MaxValue, "Loop-WaitPlayerValid");
+                TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted,                                                 int.MaxValue, "Loop-WaitDutyStarted");
+                TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(),                                        int.MaxValue, "Loop-WaitNavReady");
+                TaskManager.Enqueue(() => StartNavigation(true),                                                  "Loop-StartNavigation");
             }
             else
             {
@@ -349,23 +359,23 @@ public class AutoDuty : IDalamudPlugin
                     TaskManager.DelayNext(2000);
                     TaskManager.Enqueue(() => _chat.ExecuteCommand($"/logout"));
                     TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
-                    TaskManager.Enqueue(() => Running = false);
+                    TaskManager.Enqueue(() => Running     = false);
                     TaskManager.Enqueue(() => CurrentLoop = 0);
-                    TaskManager.Enqueue(() => Stage = 0);
+                    TaskManager.Enqueue(() => Stage       = 0);
                     TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
                 }
                 else if (Configuration.AutoARMultiEnable) {
                     TaskManager.Enqueue(() => _chat.ExecuteCommand($"/ays multi"));
-                    TaskManager.Enqueue(() => Running = false);
+                    TaskManager.Enqueue(() => Running     = false);
                     TaskManager.Enqueue(() => CurrentLoop = 0);
-                    TaskManager.Enqueue(() => Stage = 0);
+                    TaskManager.Enqueue(() => Stage       = 0);
                     TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
                 }
                 else
                 { 
-                    Running = false;
+                    Running     = false;
                     CurrentLoop = 0;
-                    Stage = 0;
+                    Stage       = 0;
                     MainWindow.OpenTab("Main");
                 }
             }
@@ -541,7 +551,7 @@ public class AutoDuty : IDalamudPlugin
 
             for (int i = 0; i < ListBoxPOSText.Count; i++)
             {
-                string node = this.ListBoxPOSText[i];
+                string node = ListBoxPOSText[i];
 
                 if (node.Contains("Boss|") && node.Replace("Boss|", "").All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
                 {
@@ -611,7 +621,7 @@ public class AutoDuty : IDalamudPlugin
                 {
                     ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int index);
                     Plugin.CurrentTerritoryContent = duty;
-                    this.MainListClicked           = true;
+                    MainListClicked           = true;
                 }
 
                 CurrentPath = MultiPathHelper.BestPathIndex();
