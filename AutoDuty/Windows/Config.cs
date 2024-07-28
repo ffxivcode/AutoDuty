@@ -51,6 +51,7 @@ public class Configuration : IPluginConfiguration
     public bool Regular { get; set; } = false;
     public bool Trial { get; set; } = false;
     public bool Raid { get; set; } = false;
+    public bool Variant { get; set; } = false;
     public bool Unsynced { get; set; } = false;
     public bool HideUnavailableDuties { get; set; } = false;
     public bool HideBossModAIConfig { get; set; } = false;

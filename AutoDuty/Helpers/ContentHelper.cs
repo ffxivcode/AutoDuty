@@ -14,6 +14,8 @@ namespace AutoDuty.Helpers
         internal static Dictionary<uint, Content> DictionaryContent { get; set; } = [];
 
         private static List<uint> ListGCArmyContent { get; set; } = [162, 1039, 1041, 1042, 171, 172, 159, 160, 349, 362, 188, 1064, 1066, 430, 510];
+        
+        private static List<uint> ListVVDContent { get; set; } = [1069, 1137, 1176]; //[1069, 1075, 1076, 1137, 1155, 1156, 1176, 1179, 1180]; *Criterions
 
         internal class Content
         {
@@ -41,6 +43,10 @@ namespace AutoDuty.Helpers
 
             internal bool TrustContent { get; set; } = false;
 
+            internal bool VariantContent { get; set; } = false;
+
+            internal int VVDIndex { get; set; } = -1;
+
             internal bool GCArmyContent { get; set; } = false;
 
             internal int GCArmyIndex { get; set; } = -1;
@@ -63,7 +69,7 @@ namespace AutoDuty.Helpers
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
 
-                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5) || contentFinderCondition.Name.ToString().IsNullOrEmpty())
+                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 && contentFinderCondition.ContentType.Value.RowId != 30) || contentFinderCondition.Name.ToString().IsNullOrEmpty())
                     continue;
 
                 string CleanName(string name)
@@ -87,6 +93,8 @@ namespace AutoDuty.Helpers
                     ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
                     DawnContent = listDawnContent.Any(dawnContent => dawnContent.Content.Value == contentFinderCondition),
                     TrustContent = listDawnContent.Any(dawnContent => dawnContent.Content.Value == contentFinderCondition) && contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId > 2,
+                    VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
+                    VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                     GCArmyContent = ListGCArmyContent.Any(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
                     GCArmyIndex = ListGCArmyContent.FindIndex(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId)
                 };

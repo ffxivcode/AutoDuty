@@ -83,6 +83,7 @@ public class AutoDuty : IDalamudPlugin
     private RegularDutyManager _regularDutyManager;
     private TrustManager _trustManager;
     private SquadronManager _squadronManager;
+    private VariantManager _variantManager;
     private OverrideAFK _overrideAFK;
     private bool _dead = false;
     private IGameObject? treasureCofferGameObject = null;
@@ -131,6 +132,7 @@ public class AutoDuty : IDalamudPlugin
             _regularDutyManager = new(TaskManager);
             _trustManager = new(TaskManager);
             _squadronManager = new(TaskManager);
+            _variantManager = new(TaskManager); 
             _actions = new(this, _chat, TaskManager);
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
@@ -278,7 +280,6 @@ public class AutoDuty : IDalamudPlugin
                     else
                         LoopTasks();
                 },"Loop-CheckStopLoop");
-                
             }
             else
                 LoopsCompleteActions();
@@ -325,6 +326,8 @@ public class AutoDuty : IDalamudPlugin
             _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Configuration.Support)
             _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
+        else if (Configuration.Variant)
+            _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
         else if (Configuration.Squadron)
         {
             TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
@@ -431,6 +434,8 @@ public class AutoDuty : IDalamudPlugin
                 _trustManager.RegisterTrust(CurrentTerritoryContent);
             else if (Configuration.Support)
                 _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
+            else if (Configuration.Variant)
+                _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
             else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
                 _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
             else if (Configuration.Squadron)
