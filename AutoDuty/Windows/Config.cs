@@ -379,7 +379,10 @@ public static class ConfigTab
             {
                 ImGui.Selectable($"{item.Value.Key} (Qty: {item.Value.Value})");
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                {
                     stopItemQtyItemDictionary.Remove(item);
+                    Configuration.Save();
+                }
             }
 
             ImGui.EndListBox();
