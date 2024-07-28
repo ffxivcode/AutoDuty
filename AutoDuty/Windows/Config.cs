@@ -11,7 +11,6 @@ using AutoDuty.Helpers;
 using ECommons.GameHelpers;
 using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
-using MessagePack.Formatters;
 using ECommons;
 using Dalamud.Interface.Utility;
 
@@ -22,7 +21,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 93;
+    public int Version { get; set; } = 94;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
