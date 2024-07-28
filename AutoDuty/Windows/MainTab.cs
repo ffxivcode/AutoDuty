@@ -101,7 +101,7 @@ namespace AutoDuty.Windows
                         }
                         ImGui.SameLine(0, 15);
                     }
-                    ImGui.PushItemWidth(150);
+                    ImGui.PushItemWidth(75 * ImGuiHelpers.GlobalScale);
                     if (ImGui.SliderInt("Times", ref _loopTimes, 0 , 100))
                     {
                         Plugin.Configuration.LoopTimes = _loopTimes;
@@ -173,8 +173,7 @@ namespace AutoDuty.Windows
             }
             else
             {
-                if (!Plugin.Running)
-                    MainWindow.GotoAndActions();
+                
 
                 using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                 {
@@ -204,13 +203,18 @@ namespace AutoDuty.Windows
                     using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                     {
                         ImGui.SameLine(0, 15);
-                        ImGui.PushItemWidth(350);
+                        ImGui.PushItemWidth(140 * ImGuiHelpers.GlobalScale);
                         if (ImGui.SliderInt("Times", ref _loopTimes, 0, 100))
                         {
                             Plugin.Configuration.LoopTimes = _loopTimes;
                             Plugin.Configuration.Save();
                         }
                         ImGui.PopItemWidth();
+                    }
+                    if (!Plugin.Running)
+                    {
+                        ImGui.SameLine(0, 5);
+                        MainWindow.GotoAndActions();
                     }
                     if (ImGui.Checkbox("Support", ref _support))
                     {

@@ -215,7 +215,7 @@ public static class ConfigTab
             Configuration.Save();
         }
         ImGui.Separator();
-        if (ImGui.Checkbox("AutoRepair Enabled", ref autoRepair))
+        if (ImGui.Checkbox("AutoRepair Enabled @", ref autoRepair))
         {
             Configuration.AutoRepair = autoRepair;
             Configuration.Save();
@@ -223,8 +223,9 @@ public static class ConfigTab
 
         using (var d1 = ImRaii.Disabled(!autoRepair))
         {
-            ImGui.PushItemWidth(300);
-            if (ImGui.SliderInt("Repair@", ref autoRepairPct, 1, 100, "%d%%"))
+            ImGui.SameLine(0, 15);
+            ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+            if (ImGui.SliderInt("##Repair@", ref autoRepairPct, 1, 100, "%d%%"))
             {
                 Configuration.AutoRepairPct = autoRepairPct;
                 Configuration.Save();
@@ -321,7 +322,7 @@ public static class ConfigTab
         using (var d1 = ImRaii.Disabled(!stopLevel))
         {
             ImGui.SameLine(0,15);
-            ImGui.PushItemWidth(145 * ImGuiHelpers.GlobalScale);
+            ImGui.PushItemWidth(155 * ImGuiHelpers.GlobalScale);
             if (ImGui.SliderInt("##Level", ref stopLevelInt, 1, 100))
             {
                 Configuration.StopLevelInt = stopLevelInt;
@@ -341,7 +342,7 @@ public static class ConfigTab
         }
         using (var d1 = ImRaii.Disabled(!stopItemQty))
         {
-            ImGui.PushItemWidth(225 * ImGuiHelpers.GlobalScale);
+            ImGui.PushItemWidth(250 * ImGuiHelpers.GlobalScale);
             if (ImGui.BeginCombo("Select Item", selectedItem.Value))
             {
                 ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref stopItemQtyItemNameInput, 1000);
@@ -353,7 +354,7 @@ public static class ConfigTab
                 ImGui.EndCombo();
             }
             ImGui.PopItemWidth();
-            ImGui.PushItemWidth(100 * ImGuiHelpers.GlobalScale);
+            ImGui.PushItemWidth(190 * ImGuiHelpers.GlobalScale);
             if (ImGui.InputInt("Quantity", ref stopItemQtyInt))
             {
                 Configuration.StopItemQtyInt = stopItemQtyInt;
@@ -373,7 +374,7 @@ public static class ConfigTab
                 }
             }
             ImGui.PopItemWidth();
-            if (!ImGui.BeginListBox("##ItemList", new System.Numerics.Vector2(290 * ImGuiHelpers.GlobalScale, 40 * ImGuiHelpers.GlobalScale))) return;
+            if (!ImGui.BeginListBox("##ItemList", new System.Numerics.Vector2(325 * ImGuiHelpers.GlobalScale, 40 * ImGuiHelpers.GlobalScale))) return;
 
             foreach (var item in stopItemQtyItemDictionary)
             {
