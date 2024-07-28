@@ -12,9 +12,9 @@ namespace AutoDuty.Helpers
     using FFXIVClientStructs.FFXIV.Client.Game.UI;
     using Lumina.Excel.GeneratedSheets;
 
-    public static class LevellingHelper
+    public static class LevelingHelper
     {
-        internal static unsafe ContentHelper.Content? SelectHighestLevellingRelevantDuty(out int index)
+        internal static unsafe ContentHelper.Content? SelectHighestLevelingRelevantDuty(out int index)
         {
             ContentHelper.Content? curContent = null;
 

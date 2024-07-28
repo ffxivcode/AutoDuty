@@ -348,24 +348,24 @@ namespace AutoDuty.Windows
                         if (Plugin.Configuration.Support)
                         {
                             ImGui.SameLine();
-                            bool levelling = Plugin.Levelling;
-                            if (ImGui.Checkbox("Levelling", ref levelling))
+                            bool leveling = Plugin.Leveling;
+                            if (ImGui.Checkbox("Leveling", ref leveling))
                             {
-                                if (levelling)
+                                if (leveling)
                                 {
-                                    ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int index);
+                                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int index);
                                     if (duty != null)
                                     {
                                         _dutyListSelected              = index;
                                         Plugin.CurrentTerritoryContent = duty;
 
                                         Plugin.CurrentPath             = MultiPathHelper.BestPathIndex();
-                                        Plugin.Levelling = levelling;
+                                        Plugin.Leveling = leveling;
                                     }
                                 }
                                 else
                                 {
-                                    Plugin.Levelling = levelling;
+                                    Plugin.Leveling = leveling;
                                 }
                             }
                         }
@@ -381,7 +381,10 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    using var d3 = ImRaii.Disabled(Plugin.LevellingEnabled);
+                    using var d3 = ImRaii.Disabled(Plugin.LevelingEnabled);
+                    if(Plugin.LevelingEnabled)
+                        ImGui.LabelText("###LevelingDutyLabel", "AutoDuty will automatically select the best leveling dungeon for you");
+
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(500 * ImGuiHelpers.GlobalScale, 525 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)

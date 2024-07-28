@@ -51,8 +51,8 @@ public class AutoDuty : IDalamudPlugin
     internal uint CurrentTerritoryType = 0;
     internal int CurrentPath = -1;
 
-    internal bool Levelling            = false;
-    internal bool LevellingEnabled => Configuration.Support && Levelling;
+    internal bool Leveling            = false;
+    internal bool LevelingEnabled => Configuration.Support && Leveling;
 
 
     internal string Name => "AutoDuty";
@@ -335,10 +335,10 @@ public class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
         }
 
-        if (LevellingEnabled)
+        if (LevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
-            ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int _);
+            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int _);
             if (duty != null)
             {
                 Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
@@ -645,9 +645,9 @@ public class AutoDuty : IDalamudPlugin
             Job curJob =Player.GetJob();
             if (curJob != job)
             {
-                if (LevellingEnabled)
+                if (LevelingEnabled)
                 {
-                    ContentHelper.Content? duty = LevellingHelper.SelectHighestLevellingRelevantDuty(out int index);
+                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int index);
                     if (duty != null)
                     {
                         Plugin.CurrentTerritoryContent = duty;
@@ -656,7 +656,7 @@ public class AutoDuty : IDalamudPlugin
                     else
                     {
                         Plugin.CurrentTerritoryContent = null;
-                        this.Levelling                 = false;
+                        this.Leveling                 = false;
                     }
                 }
 
