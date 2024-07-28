@@ -13,7 +13,6 @@ namespace AutoDuty.Windows
     using System.Globalization;
     using System.IO;
     using System.Text.RegularExpressions;
-    using ECommons.DalamudServices;
 
     internal static class PathsTab
     {

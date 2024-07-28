@@ -4,6 +4,7 @@ using static AutoDuty.AutoDuty;
 using System.Numerics;
 using AutoDuty.Helpers;
 using ECommons.DalamudServices;
+using Dalamud.Interface.Utility;
 
 namespace AutoDuty.Windows
 {
@@ -38,7 +39,7 @@ namespace AutoDuty.Windows
                 }
                 ImGui.SameLine(0, 5);
             }
-            ImGui.PushItemWidth(150);
+            ImGui.PushItemWidth(75 * ImGuiHelpers.GlobalScale);
             
             if (ImGui.SliderInt("Times", ref _loopTimes, 0, 100))
             {

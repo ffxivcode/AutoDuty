@@ -9,6 +9,10 @@ using System.Linq;
 using ECommons.ExcelServices;
 using AutoDuty.Helpers;
 using ECommons.GameHelpers;
+using ECommons.DalamudServices;
+using Lumina.Excel.GeneratedSheets;
+using ECommons;
+using Dalamud.Interface.Utility;
 
 namespace AutoDuty.Windows;
 
@@ -17,7 +21,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 93;
+    public int Version { get; set; } = 95;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
@@ -46,6 +50,7 @@ public class Configuration : IPluginConfiguration
     public bool Regular { get; set; } = false;
     public bool Trial { get; set; } = false;
     public bool Raid { get; set; } = false;
+    public bool Variant { get; set; } = false;
     public bool Unsynced { get; set; } = false;
     public bool HideUnavailableDuties { get; set; } = false;
     public bool HideBossModAIConfig { get; set; } = false;
@@ -64,6 +69,13 @@ public class Configuration : IPluginConfiguration
     public int MaxDistanceToSlot { get; set; } = 1;
     public bool PositionalRoleBased { get; set; } = true;
     public string PositionalCustom { get; set; } = "Any";
+    public bool StopLevel { get; set; } = false;
+    public int StopLevelInt { get; set; } = 0;
+    public bool StopNoRestedXP { get; set; } = false;
+    public bool StopItemQty { get; set; } = false;
+    public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary { get; set; } = [];
+    public int StopItemQtyInt { get; set; } = 1;
+
     public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
 
     [NonSerialized]
@@ -83,6 +95,10 @@ public class Configuration : IPluginConfiguration
 public static class ConfigTab
 {
     private static Configuration Configuration = AutoDuty.Plugin.Configuration;
+
+    private static Dictionary<uint, string> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x.Name.RawString)!;
+    private static string stopItemQtyItemNameInput = "";
+    private static KeyValuePair<uint, string> selectedItem = new(0, "");
 
     public static void Draw()
     {
@@ -109,6 +125,12 @@ public static class ConfigTab
         var autoDesynth = Configuration.AutoDesynth;
         var autoGCTurnin = Configuration.AutoGCTurnin;
         var hideBossModAIConfig = Configuration.HideBossModAIConfig;
+        var stopLevel = Configuration.StopLevel;
+        var stopLevelInt = Configuration.StopLevelInt;
+        var stopNoRestedXP = Configuration.StopNoRestedXP;
+        var stopItemQty = Configuration.StopItemQty;
+        var stopItemQtyItemDictionary = Configuration.StopItemQtyItemDictionary;
+        var stopItemQtyInt = Configuration.StopItemQtyInt;
         if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
         {
             Configuration.AutoManageRSRState = autoManageRSRState;
@@ -192,7 +214,7 @@ public static class ConfigTab
             Configuration.Save();
         }
         ImGui.Separator();
-        if (ImGui.Checkbox("AutoRepair Enabled", ref autoRepair))
+        if (ImGui.Checkbox("AutoRepair Enabled @", ref autoRepair))
         {
             Configuration.AutoRepair = autoRepair;
             Configuration.Save();
@@ -200,8 +222,9 @@ public static class ConfigTab
 
         using (var d1 = ImRaii.Disabled(!autoRepair))
         {
-            ImGui.PushItemWidth(300);
-            if (ImGui.SliderInt("Repair@", ref autoRepairPct, 1, 100, "%d%%"))
+            ImGui.SameLine(0, 15);
+            ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+            if (ImGui.SliderInt("##Repair@", ref autoRepairPct, 1, 100, "%d%%"))
             {
                 Configuration.AutoRepairPct = autoRepairPct;
                 Configuration.Save();
@@ -289,7 +312,82 @@ public static class ConfigTab
                 ImGui.Text("Get @ https://git.carvel.li/liza/plugin-repo");
             }
         }
+        ImGui.Separator();
+        if (ImGui.Checkbox("Stop Looping @ Level", ref stopLevel))
+        {
+            Configuration.StopLevel = stopLevel;
+            Configuration.Save();
+        }
+        using (var d1 = ImRaii.Disabled(!stopLevel))
+        {
+            ImGui.SameLine(0,15);
+            ImGui.PushItemWidth(155 * ImGuiHelpers.GlobalScale);
+            if (ImGui.SliderInt("##Level", ref stopLevelInt, 1, 100))
+            {
+                Configuration.StopLevelInt = stopLevelInt;
+                Configuration.Save();
+            }
+            ImGui.PopItemWidth();
+        }
+        if (ImGui.Checkbox("Stop When No Rested XP", ref stopNoRestedXP))
+        {
+            Configuration.StopNoRestedXP = stopNoRestedXP;
+            Configuration.Save();
+        }
+        if (ImGui.Checkbox("Stop Looping When Reach Item Qty", ref stopItemQty))
+        {
+            Configuration.StopItemQty = stopItemQty;
+            Configuration.Save();
+        }
+        using (var d1 = ImRaii.Disabled(!stopItemQty))
+        {
+            ImGui.PushItemWidth(250 * ImGuiHelpers.GlobalScale);
+            if (ImGui.BeginCombo("Select Item", selectedItem.Value))
+            {
+                ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref stopItemQtyItemNameInput, 1000);
+                foreach (var item in Items.Where(x => x.Value.Contains(stopItemQtyItemNameInput, StringComparison.InvariantCultureIgnoreCase))!)
+                {
+                    if (ImGui.Selectable($"{item.Value}"))
+                        selectedItem = item;
+                }
+                ImGui.EndCombo();
+            }
+            ImGui.PopItemWidth();
+            ImGui.PushItemWidth(190 * ImGuiHelpers.GlobalScale);
+            if (ImGui.InputInt("Quantity", ref stopItemQtyInt))
+            {
+                Configuration.StopItemQtyInt = stopItemQtyInt;
+                Configuration.Save();
+            }
+            ImGui.SameLine(0, 5);
+            using (var addDisabled = ImRaii.Disabled(selectedItem.Value.IsNullOrEmpty()))
+            {
+                if (ImGui.Button("Add Item"))
+                {
+                    if (!stopItemQtyItemDictionary.TryAdd(selectedItem.Key, new(selectedItem.Value, stopItemQtyInt)))
+                    {
+                        stopItemQtyItemDictionary.Remove(selectedItem.Key);
+                        stopItemQtyItemDictionary.Add(selectedItem.Key, new(selectedItem.Value, stopItemQtyInt));
+                    }
+                    Configuration.Save();
+                }
+            }
+            ImGui.PopItemWidth();
+            if (!ImGui.BeginListBox("##ItemList", new System.Numerics.Vector2(325 * ImGuiHelpers.GlobalScale, 40 * ImGuiHelpers.GlobalScale))) return;
 
+            foreach (var item in stopItemQtyItemDictionary)
+            {
+                ImGui.Selectable($"{item.Value.Key} (Qty: {item.Value.Value})");
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                {
+                    stopItemQtyItemDictionary.Remove(item);
+                    Configuration.Save();
+                }
+            }
+
+            ImGui.EndListBox();
+        }
+        ImGui.Separator();
         using (var savedPathsDisabled = ImRaii.Disabled(!Configuration.PathSelections.Any(kvp => kvp.Value.Any())))
         {
             if (ImGui.Button("Clear all saved path selections"))
