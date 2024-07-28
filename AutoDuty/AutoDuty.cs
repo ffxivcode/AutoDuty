@@ -1061,7 +1061,12 @@ public class AutoDuty : IDalamudPlugin
         switch (args.ToLower().Split(" ")[0])
         {
             case "config" or "cfg":
-                OpenConfigUI();
+                if (args.Count() < 2)
+                    OpenConfigUI();
+                else if (args.ToLower().Split(" ")[1].Equals("list"))
+                    ConfigHelper.ListConfig();
+                else
+                    ConfigHelper.ModifyConfig(args.ToLower().Split(" ")[1], args.ToLower().Split(" ")[2]);
                 break;
             case "start":
                 StartNavigation();
