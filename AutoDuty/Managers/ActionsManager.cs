@@ -77,9 +77,11 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/bmrai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
         }
 
-        public unsafe void ForceAttack()
+        public unsafe void ForceAttack(string _)
         {
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack");
+            _taskManager.Enqueue(() => EzThrottler.Throttle("ForceAttack", Convert.ToInt32(500)), "ForceAttack");
+            _taskManager.Enqueue(() => EzThrottler.Check("ForceAttack"), Convert.ToInt32(500), "ForceAttack");
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1), "ForceAttack");
         }
 
