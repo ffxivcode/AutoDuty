@@ -383,7 +383,7 @@ namespace AutoDuty.Windows
                     }
                     using var d3 = ImRaii.Disabled(Plugin.LevelingEnabled);
                     if(Plugin.LevelingEnabled)
-                        ImGui.LabelText("###LevelingDutyLabel", "AutoDuty will automatically select the best leveling dungeon for you");
+                        ImGui.LabelText("###LevelingDutyLabel", "AD will automatically select the best dungeon");
 
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(500 * ImGuiHelpers.GlobalScale, 525 * ImGuiHelpers.GlobalScale))) return;
 
