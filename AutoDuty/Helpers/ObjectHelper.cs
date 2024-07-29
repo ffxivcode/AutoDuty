@@ -48,39 +48,35 @@ namespace AutoDuty.Helpers
 
         internal unsafe static float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.GameObject->Position);
 
-        internal unsafe static IGameObject? GetTankPartyMember()
+        internal unsafe static IGameObject? GetPartyMemberFromRole(string role)
         {
-            if (Svc.Party.PartyId == 0)
-                return null;
-
-            if (Player.Object.ClassJob.GameData?.Role == 1)
+            if (Player.Object != null && GetJobRole(Player.Object.ClassJob.GameData!).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
                 return Player.Object;
-
-            foreach (var partyMember in Svc.Party)
+            else if (Svc.Party.PartyId != 0)
+                return Svc.Party.Where(x => GetJobRole(x.ClassJob.GameData!).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault()?.GameObject;
+            else
             {
-                if (partyMember.ClassJob.GameData?.Role == 1)
-                    return partyMember.GameObject;
-            }
+                var buddies = UIState.Instance()->Buddy.BattleBuddies.ToArray().Where(x => x.DataId != 0);
+                foreach (var buddy in buddies)
+                {
+                    var gameObject = Svc.Objects.FirstOrDefault(x => x.EntityId == buddy.EntityId);
 
+                    if (gameObject == null) continue;
+
+                    var classJob = ((ICharacter)gameObject).ClassJob.GameData;
+
+                    if (classJob == null) continue;
+
+                    if (GetJobRole(classJob).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
+                        return gameObject;
+                }
+            }
             return null;
         }
 
-        internal unsafe static IGameObject? GetHealerPartyMember()
-        {
-            if (Svc.Party.PartyId == 0)
-                return null;
+        internal unsafe static IGameObject? GetTankPartyMember() => GetPartyMemberFromRole("Tank");
 
-            if (Player.Object.ClassJob.GameData?.Role == 4)
-                return Player.Object;
-
-            foreach (var partyMember in Svc.Party)
-            {
-                if (partyMember.ClassJob.GameData?.Role == 4)
-                    return partyMember.GameObject;
-            }
-
-            return null;
-        }
+        internal unsafe static IGameObject? GetHealerPartyMember() => GetPartyMemberFromRole("Healer");
 
         //RotationSolver
         internal unsafe static float GetBattleDistanceToPlayer(IGameObject gameObject)

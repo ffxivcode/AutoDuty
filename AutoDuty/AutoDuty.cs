@@ -32,6 +32,7 @@ namespace AutoDuty;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ECommons.Schedulers;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 // TODO:
@@ -491,13 +492,14 @@ public class AutoDuty : IDalamudPlugin
 
     internal void SetBMRSettings()
     {
+        BMRRoleChecks();
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlot}");
-        _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player!.Name : (Configuration.FollowRole ? Configuration.FollowRoleStr : $"Slot{Configuration.FollowSlotInt}"))}");
+        _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player!.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player!.Name)))}");
         _chat.ExecuteCommand($"/vbmai positional {Configuration.PositionalCustom}");
     }
 
@@ -525,8 +527,8 @@ public class AutoDuty : IDalamudPlugin
         }
 
         //FollowRole
-        if (ObjectHelper.IsValid && Configuration.FollowRole && ConfigTab.FollowName != ObjectHelper.GetGroupMemberFromRole(Configuration.FollowRoleStr) && Svc.ClientState ConfigTab.FollowName)
-            ConfigTab.FollowName = ObjectHelper.GetGroupMemberFromRole();
+        if (ObjectHelper.IsValid && Configuration.FollowRole && ConfigTab.FollowName != ObjectHelper.GetPartyMemberFromRole(Configuration.FollowRoleStr!)?.Name.ExtractText())
+            ConfigTab.FollowName = ObjectHelper.GetPartyMemberFromRole(Configuration.FollowRoleStr!)?.Name.ExtractText() ?? "";
     }
 
     private void OnDeath()

@@ -428,16 +428,19 @@ public static class ConfigTab
                 Configuration.FollowDuringCombat = followDuringCombat;
                 Configuration.Save();
             }
+
             if (ImGui.Checkbox("Follow During Active BossModule", ref followDuringActiveBossModule))
             {
                 Configuration.FollowDuringActiveBossModule = followDuringActiveBossModule;
                 Configuration.Save();
             }
+
             if (ImGui.Checkbox("Follow Out Of Combat (Not Recommended)", ref followOutOfCombat))
             {
                 Configuration.FollowOutOfCombat = followOutOfCombat;
                 Configuration.Save();
             }
+
             if (ImGui.Checkbox("Follow Target", ref followTarget))
             {
                 Configuration.FollowTarget = followTarget;
@@ -452,6 +455,7 @@ public static class ConfigTab
                 followRole = false;
                 Configuration.Save();
             }
+
             if (ImGui.Checkbox("Follow Slot", ref followSlot))
             {
                 Configuration.FollowSelf = false;
@@ -462,6 +466,7 @@ public static class ConfigTab
                 followRole = false;
                 Configuration.Save();
             }
+
             using (var d1 = ImRaii.Disabled(!followSlot))
             {
                 ImGui.PushItemWidth(300);
@@ -472,7 +477,7 @@ public static class ConfigTab
                 }
                 ImGui.PopItemWidth();
             }
-            if ()
+
             if (ImGui.Checkbox("Follow Role", ref followRole))
             {
                 Configuration.FollowSelf = false;
@@ -480,8 +485,10 @@ public static class ConfigTab
                 Configuration.FollowSlot = false;
                 followSlot = false;
                 Configuration.FollowRole = followRole;
+                AutoDuty.Plugin.BMRRoleChecks();
                 Configuration.Save();
             }
+
             using (var d1 = ImRaii.Disabled(!followRole))
             {
                 ImGui.SameLine(0, 10);
@@ -522,6 +529,7 @@ public static class ConfigTab
             if (ImGui.Checkbox("Set Max Distance To Target Based on Role", ref maxDistanceToTargetRoleBased))
             {
                 Configuration.MaxDistanceToTargetRoleRange = maxDistanceToTargetRoleBased;
+                AutoDuty.Plugin.BMRRoleChecks();
                 Configuration.Save();
             }
 
@@ -540,6 +548,7 @@ public static class ConfigTab
                 }
                 ImGui.PopItemWidth();
             }
+
             ImGui.PushItemWidth(200);
             if (ImGui.SliderInt("Max Distance To Slot", ref maxDistanceToSlot, 1, 30))
             {
@@ -551,6 +560,7 @@ public static class ConfigTab
             if (ImGui.Checkbox("Set Positional Based on Role", ref positionalRoleBased))
             {
                 Configuration.PositionalRoleBased = positionalRoleBased;
+                AutoDuty.Plugin.BMRRoleChecks();
                 Configuration.Save();
             }
 
