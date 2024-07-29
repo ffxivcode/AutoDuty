@@ -32,6 +32,7 @@ namespace AutoDuty;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ECommons.Schedulers;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 // TODO:
@@ -517,14 +518,43 @@ public class AutoDuty : IDalamudPlugin
 
     internal void SetBMRSettings()
     {
+        BMRRoleChecks();
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlot}");
-        _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player!.Name : (Configuration.FollowRole ? Configuration.FollowRoleStr : $"Slot{Configuration.FollowSlotInt}"))}");
+        _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player!.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player!.Name)))}");
         _chat.ExecuteCommand($"/vbmai positional {Configuration.PositionalCustom}");
+    }
+
+    internal void BMRRoleChecks()
+    {
+        //RoleBased Positional
+        if (ObjectHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalCustom != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any"))
+        {
+            Configuration.PositionalCustom = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any");
+            Configuration.Save();
+        }
+
+        //RoleBased MaxDistanceToTarget
+        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleRange && Configuration.MaxDistanceToTarget != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
+        {
+            Configuration.MaxDistanceToTarget = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
+            Configuration.Save();
+        }
+
+        //RoleBased MaxDistanceToTargetAoE
+        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleRange && Configuration.MaxDistanceToTargetAoE != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
+        {
+            Configuration.MaxDistanceToTargetAoE = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
+            Configuration.Save();
+        }
+
+        //FollowRole
+        if (ObjectHelper.IsValid && Configuration.FollowRole && ConfigTab.FollowName != ObjectHelper.GetPartyMemberFromRole(Configuration.FollowRoleStr!)?.Name.ExtractText())
+            ConfigTab.FollowName = ObjectHelper.GetPartyMemberFromRole(Configuration.FollowRoleStr!)?.Name.ExtractText() ?? "";
     }
 
     private void OnDeath()

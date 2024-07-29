@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ECommons.ExcelServices;
-using AutoDuty.Helpers;
-using ECommons.GameHelpers;
 using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
 using ECommons;
@@ -21,7 +19,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 95;
+    public int Version { get; set; } = 96;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
@@ -94,6 +92,8 @@ public class Configuration : IPluginConfiguration
 
 public static class ConfigTab
 {
+    internal static string FollowName = "";
+
     private static Configuration Configuration = AutoDuty.Plugin.Configuration;
 
     private static Dictionary<uint, string> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x.Name.RawString)!;
@@ -131,6 +131,7 @@ public static class ConfigTab
         var stopItemQty = Configuration.StopItemQty;
         var stopItemQtyItemDictionary = Configuration.StopItemQtyItemDictionary;
         var stopItemQtyInt = Configuration.StopItemQtyInt;
+
         if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
         {
             Configuration.AutoManageRSRState = autoManageRSRState;
@@ -427,16 +428,19 @@ public static class ConfigTab
                 Configuration.FollowDuringCombat = followDuringCombat;
                 Configuration.Save();
             }
+
             if (ImGui.Checkbox("Follow During Active BossModule", ref followDuringActiveBossModule))
             {
                 Configuration.FollowDuringActiveBossModule = followDuringActiveBossModule;
                 Configuration.Save();
             }
+
             if (ImGui.Checkbox("Follow Out Of Combat (Not Recommended)", ref followOutOfCombat))
             {
                 Configuration.FollowOutOfCombat = followOutOfCombat;
                 Configuration.Save();
             }
+
             if (ImGui.Checkbox("Follow Target", ref followTarget))
             {
                 Configuration.FollowTarget = followTarget;
@@ -451,6 +455,7 @@ public static class ConfigTab
                 followRole = false;
                 Configuration.Save();
             }
+
             if (ImGui.Checkbox("Follow Slot", ref followSlot))
             {
                 Configuration.FollowSelf = false;
@@ -461,6 +466,7 @@ public static class ConfigTab
                 followRole = false;
                 Configuration.Save();
             }
+
             using (var d1 = ImRaii.Disabled(!followSlot))
             {
                 ImGui.PushItemWidth(300);
@@ -471,6 +477,7 @@ public static class ConfigTab
                 }
                 ImGui.PopItemWidth();
             }
+
             if (ImGui.Checkbox("Follow Role", ref followRole))
             {
                 Configuration.FollowSelf = false;
@@ -478,8 +485,10 @@ public static class ConfigTab
                 Configuration.FollowSlot = false;
                 followSlot = false;
                 Configuration.FollowRole = followRole;
+                AutoDuty.Plugin.BMRRoleChecks();
                 Configuration.Save();
             }
+
             using (var d1 = ImRaii.Disabled(!followRole))
             {
                 ImGui.SameLine(0, 10);
@@ -520,20 +529,7 @@ public static class ConfigTab
             if (ImGui.Checkbox("Set Max Distance To Target Based on Role", ref maxDistanceToTargetRoleBased))
             {
                 Configuration.MaxDistanceToTargetRoleRange = maxDistanceToTargetRoleBased;
-                Configuration.Save();
-            }
-
-            if (ObjectHelper.IsValid && maxDistanceToTargetRoleBased && maxDistanceToTarget != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
-            {
-                maxDistanceToTarget = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
-                Configuration.MaxDistanceToTarget = maxDistanceToTarget;
-                Configuration.Save();
-            }
-
-            if (ObjectHelper.IsValid && maxDistanceToTargetRoleBased && maxDistanceToTargetAoE != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
-            {
-                maxDistanceToTargetAoE = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
-                Configuration.MaxDistanceToTargetAoE = maxDistanceToTargetAoE;
+                AutoDuty.Plugin.BMRRoleChecks();
                 Configuration.Save();
             }
 
@@ -552,6 +548,7 @@ public static class ConfigTab
                 }
                 ImGui.PopItemWidth();
             }
+
             ImGui.PushItemWidth(200);
             if (ImGui.SliderInt("Max Distance To Slot", ref maxDistanceToSlot, 1, 30))
             {
@@ -563,13 +560,7 @@ public static class ConfigTab
             if (ImGui.Checkbox("Set Positional Based on Role", ref positionalRoleBased))
             {
                 Configuration.PositionalRoleBased = positionalRoleBased;
-                Configuration.Save();
-            }
-
-            if (ObjectHelper.IsValid && positionalRoleBased && positionalCustom != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any"))
-            {
-                positionalCustom = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any");
-                Configuration.PositionalCustom = positionalCustom;
+                AutoDuty.Plugin.BMRRoleChecks();
                 Configuration.Save();
             }
 

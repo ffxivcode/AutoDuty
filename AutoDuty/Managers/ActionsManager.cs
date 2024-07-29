@@ -14,7 +14,6 @@ using ECommons.Throttlers;
 using ECommons.GameHelpers;
 using AutoDuty.Helpers;
 using ECommons.Automation;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Managers
@@ -77,9 +76,11 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/bmrai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
         }
 
-        public unsafe void ForceAttack()
+        public unsafe void ForceAttack(string _)
         {
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack");
+            _taskManager.Enqueue(() => EzThrottler.Throttle("ForceAttack", Convert.ToInt32(500)), "ForceAttack");
+            _taskManager.Enqueue(() => EzThrottler.Check("ForceAttack"), Convert.ToInt32(500), "ForceAttack");
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1), "ForceAttack");
         }
 
@@ -386,15 +387,15 @@ namespace AutoDuty.Managers
                 {
                     //tank
                     case 1:
-                        followTargetObject = GetTrustMeleeDpsMemberObject() ?? GetTrustRangedDpsMemberObject();
+                        followTargetObject = ObjectHelper.GetPartyMemberFromRole("melee") ?? ObjectHelper.GetPartyMemberFromRole("ranged");
                         break;
                     //melee
                     case 2:
-                        followTargetObject = GetTrustMeleeDpsMemberObject() ?? GetTrustTankMemberObject();
+                        followTargetObject = ObjectHelper.GetPartyMemberFromRole("melee") ?? ObjectHelper.GetPartyMemberFromRole("tank");
                         break;
                     //ranged or healer
                     case 3 or 4:
-                        followTargetObject = GetTrustRangedDpsMemberObject() ?? GetTrustMeleeDpsMemberObject();
+                        followTargetObject = ObjectHelper.GetPartyMemberFromRole("ranged") ?? ObjectHelper.GetPartyMemberFromRole("melee");
                         break;
                 }
                 if (!IPCSubscriber_Common.IsReady("BossModReborn"))
@@ -436,14 +437,6 @@ namespace AutoDuty.Managers
         {
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
-
-        public IGameObject? GetTrustTankMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is ICharacter chara && chara.ClassJob.GameData?.Role == 1)?.GameObject;
-
-        public IGameObject? GetTrustHealerMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is ICharacter chara && chara.ClassJob.GameData?.Role == 4)?.GameObject;
-
-        public IGameObject? GetTrustRangedDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is ICharacter chara && chara.ClassJob.GameData?.Role == 3)?.GameObject;
-
-        public IGameObject? GetTrustMeleeDpsMemberObject() => Svc.Buddies.FirstOrDefault(s => s.GameObject is ICharacter chara && chara.ClassJob.GameData?.Role == 2)?.GameObject;
 
         public enum OID : uint
         {
