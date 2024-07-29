@@ -14,7 +14,6 @@ using ECommons.Throttlers;
 using ECommons.GameHelpers;
 using AutoDuty.Helpers;
 using ECommons.Automation;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Managers

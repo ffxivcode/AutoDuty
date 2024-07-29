@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ECommons.ExcelServices;
-using AutoDuty.Helpers;
-using ECommons.GameHelpers;
 using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
 using ECommons;
@@ -94,6 +92,8 @@ public class Configuration : IPluginConfiguration
 
 public static class ConfigTab
 {
+    internal static string FollowName = "";
+
     private static Configuration Configuration = AutoDuty.Plugin.Configuration;
 
     private static Dictionary<uint, string> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x.Name.RawString)!;
@@ -131,6 +131,7 @@ public static class ConfigTab
         var stopItemQty = Configuration.StopItemQty;
         var stopItemQtyItemDictionary = Configuration.StopItemQtyItemDictionary;
         var stopItemQtyInt = Configuration.StopItemQtyInt;
+
         if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
         {
             Configuration.AutoManageRSRState = autoManageRSRState;
@@ -471,6 +472,7 @@ public static class ConfigTab
                 }
                 ImGui.PopItemWidth();
             }
+            if ()
             if (ImGui.Checkbox("Follow Role", ref followRole))
             {
                 Configuration.FollowSelf = false;
@@ -523,20 +525,6 @@ public static class ConfigTab
                 Configuration.Save();
             }
 
-            if (ObjectHelper.IsValid && maxDistanceToTargetRoleBased && maxDistanceToTarget != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
-            {
-                maxDistanceToTarget = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
-                Configuration.MaxDistanceToTarget = maxDistanceToTarget;
-                Configuration.Save();
-            }
-
-            if (ObjectHelper.IsValid && maxDistanceToTargetRoleBased && maxDistanceToTargetAoE != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
-            {
-                maxDistanceToTargetAoE = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
-                Configuration.MaxDistanceToTargetAoE = maxDistanceToTargetAoE;
-                Configuration.Save();
-            }
-
             using (var d1 = ImRaii.Disabled(maxDistanceToTargetRoleBased))
             {
                 ImGui.PushItemWidth(200);
@@ -563,13 +551,6 @@ public static class ConfigTab
             if (ImGui.Checkbox("Set Positional Based on Role", ref positionalRoleBased))
             {
                 Configuration.PositionalRoleBased = positionalRoleBased;
-                Configuration.Save();
-            }
-
-            if (ObjectHelper.IsValid && positionalRoleBased && positionalCustom != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any"))
-            {
-                positionalCustom = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any");
-                Configuration.PositionalCustom = positionalCustom;
                 Configuration.Save();
             }
 

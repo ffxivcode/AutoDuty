@@ -501,6 +501,34 @@ public class AutoDuty : IDalamudPlugin
         _chat.ExecuteCommand($"/vbmai positional {Configuration.PositionalCustom}");
     }
 
+    internal void BMRRoleChecks()
+    {
+        //RoleBased Positional
+        if (ObjectHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalCustom != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any"))
+        {
+            Configuration.PositionalCustom = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any");
+            Configuration.Save();
+        }
+
+        //RoleBased MaxDistanceToTarget
+        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleRange && Configuration.MaxDistanceToTarget != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
+        {
+            Configuration.MaxDistanceToTarget = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
+            Configuration.Save();
+        }
+
+        //RoleBased MaxDistanceToTargetAoE
+        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleRange && Configuration.MaxDistanceToTargetAoE != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
+        {
+            Configuration.MaxDistanceToTargetAoE = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
+            Configuration.Save();
+        }
+
+        //FollowRole
+        if (ObjectHelper.IsValid && Configuration.FollowRole && ConfigTab.FollowName != ObjectHelper.GetGroupMemberFromRole(Configuration.FollowRoleStr) && Svc.ClientState ConfigTab.FollowName)
+            ConfigTab.FollowName = ObjectHelper.GetGroupMemberFromRole();
+    }
+
     private void OnDeath()
     {
         _dead = true;
