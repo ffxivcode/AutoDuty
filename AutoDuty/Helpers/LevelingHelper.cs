@@ -26,20 +26,42 @@ namespace AutoDuty.Helpers
             if (level < 15 || AutoDuty.Plugin.Player!.GetRole() == CombatRole.NonCombat || level >= 100)
                 return null;
 
+            uint? dungeonId = level switch
+            {
+                >= 16 and < 24 => 1036u, // TamTara Deepcroft
+                < 32 => 1039u, // The Thousand Maws of Toto-Rak
+                < 41 => 1041u, // Brayflox's Longstop
+                < 53 => 1042u, // Stone Vigil
+                < 61 => 1064u, // Sohm Al
+                < 67 => 1142u, // Sirensong Sea
+                < 71 => 1144u, // Doma Castle
+                < 75 => 837u, // Holminster
+                < 81 => 823u, // Qitana
+                < 87 => 952u, // Tower of Zot
+                < 91 => 974u, // Ktisis Hyperboreia
+                _ => null
+            };
+
+            if (dungeonId != null)
+            {
+                if (ContentHelper.DictionaryContent.TryGetValue(dungeonId.Value, out ContentHelper.Content? content)) 
+                    return content;
+            }
             foreach ((uint id, ContentHelper.Content? content) in ContentHelper.DictionaryContent)
             {
                 if (content.DawnContent)
                 {
                     if (curContent == null || curContent.ClassJobLevelRequired < content.ClassJobLevelRequired)
                     {
-                        if (FileHelper.DictionaryPathFiles.ContainsKey(id) && 
-                            content.ClassJobLevelRequired % 10 != 0 && 
-                            content.ClassJobLevelRequired <= level)
+                        if (FileHelper.DictionaryPathFiles.ContainsKey(id) &&
+                            content.ClassJobLevelRequired % 10 != 0        &&
+                            content.ClassJobLevelRequired      <= level)
                         {
                             curContent = content;
                             index      = curIndex;
                         }
                     }
+
                     curIndex++;
                 }
             }
