@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Numerics;
 using Lumina.Excel.GeneratedSheets;
 using AutoDuty.IPC;
+using ECommons;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
 {
@@ -25,7 +27,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static void Stop() 
+        internal unsafe static void Stop() 
         {
             if (GotoRunning)
                 Svc.Log.Info($"Goto Finished");
@@ -38,6 +40,8 @@ namespace AutoDuty.Helpers
             _lastPointTollerance = 0.25f;
             _useAethernetTravel = true;
             AutoDuty.Plugin.Action = "";
+            if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                addonSelectYesno->Close(true);
             if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
                 VNavmesh_IPCSubscriber.Path_Stop();
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)

@@ -30,7 +30,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static void Stop()
+        internal unsafe static void Stop()
         {
             ExtractRunning = false;
             currentCategory = 0;
@@ -38,6 +38,10 @@ namespace AutoDuty.Helpers
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("ExtractTimeOut");
             Svc.Framework.Update -= ExtractUpdate;
+            if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog))
+                addonMaterializeDialog->Close(true);
+            if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize))
+                addonMaterialize->Close(true);
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }

@@ -1,9 +1,11 @@
 ﻿using AutoDuty.IPC;
 using Dalamud.Plugin.Services;
+using ECommons;
 using ECommons.Automation;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Numerics;
 
 namespace AutoDuty.Helpers
@@ -32,11 +34,10 @@ namespace AutoDuty.Helpers
             if (GCTurninRunning)
                 Svc.Log.Info("GCTurnin Finished");
             _deliverooStarted = false;
-            GCTurninRunning = false;
             GotoHelper.Stop();
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("GCTurninTimeOut");
-            Svc.Framework.Update -= GCTurninUpdate;
+            _stop = true;
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
@@ -46,9 +47,36 @@ namespace AutoDuty.Helpers
 
         private static bool _deliverooStarted = false;
         private static Chat _chat = new();
+        private static bool _stop = false;
+        private static void ClearTarget() => Svc.Targets.Target = null;
+        private unsafe static void CloseAddons() 
+        {
+            
+        }
 
         internal static unsafe void GCTurninUpdate(IFramework framework)
         {
+            if (_stop)
+            {
+                if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
+                {
+                    _stop = false;
+                    GCTurninRunning = false;
+                    Svc.Framework.Update -= GCTurninUpdate;
+                }
+                else if (Svc.Targets.Target != null)
+                    Svc.Targets.Target = null;
+                else if (GenericHelpers.TryGetAddonByName("GrandCompanySupplyReward", out AtkUnitBase* addonGrandCompanySupplyReward))
+                    addonGrandCompanySupplyReward->Close(true);
+                else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                    addonSelectYesno->Close(true);
+                else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
+                    addonSelectString->Close(true);
+                else if (GenericHelpers.TryGetAddonByName("GrandCompanySupplyList", out AtkUnitBase* addonGrandCompanySupplyList))
+                    addonGrandCompanySupplyList->Close(true);
+                return;
+            }
+
             if (AutoDuty.Plugin.Started)
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping GCTurninHelper");

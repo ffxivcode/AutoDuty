@@ -1,10 +1,8 @@
-﻿using AutoDuty.Helpers;
-using Dalamud.Plugin.Services;
+﻿using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -27,12 +25,14 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static void Stop()
+        internal unsafe static void Stop()
         {
             DesynthRunning = false;
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("DesynthTimeOut");
             Svc.Framework.Update -= DesynthUpdate;
+            if (GenericHelpers.TryGetAddonByName("Desynth", out AtkUnitBase* addonDesynth))
+                addonDesynth->Close(true);
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
