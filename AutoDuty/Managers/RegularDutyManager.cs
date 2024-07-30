@@ -24,7 +24,7 @@ namespace AutoDuty.Managers
                 _taskManager.DelayNext("RegisterRegularDuty", 2000);
             }
             _taskManager.Enqueue(() => ContentsFinder.Instance()->IsUnrestrictedParty = AutoDuty.Plugin.Configuration.Unsynced, "RegisterRegularDuty");
-            _taskManager.DelayNext("RegisterRegularDuty", 50);
+            _taskManager.DelayNext("RegisterRegularDuty", 100);
             _taskManager.Enqueue(() => AgentContentsFinder.Instance()->OpenRegularDuty(content.ContentFinderCondition), "RegisterRegularDuty");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinder", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterRegularDuty");
             _taskManager.Enqueue(() => ((AddonContentsFinder*)addon)->DutyList->Items.LongCount > 0, "RegisterRegularDuty");
