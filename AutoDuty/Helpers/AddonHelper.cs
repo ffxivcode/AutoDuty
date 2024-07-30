@@ -79,9 +79,9 @@ namespace AutoDuty.Helpers
                 SeenAddon = false;
                 return true;
             }
-            if (EzThrottler.Throttle("Repair", 50))
-                //new AddonMaster.Repair(addon).RepairAll();
-                FireCallBack(addon, true, 0);
+            if (EzThrottler.Throttle("ClickRepair", 50))
+                new AddonMaster.Repair(addon).RepairAll();
+                //FireCallBack(addon, true, 0);
             SeenAddon = true;
             return false;
         }
