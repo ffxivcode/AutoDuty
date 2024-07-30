@@ -4,6 +4,7 @@ using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
@@ -79,10 +80,10 @@ namespace AutoDuty.Helpers
             if (ObjectHelper.IsOccupied)
                 return;
 
-            if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonSalvageDialog) && GenericHelpers.IsAddonReady(addonSalvageDialog))
+            if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog) && GenericHelpers.IsAddonReady(addonMaterializeDialog))
             {
                 Svc.Log.Debug("AutoExtract - Confirming MaterializeDialog");
-                new AddonMaster.MaterializeDialog(addonSalvageDialog).Materialize();
+                new AddonMaster.MaterializeDialog(addonMaterializeDialog).Materialize();
                 return;
             }
 
