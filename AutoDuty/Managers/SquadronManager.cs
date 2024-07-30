@@ -5,6 +5,7 @@ using ECommons;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.UIHelpers.AddonMasterImplementations;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 
@@ -90,9 +91,9 @@ namespace AutoDuty.Managers
                 return true;
             }
 
-            if (GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* _))
+            if (GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk) && GenericHelpers.IsAddonReady(addonTalk))
             {
-                // Viewing missions, move on to the next step for registering
+                // Talk window up ClickIt
                 AddonHelper.ClickTalk();
                 Svc.Log.Info("Clicking Talk");
                 return false;
