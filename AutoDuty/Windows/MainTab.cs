@@ -175,7 +175,7 @@ namespace AutoDuty.Windows
             }
             else
             {
-                if (!Plugin.Running && !Plugin.Configuration.OpenOverlay)
+                if (!Plugin.Running && !Plugin.Overlay.IsOpen)
                     MainWindow.GotoAndActions();
 
                 using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
