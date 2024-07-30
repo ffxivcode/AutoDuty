@@ -1,16 +1,14 @@
-﻿using AutoDuty.External;
-using AutoDuty.Helpers;
+﻿using AutoDuty.Helpers;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
-using ECommons.UIHelpers.AddonMasterImplementations;
-using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 
 namespace AutoDuty.Managers
 {
+    //on Rewrite need to check for sufficient seals
     internal class SquadronManager(TaskManager _taskManager)
     {
 
