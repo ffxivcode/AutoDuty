@@ -29,7 +29,6 @@ using ImGuiNET;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using Lumina.Excel.GeneratedSheets2;
 
 namespace AutoDuty;
 
