@@ -3,6 +3,7 @@ using ECommons.Automation;
 using ECommons.Automation.UIInput;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
+using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
 
@@ -38,7 +39,8 @@ namespace AutoDuty.Helpers
                 return true;
             }
             if (EzThrottler.Throttle("ClickSelectString", 50))
-                FireCallBack(addon, true, index);
+                new AddonMaster.SelectString(addon).Entries[index].Select();
+                //FireCallBack(addon, true, index);
             SeenAddon = true;
             return false;
         }
@@ -58,9 +60,11 @@ namespace AutoDuty.Helpers
             if (EzThrottler.Throttle("ClickYesno", 50))
             {
                 if (yes)
-                    FireCallBack(addon, true, 0);
+                    new AddonMaster.SelectYesno(addon).Yes();
+                    //FireCallBack(addon, true, 0);
                 else
-                    FireCallBack(addon, true, 1);
+                    new AddonMaster.SelectYesno(addon).No();
+                    //FireCallBack(addon, true, 1);
             }
             SeenAddon = true;
             return false;
@@ -76,7 +80,8 @@ namespace AutoDuty.Helpers
                 return true;
             }
             if (EzThrottler.Throttle("Repair", 50))
-                FireCallBack(addon, true, 0); ;
+                new AddonMaster.Repair(addon).RepairAll();
+                //FireCallBack(addon, true, 0);
             SeenAddon = true;
             return false;
         }
@@ -91,8 +96,8 @@ namespace AutoDuty.Helpers
                 return true;
             }
             if (EzThrottler.Throttle("ClickTalk", 50))
-                FireCallBack(addon, true);
-
+                new AddonMaster.Talk(addon).Click();
+                //FireCallBack(addon, true);
             SeenAddon = true;
             return false;
         }

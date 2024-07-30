@@ -103,7 +103,6 @@ public class AutoDuty : IDalamudPlugin
         {
             Plugin = this;
             ECommonsMain.Init(pluginInterface, this, Module.DalamudReflector, Module.ObjectFunctions);
-            ExecSkipTalk.Init();
 
             Configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.Initialize(pluginInterface);
@@ -475,7 +474,6 @@ public class AutoDuty : IDalamudPlugin
         MainListClicked = false;
         Stage = 1;
         Started = true;
-        ExecSkipTalk.IsEnabled = true;
         _chat.ExecuteCommand($"/vnav aligncamera enable");
         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
         _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
@@ -1047,8 +1045,6 @@ public class AutoDuty : IDalamudPlugin
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
         if (TaskManager.IsBusy)
             TaskManager.Abort();
-        if (ExecSkipTalk.IsEnabled)
-            ExecSkipTalk.IsEnabled = false;
         FollowHelper.SetFollow(null);
         if (ExtractHelper.ExtractRunning)
             ExtractHelper.Stop();
@@ -1077,7 +1073,6 @@ public class AutoDuty : IDalamudPlugin
         FileHelper.FileSystemWatcher.Dispose();
         WindowSystem.RemoveAllWindows();
         ECommonsMain.Dispose();
-        ExecSkipTalk.Shutdown();
         MainWindow.Dispose();
         OverrideCamera.Dispose();
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
