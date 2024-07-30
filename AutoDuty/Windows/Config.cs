@@ -24,6 +24,7 @@ public class Configuration : IPluginConfiguration
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
     public bool OpenOverlay { get; set; } = true;
+    public bool OnlyOpenOverlayWhenRunning { get; set; } = true;
     public bool HideDungeonText { get; set; } = false;
     public bool HideActionText { get; set; } = false;
     public bool AutoManageBossModAISettings { get; set; } = true;
@@ -99,6 +100,7 @@ public static class ConfigTab
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
         var openOverlay = Configuration.OpenOverlay;
+        var onlyOpenOverlayWhenRunning = Configuration.OnlyOpenOverlayWhenRunning;
         var hideDungeonText = Configuration.HideDungeonText;
         var hideActionText = Configuration.HideActionText;
         var autoManageRSRState = Configuration.AutoManageRSRState;
@@ -138,6 +140,16 @@ public static class ConfigTab
         using (var openOverlayDisable = ImRaii.Disabled(!openOverlay))
         {
             ImGui.SameLine(0, 5);
+            if (ImGui.Checkbox("Only When Running", ref onlyOpenOverlayWhenRunning))
+            {
+                if (onlyOpenOverlayWhenRunning && !AutoDuty.Plugin.Running && !AutoDuty.Plugin.Started)
+                    AutoDuty.Plugin.Overlay.IsOpen = false;
+                else
+                    AutoDuty.Plugin.Overlay.IsOpen = true;
+                Configuration.OnlyOpenOverlayWhenRunning = onlyOpenOverlayWhenRunning;
+                Configuration.Save();
+            }
+            
             if (ImGui.Checkbox("Hide Dungeon", ref hideDungeonText))
             {
                 Configuration.HideDungeonText = hideDungeonText;

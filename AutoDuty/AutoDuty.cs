@@ -141,7 +141,7 @@ public sealed class AutoDuty : IDalamudPlugin
             WindowSystem.AddWindow(MainWindow);
             WindowSystem.AddWindow(Overlay);
 
-            if (Configuration.OpenOverlay)
+            if (Configuration.OpenOverlay && (!Configuration.OnlyOpenOverlayWhenRunning || Started || Running))
                 Overlay.IsOpen = true;
             
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
@@ -1062,6 +1062,11 @@ public sealed class AutoDuty : IDalamudPlugin
         CurrentLoop = 0;
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
+        if (Configuration.OpenOverlay && Configuration.OnlyOpenOverlayWhenRunning)
+        {
+            Overlay.IsOpen = false;
+            MainWindow.IsOpen = true;
+        }
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
         if (TaskManager.IsBusy)
