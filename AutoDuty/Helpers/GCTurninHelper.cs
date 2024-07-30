@@ -1,4 +1,5 @@
 ﻿using AutoDuty.IPC;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.Automation;
@@ -43,16 +44,13 @@ namespace AutoDuty.Helpers
         }
 
         internal static bool GCTurninRunning = false;
-        internal unsafe static Vector3 GCSupplyLocation => UIState.Instance()->PlayerState.GrandCompany == 1 ? new Vector3(94.02183f, 40.27537f, 74.475525f) : (UIState.Instance()->PlayerState.GrandCompany == 2 ? new Vector3(-68.678566f, -0.5015295f, -8.470145f) : new Vector3(-142.82619f, 4.0999994f, -106.31349f));
+        internal static Vector3 GCSupplyLocation => ObjectHelper.GrandCompany == 1 ? new Vector3(94.02183f, 40.27537f, 74.475525f) : (ObjectHelper.GrandCompany == 2 ? new Vector3(-68.678566f, -0.5015295f, -8.470145f) : new Vector3(-142.82619f, 4.0999994f, -106.31349f));
 
+        private static IGameObject? _personnelOfficerGameObject => ObjectHelper.GetObjectByDataId(_personnelOfficerDataId);
+        private static uint _personnelOfficerDataId => ObjectHelper.GrandCompany == 1 ? 1002388u : (ObjectHelper.GrandCompany == 2 ? 1002394u : 1002391u);
         private static bool _deliverooStarted = false;
         private static Chat _chat = new();
         private static bool _stop = false;
-        private static void ClearTarget() => Svc.Targets.Target = null;
-        private unsafe static void CloseAddons() 
-        {
-            
-        }
 
         internal static unsafe void GCTurninUpdate(IFramework framework)
         {
@@ -131,8 +129,31 @@ namespace AutoDuty.Helpers
             }
             else if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) <= 5 && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
             {
-                Svc.Log.Debug("Sending Chat Command /deliveroo e");
-                _chat.SendMessage("/deliveroo e");
+                if (_personnelOfficerGameObject == null)
+                    return;
+                if (Svc.Targets.Target?.DataId != _personnelOfficerGameObject.DataId)
+                {
+                    Svc.Log.Debug($"Targeting {_personnelOfficerGameObject.Name}({_personnelOfficerGameObject.DataId}) CurrentTarget={Svc.Targets.Target}({Svc.Targets.Target?.DataId})");
+                    Svc.Targets.Target = _personnelOfficerGameObject;
+                }
+                else if (!GenericHelpers.TryGetAddonByName("GrandCompanySupplyList", out AtkUnitBase* addonGrandCompanySupplyList) || !GenericHelpers.IsAddonReady(addonGrandCompanySupplyList))
+                {
+                    if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString) && GenericHelpers.IsAddonReady(addonSelectString))
+                    {
+                        Svc.Log.Debug($"Clicking SelectString");
+                        AddonHelper.ClickSelectString(0);
+                    }
+                    else
+                    {
+                        Svc.Log.Debug($"Interacting with {_personnelOfficerGameObject.Name}");
+                        ObjectHelper.InteractWithObjectUntilAddon(_personnelOfficerGameObject, "SelectString");
+                    }
+                }
+                else
+                {
+                    Svc.Log.Debug("Sending Chat Command /deliveroo e");
+                    _chat.SendMessage("/deliveroo e");
+                }
                 return;
             }
         }
