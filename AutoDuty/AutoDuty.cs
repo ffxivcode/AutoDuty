@@ -82,7 +82,6 @@ public class AutoDuty : IDalamudPlugin
     private ActionsManager _actions;
     private Chat _chat;
     private DutySupportManager _dutySupportManager;
-    private RegularDutyManager _regularDutyManager;
     private TrustManager _trustManager;
     private SquadronManager _squadronManager;
     private VariantManager _variantManager;
@@ -131,7 +130,6 @@ public class AutoDuty : IDalamudPlugin
             _chat = new();
             _overrideAFK = new();
             _dutySupportManager = new(TaskManager);
-            _regularDutyManager = new(TaskManager);
             _trustManager = new(TaskManager);
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
@@ -290,6 +288,8 @@ public class AutoDuty : IDalamudPlugin
 
     private void LoopTasks()
     {
+        if (CurrentTerritoryContent == null) return;
+
         if (Configuration.AutoRepair && InventoryHelper.LowestEquippedCondition() <= Configuration.AutoRepairPct)
         {
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
@@ -338,7 +338,11 @@ public class AutoDuty : IDalamudPlugin
             _squadronManager.RegisterSquadron(CurrentTerritoryContent);
         }
         else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
-            _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
+        {
+            TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Loop-Queue");
+            TaskManager.DelayNext("Loop-Delay50", 50);
+            TaskManager.Enqueue(() => !QueueHelper.QueueRunning, int.MaxValue, "Loop-WaitQueueComplete");
+        }
         TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
         TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
         TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Loop-WaitPlayerValid");
@@ -439,7 +443,11 @@ public class AutoDuty : IDalamudPlugin
             else if (Configuration.Variant)
                 _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
             else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
-                _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
+            {
+                TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Run-Queue");
+                TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.Enqueue(() => !QueueHelper.QueueRunning, int.MaxValue, "Run-WaitQueueComplete");
+            }
             else if (Configuration.Squadron)
             {
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
@@ -1025,7 +1033,7 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady)
                     return;
 
-                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning)
+                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning && !QueueHelper.QueueRunning)
                     Action = $"Step: Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
                 break;
             default:
@@ -1165,7 +1173,7 @@ public class AutoDuty : IDalamudPlugin
                 _actions.ExitDuty("");
                 break;
             case "t":
-                QueueHelper.Invoke("t");
+                QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("t ", ""), StringComparison.InvariantCultureIgnoreCase)).Value);
                 break;
             default:
                 OpenMainUI(); 

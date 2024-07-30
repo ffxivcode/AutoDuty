@@ -1,127 +1,139 @@
 ﻿using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.DalamudServices;
+using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using System.Diagnostics;
-using System.Linq;
+using System.Collections.Generic;
 using static AutoDuty.Helpers.ContentHelper;
 
 namespace AutoDuty.Helpers
 {
     internal unsafe static class QueueHelper
     {
-        internal static void Invoke(string content)
+        internal static void Invoke(Content content)
         {
-            _content = content;
-            QueueRunning = true;
-            Svc.Framework.Update += QueueUpdate;
+            if (!QueueRunning)
+            {
+                _content = content;
+                Svc.Log.Info($"Queueing: {content.Name}");
+                QueueRunning = true;
+                Svc.Framework.Update += QueueUpdate;
+            }
         }
 
         internal static void Stop()
         {
+            if (QueueRunning)
+                Svc.Log.Info($"Done Queueing: {_content?.Name}");
             _content = null;
             QueueRunning = false;
+            _allConditionsMetToJoin = false;
             Svc.Framework.Update -= QueueUpdate;
         }
 
         internal static bool QueueRunning = false;
 
-        private static string? _content = null;
-        private static AtkUnitBase* addon = null;
+        private static Content? _content = null;
+        private static AddonContentsFinder* _addonContentsFinder = null;
+        private static bool _allConditionsMetToJoin = false;
 
         internal static void QueueUpdate(IFramework _)
         {
-            if (_content == null)
+            if (AutoDuty.Plugin.InDungeon || _content == null || Svc.ClientState.TerritoryType == _content.TerritoryType)
             {
                 Stop();
                 return;
             }
-            AutoDuty.Plugin.Action = $"Step: Queueing Duty: {_content}";
 
+            if (!EzThrottler.Throttle("QueueHelper", 250))
+                return;
+
+            AutoDuty.Plugin.Action = $"Step: Queueing Duty: {_content.Name}";
 
             if (!ObjectHelper.IsValid)
                 return;
 
+            if (GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out AtkUnitBase* addonContentsFinderConfirm) && GenericHelpers.IsAddonReady(addonContentsFinderConfirm))
+            {
+                Svc.Log.Debug("Queue Helper - Confirming DutyPop");
+                AddonHelper.FireCallBack(addonContentsFinderConfirm, true, 8);
+                return;
+            }
+
             if (ContentsFinder.Instance()->IsUnrestrictedParty != AutoDuty.Plugin.Configuration.Unsynced)
             {
+                Svc.Log.Debug("Queue Helper - Setting UnrestrictedParty");
                 ContentsFinder.Instance()->IsUnrestrictedParty = AutoDuty.Plugin.Configuration.Unsynced;
                 return;
             }
 
-            if (!GenericHelpers.TryGetAddonByName("ContentsFinder", out addon) || !GenericHelpers.IsAddonReady(addon))
+            if (!_allConditionsMetToJoin && (!GenericHelpers.TryGetAddonByName("ContentsFinder", out _addonContentsFinder) || !GenericHelpers.IsAddonReady((AtkUnitBase*)_addonContentsFinder)))
             {
-                AgentContentsFinder.Instance()->OpenRegularDuty(1);
+                Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content.Name}");
+                AgentContentsFinder.Instance()->OpenRegularDuty(_content.ContentFinderCondition);
                 return;
             }
 
-            if (((AddonContentsFinder*)addon)->DutyList->Items.LongCount == 0)
+            if (_addonContentsFinder->DutyList->Items.LongCount == 0)
                 return;
 
-            var a = ((AddonContentsFinder*)addon)->DutyList->Items.ToList();
-            //a.Where(x => x.Value->UIntValues[0] != 0);
-            Svc.Log.Info($"{a.Count}");
-            foreach (var x in a)
+            var vectorDutyListItems = _addonContentsFinder->DutyList->Items;
+            List<AtkComponentTreeListItem> listAtkComponentTreeListItems = [];
+            vectorDutyListItems.ForEach(pointAtkComponentTreeListItem => listAtkComponentTreeListItems.Add(*(pointAtkComponentTreeListItem.Value)));
+
+            if (!_allConditionsMetToJoin && (_addonContentsFinder->SelectedRow == 0 || !_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase)))
             {
-                Svc.Log.Info("_______");
-                var aas = x.Value->Renderer->GetTextNodeById(5);
-                if (aas != null)
-                {
-                    var aat = aas->GetAsAtkTextNode();
-                    if (aat != null)
-                        Svc.Log.Info($"{aat->NodeText}");
-                }
-                var xarr = x.Value->StringValues.ToArray();
-                var yarr = x.Value->UIntValues.ToArray();
-                foreach (var y in xarr)
-                {
-                    if (y.Value != null)
-                        Svc.Log.Info($"{xarr.Length} {y.Value->ToString()}");
-                }
-                foreach (var z in yarr)
-                {
-                    Svc.Log.Info($"{yarr.Length} {z}");
-                }
+                Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content.Name} because we have the wrong selection");
+                AgentContentsFinder.Instance()->OpenRegularDuty(_content.ContentFinderCondition);
+                return;
             }
-            Svc.Framework.Update -= QueueUpdate;
-            /*_taskManager.Enqueue(() => ((AddonContentsFinder*)addon)->DutyList->Items.LongCount > 0, "RegisterRegularDuty");
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 12, 1), "RegisterRegularDuty");
-            _taskManager.DelayNext("RegisterRegularDuty", 50);
-            _taskManager.Enqueue(() => SelectDuty(content, (AddonContentsFinder*)addon), "RegisterRegularDuty");
-            _taskManager.DelayNext("RegisterRegularDuty", 50);
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 12, 0), "RegisterRegularDuty");
-            _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterRegularDuty");
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterRegularDuty");*/
+
+            if ((!_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("0/5 Selected")) || (_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_content.Name!.Contains(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase)))
+            {
+                Svc.Log.Debug($"Queue Helper - We have duties that are not {_content.Name} Selected, Clearing");
+                AddonHelper.FireCallBack((AtkUnitBase*)_addonContentsFinder, true, 12, 1);
+                return;
+            }
+
+            if (_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase) && _addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("0/5 Selected"))
+            {
+                Svc.Log.Debug("Queue Helper - Checking Duty");
+                SelectDuty(_addonContentsFinder);
+                return;
+            }
+
+            if (_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase) && _addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && _content.Name.Contains(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                _allConditionsMetToJoin = true;
+                Svc.Log.Debug("Queue Helper - All Conditions Met, Clicking Join");
+                AddonHelper.FireCallBack((AtkUnitBase*)_addonContentsFinder, true, 12, 0);
+                return;
+            }
         }
 
-        private static unsafe bool SelectDuty(Content content, AddonContentsFinder* addon)
+        private static uint HeadersCount(uint before, List<AtkComponentTreeListItem> list)
         {
-            if (content.Name == null) return false;
-            if (GenericHelpers.IsAddonReady(&addon->AtkUnitBase))
+            uint count = 0;
+            for (int i = 0; i < before; i++)
             {
-                var list = addon->AtkUnitBase.GetNodeById(52)->GetAsAtkComponentList();
-                for (var i = 3; i < 19; i++)
-                {
-                    var componentNode = list->UldManager.NodeList[i]->GetComponent();
-                    if (componentNode is null) continue;
-                    var textNode = componentNode->GetTextNodeById(5)->GetAsAtkTextNode();
-                    var buttonNode = componentNode->UldManager.NodeList[16]->GetAsAtkComponentCheckBox();
-                    if (textNode is null || buttonNode is null) continue;
-                    if (textNode->NodeText.ToString().EndsWith("..."))
-                    {
-                        var textnode = textNode->NodeText.ToString().Replace("...", "");
-                        var len = textnode.Length;
-                        if (content.Name.Substring(0, len).Equals(textnode))
-                            buttonNode->ClickCheckboxButton(componentNode, 0);
-                    }
-                    else if (textNode->NodeText.ToString() == content.Name)
-                        buttonNode->ClickCheckboxButton(componentNode, 0);
-                }
-                return true;
+                if (list[i].UIntValues[0] == 4 || list[i].UIntValues[0] == 2)
+                    count++;
             }
-            return false;
+            return count;
+        }
+
+        private static void SelectDuty(AddonContentsFinder* addonContentsFinder)
+        {
+            if (addonContentsFinder == null) return;
+
+            var vectorDutyListItems = addonContentsFinder->DutyList->Items;
+            List<AtkComponentTreeListItem> listAtkComponentTreeListItems = [];
+            vectorDutyListItems.ForEach(pointAtkComponentTreeListItem => listAtkComponentTreeListItems.Add(*(pointAtkComponentTreeListItem.Value)));
+
+            AddonHelper.FireCallBack((AtkUnitBase*)addonContentsFinder, true, 3, addonContentsFinder->SelectedRow - (HeadersCount(addonContentsFinder->SelectedRow, listAtkComponentTreeListItems) - 1));
         }
     }
 }

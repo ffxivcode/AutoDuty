@@ -53,7 +53,7 @@ namespace AutoDuty.Managers
         {
             var addonBase = (AtkUnitBase*)addon;
             var atkComponentTreeListDungeons = (AtkComponentTreeList*)addonBase->UldManager.NodeList[7]->GetComponent();
-            return (int)atkComponentTreeListDungeons->Items.Size();
+            return atkComponentTreeListDungeons->Items.Count;
         }
 
         private unsafe int DawnStoryIndex(int index, uint ex, int indexModifier)
