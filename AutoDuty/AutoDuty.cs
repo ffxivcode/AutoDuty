@@ -262,7 +262,11 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.Log.Debug("We Changed Territories but are doing after loop actions or not running at all");
             return;
         }
-
+        if (Configuration.OpenOverlay && Configuration.OnlyOpenOverlayWhenRunning)
+        {
+            Overlay.IsOpen = false;
+            MainWindow.IsOpen = true;
+        }
         Action = "";
 
         if (t != CurrentTerritoryContent.TerritoryType)
