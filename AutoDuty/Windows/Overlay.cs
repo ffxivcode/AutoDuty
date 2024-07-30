@@ -34,10 +34,16 @@ public unsafe class Overlay : Window
             if (!AutoDuty.Plugin.InDungeon)
             {
                 ImGui.SameLine(0, 5);
-                if (ImGuiEx.IconButton($"\uf013##Config"))
+                if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
                     AutoDuty.Plugin.MainWindow.IsOpen = !AutoDuty.Plugin.MainWindow.IsOpen;
+                ImGui.SameLine();
+                if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
+                {
+                    this.IsOpen = false;
+                    Plugin.MainWindow.IsOpen = true;
+                }
             }
-        }
+    }
 
         if (Plugin.InDungeon || Plugin.Running)
         {
@@ -61,8 +67,14 @@ public unsafe class Overlay : Window
             ImGui.SameLine(0, 5);
             MainWindow.StopResumePause();
             ImGui.SameLine();
-            if (ImGuiEx.IconButton($"\uf013##Config"))
+            if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
                 AutoDuty.Plugin.MainWindow.IsOpen = !AutoDuty.Plugin.MainWindow.IsOpen;
+            ImGui.SameLine();
+            if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
+            {
+                this.IsOpen = false;
+                Plugin.MainWindow.IsOpen = true;
+            }
 
             if (!Plugin.Configuration.HideDungeonText)
             {
