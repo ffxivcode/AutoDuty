@@ -323,6 +323,12 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop-WaitAutoDesynthComplete");
         }
+        if (Configuration.AutoMarket)
+        {
+            TaskManager.Enqueue(() => AutoMarketHelper.Invoke(), "Loop-AutoMarket");
+            TaskManager.DelayNext("Loop-Delay50", 50);
+            TaskManager.Enqueue(() => !AutoMarketHelper.AutoMarketRunning, int.MaxValue, "Loop-WaitAutoMarketComplete");
+        }
         if (!Configuration.Squadron)
         {
             if (Configuration.RetireToBarracksBeforeLoops)
@@ -1050,7 +1056,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady)
                     return;
 
-                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning && !QueueHelper.QueueRunning)
+                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning && !QueueHelper.QueueRunning && !AutoMarketHelper.AutoMarketRunning)
                     Action = $"Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
                 break;
             default:
@@ -1192,6 +1198,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 break;
             case "queue":
                 QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null);
+                break;
+            case "automarket":
+                AutoMarketHelper.Invoke();
                 break;
             default:
                 OpenMainUI(); 

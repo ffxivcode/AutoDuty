@@ -10,6 +10,19 @@ using System.Threading.Tasks;
 
 namespace AutoDuty.IPC
 {
+    internal static class AutoMarket_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AutoMarket_IPCSubscriber), "AutoBot");
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("AutoBot");
+
+        [EzIPC] internal static readonly Action Start;
+        [EzIPC] internal static readonly Action Stop;
+        [EzIPC] internal static readonly Func<bool> IsRunning;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
     internal static class Marketbuddy_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Marketbuddy_IPCSubscriber), "Marketbuddy");
