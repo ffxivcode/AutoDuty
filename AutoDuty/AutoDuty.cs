@@ -34,6 +34,7 @@ using ECommons.GameHelpers;
 using ECommons.Schedulers;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using Lumina.Excel.GeneratedSheets2;
 
 // TODO:
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
@@ -1064,6 +1065,8 @@ public class AutoDuty : IDalamudPlugin
             GotoBarracksHelper.Stop();
         if (RepairHelper.RepairRunning)
             RepairHelper.Stop();
+        if (QueueHelper.QueueRunning)
+            QueueHelper.Stop();
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
         Action = "";
@@ -1160,6 +1163,9 @@ public class AutoDuty : IDalamudPlugin
                 break;
             case "exitduty":
                 _actions.ExitDuty("");
+                break;
+            case "t":
+                QueueHelper.Invoke("t");
                 break;
             default:
                 OpenMainUI(); 
