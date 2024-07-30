@@ -72,8 +72,15 @@ namespace AutoDuty.Helpers
                     addonRepair->Close(true);
                 return;
             }
+
             if (AutoDuty.Plugin.Started)
                 Stop();
+
+            if (Conditions.IsMounted)
+            {
+                ActionManager.Instance()->UseAction(ActionType.GeneralAction, 23);
+                return;
+            }
 
             if (!EzThrottler.Check("Repair"))
                 return;
