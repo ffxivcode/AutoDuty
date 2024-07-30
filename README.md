@@ -29,7 +29,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/ffxivcode/AutoDuty">
-    <img src="https://s3.puni.sh/media/plugin/54/icon-15ug2vnr9m1.png" alt="Logo" width="120" height="120">
+    <img src="./logo.png" alt="Logo" width="120" height="120">
   </a>
 
 <h3 align="center"><b>AutoDuty</b></h3>
