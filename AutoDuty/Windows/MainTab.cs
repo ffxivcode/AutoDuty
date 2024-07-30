@@ -87,7 +87,8 @@ namespace AutoDuty.Windows
                 ImGui.Spacing();
 
                 DrawPathSelection();
-
+                if (!Plugin.Running && !Plugin.Overlay.IsOpen)
+                    MainWindow.GotoAndActions();
                 using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
                     using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
