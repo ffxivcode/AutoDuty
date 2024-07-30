@@ -24,7 +24,7 @@ public class Configuration : IPluginConfiguration
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
     public bool OpenOverlay { get; set; } = true;
-    public bool OnlyOpenOverlayWhenRunning { get; set; } = true;
+    public bool OnlyOpenOverlayWhenRunning { get; set; } = false;
     public bool HideDungeonText { get; set; } = false;
     public bool HideActionText { get; set; } = false;
     public bool AutoManageBossModAISettings { get; set; } = true;
