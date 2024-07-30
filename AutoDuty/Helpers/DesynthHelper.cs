@@ -6,6 +6,8 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.GeneratedSheets;
+using static Dalamud.Interface.Utility.Raii.ImRaii;
 
 namespace AutoDuty.Helpers
 {
@@ -46,6 +48,12 @@ namespace AutoDuty.Helpers
 
             if (!EzThrottler.Throttle("Desynth", 250))
                 return;
+
+            if (Conditions.IsMounted)
+            {
+                ActionManager.Instance()->UseAction(ActionType.GeneralAction, 23);
+                return;
+            }
 
             AutoDuty.Plugin.Action = "Desynthing Inventory";
 
