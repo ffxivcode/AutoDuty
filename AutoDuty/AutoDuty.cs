@@ -26,14 +26,11 @@ using TinyIpc.Messaging;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
-
-namespace AutoDuty;
-
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
-using ECommons.Schedulers;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+
+namespace AutoDuty;
 
 // TODO:
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
