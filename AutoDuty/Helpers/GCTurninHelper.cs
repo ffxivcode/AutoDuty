@@ -67,7 +67,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (!EzThrottler.Throttle("Turnin", 50))
+            if (!EzThrottler.Throttle("Turnin", 250))
                 return;
 
             if (GotoHelper.GotoRunning)

@@ -73,7 +73,7 @@ namespace AutoDuty.Helpers
 
             if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
             {
-                if (!ObjectHelper.IsOccupied || (EzThrottler.Throttle("GearCheck") && InventoryHelper.LowestEquippedCondition() > AutoDuty.Plugin.Configuration.AutoRepairPct))
+                if (!ObjectHelper.IsOccupied || (EzThrottler.Throttle("GearCheck") && InventoryHelper.CanRepair()))
                 {
                     if (Svc.Condition[ConditionFlag.Occupied39])
                         Stop();

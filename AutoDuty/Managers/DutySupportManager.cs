@@ -14,7 +14,7 @@ namespace AutoDuty.Managers
             if (content.DawnIndex < 0)
                 return;
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Duty Support: {content.DisplayName}"), "RegisterDutySupport");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Duty Support: {content.DisplayName}", "RegisterDutySupport");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Duty Support: {content.DisplayName}", "RegisterDutySupport");
             AtkUnitBase * addon = null;
             int indexModifier = 0;
 

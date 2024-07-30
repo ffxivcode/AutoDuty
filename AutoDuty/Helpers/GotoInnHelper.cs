@@ -17,7 +17,7 @@ namespace AutoDuty.Helpers
 
             if (!GotoInnRunning && Svc.ClientState.TerritoryType != InnTerritoryType(_whichGrandCompany))
             {
-                Svc.Log.Info($"Goto Inn Started {_whichGrandCompany})");
+                Svc.Log.Info($"Goto Inn Started {_whichGrandCompany}");
                 GotoInnRunning = true;
                 SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;

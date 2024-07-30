@@ -23,7 +23,7 @@ namespace AutoDuty.Managers
                 return;
             }
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Squadron: {content.DisplayName}"), "RegisterSquadron");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Squadron: {content.DisplayName}", "RegisterSquadron");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Squadron: {content.DisplayName}", "RegisterSquadron");
 
             AtkUnitBase* addon = null;
 

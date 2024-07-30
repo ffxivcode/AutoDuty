@@ -51,7 +51,7 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("QueueHelper", 250))
                 return;
 
-            AutoDuty.Plugin.Action = $"Step: Queueing Duty: {_content.Name}";
+            AutoDuty.Plugin.Action = $"Queueing Duty: {_content.Name}";
 
             if (!ObjectHelper.IsValid)
                 return;

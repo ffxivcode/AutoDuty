@@ -4,6 +4,7 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina.Excel.GeneratedSheets;
 using System.Linq;
+using System;
 
 namespace AutoDuty.Helpers
 {
@@ -43,18 +44,25 @@ namespace AutoDuty.Helpers
             return itemLevelTotal / 12;
         }
 
-        internal static float LowestEquippedCondition()
+        internal static InventoryItem LowestEquippedItem()
         {
             var equipedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
             uint itemLowestCondition = 60000;
-            for (int i = 0; i < 13; i++)
+            uint itemLowest = 0;
+
+            for (uint i = 0; i < 13; i++)
             {
                 if (itemLowestCondition > equipedItems->Items[i].Condition)
+                {
+                    itemLowest = i;
                     itemLowestCondition = equipedItems->Items[i].Condition;
+                }
             }
 
-            return itemLowestCondition / 300f;
+            return equipedItems->Items[itemLowest];
         }
+
+        internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) <= AutoDuty.Plugin.Configuration.AutoRepairPct && (!AutoDuty.Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
 
         //artisan
         internal static bool CanRepairItem(uint itemID)
@@ -75,9 +83,9 @@ namespace AutoDuty.Helpers
                 if (!HasDarkMatterOrBetter(repairItem.Row))
                     return false;
 
-                /*var jobLevel = ((FFXIVClientStructs.FFXIV.Client.Game.Character.Character*)AutoDuty.Plugin.Player.Address)->CharacterData.JobLevel(actualJob);
+                var jobLevel = PlayerState.Instance()->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint)actualJob)?.ExpArrayIndex ?? 0];
                 if (Math.Max(item.LevelEquip - 10, 1) <= jobLevel)
-                    return true;*/
+                    return true;
             }
 
             return false;
