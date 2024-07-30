@@ -13,9 +13,9 @@ namespace AutoDuty.Helpers
 {
     internal unsafe static class QueueHelper
     {
-        internal static void Invoke(Content content)
+        internal static void Invoke(Content? content)
         {
-            if (!QueueRunning)
+            if (!QueueRunning && content != null)
             {
                 _content = content;
                 Svc.Log.Info($"Queueing: {content.Name}");

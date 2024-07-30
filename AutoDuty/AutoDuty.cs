@@ -1163,8 +1163,8 @@ public class AutoDuty : IDalamudPlugin
             case "exitduty":
                 _actions.ExitDuty("");
                 break;
-            case "t":
-                QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("t ", ""), StringComparison.InvariantCultureIgnoreCase)).Value);
+            case "queue":
+                QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null);
                 break;
             default:
                 OpenMainUI(); 
