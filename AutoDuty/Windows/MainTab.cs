@@ -337,7 +337,8 @@ namespace AutoDuty.Windows
 
                     if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid || Plugin.Configuration.Variant)
                     {
-                        ImGui.SameLine(0, 15);
+                        //ImGui.SameLine(0, 15);
+                        ImGui.Separator();
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref _hideUnavailableDuties))
                         {
                             Plugin.Configuration.HideUnavailableDuties = _hideUnavailableDuties;
