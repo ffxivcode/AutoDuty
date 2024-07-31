@@ -1066,6 +1066,8 @@ public sealed class AutoDuty : IDalamudPlugin
         Started = false;
         Stage = 0;
         CurrentLoop = 0;
+        _chat.ExecuteCommand($"/vbmai off");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (Configuration.OpenOverlay && Configuration.OnlyOpenOverlayWhenRunning)
