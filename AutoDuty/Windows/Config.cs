@@ -10,6 +10,7 @@ using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
 using ECommons;
 using Dalamud.Interface.Utility;
+using Dalamud.Interface.Components;
 
 namespace AutoDuty.Windows;
 
@@ -76,6 +77,7 @@ public class Configuration : IPluginConfiguration
     public bool StopItemQty { get; set; } = false;
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary { get; set; } = [];
     public int StopItemQtyInt { get; set; } = 1;
+    public bool UsingAlternativeRotationPlugin;
 
     public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
 
@@ -130,6 +132,7 @@ public static class ConfigTab
         var stopItemQty = Configuration.StopItemQty;
         var stopItemQtyItemDictionary = Configuration.StopItemQtyItemDictionary;
         var stopItemQtyInt = Configuration.StopItemQtyInt;
+        
 
         if (ImGui.Checkbox("Open Overlay", ref openOverlay))
         {
@@ -246,6 +249,14 @@ public static class ConfigTab
             Configuration.Save();
         }
         ImGui.Separator();
+
+        if (ImGui.Checkbox("Using Alternative Rotation Plugin", ref Configuration.UsingAlternativeRotationPlugin))
+            Configuration.Save();
+
+        ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Rotation Solver.");
+
+        ImGui.Separator();
+
         if (ImGui.Checkbox("AutoRepair Enabled @", ref autoRepair))
         {
             Configuration.AutoRepair = autoRepair;
