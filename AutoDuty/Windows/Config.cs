@@ -1,7 +1,6 @@
 ﻿using AutoDuty.IPC;
 using Dalamud.Configuration;
 using Dalamud.Interface.Utility.Raii;
-using Dalamud.Plugin;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -19,11 +18,15 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 96;
+    public int Version { get; set; } = 106;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
+    public bool OpenOverlay { get; set; } = true;
+    public bool OnlyOpenOverlayWhenRunning { get; set; } = false;
+    public bool HideDungeonText { get; set; } = false;
+    public bool HideActionText { get; set; } = false;
     public bool AutoManageBossModAISettings { get; set; } = true;
     public bool AutoManageRSRState { get; set; } = true;
     public bool AutoExitDuty { get; set; } = true;
@@ -76,17 +79,9 @@ public class Configuration : IPluginConfiguration
 
     public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
 
-    [NonSerialized]
-    private IDalamudPluginInterface? PluginInterface;
-
-    public void Initialize(IDalamudPluginInterface pluginInterface)
-    {
-        PluginInterface = pluginInterface;
-    }
-
     public void Save()
     {
-        PluginInterface!.SavePluginConfig(this);
+        AutoDuty.PluginInterface.SavePluginConfig(this);
     }
 }
 
@@ -104,6 +99,10 @@ public static class ConfigTab
     {
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
+        var openOverlay = Configuration.OpenOverlay;
+        var onlyOpenOverlayWhenRunning = Configuration.OnlyOpenOverlayWhenRunning;
+        var hideDungeonText = Configuration.HideDungeonText;
+        var hideActionText = Configuration.HideActionText;
         var autoManageRSRState = Configuration.AutoManageRSRState;
         var autoManageBossModAISettings = Configuration.AutoManageBossModAISettings;
         var autoExitDuty = Configuration.AutoExitDuty;
@@ -132,6 +131,38 @@ public static class ConfigTab
         var stopItemQtyItemDictionary = Configuration.StopItemQtyItemDictionary;
         var stopItemQtyInt = Configuration.StopItemQtyInt;
 
+        if (ImGui.Checkbox("Open Overlay", ref openOverlay))
+        {
+            AutoDuty.Plugin.Overlay.IsOpen = openOverlay;
+            Configuration.OpenOverlay = openOverlay;
+            Configuration.Save();
+        }
+        using (var openOverlayDisable = ImRaii.Disabled(!openOverlay))
+        {
+            ImGui.SameLine(0, 5);
+            if (ImGui.Checkbox("Only When Running", ref onlyOpenOverlayWhenRunning))
+            {
+                if (onlyOpenOverlayWhenRunning && !AutoDuty.Plugin.Running && !AutoDuty.Plugin.Started)
+                    AutoDuty.Plugin.Overlay.IsOpen = false;
+                else
+                    AutoDuty.Plugin.Overlay.IsOpen = true;
+                Configuration.OnlyOpenOverlayWhenRunning = onlyOpenOverlayWhenRunning;
+                Configuration.Save();
+            }
+            
+            if (ImGui.Checkbox("Hide Dungeon", ref hideDungeonText))
+            {
+                Configuration.HideDungeonText = hideDungeonText;
+                Configuration.Save();
+            }
+            ImGui.SameLine(0, 5);
+            if (ImGui.Checkbox("Hide Action", ref hideActionText))
+            {
+                Configuration.HideActionText = hideActionText;
+                Configuration.Save();
+            }
+        }
+        ImGui.Separator();
         if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
         {
             Configuration.AutoManageRSRState = autoManageRSRState;
@@ -469,7 +500,7 @@ public static class ConfigTab
 
             using (var d1 = ImRaii.Disabled(!followSlot))
             {
-                ImGui.PushItemWidth(300);
+                ImGui.PushItemWidth(270);
                 if (ImGui.SliderInt("Follow Slot #", ref followSlotInt, 1, 4))
                 {
                     Configuration.FollowSlotInt = followSlotInt;
@@ -535,7 +566,7 @@ public static class ConfigTab
 
             using (var d1 = ImRaii.Disabled(maxDistanceToTargetRoleBased))
             {
-                ImGui.PushItemWidth(200);
+                ImGui.PushItemWidth(195);
                 if (ImGui.SliderInt("Max Distance To Target", ref maxDistanceToTarget, 1, 30))
                 {
                     Configuration.MaxDistanceToTarget = maxDistanceToTarget;
@@ -549,7 +580,7 @@ public static class ConfigTab
                 ImGui.PopItemWidth();
             }
 
-            ImGui.PushItemWidth(200);
+            ImGui.PushItemWidth(195);
             if (ImGui.SliderInt("Max Distance To Slot", ref maxDistanceToSlot, 1, 30))
             {
                 Configuration.MaxDistanceToSlot = maxDistanceToSlot;

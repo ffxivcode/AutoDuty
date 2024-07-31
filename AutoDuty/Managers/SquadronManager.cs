@@ -1,5 +1,4 @@
-﻿using AutoDuty.External;
-using AutoDuty.Helpers;
+﻿using AutoDuty.Helpers;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
 using ECommons.Automation.LegacyTaskManager;
@@ -9,6 +8,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Managers
 {
+    //on Rewrite need to check for sufficient seals
     internal class SquadronManager(TaskManager _taskManager)
     {
 
@@ -23,15 +23,14 @@ namespace AutoDuty.Managers
                 return;
             }
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Squadron: {content.DisplayName}"), "RegisterSquadron");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Step: Queueing Squadron: {content.DisplayName}", "RegisterSquadron");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Squadron: {content.DisplayName}", "RegisterSquadron");
 
             AtkUnitBase* addon = null;
-            _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = true; }, "RegisterSquadron");
 
-            //Fallback or check if the ObjectHelper functionality is unavailable
+            //Check if player is valid
             if (!ObjectHelper.IsValid)
             {
-                Svc.Log.Info("ObjectHelper was invalid, making it valid.");
+                Svc.Log.Info("player was invalid, waiting for it to be valid.");
                 _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterSquadron");
                 Svc.Log.Info("Delaying next Enqueue by 2s");
                 _taskManager.DelayNext("RegisterSquadron", 2000);
@@ -73,9 +72,6 @@ namespace AutoDuty.Managers
                 }
                 return false; // Return false if we are not in correct duty
             }, "RegisterSquadron");
-
-            // Reset ExecSkipTalk to false
-            _taskManager.Enqueue(() => { ExecSkipTalk.IsEnabled = false; }, "RegisterSquadron");
         }
         
 
@@ -93,7 +89,15 @@ namespace AutoDuty.Managers
                 return true;
             }
 
-            if (GenericHelpers.TryGetAddonByName("GcArmyCapture", out AtkUnitBase* addon))
+            if (GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk) && GenericHelpers.IsAddonReady(addonTalk))
+            {
+                // Talk window up ClickIt
+                AddonHelper.ClickTalk();
+                Svc.Log.Info("Clicking Talk");
+                return false;
+            }
+
+            if (GenericHelpers.TryGetAddonByName("GcArmyCapture", out AtkUnitBase* _))
             {
                 // Viewing missions, move on to the next step for registering
                 ViewingMissions = true;
@@ -138,7 +142,7 @@ namespace AutoDuty.Managers
             if (!InteractedWithSergeant)
             {
                 ObjectHelper.InteractWithObject(gameObject);
-                if (GenericHelpers.TryGetAddonByName("GcArmyCapture", out addon))
+                if (GenericHelpers.TryGetAddonByName("GcArmyCapture", out AtkUnitBase* _))
                 {
                     InteractedWithSergeant = true;
                 }

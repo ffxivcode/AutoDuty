@@ -26,14 +26,12 @@ using TinyIpc.Messaging;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
-
-namespace AutoDuty;
-
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
-using ECommons.Schedulers;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using Dalamud.IoC;
+
+namespace AutoDuty;
 
 // TODO:
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
@@ -44,8 +42,9 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 // Generic (Non Module) jousting respects navmesh out of bounds (or dynamically just adds forbiddenzones as Obstacles using Detour) (or at very least, vbm NavigationDecision can use ClosestPointonMesh in it's decision making) (or just spit balling here as no idea if even possible, add Everywhere non tiled as ForbiddenZones /shrug)
 // Generic Jousting (for non forbiddenzone AoE, where it just runs to edge of arena and keeps running (happens very often)) is toggleable (so i can turn it the fuck off)
 
-public class AutoDuty : IDalamudPlugin
+public sealed class AutoDuty : IDalamudPlugin
 {
+    [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     internal List<string> ListBoxPOSText { get; set; } = [];
     internal int CurrentLoop = 0;
     internal ContentHelper.Content? CurrentTerritoryContent = null;
@@ -76,17 +75,17 @@ public class AutoDuty : IDalamudPlugin
     internal IGameObject? ClosestTargetableBattleNpc = null;
     internal OverrideCamera OverrideCamera;
     internal MainWindow MainWindow { get; init; }
+    internal Overlay Overlay { get; init; }
     internal bool InDungeon = false;
     internal string Action = "";
     internal string PathFile = "";
     internal TaskManager TaskManager;
-
+    
     private const string CommandName = "/autoduty";
     private DirectoryInfo _configDirectory;
     private ActionsManager _actions;
     private Chat _chat;
     private DutySupportManager _dutySupportManager;
-    private RegularDutyManager _regularDutyManager;
     private TrustManager _trustManager;
     private SquadronManager _squadronManager;
     private VariantManager _variantManager;
@@ -102,20 +101,18 @@ public class AutoDuty : IDalamudPlugin
     private TinyMessageBus _messageBusReceive = new("AutoDutyBroadcaster");
     private bool _messageSender = false;
 
-    public AutoDuty(IDalamudPluginInterface pluginInterface)
+    public AutoDuty()
     {
         try
         {
             Plugin = this;
-            ECommonsMain.Init(pluginInterface, this, Module.DalamudReflector, Module.ObjectFunctions);
-            ExecSkipTalk.Init();
+            ECommonsMain.Init(PluginInterface, this, Module.DalamudReflector, Module.ObjectFunctions);
 
-            Configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            Configuration.Initialize(pluginInterface);
+            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
 
-            _configDirectory = pluginInterface.ConfigDirectory;
+            _configDirectory = PluginInterface.ConfigDirectory;
             PathsDirectory = new(_configDirectory.FullName + "/paths");
-            AssemblyFileInfo = pluginInterface.AssemblyLocation;
+            AssemblyFileInfo = PluginInterface.AssemblyLocation;
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
 
             if (!_configDirectory.Exists)
@@ -135,7 +132,6 @@ public class AutoDuty : IDalamudPlugin
             _chat = new();
             _overrideAFK = new();
             _dutySupportManager = new(TaskManager);
-            _regularDutyManager = new(TaskManager);
             _trustManager = new(TaskManager);
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
@@ -144,10 +140,15 @@ public class AutoDuty : IDalamudPlugin
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
             MainWindow = new();
+            Overlay = new();
             OverrideCamera = new();
 
             WindowSystem.AddWindow(MainWindow);
+            WindowSystem.AddWindow(Overlay);
 
+            if (Configuration.OpenOverlay && (!Configuration.OnlyOpenOverlayWhenRunning || Started || Running))
+                Overlay.IsOpen = true;
+            
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "\n/autoduty -> opens main window\n" +
@@ -159,9 +160,9 @@ public class AutoDuty : IDalamudPlugin
                 "/autoduty turnin -> GC Turnin\n"
             });
 
-            pluginInterface.UiBuilder.Draw += DrawUI;
-            pluginInterface.UiBuilder.OpenConfigUi += OpenConfigUI;
-            pluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
+            PluginInterface.UiBuilder.Draw += DrawUI;
+            PluginInterface.UiBuilder.OpenConfigUi += OpenConfigUI;
+            PluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
             Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
@@ -269,6 +270,12 @@ public class AutoDuty : IDalamudPlugin
             return;
         }
 
+        if (Configuration.OpenOverlay && Configuration.OnlyOpenOverlayWhenRunning && !Running)
+        {
+            Overlay.IsOpen = false;
+            MainWindow.IsOpen = true;
+        }
+
         Action = "";
 
         if (t != CurrentTerritoryContent.TerritoryType)
@@ -296,7 +303,9 @@ public class AutoDuty : IDalamudPlugin
 
     private void LoopTasks()
     {
-        if (Configuration.AutoRepair && InventoryHelper.LowestEquippedCondition() <= Configuration.AutoRepairPct)
+        if (CurrentTerritoryContent == null) return;
+
+        if (Configuration.AutoRepair && InventoryHelper.CanRepair())
         {
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
             TaskManager.DelayNext("Loop-Delay50", 50);
@@ -363,7 +372,11 @@ public class AutoDuty : IDalamudPlugin
             _squadronManager.RegisterSquadron(CurrentTerritoryContent);
         }
         else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
-            _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
+        {
+            TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Loop-Queue");
+            TaskManager.DelayNext("Loop-Delay50", 50);
+            TaskManager.Enqueue(() => !QueueHelper.QueueRunning, int.MaxValue, "Loop-WaitQueueComplete");
+        }
         TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
         TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
         TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Loop-WaitPlayerValid");
@@ -434,14 +447,19 @@ public class AutoDuty : IDalamudPlugin
         if (CurrentTerritoryContent == null)
             return;
 
-        MainWindow.OpenTab("Mini");
+        //MainWindow.OpenTab("Mini");
+        if (Configuration.OpenOverlay)
+        {
+            MainWindow.IsOpen = false;
+            Overlay.IsOpen = true;
+        }
         Stage = 99;
         Running = true;
         TaskManager.Abort();
         Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
-            if (Configuration.AutoRepair && InventoryHelper.LowestEquippedCondition() <= Configuration.AutoRepairPct)
+            if (Configuration.AutoRepair && InventoryHelper.CanRepair())
             {
                 TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
                 TaskManager.DelayNext("Run-Delay50", 50);
@@ -464,7 +482,11 @@ public class AutoDuty : IDalamudPlugin
             else if (Configuration.Variant)
                 _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
             else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
-                _regularDutyManager.RegisterRegularDuty(CurrentTerritoryContent);
+            {
+                TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Run-Queue");
+                TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.Enqueue(() => !QueueHelper.QueueRunning, int.MaxValue, "Run-WaitQueueComplete");
+            }
             else if (Configuration.Squadron)
             {
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
@@ -497,11 +519,15 @@ public class AutoDuty : IDalamudPlugin
             MainWindow.ShowPopup("Error", "Unable to load content for Territory");
             return;
         }
-        MainWindow.OpenTab("Mini");
+        //MainWindow.OpenTab("Mini");
+        if (Configuration.OpenOverlay)
+        {
+            MainWindow.IsOpen = false;
+            Overlay.IsOpen = true;
+        }
         MainListClicked = false;
         Stage = 1;
         Started = true;
-        ExecSkipTalk.IsEnabled = true;
         _chat.ExecuteCommand($"/vnav aligncamera enable");
         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
         _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
@@ -755,7 +781,7 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                Action = $"Step: {(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
+                Action = $"{(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
                 //Backwards Compatibility
                 if (ListBoxPOSText[Indexer].Contains('|'))
                 {
@@ -839,7 +865,7 @@ public class AutoDuty : IDalamudPlugin
                     _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes($"Follow|{Player.Name}"));
                 }
                 
-                Action = $"Step: {Plugin.ListBoxPOSText[Indexer]}";
+                Action = $"{Plugin.ListBoxPOSText[Indexer]}";
                 if (ObjectHelper.InCombat(Player) && Plugin.StopForCombat)
                 {
                     if (Configuration.AutoManageRSRState)
@@ -906,7 +932,7 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                Action = $"Step: Waiting For Combat";
+                Action = $"Waiting For Combat";
 
                 if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
                 {
@@ -1007,7 +1033,7 @@ public class AutoDuty : IDalamudPlugin
                 //if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                Action = $"Step: Looting Treasure";
+                Action = $"Looting Treasure";
                 if (ObjectHelper.InCombat(Player))
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
@@ -1068,8 +1094,8 @@ public class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady)
                     return;
 
-                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning)
-                    Action = $"Step: Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
+                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning && !QueueHelper.QueueRunning)
+                    Action = $"Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
                 break;
             default:
                 break;
@@ -1084,15 +1110,17 @@ public class AutoDuty : IDalamudPlugin
         Started = false;
         Stage = 0;
         CurrentLoop = 0;
-        //MainWindow.OpenTab("Main");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
+        if (Configuration.OpenOverlay && Configuration.OnlyOpenOverlayWhenRunning)
+        {
+            Overlay.IsOpen = false;
+            MainWindow.IsOpen = true;
+        }
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
         if (TaskManager.IsBusy)
             TaskManager.Abort();
-        if (ExecSkipTalk.IsEnabled)
-            ExecSkipTalk.IsEnabled = false;
         FollowHelper.SetFollow(null);
         if (ExtractHelper.ExtractRunning)
             ExtractHelper.Stop();
@@ -1108,6 +1136,8 @@ public class AutoDuty : IDalamudPlugin
             GotoBarracksHelper.Stop();
         if (RepairHelper.RepairRunning)
             RepairHelper.Stop();
+        if (QueueHelper.QueueRunning)
+            QueueHelper.Stop();
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
         Action = "";
@@ -1121,7 +1151,6 @@ public class AutoDuty : IDalamudPlugin
         FileHelper.FileSystemWatcher.Dispose();
         WindowSystem.RemoveAllWindows();
         ECommonsMain.Dispose();
-        ExecSkipTalk.Shutdown();
         MainWindow.Dispose();
         OverrideCamera.Dispose();
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
@@ -1182,7 +1211,7 @@ public class AutoDuty : IDalamudPlugin
                 DesynthHelper.Invoke();
                 break;
             case "repair":
-                if (InventoryHelper.LowestEquippedCondition() < Configuration.AutoRepairPct)
+                if (InventoryHelper.CanRepair())
                     RepairHelper.Invoke();
                 break;
             case "extract":
@@ -1204,6 +1233,9 @@ public class AutoDuty : IDalamudPlugin
                 break;
             case "exitduty":
                 _actions.ExitDuty("");
+                break;
+            case "queue":
+                QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null);
                 break;
             default:
                 OpenMainUI(); 

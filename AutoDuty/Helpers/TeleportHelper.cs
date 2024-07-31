@@ -8,7 +8,6 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Objects.Enums;
 using ECommons.Throttlers;
-using AutoDuty.IPC;
 
 namespace AutoDuty.Helpers
 {

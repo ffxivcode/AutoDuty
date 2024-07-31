@@ -3,6 +3,8 @@ using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using System.Numerics;
 using Dalamud.Game.ClientState.Objects.Types;
+using FFXIVClientStructs.FFXIV.Component.GUI;
+using ECommons;
 
 namespace AutoDuty.Helpers
 {
@@ -17,7 +19,7 @@ namespace AutoDuty.Helpers
 
             if (!GotoInnRunning && Svc.ClientState.TerritoryType != InnTerritoryType(_whichGrandCompany))
             {
-                Svc.Log.Info($"Goto Inn Started {_whichGrandCompany})");
+                Svc.Log.Info($"Goto Inn Started {_whichGrandCompany}");
                 GotoInnRunning = true;
                 SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;
@@ -31,9 +33,8 @@ namespace AutoDuty.Helpers
             if (GotoInnRunning)
                 Svc.Log.Info($"Goto Inn Finished");
             SchedulerHelper.DescheduleAction("GotoInnTimeOut");
-            Svc.Framework.Update -= GotoInnUpdate;
-            GotoInnRunning = false;
             GotoHelper.Stop();
+            _stop = true;
             _whichGrandCompany = 0;
             AutoDuty.Plugin.Action = "";
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -47,9 +48,29 @@ namespace AutoDuty.Helpers
         private static Vector3 _innKeepLocation => _whichGrandCompany == 1 ? new Vector3(15.42688f, 39.99999f, 12.466553f) : (_whichGrandCompany == 2 ? new Vector3(25.6627f, -8f, 99.74237f) : new Vector3(28.85994f, 6.999999f, -80.12716f));
         private static uint _innKeepDataId => _whichGrandCompany == 1 ? 1000974u : (_whichGrandCompany == 2 ? 1000102u : 1001976u);
         private static IGameObject? _innKeepGameObject => ObjectHelper.GetObjectByDataId(_innKeepDataId);
+        private static bool _stop = false;
 
-        internal static void GotoInnUpdate(IFramework framework)
+        internal unsafe static void GotoInnUpdate(IFramework framework)
         {
+            if (_stop)
+            {
+                if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
+                {
+                    _stop = false;
+                    GotoInnRunning = false;
+                    Svc.Framework.Update -= GotoInnUpdate;
+                }
+                else if (Svc.Targets.Target != null)
+                    Svc.Targets.Target = null;
+                else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                    addonSelectYesno->Close(true);
+                else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
+                    addonSelectString->Close(true);
+                else if (GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk))
+                    addonTalk->Close(true);
+                return;
+            }
+
             if (AutoDuty.Plugin.Started)
                 Stop();
 

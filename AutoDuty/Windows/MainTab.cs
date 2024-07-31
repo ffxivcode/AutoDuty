@@ -45,6 +45,7 @@ namespace AutoDuty.Windows
                     if (curPaths.Count > 1)
                     {
                         int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
+                        ImGui.PushItemWidth(240 * ImGuiHelpers.GlobalScale);
                         if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths], curPaths.Count))
                         {
                             if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
@@ -55,6 +56,7 @@ namespace AutoDuty.Windows
                             Plugin.CurrentPath = curPath;
                             Plugin.LoadPath();
                         }
+                        ImGui.PopItemWidth();
                         ImGui.SameLine();
 
                         using var d2 = ImRaii.Disabled(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ||
@@ -85,7 +87,8 @@ namespace AutoDuty.Windows
                 ImGui.Spacing();
 
                 DrawPathSelection();
-
+                if (!Plugin.Running && !Plugin.Overlay.IsOpen)
+                    MainWindow.GotoAndActions();
                 using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
                     using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
@@ -101,24 +104,24 @@ namespace AutoDuty.Windows
                         }
                         ImGui.SameLine(0, 15);
                     }
-                    ImGui.PushItemWidth(75 * ImGuiHelpers.GlobalScale);
+                    ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
                     if (ImGui.SliderInt("Times", ref _loopTimes, 0 , 100))
                     {
                         Plugin.Configuration.LoopTimes = _loopTimes;
                         Plugin.Configuration.Save();
                     }
                     ImGui.PopItemWidth();
-                    //ImGui.SameLine(0, 5);
+                    ImGui.SameLine(0, 5);
                     using (var d2 = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage == 0))
                     {
                         MainWindow.StopResumePause();
                         if (Plugin.Started)
                         {
-                            ImGui.SameLine(0, 5);
+                            //ImGui.SameLine(0, 5);
                             ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
                         }
                     }
-                    if (!ImGui.BeginListBox("##MainList", new Vector2(500 * ImGuiHelpers.GlobalScale, 525 * ImGuiHelpers.GlobalScale))) return;
+                    if (!ImGui.BeginListBox("##MainList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled && ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
                     {
@@ -173,7 +176,8 @@ namespace AutoDuty.Windows
             }
             else
             {
-                
+                if (!Plugin.Running && !Plugin.Overlay.IsOpen)
+                    MainWindow.GotoAndActions();
 
                 using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                 {
@@ -203,7 +207,7 @@ namespace AutoDuty.Windows
                     using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                     {
                         ImGui.SameLine(0, 15);
-                        ImGui.PushItemWidth(140 * ImGuiHelpers.GlobalScale);
+                        ImGui.PushItemWidth(200 * ImGuiHelpers.GlobalScale);
                         if (ImGui.SliderInt("Times", ref _loopTimes, 0, 100))
                         {
                             Plugin.Configuration.LoopTimes = _loopTimes;
@@ -211,11 +215,7 @@ namespace AutoDuty.Windows
                         }
                         ImGui.PopItemWidth();
                     }
-                    if (!Plugin.Running)
-                    {
-                        ImGui.SameLine(0, 5);
-                        MainWindow.GotoAndActions();
-                    }
+                    
                     if (ImGui.Checkbox("Support", ref _support))
                     {
                         if (_support)
@@ -300,7 +300,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    ImGui.SameLine(0, 5);
+                    //ImGui.SameLine(0, 5);
                     if (ImGui.Checkbox("Raid", ref _raid))
                     {
                         if (_raid)
@@ -334,11 +334,10 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    //ImGui.SameLine(0, 5);
-                    //MainWindow.GotoAndActions();
+
                     if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid || Plugin.Configuration.Variant)
                     {
-                        //ImGui.SameLine(0, 5);
+                        ImGui.SameLine(0, 15);
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref _hideUnavailableDuties))
                         {
                             Plugin.Configuration.HideUnavailableDuties = _hideUnavailableDuties;
@@ -385,7 +384,7 @@ namespace AutoDuty.Windows
                     if(Plugin.LevelingEnabled)
                         ImGui.LabelText("###LevelingDutyLabel", "AD will automatically select the best dungeon");
 
-                    if (!ImGui.BeginListBox("##DutyList", new Vector2(500 * ImGuiHelpers.GlobalScale, 525 * ImGuiHelpers.GlobalScale))) return;
+                    if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {

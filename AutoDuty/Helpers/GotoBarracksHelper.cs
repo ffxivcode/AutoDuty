@@ -3,6 +3,8 @@ using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using System.Numerics;
 using Dalamud.Game.ClientState.Objects.Types;
+using ECommons;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
 {
@@ -21,7 +23,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static void Stop() 
+        internal unsafe static void Stop() 
         {
             if (GotoBarracksRunning)
                 Svc.Log.Info($"Goto Barracks Finished");
@@ -29,6 +31,8 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= GotoBarracksUpdate;
             GotoHelper.Stop();
             GotoBarracksRunning = false;
+            if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                addonSelectYesno->Close(true);
             AutoDuty.Plugin.Action = "";
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);

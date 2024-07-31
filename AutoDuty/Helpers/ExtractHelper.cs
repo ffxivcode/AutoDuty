@@ -4,6 +4,7 @@ using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
@@ -30,7 +31,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static void Stop()
+        internal unsafe static void Stop()
         {
             ExtractRunning = false;
             currentCategory = 0;
@@ -38,6 +39,10 @@ namespace AutoDuty.Helpers
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("ExtractTimeOut");
             Svc.Framework.Update -= ExtractUpdate;
+            if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog))
+                addonMaterializeDialog->Close(true);
+            if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize))
+                addonMaterialize->Close(true);
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
@@ -58,6 +63,12 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("Extract", 250))
                 return;
 
+            if (Conditions.IsMounted)
+            {
+                ActionManager.Instance()->UseAction(ActionType.GeneralAction, 23);
+                return;
+            }
+
             AutoDuty.Plugin.Action = "Extracting Materia";
 
             if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
@@ -69,10 +80,10 @@ namespace AutoDuty.Helpers
             if (ObjectHelper.IsOccupied)
                 return;
 
-            if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonSalvageDialog) && GenericHelpers.IsAddonReady(addonSalvageDialog))
+            if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog) && GenericHelpers.IsAddonReady(addonMaterializeDialog))
             {
                 Svc.Log.Debug("AutoExtract - Confirming MaterializeDialog");
-                new AddonMaster.MaterializeDialog(addonSalvageDialog).Materialize();
+                new AddonMaster.MaterializeDialog(addonMaterializeDialog).Materialize();
                 return;
             }
 

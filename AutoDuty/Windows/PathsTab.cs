@@ -53,11 +53,11 @@ namespace AutoDuty.Windows
                 if (ImGui.Button("Open File"))
                     Process.Start("explorer", $"\"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{_selectedPath}\"");
             }
-
+            ImGui.SameLine();
             if (ImGui.Checkbox($"Do not overwrite on update", ref _checked))
                 CheckBoxOnChange();
 
-            if (!ImGui.BeginListBox("##DutyList", new Vector2(450 * ImGuiHelpers.GlobalScale, 550 * ImGuiHelpers.GlobalScale))) return;
+            if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 550 * ImGuiHelpers.GlobalScale))) return;
 
             foreach (var pathFileKVP in FileHelper.DictionaryPathFiles.Select((Value, Index) => (Value, Index)))
             {
