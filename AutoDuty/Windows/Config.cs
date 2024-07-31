@@ -23,6 +23,7 @@ public class Configuration : IPluginConfiguration
     public int AutoGCTurninSlotsLeft { get; set; } = 5;
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
+    public bool AutoEquipRecommendedGear { get; set; } = false;
     public bool OpenOverlay { get; set; } = true;
     public bool OnlyOpenOverlayWhenRunning { get; set; } = false;
     public bool HideDungeonText { get; set; } = false;
@@ -111,6 +112,7 @@ public static class ConfigTab
         var autoARMultiEnable = Configuration.AutoARMultiEnable;
         var lootTreasure = Configuration.LootTreasure;
         var treasureCofferScanDistance = Configuration.TreasureCofferScanDistance;
+        var autoEquipRecommended = Configuration.AutoEquipRecommendedGear;
         var lootBossTreasureOnly = Configuration.LootBossTreasureOnly;
         var autoRepair = Configuration.AutoRepair;
         var autoRepairSelf = Configuration.AutoRepairSelf;
@@ -277,6 +279,11 @@ public static class ConfigTab
                 autoRepairSelf = false;
                 Configuration.Save();
             }
+        }
+        if (ImGui.Checkbox("Auto Equip Recommended Gear", ref autoEquipRecommended))
+        {
+            Configuration.AutoEquipRecommendedGear = autoEquipRecommended;
+            Configuration.Save();
         }
         ImGui.Separator();
         if (ImGui.Checkbox("Auto Extract", ref autoExtract))

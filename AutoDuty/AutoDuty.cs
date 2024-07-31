@@ -305,6 +305,13 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (CurrentTerritoryContent == null) return;
 
+        if (Configuration.AutoEquipRecommendedGear)
+        {
+            TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Run-AutoEquip");
+            TaskManager.DelayNext("Run-Delay50", 50);
+            TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Run-WaitAutoEquipComplete");
+            TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,          "Run-WaitANotIsOccupied");
+        }
         if (Configuration.AutoRepair && InventoryHelper.CanRepair())
         {
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
