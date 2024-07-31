@@ -10,6 +10,7 @@ namespace AutoDuty.Helpers
     using ECommons.GameFunctions;
     using ECommons.GameHelpers;
     using FFXIVClientStructs.FFXIV.Client.Game.UI;
+    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
     using Lumina.Excel.GeneratedSheets;
 
     public static class LevelingHelper
@@ -20,11 +21,18 @@ namespace AutoDuty.Helpers
 
             PlayerState* playerState = PlayerState.Instance();
 
-            short        level       = playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint)AutoDuty.Plugin.Player.GetJob())?.ExpArrayIndex ?? 0];
+            short level = playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint)AutoDuty.Plugin.Player.GetJob())?.ExpArrayIndex ?? 0];
 
             int curIndex = index = 0;
             if (level < 15 || AutoDuty.Plugin.Player!.GetRole() == CombatRole.NonCombat || level >= 100)
                 return null;
+
+
+            RaptureGearsetModule* gearsetModule = RaptureGearsetModule.Instance();
+            int                   gearsetId     = gearsetModule->CurrentGearsetIndex;
+            gearsetModule->UpdateGearset(gearsetId);
+            short ilvl = gearsetModule->GetGearset(gearsetId)->ItemLevel;
+        
 
             uint? dungeonId = level switch
             {
@@ -55,7 +63,8 @@ namespace AutoDuty.Helpers
                     {
                         if (FileHelper.DictionaryPathFiles.ContainsKey(id) &&
                             content.ClassJobLevelRequired % 10 != 0        &&
-                            content.ClassJobLevelRequired      <= level)
+                            content.ClassJobLevelRequired      <= level    &&
+                            content.ItemLevelRequired          <= ilvl)
                         {
                             curContent = content;
                             index      = curIndex;
