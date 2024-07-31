@@ -542,7 +542,7 @@ public sealed class AutoDuty : IDalamudPlugin
         _chat.ExecuteCommand($"/vbmai on");
         if (IPCSubscriber_Common.IsReady("BossModReborn") && Configuration.AutoManageBossModAISettings)
             SetBMRSettings();
-        if (Configuration.AutoManageRSRState)
+        if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
             ReflectionHelper.RotationSolver_Reflection.RotationAuto();
         Svc.Log.Info("Starting Navigation");
         if (startFromZero)
@@ -732,7 +732,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (!VNavmesh_IPCSubscriber.IsEnabled)
             return;
 
-        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !Configuration.UsingAlternativeRotationPlugin)
             return;
 
         if (!ObjectHelper.IsValid)
@@ -760,7 +760,7 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 ExitDuty();
                 Started = false;
-                if (Configuration.AutoManageRSRState)
+                if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
                     ReflectionHelper.RotationSolver_Reflection.RotationStop();
                 _chat.ExecuteCommand($"/vbmai off");
                 _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
@@ -875,7 +875,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 Action = $"{Plugin.ListBoxPOSText[Indexer]}";
                 if (ObjectHelper.InCombat(Player) && Plugin.StopForCombat)
                 {
-                    if (Configuration.AutoManageRSRState)
+                    if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
                         ReflectionHelper.RotationSolver_Reflection.RotationAuto();
                     VNavmesh_IPCSubscriber.Path_Stop();
                     Stage = 4;
@@ -924,7 +924,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                if (Configuration.AutoManageRSRState)
+                if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
                     ReflectionHelper.RotationSolver_Reflection.RotationAuto();
 
                 if (!TaskManager.IsBusy)
