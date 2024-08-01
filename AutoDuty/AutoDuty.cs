@@ -1170,15 +1170,16 @@ public sealed class AutoDuty : IDalamudPlugin
     private unsafe void OnCommand(string command, string args)
     {
         // in response to the slash command
-        switch (args.ToLower().Split(" ")[0])
+        var argsArray = args.ToLower().Split(" ");
+        switch (argsArray[0])
         {
             case "config" or "cfg":
-                if (args.Count() < 2)
+                if (argsArray.Length < 2)
                     OpenConfigUI();
-                else if (args.ToLower().Split(" ")[1].Equals("list"))
+                else if (argsArray[1].Equals("list"))
                     ConfigHelper.ListConfig();
                 else
-                    ConfigHelper.ModifyConfig(args.ToLower().Split(" ")[1], args.ToLower().Split(" ")[2]);
+                    ConfigHelper.ModifyConfig(argsArray[1], argsArray[2]);
                 break;
             case "start":
                 StartNavigation();
@@ -1193,11 +1194,10 @@ public sealed class AutoDuty : IDalamudPlugin
                 Plugin.Stage = 1;
                 break;
             case "goto":
-                var argsss = args.ToLower().Split(" ");
-                switch (argsss[1])
+                switch (argsArray[1])
                 {
                     case "inn":
-                        GotoInnHelper.Invoke(argsss.Length > 2 ? Convert.ToUInt32(argsss[2]) : ObjectHelper.GrandCompany);
+                        GotoInnHelper.Invoke(argsArray.Length > 2 ? Convert.ToUInt32(argsArray[2]) : ObjectHelper.GrandCompany);
                         break;
                     case "barracks":
                         GotoBarracksHelper.Invoke();
@@ -1245,6 +1245,28 @@ public sealed class AutoDuty : IDalamudPlugin
                 break;
             case "queue":
                 QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null);
+                break;
+            case "overlay":
+                if (argsArray.Length == 1)
+                    Overlay.IsOpen = true;
+                else
+                {
+                    switch (argsArray[1].ToLower())
+                    {
+                        case "lock":
+                            if (Overlay.Flags.HasFlag(ImGuiWindowFlags.NoMove))
+                                Overlay.Flags -= ImGuiWindowFlags.NoMove;
+                            else
+                                Overlay.Flags |= ImGuiWindowFlags.NoMove;
+                            break;
+                        case "nobg":
+                            if (Overlay.Flags.HasFlag(ImGuiWindowFlags.NoBackground))
+                                Overlay.Flags -= ImGuiWindowFlags.NoBackground;
+                            else
+                                Overlay.Flags |= ImGuiWindowFlags.NoBackground;
+                            break;
+                    }
+                }    
                 break;
             default:
                 OpenMainUI(); 
