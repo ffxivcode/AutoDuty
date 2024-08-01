@@ -152,12 +152,24 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "\n/autoduty -> opens main window\n" +
-                "/autoduty config or cfg -> opens config window\n" +
+                "/autoduty config or cfg -> opens config window / modifies config\n" +
                 "/autoduty start -> starts autoduty when in a Duty\n" +
                 "/autoduty stop -> stops everything\n" +
                 "/autoduty pause -> pause route\n" +
                 "/autoduty resume -> resume route\n" +
-                "/autoduty turnin -> GC Turnin\n"
+                "/autoduty turnin -> GC Turnin\n" +
+                "/autoduty desynth -> Desynth's your inventory\n" +
+                "/autoduty repair -> Repairs your gear\n" +
+                "/autoduty extract -> Extract's materia from equipment\n" +
+                "/autoduty turnin -> GC Turnin\n" +
+                "/autoduty goto -> goes to\n" +
+                "/autoduty dataid -> Logs and copies your target's dataid to clipboard\n" +
+                "/autoduty exitduty -> exits duty\n" +
+                "/autoduty queue -> queues duty\n" +
+                "/autoduty moveto -> move's to territorytype and location sent\n" +
+                "/autoduty overlay -> opens overlay\n" +
+                "/autoduty overlay lock-> toggles locking the overlay\n" +
+                "/autoduty overlay nobg-> toggles the overlay's background\n"
             });
 
             PluginInterface.UiBuilder.Draw += DrawUI;
