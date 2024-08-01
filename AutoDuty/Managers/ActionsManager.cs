@@ -433,7 +433,7 @@ namespace AutoDuty.Managers
                 _taskManager.Enqueue(() => PandorasBox_IPCSubscriber.PauseFeature(featureName, int.Parse(intMs)));
         }
 
-        public void Revival()
+        public void Revival(string _)
         {
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
