@@ -54,9 +54,10 @@ namespace AutoDuty.Windows
                     Process.Start("explorer", $"\"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{_selectedPath}\"");
             }
             ImGui.SameLine();
+            ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(0, 1, 1, 1));
             if (ImGui.Checkbox($"Do not overwrite on update", ref _checked))
                 CheckBoxOnChange();
-
+            ImGui.PopStyleColor();
             if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 550 * ImGuiHelpers.GlobalScale))) return;
 
             foreach (var pathFileKVP in FileHelper.DictionaryPathFiles.Select((Value, Index) => (Value, Index)))
@@ -65,7 +66,6 @@ namespace AutoDuty.Windows
 
                 const string idColor   = "<0.5,0.5,1>";
                 const string dutyColor = "<0,1,0>";
-
                 string dutyText = $"({idColor}{pathFileKVP.Value.Key}</>) {dutyColor}{ContentHelper.DictionaryContent[pathFileKVP.Value.Key].DisplayName}</>";
                 if (pathFileKVP.Value.Value.Count > 1)
                 {
@@ -79,6 +79,8 @@ namespace AutoDuty.Windows
 
                 foreach (string path in pathFileKVP.Value.Value)
                 {
+                    string pathFileColor = Plugin.Configuration.DoNotUpdatePathFiles.Any(x => x.Equals(path)) ? "<0,1,1>" : "<0.8,0.8,0.8>";
+
                     if (ImGui.Selectable("###PathList"+path, pathFileKVP.Index == _selectedIndex && path == _selectedPath))
                     {
                         if (path == _selectedPath)
@@ -99,7 +101,7 @@ namespace AutoDuty.Windows
 
                     Match pathMatch = RegexHelper.PathFileRegex().Match(path);
 
-                    string pathUI = pathMatch.Success ? $"{pathMatch.Groups[1]}{idColor}{pathMatch.Groups[2]}</>{pathMatch.Groups[3]}<0.8,0.8,1>{pathMatch.Groups[4]}</><0.8,0.8,0.8>{pathMatch.Groups[5]}</><0.5,0.5,0.5>{pathMatch.Groups[6]}</>" : path;
+                    string pathUI = pathMatch.Success ? $"{pathMatch.Groups[1]}{idColor}{pathMatch.Groups[2]}</>{pathMatch.Groups[3]}<0.8,0.8,1>{pathMatch.Groups[4]}</>{pathFileColor}{pathMatch.Groups[5]}</><0.5,0.5,0.5>{pathMatch.Groups[6]}</>" : path;
 
                     ColoredText(multiple ? $"{pathUI}" : $"{dutyText} => {pathUI}");
                 }
