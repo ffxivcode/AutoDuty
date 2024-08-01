@@ -78,6 +78,8 @@ public class Configuration : IPluginConfiguration
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary { get; set; } = [];
     public int StopItemQtyInt { get; set; } = 1;
     public bool UsingAlternativeRotationPlugin;
+    public bool UsingAlternativeMovingPlugin;
+    public bool UsingAlternativeBossPlugin;
 
     public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
 
