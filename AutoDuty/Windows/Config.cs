@@ -27,6 +27,8 @@ public class Configuration : IPluginConfiguration
     public bool AutoEquipRecommendedGear { get; set; } = false;
     public bool OpenOverlay { get; set; } = true;
     public bool OnlyOpenOverlayWhenRunning { get; set; } = false;
+    public bool LockOverlay = false;
+    public bool OverlayNoBG = false;
     public bool HideDungeonText { get; set; } = false;
     public bool HideActionText { get; set; } = false;
     public bool AutoManageBossModAISettings { get; set; } = true;
@@ -78,9 +80,9 @@ public class Configuration : IPluginConfiguration
     public bool StopItemQty { get; set; } = false;
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary { get; set; } = [];
     public int StopItemQtyInt { get; set; } = 1;
-    public bool UsingAlternativeRotationPlugin;
-    public bool UsingAlternativeMovingPlugin;
-    public bool UsingAlternativeBossPlugin;
+    public bool UsingAlternativeRotationPlugin = false;
+    public bool UsingAlternativeMovingPlugin = false;
+    public bool UsingAlternativeBossPlugin = false;
 
     public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
 
@@ -156,18 +158,27 @@ public static class ConfigTab
                 Configuration.OnlyOpenOverlayWhenRunning = onlyOpenOverlayWhenRunning;
                 Configuration.Save();
             }
-            
+
+            ImGui.SameLine(0, 5);
+            if (ImGui.Checkbox("Lock", ref Configuration.LockOverlay))
+                Configuration.Save();
+
             if (ImGui.Checkbox("Hide Dungeon", ref hideDungeonText))
             {
                 Configuration.HideDungeonText = hideDungeonText;
                 Configuration.Save();
             }
+
             ImGui.SameLine(0, 5);
             if (ImGui.Checkbox("Hide Action", ref hideActionText))
             {
                 Configuration.HideActionText = hideActionText;
                 Configuration.Save();
             }
+
+            ImGui.SameLine(0, 5);
+            if (ImGui.Checkbox("No BG", ref Configuration.OverlayNoBG))
+                Configuration.Save();
         }
         ImGui.Separator();
         if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
