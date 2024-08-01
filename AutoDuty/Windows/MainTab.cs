@@ -337,11 +337,37 @@ namespace AutoDuty.Windows
 
                     if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid || Plugin.Configuration.Variant)
                     {
-                        ImGui.SameLine(0, 15);
+                        //ImGui.SameLine(0, 15);
+                        ImGui.Separator();
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref _hideUnavailableDuties))
                         {
                             Plugin.Configuration.HideUnavailableDuties = _hideUnavailableDuties;
                             Plugin.Configuration.Save();
+                        }
+
+                        if (Plugin.Configuration.Support)
+                        {
+                            ImGui.SameLine();
+                            bool leveling = Plugin.Leveling;
+                            if (ImGui.Checkbox("Leveling", ref leveling))
+                            {
+                                if (leveling)
+                                {
+                                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int index);
+                                    if (duty != null)
+                                    {
+                                        _dutyListSelected              = index;
+                                        Plugin.CurrentTerritoryContent = duty;
+
+                                        Plugin.CurrentPath             = MultiPathHelper.BestPathIndex();
+                                        Plugin.Leveling = leveling;
+                                    }
+                                }
+                                else
+                                {
+                                    Plugin.Leveling = leveling;
+                                }
+                            }
                         }
 
                         DrawPathSelection();
@@ -355,6 +381,10 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
+                    using var d3 = ImRaii.Disabled(Plugin.LevelingEnabled);
+                    if(Plugin.LevelingEnabled)
+                        ImGui.LabelText("###LevelingDutyLabel", "AD will automatically select the best dungeon");
+
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)

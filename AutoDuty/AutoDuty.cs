@@ -50,6 +50,11 @@ public sealed class AutoDuty : IDalamudPlugin
     internal ContentHelper.Content? CurrentTerritoryContent = null;
     internal uint CurrentTerritoryType = 0;
     internal int CurrentPath = -1;
+
+    internal bool Leveling            = false;
+    internal bool LevelingEnabled => Configuration.Support && Leveling;
+
+
     internal string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
@@ -218,14 +223,14 @@ public sealed class AutoDuty : IDalamudPlugin
             ListBoxPOSText.Clear();
             if (!FileHelper.DictionaryPathFiles.TryGetValue(Svc.ClientState.TerritoryType, out List<string>? curPaths))
             {
-                this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
+                PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
                 return;
             }
 
             if (Plugin.CurrentPath < 0 && Svc.ClientState.LocalPlayer != null)
                 Plugin.CurrentPath = MultiPathHelper.BestPathIndex();
             //Svc.Log.Info("Loading Path: " + Plugin.CurrentPath);
-            this.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{curPaths![Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1)]}";
+            PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{curPaths![Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1)]}";
 
             if (!File.Exists(PathFile))
                 return;
@@ -243,9 +248,11 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private unsafe bool StopLoop => (Configuration.StopLevel && ECommons.GameHelpers.Player.Level >= Configuration.StopLevelInt) || (Configuration.StopNoRestedXP && AgentHUD.Instance()->ExpRestedExperience == 0) || (Configuration.StopItemQty && Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value));
+    private unsafe bool StopLoop => (Configuration.StopLevel && ECommons.GameHelpers.Player.Level >= Configuration.StopLevelInt) || 
+                                    (Configuration.StopNoRestedXP && AgentHUD.Instance()->ExpRestedExperience == 0) || 
+                                    (Configuration.StopItemQty && Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value));
 
-    private unsafe void ClientState_TerritoryChanged(ushort t)
+    private void ClientState_TerritoryChanged(ushort t)
     {
         Svc.Log.Debug($"ClientState_TerritoryChanged: t={t}");
        
@@ -254,7 +261,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (t == 0)
             return;
-        this.CurrentPath = -1;
+        CurrentPath = -1;
         LoadPath();
 
         if (!Running || GCTurninHelper.GCTurninRunning || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || CurrentTerritoryContent == null)
@@ -276,7 +283,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (CurrentLoop < Configuration.LoopTimes)
             {
                 TaskManager.Abort();
-                TaskManager.Enqueue(() => { Stage = 99; }, "Loop-SetStage=99");
+                TaskManager.Enqueue(() => { Stage   = 99; },    "Loop-SetStage=99");
                 TaskManager.Enqueue(() => { Started = false; }, "Loop-SetStarted=false");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
                 TaskManager.Enqueue(() => {
@@ -298,6 +305,13 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (CurrentTerritoryContent == null) return;
 
+        if (Configuration.AutoEquipRecommendedGear)
+        {
+            TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Run-AutoEquip");
+            TaskManager.DelayNext("Run-Delay50", 50);
+            TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Run-WaitAutoEquipComplete");
+            TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,          "Run-WaitANotIsOccupied");
+        }
         if (Configuration.AutoRepair && InventoryHelper.CanRepair())
         {
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
@@ -332,6 +346,25 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
         }
+
+        if (LevelingEnabled)
+        {
+            Svc.Log.Info("Leveling Enabled");
+            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int _);
+            if (duty != null)
+            {
+                Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
+                CurrentTerritoryContent = duty;
+                CurrentPath             = MultiPathHelper.BestPathIndex();
+            }
+            else
+            {
+                CurrentLoop = Configuration.LoopTimes;
+                LoopsCompleteActions();
+                return;
+            }
+        }
+
         if (Configuration.Trust)
             _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Configuration.Support)
@@ -604,7 +637,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
             for (int i = 0; i < ListBoxPOSText.Count; i++)
             {
-                string node = this.ListBoxPOSText[i];
+                string node = ListBoxPOSText[i];
 
                 if (node.Contains("Boss|") && node.Replace("Boss|", "").All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
                 {
@@ -669,7 +702,25 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             Job curJob =Player.GetJob();
             if (curJob != job)
+            {
+                if (LevelingEnabled)
+                {
+                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int index);
+                    if (duty != null)
+                    {
+                        Plugin.CurrentTerritoryContent = duty;
+                        MainListClicked                = true;
+                    }
+                    else
+                    {
+                        Plugin.CurrentTerritoryContent = null;
+                        this.Leveling                 = false;
+                    }
+                }
+
                 CurrentPath = MultiPathHelper.BestPathIndex();
+            }
+
             job = curJob;
         }
 
