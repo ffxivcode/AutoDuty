@@ -161,7 +161,14 @@ public static class ConfigTab
 
             ImGui.SameLine(0, 5);
             if (ImGui.Checkbox("Lock", ref Configuration.LockOverlay))
+            {
+                if (!Configuration.LockOverlay)
+                    AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoMove;
+                else
+                    AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoMove;
+                
                 Configuration.Save();
+            }
 
             if (ImGui.Checkbox("Hide Dungeon", ref hideDungeonText))
             {
@@ -178,7 +185,14 @@ public static class ConfigTab
 
             ImGui.SameLine(0, 5);
             if (ImGui.Checkbox("No BG", ref Configuration.OverlayNoBG))
+            {
+                if (!Configuration.OverlayNoBG)
+                    AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoBackground;
+                else
+                    AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoBackground;
+
                 Configuration.Save();
+            }
         }
         ImGui.Separator();
         if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
