@@ -2,6 +2,7 @@
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -26,12 +27,12 @@ namespace AutoDuty.Helpers
 
         internal static void Stop()
         {
+            Svc.Framework.Update -= QueueUpdate;
             if (QueueRunning)
                 Svc.Log.Info($"Done Queueing: {_content?.Name}");
             _content = null;
             QueueRunning = false;
             _allConditionsMetToJoin = false;
-            Svc.Framework.Update -= QueueUpdate;
         }
 
         internal static bool QueueRunning = false;
@@ -42,8 +43,9 @@ namespace AutoDuty.Helpers
 
         internal static void QueueUpdate(IFramework _)
         {
-            if (AutoDuty.Plugin.InDungeon || _content == null || Svc.ClientState.TerritoryType == _content.TerritoryType)
+            if (AutoDuty.Plugin.InDungeon || _content == null || Svc.ClientState.TerritoryType == _content?.TerritoryType)
             {
+                Svc.Framework.Update -= QueueUpdate;
                 Stop();
                 return;
             }
@@ -51,7 +53,7 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("QueueHelper", 250))
                 return;
 
-            AutoDuty.Plugin.Action = $"Queueing Duty: {_content.Name}";
+            AutoDuty.Plugin.Action = $"Queueing Duty: {_content?.Name}";
 
             if (!ObjectHelper.IsValid)
                 return;
@@ -60,6 +62,12 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Debug("Queue Helper - Confirming DutyPop");
                 AddonHelper.FireCallBack(addonContentsFinderConfirm, true, 8);
+                return;
+            }
+
+            if (Conditions.IsInDutyQueue)
+            {
+                Svc.Log.Debug("Queue Helper - InDutyQueue");
                 return;
             }
 
@@ -82,30 +90,32 @@ namespace AutoDuty.Helpers
 
             var vectorDutyListItems = _addonContentsFinder->DutyList->Items;
             List<AtkComponentTreeListItem> listAtkComponentTreeListItems = [];
+            if (vectorDutyListItems.Count == 0)
+                return;
             vectorDutyListItems.ForEach(pointAtkComponentTreeListItem => listAtkComponentTreeListItems.Add(*(pointAtkComponentTreeListItem.Value)));
 
-            if (!_allConditionsMetToJoin && (_addonContentsFinder->SelectedRow == 0 || !_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase)))
+            if (!_allConditionsMetToJoin && (_addonContentsFinder->SelectedRow == 0 || !_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", "").Replace("-", ""), System.StringComparison.InvariantCultureIgnoreCase)))
             {
                 Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content.Name} because we have the wrong selection");
                 AgentContentsFinder.Instance()->OpenRegularDuty(_content.ContentFinderCondition);
                 return;
             }
 
-            if ((!_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("0/5 Selected")) || (_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_content.Name!.Contains(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase)))
+            if ((!_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("0/5 Selected")) || (_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_content.Name!.Contains(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", "").Replace("-", ""), System.StringComparison.InvariantCultureIgnoreCase)))
             {
                 Svc.Log.Debug($"Queue Helper - We have duties that are not {_content.Name} Selected, Clearing");
                 AddonHelper.FireCallBack((AtkUnitBase*)_addonContentsFinder, true, 12, 1);
                 return;
             }
 
-            if (_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase) && _addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("0/5 Selected"))
+            if (_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", "").Replace("-", ""), System.StringComparison.InvariantCultureIgnoreCase) && _addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("0/5 Selected"))
             {
                 Svc.Log.Debug("Queue Helper - Checking Duty");
                 SelectDuty(_addonContentsFinder);
                 return;
             }
 
-            if (_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase) && _addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && _content.Name.Contains(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase))
+            if (_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", "").Replace("-", ""), System.StringComparison.InvariantCultureIgnoreCase) && _addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && _content.Name.Contains(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", "").Replace("-", ""), System.StringComparison.InvariantCultureIgnoreCase))
             {
                 _allConditionsMetToJoin = true;
                 Svc.Log.Debug("Queue Helper - All Conditions Met, Clicking Join");

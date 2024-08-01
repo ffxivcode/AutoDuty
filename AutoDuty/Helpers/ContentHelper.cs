@@ -68,8 +68,7 @@ namespace AutoDuty.Helpers
 
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
-
-                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 && contentFinderCondition.ContentType.Value.RowId != 30) || contentFinderCondition.Name.ToString().IsNullOrEmpty())
+                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 && contentFinderCondition.ContentType.Value.RowId != 30) || contentFinderCondition.Name.RawString.IsNullOrEmpty())
                     continue;
 
                 string CleanName(string name)
@@ -80,10 +79,9 @@ namespace AutoDuty.Helpers
                     return result.Replace("--", "-").Replace("<italic(0)>", "").Replace("<italic(1)>", "");
                 }
 
-
                 var content = new Content
                 {
-                    Name = CleanName(contentFinderCondition.Name.ToString()),
+                    Name = CleanName(contentFinderCondition.Name.RawString),
                     TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
                     ContentType = contentFinderCondition.ContentType.Value.RowId,
                     ContentMemberType = contentFinderCondition.ContentMemberType.Value?.RowId ?? 0,
