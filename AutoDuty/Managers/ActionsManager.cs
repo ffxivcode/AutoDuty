@@ -218,7 +218,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
-        private bool InteractableCheck(IGameObject? gameObject)
+        private unsafe bool InteractableCheck(IGameObject? gameObject)
         {
             nint addon = Svc.GameGui.GetAddonByName("SelectYesno", 1);
             if (addon > 0)
@@ -226,7 +226,11 @@ namespace AutoDuty.Managers
                 SelectYesno("Yes");
                 return true;
             }
+
             if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid() || !ObjectHelper.IsValid)
+                return true;
+
+            if (AddonHelper.ClickTalk())
                 return true;
 
             if (EzThrottler.Throttle("Interactable", 250))
@@ -415,9 +419,8 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => { AutoDuty.Plugin.BossObject = null; }, "Boss-ClearBossObject");
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
-                _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null, "Boss-FindTreasure");
+                _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null, 1000, "Boss-FindTreasure");
                 _taskManager.Enqueue(() => MovementHelper.Move(treasureCofferObject, 0.25f, 1f), int.MaxValue, "Boss-MoveTreasure");
-                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilNotTargetable(treasureCofferObject), "Boss-InteractTreasure");
             }
             _taskManager.DelayNext("Boss-Delay500", 500);
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss-ClearActionVar");

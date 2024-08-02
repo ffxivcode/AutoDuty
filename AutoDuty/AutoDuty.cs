@@ -441,6 +441,7 @@ public sealed class AutoDuty : IDalamudPlugin
         //Svc.Log.Debug($"{flag} : {value}");
         if (Stage != 3 && value && Started && (flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas51 || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.Jumping61))
         {
+            Indexer++;
             Stage = 1;
             VNavmesh_IPCSubscriber.Path_Stop();
         }
@@ -549,8 +550,6 @@ public sealed class AutoDuty : IDalamudPlugin
         Started = true;
         _chat.ExecuteCommand($"/vnav aligncamera enable");
         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
         _chat.ExecuteCommand($"/vbmai on");
         if (IPCSubscriber_Common.IsReady("BossModReborn") && Configuration.AutoManageBossModAISettings)
             SetBMRSettings();
@@ -564,6 +563,8 @@ public sealed class AutoDuty : IDalamudPlugin
     internal void SetBMRSettings()
     {
         BMRRoleChecks();
+        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
@@ -693,6 +694,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     int currentStage = -1;
     private Job job;
+    
     public void Framework_Update(IFramework framework)
     {
         if (currentStage != Stage)
@@ -753,11 +755,14 @@ public sealed class AutoDuty : IDalamudPlugin
         if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0)
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
-        if (EzThrottler.Throttle("ClosestInteractableEventObject", 25))
+        if (EzThrottler.Throttle("ClosestInteractableEventObject", 25) && MainWindow.CurrentTabName == "Build")
             ClosestInteractableEventObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.EventObj)?.FirstOrDefault(o => o.IsTargetable);
 
-        if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25))
+        if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25) && MainWindow.CurrentTabName == "Build")
             ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
+
+        if (Started && Configuration.LootTreasure && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+            ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
         if (!_dead && Started && Player.CurrentHp == 0)
             OnDeath();
@@ -808,6 +813,12 @@ public sealed class AutoDuty : IDalamudPlugin
                     _actionParams = [.. ListBoxPOSText[Indexer].Split('|')];
                     _action = (string)_actionParams[0];
                     _actionTollerance = _action == "Interactable" ? 2f : 0.25f;
+
+                    if ((!Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && _action.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        Indexer++;
+                        return;
+                    }
 
                     if (!VNavmesh_IPCSubscriber.Path_GetMovementAllowed())
                         VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
@@ -984,14 +995,14 @@ public sealed class AutoDuty : IDalamudPlugin
                             {
                                 VNavmesh_IPCSubscriber.Path_Stop();
 
-                                if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2)
-                                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTargetAoE}");
-                                else
-                                    _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
+                                if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && !BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTargetAoE))
+                                    BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoE}"]);
+                                else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTarget))
+                                    BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTarget}"]);
 
                             }
-                            else
-                                _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
+                            else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTarget))
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTarget}"]);
                         }
                         else
                         {
