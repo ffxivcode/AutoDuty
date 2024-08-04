@@ -145,6 +145,7 @@ namespace AutoDuty.Windows
                     Svc.Log.Info($"Saving {Plugin.PathFile}");
                     string json = JsonSerializer.Serialize(Plugin.ListBoxPOSText, _jsonSerializerOptions);
                     File.WriteAllText(Plugin.PathFile, json);
+                    Plugin.CurrentPath = 0;
                 }
                 catch (Exception e)
                 {
