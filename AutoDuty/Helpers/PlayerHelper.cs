@@ -20,7 +20,7 @@ namespace AutoDuty.Helpers
         public static unsafe short GetCurrentLevelFromSheet(Job? job = null)
         {
             PlayerState* playerState = PlayerState.Instance();
-            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint) (job ?? AutoDuty.Plugin.Player.GetJob()))?.ExpArrayIndex ?? 0];
+            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint) (job ?? AutoDuty.Plugin.Player?.GetJob() ?? AutoDuty.Plugin.JobLastKnown))?.ExpArrayIndex ?? 0];
         }
 
         internal static unsafe short GetCurrentItemLevelFromGearSet(int gearsetId = -1, bool updateGearsetBeforeCheck = true)

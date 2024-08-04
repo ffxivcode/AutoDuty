@@ -38,8 +38,13 @@ namespace AutoDuty.Managers
 
             public DutyPath? SelectPath(out int pathIndex, Job? job = null)
             {
-                job ??= AutoDuty.Plugin.Player.GetJob();
+                job ??= AutoDuty.Plugin.Player?.GetJob();
 
+                if (job == null)
+                {
+                    pathIndex = 0;
+                    return this.Paths[0];
+                }
 
                 if (this.Paths.Count > 1)
                 {

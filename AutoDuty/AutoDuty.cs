@@ -80,6 +80,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal string Action = "";
     internal string PathFile = "";
     internal TaskManager TaskManager;
+    internal Job JobLastKnown;
     
     private const string CommandName = "/autoduty";
     private DirectoryInfo _configDirectory;
@@ -239,7 +240,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 return;
             }
 
-            ContentPathsManager.DutyPath? path = Plugin.CurrentPath < 0 && Svc.ClientState.LocalPlayer != null ? 
+            ContentPathsManager.DutyPath? path = Plugin.CurrentPath < 0 && this.Player != null ? 
                                                      container.SelectPath(out Plugin.CurrentPath) : 
                                                      container.Paths[Plugin.CurrentPath];
 
@@ -696,7 +697,6 @@ public sealed class AutoDuty : IDalamudPlugin
     }
 
     int currentStage = -1;
-    private Job job;
     
     public void Framework_Update(IFramework framework)
     {
@@ -717,8 +717,8 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!InDungeon && CurrentTerritoryContent != null)
         {
-            Job curJob =Player.GetJob();
-            if (curJob != job)
+            Job curJob = Player.GetJob();
+            if (curJob != this.JobLastKnown)
             {
                 if (LevelingEnabled)
                 {
@@ -726,7 +726,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     if (duty != null)
                     {
                         Plugin.CurrentTerritoryContent = duty;
-                        this.MainListClicked              = true;
+                        this.MainListClicked           = true;
                         ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryContent.TerritoryType].SelectPath(out this.CurrentPath);
                     }
                     else
@@ -738,7 +738,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 }
             }
 
-            job = curJob;
+            this.JobLastKnown = curJob;
         }
 
         PlayerPosition = Player.Position;
