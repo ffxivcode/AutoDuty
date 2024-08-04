@@ -150,5 +150,10 @@ namespace AutoDuty.Windows
             ImGui.PopStyleColor();
             ImGui.PopStyleVar(3);
         }
+
+        internal static void PathsUpdated()
+        {
+            _selectedDutyPath = null;
+        }
     }
 }

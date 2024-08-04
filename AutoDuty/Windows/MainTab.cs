@@ -444,5 +444,10 @@ namespace AutoDuty.Windows
                 }
             }
         }
+
+        internal static void PathsUpdated()
+        {
+            _dutySelected = null;
+        }
     }
 }
