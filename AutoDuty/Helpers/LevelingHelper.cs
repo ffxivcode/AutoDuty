@@ -36,7 +36,7 @@ namespace AutoDuty.Helpers
 
             uint? dungeonId = level switch
             {
-                >= 16 and < 24 => 1036u, // TamTara Deepcroft
+                >= 16 and < 24 => 1037u, // TamTara Deepcroft
                 < 32 => 1039u, // The Thousand Maws of Toto-Rak
                 < 41 => 1041u, // Brayflox's Longstop
                 < 53 => 1042u, // Stone Vigil
