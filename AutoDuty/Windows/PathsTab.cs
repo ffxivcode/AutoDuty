@@ -11,6 +11,7 @@ namespace AutoDuty.Windows
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using ECommons.DalamudServices;
     using ECommons.ExcelServices;
     using ECommons.GameFunctions;
@@ -93,15 +94,14 @@ namespace AutoDuty.Windows
                     List<Tuple<CombatRole, Job>>[] pathJobs = Enumerable.Range(0, container.Paths.Count).Select(_ => new List<Tuple<CombatRole, Job>>()).ToArray();
 
                     if (multiple)
-                    {
                         if (Plugin.Configuration.PathSelections.TryGetValue(key, out Dictionary<Job, int>? pathSelections))
                             foreach ((Job job, int index) in pathSelections)
                                 pathJobs[index].Add(new Tuple<CombatRole, Job>(job.GetRole(), job));
-                    }
 
                     for (int pathIndex = 0; pathIndex < container.Paths.Count; pathIndex++)
                     {
                         ContentPathsManager.DutyPath path = container.Paths[pathIndex];
+
                         if (ImGui.Selectable("###PathList" + path.FileName, path == _selectedDutyPath))
                         {
                             if (path == _selectedDutyPath)
@@ -115,6 +115,8 @@ namespace AutoDuty.Windows
                             }
                         }
 
+                        if(ImGui.IsItemHovered() && path.PathFile.meta.notes.Count > 0)
+                            ImGui.SetTooltip(string.Join("\n", path.PathFile.meta.notes));
                         ImGui.SetItemAllowOverlap();
                         ImGui.SameLine(multiple ? 20 : 1);
 
@@ -127,6 +129,9 @@ namespace AutoDuty.Windows
                         }
 
                         ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
+
+                        ImGui.SameLine(0, 2);
+                        ImGui.TextColored(ImGuiHelper.VersionColor, $"v{path.PathFile.meta.LastUpdatedVersion}");
 
                         if (multiple)
                         {

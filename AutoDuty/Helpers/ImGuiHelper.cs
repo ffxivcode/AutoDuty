@@ -14,6 +14,8 @@ namespace AutoDuty.Helpers
 
     internal static class ImGuiHelper
     {
+        public static readonly Vector4 VersionColor = new(0, 1, 1, 1);
+
         public static readonly Vector4 RoleTankColor   = new(0, 0, 1, 1);
         public static readonly Vector4 RoleHealerColor = new(0, 1, 0, 1);
         public static readonly Vector4 RoleDPSColor    = new(1, 0, 0, 1);
