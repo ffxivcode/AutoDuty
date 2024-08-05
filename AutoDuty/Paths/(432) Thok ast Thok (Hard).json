@@ -1,1 +1,11 @@
-["ChatCommand|0, 0, 0|/bmrai off","Boss|0.08, 0.00, -1.43|"]
+{
+  "actions": [
+    "ChatCommand|0, 0, 0|/bmrai off",
+    "Boss|0.08, 0.00, -1.43|"
+  ],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [],
+    "notes": []
+  }
+}

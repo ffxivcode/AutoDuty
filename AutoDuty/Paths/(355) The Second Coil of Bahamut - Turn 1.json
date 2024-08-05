@@ -1,16 +1,23 @@
-[
-  "StopForCombat|0, 0, 0|False",
-  "MoveTo|-140.04, 8.48, -9.30|",
-  "StopForCombat|0, 0, 0|True",
-  "Wait|0, 0, 0|500",
-  "StopForCombat|0, 0, 0|False",
-  "MoveTo|-146.06, 5.02, 1.51|",
-  "MoveTo|-199.34, 2.16, 22.30|",
-  "StopForCombat|0, 0, 0|True",
-  "Wait|0, 0, 0|1000",
-  "MoveTo|-267.43, 10.42, 36.76|",
-  "Boss|0, 0, 0|",
-  "MoveTo|-291.18, 10.42, 38.10|",
-  "MoveTo|-291.30, 10.42, 41.41|",
-  "Interactable|-313.28, 8.71, 43.68|Allagan Terminal"
-]
+{
+  "actions": [
+    "StopForCombat|0, 0, 0|False",
+    "MoveTo|-140.04, 8.48, -9.30|",
+    "StopForCombat|0, 0, 0|True",
+    "Wait|0, 0, 0|500",
+    "StopForCombat|0, 0, 0|False",
+    "MoveTo|-146.06, 5.02, 1.51|",
+    "MoveTo|-199.34, 2.16, 22.30|",
+    "StopForCombat|0, 0, 0|True",
+    "Wait|0, 0, 0|1000",
+    "MoveTo|-267.43, 10.42, 36.76|",
+    "Boss|0, 0, 0|",
+    "MoveTo|-291.18, 10.42, 38.10|",
+    "MoveTo|-291.30, 10.42, 41.41|",
+    "Interactable|-313.28, 8.71, 43.68|Allagan Terminal"
+  ],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [],
+    "notes": []
+  }
+}

@@ -1,1 +1,37 @@
-["MoveTo|0.01, 139.86, -29.29|","MoveTo|-0.11, 93.54, -26.13|","Boss|0.63, 90.07, -1.65|","Interactable|0, 0, 0|Shortcut","MoveTo|13.48, 90.12, -0.07|","MoveTo|-1.89, 40.00, -25.15|","MoveTo|0.22, 30.00, -53.00|","Interactable|0.22, 30.00, -53.00|Candlekeep Key","MoveTo|14.42, 30.00, -55.71|","Interactable|14.42, 30.00, -55.71|Locked Door","Boss|49.97, 30.00, -56.95|","Interactable|0, 0, 0|Shortcut","MoveTo|51.48, 30.00, -56.03|","MoveTo|61.35, 30.00, -56.20|","ChatCommand|0, 0, 0|/automove on","Wait|0, 0, 0|2000","ChatCommand|0, 0, 0|/automove off","MoveTo|-92.63, 2.96, -190.24|","MoveTo|-112.88, 2.49, -189.35|","MoveTo|-115.60, 2.65, -211.23|","ChatCommand|-130.90, 2.19, -194.51|/targetenemy","ChatCommand|-130.90, 2.19, -194.51|/ac Auto-attack","ChatCommand|-117.30, 2.05, -166.27|/targetenemy","ChatCommand|-117.30, 2.05, -166.27|/ac Auto-attack","MoveTo|-123.99, 2.13, -164.21|","MoveTo|-94.11, -0.70, -226.26|","Boss|-96.10, -5.50, -293.21|","MoveTo|-95.34, -5.55, -301.39|"]
+{
+  "actions": [
+    "MoveTo|0.01, 139.86, -29.29|",
+    "MoveTo|-0.11, 93.54, -26.13|",
+    "Boss|0.63, 90.07, -1.65|",
+    "Interactable|0, 0, 0|Shortcut",
+    "MoveTo|13.48, 90.12, -0.07|",
+    "MoveTo|-1.89, 40.00, -25.15|",
+    "MoveTo|0.22, 30.00, -53.00|",
+    "Interactable|0.22, 30.00, -53.00|Candlekeep Key",
+    "MoveTo|14.42, 30.00, -55.71|",
+    "Interactable|14.42, 30.00, -55.71|Locked Door",
+    "Boss|49.97, 30.00, -56.95|",
+    "Interactable|0, 0, 0|Shortcut",
+    "MoveTo|51.48, 30.00, -56.03|",
+    "MoveTo|61.35, 30.00, -56.20|",
+    "ChatCommand|0, 0, 0|/automove on",
+    "Wait|0, 0, 0|2000",
+    "ChatCommand|0, 0, 0|/automove off",
+    "MoveTo|-92.63, 2.96, -190.24|",
+    "MoveTo|-112.88, 2.49, -189.35|",
+    "MoveTo|-115.60, 2.65, -211.23|",
+    "ChatCommand|-130.90, 2.19, -194.51|/targetenemy",
+    "ChatCommand|-130.90, 2.19, -194.51|/ac Auto-attack",
+    "ChatCommand|-117.30, 2.05, -166.27|/targetenemy",
+    "ChatCommand|-117.30, 2.05, -166.27|/ac Auto-attack",
+    "MoveTo|-123.99, 2.13, -164.21|",
+    "MoveTo|-94.11, -0.70, -226.26|",
+    "Boss|-96.10, -5.50, -293.21|",
+    "MoveTo|-95.34, -5.55, -301.39|"
+  ],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [],
+    "notes": []
+  }
+}
