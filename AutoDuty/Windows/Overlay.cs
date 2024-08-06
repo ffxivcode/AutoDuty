@@ -10,6 +10,8 @@ using ECommons.ImGuiMethods;
 
 namespace AutoDuty.Windows;
 
+using Managers;
+
 public unsafe class Overlay : Window
 {
     public Overlay() : base("AutoDuty Overlay", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize)
@@ -47,7 +49,7 @@ public unsafe class Overlay : Window
 
         if (Plugin.InDungeon || Plugin.Running)
         {
-            using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Svc.ClientState.TerritoryType) || Plugin.Stage > 0))
+            using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Svc.ClientState.TerritoryType) || Plugin.Stage > 0))
             {
                 if (ImGui.Button("Start"))
                 {

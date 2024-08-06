@@ -13,6 +13,9 @@ using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
 {
+    using ECommons.Logging;
+    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+
     internal unsafe static class InventoryHelper
     {
         internal static uint SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();

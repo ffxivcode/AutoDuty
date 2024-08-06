@@ -14,12 +14,13 @@ namespace AutoDuty.Windows
 {
     using System;
     using ECommons.GameHelpers;
+    using Managers;
 
     internal static class MainTab
     {
-        private static int _currentIndex = -1;
-        private static int _dutyListSelected = -1;
-        private static readonly string _pathsURL = "https://github.com/ffxivcode/DalamudPlugins/tree/main/AutoDuty/Paths";
+        private static          int                                       _currentStepIndex = -1;
+        private static          ContentPathsManager.ContentPathContainer? _dutySelected;
+        private static readonly string                                    _pathsURL = "https://github.com/ffxivcode/DalamudPlugins/tree/main/AutoDuty/Paths";
         
         internal static void Draw()
         {
@@ -40,13 +41,14 @@ namespace AutoDuty.Windows
             {
                 using var d = ImRaii.Disabled(Plugin is { InDungeon: true, Stage: > 0 });
                 
-                if (FileHelper.DictionaryPathFiles.TryGetValue(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0, out List<string>? curPaths))
+                if (ContentPathsManager.DictionaryPaths.TryGetValue(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0, out ContentPathsManager.ContentPathContainer container))
                 {
+                    List<ContentPathsManager.DutyPath> curPaths = container.Paths;
                     if (curPaths.Count > 1)
                     {
                         int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
                         ImGui.PushItemWidth(240 * ImGuiHelpers.GlobalScale);
-                        if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths], curPaths.Count))
+                        if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths.Select(dp => dp.Name)], curPaths.Count))
                         {
                             if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
                                 Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryContent.TerritoryType, []);
@@ -66,7 +68,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType].Remove(Svc.ClientState.LocalPlayer.GetJob());
                             Plugin.Configuration.Save();
                             if (!Plugin.InDungeon)
-                                Plugin.CurrentPath = MultiPathHelper.BestPathIndex();
+                                container.SelectPath(out Plugin.CurrentPath);
                         }
                     }
                 }
@@ -81,7 +83,7 @@ namespace AutoDuty.Windows
                     ImGui.ProgressBar(progress, new(200, 0));
                 }
                 else
-                    ImGui.Text($"{Plugin.CurrentTerritoryContent.DisplayName} Mesh: Loaded Path: {(FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
+                    ImGui.Text($"{Plugin.CurrentTerritoryContent.DisplayName} Mesh: Loaded Path: {(ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
 
                 ImGui.Separator();
                 ImGui.Spacing();
@@ -91,12 +93,12 @@ namespace AutoDuty.Windows
                     MainWindow.GotoAndActions();
                 using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
-                    using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
+                    using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
                     {
                         if (ImGui.Button("Start"))
                         {
                             Plugin.LoadPath();
-                            _currentIndex = -1;
+                            _currentStepIndex = -1;
                             if (Plugin.MainListClicked)
                                 Plugin.StartNavigation(!Plugin.MainListClicked);
                             else
@@ -147,19 +149,19 @@ namespace AutoDuty.Windows
                                 }
                             }
                         }
-                        if (_currentIndex != Plugin.Indexer && _currentIndex > -1 && Plugin.Stage > 0)
+                        if (_currentStepIndex != Plugin.Indexer && _currentStepIndex > -1 && Plugin.Stage > 0)
                         {
                             var lineHeight = ImGui.GetTextLineHeightWithSpacing();
-                            _currentIndex = Plugin.Indexer;
-                            if (_currentIndex > 1)
-                                ImGui.SetScrollY((_currentIndex - 1) * lineHeight);
+                            _currentStepIndex = Plugin.Indexer;
+                            if (_currentStepIndex > 1)
+                                ImGui.SetScrollY((_currentStepIndex - 1) * lineHeight);
                         }
-                        else if (_currentIndex == -1 && Plugin.Stage > 0)
+                        else if (_currentStepIndex == -1 && Plugin.Stage > 0)
                         {
-                            _currentIndex = 0;
-                            ImGui.SetScrollY(_currentIndex);
+                            _currentStepIndex = 0;
+                            ImGui.SetScrollY(_currentStepIndex);
                         }
-                        if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count <1 && !FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
+                        if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count <1 && !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
                             ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryContent.TerritoryType).Split('|')[1].Trim()}\n({Plugin.CurrentTerritoryContent.TerritoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory.FullName.Replace('\\','/')}\nPlease download from:\n{_pathsURL}\nor Create in the Build Tab");
                     }
                     else
@@ -193,7 +195,7 @@ namespace AutoDuty.Windows
                                 MainWindow.ShowPopup("Error", "You must be in a group of 4 to run Regular Duties");
                             else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !ObjectHelper.PartyValidation())
                                 MainWindow.ShowPopup("Error", "You must have the correcty party makeup to run Regular Duties");
-                            else if (FileHelper.DictionaryPathFiles.ContainsKey(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
+                            else if (ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
                                 Plugin.Run();
                             else
                                 MainWindow.ShowPopup("Error", "No path was found");
@@ -220,15 +222,15 @@ namespace AutoDuty.Windows
                     {
                         if (_support)
                         {
-                            Plugin.Configuration.Support = _support;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Variant = false;
+                            Plugin.Configuration.Support   = _support;
+                            Plugin.Configuration.Trial     = false;
+                            Plugin.Configuration.Raid      = false;
+                            Plugin.Configuration.Trust     = false;
+                            Plugin.Configuration.Squadron  = false;
+                            Plugin.Configuration.Regular   = false;
+                            Plugin.Configuration.Variant   = false;
                             Plugin.CurrentTerritoryContent = null;
-                            _dutyListSelected = -1;
+                            _dutySelected                  = null;
                             Plugin.Configuration.Save();
                         }
                     }                
@@ -237,15 +239,15 @@ namespace AutoDuty.Windows
                     {
                         if (_trust)
                         {
-                            Plugin.Configuration.Trust = _trust;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Variant = false;
+                            Plugin.Configuration.Trust     = _trust;
+                            Plugin.Configuration.Trial     = false;
+                            Plugin.Configuration.Raid      = false;
+                            Plugin.Configuration.Support   = false;
+                            Plugin.Configuration.Squadron  = false;
+                            Plugin.Configuration.Regular   = false;
+                            Plugin.Configuration.Variant   = false;
                             Plugin.CurrentTerritoryContent = null;
-                            _dutyListSelected = -1;
+                            _dutySelected                  = null;
                             Plugin.Configuration.Save();
                         }
                     } 
@@ -254,15 +256,15 @@ namespace AutoDuty.Windows
                     {
                         if (_squadron)
                         {
-                            Plugin.Configuration.Squadron = _squadron;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Variant = false;
+                            Plugin.Configuration.Squadron  = _squadron;
+                            Plugin.Configuration.Trial     = false;
+                            Plugin.Configuration.Raid      = false;
+                            Plugin.Configuration.Support   = false;
+                            Plugin.Configuration.Trust     = false;
+                            Plugin.Configuration.Regular   = false;
+                            Plugin.Configuration.Variant   = false;
                             Plugin.CurrentTerritoryContent = null;
-                            _dutyListSelected = -1;
+                            _dutySelected                  = null;
                             Plugin.Configuration.Save();
                         }
                     }
@@ -271,15 +273,15 @@ namespace AutoDuty.Windows
                     {
                         if (_regular)
                         {
-                            Plugin.Configuration.Regular = _regular;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Variant = false;
+                            Plugin.Configuration.Regular   = _regular;
+                            Plugin.Configuration.Trial     = false;
+                            Plugin.Configuration.Raid      = false;
+                            Plugin.Configuration.Support   = false;
+                            Plugin.Configuration.Trust     = false;
+                            Plugin.Configuration.Squadron  = false;
+                            Plugin.Configuration.Variant   = false;
                             Plugin.CurrentTerritoryContent = null;
-                            _dutyListSelected = -1;
+                            _dutySelected                  = null;
                             Plugin.Configuration.Save();
                         }
                     }
@@ -288,15 +290,15 @@ namespace AutoDuty.Windows
                     {
                         if (_Trial)
                         {
-                            Plugin.Configuration.Trial = _Trial;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Variant = false;
+                            Plugin.Configuration.Trial     = _Trial;
+                            Plugin.Configuration.Raid      = false;
+                            Plugin.Configuration.Regular   = false;
+                            Plugin.Configuration.Support   = false;
+                            Plugin.Configuration.Trust     = false;
+                            Plugin.Configuration.Squadron  = false;
+                            Plugin.Configuration.Variant   = false;
                             Plugin.CurrentTerritoryContent = null;
-                            _dutyListSelected = -1;
+                            _dutySelected                  = null;
                             Plugin.Configuration.Save();
                         }
                     }
@@ -305,15 +307,15 @@ namespace AutoDuty.Windows
                     {
                         if (_raid)
                         {
-                            Plugin.Configuration.Raid = _raid;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Variant = false;
+                            Plugin.Configuration.Raid      = _raid;
+                            Plugin.Configuration.Trial     = false;
+                            Plugin.Configuration.Regular   = false;
+                            Plugin.Configuration.Support   = false;
+                            Plugin.Configuration.Trust     = false;
+                            Plugin.Configuration.Squadron  = false;
+                            Plugin.Configuration.Variant   = false;
                             Plugin.CurrentTerritoryContent = null;
-                            _dutyListSelected = -1;
+                            _dutySelected                  = null;
                             Plugin.Configuration.Save();
                         }
                     }
@@ -322,15 +324,15 @@ namespace AutoDuty.Windows
                     {
                         if (_variant)
                         {
-                            Plugin.Configuration.Variant = _variant;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
+                            Plugin.Configuration.Variant   = _variant;
+                            Plugin.Configuration.Raid      = false;
+                            Plugin.Configuration.Trial     = false;
+                            Plugin.Configuration.Regular   = false;
+                            Plugin.Configuration.Support   = false;
+                            Plugin.Configuration.Trust     = false;
+                            Plugin.Configuration.Squadron  = false;
                             Plugin.CurrentTerritoryContent = null;
-                            _dutyListSelected = -1;
+                            _dutySelected                  = null;
                             Plugin.Configuration.Save();
                         }
                     }
@@ -356,10 +358,10 @@ namespace AutoDuty.Windows
                                     ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int index);
                                     if (duty != null)
                                     {
-                                        _dutyListSelected              = index;
+                                        _dutySelected                  = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
                                         Plugin.CurrentTerritoryContent = duty;
 
-                                        Plugin.CurrentPath             = MultiPathHelper.BestPathIndex();
+                                        _dutySelected.SelectPath(out Plugin.CurrentPath);
                                         Plugin.Leveling = leveling;
                                     }
                                 }
@@ -407,17 +409,21 @@ namespace AutoDuty.Windows
 
                         if (dictionary.Count > 0)
                         {
-                            foreach (var item in dictionary.Select((Value, Index) => (Value, Index)))
+                            short level = PlayerHelper.GetCurrentLevelFromSheet();
+                            short ilvl  = PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false);
+
+                            foreach ((uint _, ContentHelper.Content? content) in dictionary)
                             {
-                                using (var d2 = ImRaii.Disabled(item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.DictionaryPathFiles.ContainsKey(item.Value.Value.TerritoryType)))
+                                bool canRun = content.CanRun(level, ilvl);
+                                using (var d2 = ImRaii.Disabled(!canRun))
                                 {
-                                    if (Plugin.Configuration.HideUnavailableDuties && (item.Value.Value.ClassJobLevelRequired > Plugin.Player?.Level || !FileHelper.DictionaryPathFiles.ContainsKey(item.Value.Value.TerritoryType)))
+                                    if (Plugin.Configuration.HideUnavailableDuties && !canRun)
                                         continue;
-                                    if (ImGui.Selectable($"({item.Value.Value.TerritoryType}) {item.Value.Value.DisplayName}", _dutyListSelected == item.Index))
+                                    if (ImGui.Selectable($"({content.TerritoryType}) {content.DisplayName}", _dutySelected?.id == content.TerritoryType))
                                     {
-                                        _dutyListSelected              = item.Index;
-                                        Plugin.CurrentTerritoryContent = item.Value.Value;
-                                        Plugin.CurrentPath             = MultiPathHelper.BestPathIndex();
+                                        _dutySelected                  = ContentPathsManager.DictionaryPaths[content.TerritoryType];
+                                        Plugin.CurrentTerritoryContent = content;
+                                        _dutySelected.SelectPath(out Plugin.CurrentPath);
                                     }
                                 }
                             }
@@ -437,6 +443,11 @@ namespace AutoDuty.Windows
                     ImGui.EndListBox();
                 }
             }
+        }
+
+        internal static void PathsUpdated()
+        {
+            _dutySelected = null;
         }
     }
 }

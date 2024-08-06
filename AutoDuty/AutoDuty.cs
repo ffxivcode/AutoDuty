@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 using Dalamud.Game.Command;
 using Dalamud.Plugin;
@@ -45,11 +45,11 @@ namespace AutoDuty;
 public sealed class AutoDuty : IDalamudPlugin
 {
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
-    internal List<string> ListBoxPOSText { get; set; } = [];
-    internal int CurrentLoop = 0;
-    internal ContentHelper.Content? CurrentTerritoryContent = null;
-    internal uint CurrentTerritoryType = 0;
-    internal int CurrentPath = -1;
+    internal                        List<string>            ListBoxPOSText  { get; set; }         = [];
+    internal                        int                     CurrentLoop             = 0;
+    internal                        ContentHelper.Content?  CurrentTerritoryContent = null;
+    internal                        uint                    CurrentTerritoryType    = 0;
+    internal                        int                     CurrentPath             = -1;
 
     internal bool Leveling            = false;
     internal bool LevelingEnabled => Configuration.Support && Leveling;
@@ -80,6 +80,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal string Action = "";
     internal string PathFile = "";
     internal TaskManager TaskManager;
+    internal Job JobLastKnown;
     
     private const string CommandName = "/autoduty";
     private DirectoryInfo _configDirectory;
@@ -230,28 +231,23 @@ public sealed class AutoDuty : IDalamudPlugin
                     return;
                 }
             }
-
+            
             InDungeon = true;
             ListBoxPOSText.Clear();
-            if (!FileHelper.DictionaryPathFiles.TryGetValue(Svc.ClientState.TerritoryType, out List<string>? curPaths))
+            if (!ContentPathsManager.DictionaryPaths.TryGetValue(Svc.ClientState.TerritoryType, out ContentPathsManager.ContentPathContainer container))
             {
                 PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
                 return;
             }
 
-            if (Plugin.CurrentPath < 0 && Svc.ClientState.LocalPlayer != null)
-                Plugin.CurrentPath = MultiPathHelper.BestPathIndex();
+            ContentPathsManager.DutyPath? path = Plugin.CurrentPath < 0 && this.Player != null ? 
+                                                     container.SelectPath(out Plugin.CurrentPath) : 
+                                                     container.Paths[Plugin.CurrentPath];
+
+            PathFile       = path.FilePath;
+            ListBoxPOSText = path.Actions.ToList();
+
             //Svc.Log.Info("Loading Path: " + Plugin.CurrentPath);
-            PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{curPaths![Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1)]}";
-
-            if (!File.Exists(PathFile))
-                return;
-
-            using StreamReader streamReader = new(PathFile, Encoding.UTF8);
-            var json = streamReader.ReadToEnd();
-            List<string>? paths;
-            if ((paths = JsonSerializer.Deserialize<List<string>>(json)) != null)
-                ListBoxPOSText = paths;
         }
         catch (Exception e)
         {
@@ -380,7 +376,6 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
         }
-
         if (Configuration.Trust)
             _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Configuration.Support)
@@ -683,13 +678,21 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (Indexer != -1)
         {
+            bool revivalFound = ContentPathsManager.DictionaryPaths[this.CurrentTerritoryType].Paths[this.CurrentPath].RevivalFound;
+
             //Svc.Log.Info("Finding Last Boss");
             for (int i = Indexer; i >= 0; i--)
             {
-                if (ListBoxPOSText[i].Contains("Boss|") && i != Indexer)
-                    return i + 1;
-                if (ListBoxPOSText[i].Contains("Revival|") && i != Indexer)
-                    return i;
+                if (revivalFound)
+                {
+                    if (this.ListBoxPOSText[i].Contains("Revival|") && i != this.Indexer)
+                        return i;
+                }
+                else
+                {
+                    if (this.ListBoxPOSText[i].Contains("Boss|") && i != this.Indexer)
+                        return i + 1;
+                }
             }
         }
 
@@ -697,7 +700,6 @@ public sealed class AutoDuty : IDalamudPlugin
     }
 
     int currentStage = -1;
-    private Job job;
     
     public void Framework_Update(IFramework framework)
     {
@@ -718,8 +720,8 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!InDungeon && CurrentTerritoryContent != null)
         {
-            Job curJob =Player.GetJob();
-            if (curJob != job)
+            Job curJob = Player.GetJob();
+            if (curJob != this.JobLastKnown)
             {
                 if (LevelingEnabled)
                 {
@@ -727,19 +729,19 @@ public sealed class AutoDuty : IDalamudPlugin
                     if (duty != null)
                     {
                         Plugin.CurrentTerritoryContent = duty;
-                        MainListClicked                = true;
+                        this.MainListClicked           = true;
+                        ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryContent.TerritoryType].SelectPath(out this.CurrentPath);
                     }
                     else
                     {
                         Plugin.CurrentTerritoryContent = null;
-                        this.Leveling                 = false;
+                        this.Leveling                  = false;
+                        this.CurrentPath               = -1;
                     }
                 }
-
-                CurrentPath = MultiPathHelper.BestPathIndex();
             }
 
-            job = curJob;
+            this.JobLastKnown = curJob;
         }
 
         PlayerPosition = Player.Position;

@@ -5,9 +5,15 @@ using System.Linq;
 
 namespace AutoDuty.Helpers
 {
+    using ECommons.GameFunctions;
+    using ECommons.GameHelpers;
+    using FFXIVClientStructs.FFXIV.Client.Game.UI;
+    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+    using global::AutoDuty.Managers;
     using Lumina.Data;
     using Lumina.Excel.GeneratedSheets2;
     using Lumina.Text;
+    using ClassJob = Lumina.Excel.GeneratedSheets.ClassJob;
 
     internal static class ContentHelper
     {
@@ -107,6 +113,22 @@ namespace AutoDuty.Helpers
             }
 
             DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.TerritoryType).ToDictionary();
+        }
+
+        public static bool CanRun(this Content content, short level = -1, short ilvl = -1)
+        {
+            if ((AutoDuty.Plugin.Player?.GetRole() ?? CombatRole.NonCombat) == CombatRole.NonCombat)
+                return false;
+
+            if (level < 0) 
+                level = PlayerHelper.GetCurrentLevelFromSheet();
+
+            if (ilvl < 0) 
+                ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet();
+
+            return content.ClassJobLevelRequired <= level                                 &&
+                   ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) &&
+                   content.ItemLevelRequired <= ilvl;
         }
     }
 }
