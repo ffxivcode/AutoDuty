@@ -148,7 +148,7 @@ public sealed class AutoDuty : IDalamudPlugin
             WindowSystem.AddWindow(Overlay);
 
             if (Configuration.OpenOverlay && (!Configuration.OnlyOpenOverlayWhenRunning || Started || Running))
-                Overlay.IsOpen = true;
+                SchedulerHelper.ScheduleAction("OpenOverlay", () => Overlay.IsOpen = true, () => ObjectHelper.IsReady);
             
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
