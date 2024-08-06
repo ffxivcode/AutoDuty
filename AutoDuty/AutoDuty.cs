@@ -19,7 +19,6 @@ using ECommons.Throttlers;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Linq;
 using Dalamud.Game.ClientState.Objects.Enums;
-using System.Text.Json;
 using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
@@ -304,25 +303,6 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,          "Run-WaitANotIsOccupied");
                 }
 
-                this.TaskManager.Enqueue(() =>
-                                         {
-                                             if (this.LevelingEnabled)
-                                             {
-                                                 Svc.Log.Info("Leveling Enabled");
-                                                 ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int _);
-                                                 if (duty != null)
-                                                 {
-                                                     Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
-                                                     this.CurrentTerritoryContent = duty;
-                                                     this.CurrentPath             = MultiPathHelper.BestPathIndex();
-                                                 }
-                                                 else
-                                                 {
-                                                     this.CurrentTerritoryContent = null;
-                                                     this.CurrentLoop             = this.Configuration.LoopTimes;
-                                                 }
-                                             }
-                                         }, "Loop-DecideLevelingDuty");
                 TaskManager.Enqueue(() => {
                     if (StopLoop)
                     {
@@ -375,6 +355,23 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Loop-GotoInnInvoke");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
+        }
+        if (LevelingEnabled)
+        {
+            Svc.Log.Info("Leveling Enabled");
+            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int _);
+            if (duty != null)
+            {
+                Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
+                this.CurrentTerritoryContent = duty;
+                ContentPathsManager.DictionaryPaths[duty.TerritoryType].SelectPath(out this.CurrentPath);
+            }
+            else
+            {
+                CurrentLoop = Configuration.LoopTimes;
+                LoopsCompleteActions();
+                return;
+            }
         }
         if (Configuration.Trust)
             _trustManager.RegisterTrust(CurrentTerritoryContent);

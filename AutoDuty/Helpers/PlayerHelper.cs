@@ -38,15 +38,13 @@ namespace AutoDuty.Helpers
 
         public static CombatRole GetRole(this Job job)
         {
-            if (ExcelItemHelper.Tanks.Contains(job))
-                return CombatRole.Tank;
-            if (ExcelItemHelper.Healers.Contains(job))
-                return CombatRole.Healer;
-            if (ExcelItemHelper.DexterityDPS.Contains(job) ||
-                ExcelItemHelper.StrengthDPS.Contains(job)  ||
-                ExcelItemHelper.MagicalDPS.Contains(job))
-                return CombatRole.DPS;
-            return CombatRole.NonCombat;
+            return job switch
+            {
+                Job.GLA or Job.PLD or Job.MRD or Job.WAR or Job.DRK or Job.GNB => CombatRole.Tank,
+                Job.CNJ or Job.WHM or Job.SGE or Job.SCH or Job.AST => CombatRole.Healer,
+                Job.PGL or Job.MNK or Job.LNC or Job.DRG or Job.SAM or Job.RPR or Job.BRD or Job.DNC or Job.MCH or Job.ROG or Job.NIN or Job.THM or Job.BLM or Job.ARC or Job.SMN or Job.RDM or Job.BLU => CombatRole.DPS,
+                _ => CombatRole.NonCombat,
+            };
         }
     }
 }
