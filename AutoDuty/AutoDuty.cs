@@ -233,7 +233,7 @@ public sealed class AutoDuty : IDalamudPlugin
             
             InDungeon = true;
             ListBoxPOSText.Clear();
-            if (!ContentPathsManager.DictionaryPaths.TryGetValue(Svc.ClientState.TerritoryType, out ContentPathsManager.ContentPathContainer container))
+            if (!ContentPathsManager.DictionaryPaths.TryGetValue(Svc.ClientState.TerritoryType, out ContentPathsManager.ContentPathContainer? container))
             {
                 PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
                 return;
@@ -560,23 +560,24 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         BMRoleChecks();
         var bmr = IPCSubscriber_Common.IsReady("BossModReborn");
-        //if (bmr) // remove once veyn merges
-        //{
+        if (bmr) // remove once veyn merges
+        {
             _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
             _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
-        //}
-        /*_chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "FollowDuringCombat" : "FollowInCombat")} {Configuration.FollowDuringCombat}");
+        }
+        _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "FollowDuringCombat" : "FollowInCombat")} {Configuration.FollowDuringCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "FollowDuringActiveBossModule" : "FollowActiveBM")} {Configuration.FollowDuringActiveBossModule}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "FollowOutOfCombat" : "FollowOOC")} {Configuration.FollowOutOfCombat}");*/
-        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "FollowOutOfCombat" : "FollowOOC")} {Configuration.FollowOutOfCombat}");
+        //replace the 3 above with 3 below after veyn merges
+        //_chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
+        //_chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
+        //_chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "MaxDistanceToTarget" : "FollowRange")} {Configuration.MaxDistanceToTarget}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "MaxDistanceToSlot " + $"{Configuration.MaxDistanceToSlot}" : "OverrideRange true")}");
 
-        //if (bmr)// remove once veyn merges
-        _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player!.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player!.Name)))}");
+        if (bmr)// remove once veyn merges
+            _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player!.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player!.Name)))}");
 
         if (!bmr)
             _chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
