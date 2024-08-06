@@ -245,9 +245,9 @@ namespace AutoDuty.Helpers
                 var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
                 TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Svc.Log.Info($"InteractWithObject: Exception: {ex}");
+                Svc.Log.Info($"InteractWithObject: Exception: {ex}");
             }
         }
         internal static unsafe AtkUnitBase* InteractWithObjectUntilAddon(IGameObject? gameObject, string addonName)

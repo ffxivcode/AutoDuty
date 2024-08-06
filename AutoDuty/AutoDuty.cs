@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 using Dalamud.Game.Command;
 using Dalamud.Plugin;
@@ -256,7 +256,8 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private unsafe bool StopLoop => (Configuration.StopLevel && ECommons.GameHelpers.Player.Level >= Configuration.StopLevelInt) || 
+    private unsafe bool StopLoop => this.CurrentTerritoryContent == null ||
+                                    (Configuration.StopLevel && ECommons.GameHelpers.Player.Level >= Configuration.StopLevelInt) || 
                                     (Configuration.StopNoRestedXP && AgentHUD.Instance()->ExpRestedExperience == 0) || 
                                     (Configuration.StopItemQty && Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value));
 
@@ -294,6 +295,34 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => { Stage   = 99; },    "Loop-SetStage=99");
                 TaskManager.Enqueue(() => { Started = false; }, "Loop-SetStarted=false");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
+
+                if (Configuration.AutoEquipRecommendedGear)
+                {
+                    TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Run-AutoEquip");
+                    TaskManager.DelayNext("Run-Delay50", 50);
+                    TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Run-WaitAutoEquipComplete");
+                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,          "Run-WaitANotIsOccupied");
+                }
+
+                this.TaskManager.Enqueue(() =>
+                                         {
+                                             if (this.LevelingEnabled)
+                                             {
+                                                 Svc.Log.Info("Leveling Enabled");
+                                                 ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int _);
+                                                 if (duty != null)
+                                                 {
+                                                     Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
+                                                     this.CurrentTerritoryContent = duty;
+                                                     this.CurrentPath             = MultiPathHelper.BestPathIndex();
+                                                 }
+                                                 else
+                                                 {
+                                                     this.CurrentTerritoryContent = null;
+                                                     this.CurrentLoop             = this.Configuration.LoopTimes;
+                                                 }
+                                             }
+                                         }, "Loop-DecideLevelingDuty");
                 TaskManager.Enqueue(() => {
                     if (StopLoop)
                     {
@@ -313,13 +342,6 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (CurrentTerritoryContent == null) return;
 
-        if (Configuration.AutoEquipRecommendedGear)
-        {
-            TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Run-AutoEquip");
-            TaskManager.DelayNext("Run-Delay50", 50);
-            TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Run-WaitAutoEquipComplete");
-            TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,          "Run-WaitANotIsOccupied");
-        }
         if (Configuration.AutoRepair && InventoryHelper.CanRepair())
         {
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
@@ -354,25 +376,6 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
         }
-
-        if (LevelingEnabled)
-        {
-            Svc.Log.Info("Leveling Enabled");
-            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int _);
-            if (duty != null)
-            {
-                Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
-                this.CurrentTerritoryContent = duty;
-                ContentPathsManager.DictionaryPaths[duty.TerritoryType].SelectPath(out this.CurrentPath);
-            }
-            else
-            {
-                CurrentLoop = Configuration.LoopTimes;
-                LoopsCompleteActions();
-                return;
-            }
-        }
-
         if (Configuration.Trust)
             _trustManager.RegisterTrust(CurrentTerritoryContent);
         else if (Configuration.Support)
