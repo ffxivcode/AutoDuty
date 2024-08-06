@@ -4,8 +4,11 @@ using System.Text;
 namespace AutoDuty.Managers
 {
     using System.IO;
+    using System.Linq;
     using System.Text.Json;
+    using System.Text.Json.Serialization;
     using System.Text.RegularExpressions;
+    using Windows;
     using ECommons.ExcelServices;
     using ECommons.GameFunctions;
     using ECommons.GameHelpers;
@@ -110,23 +113,36 @@ namespace AutoDuty.Managers
 
             public  Match ColoredNameRegex { get; private set; } = null!;
 
-
-            private string[] actions = [];
-
-            public string[] Actions
+            private PathFile? pathFile = null;
+            public PathFile PathFile
             {
                 get
                 {
-                    if (this.actions.Length <= 0)
+                    if (this.pathFile == null)
                     {
                         this.RevivalFound = false;
-                        using StreamReader streamReader = new(this.FilePath, Encoding.UTF8);
-                        string             json         = streamReader.ReadToEnd();
-                        List<string>?      paths;
-                        if ((paths = JsonSerializer.Deserialize<List<string>>(json)) != null)
-                            this.actions = paths.ToArray();
+                        string json;
 
-                        foreach (string action in this.actions)
+                        using (StreamReader streamReader = new(this.FilePath, Encoding.UTF8)) 
+                            json = streamReader.ReadToEnd();
+
+                        // Backwards compatibility, with instant updating
+                        if (!json.Contains("\"createdAt\""))
+                        {
+                            List<string>? paths;
+                            if ((paths = JsonSerializer.Deserialize<List<string>>(json)) != null)
+                            {
+                                this.pathFile         = PathFile.Default;
+                                this.pathFile.actions = paths.ToArray();
+                            }
+
+                            string jsonNew = JsonSerializer.Serialize(this.PathFile, BuildTab.jsonSerializerOptions);
+                            File.WriteAllText(this.FilePath, jsonNew);
+                        }
+                        else
+                            this.pathFile = JsonSerializer.Deserialize<PathFile>(json);
+
+                        foreach (string action in this.PathFile.actions)
                             if (action.Split('|')[0].Trim() == "Revival")
                             {
                                 this.RevivalFound = true;
@@ -134,11 +150,45 @@ namespace AutoDuty.Managers
                             }
                     }
 
-                    return this.actions;
+                    return this.pathFile!;
                 }
             }
 
-            public bool RevivalFound { get; private set; }
+            public string[] Actions => this.PathFile.actions;
+            public         bool                  RevivalFound { get; private set; }
+        }
+
+        internal class PathFile
+        {
+            public string[]         actions { get; set; }
+            public PathFileMetaData meta    { get; set; }
+
+            public static PathFile Default => new()
+                                              {
+                                                  actions = [],
+                                                  meta = new PathFileMetaData
+                                                         {
+                                                             createdAt = AutoDuty.Plugin.Configuration.Version,
+                                                             changelog = [],
+                                                             notes     = []
+                                                         }
+                                              };
+        }
+
+        internal class PathFileMetaData
+        {
+            public int                          createdAt { get; set; }
+            public List<PathFileChangelogEntry> changelog { get; set; }
+
+            public int LastUpdatedVersion => this.changelog.Count > 0 ? this.changelog.Last().version : this.createdAt;
+
+            public List<string> notes { get; set; }
+        }
+
+        internal class PathFileChangelogEntry
+        {
+            public int    version { get; set; }
+            public string change  { get; set; } = string.Empty;
         }
     }
 }

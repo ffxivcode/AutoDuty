@@ -1,24 +1,31 @@
-[
-  "DutySpecificCode|347.75, 44.14, -223.21|1",
-  "DutySpecificCode|90.26, 27.20, -56.04|2",
-  "MoveTo|86.99, 29.11, -41.05|",
-  "Interactable|0, 0, 0|2000214 (Red Coral Formation)",
-  "DutySpecificCode|63.56, 32.83, -31.59|3",
-  "MoveTo|75.40, 32.55, -33.57|",
-  "Interactable|0, 0, 0|2000213 (Blue Coral Formation)",
-  "DutySpecificCode|63.66, 32.85, -31.63|3",
-  "MoveTo|65.29, 31.77, -55.45|",
-  "Interactable|0, 0, 0|2000215 (Green Coral Formation)",
-  "DutySpecificCode|63.66, 32.85, -31.63|3",
-  "Boss|71.80, 30.37, -44.91|",
-  "Interactable|63.56, 32.83, -31.59|2000216 (Inconspicuous Switch)",
-  "Boss|-27.17, 22.86, 56.34|",
-  "Interactable|-91.82, 13.84, 145.88|2000250 (Captain\u0027s Quarters Key)",
-  "MoveTo|-95.10, 19.90, 171.10|",
-  "Interactable|0, 0, 0|2000227 (Captain\u0027s Quarters)",
-  "Interactable|-95.15, 20.01, 190.03|2000255 (Waverider Gate Key)",
-  "MoveTo|-129.54, 16.30, 156.32|",
-  "Interactable|0, 0, 0|2000231 (Waverider Gate)",
-  "Boss|-183.12, 6.38, 244.52|",
-  "Boss|-332.47, 5.57, 317.23|"
-]
+{
+  "actions": [
+    "DutySpecificCode|347.75, 44.14, -223.21|1",
+    "DutySpecificCode|90.26, 27.20, -56.04|2",
+    "MoveTo|86.99, 29.11, -41.05|",
+    "Interactable|0, 0, 0|2000214 (Red Coral Formation)",
+    "DutySpecificCode|63.56, 32.83, -31.59|3",
+    "MoveTo|75.40, 32.55, -33.57|",
+    "Interactable|0, 0, 0|2000213 (Blue Coral Formation)",
+    "DutySpecificCode|63.66, 32.85, -31.63|3",
+    "MoveTo|65.29, 31.77, -55.45|",
+    "Interactable|0, 0, 0|2000215 (Green Coral Formation)",
+    "DutySpecificCode|63.66, 32.85, -31.63|3",
+    "Boss|71.80, 30.37, -44.91|",
+    "Interactable|63.56, 32.83, -31.59|2000216 (Inconspicuous Switch)",
+    "Boss|-27.17, 22.86, 56.34|",
+    "Interactable|-91.82, 13.84, 145.88|2000250 (Captain\u0027s Quarters Key)",
+    "MoveTo|-95.10, 19.90, 171.10|",
+    "Interactable|0, 0, 0|2000227 (Captain\u0027s Quarters)",
+    "Interactable|-95.15, 20.01, 190.03|2000255 (Waverider Gate Key)",
+    "MoveTo|-129.54, 16.30, 156.32|",
+    "Interactable|0, 0, 0|2000231 (Waverider Gate)",
+    "Boss|-183.12, 6.38, 244.52|",
+    "Boss|-332.47, 5.57, 317.23|"
+  ],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [],
+    "notes": []
+  }
+}
