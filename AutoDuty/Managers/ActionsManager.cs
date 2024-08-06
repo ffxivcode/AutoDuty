@@ -41,7 +41,8 @@ namespace AutoDuty.Managers
             ("Revival",  "false"),
             ("ForceAttack",  "false"),
             ("Jump", "automove for how long before"),
-            ("PausePandora", "Which feature | how long")
+            ("PausePandora", "Which feature | how long"),
+            ("CameraFacing", "Face which Coords?")
         ];
 
         public void InvokeAction(string action, object?[] p)
@@ -441,7 +442,20 @@ namespace AutoDuty.Managers
         {
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
-
+        
+        public void CameraFacing(string coords)
+        {
+            if (coords != null)
+            {
+                string[] v = coords.Split(", ");
+                if (v.Length == 3)
+                {
+                    Vector3 facingPos = new Vector3(float.Parse(v[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[2], System.Globalization.CultureInfo.InvariantCulture));
+                    AutoDuty.Plugin.OverrideCamera.Face(facingPos);
+                }
+            }
+        }
+        
         public enum OID : uint
         {
             Blue = 0x1E8554,
