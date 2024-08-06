@@ -9,8 +9,6 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 
-//still need to test self repair
-
 namespace AutoDuty.Helpers
 {
     internal static class RepairHelper

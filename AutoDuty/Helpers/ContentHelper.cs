@@ -2,19 +2,14 @@
 using ECommons.DalamudServices;
 using System.Collections.Generic;
 using System.Linq;
+using ECommons.GameFunctions;
+using global::AutoDuty.Managers;
+using Lumina.Data;
+using Lumina.Excel.GeneratedSheets2;
+using Lumina.Text;
 
 namespace AutoDuty.Helpers
 {
-    using ECommons.GameFunctions;
-    using ECommons.GameHelpers;
-    using FFXIVClientStructs.FFXIV.Client.Game.UI;
-    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-    using global::AutoDuty.Managers;
-    using Lumina.Data;
-    using Lumina.Excel.GeneratedSheets2;
-    using Lumina.Text;
-    using ClassJob = Lumina.Excel.GeneratedSheets.ClassJob;
-
     internal static class ContentHelper
     {
         internal static Dictionary<uint, Content> DictionaryContent { get; set; } = [];

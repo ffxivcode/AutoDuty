@@ -547,8 +547,8 @@ public sealed class AutoDuty : IDalamudPlugin
         _chat.ExecuteCommand($"/vnav aligncamera enable");
         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
         _chat.ExecuteCommand($"/vbmai on");
-        if (IPCSubscriber_Common.IsReady("BossModReborn") && Configuration.AutoManageBossModAISettings)
-            SetBMRSettings();
+        if (Configuration.AutoManageBossModAISettings)
+            SetBMSettings();
         if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
             ReflectionHelper.RotationSolver_Reflection.RotationAuto();
         Svc.Log.Info("Starting Navigation");
@@ -556,22 +556,34 @@ public sealed class AutoDuty : IDalamudPlugin
             Indexer = 0;
     }
 
-    internal void SetBMRSettings()
+    internal void SetBMSettings()
     {
-        BMRRoleChecks();
-        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
+        BMRoleChecks();
+        var bmr = IPCSubscriber_Common.IsReady("BossModReborn");
+        //if (bmr) // remove once veyn merges
+        //{
+            _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
+            _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
+        //}
+        /*_chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "FollowDuringCombat" : "FollowInCombat")} {Configuration.FollowDuringCombat}");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "FollowDuringActiveBossModule" : "FollowActiveBM")} {Configuration.FollowDuringActiveBossModule}");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "FollowOutOfCombat" : "FollowOOC")} {Configuration.FollowOutOfCombat}");*/
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlot}");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "MaxDistanceToTarget" : "FollowRange")} {Configuration.MaxDistanceToTarget}");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "MaxDistanceToSlot " + $"{Configuration.MaxDistanceToSlot}" : "OverrideRange true")}");
+
+        //if (bmr)// remove once veyn merges
         _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player!.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player!.Name)))}");
-        _chat.ExecuteCommand($"/vbmai positional {Configuration.PositionalCustom}");
+
+        if (!bmr)
+            _chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {(bmr ? Configuration.PositionalCustom : (Configuration.PositionalCustom == "Any" ? "0" : (Configuration.PositionalCustom == "Flank" ? "1" : (Configuration.PositionalCustom == "Rear" ? "2" : "3"))))}");
     }
 
-    internal void BMRRoleChecks()
+    internal void BMRoleChecks()
     {
         //RoleBased Positional
         if (ObjectHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalCustom != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any"))
@@ -989,41 +1001,21 @@ public sealed class AutoDuty : IDalamudPlugin
                         if (gos != null)
                             Svc.Targets.Target = gos;
                     }
-
-                    if (!IPCSubscriber_Common.IsReady("BossModReborn") || Configuration.AutoManageBossModAISettings)
+                    var BMR = IPCSubscriber_Common.IsReady("BossModReborn");
+                    if (Configuration.AutoManageBossModAISettings)
                     {
-                        if (IPCSubscriber_Common.IsReady("BossModReborn"))
+                        if (Svc.Targets.Target != null)
                         {
-                            if (Svc.Targets.Target != null)
-                            {
-                                VNavmesh_IPCSubscriber.Path_Stop();
+                            VNavmesh_IPCSubscriber.Path_Stop();
 
-                                if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && !BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTargetAoE))
-                                    BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoE}"]);
-                                else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTarget))
-                                    BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTarget}"]);
+                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && !BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange"])[0].Equals(Configuration.MaxDistanceToTargetAoE))
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange", $"{Configuration.MaxDistanceToTargetAoE}"]);
+                            else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange"])[0].Equals(Configuration.MaxDistanceToTarget))
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange", $"{Configuration.MaxDistanceToTarget}"]);
 
-                            }
-                            else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTarget))
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTarget}"]);
                         }
-                        else
-                        {
-                            if (Svc.Targets.Target != null && (ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.JobRange || (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && ObjectHelper.GetBattleDistanceToPlayer(Svc.Targets.Target) > ObjectHelper.AoEJobRange)))
-                            {
-                                if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2)
-                                    VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.AoEJobRange);
-                                else
-                                    VNavmesh_IPCSubscriber.Path_SetTolerance(ObjectHelper.JobRange);
-                                if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
-                                    VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(Svc.Targets.Target.Position, false);
-                            }
-                            else
-                            {
-                                VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
-                                VNavmesh_IPCSubscriber.Path_Stop();
-                            }
-                        }
+                        else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange"])[0].Equals(Configuration.MaxDistanceToTarget))
+                            BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange", $"{Configuration.MaxDistanceToTarget}"]);
                     }
                     else
                         VNavmesh_IPCSubscriber.Path_Stop();

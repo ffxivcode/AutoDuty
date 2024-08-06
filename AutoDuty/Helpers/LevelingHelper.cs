@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ECommons.GameFunctions;
 
 namespace AutoDuty.Helpers
 {
-    using ECommons.DalamudServices;
-    using ECommons.GameFunctions;
-    using ECommons.GameHelpers;
-    using FFXIVClientStructs.FFXIV.Client.Game.UI;
-    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-    using Lumina.Excel.GeneratedSheets;
-    using Managers;
-
     public static class LevelingHelper
     {
         internal static unsafe ContentHelper.Content? SelectHighestLevelingRelevantDuty(out int index)

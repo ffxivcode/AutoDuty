@@ -1,19 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using ECommons.ExcelServices;
+using ECommons.GameFunctions;
+using ECommons.GameHelpers;
+using AutoDuty.Helpers;
+using AutoDuty.Windows;
 
 namespace AutoDuty.Managers
 {
-    using System.IO;
-    using System.Linq;
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
-    using System.Text.RegularExpressions;
-    using Windows;
-    using ECommons.ExcelServices;
-    using ECommons.GameFunctions;
-    using ECommons.GameHelpers;
-    using Helpers;
-
     internal static class ContentPathsManager
     {
         internal static Dictionary<uint, ContentPathContainer> DictionaryPaths = [];

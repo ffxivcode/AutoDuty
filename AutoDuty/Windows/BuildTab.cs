@@ -11,15 +11,13 @@ using System.Collections.Generic;
 using System.IO;
 using AutoDuty.Helpers;
 using Dalamud.Interface.Utility;
+using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.GameHelpers;
 using static AutoDuty.Managers.ContentPathsManager;
 
 namespace AutoDuty.Windows
 {
-    using Dalamud.Game.ClientState.Objects.Enums;
-    using Dalamud.Game.ClientState.Objects.Types;
-    using ECommons.GameHelpers;
-    using Managers;
-
     internal static class BuildTab
     {
         internal static List<(string, string)>? ActionsList { get; set; }

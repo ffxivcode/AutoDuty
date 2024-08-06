@@ -7,10 +7,9 @@ using ImGuiNET;
 using System.Numerics;
 using static AutoDuty.AutoDuty;
 using ECommons.ImGuiMethods;
+using AutoDuty.Managers;
 
 namespace AutoDuty.Windows;
-
-using Managers;
 
 public unsafe class Overlay : Window
 {

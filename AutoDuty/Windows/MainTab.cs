@@ -9,13 +9,12 @@ using System.Linq;
 using AutoDuty.Helpers;
 using ECommons.DalamudServices;
 using Dalamud.Interface.Utility;
+using System;
+using ECommons.GameHelpers;
+using AutoDuty.Managers;
 
 namespace AutoDuty.Windows
 {
-    using System;
-    using ECommons.GameHelpers;
-    using Managers;
-
     internal static class MainTab
     {
         private static          int                                       _currentStepIndex = -1;

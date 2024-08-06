@@ -561,7 +561,7 @@ public static class ConfigTab
                 Configuration.FollowSlot = false;
                 followSlot = false;
                 Configuration.FollowRole = followRole;
-                AutoDuty.Plugin.BMRRoleChecks();
+                AutoDuty.Plugin.BMRoleChecks();
                 Configuration.Save();
             }
 
@@ -605,7 +605,7 @@ public static class ConfigTab
             if (ImGui.Checkbox("Set Max Distance To Target Based on Role", ref maxDistanceToTargetRoleBased))
             {
                 Configuration.MaxDistanceToTargetRoleRange = maxDistanceToTargetRoleBased;
-                AutoDuty.Plugin.BMRRoleChecks();
+                AutoDuty.Plugin.BMRoleChecks();
                 Configuration.Save();
             }
 
@@ -636,7 +636,7 @@ public static class ConfigTab
             if (ImGui.Checkbox("Set Positional Based on Role", ref positionalRoleBased))
             {
                 Configuration.PositionalRoleBased = positionalRoleBased;
-                AutoDuty.Plugin.BMRRoleChecks();
+                AutoDuty.Plugin.BMRoleChecks();
                 Configuration.Save();
             }
 

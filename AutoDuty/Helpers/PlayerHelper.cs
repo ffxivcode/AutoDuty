@@ -1,20 +1,13 @@
 ﻿using ECommons.DalamudServices;
-using ECommons.Reflection;
+using ECommons.ExcelServices;
+using ECommons.GameFunctions;
+using ECommons.GameHelpers;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using Lumina.Excel.GeneratedSheets;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoDuty.Helpers
 {
-    using ECommons.ExcelServices;
-    using ECommons.GameFunctions;
-    using ECommons.GameHelpers;
-    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-    using Lumina.Excel.GeneratedSheets;
-
     internal static class PlayerHelper
     {
         public static unsafe short GetCurrentLevelFromSheet(Job? job = null)

@@ -5,7 +5,6 @@ using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
-
 namespace AutoDuty.Managers
 {
     //on Rewrite need to check for sufficient seals

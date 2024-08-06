@@ -1,15 +1,7 @@
 ﻿using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using ECommons.Automation;
 using ECommons.Automation.LegacyTaskManager;
 using Dalamud.Plugin.Services;
-using ECommons.DalamudServices;
-using ECommons.Throttlers;
-using System.Numerics;
-using Dalamud.Game.ClientState.Objects.Types;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using Dalamud.Game.ClientState.Conditions;
 
 namespace AutoDuty.Helpers

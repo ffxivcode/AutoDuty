@@ -10,7 +10,7 @@ namespace AutoDuty.Helpers
         {
             internal string Name { get; set; } = string.Empty;
 
-            internal Action Action { get; set; } = () => { };
+            internal List<Action> Action { get; set; } = [() => { }];
 
             internal int TimeMS { get; set; } = 0;
 
@@ -21,9 +21,13 @@ namespace AutoDuty.Helpers
 
         internal static HashSet<Schedule> schedules = [];
 
-        internal static bool ScheduleAction(string name, Action action, int timeMS, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = action, TimeMS = Environment.TickCount + timeMS, RunOnce = runOnce });
+        internal static bool ScheduleAction(string name, Action action, int timeMS, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = [action], TimeMS = Environment.TickCount + timeMS, RunOnce = runOnce });
 
-        internal static bool ScheduleAction(string name, Action action, Func<bool> condition, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = action, Condition = condition, RunOnce = runOnce });
+        internal static bool ScheduleAction(string name, List<Action> action, int timeMS, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = action, TimeMS = Environment.TickCount + timeMS, RunOnce = runOnce });
+
+        internal static bool ScheduleAction(string name, Action action, Func<bool> condition, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = [action], Condition = condition, RunOnce = runOnce });
+
+        internal static bool ScheduleAction(string name, List<Action> action, Func<bool> condition, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = action, Condition = condition, RunOnce = runOnce });
 
         internal static int DescheduleAction(string name) => schedules.RemoveWhere(s => s.Name == name);
 
@@ -33,7 +37,7 @@ namespace AutoDuty.Helpers
             {
                 if (schedule.TimeMS != 0 ? Environment.TickCount >= schedule.TimeMS : schedule.Condition?.Invoke() ?? false)
                 {
-                    schedule.Action();
+                    schedule.Action.ForEach(a => a.Invoke());
                     if (schedule.RunOnce)
                         schedules.Remove(schedule);
                 }

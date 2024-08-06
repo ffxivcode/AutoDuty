@@ -6,17 +6,15 @@ using System.Linq;
 using AutoDuty.Helpers;
 using System.Diagnostics;
 using Dalamud.Interface.Utility;
+using System;
+using System.Collections.Generic;
+using ECommons.DalamudServices;
+using ECommons.ExcelServices;
+using ECommons.GameFunctions;
+using AutoDuty.Managers;
 
 namespace AutoDuty.Windows
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using ECommons.DalamudServices;
-    using ECommons.ExcelServices;
-    using ECommons.GameFunctions;
-    using Managers;
-
     internal static class PathsTab
     {
         //private static Dictionary<CombatRole, Job[]> _jobs = Enum.GetValues<Job>().Where(j => !j.IsUpgradeable() && j != Job.BLU).GroupBy(j => j.GetRole()).Where(ig => ig.Key != CombatRole.NonCombat).ToDictionary(ig => ig.Key, ig => ig.ToArray());
