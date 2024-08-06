@@ -449,7 +449,7 @@ namespace AutoDuty.Managers
                 string[] v = coords.Split(", ");
                 if (v.Length == 3)
                 {
-                    Vector3 facingPos = new Vector3(float.Parse(v[0]), float.Parse(v[1]), float.Parse(v[2]));
+                    Vector3 facingPos = new Vector3(float.Parse(v[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[2], System.Globalization.CultureInfo.InvariantCulture));
                     AutoDuty.Plugin.OverrideCamera.Face(facingPos);
                 }
             }
