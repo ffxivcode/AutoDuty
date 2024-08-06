@@ -9,8 +9,7 @@
     "Interactable|0, 0, 0|Ingress",
     "Wait|0, 0, 0|9000",
     "Wait|0.75, -250.29, -241.15|2000",
-    "ChatCommand|0, 0, 0|/targetenemy",
-    "ChatCommand|0, 0, 0|/ac Auto-attack",
+	"ForceAttack|0, 0, 0|",
     "Boss|-0.24, -250.29, -238.17|"
   ],
   "meta": {

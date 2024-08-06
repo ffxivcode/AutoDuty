@@ -1,6 +1,5 @@
 {
   "actions": [
-    "Revival|0, 0, 0|",
     "MoveTo|29.84, 302.00, 126.74|",
     "AutoMoveFor|29.83, 302.00, 135.95|6500",
     "Interactable|-172.13, -504.00, 11.23|2013731 (Elevator Console)",
@@ -14,6 +13,7 @@
     "MoveTo|44.58, -120.00, -129.21|",
     "MoveTo|84.94, -120.00, -125.36|",
     "AutoMoveFor|85.12, -120.00, -116.10|4000",
+	"PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
     "MoveTo|49.36, -93.90, -60.94|",
     "MoveTo|-187.33, -94.00, -86.08|",
     "Revival|-171.57, -94.00, -107.90|",

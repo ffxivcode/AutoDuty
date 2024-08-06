@@ -1,6 +1,5 @@
 {
   "actions": [
-    "Revival|0, 0, 0|",
     "StopForCombat|-40.61, 300.20, 54.79|False",
     "MoveTo|30.56, 302.00, 109.17|",
     "StopForCombat|29.84, 302.00, 56.86|True",
@@ -19,6 +18,7 @@
     "Wait|44.58, -120.00, -129.21|300",
     "MoveTo|84.94, -120.00, -125.36|",
     "AutoMoveFor|85.12, -120.00, -116.10|4000",
+	"PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
     "StopForCombat|49.36, -93.90, -60.94|False",
     "StopForCombat|-139.71, -94.00, -81.52|True",
     "MoveTo|-187.33, -94.00, -86.08|",

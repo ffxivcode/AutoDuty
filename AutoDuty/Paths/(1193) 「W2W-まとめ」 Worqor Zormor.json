@@ -1,6 +1,5 @@
 {
   "actions": [
-    "Revival|0, 0, 0|",
     "StopForCombat|145.52, -18.39, 177.43|False",
     "MoveTo|44.74, -20.54, 198.37|",
     "StopForCombat|95.68, -19.19, 196.44|True",

@@ -13,7 +13,8 @@
     "Boss|0, 0, 0|",
     "MoveTo|-291.18, 10.42, 38.10|",
     "MoveTo|-291.30, 10.42, 41.41|",
-    "Interactable|-313.28, 8.71, 43.68|Allagan Terminal"
+	"MoveTo|-313.28, 8.71, 43.68|",
+    "Interactable|0, 0, 0|Allagan Terminal"
   ],
   "meta": {
     "createdAt": 106,
