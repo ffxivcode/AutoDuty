@@ -1,7 +1,8 @@
 {
   "actions": [
-    "Boss|0.67, 0.00, 5.58|"
-  ],
+    "ChatCommand|0, 0, 0|/bmrai off",
+	"MoveTo|-6.79, 0.02, -1.58|"
+	  ],
   "meta": {
     "createdAt": 106,
     "changelog": [],

@@ -1,9 +1,12 @@
 {
   "actions": [
-    "Interactable|196.44, 186.00, -5.37|2012811 (Magitek Terminal)",
-    "Interactable|172.81, 156.00, -25.49|2012813 (Magitek Transporter)",
+    "MoveTo|196.44, 186.00, -5.37|",
+	"Interactable|0, 0, 0|2012811 (Magitek Terminal)",
+    "MoveTo|172.81, 156.00, -25.49|",
+	"Interactable|0, 0, 0|2012813 (Magitek Transporter)",
     "Boss|191.97, 76.00, 0.02|",
-    "Interactable|174.78, 76.00, 3.76|2012815 (Magitek Terminal)",
+    "MoveTo|174.78, 76.00, 3.76|",
+	"Interactable|0, 0, 0|2012815 (Magitek Terminal)",
     "DutySpecificCode|174.68, 102.00, -66.46|1",
     "MoveTo|229.97, 64.39, 66.59|",
     "Wait|83.61, -107.99, -31.14|5000",
@@ -14,7 +17,8 @@
     "Target|-65.00, -103.97, 0.24|Cermet Blast Door",
     "DutySpecificCode|-83.86, -103.94, -0.08|2",
     "Boss|-164.13, -104.40, -0.09|",
-    "Interactable|-238.41, -104.00, -19.20|2012817 (Magitek Terminal)",
+    "MoveTo|-238.41, -104.00, -19.20|",
+	"Interactable|0, 0, 0|2012817 (Magitek Terminal)",
     "Boss|-562.17, -268.00, 220.06|"
   ],
   "meta": {

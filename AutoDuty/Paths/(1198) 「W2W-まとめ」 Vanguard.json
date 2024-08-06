@@ -1,6 +1,5 @@
 {
   "actions": [
-    "Revival|0, 0, 0|",
     "StopForCombat|-8.00, -1.06, 479.00|False",
     "MoveTo|-7.38, -2.23, 391.99|",
     "StopForCombat|-6.16, -2.39, 414.16|True",
@@ -42,24 +41,7 @@
   ],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 106,
-        "change": "hey"
-      },
-      {
-        "version": 106,
-        "change": "I changed things"
-      },
-      {
-        "version": 106,
-        "change": "lots of things"
-      },
-      {
-        "version": 106,
-        "change": "changed so many things"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }
