@@ -9,8 +9,6 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 
-//still need to test self repair
-
 namespace AutoDuty.Helpers
 {
     internal static class RepairHelper
@@ -78,6 +76,7 @@ namespace AutoDuty.Helpers
 
             if (Conditions.IsMounted)
             {
+                Svc.Log.Debug("Dismounting");
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 23);
                 return;
             }
@@ -100,57 +99,71 @@ namespace AutoDuty.Helpers
                 if (!ObjectHelper.IsOccupied || (EzThrottler.Throttle("GearCheck") && InventoryHelper.CanRepair()))
                 {
                     if (Svc.Condition[ConditionFlag.Occupied39])
+                    {
+                        Svc.Log.Debug("Done Repairing");
                         Stop();
+                    }
                     if (!GenericHelpers.TryGetAddonByName("Repair", out addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno))
                     {
+                        Svc.Log.Debug("Using Repair Action");
                         ActionManager.Instance()->UseAction(ActionType.GeneralAction, 6);
                         return;
                     }
                     else if (!_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
                     {
+                        Svc.Log.Debug("Clicking Repair");
                         AddonHelper.ClickRepair();
                         return;
                     }
                     else if (GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
                     {
+                        Svc.Log.Debug("Clicking SelectYesno");
                         AddonHelper.ClickSelectYesno();
                         _seenAddon = true;
                     }
                     else if (_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
                     {
+                        Svc.Log.Debug("Stopping-SelfRepair");
                         Stop();
                     }
                 }
                 else
+                {
+                    Svc.Log.Debug("Stopping-SelfRepair");
                     Stop();
-                
+                }
                 return;
             }
 
             if (Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany) || _repairVendorGameObject == null || Vector3.Distance(Svc.ClientState.LocalPlayer.Position, _repairVendorGameObject.Position) > 3f)
             {
+                Svc.Log.Debug("Going to RepairVendor");
                 GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [_repairVendorLocation], 0.25f, 3f);
                 return;
             }
             else if (ObjectHelper.IsValid)
             {
-                if (!ECommons.GenericHelpers.TryGetAddonByName("Repair", out addonRepair) && !ECommons.GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno))
+                if (!GenericHelpers.TryGetAddonByName("Repair", out addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno))
                 {
+                    Svc.Log.Debug("Interacting with RepairVendor");
                     ObjectHelper.InteractWithObjectUntilAddon(_repairVendorGameObject, "Repair");
                     return;
                 }
-                else if (!_seenAddon && (!ECommons.GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !ECommons.GenericHelpers.IsAddonReady(addonSelectYesno)))
+                else if (!_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
                 {
+                    Svc.Log.Debug("Clicking Repair");
                     AddonHelper.ClickRepair();
                     return;
                 }
-                else if (ECommons.GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) && ECommons.GenericHelpers.IsAddonReady(addonSelectYesno))
+                else if (GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
                 {
+                    Svc.Log.Debug("Clicking SelectYesno");
                     AddonHelper.ClickSelectYesno();
                     _seenAddon = true;
                 }
-                else if (_seenAddon && (!ECommons.GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !ECommons.GenericHelpers.IsAddonReady(addonSelectYesno)))
+                else if (_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
                 {
+                    Svc.Log.Debug("Stopping-RepairCity");
                     Stop();
                 }
             }

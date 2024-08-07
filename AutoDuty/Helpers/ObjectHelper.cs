@@ -133,6 +133,8 @@ namespace AutoDuty.Helpers
                         radius = 3;
                         break;
                 }
+                if (Player.Object.ClassJob.Id == 38)
+                    radius = 3;
                 return radius;
             }
         }
@@ -232,19 +234,20 @@ namespace AutoDuty.Helpers
 
         internal static unsafe bool InCombat(this IBattleChara battleChara) => battleChara.Struct()->Character.InCombat;
 
-        internal static unsafe void InteractWithObject(IGameObject? gameObject)
+        internal static unsafe void InteractWithObject(IGameObject? gameObject, bool face = true)
         {
             try
             {
                 if (gameObject == null || !gameObject.IsTargetable) 
                     return;
-                AutoDuty.Plugin.OverrideCamera.Face(gameObject.Position);
+                if (face) 
+                    AutoDuty.Plugin.OverrideCamera.Face(gameObject.Position);
                 var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
                 TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Svc.Log.Info($"InteractWithObject: Exception: {ex}");
+                Svc.Log.Info($"InteractWithObject: Exception: {ex}");
             }
         }
         internal static unsafe AtkUnitBase* InteractWithObjectUntilAddon(IGameObject? gameObject, string addonName)

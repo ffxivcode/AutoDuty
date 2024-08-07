@@ -2,13 +2,14 @@
 using ECommons.DalamudServices;
 using System.Collections.Generic;
 using System.Linq;
+using ECommons.GameFunctions;
+using global::AutoDuty.Managers;
+using Lumina.Data;
+using Lumina.Excel.GeneratedSheets2;
+using Lumina.Text;
 
 namespace AutoDuty.Helpers
 {
-    using Lumina.Data;
-    using Lumina.Excel.GeneratedSheets2;
-    using Lumina.Text;
-
     internal static class ContentHelper
     {
         internal static Dictionary<uint, Content> DictionaryContent { get; set; } = [];
@@ -68,8 +69,7 @@ namespace AutoDuty.Helpers
 
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
-
-                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 && contentFinderCondition.ContentType.Value.RowId != 30) || contentFinderCondition.Name.ToString().IsNullOrEmpty())
+                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 && contentFinderCondition.ContentType.Value.RowId != 30) || contentFinderCondition.Name.RawString.IsNullOrEmpty())
                     continue;
 
                 string CleanName(string name)
@@ -80,10 +80,9 @@ namespace AutoDuty.Helpers
                     return result.Replace("--", "-").Replace("<italic(0)>", "").Replace("<italic(1)>", "");
                 }
 
-
                 var content = new Content
                 {
-                    Name = CleanName(contentFinderCondition.Name.ToString()),
+                    Name = CleanName(contentFinderCondition.Name.RawString),
                     TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
                     ContentType = contentFinderCondition.ContentType.Value.RowId,
                     ContentMemberType = contentFinderCondition.ContentMemberType.Value?.RowId ?? 0,
@@ -109,6 +108,22 @@ namespace AutoDuty.Helpers
             }
 
             DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.TerritoryType).ToDictionary();
+        }
+
+        public static bool CanRun(this Content content, short level = -1, short ilvl = -1)
+        {
+            if ((AutoDuty.Plugin.Player?.GetRole() ?? CombatRole.NonCombat) == CombatRole.NonCombat)
+                return false;
+
+            if (level < 0) 
+                level = PlayerHelper.GetCurrentLevelFromSheet();
+
+            if (ilvl < 0) 
+                ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet();
+
+            return content.ClassJobLevelRequired <= level                                 &&
+                   ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) &&
+                   content.ItemLevelRequired <= ilvl;
         }
     }
 }

@@ -48,6 +48,7 @@ namespace AutoDuty.IPC
         [EzIPC] internal static readonly Func<string, bool> ActiveModuleHasComponent;
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentBaseList;
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentList;
+        [EzIPC] internal static readonly Func<IReadOnlyList<string>, List<string>> Configuration;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }

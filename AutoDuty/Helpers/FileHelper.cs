@@ -8,24 +8,25 @@ using static AutoDuty.AutoDuty;
 
 namespace AutoDuty.Helpers
 {
+    using Windows;
+    using Managers;
+
     internal static class FileHelper
     {
-        internal static Dictionary<uint, List<string>> DictionaryPathFiles = [];
         internal static readonly FileSystemWatcher FileSystemWatcher = new(Plugin.PathsDirectory.FullName)
+                                                                       {
+                                                                           NotifyFilter = NotifyFilters.Attributes
+                                                                                        | NotifyFilters.CreationTime
+                                                                                        | NotifyFilters.DirectoryName
+                                                                                        | NotifyFilters.FileName
+                                                                                        | NotifyFilters.LastAccess
+                                                                                        | NotifyFilters.LastWrite
+                                                                                        | NotifyFilters.Security
+                                                                                        | NotifyFilters.Size,
 
-        {
-            NotifyFilter = NotifyFilters.Attributes
-                                 | NotifyFilters.CreationTime
-                                 | NotifyFilters.DirectoryName
-                                 | NotifyFilters.FileName
-                                 | NotifyFilters.LastAccess
-                                 | NotifyFilters.LastWrite
-                                 | NotifyFilters.Security
-                                 | NotifyFilters.Size,
-
-            Filter = "*.json",
-            IncludeSubdirectories = false
-        };
+                                                                           Filter                = "*.json",
+                                                                           IncludeSubdirectories = true
+                                                                       };
 
         public static byte[] CalculateMD5(string filename)
         {
@@ -46,11 +47,14 @@ namespace AutoDuty.Helpers
             try
             {
                 int i = 0;
-                var files = Plugin.AssemblyDirectoryInfo.EnumerateFiles("*.json", SearchOption.TopDirectoryOnly)
-                .Where(s => s.Name.StartsWith('('));
+                var files = Plugin.AssemblyDirectoryInfo.EnumerateFiles("*.json", SearchOption.TopDirectoryOnly).Where(s => s.Name.StartsWith('('));
+
                 foreach (var file in files)
                 {
-                    if (!Plugin.Configuration.DoNotUpdatePathFiles.Contains(file.Name) && (!File.Exists($"{Plugin.PathsDirectory.FullName}/{file.Name}") || !BitConverter.ToString(CalculateMD5(file.FullName)).Replace("-", "").Equals(BitConverter.ToString(CalculateMD5($"{Plugin.PathsDirectory.FullName}/{file.Name}")).Replace("-", ""), StringComparison.InvariantCultureIgnoreCase)))
+                    if (!Plugin.Configuration.DoNotUpdatePathFiles.Contains(file.Name) && 
+                        (!File.Exists($"{Plugin.PathsDirectory.FullName}/{file.Name}") || 
+                         !BitConverter.ToString(CalculateMD5(file.FullName)).Replace("-", "").Equals(BitConverter.ToString(CalculateMD5($"{Plugin.PathsDirectory.FullName}/{file.Name}")).Replace("-", ""), 
+                                                                                                     StringComparison.InvariantCultureIgnoreCase)))
                     {
                         file.MoveTo($"{Plugin.PathsDirectory.FullName}/{file.Name}", true);
                         Svc.Log.Info($"Moved: {file.Name}");
@@ -76,22 +80,23 @@ namespace AutoDuty.Helpers
             Update();
         }
 
-        private static void Update() 
+        private static void Update()
         {
-            DictionaryPathFiles = [];
-            foreach (var t in ContentHelper.DictionaryContent)
+            ContentPathsManager.DictionaryPaths = [];
+
+            MainTab.PathsUpdated();
+            PathsTab.PathsUpdated();
+
+            foreach ((uint _, ContentHelper.Content? content) in ContentHelper.DictionaryContent)
             {
-                IEnumerable<FileInfo> files = Plugin.PathsDirectory.EnumerateFiles($"({t.Value.TerritoryType})*.json", SearchOption.TopDirectoryOnly);
+                IEnumerable<FileInfo> files = Plugin.PathsDirectory.EnumerateFiles($"({content.TerritoryType})*.json", SearchOption.AllDirectories);
 
                 foreach (FileInfo file in files)
                 {
-                    string fileName = file.Name.Replace(":", "");
-                    if (fileName.StartsWith($"({t.Value.TerritoryType})"))
-                    {
-                        if(!DictionaryPathFiles.ContainsKey(t.Value.TerritoryType))
-                            DictionaryPathFiles.Add(t.Value.TerritoryType, []);
-                        DictionaryPathFiles[t.Value.TerritoryType]!.Add(fileName);
-                    }
+                    if (!ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType))
+                        ContentPathsManager.DictionaryPaths.Add(content.TerritoryType, new ContentPathsManager.ContentPathContainer(content));
+
+                    ContentPathsManager.DictionaryPaths[content.TerritoryType].Paths.Add(new ContentPathsManager.DutyPath(file.FullName));
                 }
             }
         }

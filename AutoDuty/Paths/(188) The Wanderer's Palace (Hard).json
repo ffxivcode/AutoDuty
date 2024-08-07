@@ -1,1 +1,33 @@
-["MoveTo|125.51, -14.05, 245.51|","Boss|124.93, -12.00, 102.90|","MoveTo|125.11, -12.05, 92.02|","MoveTo|77.39, -10.16, 28.32|","MoveTo|43.84, -0.16, -16.95|","MoveTo|-24.84, -0.30, -38.27|","MoveTo|-26.67, -0.16, -144.68|","Boss|43.41, -0.01, -237.47|","MoveTo|37.87, 0.00, -248.99|","MoveTo|76.67, -12.00, -317.85|","Interactable|0, 0, 0|Asylum Key","MoveTo|70.92, -12.00, -312.26|","Interactable|0, 0, 0|Asylum Cell","MoveTo|71.16, -12.00, -324.09|","Interactable|0, 0, 0|Asylum Cell","Wait|93.03, -11.88, -311.96|6000","MoveTo|123.89, -11.98, -340.46|","Interactable|0, 0, 0|Drainage Valve","MoveTo|156.95, -7.88, -351.16|","Interactable|0, 0, 0|Nymian Device","MoveTo|72.07, 9.98, -395.48|","MoveTo|90.68, 6.00, -407.25|","Boss|73.46, 6.00, -442.36|","MoveTo|72.86, 6.00, -461.79|"]
+{
+  "actions": [
+    "MoveTo|125.51, -14.05, 245.51|",
+    "Boss|124.93, -12.00, 102.90|",
+    "MoveTo|125.11, -12.05, 92.02|",
+    "MoveTo|77.39, -10.16, 28.32|",
+    "MoveTo|43.84, -0.16, -16.95|",
+    "MoveTo|-24.84, -0.30, -38.27|",
+    "MoveTo|-26.67, -0.16, -144.68|",
+    "Boss|43.41, -0.01, -237.47|",
+    "MoveTo|37.87, 0.00, -248.99|",
+    "MoveTo|76.67, -12.00, -317.85|",
+    "Interactable|0, 0, 0|Asylum Key",
+    "MoveTo|70.92, -12.00, -312.26|",
+    "Interactable|0, 0, 0|Asylum Cell",
+    "MoveTo|71.16, -12.00, -324.09|",
+    "Interactable|0, 0, 0|Asylum Cell",
+    "Wait|93.03, -11.88, -311.96|6000",
+    "MoveTo|123.89, -11.98, -340.46|",
+    "Interactable|0, 0, 0|Drainage Valve",
+    "MoveTo|156.95, -7.88, -351.16|",
+    "Interactable|0, 0, 0|Nymian Device",
+    "MoveTo|72.07, 9.98, -395.48|",
+    "MoveTo|90.68, 6.00, -407.25|",
+    "Boss|73.46, 6.00, -442.36|",
+    "MoveTo|72.86, 6.00, -461.79|"
+  ],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [],
+    "notes": []
+  }
+}

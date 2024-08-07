@@ -7,6 +7,7 @@ using ImGuiNET;
 using System.Numerics;
 using static AutoDuty.AutoDuty;
 using ECommons.ImGuiMethods;
+using AutoDuty.Managers;
 
 namespace AutoDuty.Windows;
 
@@ -14,7 +15,11 @@ public unsafe class Overlay : Window
 {
     public Overlay() : base("AutoDuty Overlay", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize)
     {
-                 
+        if (AutoDuty.Plugin.Configuration.OverlayNoBG)
+            Flags |= ImGuiWindowFlags.NoBackground;
+
+        if (AutoDuty.Plugin.Configuration.LockOverlay)
+            Flags |= ImGuiWindowFlags.NoMove;
     }
 
     private static string hideText = " ";
@@ -27,53 +32,69 @@ public unsafe class Overlay : Window
         if (!ObjectHelper.IsValid)
             return;
 
-        var _loopTimes = Plugin.Configuration.LoopTimes;
         if (!Plugin.Running && !Plugin.Started)
         {
             MainWindow.GotoAndActions();
-            if (!AutoDuty.Plugin.InDungeon)
+            if (!Plugin.InDungeon || !Plugin.Started)
             {
                 ImGui.SameLine(0, 5);
-                if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
-                    AutoDuty.Plugin.MainWindow.IsOpen = !AutoDuty.Plugin.MainWindow.IsOpen;
+                if (!Plugin.InDungeon)
+                    if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
+                        Plugin.MainWindow.IsOpen = !Plugin.MainWindow.IsOpen;
                 ImGui.SameLine();
-                if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
+                if (!Plugin.Started)
                 {
-                    this.IsOpen = false;
-                    Plugin.MainWindow.IsOpen = true;
+                    if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
+                    {
+                        this.IsOpen = false;
+                        Plugin.Configuration.OpenOverlay = false;
+                        Plugin.MainWindow.IsOpen = true;
+                    }
                 }
             }
     }
 
         if (Plugin.InDungeon || Plugin.Running)
         {
-            using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !FileHelper.DictionaryPathFiles.ContainsKey(Svc.ClientState.TerritoryType) || Plugin.Stage > 0))
+            using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Svc.ClientState.TerritoryType) || Plugin.Stage > 0))
             {
-                if (ImGui.Button("Start"))
+                if (!Plugin.Started && !Plugin.Running)
                 {
-                    Plugin.LoadPath();
-                    Plugin.Run(Svc.ClientState.TerritoryType);
+                    if (ImGui.Button("Start"))
+                    {
+                        Plugin.LoadPath();
+                        Plugin.Run(Svc.ClientState.TerritoryType);
+                    }
+                    ImGui.SameLine(0, 5);
                 }
-                ImGui.SameLine(0, 5);
             }
-            ImGui.PushItemWidth(50 * ImGuiHelpers.GlobalScale);
-
-            if (ImGui.SliderInt("Times", ref _loopTimes, 0, 100))
+            ImGui.PushItemWidth(75 * ImGuiHelpers.GlobalScale);
+            if (Plugin.Configuration.LoopsInputInt)
             {
-                Plugin.Configuration.LoopTimes = _loopTimes;
-                Plugin.Configuration.Save();
+                if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
+                    Plugin.Configuration.Save();
+            }
+            else
+            {
+                if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
+                    Plugin.Configuration.Save();
             }
             ImGui.PopItemWidth();
             ImGui.SameLine(0, 5);
             MainWindow.StopResumePause();
             ImGui.SameLine();
             if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
-                AutoDuty.Plugin.MainWindow.IsOpen = !AutoDuty.Plugin.MainWindow.IsOpen;
-            ImGui.SameLine();
-            if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
+                Plugin.MainWindow.IsOpen = !Plugin.MainWindow.IsOpen;
+            
+            if (Plugin.Started || Plugin.Running)
             {
-                this.IsOpen = false;
-                Plugin.MainWindow.IsOpen = true;
+                ImGui.SameLine();
+                if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
+                {
+                    this.IsOpen = false;
+                    Plugin.Configuration.OpenOverlay = false;
+                    Plugin.MainWindow.IsOpen = true;
+                }
             }
 
             if (!Plugin.Configuration.HideDungeonText)

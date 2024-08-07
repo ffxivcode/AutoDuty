@@ -11,18 +11,19 @@ using System.Collections.Generic;
 using System.IO;
 using AutoDuty.Helpers;
 using Dalamud.Interface.Utility;
+using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.GameHelpers;
+using static AutoDuty.Managers.ContentPathsManager;
 
 namespace AutoDuty.Windows
 {
-    using Dalamud.Game.ClientState.Objects.Enums;
-    using Dalamud.Game.ClientState.Objects.Types;
-    using ECommons.GameHelpers;
-
     internal static class BuildTab
     {
         internal static List<(string, string)>? ActionsList { get; set; }
 
         private static bool _scrollBottom = false;
+        private static string _changelog = string.Empty;
         private static string _input = "";
         private static string _action = "";
         private static string _inputTextName = "";
@@ -34,7 +35,7 @@ namespace AutoDuty.Windows
         private static string _addActionButton = "Add"; 
         private static bool _dragDrop = false;
 
-        private static JsonSerializerOptions _jsonSerializerOptions = new() { WriteIndented = true };
+        public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true};
 
         private static string GetPlayerPosition => $"{Plugin.PlayerPosition.X.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Plugin.PlayerPosition.Y.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Plugin.PlayerPosition.Z.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}";
 
@@ -67,10 +68,12 @@ namespace AutoDuty.Windows
             string idText = $"({Svc.ClientState.TerritoryType}) ";
             ImGui.Text(idText);
             ImGui.SameLine();
-            string path     = Path.GetFileName(Plugin.PathFile).Replace(idText, string.Empty).Replace(".json", string.Empty);
-            string pathOrg = path;
-            if (ImGui.InputText("##BuildPathFileName", ref path, 100) && !path.Equals(pathOrg))
+            string path       = Path.GetFileName(Plugin.PathFile).Replace(idText, string.Empty).Replace(".json", string.Empty);
+            string pathOrg    = path;
+
+            if (ImGui.InputText("##BuildPathFileName", ref path, 100) && !path.Equals(pathOrg)) 
                 Plugin.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{idText}{path}.json";
+
             ImGui.SameLine();
             ImGui.Text($".json");
             ImGui.Spacing();
@@ -143,8 +146,34 @@ namespace AutoDuty.Windows
                 try
                 {
                     Svc.Log.Info($"Saving {Plugin.PathFile}");
-                    string json = JsonSerializer.Serialize(Plugin.ListBoxPOSText, _jsonSerializerOptions);
+
+                    PathFile? pathFile = null;
+
+                    if(DictionaryPaths.TryGetValue(Plugin.CurrentTerritoryContent!.TerritoryType, out ContentPathContainer? container))
+                    {
+                        DutyPath? dutyPath = container.Paths.FirstOrDefault(dp => dp.FilePath == Plugin.PathFile);
+                        if (dutyPath != null)
+                        {
+                            pathFile = dutyPath.PathFile;
+                            if(pathFile.meta.LastUpdatedVersion < Plugin.Configuration.Version || _changelog.Length > 0)
+                            {
+                                pathFile.meta.changelog.Add(new PathFileChangelogEntry
+                                                            {
+                                                                version = Plugin.Configuration.Version,
+                                                                change  = _changelog
+                                                            });
+                                _changelog = string.Empty;
+                            }
+                        }
+                    }
+
+                    pathFile ??= PathFile.Default;
+
+                    pathFile.actions = Plugin.ListBoxPOSText.ToArray();
+
+                    string json = JsonSerializer.Serialize(pathFile, jsonSerializerOptions);
                     File.WriteAllText(Plugin.PathFile, json);
+                    Plugin.CurrentPath = 0;
                 }
                 catch (Exception e)
                 {
@@ -158,6 +187,9 @@ namespace AutoDuty.Windows
                 Plugin.LoadPath();
                 ClearAll();
             }
+            ImGui.Text("Changelog:");
+            ImGui.SameLine();
+            ImGui.InputText("##Changelog", ref _changelog, 200);
             if (_showAddActionUI)
             {
                 ImGui.Spacing();

@@ -1,1 +1,32 @@
-["Interactable|-3.68, -2.38, -5.96|Tiny Key","MoveTo|21.82, 7.10, 27.40|","MoveTo|64.57, 3.41, -9.90|","MoveTo|104.01, -0.08, 12.50|","Interactable|0, 0, 0|Runstop Headgate","Boss|111.80, -2.55, -36.46|","MoveTo|89.52, 4.72, -100.15|","MoveTo|39.34, 5.90, -92.07|","MoveTo|34.50, 7.05, -125.09|","WaitFor|45.29, 7.02, -129.71|10000","MoveTo|44.67, 7.02, -131.59|","MoveTo|-41.32, 18.65, -119.77|","MoveTo|-88.10, 13.67, -125.75|","Interactable|-88.10, 13.67, -125.75|Tiny Key","MoveTo|-95.86, 13.02, -123.64|","Interactable|0, 0, 0|Swiftmake Checkgate","MoveTo|-102.58, 20.74, -180.60|","Interactable|-101.39, 20.74, -178.08|Tiny Key","MoveTo|-101.31, 21.31, -188.72|","Interactable|0, 0, 0|Swiftmake Checkgate","Boss|-27.24, 35.5, -236.09|"]
+{
+  "actions": [
+	"MoveTo|-3.68, -2.38, -5.96|",
+    "Interactable|0, 0, 0|Tiny Key",
+    "MoveTo|21.82, 7.10, 27.40|",
+    "MoveTo|64.57, 3.41, -9.90|",
+    "MoveTo|104.01, -0.08, 12.50|",
+    "Interactable|0, 0, 0|Runstop Headgate",
+    "Boss|111.80, -2.55, -36.46|",
+    "MoveTo|89.52, 4.72, -100.15|",
+    "MoveTo|39.34, 5.90, -92.07|",
+    "MoveTo|34.50, 7.05, -125.09|",
+    "WaitFor|45.29, 7.02, -129.71|10000",
+    "MoveTo|44.67, 7.02, -131.59|",
+    "MoveTo|-41.32, 18.65, -119.77|",
+    "MoveTo|-88.10, 13.67, -125.75|",
+    "Interactable|0, 0, 0|Tiny Key",
+    "MoveTo|-95.86, 13.02, -123.64|",
+    "Interactable|0, 0, 0|Swiftmake Checkgate",
+    "MoveTo|-102.58, 20.74, -180.60|",
+	"MoveTo|-101.39, 20.74, -178.08|",
+    "Interactable|0, 0, 0|Tiny Key",
+    "MoveTo|-101.31, 21.31, -188.72|",
+    "Interactable|0, 0, 0|Swiftmake Checkgate",
+    "Boss|-27.24, 35.5, -236.09|"
+  ],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [],
+    "notes": []
+  }
+}

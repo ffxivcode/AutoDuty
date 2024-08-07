@@ -5,6 +5,11 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina.Excel.GeneratedSheets;
 using System.Linq;
 using System;
+using ECommons;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
+using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
 {
@@ -14,7 +19,25 @@ namespace AutoDuty.Helpers
         internal static uint MySeals => InventoryManager.Instance()->GetCompanySeals(PlayerState.Instance()->GrandCompany);
         internal static uint MaxSeals => InventoryManager.Instance()->GetMaxCompanySeals(PlayerState.Instance()->GrandCompany);
 
-        internal static uint CurrentItemLevel()
+        internal unsafe static uint CurrentItemLevel()
+        {
+            if (GenericHelpers.TryGetAddonByName("Character", out AddonCharacter* addonCharacter) && GenericHelpers.IsAddonReady((AtkUnitBase*)addonCharacter))
+            {
+                if (addonCharacter->GetTextNodeById(71)->GetAsAtkTextNode()->NodeText.ExtractText().IsNullOrEmpty())
+                    return 0;
+                var iLvl = Convert.ToUInt32(addonCharacter->GetTextNodeById(71)->GetAsAtkTextNode()->NodeText.ExtractText());
+                addonCharacter->Close(true);
+                return iLvl;
+            }
+            else
+            {
+                if (EzThrottler.Throttle("AgentStatus", 250))
+                    AgentStatus.Instance()->Show();
+                return 0;
+            }
+        }
+
+        internal static uint CurrentItemLevelCalc()
         {
             var equipedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
             uint itemLevelTotal = 0;
@@ -62,7 +85,7 @@ namespace AutoDuty.Helpers
             return equipedItems->Items[itemLowest];
         }
 
-        internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) <= AutoDuty.Plugin.Configuration.AutoRepairPct && (!AutoDuty.Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
+        internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) <= AutoDuty.Plugin.Configuration.AutoRepairPct;// && (!AutoDuty.Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
 
         //artisan
         internal static bool CanRepairItem(uint itemID)

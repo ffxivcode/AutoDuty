@@ -15,12 +15,10 @@ using ECommons.GameHelpers;
 using AutoDuty.Helpers;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using System.Text.RegularExpressions;
 
 namespace AutoDuty.Managers
 {
-    using global::AutoDuty.Windows;
-    using System.Text.RegularExpressions;
-
     internal class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
     {
         public readonly List<(string, string)> ActionsList =
@@ -41,7 +39,8 @@ namespace AutoDuty.Managers
             ("Revival",  "false"),
             ("ForceAttack",  "false"),
             ("Jump", "automove for how long before"),
-            ("PausePandora", "Which feature | how long")
+            ("PausePandora", "Which feature | how long"),
+            ("CameraFacing", "Face which Coords?")
         ];
 
         public void InvokeAction(string action, object?[] p)
@@ -218,7 +217,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
-        private bool InteractableCheck(IGameObject? gameObject)
+        private unsafe bool InteractableCheck(IGameObject? gameObject)
         {
             nint addon = Svc.GameGui.GetAddonByName("SelectYesno", 1);
             if (addon > 0)
@@ -226,7 +225,11 @@ namespace AutoDuty.Managers
                 SelectYesno("Yes");
                 return true;
             }
+
             if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid() || !ObjectHelper.IsValid)
+                return true;
+
+            if (AddonHelper.ClickTalk())
                 return true;
 
             if (EzThrottler.Throttle("Interactable", 250))
@@ -252,80 +255,18 @@ namespace AutoDuty.Managers
             string id    = match.Success ? match.Captures.First().Value : string.Empty;
 
             _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null ) ?? ObjectHelper.GetObjectByName(objectName)) != null, "Interactable");
+            _taskManager.Enqueue(() => gameObject?.IsTargetable ?? true, "Interactable");
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable");
             _taskManager.Enqueue(() => Player.Character->IsCasting, 500, "Interactable");
             _taskManager.Enqueue(() => !Player.Character->IsCasting, "Interactable");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
-        private bool BossCheck(bool hasModule, Vector3 bossV3, int numForbiddenZonesToIgnore, IGameObject? followTargetObject)
+        private bool BossCheck()
         {
             if (((AutoDuty.Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
                 return true;
-            if (EzThrottler.Throttle("BossCheck", 25))
-            {
-                if (AutoDuty.Plugin.BossObject == null && Svc.Targets.Target != null)
-                {
-                    AutoDuty.Plugin.BossObject = (IBattleChara?)Svc.Targets.Target;
-                    hasModule = BossMod_IPCSubscriber.HasModuleByDataId(AutoDuty.Plugin.BossObject!.DataId);
-                }
-                if (!IPCSubscriber_Common.IsReady("BossModReborn"))
-                {
-                    if (BossMod_IPCSubscriber.ForbiddenZonesCount() > numForbiddenZonesToIgnore)
-                        FollowHelper.SetFollow(null);
-                    else if (BossMod_IPCSubscriber.ForbiddenZonesCount() <= numForbiddenZonesToIgnore)
-                    {
-                        if (!hasModule)
-                            FollowHelper.SetFollow(followTargetObject);
-                        else
-                        {
-                            IGameObject? healerGameObject;
-                            switch (Player.Object.ClassJob.GameData?.Role)
-                            {
-                                //tank - try to stay within 10 of boss waypoint, or move to boss if loose aggro
-                                case 1:
-                                    if (AutoDuty.Plugin.BossObject != null && AutoDuty.Plugin.BossObject.TargetObject != Player.Object)
-                                        FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 3f);
-                                    else if (ObjectHelper.GetDistanceToPlayer(bossV3) > 10)
-                                        MovementHelper.Move(bossV3, 0.25f, 10f);
-                                    break;
-                                //healer - try to stay in range of anyone needing heals, priority to tank, else
-                                //stay in range and try to stay behind/flanked (later implementation)
-                                case 4:
-                                    var tankGameObject = ObjectHelper.GetTankPartyMember();
-                                    if (tankGameObject != null && ObjectHelper.GetDistanceToPlayer(tankGameObject) > 15)
-                                        FollowHelper.SetFollow(tankGameObject, 15);
-                                    else if (AutoDuty.Plugin.BossObject != null && ECommons.GameFunctions.ObjectFunctions.GetAttackableEnemyCountAroundPoint(AutoDuty.Plugin.BossObject.Position, 8) <= 2)
-                                        FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 15);
-                                    else if (AutoDuty.Plugin.BossObject != null)
-                                        FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 3);
-                                    break;
-                                //everyone else - stay in range of healer then try to stay behind/flanked (later implementation)
-                                case 2:
-                                    healerGameObject = ObjectHelper.GetHealerPartyMember();
-                                    if (healerGameObject != null && ObjectHelper.GetDistanceToPlayer(healerGameObject) > 15)
-                                        FollowHelper.SetFollow(healerGameObject, 15);
-                                    else if (AutoDuty.Plugin.BossObject != null)
-                                        FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 3);
-                                    break;
-                                default:
-                                    healerGameObject = ObjectHelper.GetHealerPartyMember();
-                                    if (healerGameObject != null && ObjectHelper.GetDistanceToPlayer(healerGameObject) > 15)
-                                        FollowHelper.SetFollow(healerGameObject, 15);
-                                    else if (AutoDuty.Plugin.BossObject != null)
-                                        FollowHelper.SetFollow(AutoDuty.Plugin.BossObject, 15);
-                                    break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    VNavmesh_IPCSubscriber.Nav_PathfindCancelAll();
-                    VNavmesh_IPCSubscriber.Path_Stop();
-                    FollowHelper.SetFollow(null);
-                }
-            }
+            
             return false;
         }
         private bool BossMoveCheck(Vector3 bossV3)
@@ -341,103 +282,53 @@ namespace AutoDuty.Managers
         public void Boss(Vector3 bossV3)
         {
             Svc.Log.Info($"Starting Action Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? "null"}");
-            IGameObject? followTargetObject = null;
             IGameObject? treasureCofferObject = null;
-            var hasModule = false;
-            var numForbiddenZonesToIgnore = 0;
             _taskManager.Enqueue(() => BossMoveCheck(bossV3), "Boss-MoveCheck");
             if (AutoDuty.Plugin.BossObject == null)
                 _taskManager.Enqueue(() => (AutoDuty.Plugin.BossObject = ObjectHelper.GetBossObject()) != null, "Boss-GetBossObject");
-            //check if our Boss has a Module
-            _taskManager.Enqueue(() =>
-            {
-                if (AutoDuty.Plugin.BossObject != null)
-                {
-                    hasModule = BossMod_IPCSubscriber.HasModuleByDataId(AutoDuty.Plugin.BossObject!.DataId);
-                }
-                else if (Svc.Targets.Target != null)
-                {
-                    AutoDuty.Plugin.BossObject = (IBattleChara)Svc.Targets.Target;
-                    hasModule = BossMod_IPCSubscriber.HasModuleByDataId(AutoDuty.Plugin.BossObject!.DataId);
-                }
-                if (hasModule)
-                {
-                    if (BossMod_IPCSubscriber.ActiveModuleHasComponent("Cleave"))
-                        numForbiddenZonesToIgnore++;
-                    if (BossMod_IPCSubscriber.ActiveModuleHasComponent("Positioning"))
-                        numForbiddenZonesToIgnore++;
-                    if (BossMod_IPCSubscriber.ActiveModuleHasComponent("RonkanFire"))
-                        numForbiddenZonesToIgnore = 4;
-                }
-            }, "Boss-CheckModule");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? ""}", "Boss-SetActionVar");
-            //switch our class type
-            _taskManager.Enqueue(() =>
-            {
-
-                if (hasModule)
-                {
-                    if (IPCSubscriber_Common.IsReady("BossModReborn") && AutoDuty.Plugin.Configuration.AutoManageBossModAISettings)
-                        AutoDuty.Plugin.SetBMRSettings();
-                    else
-                        followTargetObject = AutoDuty.Plugin.BossObject;
-                    return;
-                }
-                switch (Player.Object.ClassJob.GameData?.Role)
-                {
-                    //tank
-                    case 1:
-                        followTargetObject = ObjectHelper.GetPartyMemberFromRole("melee") ?? ObjectHelper.GetPartyMemberFromRole("ranged");
-                        break;
-                    //melee
-                    case 2:
-                        followTargetObject = ObjectHelper.GetPartyMemberFromRole("melee") ?? ObjectHelper.GetPartyMemberFromRole("tank");
-                        break;
-                    //ranged or healer
-                    case 3 or 4:
-                        followTargetObject = ObjectHelper.GetPartyMemberFromRole("ranged") ?? ObjectHelper.GetPartyMemberFromRole("melee");
-                        break;
-                }
-                if (!IPCSubscriber_Common.IsReady("BossModReborn"))
-                    FollowHelper.SetFollow(followTargetObject, 0);
-                else if(AutoDuty.Plugin.Configuration.AutoManageBossModAISettings)
-                {
-                    AutoDuty.Plugin.SetBMRSettings();
-                    _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget false");
-                    _chat.ExecuteCommand($"/vbmai follow {followTargetObject?.Name.TextValue ?? "Slot3"}");
-                    _chat.ExecuteCommand($"/vbmai positional Any");
-                }
-            }, "Boss-CheckModule2");
             _taskManager.Enqueue(() => Svc.Condition[ConditionFlag.InCombat], "Boss-WaitInCombat");
-            _taskManager.Enqueue(() => BossCheck(hasModule, bossV3, numForbiddenZonesToIgnore, followTargetObject), int.MaxValue, "Boss-BossCheck");
+            _taskManager.Enqueue(() => BossCheck(), int.MaxValue, "Boss-BossCheck");
             _taskManager.Enqueue(() => { AutoDuty.Plugin.StopForCombat = true; }, "Boss-SetStopForCombatTrue");
-            _taskManager.Enqueue(() => { if (!IPCSubscriber_Common.IsReady("BossModReborn")) FollowHelper.SetFollow(null); }, "Boss-TurnOffFollowHelper");
             _taskManager.Enqueue(() => { AutoDuty.Plugin.BossObject = null; }, "Boss-ClearBossObject");
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
-                _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null, "Boss-FindTreasure");
+                _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null, 1000, "Boss-FindTreasure");
                 _taskManager.Enqueue(() => MovementHelper.Move(treasureCofferObject, 0.25f, 1f), int.MaxValue, "Boss-MoveTreasure");
-                _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilNotTargetable(treasureCofferObject), "Boss-InteractTreasure");
             }
             _taskManager.DelayNext("Boss-Delay500", 500);
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss-ClearActionVar");
             _taskManager.Enqueue(() =>
             {
                 if (IPCSubscriber_Common.IsReady("BossModReborn") && AutoDuty.Plugin.Configuration.AutoManageBossModAISettings)
-                    AutoDuty.Plugin.SetBMRSettings();
+                    AutoDuty.Plugin.SetBMSettings();
             }, "Boss-SetFollowTargetBMR");
         }
+
         public void PausePandora(string featureName, string intMs)
         {
             if(PandorasBox_IPCSubscriber.IsEnabled)
                 _taskManager.Enqueue(() => PandorasBox_IPCSubscriber.PauseFeature(featureName, int.Parse(intMs)));
         }
 
-        public void Revival()
+        public void Revival(string _)
         {
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
-
+        
+        public void CameraFacing(string coords)
+        {
+            if (coords != null)
+            {
+                string[] v = coords.Split(", ");
+                if (v.Length == 3)
+                {
+                    Vector3 facingPos = new Vector3(float.Parse(v[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[2], System.Globalization.CultureInfo.InvariantCulture));
+                    AutoDuty.Plugin.OverrideCamera.Face(facingPos);
+                }
+            }
+        }
+        
         public enum OID : uint
         {
             Blue = 0x1E8554,
@@ -449,11 +340,11 @@ namespace AutoDuty.Managers
 
         public unsafe void DutySpecificCode(string stage)
         {
+            IGameObject? gameObject = null;
             switch (Svc.ClientState.TerritoryType)
             {
                 //Sastasha - From BossMod
                 case 1036:
-                    IGameObject? gameObject = null;
                     switch (stage)
                     {
                         case "1":
@@ -479,6 +370,62 @@ namespace AutoDuty.Managers
                             _taskManager.DelayNext("DutySpecificCode", 1000);
                             _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
                             break;
+                        default: break;
+                    }
+                    break;
+                //Mount Rokkon
+                case 1137:
+                    switch (stage)
+                    {
+                        case "5":
+                            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByDataId(16140)) != null, "DutySpecificCode");
+                            _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
+                            _taskManager.DelayNext("DutySpecificCode", 1000);
+                            _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
+                            if (ObjectHelper.IsValid)
+                            {
+                                _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
+                                _taskManager.Enqueue(() => AddonHelper.ClickSelectString(0));
+                            }
+                            break;
+                        case "6":
+                            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByDataId(16140)) != null, "DutySpecificCode");
+                            _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
+                            _taskManager.DelayNext("DutySpecificCode", 1000);                          
+                            if (ObjectHelper.IsValid)
+                            {
+                                _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
+                                _taskManager.Enqueue(() => AddonHelper.ClickSelectString(1));
+                            }
+                            break;
+                        case "12":
+                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/rotation Settings AoEType Off"), "DutySpecificCode");
+                            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
+                            _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
+                            _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
+                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk ignore1"), "DutySpecificCode");
+                            _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(100)));
+                            _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(100), "DutySpecificCode"); 
+                            
+                            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
+                            _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
+                            _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
+                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk ignore2"), "DutySpecificCode");
+                            _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(100)));
+                            _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(100), "DutySpecificCode");
+                
+                            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
+                            _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
+                            _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
+                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk attack1"), "DutySpecificCode");
+                            break;
+                        case "13":
+                            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
+                            _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
+                            _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
+                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk attack1"), "DutySpecificCode");
+                            break;
+                
                         default: break;
                     }
                     break;

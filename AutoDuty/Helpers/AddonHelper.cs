@@ -2,7 +2,6 @@
 using ECommons.Automation;
 using ECommons.Automation.UIInput;
 using ECommons.DalamudServices;
-using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
@@ -29,76 +28,82 @@ namespace AutoDuty.Helpers
 
         internal static bool ClickSelectString(int index)
         {
-            if ((!GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon)) && !SeenAddon)
-            {
-                return false;
-            }
-            if (SeenAddon && (!GenericHelpers.TryGetAddonByName("SelectString", out addon) || !GenericHelpers.IsAddonReady(addon)))
-            {
-                SeenAddon = false;
-                return true;
-            }
-            if (EzThrottler.Throttle("ClickSelectString", 50))
+            var addonChecker = AddonChecker("SelectString", out AtkUnitBase* addon, out bool seenAddon);
+
+            if (!addonChecker && seenAddon)
                 new AddonMaster.SelectString(addon).Entries[index].Select();
-                //FireCallBack(addon, true, index);
-            SeenAddon = true;
+
+            if (addonChecker && seenAddon)
+                return true;
+
             return false;
         }
 
         internal static bool ClickSelectYesno(bool yes = true)
         {
-            if ((!GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon)) && !SeenAddon)
-            {
-                return false;
-            }
-            if (SeenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addon) || !GenericHelpers.IsAddonReady(addon)))
-            {
-                SeenAddon = false;
-                return true;
-            }
+            var addonChecker = AddonChecker("SelectYesno", out AtkUnitBase* addon, out bool seenAddon);
 
-            if (EzThrottler.Throttle("ClickYesno", 50))
+            if (!addonChecker && seenAddon)
             {
                 if (yes)
                     new AddonMaster.SelectYesno(addon).Yes();
-                    //FireCallBack(addon, true, 0);
                 else
                     new AddonMaster.SelectYesno(addon).No();
-                    //FireCallBack(addon, true, 1);
+                return false;
             }
-            SeenAddon = true;
+
+            if (addonChecker && seenAddon)
+                return true;
+
             return false;
         }
 
         internal static bool ClickRepair()
         {
-            if ((!GenericHelpers.TryGetAddonByName("Repair", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon)) && !SeenAddon)
-                return false;
-            if (SeenAddon && (!GenericHelpers.TryGetAddonByName("Repair", out addon) || !GenericHelpers.IsAddonReady(addon)))
-            {
-                SeenAddon = false;
-                return true;
-            }
-            if (EzThrottler.Throttle("Repair", 50))
+            var addonChecker = AddonChecker("Repair", out AtkUnitBase* addon, out bool seenAddon);
+
+            if (!addonChecker && seenAddon)
                 new AddonMaster.Repair(addon).RepairAll();
-                //FireCallBack(addon, true, 0);
-            SeenAddon = true;
+
+            if (addonChecker && seenAddon)
+                return true;
+
             return false;
         }
 
         internal static bool ClickTalk()
         {
-            if ((!GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon)) && !SeenAddon)
-                return false;
-            if (SeenAddon && (!GenericHelpers.TryGetAddonByName("Talk", out addon) || !GenericHelpers.IsAddonReady(addon)))
+            var addonChecker = AddonChecker("Talk", out AtkUnitBase* addon, out bool seenAddon);
+
+            if (!addonChecker && seenAddon)
+                new AddonMaster.Talk(addon).Click();
+            
+            if (addonChecker && seenAddon)
+                return true;
+                    
+            return false;
+        }
+
+        private static bool AddonChecker(string addonName, out AtkUnitBase* outAddon, out bool outSeenAddon)
+        {
+            outSeenAddon = false;
+            
+            var gotAddon = GenericHelpers.TryGetAddonByName(addonName, out outAddon);
+            var addonReady = gotAddon && GenericHelpers.IsAddonReady(outAddon);
+
+            if (gotAddon && addonReady)
             {
+                outSeenAddon = true;
+                SeenAddon = true;
+                return false;
+            }
+
+            if (SeenAddon && (!gotAddon || !addonReady))
+            {
+                outSeenAddon = true;
                 SeenAddon = false;
                 return true;
             }
-            if (EzThrottler.Throttle("ClickTalk", 50))
-                new AddonMaster.Talk(addon).Click();
-                //FireCallBack(addon, true);
-            SeenAddon = true;
             return false;
         }
 

@@ -1,1 +1,10 @@
-["Boss|0.02, 0.00, -1.45|"]
+{
+  "actions": [
+    "Boss|0.02, 0.00, -1.45|"
+  ],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [],
+    "notes": []
+  }
+}

@@ -62,14 +62,10 @@ namespace AutoDuty.Helpers
 
             if (ObjectHelper.GetDistanceToPlayer(_followTarget) >= _followDistance)
             {
-                //AutoDuty.Plugin.OverrideCamera.Face(_followTarget.Position);
-                //InputHelper.SetKeyValue(W, Down);
-                List<Vector3> _followTargetList = [_followTarget.Position];
-                VNavmesh_IPCSubscriber.Path_MoveTo(_followTargetList,false);
                 VNavmesh_IPCSubscriber.Path_Stop();
+                List<Vector3> _followTargetList = [_followTarget.Position];
+                VNavmesh_IPCSubscriber.Path_MoveTo(_followTargetList, false);
             }
-            //else
-                //InputHelper.SetKeyValue(W, Released);
         }
     }
 }

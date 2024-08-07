@@ -10,6 +10,7 @@ using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
 using ECommons;
 using Dalamud.Interface.Utility;
+using Dalamud.Interface.Components;
 
 namespace AutoDuty.Windows;
 
@@ -18,15 +19,20 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 105;
+    public int Version { get; set; } = 111;
     public int AutoRepairPct { get; set; } = 50;
-    public int AutoGCTurninSlotsLeft { get; set; } = 5;
-    public int LoopTimes { get; set; } = 1;
+    public int AutoGCTurninSlotsLeft = 5;
+    public int LoopTimes = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
+    public int WaitTimeBeforeAfterLoopActions = 0;
+    public bool AutoEquipRecommendedGear { get; set; } = false;
     public bool OpenOverlay { get; set; } = true;
     public bool OnlyOpenOverlayWhenRunning { get; set; } = false;
+    public bool LockOverlay = false;
+    public bool OverlayNoBG = false;
     public bool HideDungeonText { get; set; } = false;
     public bool HideActionText { get; set; } = false;
+    public bool LoopsInputInt = false;
     public bool AutoManageBossModAISettings { get; set; } = true;
     public bool AutoManageRSRState { get; set; } = true;
     public bool AutoExitDuty { get; set; } = true;
@@ -45,6 +51,8 @@ public class Configuration : IPluginConfiguration
     public bool AutoExtractAll { get; set; } = false;
     public bool AutoDesynth { get; set; } = false;
     public bool AutoGCTurnin { get; set; } = false;
+    public bool AutoGCTurninSlotsLeftBool = false;
+    public bool AutoGCTurninSlotsLeftInput = false;
     public bool AM = false;
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
@@ -77,6 +85,9 @@ public class Configuration : IPluginConfiguration
     public bool StopItemQty { get; set; } = false;
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary { get; set; } = [];
     public int StopItemQtyInt { get; set; } = 1;
+    public bool UsingAlternativeRotationPlugin = false;
+    public bool UsingAlternativeMovingPlugin = false;
+    public bool UsingAlternativeBossPlugin = false;
 
     public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
 
@@ -112,6 +123,7 @@ public static class ConfigTab
         var autoARMultiEnable = Configuration.AutoARMultiEnable;
         var lootTreasure = Configuration.LootTreasure;
         var treasureCofferScanDistance = Configuration.TreasureCofferScanDistance;
+        var autoEquipRecommended = Configuration.AutoEquipRecommendedGear;
         var lootBossTreasureOnly = Configuration.LootBossTreasureOnly;
         var autoRepair = Configuration.AutoRepair;
         var autoRepairSelf = Configuration.AutoRepairSelf;
@@ -150,19 +162,45 @@ public static class ConfigTab
                 Configuration.OnlyOpenOverlayWhenRunning = onlyOpenOverlayWhenRunning;
                 Configuration.Save();
             }
-            
+
+            ImGui.SameLine(0, 5);
+            if (ImGui.Checkbox("Lock", ref Configuration.LockOverlay))
+            {
+                if (!Configuration.LockOverlay)
+                    AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoMove;
+                else
+                    AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoMove;
+                
+                Configuration.Save();
+            }
+
             if (ImGui.Checkbox("Hide Dungeon", ref hideDungeonText))
             {
                 Configuration.HideDungeonText = hideDungeonText;
                 Configuration.Save();
             }
+
             ImGui.SameLine(0, 5);
             if (ImGui.Checkbox("Hide Action", ref hideActionText))
             {
                 Configuration.HideActionText = hideActionText;
                 Configuration.Save();
             }
+
+            ImGui.SameLine(0, 5);
+            if (ImGui.Checkbox("No BG", ref Configuration.OverlayNoBG))
+            {
+                if (!Configuration.OverlayNoBG)
+                    AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoBackground;
+                else
+                    AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoBackground;
+
+                Configuration.Save();
+            }
         }
+        if (ImGui.Checkbox("Set loops element as integer input", ref Configuration.LoopsInputInt))
+            Configuration.Save();
+
         ImGui.Separator();
         if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
         {
@@ -247,6 +285,14 @@ public static class ConfigTab
             Configuration.Save();
         }
         ImGui.Separator();
+
+        if (ImGui.Checkbox("Using Alternative Rotation Plugin", ref Configuration.UsingAlternativeRotationPlugin))
+            Configuration.Save();
+
+        ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Rotation Solver.");
+
+        ImGui.Separator();
+
         if (ImGui.Checkbox("AutoRepair Enabled @", ref autoRepair))
         {
             Configuration.AutoRepair = autoRepair;
@@ -278,6 +324,11 @@ public static class ConfigTab
                 autoRepairSelf = false;
                 Configuration.Save();
             }
+        }
+        if (ImGui.Checkbox("Auto Equip Recommended Gear", ref autoEquipRecommended))
+        {
+            Configuration.AutoEquipRecommendedGear = autoEquipRecommended;
+            Configuration.Save();
         }
         ImGui.Separator();
         if (ImGui.Checkbox("Auto Extract", ref autoExtract))
@@ -336,7 +387,34 @@ public static class ConfigTab
                 autoDesynth = false;
                 Configuration.Save();
             }
-            
+            using (var autoGcTurninConfigDisabled = ImRaii.Disabled(!Configuration.AutoGCTurnin))
+            {
+                if (ImGui.Checkbox("Inventory Slots Left @", ref Configuration.AutoGCTurninSlotsLeftBool))
+                    Configuration.Save();
+                ImGui.SameLine(0);
+                using (var autoGcTurninSlotsLeftDisabled = ImRaii.Disabled(!Configuration.AutoGCTurninSlotsLeftBool))
+                {
+                    ImGui.PushItemWidth(125 * ImGuiHelpers.GlobalScale);
+                    if (Configuration.AutoGCTurninSlotsLeftInput)
+                    {
+                        if (ImGui.InputInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft))
+                            Configuration.Save();
+                    }
+                    else
+                    {
+                        if (ImGui.SliderInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft, 1, 120))
+                            Configuration.Save();
+                    }
+                    ImGui.PopItemWidth();
+                    ImGui.SameLine();
+                    if (ImGui.Button($"{(Configuration.AutoGCTurninSlotsLeftInput ? "Slider" : "Input")}"))
+                    {
+                        Configuration.AutoGCTurninSlotsLeftInput = !Configuration.AutoGCTurninSlotsLeftInput;
+                        Configuration.Save();
+                    }
+                }
+            }
+            if (!Deliveroo_IPCSubscriber.IsEnabled)
         }
         ImGui.SameLine(0, 5);
         using (var autoMarketDisabled = ImRaii.Disabled(!AM_IPCSubscriber.IsEnabled))
@@ -372,7 +450,10 @@ public static class ConfigTab
             ImGui.Text("DO NOT ASK OR DISCUSS THIS OPTION IN PUNI.SH DISCORD");
             ImGui.Text("YOU HAVE BEEN WARNED!!!!!!!");
         }
-        
+        ImGui.PushItemWidth(100 * ImGuiHelpers.GlobalScale);
+        if (ImGui.InputInt("(s) Wait time before after loop actions", ref Configuration.WaitTimeBeforeAfterLoopActions))
+            Configuration.Save();
+        ImGui.PopItemWidth();
         ImGui.Separator();
         if (ImGui.Checkbox("Stop Looping @ Level", ref stopLevel))
         {
@@ -545,7 +626,7 @@ public static class ConfigTab
                 Configuration.FollowSlot = false;
                 followSlot = false;
                 Configuration.FollowRole = followRole;
-                AutoDuty.Plugin.BMRRoleChecks();
+                AutoDuty.Plugin.BMRoleChecks();
                 Configuration.Save();
             }
 
@@ -589,7 +670,7 @@ public static class ConfigTab
             if (ImGui.Checkbox("Set Max Distance To Target Based on Role", ref maxDistanceToTargetRoleBased))
             {
                 Configuration.MaxDistanceToTargetRoleRange = maxDistanceToTargetRoleBased;
-                AutoDuty.Plugin.BMRRoleChecks();
+                AutoDuty.Plugin.BMRoleChecks();
                 Configuration.Save();
             }
 
@@ -620,7 +701,7 @@ public static class ConfigTab
             if (ImGui.Checkbox("Set Positional Based on Role", ref positionalRoleBased))
             {
                 Configuration.PositionalRoleBased = positionalRoleBased;
-                AutoDuty.Plugin.BMRRoleChecks();
+                AutoDuty.Plugin.BMRoleChecks();
                 Configuration.Save();
             }
 
