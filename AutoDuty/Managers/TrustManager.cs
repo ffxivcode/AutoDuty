@@ -92,7 +92,7 @@ namespace AutoDuty.Managers
         {
             if (GenericHelpers.TryGetAddonByName<AtkUnitBase>("Dawn", out var addon))
             {
-                for (int i = 0; i < 7; i++)
+                for (int i = 0; i <= 7; i++)
                 {
                     var isEnabled = addon->AtkValues[i + 33].Bool;
                     if (isEnabled)
