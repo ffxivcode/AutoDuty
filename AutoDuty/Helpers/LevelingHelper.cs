@@ -35,13 +35,12 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static unsafe ContentHelper.Content? SelectHighestLevelingRelevantDuty(out int index)
+        internal static unsafe ContentHelper.Content? SelectHighestLevelingRelevantDuty()
         {
             ContentHelper.Content? curContent = null;
 
             short lvl = PlayerHelper.GetCurrentLevelFromSheet();
 
-            int curIndex = index = 0;
             if (lvl < 15 || AutoDuty.Plugin.Player!.GetRole() == CombatRole.NonCombat || lvl >= 100)
                 return null;
 
@@ -61,11 +60,8 @@ namespace AutoDuty.Helpers
                         if (content.CanRun(lvl, ilvl) && (content.ClassJobLevelRequired < 50 || content.ClassJobLevelRequired % 10 != 0))
                         {
                             curContent = content;
-                            index      = curIndex;
                         }
                     }
-
-                    curIndex++;
                 }
             }
 
