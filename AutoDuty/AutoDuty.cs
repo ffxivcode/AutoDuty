@@ -545,6 +545,7 @@ public sealed class AutoDuty : IDalamudPlugin
         MainListClicked = false;
         Stage = 1;
         Started = true;
+        StopForCombat = true;
         _chat.ExecuteCommand($"/vnav aligncamera enable");
         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
         _chat.ExecuteCommand($"/vbmai on");
@@ -616,6 +617,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private unsafe void OnDeath()
     {
         _dead = true;
+        StopForCombat = true;
         Action = $"Died";
         if (VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
