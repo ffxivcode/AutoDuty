@@ -1309,6 +1309,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     Indexer++;
                     Stage = 1;
                 }
+                break;
             case "am":
                 AMHelper.Invoke();
                 break;

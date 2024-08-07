@@ -414,7 +414,6 @@ public static class ConfigTab
                     }
                 }
             }
-            if (!Deliveroo_IPCSubscriber.IsEnabled)
         }
         ImGui.SameLine(0, 5);
         using (var autoMarketDisabled = ImRaii.Disabled(!AM_IPCSubscriber.IsEnabled))
