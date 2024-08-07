@@ -24,6 +24,7 @@ public class Configuration : IPluginConfiguration
     public int AutoGCTurninSlotsLeft = 5;
     public int LoopTimes = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
+    public int WaitTimeBeforeAfterLoopActions = 0;
     public bool AutoEquipRecommendedGear { get; set; } = false;
     public bool OpenOverlay { get; set; } = true;
     public bool OnlyOpenOverlayWhenRunning { get; set; } = false;
@@ -421,6 +422,10 @@ public static class ConfigTab
                 ImGui.Text("Get @ https://git.carvel.li/liza/plugin-repo");
             }
         }
+        ImGui.PushItemWidth(100 * ImGuiHelpers.GlobalScale);
+        if (ImGui.InputInt("(s) Wait time before after loop actions", ref Configuration.WaitTimeBeforeAfterLoopActions))
+            Configuration.Save();
+        ImGui.PopItemWidth();
         ImGui.Separator();
         if (ImGui.Checkbox("Stop Looping @ Level", ref stopLevel))
         {
