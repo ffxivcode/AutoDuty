@@ -29,6 +29,7 @@ using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty;
 
@@ -612,19 +613,26 @@ public sealed class AutoDuty : IDalamudPlugin
             ConfigTab.FollowName = ObjectHelper.GetPartyMemberFromRole(Configuration.FollowRoleStr!)?.Name.ExtractText() ?? "";
     }
 
-    private void OnDeath()
+    private unsafe void OnDeath()
     {
         _dead = true;
+        Action = $"Died";
         if (VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
         if (TaskManager.IsBusy)
             TaskManager.Abort();
+        if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
+        {
+            TaskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno));
+            TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
+        }
         Stage = 6;
     }
 
     private unsafe void OnRevive()
     {
         _dead = false;
+        Action = $"Revived";
         TaskManager.DelayNext(5000);
         TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
         //IGameObject? gameObject = ObjectHelper.GetObjectByName("Shortcut");
@@ -1043,7 +1051,6 @@ public sealed class AutoDuty : IDalamudPlugin
                     return;
 
                 Action = $"Died";
-                //litterally do nothing, until i code auto revive
                 break;
             //OnRevive
             case 7:
