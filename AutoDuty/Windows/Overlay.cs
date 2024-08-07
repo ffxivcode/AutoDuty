@@ -15,7 +15,11 @@ public unsafe class Overlay : Window
 {
     public Overlay() : base("AutoDuty Overlay", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize)
     {
-                 
+        if (AutoDuty.Plugin.Configuration.OverlayNoBG)
+            Flags |= ImGuiWindowFlags.NoBackground;
+
+        if (AutoDuty.Plugin.Configuration.LockOverlay)
+            Flags |= ImGuiWindowFlags.NoMove;
     }
 
     private static string hideText = " ";
