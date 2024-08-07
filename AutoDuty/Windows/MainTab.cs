@@ -38,9 +38,12 @@ namespace AutoDuty.Windows
 
             void DrawPathSelection()
             {
+                if (Plugin.CurrentTerritoryContent == null || !ObjectHelper.IsReady)
+                    return;
+
                 using var d = ImRaii.Disabled(Plugin is { InDungeon: true, Stage: > 0 });
                 
-                if (ContentPathsManager.DictionaryPaths.TryGetValue(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0, out ContentPathsManager.ContentPathContainer container))
+                if (ContentPathsManager.DictionaryPaths.TryGetValue(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0, out var container))
                 {
                     List<ContentPathsManager.DutyPath> curPaths = container.Paths;
                     if (curPaths.Count > 1)
@@ -106,10 +109,15 @@ namespace AutoDuty.Windows
                         ImGui.SameLine(0, 15);
                     }
                     ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                    if (ImGui.SliderInt("Times", ref _loopTimes, 0 , 100))
+                    if (Plugin.Configuration.LoopsInputInt)
                     {
-                        Plugin.Configuration.LoopTimes = _loopTimes;
-                        Plugin.Configuration.Save();
+                        if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
+                            Plugin.Configuration.Save();
+                    }
+                    else
+                    {
+                        if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
+                            Plugin.Configuration.Save();
                     }
                     ImGui.PopItemWidth();
                     ImGui.SameLine(0, 5);
@@ -209,10 +217,15 @@ namespace AutoDuty.Windows
                     {
                         ImGui.SameLine(0, 15);
                         ImGui.PushItemWidth(200 * ImGuiHelpers.GlobalScale);
-                        if (ImGui.SliderInt("Times", ref _loopTimes, 0, 100))
+                        if (Plugin.Configuration.LoopsInputInt)
                         {
-                            Plugin.Configuration.LoopTimes = _loopTimes;
-                            Plugin.Configuration.Save();
+                            if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
+                                Plugin.Configuration.Save();
+                        }
+                        else
+                        {
+                            if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
+                                Plugin.Configuration.Save();
                         }
                         ImGui.PopItemWidth();
                     }
@@ -406,7 +419,7 @@ namespace AutoDuty.Windows
                         else if (Plugin.Configuration.Variant)
                             dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.VariantContent).ToDictionary();
 
-                        if (dictionary.Count > 0)
+                        if (dictionary.Count > 0 && ObjectHelper.IsReady)
                         {
                             short level = PlayerHelper.GetCurrentLevelFromSheet();
                             short ilvl  = PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false);

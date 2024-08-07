@@ -22,7 +22,7 @@ public class Configuration : IPluginConfiguration
     public int Version { get; set; } = 110;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft = 5;
-    public int LoopTimes { get; set; } = 1;
+    public int LoopTimes = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
     public bool AutoEquipRecommendedGear { get; set; } = false;
     public bool OpenOverlay { get; set; } = true;
@@ -31,6 +31,7 @@ public class Configuration : IPluginConfiguration
     public bool OverlayNoBG = false;
     public bool HideDungeonText { get; set; } = false;
     public bool HideActionText { get; set; } = false;
+    public bool LoopsInputInt = false;
     public bool AutoManageBossModAISettings { get; set; } = true;
     public bool AutoManageRSRState { get; set; } = true;
     public bool AutoExitDuty { get; set; } = true;
@@ -195,6 +196,9 @@ public static class ConfigTab
                 Configuration.Save();
             }
         }
+        if (ImGui.Checkbox("Set loops element as integer input", ref Configuration.LoopsInputInt))
+            Configuration.Save();
+
         ImGui.Separator();
         if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
         {
