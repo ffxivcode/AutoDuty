@@ -1296,6 +1296,13 @@ public sealed class AutoDuty : IDalamudPlugin
                     }
                 }    
                 break;
+            case "skipstep":
+                if (Started)
+                {
+                    Indexer++;
+                    Stage = 1;
+                }
+                break;
             default:
                 OpenMainUI(); 
                 break;
