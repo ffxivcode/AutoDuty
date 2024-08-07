@@ -350,6 +350,12 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop-WaitAutoDesynthComplete");
         }
+        if (Configuration.AM)
+        {
+            TaskManager.Enqueue(() => AMHelper.Invoke(), "Loop-AM");
+            TaskManager.DelayNext("Loop-Delay50", 50);
+            TaskManager.Enqueue(() => !AMHelper.AMRunning, int.MaxValue, "Loop-WaitAMComplete");
+        }
         if (!Configuration.Squadron)
         {
             if (Configuration.RetireToBarracksBeforeLoops)
@@ -1131,6 +1137,7 @@ public sealed class AutoDuty : IDalamudPlugin
             case 99:
                 if (!ObjectHelper.IsReady)
                     return;
+
                 break;
             default:
                 break;
@@ -1302,6 +1309,8 @@ public sealed class AutoDuty : IDalamudPlugin
                     Indexer++;
                     Stage = 1;
                 }
+            case "am":
+                AMHelper.Invoke();
                 break;
             default:
                 OpenMainUI(); 

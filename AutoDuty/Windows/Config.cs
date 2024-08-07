@@ -53,6 +53,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoGCTurnin { get; set; } = false;
     public bool AutoGCTurninSlotsLeftBool = false;
     public bool AutoGCTurninSlotsLeftInput = false;
+    public bool AM = false;
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
@@ -414,13 +415,40 @@ public static class ConfigTab
                 }
             }
             if (!Deliveroo_IPCSubscriber.IsEnabled)
+        }
+        ImGui.SameLine(0, 5);
+        using (var autoMarketDisabled = ImRaii.Disabled(!AM_IPCSubscriber.IsEnabled))
+        {
+            if (ImGui.Checkbox("AM", ref Configuration.AM))
+            {
+                if (Configuration.AM)
+                    MainWindow.ShowPopup("DISCLAIMER", "Enabling the usage of this option, you are agreeing to never discuss This option in Puni.sh Discord or to anyone in Puni.sh, you have been warned!!!");
+                Configuration.Save();
+            }
+        }
+        if (!Deliveroo_IPCSubscriber.IsEnabled)
+        {
+            if (Configuration.AutoGCTurnin)
             {
                 Configuration.AutoGCTurnin = false;
                 autoGCTurnin = false;
                 Configuration.Save();
-                ImGui.Text("* Auto GC Turnin Requires Deliveroo plugin");
-                ImGui.Text("Get @ https://git.carvel.li/liza/plugin-repo");
             }
+            ImGui.Text("* Auto GC Turnin Requires Deliveroo plugin");
+            ImGui.Text("Get @ https://git.carvel.li/liza/plugin-repo");
+        }
+
+        if (!AM_IPCSubscriber.IsEnabled)
+        {
+            if (Configuration.AM)
+            {
+                Configuration.AM = false;
+                Configuration.Save();
+            }
+            ImGui.Text("*This Requires a plugin");
+            ImGui.Text("Visit https://discord.gg/JzSxThjKnd");
+            ImGui.Text("DO NOT ASK OR DISCUSS THIS OPTION IN PUNI.SH DISCORD");
+            ImGui.Text("YOU HAVE BEEN WARNED!!!!!!!");
         }
         ImGui.PushItemWidth(100 * ImGuiHelpers.GlobalScale);
         if (ImGui.InputInt("(s) Wait time before after loop actions", ref Configuration.WaitTimeBeforeAfterLoopActions))
