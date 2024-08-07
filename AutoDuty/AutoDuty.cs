@@ -368,7 +368,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (LevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
-            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int _);
+            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty();
             if (duty != null)
             {
                 Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
@@ -754,7 +754,7 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 if (LevelingEnabled)
                 {
-                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int index);
+                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty();
                     if (duty != null)
                     {
                         Plugin.CurrentTerritoryContent = duty;

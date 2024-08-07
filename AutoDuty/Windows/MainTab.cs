@@ -435,7 +435,7 @@ namespace AutoDuty.Windows
                             {
                                 if (leveling)
                                 {
-                                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(out int index);
+                                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty();
                                     if (duty != null)
                                     {
                                         _dutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
