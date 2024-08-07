@@ -11,6 +11,7 @@ using Lumina.Excel.GeneratedSheets;
 using ECommons;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Components;
+using AutoDuty.Managers;
 
 namespace AutoDuty.Windows;
 
@@ -96,6 +97,8 @@ public class Configuration : IPluginConfiguration
     {
         AutoDuty.PluginInterface.SavePluginConfig(this);
     }
+
+    public TrustMember[] SelectedTrusts = new TrustMember[3];
 }
 
 public static class ConfigTab

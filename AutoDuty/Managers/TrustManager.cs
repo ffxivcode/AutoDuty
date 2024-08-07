@@ -1,13 +1,20 @@
 ﻿using AutoDuty.Helpers;
 using ECommons;
+using ECommons.Automation;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
+using ECommons.GameFunctions;
+using ECommons.GameHelpers;
+using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.GeneratedSheets;
+using System;
+using System.Linq;
 
 namespace AutoDuty.Managers
 {
-    internal class TrustManager(TaskManager _taskManager)
+    internal partial class TrustManager(TaskManager _taskManager)
     {
         internal unsafe void RegisterTrust(ContentHelper.Content content)
         {
@@ -34,15 +41,64 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => { if (addon == null) OpenDawn(); }, "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, (content.ExVersion)), "RegisterTrust");
-            _taskManager.DelayNext("RegisterTrust", 500);
+            _taskManager.DelayNext("RegisterTrust", 50);
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, content.DawnIndex - indexModifier), "RegisterTrust");
-            _taskManager.DelayNext("RegisterTrust", 500);
+            _taskManager.Enqueue(() => TurnOffAllMembers());
+            _taskManager.Enqueue(() => TurnOnConfigMembers());
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 14), "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterTrust");
         }
 
+        private unsafe void TurnOnConfigMembers()
+        {
+            if (GenericHelpers.TryGetAddonByName<AtkUnitBase>("Dawn", out var addon))
+            {
+                if (AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null) == 3)
+                {
+                    foreach (var member in AutoDuty.Plugin.Configuration.SelectedTrusts.OrderBy(x => x.Role))
+                        Callback.Fire(addon, true, 12, member.Index);
+                }
+            }
+        }
+
+        public static void ResetTrustIfInvalid()
+        {
+            if (AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null) == 3)
+            {
+                var playerRole = Player.Job.GetRole();
+                var dps = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null && x.Role is 0);
+                var healers = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null && x.Role is 1);
+                var tanks = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null && x.Role is 2);
+
+                bool needsReset = playerRole switch
+                {
+                   CombatRole.DPS => dps == 2,
+                   CombatRole.Healer => healers == 1,
+                   CombatRole.Tank => tanks == 1,
+                };
+
+                if (needsReset)
+                {
+                    AutoDuty.Plugin.Configuration.SelectedTrusts = new TrustMember[3];
+                    AutoDuty.Plugin.Configuration.Save();
+                }
+            }
+        }
+
         private unsafe void OpenDawn() => AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Show();
 
+        private unsafe void TurnOffAllMembers()
+        {
+            if (GenericHelpers.TryGetAddonByName<AtkUnitBase>("Dawn", out var addon))
+            {
+                for (int i = 0; i <= 7; i++)
+                {
+                    var isEnabled = addon->AtkValues[i + 33].Bool;
+                    if (isEnabled)
+                        Callback.Fire(addon, true, 12, i);
+                }
+            }
+        }
     }
 }
