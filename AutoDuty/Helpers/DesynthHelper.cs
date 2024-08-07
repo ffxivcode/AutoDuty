@@ -27,10 +27,9 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void Stop()
         {
-            DesynthRunning = false;
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("DesynthTimeOut");
-            Svc.Framework.Update -= DesynthUpdate;
+            _stop = true;
             if (GenericHelpers.TryGetAddonByName("Desynth", out AtkUnitBase* addonDesynth))
                 addonDesynth->Close(true);
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -38,6 +37,7 @@ namespace AutoDuty.Helpers
         }
 
         internal static bool DesynthRunning = false;
+        private static bool _stop = false;
 
         internal static unsafe void DesynthUpdate(IFramework framework)
         {
@@ -46,6 +46,23 @@ namespace AutoDuty.Helpers
 
             if (!EzThrottler.Throttle("Desynth", 250))
                 return;
+
+            if (_stop)
+            {
+                if (GenericHelpers.TryGetAddonByName("SalvageResult", out AtkUnitBase* addonSalvageResultClose))
+                    addonSalvageResultClose->Close(true);
+                else if (GenericHelpers.TryGetAddonByName("SalvageDialog", out AtkUnitBase* addonSalvageDialog))
+                    addonSalvageDialog->Close(true);
+                else if (GenericHelpers.TryGetAddonByName("SalvageItemSelector", out AtkUnitBase* addonSalvageItemSelectorClose))
+                    addonSalvageItemSelectorClose->Close(true);
+                else
+                {
+                    _stop = false;
+                    DesynthRunning = false;
+                    Svc.Framework.Update -= DesynthUpdate;
+                }
+                return;
+            }
 
             if (Conditions.IsMounted)
             {

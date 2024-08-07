@@ -20,9 +20,9 @@ namespace AutoDuty.Helpers
                 ExtractRunning = true;
                 SchedulerHelper.ScheduleAction("ExtractTimeOut", Stop, 300000);
                 if (AutoDuty.Plugin.Configuration.AutoExtractAll)
-                    stoppingCategory = 6;
+                    _stoppingCategory = 6;
                 else
-                    stoppingCategory = 0;
+                    _stoppingCategory = 0;
                 AutoDuty.Plugin.Action = "Extracting Materia";
                 Svc.Framework.Update += ExtractUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -32,12 +32,11 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void Stop()
         {
-            ExtractRunning = false;
-            currentCategory = 0;
-            switchedCategory = false;
+            _currentCategory = 0;
+            _switchedCategory = false;
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("ExtractTimeOut");
-            Svc.Framework.Update -= ExtractUpdate;
+            _stop = true;
             if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog))
                 addonMaterializeDialog->Close(true);
             if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize))
@@ -48,11 +47,11 @@ namespace AutoDuty.Helpers
 
         internal static bool ExtractRunning = false;
 
-        private static int currentCategory = 0;
+        private static int _currentCategory = 0;
+        private static int _stoppingCategory;
+        private static bool _switchedCategory = false;
+        private static bool _stop = false;
 
-        private static int stoppingCategory;
-
-        private static bool switchedCategory = false;
 
         internal static unsafe void ExtractUpdate(IFramework framework)
         {
@@ -61,6 +60,21 @@ namespace AutoDuty.Helpers
 
             if (!EzThrottler.Throttle("Extract", 250))
                 return;
+
+            if (_stop)
+            {
+                if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialogClose))
+                    addonMaterializeDialogClose->Close(true);
+                else if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterializeClose))
+                    addonMaterializeClose->Close(true);
+                else
+                {
+                    _stop = false;
+                    ExtractRunning = false;
+                    Svc.Framework.Update -= ExtractUpdate;
+                }
+                return;
+            }
 
             if (Conditions.IsMounted)
             {
@@ -90,7 +104,7 @@ namespace AutoDuty.Helpers
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 14);
             else if (GenericHelpers.IsAddonReady(addonMaterialize))
             {
-                if (currentCategory <= stoppingCategory)
+                if (_currentCategory <= _stoppingCategory)
                 {
                     var list = addonMaterialize->GetNodeById(12)->GetAsAtkComponentList();
 
@@ -102,11 +116,11 @@ namespace AutoDuty.Helpers
                     if (spiritbondTextNode == null || categoryTextNode == null) return;
 
                     //switch to Category, if not on it
-                    if (!switchedCategory)
+                    if (!_switchedCategory)
                     {
-                        Svc.Log.Debug($"AutoExtract - Switching to Category: {currentCategory}");
-                        AddonHelper.FireCallBack(addonMaterialize, false, 1, currentCategory);
-                        switchedCategory = true;
+                        Svc.Log.Debug($"AutoExtract - Switching to Category: {_currentCategory}");
+                        AddonHelper.FireCallBack(addonMaterialize, false, 1, _currentCategory);
+                        _switchedCategory = true;
                         return;
                     }
 
@@ -118,8 +132,8 @@ namespace AutoDuty.Helpers
                     }
                     else
                     {
-                        currentCategory++;
-                        switchedCategory = false;
+                        _currentCategory++;
+                        _switchedCategory = false;
                     }
                 }
                 else
