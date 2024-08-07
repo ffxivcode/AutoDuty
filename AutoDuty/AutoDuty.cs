@@ -295,7 +295,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => { Stage   = 99; },    "Loop-SetStage=99");
                 TaskManager.Enqueue(() => { Started = false; }, "Loop-SetStarted=false");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
-
+                TaskManager.Enqueue(() => { Action = $"Waiting {Configuration.WaitTimeBeforeAfterLoopActions}s"; }, "Loop-WaitTimeBeforeAfterLoopActionsActionSet");
+                TaskManager.DelayNext("Loop-WaitTimeBeforeAfterLoopActions", Configuration.WaitTimeBeforeAfterLoopActions * 1000);
+                TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
                 if (Configuration.AutoEquipRecommendedGear)
                 {
                     TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Run-AutoEquip");
@@ -394,6 +396,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => !QueueHelper.QueueRunning, int.MaxValue, "Loop-WaitQueueComplete");
         }
         TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
+        TaskManager.Enqueue(() => { Action = $"Looping: {CurrentTerritoryContent.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}"; }, "Loop-SetAction");
         TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
         TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Loop-WaitPlayerValid");
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Loop-WaitDutyStarted");
@@ -1128,9 +1131,6 @@ public sealed class AutoDuty : IDalamudPlugin
             case 99:
                 if (!ObjectHelper.IsReady)
                     return;
-
-                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning && !QueueHelper.QueueRunning)
-                    Action = $"Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
                 break;
             default:
                 break;
