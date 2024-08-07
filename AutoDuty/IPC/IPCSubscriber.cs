@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace AutoDuty.IPC
 {
-    internal static class AutoMarket_IPCSubscriber
+    internal static class AM_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AutoMarket_IPCSubscriber), "AutoBot");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AM_IPCSubscriber), "AutoBot");
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("AutoBot");
 

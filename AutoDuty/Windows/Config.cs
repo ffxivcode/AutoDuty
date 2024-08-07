@@ -45,7 +45,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoExtractAll { get; set; } = false;
     public bool AutoDesynth { get; set; } = false;
     public bool AutoGCTurnin { get; set; } = false;
-    public bool AutoMarket { get; set; } = false;
+    public bool AM = false;
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
@@ -124,7 +124,6 @@ public static class ConfigTab
         var autoExtractAll = Configuration.AutoExtractAll;
         var autoDesynth = Configuration.AutoDesynth;
         var autoGCTurnin = Configuration.AutoGCTurnin;
-        var autoMarket = Configuration.AutoMarket;
         var hideBossModAIConfig = Configuration.HideBossModAIConfig;
         var stopLevel = Configuration.StopLevel;
         var stopLevelInt = Configuration.StopLevelInt;
@@ -340,33 +339,38 @@ public static class ConfigTab
             
         }
         ImGui.SameLine(0, 5);
-        using (var autoMarketDisabled = ImRaii.Disabled(!AutoMarket_IPCSubscriber.IsEnabled))
+        using (var autoMarketDisabled = ImRaii.Disabled(!AM_IPCSubscriber.IsEnabled))
         {
-            if (ImGui.Checkbox("Auto Market", ref autoMarket))
+            if (ImGui.Checkbox("AM", ref Configuration.AM))
             {
-                if (autoMarket)
-                    MainWindow.ShowPopup("DISCLAIMER", "Enabling the usage of AutoMarket, you are agreeing to never discuss AutoMarket in Puni.sh Discord or to anyone in Puni.sh");
-                Configuration.AutoMarket = autoMarket;
+                if (Configuration.AM)
+                    MainWindow.ShowPopup("DISCLAIMER", "Enabling the usage of this option, you are agreeing to never discuss This option in Puni.sh Discord or to anyone in Puni.sh, you have been warned!!!");
                 Configuration.Save();
             }
         }
         if (!Deliveroo_IPCSubscriber.IsEnabled)
         {
-            Configuration.AutoGCTurnin = false;
-            autoGCTurnin = false;
-            Configuration.Save();
+            if (Configuration.AutoGCTurnin)
+            {
+                Configuration.AutoGCTurnin = false;
+                autoGCTurnin = false;
+                Configuration.Save();
+            }
             ImGui.Text("* Auto GC Turnin Requires Deliveroo plugin");
             ImGui.Text("Get @ https://git.carvel.li/liza/plugin-repo");
         }
 
-        if (!AutoMarket_IPCSubscriber.IsEnabled)
+        if (!AM_IPCSubscriber.IsEnabled)
         {
-            Configuration.AutoMarket = false;
-            autoMarket = false;
-            Configuration.Save();
-            ImGui.Text("* AutoMarket Requires a plugin");
-            ImGui.Text("Get @ https://github.com/ffxivcode/DalamudPlugins");
-            ImGui.Text("DO NOT ASK OR DISCUSS AUTOMARKET IN PUNI.SH DISCORD");
+            if (Configuration.AM)
+            {
+                Configuration.AM = false;
+                Configuration.Save();
+            }
+            ImGui.Text("*This Requires a plugin");
+            ImGui.Text("Visit https://discord.gg/JzSxThjKnd");
+            ImGui.Text("DO NOT ASK OR DISCUSS THIS OPTION IN PUNI.SH DISCORD");
+            ImGui.Text("YOU HAVE BEEN WARNED!!!!!!!");
         }
         
         ImGui.Separator();

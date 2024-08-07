@@ -323,11 +323,11 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop-WaitAutoDesynthComplete");
         }
-        if (Configuration.AutoMarket)
+        if (Configuration.AM)
         {
-            TaskManager.Enqueue(() => AutoMarketHelper.Invoke(), "Loop-AutoMarket");
+            TaskManager.Enqueue(() => AMHelper.Invoke(), "Loop-AM");
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !AutoMarketHelper.AutoMarketRunning, int.MaxValue, "Loop-WaitAutoMarketComplete");
+            TaskManager.Enqueue(() => !AMHelper.AMRunning, int.MaxValue, "Loop-WaitAMComplete");
         }
         if (!Configuration.Squadron)
         {
@@ -1056,7 +1056,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady)
                     return;
 
-                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning && !QueueHelper.QueueRunning && !AutoMarketHelper.AutoMarketRunning)
+                if (!RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning && !QueueHelper.QueueRunning && !AMHelper.AMRunning)
                     Action = $"Looping: {CurrentTerritoryContent?.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}";
                 break;
             default:
@@ -1200,7 +1200,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null);
                 break;
             case "automarket":
-                AutoMarketHelper.Invoke();
+                AMHelper.Invoke();
                 break;
             default:
                 OpenMainUI(); 
