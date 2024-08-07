@@ -1311,7 +1311,8 @@ public sealed class AutoDuty : IDalamudPlugin
                 }
                 break;
             case "am":
-                AMHelper.Invoke();
+                Configuration.UnhideAM = !Configuration.UnhideAM;
+                Configuration.Save();
                 break;
             default:
                 OpenMainUI(); 
