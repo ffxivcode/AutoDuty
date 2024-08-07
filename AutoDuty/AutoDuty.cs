@@ -319,7 +319,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private void LoopTasks()
+    private unsafe void LoopTasks()
     {
         if (CurrentTerritoryContent == null) return;
 
@@ -336,7 +336,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !ExtractHelper.ExtractRunning, int.MaxValue, "Loop-WaitAutoExtractComplete");
         }
-        if (Configuration.AutoGCTurnin && ObjectHelper.GrandCompanyRank > 5)
+        if (Configuration.AutoGCTurnin && (!Configuration.AutoGCTurninSlotsLeftBool || InventoryManager.Instance()->GetEmptySlotsInBag() <= Configuration.AutoGCTurninSlotsLeft) && ObjectHelper.GrandCompanyRank > 5)
         {
             TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
             TaskManager.DelayNext("Loop-Delay50", 50);
