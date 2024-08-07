@@ -21,7 +21,7 @@ public class Configuration : IPluginConfiguration
 
     public int Version { get; set; } = 110;
     public int AutoRepairPct { get; set; } = 50;
-    public int AutoGCTurninSlotsLeft { get; set; } = 5;
+    public int AutoGCTurninSlotsLeft = 5;
     public int LoopTimes { get; set; } = 1;
     public int TreasureCofferScanDistance { get; set; } = 25;
     public bool AutoEquipRecommendedGear { get; set; } = false;
@@ -49,6 +49,8 @@ public class Configuration : IPluginConfiguration
     public bool AutoExtractAll { get; set; } = false;
     public bool AutoDesynth { get; set; } = false;
     public bool AutoGCTurnin { get; set; } = false;
+    public bool AutoGCTurninSlotsLeftBool = false;
+    public bool AutoGCTurninSlotsLeftInput = false;
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
@@ -138,7 +140,6 @@ public static class ConfigTab
         var stopItemQty = Configuration.StopItemQty;
         var stopItemQtyItemDictionary = Configuration.StopItemQtyItemDictionary;
         var stopItemQtyInt = Configuration.StopItemQtyInt;
-        
 
         if (ImGui.Checkbox("Open Overlay", ref openOverlay))
         {
@@ -379,6 +380,33 @@ public static class ConfigTab
                 Configuration.AutoDesynth = false;
                 autoDesynth = false;
                 Configuration.Save();
+            }
+            using (var autoGcTurninConfigDisabled = ImRaii.Disabled(!Configuration.AutoGCTurnin))
+            {
+                if (ImGui.Checkbox("Inventory Slots Left @", ref Configuration.AutoGCTurninSlotsLeftBool))
+                    Configuration.Save();
+                ImGui.SameLine(0);
+                using (var autoGcTurninSlotsLeftDisabled = ImRaii.Disabled(!Configuration.AutoGCTurninSlotsLeftBool))
+                {
+                    ImGui.PushItemWidth(125 * ImGuiHelpers.GlobalScale);
+                    if (Configuration.AutoGCTurninSlotsLeftInput)
+                    {
+                        if (ImGui.InputInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft))
+                            Configuration.Save();
+                    }
+                    else
+                    {
+                        if (ImGui.SliderInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft, 1, 120))
+                            Configuration.Save();
+                    }
+                    ImGui.PopItemWidth();
+                    ImGui.SameLine();
+                    if (ImGui.Button($"{(Configuration.AutoGCTurninSlotsLeftInput ? "Slider" : "Input")}"))
+                    {
+                        Configuration.AutoGCTurninSlotsLeftInput = !Configuration.AutoGCTurninSlotsLeftInput;
+                        Configuration.Save();
+                    }
+                }
             }
             if (!Deliveroo_IPCSubscriber.IsEnabled)
             {
