@@ -31,7 +31,7 @@
 	"PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
 	"Interactable|0, 0, 0|2005309 (Lift Terminal)",
     "Wait|228.77, -59.27, 95.07|8000",
-    "AutoMoveFor|227.97, -90.16, 49.87|1000",
+    "AutoMoveFor|227.97, -90.16, 49.87|4000",
     "Boss|230.03, -96.46, -182.83|",
     "AutoMoveFor|0, 0, 0|5000",
     "Boss|229.89, -456.46, 79.02|"
