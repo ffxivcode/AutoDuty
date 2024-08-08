@@ -57,6 +57,7 @@ public class Configuration : IPluginConfiguration
     public bool AM = false;
     public bool UnhideAM = false;
     public bool EnableAutoRetainer = true;
+    public bool AutoBoiledEgg = true;
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
@@ -479,6 +480,9 @@ public static class ConfigTab
             ImGui.Text("* AutoRetainer requires a plugin");
             ImGui.Text("Visit https://puni.sh/plugin/AutoRetainer");
         }
+
+        if (ImGui.Checkbox("Auto Consume Boiled Eggs", ref Configuration.AutoBoiledEgg))
+            Configuration.Save();
 
         ImGui.Separator();
 

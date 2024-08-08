@@ -18,6 +18,8 @@ namespace AutoDuty.Helpers
         internal static uint SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();
         internal static uint MySeals => InventoryManager.Instance()->GetCompanySeals(PlayerState.Instance()->GrandCompany);
         internal static uint MaxSeals => InventoryManager.Instance()->GetMaxCompanySeals(PlayerState.Instance()->GrandCompany);
+        internal static int ItemCount(uint itemId) => InventoryManager.Instance()->GetInventoryItemCount(itemId);
+        internal static void UseItem(uint itemId) => AgentInventoryContext.Instance()->UseItem(itemId);
 
         internal unsafe static uint CurrentItemLevel()
         {
