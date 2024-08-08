@@ -191,6 +191,5 @@ namespace AutoDuty.Managers
                                      }
                                  }, "TrustLevelCheck9");
         }
-
     }
 }

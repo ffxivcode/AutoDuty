@@ -394,14 +394,7 @@ namespace AutoDuty.Windows
                                     CombatRole playerRole     = Player.Job.GetRole();
                                     int        numberSelected = Plugin.Configuration.SelectedTrusts.Count(x => x != null);
 
-                                    bool canSelect = member.Role switch
-                                    {
-                                        TrustRole.DPS => playerRole == CombatRole.DPS && !Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Role is TrustRole.DPS) ||
-                                                         playerRole != CombatRole.DPS && Plugin.Configuration.SelectedTrusts.Where(x => x  != null).Count(x => x.Role is TrustRole.DPS) < 2,
-                                        TrustRole.Healer => playerRole != CombatRole.Healer && !Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Role is TrustRole.Healer),
-                                        TrustRole.Tank => playerRole   != CombatRole.Tank   && !Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Role is TrustRole.Tank),
-                                        TrustRole.Graha => true
-                                    };
+                                    bool canSelect = Plugin.Configuration.SelectedTrusts.CanSelectMember(member, playerRole) && member.Level >= _dutySelected.Content.ClassJobLevelRequired;
 
                                     using (var disabled = ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
                                     {
