@@ -170,7 +170,8 @@ public sealed class AutoDuty : IDalamudPlugin
                 "/autoduty moveto -> move's to territorytype and location sent\n" +
                 "/autoduty overlay -> opens overlay\n" +
                 "/autoduty overlay lock-> toggles locking the overlay\n" +
-                "/autoduty overlay nobg-> toggles the overlay's background\n"
+                "/autoduty overlay nobg-> toggles the overlay's background\n" +
+                "/autoduty skipstep-> skips to the next step in the path\n"
             });
 
             PluginInterface.UiBuilder.Draw += DrawUI;
@@ -324,7 +325,18 @@ public sealed class AutoDuty : IDalamudPlugin
     private unsafe void LoopTasks()
     {
         if (CurrentTerritoryContent == null) return;
-
+        if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
+        {
+            TaskManager.Enqueue(() => AutoRetainerHelper.Invoke(), "Loop-AutoRetainer");
+            TaskManager.DelayNext("Loop-Delay50", 50);
+            TaskManager.Enqueue(() => !AutoRetainerHelper.AutoRetainerRunning, int.MaxValue, "Loop-WaitAutoRetainerComplete");
+        }
+        if (Configuration.AM)
+        {
+            TaskManager.Enqueue(() => AMHelper.Invoke(), "Loop-AM");
+            TaskManager.DelayNext("Loop-Delay50", 50);
+            TaskManager.Enqueue(() => !AMHelper.AMRunning, int.MaxValue, "Loop-WaitAMComplete");
+        }
         if (Configuration.AutoRepair && InventoryHelper.CanRepair())
         {
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
@@ -350,12 +362,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop-WaitAutoDesynthComplete");
         }
-        if (Configuration.AM)
-        {
-            TaskManager.Enqueue(() => AMHelper.Invoke(), "Loop-AM");
-            TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !AMHelper.AMRunning, int.MaxValue, "Loop-WaitAMComplete");
-        }
+        
         if (!Configuration.Squadron)
         {
             if (Configuration.RetireToBarracksBeforeLoops)
@@ -1182,6 +1189,10 @@ public sealed class AutoDuty : IDalamudPlugin
             RepairHelper.Stop();
         if (QueueHelper.QueueRunning)
             QueueHelper.Stop();
+        if (AMHelper.AMRunning)
+            AMHelper.Stop();
+        if (AutoRetainerHelper.AutoRetainerRunning)
+            AutoRetainerHelper.Stop();
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
         Action = "";

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using System;
 using Dalamud.Plugin.Services;
 
@@ -8,8 +9,6 @@ namespace AutoDuty.Helpers
     {
         internal class Schedule
         {
-            internal string Name { get; set; } = string.Empty;
-
             internal List<Action> Action { get; set; } = [() => { }];
 
             internal int TimeMS { get; set; } = 0;
@@ -19,27 +18,27 @@ namespace AutoDuty.Helpers
             internal bool RunOnce { get; set; } = true;
         }
 
-        internal static HashSet<Schedule> schedules = [];
+        internal static Dictionary<string, Schedule> Schedules = [];
 
-        internal static bool ScheduleAction(string name, Action action, int timeMS, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = [action], TimeMS = Environment.TickCount + timeMS, RunOnce = runOnce });
+        internal static bool ScheduleAction(string name, Action action, int timeMS, bool runOnce = true) => Schedules.TryAdd(name, new Schedule() { Action = [action], TimeMS = Environment.TickCount + timeMS, RunOnce = runOnce });
 
-        internal static bool ScheduleAction(string name, List<Action> action, int timeMS, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = action, TimeMS = Environment.TickCount + timeMS, RunOnce = runOnce });
+        internal static bool ScheduleAction(string name, List<Action> action, int timeMS, bool runOnce = true) => Schedules.TryAdd(name, new Schedule() { Action = action, TimeMS = Environment.TickCount + timeMS, RunOnce = runOnce });
 
-        internal static bool ScheduleAction(string name, Action action, Func<bool> condition, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = [action], Condition = condition, RunOnce = runOnce });
+        internal static bool ScheduleAction(string name, Action action, Func<bool> condition, bool runOnce = true) => Schedules.TryAdd(name, new Schedule() { Action = [action], Condition = condition, RunOnce = runOnce });
 
-        internal static bool ScheduleAction(string name, List<Action> action, Func<bool> condition, bool runOnce = true) => schedules.Add(new Schedule() { Name = name, Action = action, Condition = condition, RunOnce = runOnce });
+        internal static bool ScheduleAction(string name, List<Action> action, Func<bool> condition, bool runOnce = true) => Schedules.TryAdd(name, new Schedule() { Action = action, Condition = condition, RunOnce = runOnce });
 
-        internal static int DescheduleAction(string name) => schedules.RemoveWhere(s => s.Name == name);
+        internal static bool DescheduleAction(string name) => Schedules.Remove(name);
 
         internal static void ScheduleInvoker(IFramework _)
         {
-            foreach (var schedule in schedules)
+            foreach (var schedule in Schedules)
             {
-                if (schedule.TimeMS != 0 ? Environment.TickCount >= schedule.TimeMS : schedule.Condition?.Invoke() ?? false)
+                if (schedule.Value.TimeMS != 0 ? Environment.TickCount >= schedule.Value.TimeMS : schedule.Value.Condition?.Invoke() ?? false)
                 {
-                    schedule.Action.ForEach(a => a.Invoke());
-                    if (schedule.RunOnce)
-                        schedules.Remove(schedule);
+                    schedule.Value.Action.ForEach(a => a.Invoke());
+                    if (schedule.Value.RunOnce)
+                        Schedules.Remove(schedule.Key);
                 }
             }
         }

@@ -56,6 +56,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoGCTurninSlotsLeftInput = false;
     public bool AM = false;
     public bool UnhideAM = false;
+    public bool EnableAutoRetainer = true;
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
@@ -461,7 +462,26 @@ public static class ConfigTab
         if (ImGui.InputInt("(s) Wait time before after loop actions", ref Configuration.WaitTimeBeforeAfterLoopActions))
             Configuration.Save();
         ImGui.PopItemWidth();
+
+        using (var autoRetainerDisabled = ImRaii.Disabled(!AutoRetainer_IPCSubscriber.IsEnabled))
+        {
+            if (ImGui.Checkbox("Enable AutoRetainer Integration", ref Configuration.EnableAutoRetainer))
+                Configuration.Save();
+        }
+
+        if (!AutoRetainer_IPCSubscriber.IsEnabled)
+        {
+            if (Configuration.EnableAutoRetainer)
+            {
+                Configuration.EnableAutoRetainer = false;
+                Configuration.Save();
+            }
+            ImGui.Text("* AutoRetainer requires a plugin");
+            ImGui.Text("Visit https://puni.sh/plugin/AutoRetainer");
+        }
+
         ImGui.Separator();
+
         if (ImGui.Checkbox("Stop Looping @ Level", ref stopLevel))
         {
             Configuration.StopLevel = stopLevel;
