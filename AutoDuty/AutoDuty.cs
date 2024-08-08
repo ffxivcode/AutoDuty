@@ -299,9 +299,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => { Action = $"Waiting {Configuration.WaitTimeBeforeAfterLoopActions}s"; }, "Loop-WaitTimeBeforeAfterLoopActionsActionSet");
                 TaskManager.DelayNext("Loop-WaitTimeBeforeAfterLoopActions", Configuration.WaitTimeBeforeAfterLoopActions * 1000);
                 TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
-                if (Configuration.AutoBoiledEgg && InventoryHelper.ItemCount(4650) > 1 && !PlayerHelper.HasStatus(48))
+                if (Configuration.AutoBoiledEgg)
                 {
-                    TaskManager.Enqueue(() => InventoryHelper.UseItem(4650), "Loop-AutoBoiledEgg");
+                    TaskManager.Enqueue(() => { if (InventoryHelper.ItemCount(4650) > 1 && !PlayerHelper.HasStatus(48)) InventoryHelper.UseItem(4650); }, "Loop-AutoBoiledEgg");
                     TaskManager.DelayNext("Loop-Delay50", 50);
                 }
 
