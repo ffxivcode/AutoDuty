@@ -11,6 +11,7 @@ using System.Linq;
 
 namespace AutoDuty.Managers
 {
+    using System;
     using System.Collections.Generic;
     using Lumina.Excel;
     using Lumina.Excel.GeneratedSheets2;
@@ -104,6 +105,7 @@ namespace AutoDuty.Managers
                     CombatRole.DPS => dps == 2,
                     CombatRole.Healer => healers == 1,
                     CombatRole.Tank => tanks == 1,
+                    _ => false
                 };
 
                 if (needsReset)
