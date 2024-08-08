@@ -132,8 +132,8 @@ namespace AutoDuty.Managers
         private bool currentlyGettingLevels = false;
         internal unsafe void GetLevels(Content? content)
         {
-            AtkUnitBase* addon   = null;
-            bool         wasOpen = false;
+            if (this.currentlyGettingLevels)
+                return;
 
             content ??= AutoDuty.Plugin.CurrentTerritoryContent;
             if (content?.DawnIndex < 1)
@@ -141,28 +141,30 @@ namespace AutoDuty.Managers
 
             if (content.TrustMembers.TrueForAll(tm => tm.Level > 0))
                 return;
-            if (this.currentlyGettingLevels)
-                return;
+
             this.currentlyGettingLevels = true;
+
+            AtkUnitBase* addon   = null;
+            bool         wasOpen = false;
 
             int queueIndex = QueueIndex(content);
 
             if (!ObjectHelper.IsValid)
             {
-                _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "TrustLevelCheck");
-                _taskManager.DelayNext("TrustLevelCheck", 2000);
+                _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "TrustLevelCheck1");
+                _taskManager.DelayNext("TrustLevelCheck2", 2000);
             }
 
-            _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dawn"), "TrustLevelCheck");
+            _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dawn"), "TrustLevelCheck3");
             _taskManager.Enqueue(() =>
                                  {
-                                     if (addon == null) this.OpenDawn();
+                                     if (addon == null || !GenericHelpers.IsAddonReady(addon)) this.OpenDawn();
                                      else wasOpen = true;
-                                 }, "TrustLevelCheck");
-            _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "TrustLevelCheck");
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, content.ExVersion), "TrustLevelCheck");
-            _taskManager.DelayNext("TrustLevelCheck", 50);
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, queueIndex), "TrustLevelCheck");
+                                 }, "TrustLevelCheck4");
+            _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "TrustLevelCheck5");
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, content.ExVersion), "TrustLevelCheck6");
+            _taskManager.DelayNext("TrustLevelCheck7", 50);
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, queueIndex), "TrustLevelCheck8");
             _taskManager.Enqueue(() =>
                                  {
                                      for (int id = 0; id < content.TrustMembers.Count; id++)
@@ -179,9 +181,15 @@ namespace AutoDuty.Managers
                                                           {
                                                               if (!wasOpen)
                                                                   AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Hide();
-                                                              this.currentlyGettingLevels = false;
-                                                          });
-                                 });
+                                                              else
+                                                                  this.currentlyGettingLevels = false;
+                                                          }, "TrustLevelCheck10");
+                                     if (!wasOpen)
+                                     {
+                                         _taskManager.Enqueue(() => !GenericHelpers.IsAddonReady(addon), "TrustLevelCheck11");
+                                         _taskManager.Enqueue(() => !(this.currentlyGettingLevels = false), "TrustLevelCheck12");
+                                     }
+                                 }, "TrustLevelCheck9");
         }
 
     }
