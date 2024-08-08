@@ -56,8 +56,8 @@ public class Configuration : IPluginConfiguration
     public bool AutoGCTurninSlotsLeftInput = false;
     public bool AM = false;
     public bool UnhideAM = false;
-    public bool EnableAutoRetainer = true;
-    public bool AutoBoiledEgg = true;
+    public bool EnableAutoRetainer = false;
+    public bool AutoBoiledEgg = false;
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
