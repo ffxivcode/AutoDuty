@@ -5,12 +5,13 @@ using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel.GeneratedSheets;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using System.Linq;
 
 namespace AutoDuty.Helpers
 {
     internal static class PlayerHelper
     {
-        public static unsafe short GetCurrentLevelFromSheet(Job? job = null)
+        internal static unsafe short GetCurrentLevelFromSheet(Job? job = null)
         {
             PlayerState* playerState = PlayerState.Instance();
             return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint) (job ?? AutoDuty.Plugin.Player?.GetJob() ?? AutoDuty.Plugin.JobLastKnown))?.ExpArrayIndex ?? 0];
@@ -26,10 +27,10 @@ namespace AutoDuty.Helpers
             return gearsetModule->GetGearset(gearsetId)->ItemLevel;
         }
 
-        public static CombatRole GetRole(this Job? job) => 
+        internal static CombatRole GetRole(this Job? job) => 
             job != null ? GetRole((Job)job) : CombatRole.NonCombat;
 
-        public static CombatRole GetRole(this Job job)
+        internal static CombatRole GetRole(this Job job)
         {
             return job switch
             {
@@ -39,5 +40,7 @@ namespace AutoDuty.Helpers
                 _ => CombatRole.NonCombat,
             };
         }
+
+        internal static bool HasStatus(uint statusID) => Svc.ClientState.LocalPlayer != null && Player.Object.StatusList.Any(x => x.StatusId == statusID);
     }
 }

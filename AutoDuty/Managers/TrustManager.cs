@@ -5,8 +5,11 @@ using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.GameHelpers;
+using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.GeneratedSheets;
+using System;
 using System.Linq;
 
 namespace AutoDuty.Managers
@@ -40,8 +43,13 @@ namespace AutoDuty.Managers
         {
             if (content.DawnIndex < 1)
                 return;
-            int queueIndex = QueueIndex(content);
-
+            int indexModifier = 1;
+            if (content.DawnIndex >= 17) //Skips Trials mistakenly present in the Trusts list because I (Vera) can't figure out how to parse them out in ContentHelper.cs
+                indexModifier++;
+            if (content.DawnIndex >= 26)
+                indexModifier++;
+            if (content.DawnIndex >= 30)
+                indexModifier++;
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.DisplayName}"), "RegisterTrust");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Trust: {content.DisplayName}", "RegisterTrust");
             AtkUnitBase* addon = null;
@@ -57,24 +65,12 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, (content.ExVersion)), "RegisterTrust");
             _taskManager.DelayNext("RegisterTrust", 50);
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, queueIndex), "RegisterTrust");
-            _taskManager.Enqueue(this.TurnOffAllMembers);
-            _taskManager.Enqueue(this.TurnOnConfigMembers);
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, content.DawnIndex - indexModifier), "RegisterTrust");
+            _taskManager.Enqueue(() => TurnOffAllMembers());
+            _taskManager.Enqueue(() => TurnOnConfigMembers());
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 14), "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterTrust");
-        }
-
-        private static int QueueIndex(ContentHelper.Content content)
-        {
-            int indexModifier = 1;
-            if (content.DawnIndex >= 17) //Skips Trials mistakenly present in the Trusts list because I (Vera) can't figure out how to parse them out in ContentHelper.cs
-                indexModifier++;
-            if (content.DawnIndex >= 26)
-                indexModifier++;
-            if (content.DawnIndex >= 30)
-                indexModifier++;
-            return content.DawnIndex - indexModifier;
         }
 
         private unsafe void TurnOnConfigMembers()
@@ -93,11 +89,10 @@ namespace AutoDuty.Managers
         {
             if (AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null) == 3)
             {
-                CombatRole playerRole = Player.Job.GetRole();
-
-                int dps     = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x?.Role is TrustRole.DPS);
-                int healers = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x?.Role is TrustRole.Healer);
-                int tanks   = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x?.Role is TrustRole.Tank);
+                var playerRole = Player.Job.GetRole();
+                var dps = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null && x.Role is 0);
+                var healers = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null && x.Role is 1);
+                var tanks = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null && x.Role is 2);
 
                 bool needsReset = playerRole switch
                 {
@@ -122,7 +117,7 @@ namespace AutoDuty.Managers
             {
                 for (int i = 0; i <= 7; i++)
                 {
-                    bool isEnabled = addon->AtkValues[i + 33].Bool;
+                    var isEnabled = addon->AtkValues[i + 33].Bool;
                     if (isEnabled)
                         Callback.Fire(addon, true, 12, i);
                 }

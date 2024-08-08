@@ -87,7 +87,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private ActionsManager _actions;
     private Chat _chat;
     private DutySupportManager _dutySupportManager;
-    internal TrustManager _trustManager;
+    private TrustManager _trustManager;
     private SquadronManager _squadronManager;
     private VariantManager _variantManager;
     private OverrideAFK _overrideAFK;
@@ -126,7 +126,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 AbortOnTimeout = false,
                 TimeoutSilently = true
             };
-            TrustManager.PopulateTrustMembers();
+
             ContentHelper.PopulateDuties();
             FileHelper.OnStart();
             FileHelper.Init();
@@ -299,12 +299,18 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => { Action = $"Waiting {Configuration.WaitTimeBeforeAfterLoopActions}s"; }, "Loop-WaitTimeBeforeAfterLoopActionsActionSet");
                 TaskManager.DelayNext("Loop-WaitTimeBeforeAfterLoopActions", Configuration.WaitTimeBeforeAfterLoopActions * 1000);
                 TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
+                if (Configuration.AutoBoiledEgg)
+                {
+                    TaskManager.Enqueue(() => { if (InventoryHelper.ItemCount(4650) > 1 && !PlayerHelper.HasStatus(48)) InventoryHelper.UseItem(4650); }, "Loop-AutoBoiledEgg");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                }
+
                 if (Configuration.AutoEquipRecommendedGear)
                 {
-                    TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Run-AutoEquip");
-                    TaskManager.DelayNext("Run-Delay50", 50);
-                    TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Run-WaitAutoEquipComplete");
-                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,          "Run-WaitANotIsOccupied");
+                    TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Loop-AutoEquip");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Loop-WaitAutoEquipComplete");
+                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
                 }
 
                 TaskManager.Enqueue(() => {
@@ -492,6 +498,11 @@ public sealed class AutoDuty : IDalamudPlugin
         Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
+            if (Configuration.AutoBoiledEgg && InventoryHelper.ItemCount(4650) > 1 && !PlayerHelper.HasStatus(48))
+            {
+                TaskManager.Enqueue(() => InventoryHelper.UseItem(4650), "Run-AutoBoiledEgg");
+                TaskManager.DelayNext("Run-Delay50", 50);
+            }
             if (Configuration.AutoRepair && InventoryHelper.CanRepair())
             {
                 TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
@@ -1324,6 +1335,9 @@ public sealed class AutoDuty : IDalamudPlugin
             case "am":
                 Configuration.UnhideAM = !Configuration.UnhideAM;
                 Configuration.Save();
+                break;
+            case "movetoflag":
+                MapHelper.MoveToMapMarker();
                 break;
             default:
                 OpenMainUI(); 

@@ -20,7 +20,7 @@ public class Configuration : IPluginConfiguration
 {
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
 
-    public int Version { get; set; } = 111;
+    public int Version { get; set; } = 113;
     public int AutoRepairPct { get; set; } = 50;
     public int AutoGCTurninSlotsLeft = 5;
     public int LoopTimes = 1;
@@ -57,6 +57,7 @@ public class Configuration : IPluginConfiguration
     public bool AM = false;
     public bool UnhideAM = false;
     public bool EnableAutoRetainer = true;
+    public bool AutoBoiledEgg = true;
     public bool Support { get; set; } = false;
     public bool Trust { get; set; } = false;
     public bool Squadron { get; set; } = false;
@@ -99,7 +100,7 @@ public class Configuration : IPluginConfiguration
         AutoDuty.PluginInterface.SavePluginConfig(this);
     }
 
-    public TrustMember?[] SelectedTrusts = new TrustMember?[3];
+    public TrustMember[] SelectedTrusts = new TrustMember[3];
 }
 
 public static class ConfigTab
@@ -459,7 +460,7 @@ public static class ConfigTab
             ImGui.Text("YOU HAVE BEEN WARNED!!!!!!!");
         }
         ImGui.PushItemWidth(100 * ImGuiHelpers.GlobalScale);
-        if (ImGui.InputInt("(s) Wait time before after loop actions", ref Configuration.WaitTimeBeforeAfterLoopActions))
+        if (ImGui.InputInt("(s) Wait time between loops", ref Configuration.WaitTimeBeforeAfterLoopActions))
             Configuration.Save();
         ImGui.PopItemWidth();
 
@@ -479,6 +480,9 @@ public static class ConfigTab
             ImGui.Text("* AutoRetainer requires a plugin");
             ImGui.Text("Visit https://puni.sh/plugin/AutoRetainer");
         }
+
+        if (ImGui.Checkbox("Auto Consume Boiled Eggs", ref Configuration.AutoBoiledEgg))
+            Configuration.Save();
 
         ImGui.Separator();
 
