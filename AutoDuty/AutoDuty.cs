@@ -1336,6 +1336,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 Configuration.UnhideAM = !Configuration.UnhideAM;
                 Configuration.Save();
                 break;
+            case "movetoflag":
+                MapHelper.MoveToMapMarker();
+                break;
             default:
                 OpenMainUI(); 
                 break;

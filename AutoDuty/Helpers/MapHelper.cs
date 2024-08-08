@@ -3,11 +3,20 @@ using ECommons.MathHelpers;
 using Lumina.Excel.GeneratedSheets;
 using System.Numerics;
 using System.Linq;
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using ECommons.Throttlers;
+using AutoDuty.IPC;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Helpers
 {
     internal static class MapHelper
     {
+        internal static unsafe bool IsFlagMarkerSet => AgentMap.Instance()->IsFlagMarkerSet > 0;
+        
+        internal static unsafe FlagMapMarker GetFlagMarker => AgentMap.Instance()->FlagMapMarker;
+
         internal static Vector2 ConvertWorldXZToMap(Vector2 coords, Map map) => Dalamud.Utility.MapUtil.WorldToMap(coords, map.OffsetX, map.OffsetY, map.SizeFactor);
 
         internal static Vector2 ConvertMarkerToMap(MapMarker mapMarker, Map map) => new((float)(mapMarker.X * 42.0 / 2048 / map.SizeFactor * 100 + 1), (float)(mapMarker.Y * 42.0 / 2048 / map.SizeFactor * 100 + 1));
@@ -70,6 +79,45 @@ namespace AutoDuty.Helpers
             }
 
             return closestAetheryte;
+        }
+
+        private static FlagMapMarker flagMapMarker = default;
+
+        internal static void MoveToMapMarker()
+        {
+            Svc.Framework.Update += MoveToMapMarkerUpdate;
+        }
+
+        internal unsafe static void MoveToMapMarkerUpdate(IFramework _)
+        {
+            if (!EzThrottler.Throttle("MoveToMapMarker"))
+                return;
+
+            if (!ObjectHelper.IsReady)
+                return;
+
+            if (GotoHelper.GotoRunning)
+                return;
+
+            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType == flagMapMarker.TerritoryId)
+            {
+                if (!Conditions.IsMounted)
+                    ActionManager.Instance()->UseAction(ActionType.GeneralAction, 4);
+                else if (!Conditions.IsInFlight)
+                    ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2);
+                else
+                {
+                    new ECommons.Automation.Chat().ExecuteCommand("/vnavmesh flyflag");
+                    Svc.Framework.Update -= MoveToMapMarkerUpdate;
+                }
+                return;
+            }
+
+            if (IsFlagMarkerSet && flagMapMarker.Equals(default))
+            {
+                flagMapMarker = GetFlagMarker;
+                GotoHelper.Invoke(flagMapMarker.TerritoryId, []);
+            }
         }
     }
 }
