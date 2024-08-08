@@ -299,12 +299,18 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => { Action = $"Waiting {Configuration.WaitTimeBeforeAfterLoopActions}s"; }, "Loop-WaitTimeBeforeAfterLoopActionsActionSet");
                 TaskManager.DelayNext("Loop-WaitTimeBeforeAfterLoopActions", Configuration.WaitTimeBeforeAfterLoopActions * 1000);
                 TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
+                if (Configuration.AutoBoiledEgg && InventoryHelper.ItemCount(4650) > 1 && !PlayerHelper.HasStatus(48))
+                {
+                    TaskManager.Enqueue(() => InventoryHelper.UseItem(4650), "Loop-AutoBoiledEgg");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                }
+
                 if (Configuration.AutoEquipRecommendedGear)
                 {
-                    TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Run-AutoEquip");
-                    TaskManager.DelayNext("Run-Delay50", 50);
-                    TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Run-WaitAutoEquipComplete");
-                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied,          "Run-WaitANotIsOccupied");
+                    TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Loop-AutoEquip");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Loop-WaitAutoEquipComplete");
+                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
                 }
 
                 TaskManager.Enqueue(() => {
@@ -492,6 +498,11 @@ public sealed class AutoDuty : IDalamudPlugin
         Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
+            if (Configuration.AutoBoiledEgg && InventoryHelper.ItemCount(4650) > 1 && !PlayerHelper.HasStatus(48))
+            {
+                TaskManager.Enqueue(() => InventoryHelper.UseItem(4650), "Run-AutoBoiledEgg");
+                TaskManager.DelayNext("Run-Delay50", 50);
+            }
             if (Configuration.AutoRepair && InventoryHelper.CanRepair())
             {
                 TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
