@@ -12,11 +12,11 @@ namespace AutoDuty.Helpers
 {
     internal static class GotoHelper
     {
-        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = true)
+        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false)
         {
             if (!GotoRunning)
             {
-                Svc.Log.Info($"Goto Started, Going to {territoryType} and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations");
+                Svc.Log.Info($"Goto Started, Going to {territoryType}{(moveLocations.Count>0 ? $" and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations" : "")}");
                 GotoRunning = true;
                 _territoryType = territoryType;
                 _moveLocations = moveLocations;
@@ -67,7 +67,7 @@ namespace AutoDuty.Helpers
 
             EzThrottler.Throttle("Goto", 50);
 
-            AutoDuty.Plugin.Action = $"Going to {ECommons.TerritoryName.GetTerritoryName(_territoryType)} at {_moveLocations[^1]}";
+            AutoDuty.Plugin.Action = $"Going to {TerritoryName.GetTerritoryName(_territoryType)}{(_moveLocations.Count > 0 ? $" at {_moveLocations[^1]}" : "")}";
 
             if (Svc.ClientState.LocalPlayer == null)
                 return;
@@ -95,10 +95,10 @@ namespace AutoDuty.Helpers
                     return;
                 }
                
-                Aetheryte? aetheryte = MapHelper.GetClosestAetheryte(_territoryType, _moveLocations[0]);
+                Aetheryte? aetheryte = MapHelper.GetClosestAetheryte(_territoryType, _moveLocations.Count > 0 ? _moveLocations[0] : Vector3.Zero);
                 if (aetheryte == null)
                 {
-                    aetheryte = MapHelper.GetClosestAethernet(_territoryType, _moveLocations[0]);
+                    aetheryte = MapHelper.GetClosestAethernet(_territoryType, _moveLocations.Count > 0 ? _moveLocations[0] : Vector3.Zero);
 
                     if (aetheryte == null)
                     {
@@ -130,7 +130,7 @@ namespace AutoDuty.Helpers
             }
             else if(_useAethernetTravel)
             {
-                Aetheryte? aetheryteLoc = MapHelper.GetClosestAethernet(_territoryType, _moveLocations[0]);
+                Aetheryte? aetheryteLoc = MapHelper.GetClosestAethernet(_territoryType, _moveLocations.Count > 0 ? _moveLocations[0] : Vector3.Zero);
                 Aetheryte? aetheryteMe = MapHelper.GetClosestAethernet(_territoryType, Svc.ClientState.LocalPlayer.Position);
 
                 if (aetheryteLoc != aetheryteMe)
@@ -142,7 +142,7 @@ namespace AutoDuty.Helpers
                     return;
                 }
             }
-
+            Svc.Log.Info($"{_locationIndex} < {_moveLocations.Count}");
             if (_locationIndex < _moveLocations.Count && ObjectHelper.IsReady)
             {
                 if (MovementHelper.Move(_moveLocations[_locationIndex], _tollerance, (_locationIndex + 1) == _moveLocations.Count ? _lastPointTollerance : _tollerance))

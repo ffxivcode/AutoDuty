@@ -81,12 +81,13 @@ namespace AutoDuty.Helpers
             return closestAetheryte;
         }
 
-        private static FlagMapMarker flagMapMarker = default;
-
         internal static void MoveToMapMarker()
         {
+            Svc.Log.Info("Moving to Flag Marker");
             Svc.Framework.Update += MoveToMapMarkerUpdate;
         }
+
+        private static uint flagMapMarkerTerritoryType = 0;
 
         internal unsafe static void MoveToMapMarkerUpdate(IFramework _)
         {
@@ -99,23 +100,29 @@ namespace AutoDuty.Helpers
             if (GotoHelper.GotoRunning)
                 return;
 
-            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType == flagMapMarker.TerritoryId)
+            if (VNavmesh_IPCSubscriber.Path_IsRunning())
+                return;
+
+            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType == flagMapMarkerTerritoryType)
             {
                 if (!Conditions.IsMounted)
-                    ActionManager.Instance()->UseAction(ActionType.GeneralAction, 4);
+                    ActionManager.Instance()->UseAction(ActionType.GeneralAction, 9);
                 else if (!Conditions.IsInFlight)
                     ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2);
                 else
                 {
+                    Svc.Log.Info("Done Moving to Flag Marker");
                     new ECommons.Automation.Chat().ExecuteCommand("/vnavmesh flyflag");
+                    flagMapMarkerTerritoryType = 0;
                     Svc.Framework.Update -= MoveToMapMarkerUpdate;
                 }
                 return;
             }
 
-            if (IsFlagMarkerSet && flagMapMarker.Equals(default))
+            if (IsFlagMarkerSet)
             {
-                flagMapMarker = GetFlagMarker;
+                var flagMapMarker = GetFlagMarker;
+                flagMapMarkerTerritoryType = flagMapMarker.TerritoryId;
                 GotoHelper.Invoke(flagMapMarker.TerritoryId, []);
             }
         }
