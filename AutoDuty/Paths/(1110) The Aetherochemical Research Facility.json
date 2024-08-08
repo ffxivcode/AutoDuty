@@ -10,7 +10,7 @@
     "MoveTo|110.17, 222.05, 270.08|",
     "ForceAttack|110.17, 222.05, 270.08|",
     "Boss|247.25, 225.14, 271.92|",
-    "AutoMoveFor|324.80, 222.20, 271.98|1000",
+    "AutoMoveFor|324.80, 222.20, 271.98|4000",
     "MoveTo|-352.83, -299.98, -249.99|",
 	"PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
 	"Interactable|0, 0, 0|2005307 (Lift Terminal)",
