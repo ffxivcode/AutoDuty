@@ -17,10 +17,6 @@ using static AutoDuty.AutoDuty;
 namespace AutoDuty.Windows
 {
     using ECommons.GameFunctions;
-    using FFXIVClientStructs.FFXIV.Client.Game.UI;
-    using FFXIVClientStructs.FFXIV.Client.System.String;
-    using FFXIVClientStructs.FFXIV.Component.GUI;
-    using Lumina.Data.Parsing.Layer;
 
     internal static class MainTab
     {

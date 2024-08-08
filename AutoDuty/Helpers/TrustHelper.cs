@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoDuty.Helpers
 {
     using ECommons;
-    using ECommons.Automation;
-    using ECommons.DalamudServices;
     using ECommons.GameFunctions;
-    using ECommons.Throttlers;
     using FFXIVClientStructs.FFXIV.Component.GUI;
     using Managers;
-    using static Dalamud.Interface.Utility.Raii.ImRaii;
-    using static global::AutoDuty.Helpers.ContentHelper;
+    using static ContentHelper;
 
     internal static class TrustHelper
     {

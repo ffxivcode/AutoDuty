@@ -14,7 +14,7 @@ namespace AutoDuty.Managers
     using System.Collections.Generic;
     using Lumina.Excel;
     using Lumina.Excel.GeneratedSheets2;
-    using static global::AutoDuty.Helpers.ContentHelper;
+    using static ContentHelper;
 
     internal partial class TrustManager(TaskManager _taskManager)
     {
@@ -36,7 +36,7 @@ namespace AutoDuty.Managers
         }
 
 
-        internal unsafe void RegisterTrust(ContentHelper.Content content)
+        internal unsafe void RegisterTrust(Content content)
         {
             if (content.DawnIndex < 1)
                 return;
@@ -52,10 +52,10 @@ namespace AutoDuty.Managers
                 _taskManager.DelayNext("RegisterTrust", 2000);
             }
 
-            _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dawn"),                                  "RegisterTrust");
-            _taskManager.Enqueue(() => { if (addon == null) this.OpenDawn(); },                                                      "RegisterTrust");
+            _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dawn"), "RegisterTrust");
+            _taskManager.Enqueue(() => { if (addon == null) this.OpenDawn(); }, "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, (content.ExVersion)),                            "RegisterTrust");
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, (content.ExVersion)), "RegisterTrust");
             _taskManager.DelayNext("RegisterTrust", 50);
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, queueIndex), "RegisterTrust");
             _taskManager.Enqueue(this.TurnOffAllMembers);
@@ -129,7 +129,7 @@ namespace AutoDuty.Managers
             }
         }
 
-        private bool currentlyGettingLevels = false;
+        private bool currentlyGettingLevels;
         internal unsafe void GetLevels(Content? content)
         {
             if (this.currentlyGettingLevels)
