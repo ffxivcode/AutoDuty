@@ -331,7 +331,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private unsafe void LoopTasks()
     {
         if (CurrentTerritoryContent == null) return;
-        if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.IsReady() && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
+        if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.IsEnabled && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
         {
             TaskManager.Enqueue(() => AutoRetainerHelper.Invoke(), "Loop-AutoRetainer");
             TaskManager.DelayNext("Loop-Delay50", 50);
