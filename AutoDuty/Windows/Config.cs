@@ -460,7 +460,7 @@ public static class ConfigTab
             ImGui.Text("YOU HAVE BEEN WARNED!!!!!!!");
         }
         ImGui.PushItemWidth(100 * ImGuiHelpers.GlobalScale);
-        if (ImGui.InputInt("(s) Wait time before after loop actions", ref Configuration.WaitTimeBeforeAfterLoopActions))
+        if (ImGui.InputInt("(s) Wait time between loops", ref Configuration.WaitTimeBeforeAfterLoopActions))
             Configuration.Save();
         ImGui.PopItemWidth();
 
