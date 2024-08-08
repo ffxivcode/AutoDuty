@@ -16,12 +16,6 @@ using static AutoDuty.AutoDuty;
 
 namespace AutoDuty.Windows
 {
-    using ECommons.GameFunctions;
-    using FFXIVClientStructs.FFXIV.Client.Game.UI;
-    using FFXIVClientStructs.FFXIV.Client.System.String;
-    using FFXIVClientStructs.FFXIV.Component.GUI;
-    using Lumina.Data.Parsing.Layer;
-
     internal static class MainTab
     {
         private static int _currentStepIndex = -1;
@@ -377,9 +371,7 @@ namespace AutoDuty.Windows
                                 TrustManager.ResetTrustIfInvalid();
                                 for (int i = 0; i < Plugin.Configuration.SelectedTrusts.Length; i++)
                                 {
-                                    if (Plugin.Configuration.SelectedTrusts[i] is null) 
-                                        continue;
-
+                                    if (Plugin.Configuration.SelectedTrusts[i] is null) continue;
                                     var member = Plugin.Configuration.SelectedTrusts[i];
                                     if (!_dutySelected.Content.TrustMembers.Any(x => x.Name == member.Name))
                                     {
@@ -390,22 +382,21 @@ namespace AutoDuty.Windows
 
                                 foreach (var member in _dutySelected.Content.TrustMembers)
                                 {
-                                    bool       enabled        = Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Name == member.Name);
-                                    CombatRole playerRole     = Player.Job.GetRole();
-                                    int        numberSelected = Plugin.Configuration.SelectedTrusts.Count(x => x != null);
-
+                                    bool enabled = Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Name == member.Name);
+                                    var playerRole = Player.Job.GetRole();
+                                    int numberSelected = Plugin.Configuration.SelectedTrusts.Where(x => x != null).Count();
                                     bool canSelect = member.Role switch
                                     {
-                                        TrustRole.DPS => playerRole == CombatRole.DPS && !Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Role is TrustRole.DPS) ||
-                                                         playerRole != CombatRole.DPS && Plugin.Configuration.SelectedTrusts.Where(x => x  != null).Count(x => x.Role is TrustRole.DPS) < 2,
-                                        TrustRole.Healer => playerRole != CombatRole.Healer && !Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Role is TrustRole.Healer),
-                                        TrustRole.Tank => playerRole   != CombatRole.Tank   && !Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Role is TrustRole.Tank),
-                                        TrustRole.Graha => true
+                                        0 => (playerRole == ECommons.GameFunctions.CombatRole.DPS && !Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Role is 0)) ||
+                                        (playerRole !=  ECommons.GameFunctions.CombatRole.DPS && Plugin.Configuration.SelectedTrusts.Where(x => x != null).Count(x => x.Role is 0) < 2),
+                                        1 => playerRole != ECommons.GameFunctions.CombatRole.Healer && !Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Role is 1),
+                                        2 => playerRole != ECommons.GameFunctions.CombatRole.Tank && !Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Role is 2),
+                                        3 => true
                                     };
 
                                     using (var disabled = ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
                                     {
-                                        if (ImGui.Checkbox($"###{member.Index}{_dutySelected.id}", ref enabled))
+                                        if (ImGui.Checkbox($"{member.Name}###{member.Index}{_dutySelected.id}", ref enabled))
                                         {
                                             if (enabled)
                                             {
@@ -422,35 +413,19 @@ namespace AutoDuty.Windows
                                             {
                                                 if (Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Name == member.Name))
                                                 {
-                                                    int idx = Plugin.Configuration.SelectedTrusts.IndexOf(x => x != null && x.Name == member.Name);
+                                                    var idx = Plugin.Configuration.SelectedTrusts.IndexOf(x => x != null && x.Name == member.Name);
                                                     Plugin.Configuration.SelectedTrusts[idx] = null;
                                                 }
                                             }
+
                                             Plugin.Configuration.Save();
                                         }
                                     }
-
-                                    ImGui.SameLine(0, 2);
-                                    ImGui.SetItemAllowOverlap();
-                                    ImGui.TextColored(member.Role switch
-                                    {
-                                        TrustRole.DPS => ImGuiHelper.RoleDPSColor,
-                                        TrustRole.Healer => ImGuiHelper.RoleHealerColor,
-                                        TrustRole.Tank => ImGuiHelper.RoleTankColor,
-                                        TrustRole.Graha => ImGuiHelper.RoleGrahaColor,
-                                        _ => Vector4.One
-                                    }, member.Name);
-                                    ImGui.SameLine(0, 2);
-                                    ImGui.Text(member.Level.ToString());
-
-
                                     ImGui.NextColumn();
                                 }
                                 ImGui.Columns(1, null, false);
                             }
                         }
-
-
 
                         if (Plugin.Configuration.Support)
                         {
@@ -519,7 +494,7 @@ namespace AutoDuty.Windows
 
                             foreach ((uint _, ContentHelper.Content? content) in dictionary)
                             {
-                                bool canRun = content.CanRun(level, ilvl) && (!_trust || content.CanTrustRun());
+                                bool canRun = content.CanRun(level, ilvl);
                                 using (var d2 = ImRaii.Disabled(!canRun))
                                 {
                                     if (Plugin.Configuration.HideUnavailableDuties && !canRun)
