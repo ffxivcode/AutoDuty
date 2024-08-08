@@ -373,7 +373,9 @@ namespace AutoDuty.Windows
                                 TrustManager.ResetTrustIfInvalid();
                                 for (int i = 0; i < Plugin.Configuration.SelectedTrusts.Length; i++)
                                 {
-                                    if (Plugin.Configuration.SelectedTrusts[i] is null) continue;
+                                    if (Plugin.Configuration.SelectedTrusts[i] is null)
+                                        continue;
+
                                     var member = Plugin.Configuration.SelectedTrusts[i];
                                     if (!_dutySelected.Content.TrustMembers.Any(x => x.Name == member.Name))
                                     {
@@ -392,7 +394,7 @@ namespace AutoDuty.Windows
 
                                     using (var disabled = ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
                                     {
-                                        if (ImGui.Checkbox($"{member.Name}###{member.Index}{_dutySelected.id}", ref enabled))
+                                        if (ImGui.Checkbox($"###{member.Index}{_dutySelected.id}", ref enabled))
                                         {
                                             if (enabled)
                                             {
@@ -409,19 +411,35 @@ namespace AutoDuty.Windows
                                             {
                                                 if (Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Name == member.Name))
                                                 {
-                                                    var idx = Plugin.Configuration.SelectedTrusts.IndexOf(x => x != null && x.Name == member.Name);
+                                                    int idx = Plugin.Configuration.SelectedTrusts.IndexOf(x => x != null && x.Name == member.Name);
                                                     Plugin.Configuration.SelectedTrusts[idx] = null;
                                                 }
                                             }
-
                                             Plugin.Configuration.Save();
                                         }
                                     }
+
+                                    ImGui.SameLine(0, 2);
+                                    ImGui.SetItemAllowOverlap();
+                                    ImGui.TextColored(member.Role switch
+                                    {
+                                        TrustRole.DPS => ImGuiHelper.RoleDPSColor,
+                                        TrustRole.Healer => ImGuiHelper.RoleHealerColor,
+                                        TrustRole.Tank => ImGuiHelper.RoleTankColor,
+                                        TrustRole.Graha => ImGuiHelper.RoleGrahaColor,
+                                        _ => Vector4.One
+                                    }, member.Name);
+                                    ImGui.SameLine(0, 2);
+                                    ImGui.Text(member.Level.ToString());
+
+
                                     ImGui.NextColumn();
                                 }
                                 ImGui.Columns(1, null, false);
                             }
                         }
+
+
 
                         if (Plugin.Configuration.Support)
                         {
@@ -490,7 +508,7 @@ namespace AutoDuty.Windows
 
                             foreach ((uint _, ContentHelper.Content? content) in dictionary)
                             {
-                                bool canRun = content.CanRun(level, ilvl);
+                                bool canRun = content.CanRun(level, ilvl) && (!_trust || content.CanTrustRun());
                                 using (var d2 = ImRaii.Disabled(!canRun))
                                 {
                                     if (Plugin.Configuration.HideUnavailableDuties && !canRun)
