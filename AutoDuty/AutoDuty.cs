@@ -87,7 +87,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private ActionsManager _actions;
     private Chat _chat;
     private DutySupportManager _dutySupportManager;
-    internal TrustManager _trustManager;
+    private TrustManager _trustManager;
     private SquadronManager _squadronManager;
     private VariantManager _variantManager;
     private OverrideAFK _overrideAFK;
@@ -126,7 +126,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 AbortOnTimeout = false,
                 TimeoutSilently = true
             };
-            TrustManager.PopulateTrustMembers();
+
             ContentHelper.PopulateDuties();
             FileHelper.OnStart();
             FileHelper.Init();
