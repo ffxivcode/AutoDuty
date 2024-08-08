@@ -5,11 +5,15 @@ using System.Linq;
 using ECommons.GameFunctions;
 using global::AutoDuty.Managers;
 using Lumina.Data;
-using Lumina.Excel.GeneratedSheets2;
 using Lumina.Text;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Excel.GeneratedSheets;
+    using ContentFinderCondition = Lumina.Excel.GeneratedSheets2.ContentFinderCondition;
+    using DawnContent = Lumina.Excel.GeneratedSheets2.DawnContent;
+    using DawnMemberUIParam = Lumina.Excel.GeneratedSheets2.DawnMemberUIParam;
+
     internal static class ContentHelper
     {
         internal static Dictionary<uint, Content> DictionaryContent { get; set; } = [];
@@ -109,21 +113,20 @@ namespace AutoDuty.Helpers
                 
                 if (content.TrustContent)
                 {
-                    var dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
-                    content.TrustMembers.Add(new TrustMember() { Index = 0, Name = dawnSheet!.GetRow(1)!.Unknown0.RawString, Role = 1 });
-                    content.TrustMembers.Add(new TrustMember() { Index = 1, Name = dawnSheet!.GetRow(2)!.Unknown0.RawString, Role = 0 });
-                    content.TrustMembers.Add(new TrustMember() { Index = 2, Name = dawnSheet!.GetRow(3)!.Unknown0.RawString, Role = 2 });
-                    content.TrustMembers.Add(new TrustMember() { Index = 3, Name = dawnSheet!.GetRow(5)!.Unknown0.RawString, Role = 1 });
-                    content.TrustMembers.Add(new TrustMember() { Index = 4, Name = dawnSheet!.GetRow(6)!.Unknown0.RawString, Role = 0 });
-                    if (content.ExVersion == 3)
-                        content.TrustMembers.Add(new TrustMember() { Index = 5, Name = dawnSheet!.GetRow(7)!.Unknown0.RawString, Role = 0 });
-                    else
-                        content.TrustMembers.Add(new TrustMember() { Index = 5, Name = dawnSheet!.GetRow(12)!.Unknown0.RawString, Role = 0 });
-                    content.TrustMembers.Add(new TrustMember() { Index = 6, Name = dawnSheet!.GetRow(10)!.Unknown0.RawString, Role = 3 });
-                    if (content.TerritoryType >= 1097 &&  content.TerritoryType <= 1164)
-                        content.TrustMembers.Add(new TrustMember() { Index = 7, Name = dawnSheet!.GetRow(41)!.Unknown0.RawString, Role = 0 });
+                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.AlisaieBlue]);
+                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Alisaie]);
+                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Thancred]);
+                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Urianger]);
+                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.BestCatGirl]);
+                    content.TrustMembers.Add(TrustManager.members[content.ExVersion == 3 ?
+                                                                      TrustMemberName.Ryne :
+                                                                      TrustMemberName.Estinien
+                                                                 ]);
+                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Graha]);
+                    if (content.TerritoryType is >= 1097 and <= 1164)
+                        content.TrustMembers.Add(TrustManager.members[TrustMemberName.Zero]);
                     if (content.ExVersion == 5)
-                        content.TrustMembers.Add(new TrustMember() { Index = 7, Name = dawnSheet!.GetRow(60)!.Unknown0.RawString, Role = 0 });
+                        content.TrustMembers.Add(TrustManager.members[TrustMemberName.Krile]);
                 }
 
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);
