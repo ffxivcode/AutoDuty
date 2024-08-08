@@ -10,6 +10,24 @@ using System.Threading.Tasks;
 
 namespace AutoDuty.IPC
 {
+    internal static class AutoRetainer_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AutoRetainer_IPCSubscriber), "AutoRetainer.PluginState");
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("AutoRetainer");
+
+        [EzIPC] internal static readonly Func<bool> IsBusy;
+        [EzIPC] internal static readonly Func<Dictionary<ulong, HashSet<string>>> GetEnabledRetainers;
+        [EzIPC] internal static readonly Func<bool> AreAnyRetainersAvailableForCurrentChara;
+        [EzIPC] internal static readonly Action AbortAllTasks;
+        [EzIPC] internal static readonly Action DisableAllFunctions;
+        [EzIPC] internal static readonly Action EnableMultiMode;
+        [EzIPC] internal static readonly Func<int> GetInventoryFreeSlotCount;
+        [EzIPC] internal static readonly Action EnqueueHET;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
     internal static class AM_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AM_IPCSubscriber), "AutoBot");
