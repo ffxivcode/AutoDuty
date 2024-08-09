@@ -308,7 +308,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 if (Configuration.AutoEquipRecommendedGear)
                 {
-                    TaskManager.Enqueue(() => AutoEquipHelper.Invoke(TaskManager), "Loop-AutoEquip");
+                    TaskManager.Enqueue(() => AutoEquipHelper.Invoke(), "Loop-AutoEquip");
                     TaskManager.DelayNext("Loop-Delay50", 50);
                     TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Loop-WaitAutoEquipComplete");
                     TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
