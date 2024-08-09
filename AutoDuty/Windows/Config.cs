@@ -12,8 +12,12 @@ using ECommons;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Components;
 using AutoDuty.Managers;
+using static System.Net.WebRequestMethods;
 
 namespace AutoDuty.Windows;
+
+using ECommons.ImGuiMethods;
+using Helpers;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
@@ -434,7 +438,7 @@ public static class ConfigTab
                 }
             }
         }
-        
+
         if (!Deliveroo_IPCSubscriber.IsEnabled)
         {
             if (Configuration.AutoGCTurnin)
@@ -444,7 +448,10 @@ public static class ConfigTab
                 Configuration.Save();
             }
             ImGui.Text("* Auto GC Turnin Requires Deliveroo plugin");
-            ImGui.Text("Get @ https://git.carvel.li/liza/plugin-repo");
+            ImGui.Text("Get @ ");
+            ImGui.SameLine(0,0);
+            ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
+
         }
 
         if (Configuration.UnhideAM && !AM_IPCSubscriber.IsEnabled)
