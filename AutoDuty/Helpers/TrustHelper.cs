@@ -5,6 +5,7 @@ namespace AutoDuty.Helpers
 {
     using ECommons;
     using ECommons.GameFunctions;
+    using FFXIVClientStructs.FFXIV.Client.Game.UI;
     using FFXIVClientStructs.FFXIV.Component.GUI;
     using Managers;
     using static ContentHelper;
@@ -23,11 +24,19 @@ namespace AutoDuty.Helpers
         }
 
 
-        internal static bool CanTrustRun(this Content content)
+        internal static bool CanTrustRun(this Content content, bool checkTrustLevels = true)
         {
             if (!content.TrustContent)
                 return false;
+            
+            if (!UIState.IsInstanceContentCompleted(content.Id))
+                return false;
 
+            return !checkTrustLevels || CanTrustRunMembers(content);
+        }
+
+        private static bool CanTrustRunMembers(Content content)
+        {
             if (content.TrustMembers.Any(tm => tm.Level <= 0))
             {
                 AutoDuty.Plugin._trustManager.GetLevels(content);
