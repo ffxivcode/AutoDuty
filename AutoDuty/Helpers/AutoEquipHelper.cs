@@ -1,84 +1,33 @@
-﻿using ECommons.DalamudServices;
+using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using ECommons.Automation.LegacyTaskManager;
-using Dalamud.Plugin.Services;
-using Dalamud.Game.ClientState.Conditions;
 
 namespace AutoDuty.Helpers
 {
     internal unsafe class AutoEquipHelper
     {
-
-        private static TaskManager _taskManager;
-
-        internal static void Invoke(TaskManager taskManager)
+        internal static bool AutoEquipRunning = false;
+        internal static void Invoke()
         {
             if (!AutoEquipRunning)
             {
-                Svc.Log.Info($"Equipping Started");
+                Svc.Log.Info("AutoEquip - Started");
                 AutoEquipRunning = true;
-                _taskManager = taskManager;
-                SchedulerHelper.ScheduleAction("AutoEquipTimeout", Stop, AutoDuty.Plugin.Configuration.AutoEquipRecommendedGear ? 300000 : 600000);
-                Svc.Framework.Update += AutoEquipRecommendedGear;
+                SchedulerHelper.ScheduleAction("AutoEquipTimeout", Stop, 600000);
+                RecommendEquipModule.Instance()->SetupForClassJob((byte)Svc.ClientState.LocalPlayer!.ClassJob.Id);
+                SchedulerHelper.ScheduleAction("EquipRecommendedGear", () => RecommendEquipModule.Instance()->EquipRecommendedGear(), () => !RecommendEquipModule.Instance()->IsUpdating);
+                Svc.Log.Info($"AutoEquip - Equipped Recommended Gear");
+                SchedulerHelper.ScheduleAction("UpdateGearset", () => RaptureGearsetModule.Instance()->UpdateGearset(RaptureGearsetModule.Instance()->CurrentGearsetIndex), 1000);
+                Stop();
             }
         }
 
         internal static void Stop()
         {
             if (AutoEquipRunning)
-                Svc.Log.Info($"AutoEquip Finished");
-            SchedulerHelper.DescheduleAction("AutoEquipTimeout");
-            Svc.Framework.Update -= AutoEquipRecommendedGear;
-            AutoEquipRunning = false;
+                Svc.Log.Info($"AutoEquip - Finished");
             AutoDuty.Plugin.Action = "";
-        }
-
-        internal static bool AutoEquipRunning = false;
-
-        internal static unsafe void AutoEquipRecommendedGear(IFramework framework)
-        {
-            _taskManager.Insert(() =>
-            {
-                if (Svc.Condition[ConditionFlag.InCombat] ||
-                    Svc.Condition[ConditionFlag.BetweenAreas])
-                {
-                    Svc.Log.Debug("Cannot equip gear: player is in combat or between areas.");
-                    AutoEquipRunning = false;
-                    return false;
-                }
-                Stop();
-                return true;
-            }, "CheckConditions");
-
-            RecommendEquipModule* equipModule = RecommendEquipModule.Instance();
-
-            _taskManager.EnqueueImmediate(() =>
-            {
-                Svc.Log.Debug("Set up recommended gear for current class/job.");
-                equipModule->SetupForClassJob((byte)Svc.ClientState.LocalPlayer!.ClassJob.Id);
-                equipModule->EquipRecommendedGear();
-            });
-
-            _taskManager.EnqueueImmediate(() =>
-            {
-                Svc.Log.Info("Attempted to equip recommended gear.");
-                equipModule->EquipRecommendedGear();
-            });
-
-
-            _taskManager.EnqueueImmediate(() =>
-            {
-                equipModule->EquipRecommendedGear();
-                int id = RaptureGearsetModule.Instance()->CurrentGearsetIndex;
-                RaptureGearsetModule.Instance()->UpdateGearset(id);
-                Svc.Log.Info($"Attempted to update gearset {id}.");
-                AutoEquipRunning = false;
-                Stop();
-
-            }, "UpdateGearset");
-
-            // Force prevention of additional calls per queue
-            Svc.Framework.Update -= AutoEquipRecommendedGear;
+            SchedulerHelper.DescheduleAction("AutoEquipTimeout");
+            AutoEquipRunning = false;
         }
     }
 }

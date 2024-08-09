@@ -445,10 +445,15 @@ namespace AutoDuty.Windows
                         {
                             ImGui.SameLine();
                             bool leveling = Plugin.Leveling;
+                            bool equip = Plugin.Configuration.AutoEquipRecommendedGear;
                             if (ImGui.Checkbox("Leveling", ref leveling))
                             {
                                 if (leveling)
                                 {
+                                    if (equip){
+                                        AutoEquipHelper.Invoke();
+                                        equip = false;
+                                    }
                                     ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty();
                                     if (duty != null)
                                     {
