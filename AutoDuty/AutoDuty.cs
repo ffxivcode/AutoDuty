@@ -1207,6 +1207,8 @@ public sealed class AutoDuty : IDalamudPlugin
             AutoRetainerHelper.Stop();
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
+        if (MapHelper.MoveToMapMarkerRunning)
+            MapHelper.StopMoveToMapMarker();
         Action = "";
     }
 

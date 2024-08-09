@@ -8,6 +8,8 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons.Throttlers;
 using AutoDuty.IPC;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using ECommons;
+using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace AutoDuty.Helpers
 {
@@ -83,11 +85,27 @@ namespace AutoDuty.Helpers
 
         internal static void MoveToMapMarker()
         {
+            if (!IsFlagMarkerSet)
+            {
+                Svc.Log.Info("There is no flag marker set");
+                return;
+            }
             Svc.Log.Info("Moving to Flag Marker");
+            MoveToMapMarkerRunning = true;
             Svc.Framework.Update += MoveToMapMarkerUpdate;
         }
 
+        internal static bool MoveToMapMarkerRunning = false;
+
         private static uint flagMapMarkerTerritoryType = 0;
+
+        internal unsafe static void StopMoveToMapMarker()
+        {
+            flagMapMarkerTerritoryType = 0;
+            Svc.Framework.Update -= MoveToMapMarkerUpdate;
+            VNavmesh_IPCSubscriber.Path_Stop();
+            MoveToMapMarkerRunning = false;
+        }
 
         internal unsafe static void MoveToMapMarkerUpdate(IFramework _)
         {
@@ -103,18 +121,26 @@ namespace AutoDuty.Helpers
             if (VNavmesh_IPCSubscriber.Path_IsRunning())
                 return;
 
+            if (GenericHelpers.TryGetAddonByName("AreaMap", out AddonAreaMap* addonAreaMap) && GenericHelpers.IsAddonReady(&addonAreaMap->AtkUnitBase))
+                addonAreaMap->Close(true);
+
             if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType == flagMapMarkerTerritoryType)
             {
                 if (!Conditions.IsMounted)
-                    ActionManager.Instance()->UseAction(ActionType.GeneralAction, 9);
+                {
+                    if (!ObjectHelper.PlayerIsCasting)
+                        ActionManager.Instance()->UseAction(ActionType.GeneralAction, 9);
+                }
                 else if (!Conditions.IsInFlight)
-                    ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2);
+                {
+                    if (!ObjectHelper.PlayerIsCasting)
+                        ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2);
+                }
                 else
                 {
                     Svc.Log.Info("Done Moving to Flag Marker");
                     new ECommons.Automation.Chat().ExecuteCommand("/vnavmesh flyflag");
-                    flagMapMarkerTerritoryType = 0;
-                    Svc.Framework.Update -= MoveToMapMarkerUpdate;
+                    StopMoveToMapMarker();
                 }
                 return;
             }
