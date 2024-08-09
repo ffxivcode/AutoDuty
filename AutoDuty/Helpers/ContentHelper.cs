@@ -10,6 +10,8 @@ using Lumina.Text;
 
 namespace AutoDuty.Helpers
 {
+    using FFXIVClientStructs.FFXIV.Client.Game.UI;
+
     internal static class ContentHelper
     {
         internal static Dictionary<uint, Content> DictionaryContent { get; set; } = [];
@@ -21,6 +23,8 @@ namespace AutoDuty.Helpers
 
         internal class Content
         {
+            internal uint Id { get; set; }
+
             internal string? Name { get; set; }
 
             internal string? DisplayName { get; set; }
@@ -85,6 +89,7 @@ namespace AutoDuty.Helpers
 
                 var content = new Content
                 {
+                    Id = contentFinderCondition.Content.Row,
                     Name = CleanName(contentFinderCondition.Name.RawString),
                     TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
                     ContentType = contentFinderCondition.ContentType.Value.RowId,
@@ -134,6 +139,9 @@ namespace AutoDuty.Helpers
         public static bool CanRun(this Content content, short level = -1, short ilvl = -1)
         {
             if ((AutoDuty.Plugin.Player?.GetRole() ?? CombatRole.NonCombat) == CombatRole.NonCombat)
+                return false;
+
+            if (!UIState.IsInstanceContentUnlocked(content.Id))
                 return false;
 
             if (level < 0) 
