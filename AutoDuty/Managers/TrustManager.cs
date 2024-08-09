@@ -11,7 +11,6 @@ using System.Linq;
 
 namespace AutoDuty.Managers
 {
-    using System;
     using System.Collections.Generic;
     using Lumina.Excel;
     using Lumina.Excel.GeneratedSheets2;
@@ -141,8 +140,12 @@ namespace AutoDuty.Managers
             if (content?.DawnIndex < 1)
                 return;
 
-            if (content.TrustMembers.TrueForAll(tm => tm.Level > 0))
+            if (!content.TrustMembers.Any(tm => tm.Level <= 0))
                 return;
+            
+            if (!content.CanTrustRun(false))
+                return;
+            
 
             this.currentlyGettingLevels = true;
 
