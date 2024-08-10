@@ -23,14 +23,14 @@ namespace AutoDuty.Managers
         internal static void PopulateTrustMembers()
         {
             ExcelSheet<DawnMemberUIParam>? dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
-            members.Add(TrustMemberName.AlisaieBlue, new TrustMember { Index = 0, Name = dawnSheet!.GetRow(1)!.Unknown0.RawString, Role = TrustRole.Healer }); // Blue Alisaie
+            members.Add(TrustMemberName.Alphinaud, new TrustMember { Index = 0, Name = dawnSheet!.GetRow(1)!.Unknown0.RawString, Role = TrustRole.Healer }); // Alphinaud
             members.Add(TrustMemberName.Alisaie, new TrustMember { Index = 1, Name = dawnSheet.GetRow(2)!.Unknown0.RawString, Role = TrustRole.DPS });    // Alisaie
             members.Add(TrustMemberName.Thancred, new TrustMember { Index = 2, Name = dawnSheet.GetRow(3)!.Unknown0.RawString, Role = TrustRole.Tank });   // Thancred
             members.Add(TrustMemberName.Urianger, new TrustMember { Index = 3, Name = dawnSheet.GetRow(5)!.Unknown0.RawString, Role = TrustRole.Healer }); // Urianger
-            members.Add(TrustMemberName.BestCatGirl, new TrustMember { Index = 4, Name = dawnSheet.GetRow(6)!.Unknown0.RawString, Role = TrustRole.DPS });    // Best cat girl
+            members.Add(TrustMemberName.Yshtola, new TrustMember { Index = 4, Name = dawnSheet.GetRow(6)!.Unknown0.RawString, Role = TrustRole.DPS });    // Y'shtola
             members.Add(TrustMemberName.Ryne, new TrustMember { Index = 5, Name = dawnSheet.GetRow(7)!.Unknown0.RawString, Role = TrustRole.DPS });    //Ryne
             members.Add(TrustMemberName.Estinien, new TrustMember { Index = 5, Name = dawnSheet.GetRow(12)!.Unknown0.RawString, Role = TrustRole.DPS });    //Estinien
-            members.Add(TrustMemberName.Graha, new TrustMember { Index = 6, Name = dawnSheet.GetRow(10)!.Unknown0.RawString, Role = TrustRole.Graha });  //Take a guess
+            members.Add(TrustMemberName.Graha, new TrustMember { Index = 6, Name = dawnSheet.GetRow(10)!.Unknown0.RawString, Role = TrustRole.AllRounder });  //G'raha
             members.Add(TrustMemberName.Zero, new TrustMember { Index = 7, Name = dawnSheet.GetRow(41)!.Unknown0.RawString, Role = TrustRole.DPS });    // Zero.. bit random
             members.Add(TrustMemberName.Krile, new TrustMember { Index = 7, Name = dawnSheet.GetRow(60)!.Unknown0.RawString, Role = TrustRole.DPS });    // Krile
         }
