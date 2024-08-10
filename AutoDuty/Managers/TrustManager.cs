@@ -38,9 +38,9 @@ namespace AutoDuty.Managers
 
         internal unsafe void RegisterTrust(Content content)
         {
-            if (content.DawnIndex < 1)
+            if (content.TrustIndex < 0)
                 return;
-            int queueIndex = QueueIndex(content);
+            int queueIndex = content.TrustIndex;
 
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.DisplayName}"), "RegisterTrust");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Trust: {content.DisplayName}", "RegisterTrust");
@@ -152,7 +152,7 @@ namespace AutoDuty.Managers
             AtkUnitBase* addon = null;
             bool wasOpen = false;
 
-            int queueIndex = QueueIndex(content);
+            int queueIndex = content.TrustIndex;
 
             if (!ObjectHelper.IsValid)
             {

@@ -49,6 +49,8 @@ namespace AutoDuty.Helpers
 
             internal bool TrustContent { get; set; } = false;
 
+            internal int TrustIndex { get; set; } = -1;
+
             internal bool VariantContent { get; set; } = false;
 
             internal int VVDIndex { get; set; } = -1;
@@ -99,7 +101,8 @@ namespace AutoDuty.Helpers
                     ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
                     ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
                     DawnContent = listDawnContent.Any(dawnContent => dawnContent.Content.Value == contentFinderCondition),
-                    TrustContent = listDawnContent.Any(dawnContent => dawnContent.Content.Value == contentFinderCondition) && contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId > 2,
+                    TrustContent = listDawnContent.Any(dawnContent => dawnContent.Content.Value == contentFinderCondition && dawnContent.Unknown13),
+                    TrustIndex = listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value == contentFinderCondition),
                     VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                     VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                     GCArmyContent = ListGCArmyContent.Any(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
