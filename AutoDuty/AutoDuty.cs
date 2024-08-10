@@ -148,8 +148,8 @@ public sealed class AutoDuty : IDalamudPlugin
             WindowSystem.AddWindow(MainWindow);
             WindowSystem.AddWindow(Overlay);
 
-            if (Configuration.OpenOverlay && (!Configuration.OnlyOpenOverlayWhenRunning || Started || Running))
-                SchedulerHelper.ScheduleAction("OpenOverlay", () => Overlay.IsOpen = true, () => ObjectHelper.IsReady);
+            if (Configuration.ShowOverlay && (!Configuration.HideOverlayWhenStopped || Started || Running))
+                SchedulerHelper.ScheduleAction("ShowOverlay", () => Overlay.IsOpen = true, () => ObjectHelper.IsReady);
             
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
@@ -281,7 +281,7 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
 
-        if (Configuration.OpenOverlay && Configuration.OnlyOpenOverlayWhenRunning && !Running)
+        if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped && !Running)
         {
             Overlay.IsOpen = false;
             MainWindow.IsOpen = true;
@@ -372,9 +372,9 @@ public sealed class AutoDuty : IDalamudPlugin
         
         if (!Configuration.Squadron)
         {
-            if (Configuration.RetireToBarracksBeforeLoops)
+            if (Configuration.RetireToBarracksBeforeLoops && Configuration.RetireMode)
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
-            else if (Configuration.RetireToInnBeforeLoops)
+            else if (Configuration.RetireToInnBeforeLoops && Configuration.RetireMode)
                 TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Loop-GotoInnInvoke");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
@@ -488,7 +488,7 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
 
         //MainWindow.OpenTab("Mini");
-        if (Configuration.OpenOverlay)
+        if (Configuration.ShowOverlay)
         {
             MainWindow.IsOpen = false;
             Overlay.IsOpen = true;
@@ -513,9 +513,9 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             if (!Configuration.Squadron)
             {
-                if (Configuration.RetireToBarracksBeforeLoops)
+                if (Configuration.RetireToBarracksBeforeLoops && Configuration.RetireMode)
                     TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
-                else if (Configuration.RetireToInnBeforeLoops)
+                else if (Configuration.RetireToInnBeforeLoops && Configuration.RetireMode)
                     TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Run-GotoInnInvoke");
                 TaskManager.DelayNext("Run-Delay50", 50);
                 TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
@@ -565,7 +565,7 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
         //MainWindow.OpenTab("Mini");
-        if (Configuration.OpenOverlay)
+        if (Configuration.ShowOverlay)
         {
             MainWindow.IsOpen = false;
             Overlay.IsOpen = true;
@@ -815,7 +815,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25) && MainWindow.CurrentTabName == "Build")
             ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
 
-        if (Started && Configuration.LootTreasure && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        if (Started && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == 9)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
         if (!_dead && Started && Player.CurrentHp == 0)
@@ -1182,7 +1182,7 @@ public sealed class AutoDuty : IDalamudPlugin
         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
-        if (Configuration.OpenOverlay && Configuration.OnlyOpenOverlayWhenRunning)
+        if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped)
         {
             Overlay.IsOpen = false;
             MainWindow.IsOpen = true;

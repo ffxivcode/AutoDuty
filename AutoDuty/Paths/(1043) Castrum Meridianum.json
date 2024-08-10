@@ -1,14 +1,23 @@
 {
   "actions": [
+    "MoveTo|194.67, 91.74, -93.41|",
+    "StopForCombat|0, 0, 0|False",
+    "StopForCombat|125.65, 89.67, -66.37|True",
     "Boss|17.66, 70.17, -40.17|",
     "MoveTo|41.65, 71.25, -11.35|",
-	"Interactable|0, 0, 0|2000597 (Disposal Chute)",
+    "Interactable|0, 0, 0|2000597 (Disposal Chute)",
     "Boss|-12.56, 70.09, 34.26|",
-    "Boss|-97.93, 72, -33.13|"
+    "Wait|-83.88, 72.00, -35.23|30000",
+    "Boss|-100.38, 72.00, -32.47|"
   ],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 114,
+        "change": "Added StopForCombat to avoid potentially getting stuck on Fence, and a Wait step for before the boss to avoid leaving duty early"
+      },
+    ],
     "notes": []
   }
 }
