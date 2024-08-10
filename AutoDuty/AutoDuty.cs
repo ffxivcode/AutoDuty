@@ -1183,10 +1183,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped)
-        {
             Overlay.IsOpen = false;
-            MainWindow.IsOpen = true;
-        }
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
         if (TaskManager.IsBusy)

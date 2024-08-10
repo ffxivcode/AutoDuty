@@ -31,16 +31,6 @@ public unsafe class Overlay : Window
             IsOpen = false;
         }
 
-        if (AutoDuty.Plugin.Configuration.LockOverlay && !Flags.HasFlag(ImGuiWindowFlags.NoMove))
-            Flags |= ImGuiWindowFlags.NoMove;
-        else if (!AutoDuty.Plugin.Configuration.LockOverlay && Flags.HasFlag(ImGuiWindowFlags.NoMove))
-            Flags -= ImGuiWindowFlags.NoMove;
-
-        if (AutoDuty.Plugin.Configuration.OverlayNoBG && !Flags.HasFlag(ImGuiWindowFlags.NoBackground))
-            Flags |= ImGuiWindowFlags.NoBackground;
-        else if (!AutoDuty.Plugin.Configuration.OverlayNoBG && Flags.HasFlag(ImGuiWindowFlags.NoBackground))
-            Flags -= ImGuiWindowFlags.NoBackground;
-
         if (!Plugin.Running && !Plugin.Started)
         {
             MainWindow.GotoAndActions();

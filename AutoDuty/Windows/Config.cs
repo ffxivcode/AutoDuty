@@ -45,17 +45,56 @@ public class Configuration : IPluginConfiguration
         get => HideOverlayWhenStopped;
         set => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.Running || AutoDuty.Plugin.Started;
     }
-    public bool LockOverlay = false;
-    public bool OverlayNoBG = false;
+    public bool LockOverlay
+    {
+        get => LockOverlay;
+        set 
+        {
+            if (AutoDuty.Plugin.Configuration.LockOverlay && !AutoDuty.Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoMove))
+                AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoMove;
+            else if (!AutoDuty.Plugin.Configuration.LockOverlay && AutoDuty.Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoMove))
+                AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoMove;
+        }
+    }
+    public bool OverlayNoBG
+    {
+        get => OverlayNoBG;
+        set
+        {
+            if (AutoDuty.Plugin.Configuration.OverlayNoBG && !AutoDuty.Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoBackground))
+                AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoBackground;
+            else if (!AutoDuty.Plugin.Configuration.OverlayNoBG && AutoDuty.Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoBackground))
+                AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoBackground;
+        }
+    }
     public bool ShowDutyLoopText = true;
     public bool ShowActionText = true;
     public bool UseSliderInputs = false;
 
     //Duty Config Options
-    public bool AutoExitDuty { get; set; } = true;
-    public bool AutoManageRSRState { get; set; } = true;
-    public bool AutoManageBossModAISettings { get; set; } = true;
-    public bool LootTreasure { get; set; } = true;
+    public bool AutoExitDuty = true;
+    public bool AutoManageRSRState = true;
+    public bool AutoManageBossModAISettings
+    {
+        get => AutoManageBossModAISettings = true;
+        set => HideBossModAIConfig = !value;
+    }
+    public bool LootTreasure
+    {
+        get => LootTreasure = true;
+        set
+        {
+            if (!value)
+            {
+                if (PandorasBox_IPCSubscriber.IsEnabled)
+                    PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", false);
+                if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+                {
+                    //NYI
+                }
+            }
+        }
+    }
     public string LootMethod { get; set; } = "AutoDuty";
     public bool LootBossTreasureOnly { get; set; } = true;
     public int TreasureCofferScanDistance { get; set; } = 25;
@@ -156,10 +195,10 @@ public static class ConfigTab
         
         //OverlaySettings
         var hideOverlayWhenStopped = Configuration.HideOverlayWhenStopped;
+        var lockOverlay = Configuration.LockOverlay;
+        var overlayNoBG = Configuration.OverlayNoBG;
 
         //DutySettings
-        var autoExitDuty = Configuration.AutoExitDuty;
-        var autoManageRSRState = Configuration.AutoManageRSRState;
         var autoManageBossModAISettings = Configuration.AutoManageBossModAISettings;
         var lootTreasure = Configuration.LootTreasure;
         var lootMethod = Configuration.LootMethod;
@@ -198,7 +237,6 @@ public static class ConfigTab
         //LoopTerminationSettings
         var terminationMethod = Configuration.TerminationMethod;
 
-
         //Start of Overlay Settings
         ImGui.Spacing();
         ImGui.Separator();
@@ -215,7 +253,7 @@ public static class ConfigTab
             if (ImGui.Checkbox("Show Overlay", ref Configuration.ShowOverlay))
                 Configuration.Save();
 
-            using (var openOverlayDisable = ImRaii.Disabled(!showOverlay))
+            using (var openOverlayDisable = ImRaii.Disabled(!Configuration.ShowOverlay))
             {
                 ImGui.SameLine(0, 53);
                 if (ImGui.Checkbox("Hide When Stopped", ref hideOverlayWhenStopped))
@@ -224,12 +262,17 @@ public static class ConfigTab
                     Configuration.Save();
                 }
 
-                if (ImGui.Checkbox("Lock Overlay", ref Configuration.LockOverlay))
+                if (ImGui.Checkbox("Lock Overlay", ref lockOverlay))
+                {
+                    Configuration.LockOverlay = lockOverlay;
                     Configuration.Save();
-
+                }
                 ImGui.SameLine(0, 57);
-                if (ImGui.Checkbox("Use Transparent BG", ref Configuration.OverlayNoBG))
+                if (ImGui.Checkbox("Use Transparent BG", ref overlayNoBG))
+                {
+                    Configuration.OverlayNoBG = overlayNoBG;
                     Configuration.Save();
+                }
 
                 if (ImGui.Checkbox("Show Duty/Loops Text", ref Configuration.ShowDutyLoopText))
                     Configuration.Save();
@@ -242,7 +285,6 @@ public static class ConfigTab
                     Configuration.Save();
             }
         }
-
 
         //Start of Duty Config Settings
         ImGui.Spacing();
@@ -257,50 +299,37 @@ public static class ConfigTab
 
         if (dutyConfigHeaderSelected == true)
         {
-            if (ImGui.Checkbox("Auto Leave Duty", ref autoExitDuty))
-            {
-                Configuration.AutoExitDuty = autoExitDuty;
+            if (ImGui.Checkbox("Auto Leave Duty", ref Configuration.AutoExitDuty))
                 Configuration.Save();
-            }
             ImGuiComponents.HelpMarker("Will automatically exit the dungeon upon completion of the path.");
-            if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref autoManageRSRState))
-            {
-                Configuration.AutoManageRSRState = autoManageRSRState;
+
+            if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref Configuration.AutoManageRSRState))
                 Configuration.Save();
-            }
             ImGuiComponents.HelpMarker("Autoduty will enable RS Auto States at the start of each duty.");
+
             if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref autoManageBossModAISettings))
             {
                 Configuration.AutoManageBossModAISettings = autoManageBossModAISettings;
-                hideBossModAIConfig = !autoManageBossModAISettings;
-                Configuration.HideBossModAIConfig = hideBossModAIConfig;
                 Configuration.Save();
             }
             ImGuiComponents.HelpMarker("Autoduty will enable BMAI and any options you configure at the start of each duty.");
             ImGui.SameLine(0, 5);
+
             using (var autoManageBossModAISettingsDisable = ImRaii.Disabled(!autoManageBossModAISettings))
             {
-                if (ImGui.Button(hideBossModAIConfig ? "Show" : "Hide"))
+                if (ImGui.Button(Configuration.HideBossModAIConfig ? "Show" : "Hide"))
                 {
-                    hideBossModAIConfig = !hideBossModAIConfig;
-                    Configuration.HideBossModAIConfig = hideBossModAIConfig;
+                    Configuration.HideBossModAIConfig = !Configuration.HideBossModAIConfig;
                     Configuration.Save();
                 }
             }
+
             if (ImGui.Checkbox("Loot Treasure Coffers", ref lootTreasure))
             {
                 Configuration.LootTreasure = lootTreasure;
                 Configuration.Save();
-                if (Configuration.LootTreasure == false && PandorasBox_IPCSubscriber.IsEnabled)
-                {
-                    PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", false);
-                }
-                if (Configuration.LootTreasure == false && ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
-                {
-                    //NYI
-                }
             }
-            using (var d1 = ImRaii.Disabled(!lootTreasure))
+            using (var lootTreasureDisabled = ImRaii.Disabled(!lootTreasure))
             {
                 ImGui.Text("Select Method: ");
                 ImGui.SameLine(0, 5);
@@ -376,9 +405,8 @@ public static class ConfigTab
                     ImGui.EndCombo();
                 }
                 ImGuiComponents.HelpMarker("RSR Toggles Not Yet Implemented");
-                using (var d2 = ImRaii.Disabled(lootMethod != "AutoDuty"))
+                using (var lootMethodAutoDutyDisabled = ImRaii.Disabled(lootMethod != "AutoDuty"))
                 {
-
                     if (ImGui.Checkbox("Loot Boss Treasure Only", ref lootBossTreasureOnly))
                     {
                         Configuration.LootBossTreasureOnly = lootBossTreasureOnly;
