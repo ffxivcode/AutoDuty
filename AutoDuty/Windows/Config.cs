@@ -12,16 +12,11 @@ using ECommons;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Components;
 using AutoDuty.Managers;
-using static System.Net.WebRequestMethods;
-
-
-
-namespace AutoDuty.Windows;
-
-using ECommons.Automation.LegacyTaskManager;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Common.Math;
-using Helpers;
+using AutoDuty.Helpers;
+
+namespace AutoDuty.Windows;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
@@ -30,7 +25,6 @@ public class Configuration : IPluginConfiguration
     public int Version { get => 114; set { } }
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
-
 
     //General Options
     public int LoopTimes = 1;

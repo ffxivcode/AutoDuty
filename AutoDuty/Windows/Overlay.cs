@@ -80,7 +80,7 @@ public unsafe class Overlay : Window
             }
             else
             {
-                if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes)
+                if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
                     Plugin.Configuration.Save();
             }
             ImGui.PopItemWidth();
