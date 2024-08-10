@@ -815,7 +815,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25) && MainWindow.CurrentTabName == "Build")
             ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
 
-        if (Started && Configuration.LootTreasure && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        if (Started && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == 9)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
         if (!_dead && Started && Player.CurrentHp == 0)

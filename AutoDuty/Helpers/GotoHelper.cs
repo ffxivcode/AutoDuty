@@ -12,7 +12,7 @@ namespace AutoDuty.Helpers
 {
     internal static class GotoHelper
     {
-        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false)
+        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false)
         {
             if (!GotoRunning)
             {
@@ -23,6 +23,7 @@ namespace AutoDuty.Helpers
                 _tollerance = tollerance;
                 _lastPointTollerance = lastPointTollerance;
                 _useAethernetTravel = useAethernetTravel;
+                _useFlight = useFlight;
                 Svc.Framework.Update += GotoUpdate;
             }
         }
@@ -38,7 +39,8 @@ namespace AutoDuty.Helpers
             _locationIndex = 0;
             _tollerance = 0.25f;
             _lastPointTollerance = 0.25f;
-            _useAethernetTravel = true;
+            _useAethernetTravel = false;
+            _useFlight = false;
             AutoDuty.Plugin.Action = "";
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
@@ -55,7 +57,8 @@ namespace AutoDuty.Helpers
         private static int _locationIndex = 0;
         private static float _tollerance = 0.25f;
         private static float _lastPointTollerance = 0.25f;
-        private static bool _useAethernetTravel = true;
+        private static bool _useAethernetTravel = false;
+        private static bool _useFlight = false;
 
         internal unsafe static void GotoUpdate(IFramework framework)
         {
@@ -109,7 +112,7 @@ namespace AutoDuty.Helpers
                     }
                     else
                     {
-                        if (Svc.ClientState.TerritoryType != MapHelper.GetAetheryteForAethernet(aetheryte)?.Territory.Value?.RowId)
+                        if (Svc.ClientState.TerritoryType != MapHelper.GetAetheryteForAethernet(aetheryte).Territory.Value?.RowId)
                         {
                             TeleportHelper.TeleportAetheryte(MapHelper.GetAetheryteForAethernet(aetheryte)?.RowId ?? 0, 0);
                             EzThrottler.Throttle("Goto", 7500, true);
@@ -145,7 +148,7 @@ namespace AutoDuty.Helpers
             Svc.Log.Info($"{_locationIndex} < {_moveLocations.Count}");
             if (_locationIndex < _moveLocations.Count && ObjectHelper.IsReady)
             {
-                if (MovementHelper.Move(_moveLocations[_locationIndex], _tollerance, (_locationIndex + 1) == _moveLocations.Count ? _lastPointTollerance : _tollerance))
+                if (MovementHelper.Move(_moveLocations[_locationIndex], _tollerance, (_locationIndex + 1) == _moveLocations.Count ? _lastPointTollerance : _tollerance, _useFlight))
                     _locationIndex++;
                 return;
             }
