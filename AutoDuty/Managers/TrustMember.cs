@@ -11,11 +11,11 @@
 
     public enum TrustMemberName : byte
     {
-        AlisaieBlue = 1,
+        Alphinaud   = 1,
         Alisaie     = 2,
         Thancred    = 3,
         Urianger    = 5,
-        BestCatGirl = 6,
+        Yshtola     = 6,
         Ryne        = 7,
         Estinien    = 12,
         Graha       = 10,
@@ -25,9 +25,9 @@
 
     public enum TrustRole : byte
     {
-        DPS    = 0,
-        Healer = 1,
-        Tank   = 2,
-        Graha  = 3
+        DPS         = 0,
+        Healer      = 1,
+        Tank        = 2,
+        AllRounder  = 3
     }
 }

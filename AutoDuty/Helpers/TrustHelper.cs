@@ -68,7 +68,7 @@ namespace AutoDuty.Helpers
                                  playerRole != CombatRole.DPS && trustMembers.Where(x => x  != null).Count(x => x.Role is TrustRole.DPS) < 2,
                 TrustRole.Healer => playerRole != CombatRole.Healer && !trustMembers.Where(x => x != null).Any(x => x.Role is TrustRole.Healer),
                 TrustRole.Tank => playerRole   != CombatRole.Tank   && !trustMembers.Where(x => x != null).Any(x => x.Role is TrustRole.Tank),
-                TrustRole.Graha => true,
+                TrustRole.AllRounder => true,
                 _ => throw new ArgumentOutOfRangeException()
             };
     }
