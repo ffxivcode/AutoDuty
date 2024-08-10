@@ -52,7 +52,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal                        int                     CurrentPath             = -1;
 
     internal bool Leveling            = false;
-    internal bool LevelingEnabled => Configuration.Support && Leveling;
+    internal bool SupportLevelingEnabled => Configuration.Support && Leveling;
 
 
     internal string Name => "AutoDuty";
@@ -379,7 +379,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
         }
-        if (LevelingEnabled)
+        if (this.SupportLevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
             ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty();
@@ -771,7 +771,7 @@ public sealed class AutoDuty : IDalamudPlugin
             Job curJob = Player.GetJob();
             if (curJob != this.JobLastKnown)
             {
-                if (LevelingEnabled)
+                if (this.SupportLevelingEnabled)
                 {
                     ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty();
                     if (duty != null)

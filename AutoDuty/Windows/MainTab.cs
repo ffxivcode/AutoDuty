@@ -429,13 +429,20 @@ namespace AutoDuty.Windows
                                         TrustRole.Graha => ImGuiHelper.RoleGrahaColor,
                                         _ => Vector4.One
                                     }, member.Name);
-                                    ImGui.SameLine(0, 2);
-                                    ImGui.Text(member.Level.ToString());
+                                    if (member.Level > 0)
+                                    {
+                                        ImGui.SameLine(0, 2);
+                                        ImGui.Text(member.Level.ToString());
+                                    }
 
 
                                     ImGui.NextColumn();
                                 }
-                                ImGui.Columns(1, null, false);
+
+                                if(ImGui.Button("Refresh"))
+                                    TrustManager.ClearCachedLevels();
+                                ImGui.NextColumn();
+                                ImGui.Columns(1, null, true);
                             }
                         }
 
@@ -482,8 +489,8 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    using var d3 = ImRaii.Disabled(Plugin.LevelingEnabled);
-                    if (Plugin.LevelingEnabled)
+                    using var d3 = ImRaii.Disabled(Plugin.SupportLevelingEnabled);
+                    if (Plugin.SupportLevelingEnabled)
                         ImGui.TextWrapped("AutoDuty will automatically select the best dungeon");
 
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;

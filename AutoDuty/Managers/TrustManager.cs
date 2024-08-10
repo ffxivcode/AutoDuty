@@ -130,6 +130,12 @@ namespace AutoDuty.Managers
             }
         }
 
+        internal static void ClearCachedLevels()
+        {
+            foreach ((TrustMemberName _, TrustMember? member) in members) 
+                member.Level = 0;
+        }
+
         private bool currentlyGettingLevels;
         internal unsafe void GetLevels(Content? content)
         {
