@@ -302,7 +302,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
                 if (Configuration.AutoBoiledEgg)
                 {
-                    TaskManager.Enqueue(() => { if (InventoryHelper.ItemCount(4650) > 1 && !PlayerHelper.HasStatus(48)) InventoryHelper.UseItem(4650); }, "Loop-AutoBoiledEgg");
+                    TaskManager.Enqueue(() => { if (InventoryHelper.ItemCount(4650) > 1 /*&& !PlayerHelper.HasStatus(48)*/) InventoryHelper.UseItem(4650); }, "Loop-AutoBoiledEgg");
                     TaskManager.DelayNext("Loop-Delay50", 50);
                 }
 
@@ -499,7 +499,7 @@ public sealed class AutoDuty : IDalamudPlugin
         Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
-            if (Configuration.AutoBoiledEgg && InventoryHelper.ItemCount(4650) > 1 && !PlayerHelper.HasStatus(48))
+            if (Configuration.AutoBoiledEgg && InventoryHelper.ItemCount(4650) > 1 /*&& !PlayerHelper.HasStatus(48)*/)
             {
                 TaskManager.Enqueue(() => InventoryHelper.UseItem(4650), "Run-AutoBoiledEgg");
                 TaskManager.DelayNext("Run-Delay50", 50);
