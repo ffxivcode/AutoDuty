@@ -2,8 +2,10 @@
 
 namespace AutoDuty.Helpers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Managers;
 
     public static class LevelingHelper
     {
@@ -35,7 +37,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static unsafe ContentHelper.Content? SelectHighestLevelingRelevantDuty()
+        internal static ContentHelper.Content? SelectHighestLevelingRelevantDuty(bool trust = false)
         {
             ContentHelper.Content? curContent = null;
 
@@ -44,11 +46,25 @@ namespace AutoDuty.Helpers
             if (lvl < 15 || AutoDuty.Plugin.Player!.GetRole() == CombatRole.NonCombat || lvl >= 100)
                 return null;
 
+            if (trust)
+            {
+                if (TrustManager.members.Any(tm => tm.Value.Level <= 0)) 
+                    return null;
+
+
+                foreach ((TrustMemberName _, TrustMember member) in TrustManager.members)
+                {
+                    if (member.Level < lvl)
+                        lvl = (short) member.Level;
+                }
+            }
+
+
             short ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet();
             
             if(lvl is >= 16 and < 91)
                 foreach (ContentHelper.Content duty in LevelingDuties)
-                    if (duty.CanRun(lvl, ilvl))
+                    if (duty.CanRun(lvl, ilvl) && (!trust || duty.CanTrustRun(false)))
                         return duty;
 
             foreach ((uint _, ContentHelper.Content? content) in ContentHelper.DictionaryContent)
@@ -57,7 +73,7 @@ namespace AutoDuty.Helpers
                 {
                     if (curContent == null || curContent.ClassJobLevelRequired < content.ClassJobLevelRequired)
                     {
-                        if (content.CanRun(lvl, ilvl) && (content.ClassJobLevelRequired < 50 || content.ClassJobLevelRequired % 10 != 0))
+                        if (content.CanRun(lvl, ilvl) && (!trust || content.CanTrustRun(false)) && (content.ClassJobLevelRequired < 50 || content.ClassJobLevelRequired % 10 != 0))
                         {
                             curContent = content;
                         }
