@@ -112,14 +112,14 @@ namespace AutoDuty.Windows
                         ImGui.SameLine(0, 15);
                     }
                     ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                    if (Plugin.Configuration.LoopsInputInt)
+                    if (Plugin.Configuration.UseSliderInputs)
                     {
-                        if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
+                        if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
                             Plugin.Configuration.Save();
                     }
                     else
                     {
-                        if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
+                        if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
                             Plugin.Configuration.Save();
                     }
                     ImGui.PopItemWidth();
@@ -135,7 +135,7 @@ namespace AutoDuty.Windows
                     }
                     if (!ImGui.BeginListBox("##MainList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
 
-                    if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovingPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || Plugin.Configuration.UsingAlternativeRotationPlugin))
+                    if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || Plugin.Configuration.UsingAlternativeRotationPlugin))
                     {
                         foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
                         {
@@ -176,7 +176,7 @@ namespace AutoDuty.Windows
                     }
                     else
                     {
-                        if (!VNavmesh_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeMovingPlugin)
+                        if (!VNavmesh_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeMovementPlugin)
                             ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
                         if (!BossMod_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeBossPlugin)
                             ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
@@ -220,14 +220,14 @@ namespace AutoDuty.Windows
                     {
                         ImGui.SameLine(0, 15);
                         ImGui.PushItemWidth(200 * ImGuiHelpers.GlobalScale);
-                        if (Plugin.Configuration.LoopsInputInt)
+                        if (Plugin.Configuration.UseSliderInputs)
                         {
-                            if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
+                            if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
                                 Plugin.Configuration.Save();
                         }
                         else
                         {
-                            if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
+                            if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
                                 Plugin.Configuration.Save();
                         }
                         ImGui.PopItemWidth();

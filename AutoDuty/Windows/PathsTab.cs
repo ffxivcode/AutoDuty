@@ -62,7 +62,15 @@ namespace AutoDuty.Windows
                 CheckBoxOnChange();
 
             ImGui.PopStyleColor();
-
+            ImGui.SameLine();
+            using (var savedPathsDisabled = ImRaii.Disabled(!Plugin.Configuration.PathSelections.Any(kvp => kvp.Value.Any())))
+            {
+                if (ImGui.Button("Clear all cached classes"))
+                {
+                    Plugin.Configuration.PathSelections.Clear();
+                    Plugin.Configuration.Save();
+                }
+            }
 
 
             ImGuiStylePtr style = ImGui.GetStyle();

@@ -147,6 +147,8 @@ namespace AutoDuty.IPC
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("PandorasBox");
 
         [EzIPC] internal static readonly Action<string, int> PauseFeature;
+        [EzIPC] internal static readonly Action<string, bool> SetFeatureEnabled;
+        [EzIPC] internal static readonly Action<string, string, bool> SetConfigEnabled;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
