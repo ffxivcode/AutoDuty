@@ -15,16 +15,11 @@ public unsafe class Overlay : Window
 {
     public Overlay() : base("AutoDuty Overlay", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize)
     {
-        if (AutoDuty.Plugin.Configuration.OverlayNoBG)
-            Flags |= ImGuiWindowFlags.NoBackground;
 
-        if (AutoDuty.Plugin.Configuration.LockOverlay)
-            Flags |= ImGuiWindowFlags.NoMove;
     }
 
     private static string hideText = " ";
     private static string hideTextAction = " ";
-    
     private static string loopsText = "";
 
     public override void Draw()
@@ -35,6 +30,16 @@ public unsafe class Overlay : Window
                 SchedulerHelper.ScheduleAction("OpenOverlay", () => IsOpen = true, () => ObjectHelper.IsReady);
             IsOpen = false;
         }
+
+        if (AutoDuty.Plugin.Configuration.LockOverlay && !Flags.HasFlag(ImGuiWindowFlags.NoMove))
+            Flags |= ImGuiWindowFlags.NoMove;
+        else if (!AutoDuty.Plugin.Configuration.LockOverlay && Flags.HasFlag(ImGuiWindowFlags.NoMove))
+            Flags -= ImGuiWindowFlags.NoMove;
+
+        if (AutoDuty.Plugin.Configuration.OverlayNoBG && !Flags.HasFlag(ImGuiWindowFlags.NoBackground))
+            Flags |= ImGuiWindowFlags.NoBackground;
+        else if (!AutoDuty.Plugin.Configuration.OverlayNoBG && Flags.HasFlag(ImGuiWindowFlags.NoBackground))
+            Flags -= ImGuiWindowFlags.NoBackground;
 
         if (!Plugin.Running && !Plugin.Started)
         {

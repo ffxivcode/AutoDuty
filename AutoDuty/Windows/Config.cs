@@ -37,14 +37,18 @@ public class Configuration : IPluginConfiguration
     public bool Variant { get; set; } = false;
     public bool Unsynced { get; set; } = false;
     public bool HideUnavailableDuties { get; set; } = false;
-
+    
     //Overlay Config Options
-    public bool ShowOverlay { get; set; } = true;
-    public bool HideOverlayWhenStopped { get; set; } = false;
+    public bool ShowOverlay = true;
+    public bool HideOverlayWhenStopped
+    {
+        get => HideOverlayWhenStopped;
+        set => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.Running || AutoDuty.Plugin.Started;
+    }
     public bool LockOverlay = false;
     public bool OverlayNoBG = false;
-    public bool ShowDutyLoopText { get; set; } = true;
-    public bool ShowActionText { get; set; } = true;
+    public bool ShowDutyLoopText = true;
+    public bool ShowActionText = true;
     public bool UseSliderInputs = false;
 
     //Duty Config Options
@@ -151,10 +155,7 @@ public static class ConfigTab
             MainWindow.CurrentTabName = "Config";
         
         //OverlaySettings
-        var showOverlay = Configuration.ShowOverlay;
         var hideOverlayWhenStopped = Configuration.HideOverlayWhenStopped;
-        var showDutyLoopText = Configuration.ShowDutyLoopText;
-        var showActionText = Configuration.ShowActionText;
 
         //DutySettings
         var autoExitDuty = Configuration.AutoExitDuty;
@@ -211,58 +212,32 @@ public static class ConfigTab
 
         if (overlayHeaderSelected == true)
         {
-            if (ImGui.Checkbox("Show Overlay", ref showOverlay))
-            {
-                AutoDuty.Plugin.Overlay.IsOpen = showOverlay;
-                Configuration.ShowOverlay = showOverlay;
+            if (ImGui.Checkbox("Show Overlay", ref Configuration.ShowOverlay))
                 Configuration.Save();
-            }
 
             using (var openOverlayDisable = ImRaii.Disabled(!showOverlay))
             {
                 ImGui.SameLine(0, 53);
                 if (ImGui.Checkbox("Hide When Stopped", ref hideOverlayWhenStopped))
                 {
-                    if (hideOverlayWhenStopped && !AutoDuty.Plugin.Running && !AutoDuty.Plugin.Started)
-                        AutoDuty.Plugin.Overlay.IsOpen = false;
-                    else
-                        AutoDuty.Plugin.Overlay.IsOpen = true;
                     Configuration.HideOverlayWhenStopped = hideOverlayWhenStopped;
                     Configuration.Save();
                 }
 
                 if (ImGui.Checkbox("Lock Overlay", ref Configuration.LockOverlay))
-                {
-                    if (!Configuration.LockOverlay)
-                        AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoMove;
-                    else
-                        AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoMove;
-
                     Configuration.Save();
-                }
+
                 ImGui.SameLine(0, 57);
                 if (ImGui.Checkbox("Use Transparent BG", ref Configuration.OverlayNoBG))
-                {
-                    if (!Configuration.OverlayNoBG)
-                        AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoBackground;
-                    else
-                        AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoBackground;
-
                     Configuration.Save();
-                }
 
-                if (ImGui.Checkbox("Show Duty/Loops Text", ref showDutyLoopText))
-                {
-                    Configuration.ShowDutyLoopText = showDutyLoopText;
+                if (ImGui.Checkbox("Show Duty/Loops Text", ref Configuration.ShowDutyLoopText))
                     Configuration.Save();
-                }
 
                 ImGui.SameLine(0, 5);
-                if (ImGui.Checkbox("Show AD Action Text", ref showActionText))
-                {
-                    Configuration.ShowActionText = showActionText;
+                if (ImGui.Checkbox("Show AD Action Text", ref Configuration.ShowActionText))
                     Configuration.Save();
-                }
+                
                 if (ImGui.Checkbox("Use Slider Inputs", ref Configuration.UseSliderInputs))
                     Configuration.Save();
             }

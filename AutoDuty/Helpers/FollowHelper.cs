@@ -13,11 +13,10 @@ namespace AutoDuty.Helpers
     {
         private static IGameObject? _followTarget = null;
         private static float _followDistance = 0.25f;
-
         private static bool _updateHooked = false;
         private static bool _enabled
         {
-            get { return _enabled; }    
+            get => _enabled;
             set
             {
                 if (value && !_updateHooked) {
@@ -28,7 +27,7 @@ namespace AutoDuty.Helpers
                 {
                     _updateHooked = false;
                     Svc.Framework.Update -= FollowUpdate;
-                    InputHelper.SetKeyValue(W, Released);
+                    VNavmesh_IPCSubscriber.Path_Stop();
                 }
             }
         }
