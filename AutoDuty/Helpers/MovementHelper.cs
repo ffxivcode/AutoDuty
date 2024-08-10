@@ -5,11 +5,15 @@ using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using ECommons.DalamudServices;
+using Lumina.Excel.GeneratedSheets;
 
 namespace AutoDuty.Helpers
 {
     internal static class MovementHelper
     {
+        public static bool IsFlyingSupported => Svc.ClientState.TerritoryType != 0 && Svc.Data.GetExcelSheet<TerritoryType>()!.GetRow(Svc.ClientState.TerritoryType)?.TerritoryIntendedUse is 1 or 49 or 47;
+
         internal static bool Move(IGameObject? gameObject, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false)
         {
             if (gameObject == null)
@@ -22,6 +26,23 @@ namespace AutoDuty.Helpers
         {
             if (!ObjectHelper.IsValid)
                 return false;
+
+            if (fly && !IsFlyingSupported)
+                fly = false;
+
+            if (fly && !Conditions.IsMounted)
+            {
+                if (!ObjectHelper.PlayerIsCasting)
+                    ActionManager.Instance()->UseAction(ActionType.GeneralAction, 9);
+                return false;
+            }
+
+            if (fly && !Conditions.IsInFlight)
+            {
+                if (!ObjectHelper.PlayerIsCasting)
+                    ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2);
+                return false;
+            }
 
             if (position == Vector3.Zero || Vector3.Distance(Player.Object.Position, position) <= lastPointTollerance)
             {

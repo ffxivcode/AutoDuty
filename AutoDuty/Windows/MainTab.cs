@@ -16,6 +16,7 @@ using static AutoDuty.AutoDuty;
 
 namespace AutoDuty.Windows
 {
+    using Dalamud.Interface.Components;
     using ECommons.GameFunctions;
 
     internal static class MainTab
@@ -112,14 +113,14 @@ namespace AutoDuty.Windows
                         ImGui.SameLine(0, 15);
                     }
                     ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                    if (Plugin.Configuration.LoopsInputInt)
+                    if (Plugin.Configuration.UseSliderInputs)
                     {
-                        if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
+                        if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
                             Plugin.Configuration.Save();
                     }
                     else
                     {
-                        if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
+                        if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
                             Plugin.Configuration.Save();
                     }
                     ImGui.PopItemWidth();
@@ -135,7 +136,7 @@ namespace AutoDuty.Windows
                     }
                     if (!ImGui.BeginListBox("##MainList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
 
-                    if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovingPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || Plugin.Configuration.UsingAlternativeRotationPlugin))
+                    if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || Plugin.Configuration.UsingAlternativeRotationPlugin))
                     {
                         foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
                         {
@@ -176,7 +177,7 @@ namespace AutoDuty.Windows
                     }
                     else
                     {
-                        if (!VNavmesh_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeMovingPlugin)
+                        if (!VNavmesh_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeMovementPlugin)
                             ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
                         if (!BossMod_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeBossPlugin)
                             ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
@@ -220,14 +221,14 @@ namespace AutoDuty.Windows
                     {
                         ImGui.SameLine(0, 15);
                         ImGui.PushItemWidth(200 * ImGuiHelpers.GlobalScale);
-                        if (Plugin.Configuration.LoopsInputInt)
+                        if (Plugin.Configuration.UseSliderInputs)
                         {
-                            if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
+                            if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
                                 Plugin.Configuration.Save();
                         }
                         else
                         {
-                            if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
+                            if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
                                 Plugin.Configuration.Save();
                         }
                         ImGui.PopItemWidth();
@@ -469,6 +470,7 @@ namespace AutoDuty.Windows
                                     Plugin.Leveling = leveling;
                                 }
                             }
+                            ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows this list instead:\nL16-L23 (i0): TamTara \nL24-31 (i0): Totorak\nL32-40 (i0): Brayflox\nL41-52 (i0): Stone Vigil\nL53-60 (i105): Sohm Al\nL61-66 (i240): Sirensong Sea\nL67-70 (i255): Doma Castle\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
                         }
 
                         DrawPathSelection();
