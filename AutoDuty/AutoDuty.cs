@@ -959,7 +959,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     break;
                 }
 
-                if (StuckHelper.IsStuck((Vector3)_actionPosition[0], 3f))
+                if (StuckHelper.IsStuck())
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
                     Stage = 1;
