@@ -46,9 +46,14 @@
     "Boss|351.80, 212.00, 392.18|",
     "MoveTo|342.08, 212.00, 392.03|"
   ],
-  "meta": {
+"meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 114,
+        "change": "Fixed Missing Interactables"
+      },
+    ],
     "notes": []
   }
 }
