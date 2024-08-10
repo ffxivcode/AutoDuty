@@ -114,11 +114,11 @@ namespace AutoDuty.Helpers
 
                 if (content.TrustContent)
                 {
-                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.AlisaieBlue]);
+                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Alphinaud]);
                     content.TrustMembers.Add(TrustManager.members[TrustMemberName.Alisaie]);
                     content.TrustMembers.Add(TrustManager.members[TrustMemberName.Thancred]);
                     content.TrustMembers.Add(TrustManager.members[TrustMemberName.Urianger]);
-                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.BestCatGirl]);
+                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Yshtola]);
                     content.TrustMembers.Add(TrustManager.members[content.ExVersion == 3 ?
                                                                       TrustMemberName.Ryne :
                                                                       TrustMemberName.Estinien
