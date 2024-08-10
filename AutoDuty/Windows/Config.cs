@@ -31,6 +31,7 @@ public class Configuration : IPluginConfiguration
     public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
 
+
     //General Options
     public int LoopTimes = 1;
     public bool Support { get; set; } = false;

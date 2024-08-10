@@ -7,7 +7,6 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons.Throttlers;
 using AutoDuty.IPC;
-using FFXIVClientStructs.FFXIV.Client.Game;
 using ECommons;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
@@ -98,6 +97,7 @@ namespace AutoDuty.Helpers
         internal static bool MoveToMapMarkerRunning = false;
 
         private static uint flagMapMarkerTerritoryType = 0;
+        private static Vector3 flagMapMarkerVector3 = Vector3.Zero;
 
         internal unsafe static void StopMoveToMapMarker()
         {
@@ -124,32 +124,19 @@ namespace AutoDuty.Helpers
             if (GenericHelpers.TryGetAddonByName("AreaMap", out AddonAreaMap* addonAreaMap) && GenericHelpers.IsAddonReady(&addonAreaMap->AtkUnitBase))
                 addonAreaMap->Close(true);
 
-            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType == flagMapMarkerTerritoryType)
+            if (Svc.ClientState.TerritoryType == flagMapMarkerTerritoryType && ObjectHelper.GetDistanceToPlayer(flagMapMarkerVector3) < 2)
             {
-                if (!Conditions.IsMounted)
-                {
-                    if (!ObjectHelper.PlayerIsCasting)
-                        ActionManager.Instance()->UseAction(ActionType.GeneralAction, 9);
-                }
-                else if (!Conditions.IsInFlight)
-                {
-                    if (!ObjectHelper.PlayerIsCasting)
-                        ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2);
-                }
-                else
-                {
-                    Svc.Log.Info("Done Moving to Flag Marker");
-                    new ECommons.Automation.Chat().ExecuteCommand("/vnavmesh flyflag");
-                    StopMoveToMapMarker();
-                }
+                StopMoveToMapMarker();
+                GotoHelper.Stop();
                 return;
             }
 
             if (IsFlagMarkerSet)
             {
                 var flagMapMarker = GetFlagMarker;
+                flagMapMarkerVector3 = VNavmesh_IPCSubscriber.Query_Mesh_NearestPoint(new Vector3(flagMapMarker.XFloat, 1000f, flagMapMarker.YFloat), 0, 2048);
                 flagMapMarkerTerritoryType = flagMapMarker.TerritoryId;
-                GotoHelper.Invoke(flagMapMarker.TerritoryId, []);
+                GotoHelper.Invoke(flagMapMarker.TerritoryId, [flagMapMarkerVector3]);
             }
         }
     }
