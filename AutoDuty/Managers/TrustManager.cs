@@ -143,6 +143,12 @@ namespace AutoDuty.Managers
                 member.Level = 0;
         }
 
+        internal static void ClearCachedLevels(Content content)
+        {
+            foreach (TrustMember member in content.TrustMembers)
+                member.Level = 0;
+        }
+
         internal bool GetLevelsCheck() => 
             !this.currentlyGettingLevels;
 
@@ -195,11 +201,11 @@ namespace AutoDuty.Managers
 
                     if (content.TrustMembers[index].Level <= 0)
                     {
-                        _taskManager.Enqueue(() => Callback.Fire(addon, true, 16, index));
-                        _taskManager.Enqueue(() => content.TrustMembers[index].Level = TrustHelper.GetLevelFromTrustWindow(addon));
+                        _taskManager.EnqueueImmediate(() => Callback.Fire(addon, true, 16, index));
+                        _taskManager.EnqueueImmediate(() => content.TrustMembers[index].Level = TrustHelper.GetLevelFromTrustWindow(addon));
                     }
                 }
-                _taskManager.Enqueue(() =>
+                _taskManager.EnqueueImmediate(() =>
                 {
                     if (!wasOpen)
                         AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Hide();
@@ -208,8 +214,8 @@ namespace AutoDuty.Managers
                 }, "TrustLevelCheck10");
                 if (!wasOpen)
                 {
-                    _taskManager.Enqueue(() => !GenericHelpers.IsAddonReady(addon), "TrustLevelCheck11");
-                    _taskManager.Enqueue(() => !(this.currentlyGettingLevels = false), "TrustLevelCheck12");
+                    _taskManager.EnqueueImmediate(() => !GenericHelpers.IsAddonReady(addon), "TrustLevelCheck11");
+                    _taskManager.EnqueueImmediate(() => !(this.currentlyGettingLevels = false), "TrustLevelCheck12");
                 }
             }, "TrustLevelCheck9");
         }

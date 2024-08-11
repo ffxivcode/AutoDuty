@@ -42,9 +42,6 @@ namespace AutoDuty.Helpers
 
             short lvl = PlayerHelper.GetCurrentLevelFromSheet();
 
-            if (lvl < 15 || AutoDuty.Plugin.Player!.GetRole() == CombatRole.NonCombat || lvl >= 100)
-                return null;
-
             if (trust)
             {
                 if (TrustManager.members.Any(tm => tm.Value.Level <= 0)) 
@@ -57,6 +54,9 @@ namespace AutoDuty.Helpers
                         lvl = (short) member.Level;
                 }
             }
+
+            if (lvl < 15 || AutoDuty.Plugin.Player!.GetRole() == CombatRole.NonCombat || lvl >= 100)
+                return null;
 
 
             short ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet();

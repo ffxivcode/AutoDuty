@@ -321,15 +321,23 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
                 }
 
+                if (this.TrustLevelingEnabled)
+                {
+                    TrustManager.ClearCachedLevels(this.CurrentTerritoryContent);
+                    this._trustManager.GetLevels(this.CurrentTerritoryContent);
+                    this.TaskManager.DelayNext(50);
+                    this.TaskManager.Enqueue(() => this._trustManager.GetLevelsCheck(), "Loop-RecheckingTrustLevels");
+                }
+
                 TaskManager.Enqueue(() => {
-                    if (StopLoop)
-                    {
-                        Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");
-                        LoopsCompleteActions();
-                    }
-                    else
-                        LoopTasks();
-                },"Loop-CheckStopLoop");
+                                        if (StopLoop)
+                                        {
+                                            Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");
+                                            LoopsCompleteActions();
+                                        }
+                                        else
+                                            LoopTasks();
+                                    },"Loop-CheckStopLoop");
             }
             else
                 LoopsCompleteActions();
