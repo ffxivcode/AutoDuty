@@ -320,6 +320,7 @@ public class Configuration : IPluginConfiguration
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary = [];
     public int StopItemQtyInt = 1;
     public TerminationMode TerminationMethodEnum = TerminationMode.Do_Nothing;
+    public bool TerminationKeepActive = true;
 
     //BMAI Config Options
     public bool HideBossModAIConfig = false;
@@ -929,7 +930,15 @@ public static class ConfigTab
                         }
                 }
                 ImGui.EndCombo();
-            }       
+            }
+
+            if (Configuration.TerminationMethodEnum is TerminationMode.Kill_Client or TerminationMode.Kill_PC or TerminationMode.Logout)
+            {
+                ImGui.Indent();
+                if(ImGui.Checkbox("Keep Termination option after execution ", ref Configuration.TerminationKeepActive))
+                    Configuration.Save();
+                ImGui.Unindent();
+            }
         }     
     }
 

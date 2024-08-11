@@ -430,7 +430,13 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_PC)
         {
-            if(OperatingSystem.IsWindows())
+            if (!Configuration.TerminationKeepActive)
+            {
+                Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
+                Configuration.Save();
+            }
+
+            if (OperatingSystem.IsWindows())
             {
                 ProcessStartInfo startinfo = new("shutdown.exe", "-s -t 20");
                 Process.Start(startinfo);
@@ -448,9 +454,23 @@ public sealed class AutoDuty : IDalamudPlugin
             _chat.ExecuteCommand($"/xlkill");
         }
         else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_Client)
+        {
+            if (!Configuration.TerminationKeepActive)
+            {
+                Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
+                Configuration.Save();
+            }
+
             _chat.ExecuteCommand($"/xlkill");
+        }
         else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Logout)
         {
+            if (!Configuration.TerminationKeepActive)
+            {
+                Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
+                Configuration.Save();
+            }
+
             TaskManager.Enqueue(() => ObjectHelper.IsReady);
             TaskManager.DelayNext(2000);
             TaskManager.Enqueue(() => _chat.ExecuteCommand($"/logout"));
