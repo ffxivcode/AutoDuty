@@ -23,7 +23,7 @@ namespace AutoDuty.Windows;
 public class Configuration : IPluginConfiguration
 {
     //Meta
-    public int Version { get => 114; set { } }
+    public int Version { get => 115; set { } }
     public HashSet<string> DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
 
@@ -564,10 +564,13 @@ public static class ConfigTab
                 {
                     foreach (LootMethod lootMethod in Enum.GetValues(typeof(LootMethod)))
                     {
-                        if (ImGui.Selectable(EnumString(lootMethod)))
+                        using (var lootMethodAutoDutyDisabled = ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled) || (lootMethod == LootMethod.RotationSolver && !ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)))
                         {
-                            Configuration.LootMethodEnum = lootMethod;
-                            Configuration.Save();
+                            if (ImGui.Selectable(EnumString(lootMethod)))
+                            {
+                                Configuration.LootMethodEnum = lootMethod;
+                                Configuration.Save();
+                            }
                         }
                     }
                     ImGui.EndCombo();
@@ -613,7 +616,6 @@ public static class ConfigTab
                 ImGuiComponents.HelpMarker("You are deciding to use a plugin other than BossMod/BMR.");
             }
         }
-
 
         //Start of Pre-Loop Settings
         ImGui.Spacing();
