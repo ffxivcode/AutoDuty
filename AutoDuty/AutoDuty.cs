@@ -141,10 +141,9 @@ public sealed class AutoDuty : IDalamudPlugin
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
-            MainWindow = new();
-            Overlay = new();
             OverrideCamera = new();
-
+            Overlay = new();
+            MainWindow = new();
             WindowSystem.AddWindow(MainWindow);
             WindowSystem.AddWindow(Overlay);
 
@@ -180,7 +179,7 @@ public sealed class AutoDuty : IDalamudPlugin
             PluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
-            Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
+            //Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
         }
@@ -372,9 +371,9 @@ public sealed class AutoDuty : IDalamudPlugin
         
         if (!Configuration.Squadron)
         {
-            if (Configuration.RetireToBarracksBeforeLoops && Configuration.RetireMode)
+            if (Configuration.RetireMode && Configuration.RetireLocation == ConfigTab.RetireLocation.GC_Barracks)
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
-            else if (Configuration.RetireToInnBeforeLoops && Configuration.RetireMode)
+            else if (Configuration.RetireMode && Configuration.RetireLocation == ConfigTab.RetireLocation.Inn)
                 TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Loop-GotoInnInvoke");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
@@ -513,9 +512,9 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             if (!Configuration.Squadron)
             {
-                if (Configuration.RetireToBarracksBeforeLoops && Configuration.RetireMode)
+                if (Configuration.RetireMode && Configuration.RetireLocation == ConfigTab.RetireLocation.GC_Barracks)
                     TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
-                else if (Configuration.RetireToInnBeforeLoops && Configuration.RetireMode)
+                else if (Configuration.RetireMode && Configuration.RetireLocation == ConfigTab.RetireLocation.Inn)
                     TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Run-GotoInnInvoke");
                 TaskManager.DelayNext("Run-Delay50", 50);
                 TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
