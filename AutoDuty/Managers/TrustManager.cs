@@ -34,7 +34,7 @@ namespace AutoDuty.Managers
             AddMember(TrustMemberName.Yshtola,   4, TrustRole.DPS);
             AddMember(TrustMemberName.Ryne,      5, TrustRole.DPS, 80);
             AddMember(TrustMemberName.Estinien,  5, TrustRole.DPS);
-            AddMember(TrustMemberName.Graha,     6, TrustRole.Allrounder);
+            AddMember(TrustMemberName.Graha,     6, TrustRole.AllRounder);
             AddMember(TrustMemberName.Zero,      7, TrustRole.DPS, 90);
             AddMember(TrustMemberName.Krile,     7, TrustRole.DPS);
         }

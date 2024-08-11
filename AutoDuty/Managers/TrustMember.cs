@@ -27,9 +27,9 @@
 
     public enum TrustRole : byte
     {
-        DPS    = 0,
-        Healer = 1,
-        Tank   = 2,
-        Allrounder  = 3
+        DPS        = 0,
+        Healer     = 1,
+        Tank       = 2,
+        AllRounder = 3
     }
 }

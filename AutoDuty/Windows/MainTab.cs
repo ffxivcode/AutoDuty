@@ -415,7 +415,7 @@ namespace AutoDuty.Windows
                                             TrustRole.DPS => ImGuiHelper.RoleDPSColor,
                                             TrustRole.Healer => ImGuiHelper.RoleHealerColor,
                                             TrustRole.Tank => ImGuiHelper.RoleTankColor,
-                                            TrustRole.Allrounder => ImGuiHelper.RoleAllrounderColor,
+                                            TrustRole.AllRounder => ImGuiHelper.RoleAllRounderColor,
                                             _ => Vector4.One
                                         }, member.Name);
                                         if (member.Level > 0)
