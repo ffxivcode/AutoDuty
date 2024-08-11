@@ -438,7 +438,7 @@ namespace AutoDuty.Windows
                         if (Plugin.Configuration.Support)
                             dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
                         else if (Plugin.Configuration.Trust)
-                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent && x.Value.ExVersion > 2).ToDictionary();
+                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.TrustContent).ToDictionary();
                         else if (Plugin.Configuration.Squadron)
                             dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
                         else if (Plugin.Configuration.Regular)
