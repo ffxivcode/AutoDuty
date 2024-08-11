@@ -560,7 +560,7 @@ public static class ConfigTab
                 ImGui.Text("Select Method: ");
                 ImGui.SameLine(0, 5);
                 ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                if (ImGui.BeginCombo(" ", EnumString(Configuration.LootMethodEnum)))
+                if (ImGui.BeginCombo("##ConfigLootMethod", EnumString(Configuration.LootMethodEnum)))
                 {
                     foreach (LootMethod lootMethod in Enum.GetValues(typeof(LootMethod)))
                     {
@@ -916,7 +916,7 @@ public static class ConfigTab
             ImGui.Text("On Completion of All Loops: ");
             ImGui.SameLine(0, 10);
             ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-            if (ImGui.BeginCombo(" ", EnumString(Configuration.TerminationMethodEnum)))
+            if (ImGui.BeginCombo("##ConfigTerminationMethod", EnumString(Configuration.TerminationMethodEnum)))
             {
                 foreach (TerminationMode terminationMode in Enum.GetValues(typeof(TerminationMode)))
                 {
