@@ -100,7 +100,7 @@ public class Configuration : IPluginConfiguration
         AutoDuty.PluginInterface.SavePluginConfig(this);
     }
 
-    public TrustMember?[] SelectedTrusts = new TrustMember?[3];
+    public TrustMemberName?[] SelectedTrustMembers = new TrustMemberName?[3];
 }
 
 public static class ConfigTab

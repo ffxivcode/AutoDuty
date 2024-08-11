@@ -2,7 +2,6 @@
 
 namespace AutoDuty.Helpers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Managers;
@@ -54,7 +53,7 @@ namespace AutoDuty.Helpers
 
                 foreach ((TrustMemberName _, TrustMember member) in TrustManager.members)
                 {
-                    if (member.Level < lvl)
+                    if (member.Level < lvl && member.Level < member.LevelCap)
                         lvl = (short) member.Level;
                 }
             }
@@ -64,22 +63,31 @@ namespace AutoDuty.Helpers
             
             if(lvl is >= 16 and < 91)
                 foreach (ContentHelper.Content duty in LevelingDuties)
-                    if (duty.CanRun(lvl, ilvl) && (!trust || duty.CanTrustRun(false)))
-                        return duty;
-
-            foreach ((uint _, ContentHelper.Content? content) in ContentHelper.DictionaryContent)
-            {
-                if (content.DawnContent)
-                {
-                    if (curContent == null || curContent.ClassJobLevelRequired < content.ClassJobLevelRequired)
+                    if (duty.CanRun(lvl, ilvl) && (!trust || duty.CanTrustRun()))
                     {
-                        if (content.CanRun(lvl, ilvl) && (!trust || content.CanTrustRun(false)) && (content.ClassJobLevelRequired < 50 || content.ClassJobLevelRequired % 10 != 0))
+                        curContent = duty;
+                        break;
+                    }
+
+            if (curContent == null)
+            {
+                foreach ((uint _, ContentHelper.Content? content) in ContentHelper.DictionaryContent)
+                {
+                    if (content.DawnContent)
+                    {
+                        if (curContent == null || curContent.ClassJobLevelRequired < content.ClassJobLevelRequired)
                         {
-                            curContent = content;
+                            if (content.CanRun(lvl, ilvl) && (!trust || content.CanTrustRun()) && (content.ClassJobLevelRequired < 50 || content.ClassJobLevelRequired % 10 != 0))
+                            {
+                                curContent = content;
+                            }
                         }
                     }
                 }
             }
+            if (trust && curContent != null)
+                if (!TrustHelper.SetLowestTrustMembers(curContent))
+                    curContent = null;
 
             return curContent ?? null;
         }
