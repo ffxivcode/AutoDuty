@@ -430,7 +430,8 @@ public static class ConfigTab
         Do_Nothing = 0,
         Logout = 1,
         Start_AR_Multi_Mode =2, 
-        Kill_Client = 3
+        Kill_Client = 3,
+        Kill_PC = 4
     }
     public enum Role : int
     {
@@ -920,11 +921,12 @@ public static class ConfigTab
             {
                 foreach (TerminationMode terminationMode in Enum.GetValues(typeof(TerminationMode)))
                 {
-                    if (ImGui.Selectable(EnumString(terminationMode)))
-                    {
-                        Configuration.TerminationMethodEnum = terminationMode;
-                        Configuration.Save();
-                    }
+                    if (terminationMode != TerminationMode.Kill_PC || (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
+                        if (ImGui.Selectable(EnumString(terminationMode)))
+                        {
+                            Configuration.TerminationMethodEnum = terminationMode;
+                            Configuration.Save();
+                        }
                 }
                 ImGui.EndCombo();
             }       

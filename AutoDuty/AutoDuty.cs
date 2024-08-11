@@ -31,6 +31,8 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using static AutoDuty.Windows.ConfigTab;
+using static FFXIVClientStructs.FFXIV.Common.Component.BGCollision.MeshPCB;
+using System.Diagnostics;
 
 namespace AutoDuty;
 
@@ -426,7 +428,26 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
-        if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_Client)
+        if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_PC)
+        {
+            if(OperatingSystem.IsWindows())
+            {
+                ProcessStartInfo startinfo = new("shutdown.exe", "-s -t 20");
+                Process.Start(startinfo);
+            } 
+            else if (OperatingSystem.IsLinux())
+            {
+                //Educated guess
+                ProcessStartInfo startinfo = new("shutdown", "-t 20");
+                Process.Start(startinfo);
+            } 
+            else if (OperatingSystem.IsMacOS())
+            {
+                //hell if I know
+            }
+            _chat.ExecuteCommand($"/xlkill");
+        }
+        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_Client)
             _chat.ExecuteCommand($"/xlkill");
         else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Logout)
         {
