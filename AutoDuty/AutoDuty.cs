@@ -30,6 +30,7 @@ using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using static AutoDuty.Windows.ConfigTab;
 
 namespace AutoDuty;
 
@@ -371,9 +372,9 @@ public sealed class AutoDuty : IDalamudPlugin
         
         if (!Configuration.Squadron)
         {
-            if (Configuration.RetireMode && Configuration.RetireLocation == ConfigTab.RetireLocation.GC_Barracks)
+            if (Configuration.RetireMode && Configuration.RetireLocationEnum == ConfigTab.RetireLocation.GC_Barracks)
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
-            else if (Configuration.RetireMode && Configuration.RetireLocation == ConfigTab.RetireLocation.Inn)
+            else if (Configuration.RetireMode && Configuration.RetireLocationEnum == ConfigTab.RetireLocation.Inn)
                 TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Loop-GotoInnInvoke");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
@@ -425,9 +426,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
-        if (Configuration.AutoKillClient)
+        if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_Client)
             _chat.ExecuteCommand($"/xlkill");
-        else if (Configuration.AutoLogout)
+        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Logout)
         {
             TaskManager.Enqueue(() => ObjectHelper.IsReady);
             TaskManager.DelayNext(2000);
@@ -438,7 +439,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => Stage = 0);
             TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
         }
-        else if (Configuration.AutoARMultiEnable)
+        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Start_AR_Multi_Mode)
         {
             TaskManager.Enqueue(() => _chat.ExecuteCommand($"/ays multi"));
             TaskManager.Enqueue(() => Running = false);
@@ -512,9 +513,9 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             if (!Configuration.Squadron)
             {
-                if (Configuration.RetireMode && Configuration.RetireLocation == ConfigTab.RetireLocation.GC_Barracks)
+                if (Configuration.RetireMode && Configuration.RetireLocationEnum == ConfigTab.RetireLocation.GC_Barracks)
                     TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
-                else if (Configuration.RetireMode && Configuration.RetireLocation == ConfigTab.RetireLocation.Inn)
+                else if (Configuration.RetireMode && Configuration.RetireLocationEnum == ConfigTab.RetireLocation.Inn)
                     TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Run-GotoInnInvoke");
                 TaskManager.DelayNext("Run-Delay50", 50);
                 TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
@@ -546,7 +547,7 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => StartNavigation(true), "Run");
         CurrentLoop = 1;
     }
-
+    private bool _lootTreasure;
     public void StartNavigation(bool startFromZero = true)
     {
         Svc.Log.Debug($"StartNavigation: startFromZero={startFromZero}");
@@ -580,6 +581,21 @@ public sealed class AutoDuty : IDalamudPlugin
             SetBMSettings();
         if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
             ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+        if (Configuration.LootTreasure)
+        {
+            if (PandorasBox_IPCSubscriber.IsEnabled)
+                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", Configuration.LootMethodEnum == LootMethod.Pandora || Configuration.LootMethodEnum == LootMethod.All);
+            if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", $"{Configuration.LootMethodEnum == LootMethod.RotationSolver || Configuration.LootMethodEnum == LootMethod.All}");
+            _lootTreasure = Configuration.LootMethodEnum == LootMethod.AutoDuty || Configuration.LootMethodEnum == LootMethod.All;
+        }
+        else
+        {
+            if (PandorasBox_IPCSubscriber.IsEnabled)
+                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", false);
+                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", "false");
+            _lootTreasure = false;
+        }
         Svc.Log.Info("Starting Navigation");
         if (startFromZero)
             Indexer = 0;
@@ -610,35 +626,36 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!bmr)
             _chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {(bmr ? Configuration.PositionalCustom : (Configuration.PositionalCustom == "Any" ? "0" : (Configuration.PositionalCustom == "Flank" ? "1" : (Configuration.PositionalCustom == "Rear" ? "2" : "3"))))}");
+        if (bmr)// remove once veyn merges
+            _chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
     }
 
     internal void BMRoleChecks()
     {
         //RoleBased Positional
-        if (ObjectHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalCustom != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any"))
+        if (ObjectHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalEnum != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? Positional.Rear : Positional.Any))
         {
-            Configuration.PositionalCustom = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? "Rear" : "Any");
+            Configuration.PositionalEnum = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? ConfigTab.Positional.Rear : ConfigTab.Positional.Any);
             Configuration.Save();
         }
 
         //RoleBased MaxDistanceToTarget
-        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleRange && Configuration.MaxDistanceToTarget != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
+        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTarget != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
         {
             Configuration.MaxDistanceToTarget = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
             Configuration.Save();
         }
 
         //RoleBased MaxDistanceToTargetAoE
-        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleRange && Configuration.MaxDistanceToTargetAoE != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
+        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTargetAoE != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
         {
             Configuration.MaxDistanceToTargetAoE = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
             Configuration.Save();
         }
 
         //FollowRole
-        if (ObjectHelper.IsValid && Configuration.FollowRole && ConfigTab.FollowName != ObjectHelper.GetPartyMemberFromRole(Configuration.FollowRoleStr!)?.Name.ExtractText())
-            ConfigTab.FollowName = ObjectHelper.GetPartyMemberFromRole(Configuration.FollowRoleStr!)?.Name.ExtractText() ?? "";
+        if (ObjectHelper.IsValid && Configuration.FollowRole && ConfigTab.FollowName != ObjectHelper.GetPartyMemberFromRole($"{Configuration.FollowRoleEnum}")?.Name.ExtractText())
+            ConfigTab.FollowName = ObjectHelper.GetPartyMemberFromRole($"{Configuration.FollowRoleEnum}")?.Name.ExtractText() ?? "";
     }
 
     private unsafe void OnDeath()
