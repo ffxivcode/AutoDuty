@@ -128,7 +128,7 @@ namespace AutoDuty.Windows
 
                         if (!multiple)
                         {
-                            ImGuiHelper.ColoredText(container.ColoredNameRegex, container.Content.DisplayName);
+                            ImGuiHelper.ColoredText(container.ColoredNameRegex, container.Content.DisplayName!);
                             ImGui.SameLine(0, 0);
                             ImGui.Text(" => ");
                             ImGui.SameLine(0, 0);

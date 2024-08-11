@@ -29,16 +29,13 @@ namespace AutoDuty.Windows
         {
             if (MainWindow.CurrentTabName != "Main")
                 MainWindow.CurrentTabName = "Main";
-            var _loopTimes = Plugin.Configuration.LoopTimes;
             var _support = Plugin.Configuration.Support;
             var _trust = Plugin.Configuration.Trust;
             var _squadron = Plugin.Configuration.Squadron;
             var _regular = Plugin.Configuration.Regular;
-            var _Trial = Plugin.Configuration.Trial;
+            var _trial = Plugin.Configuration.Trial;
             var _raid = Plugin.Configuration.Raid;
             var _variant = Plugin.Configuration.Variant;
-            var _unsynced = Plugin.Configuration.Unsynced;
-            var _hideUnavailableDuties = Plugin.Configuration.HideUnavailableDuties;
 
             void DrawPathSelection()
             {
@@ -234,120 +231,71 @@ namespace AutoDuty.Windows
                         ImGui.PopItemWidth();
                     }
 
-                    if (ImGui.Checkbox("Support", ref _support))
+                    if (ImGui.Checkbox("Support", ref Plugin.Configuration.support))
                     {
-                        if (_support)
+                        if (Plugin.Configuration.support)
                         {
-                            Plugin.Configuration.Support = _support;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Variant = false;
-                            Plugin.CurrentTerritoryContent = null;
+                            Plugin.Configuration.Support = Plugin.Configuration.support;
                             _dutySelected = null;
                             Plugin.Configuration.Save();
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Trust", ref _trust))
+                    if (ImGui.Checkbox("Trust", ref Plugin.Configuration.trust))
                     {
-                        if (_trust)
+                        if (Plugin.Configuration.trust)
                         {
-                            Plugin.Configuration.Trust = _trust;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Variant = false;
-                            Plugin.CurrentTerritoryContent = null;
+                            Plugin.Configuration.Trust = Plugin.Configuration.trust;
                             _dutySelected = null;
                             Plugin.Configuration.Save();
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Squadron", ref _squadron))
+                    if (ImGui.Checkbox("Squadron", ref Plugin.Configuration.squadron))
                     {
-                        if (_squadron)
+                        if (Plugin.Configuration.squadron)
                         {
-                            Plugin.Configuration.Squadron = _squadron;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Variant = false;
-                            Plugin.CurrentTerritoryContent = null;
+                            Plugin.Configuration.Squadron = Plugin.Configuration.squadron;
                             _dutySelected = null;
                             Plugin.Configuration.Save();
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Regular", ref _regular))
+                    if (ImGui.Checkbox("Regular", ref Plugin.Configuration.regular))
                     {
-                        if (_regular)
+                        if (Plugin.Configuration.regular)
                         {
-                            Plugin.Configuration.Regular = _regular;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Variant = false;
-                            Plugin.CurrentTerritoryContent = null;
+                            Plugin.Configuration.Regular = Plugin.Configuration.regular;
                             _dutySelected = null;
                             Plugin.Configuration.Save();
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Trial", ref _Trial))
+                    if (ImGui.Checkbox("Trial", ref Plugin.Configuration.trial))
                     {
-                        if (_Trial)
+                        if (Plugin.Configuration.trial)
                         {
-                            Plugin.Configuration.Trial = _Trial;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Variant = false;
-                            Plugin.CurrentTerritoryContent = null;
+                            Plugin.Configuration.Trial = Plugin.Configuration.trial;
                             _dutySelected = null;
                             Plugin.Configuration.Save();
                         }
                     }
                     //ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Raid", ref _raid))
+                    if (ImGui.Checkbox("Raid", ref Plugin.Configuration.raid))
                     {
-                        if (_raid)
+                        if (Plugin.Configuration.raid)
                         {
-                            Plugin.Configuration.Raid = _raid;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.Configuration.Variant = false;
-                            Plugin.CurrentTerritoryContent = null;
+                            Plugin.Configuration.Raid = Plugin.Configuration.raid;
                             _dutySelected = null;
                             Plugin.Configuration.Save();
                         }
                     }
                     ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("Variant", ref _variant))
+                    if (ImGui.Checkbox("Variant", ref Plugin.Configuration.variant))
                     {
-                        if (_variant)
+                        Plugin.Configuration.Variant = Plugin.Configuration.variant;
+                        if (Plugin.Configuration.variant)
                         {
-                            Plugin.Configuration.Variant = _variant;
-                            Plugin.Configuration.Raid = false;
-                            Plugin.Configuration.Trial = false;
-                            Plugin.Configuration.Regular = false;
-                            Plugin.Configuration.Support = false;
-                            Plugin.Configuration.Trust = false;
-                            Plugin.Configuration.Squadron = false;
-                            Plugin.CurrentTerritoryContent = null;
                             _dutySelected = null;
                             Plugin.Configuration.Save();
                         }
@@ -357,11 +305,8 @@ namespace AutoDuty.Windows
                     {
                         //ImGui.SameLine(0, 15);
                         ImGui.Separator();
-                        if (ImGui.Checkbox("Hide Unavailable Duties", ref _hideUnavailableDuties))
-                        {
-                            Plugin.Configuration.HideUnavailableDuties = _hideUnavailableDuties;
+                        if (ImGui.Checkbox("Hide Unavailable Duties", ref Plugin.Configuration.HideUnavailableDuties))
                             Plugin.Configuration.Save();
-                        }
 
                         if (Plugin.Configuration.Trust)
                         {
@@ -478,11 +423,8 @@ namespace AutoDuty.Windows
                     if (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
                     {
                         ImGui.SameLine(0, 5);
-                        if (ImGui.Checkbox("Unsynced", ref _unsynced))
-                        {
-                            Plugin.Configuration.Unsynced = _unsynced;
+                        if (ImGui.Checkbox("Unsynced", ref Plugin.Configuration.Unsynced))
                             Plugin.Configuration.Save();
-                        }
                     }
                     using var d3 = ImRaii.Disabled(Plugin.LevelingEnabled);
                     if (Plugin.LevelingEnabled)

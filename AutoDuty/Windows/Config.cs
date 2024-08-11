@@ -24,20 +24,146 @@ public class Configuration : IPluginConfiguration
 {
     //Meta
     public int Version { get => 114; set { } }
-    public HashSet<string> DoNotUpdatePathFiles { get; set; } = [];
-    public Dictionary<uint, Dictionary<Job, int>> PathSelections { get; set; } = [];
+    public HashSet<string> DoNotUpdatePathFiles = [];
+    public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
 
     //General Options
     public int LoopTimes = 1;
-    public bool Support { get; set; } = false;
-    public bool Trust { get; set; } = false;
-    public bool Squadron { get; set; } = false;
-    public bool Regular { get; set; } = false;
-    public bool Trial { get; set; } = false;
-    public bool Raid { get; set; } = false;
-    public bool Variant { get; set; } = false;
-    public bool Unsynced { get; set; } = false;
-    public bool HideUnavailableDuties { get; set; } = false;
+    internal bool support = false;
+    public bool Support
+    {
+        get => support;
+        set
+        {
+            support = value;
+            if (value)
+            {
+                Variant = false;
+                Raid = false;
+                Trial = false;
+                Regular = false;
+                Trust = false;
+                Squadron = false;
+                AutoDuty.Plugin.CurrentTerritoryContent = null;
+            }
+        }
+    }
+    internal bool trust = false;
+    public bool Trust
+    {
+        get => trust;
+        set
+        {
+            trust = value;
+            if (value)
+            {
+                Variant = false;
+                Raid = false;
+                Trial = false;
+                Regular = false;
+                Support = false;
+                Squadron = false;
+                AutoDuty.Plugin.CurrentTerritoryContent = null;
+            }
+        }
+    }
+    internal bool squadron = false;
+    public bool Squadron
+    {
+        get => squadron;
+        set
+        {
+            squadron = value;
+            if (value)
+            {
+                Variant = false;
+                Raid = false;
+                Trial = false;
+                Regular = false;
+                Support = false;
+                Trust = false;
+                AutoDuty.Plugin.CurrentTerritoryContent = null;
+            }
+        }
+    }
+    internal bool regular = false;
+    public bool Regular
+    {
+        get => regular;
+        set
+        {
+            regular = value;
+            if (value)
+            {
+                Variant = false;
+                Raid = false;
+                Trial = false;
+                Support = false;
+                Trust = false;
+                Squadron = false;
+                AutoDuty.Plugin.CurrentTerritoryContent = null;
+            }
+        }
+    }
+    internal bool trial = false;
+    public bool Trial
+    {
+        get => trial;
+        set
+        {
+            trial = value;
+            if (value)
+            {
+                Variant = false;
+                Raid = false;
+                Regular = false;
+                Support = false;
+                Trust = false;
+                Squadron = false;
+                AutoDuty.Plugin.CurrentTerritoryContent = null;
+            }
+        }
+    }
+    internal bool raid = false;
+    public bool Raid
+    {
+        get => raid;
+        set
+        {
+            raid = value;
+            if (value)
+            {
+                Variant = false;
+                Trial = false;
+                Regular = false;
+                Support = false;
+                Trust = false;
+                Squadron = false;
+                AutoDuty.Plugin.CurrentTerritoryContent = null;
+            }
+        }
+    }
+    internal bool variant = false;
+    public bool Variant
+    {
+        get => variant;
+        set
+        {
+            variant = value;
+            if (value)
+            {
+                Raid = false;
+                Trial = false;
+                Regular = false;
+                Support = false;
+                Trust = false;
+                Squadron = false;
+                AutoDuty.Plugin.CurrentTerritoryContent = null;
+            }
+        }
+    }
+    public bool Unsynced = false;
+    public bool HideUnavailableDuties = false;
     
     //Overlay Config Options
     public bool ShowOverlay = true;
@@ -571,8 +697,10 @@ public static class ConfigTab
         {
             ImGui.PushItemWidth(100 * ImGuiHelpers.GlobalScale);
             if (ImGui.InputInt("(s) Wait time between loops", ref Configuration.WaitTimeBeforeAfterLoopActions))
+            {
                 if (Configuration.WaitTimeBeforeAfterLoopActions < 0) Configuration.WaitTimeBeforeAfterLoopActions = 0;
-            Configuration.Save();
+                Configuration.Save();
+            }
             ImGui.PopItemWidth();
             ImGuiComponents.HelpMarker("Will delay all AutoDuty between-loop Processes for X seconds.");
             ImGui.Separator();
