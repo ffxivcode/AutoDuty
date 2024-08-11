@@ -16,7 +16,7 @@
       {
         "version": 114,
         "change": "Added StopForCombat to avoid potentially getting stuck on Fence, and a Wait step for before the boss to avoid leaving duty early"
-      },
+      }
     ],
     "notes": []
   }
