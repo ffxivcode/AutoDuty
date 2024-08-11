@@ -238,25 +238,9 @@ public class Configuration : IPluginConfiguration
     public int AutoRepairPct = 50;
     internal bool autoRepairSelf = false;
     public bool AutoRepairSelf 
-    { 
-        get => autoRepairSelf; 
-        set
-        {
-            autoRepairSelf = value;
-            if (value)
-                AutoRepairCity = false;
-        }
-    }
-    internal bool autoRepairCity = true;
-    public bool AutoRepairCity
     {
-        get => autoRepairCity;
-        set
-        {
-            autoRepairCity = value;
-            if (value)
-                AutoRepairSelf = false;
-        }
+        get => autoRepairSelf; 
+        set => autoRepairSelf = value;
     }
 
     //Between Loop Config Options
@@ -659,30 +643,44 @@ public static class ConfigTab
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will use Boiled Eggs in inventory for +3% Exp.");
 
+            if (ImGui.Checkbox("Auto Repair", ref Configuration.AutoRepair)) 
+                Configuration.Save();
 
-            if (ImGui.Checkbox("Auto Repair via Self", ref Configuration.autoRepairSelf))
+            using (ImRaii.Disabled(!Configuration.AutoRepair))
             {
-                Configuration.AutoRepairSelf = Configuration.autoRepairSelf;
-                Configuration.Save();
-            }
-            ImGuiComponents.HelpMarker("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
-            if (ImGui.Checkbox("Auto Repair via CityNpc", ref Configuration.autoRepairCity))
-            {
-                Configuration.AutoRepairCity = Configuration.autoRepairCity;
-                Configuration.Save();
-            }
-            ImGuiComponents.HelpMarker("Will use Npc near Inn to Repair.");
-            using (var d1 = ImRaii.Disabled(!Configuration.autoRepairSelf && !Configuration.autoRepairCity))
-            {
-                if (ImGui.Checkbox("Trigger Auto Repair @", ref Configuration.AutoRepair))
+                ImGui.SameLine();
+
+                bool selfRepair = Configuration.autoRepairSelf;
+
+                if (ImGui.RadioButton("Self", selfRepair))
+                {
+                    Configuration.AutoRepairSelf = true;
                     Configuration.Save();
+                }
+                ImGui.SameLine();
+                ImGuiComponents.HelpMarker("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
+                ImGui.SameLine();
+                
+                bool cityRepair = !Configuration.autoRepairSelf;
+                if (ImGui.RadioButton("CityNpc", !selfRepair))
+                {
+                    Configuration.AutoRepairSelf = false;
+                    Configuration.Save();
+                }
+                ImGui.SameLine();
+                ImGuiComponents.HelpMarker("Will use Npc near Inn to Repair.");
+            }
 
-                ImGui.SameLine(0, 5);
+            using (var d1 = ImRaii.Disabled(!Configuration.AutoRepair))
+            {
+                ImGui.Indent();
+                ImGui.Text("Trigger @");
+                ImGui.SameLine();
                 ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
                 if (ImGui.SliderInt("##Repair@", ref Configuration.AutoRepairPct, 1, 99, "%d%%"))
                     Configuration.Save();
                 ImGui.PopItemWidth();
-
+                ImGui.Unindent();
             }
         }
 
