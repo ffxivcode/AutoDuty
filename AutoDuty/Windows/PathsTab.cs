@@ -62,7 +62,15 @@ namespace AutoDuty.Windows
                 CheckBoxOnChange();
 
             ImGui.PopStyleColor();
-
+            ImGui.SameLine();
+            using (var savedPathsDisabled = ImRaii.Disabled(!Plugin.Configuration.PathSelections.Any(kvp => kvp.Value.Any())))
+            {
+                if (ImGui.Button("Clear all cached classes"))
+                {
+                    Plugin.Configuration.PathSelections.Clear();
+                    Plugin.Configuration.Save();
+                }
+            }
 
 
             ImGuiStylePtr style = ImGui.GetStyle();
@@ -120,7 +128,7 @@ namespace AutoDuty.Windows
 
                         if (!multiple)
                         {
-                            ImGuiHelper.ColoredText(container.ColoredNameRegex, container.Content.DisplayName);
+                            ImGuiHelper.ColoredText(container.ColoredNameRegex, container.Content.DisplayName!);
                             ImGui.SameLine(0, 0);
                             ImGui.Text(" => ");
                             ImGui.SameLine(0, 0);

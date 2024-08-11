@@ -1,6 +1,7 @@
 ﻿using ECommons.Automation;
 using ECommons.Reflection;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 #nullable disable
 
 namespace AutoDuty.Helpers
@@ -27,6 +28,11 @@ namespace AutoDuty.Helpers
             internal static bool GetState => DalamudReflector.TryGetDalamudPlugin("RotationSolver", out var pl, false, true) && (bool)Assembly.GetAssembly(pl.GetType()).GetType("RotationSolver.Commands.RSCommands").GetField("_lastState", All).GetValue(null);
 
             internal static StateTypeEnum GetStateType => DalamudReflector.TryGetDalamudPlugin("RotationSolver", out var pl, false, true) && ((string)Assembly.GetAssembly(pl.GetType()).GetType("RotationSolver.Commands.RSCommands").GetField("_stateString", All).GetValue(null)).Equals("Manual Target") ? StateTypeEnum.Manual : ((string)Assembly.GetAssembly(pl.GetType()).GetType("RotationSolver.Commands.RSCommands").GetField("_stateString", All).GetValue(null)).Equals("Off") ? StateTypeEnum.Off : StateTypeEnum.Auto;
+
+            internal static void SetConfigValue(string configName, string value)
+            {
+                //not yet implemented
+            }
 
             internal static void SetState(StateTypeEnum stateType)
             {

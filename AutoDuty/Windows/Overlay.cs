@@ -15,16 +15,11 @@ public unsafe class Overlay : Window
 {
     public Overlay() : base("AutoDuty Overlay", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize)
     {
-        if (AutoDuty.Plugin.Configuration.OverlayNoBG)
-            Flags |= ImGuiWindowFlags.NoBackground;
 
-        if (AutoDuty.Plugin.Configuration.LockOverlay)
-            Flags |= ImGuiWindowFlags.NoMove;
     }
 
     private static string hideText = " ";
     private static string hideTextAction = " ";
-    
     private static string loopsText = "";
 
     public override void Draw()
@@ -51,7 +46,7 @@ public unsafe class Overlay : Window
                     if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
                     {
                         this.IsOpen = false;
-                        Plugin.Configuration.OpenOverlay = false;
+                        Plugin.Configuration.ShowOverlay = false;
                         Plugin.MainWindow.IsOpen = true;
                     }
                 }
@@ -73,14 +68,14 @@ public unsafe class Overlay : Window
                 }
             }
             ImGui.PushItemWidth(75 * ImGuiHelpers.GlobalScale);
-            if (Plugin.Configuration.LoopsInputInt)
+            if (Plugin.Configuration.UseSliderInputs)
             {
-                if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
+                if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
                     Plugin.Configuration.Save();
             }
             else
             {
-                if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
+                if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
                     Plugin.Configuration.Save();
             }
             ImGui.PopItemWidth();
@@ -96,16 +91,16 @@ public unsafe class Overlay : Window
                 if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
                 {
                     this.IsOpen = false;
-                    Plugin.Configuration.OpenOverlay = false;
+                    Plugin.Configuration.ShowOverlay = false;
                     Plugin.MainWindow.IsOpen = true;
                 }
             }
 
-            if (!Plugin.Configuration.HideDungeonText)
+            if (Plugin.Configuration.ShowDutyLoopText)
             {
                 if (ImGui.Button(hideText))
                 {
-                    Plugin.Configuration.HideDungeonText = true;
+                    Plugin.Configuration.ShowDutyLoopText = false;
                     Plugin.Configuration.Save();
                 }
 
@@ -126,11 +121,11 @@ public unsafe class Overlay : Window
         }
         if (Plugin.InDungeon || Plugin.Running || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || DesynthHelper.DesynthRunning || QueueHelper.QueueRunning)
         {
-            if (!Plugin.Configuration.HideActionText)
+            if (Plugin.Configuration.ShowActionText)
             {
                 if (ImGui.Button(hideTextAction))
                 {
-                    Plugin.Configuration.HideActionText = true;
+                    Plugin.Configuration.ShowActionText = false;
                     Plugin.Configuration.Save();
                 }
 

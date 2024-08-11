@@ -26,7 +26,11 @@ namespace AutoDuty.Helpers
                 else if (configType == "System.String")
                     field.SetValue(AutoDuty.Plugin.Configuration, configValue);
                 else
+                {
                     Svc.Log.Error($"Unable to set config setting: {field.Name.Replace(">k__BackingField", "").Replace("<", "")}, value must be of type: {field.FieldType.ToString().Replace("System.", "")}");
+                    return false;
+                }
+                AutoDuty.Plugin.Configuration.Save();
             }
             return false;
         }
