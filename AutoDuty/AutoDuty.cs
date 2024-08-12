@@ -185,7 +185,7 @@ public sealed class AutoDuty : IDalamudPlugin
             PluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
-            //Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
+            Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
         }
