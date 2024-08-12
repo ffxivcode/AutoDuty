@@ -189,7 +189,7 @@ namespace AutoDuty.Windows
                 if (!Plugin.Running && !Plugin.Overlay.IsOpen)
                     MainWindow.GotoAndActions();
 
-                using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.Trust && Plugin.Configuration.SelectedTrusts.Count(x => x is null) > 0)))
+                using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.Trust && Plugin.Configuration.SelectedTrustMembers.Count(x => x is null) > 0)))
                 {
                     if (!Plugin.Running)
                     {
@@ -308,6 +308,43 @@ namespace AutoDuty.Windows
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref Plugin.Configuration.HideUnavailableDuties))
                             Plugin.Configuration.Save();
 
+                        if (Plugin.Configuration.Support || Plugin.Configuration.Trust)
+                        {
+                            ImGui.SameLine();
+                            bool leveling = _support ? Plugin.SupportLeveling :
+                                            _trust   ? Plugin.TrustLeveling : false;
+                            bool equip = Plugin.Configuration.AutoEquipRecommendedGear;
+                            if (ImGui.Checkbox("Leveling", ref leveling))
+                            {
+                                if (leveling)
+                                {
+                                    if (equip)
+                                        AutoEquipHelper.Invoke();
+
+                                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Plugin.Configuration.Trust);
+                                    if (duty != null)
+                                    {
+                                        _dutySelected                  = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
+                                        Plugin.CurrentTerritoryContent = duty;
+
+                                        _dutySelected.SelectPath(out Plugin.CurrentPath);
+
+                                        if (Plugin.Configuration.Support)
+                                            Plugin.SupportLeveling            = leveling;
+                                        else if (Plugin.Configuration.Trust) 
+                                            Plugin.TrustLeveling = leveling;
+                                    }
+                                }
+                                else
+                                {
+                                    if (Plugin.Configuration.Support)
+                                        Plugin.SupportLeveling = leveling;
+                                    else if (Plugin.Configuration.Trust)
+                                        Plugin.TrustLeveling = leveling;
+                                }
+                            }
+                        }
+
                         if (Plugin.Configuration.Trust)
                         {
                             if (_dutySelected != null && _dutySelected.Content.TrustMembers.Count > 0)
@@ -317,103 +354,84 @@ namespace AutoDuty.Windows
                                 ImGui.Columns(3, null, false);
 
                                 TrustManager.ResetTrustIfInvalid();
-                                for (int i = 0; i < Plugin.Configuration.SelectedTrusts.Length; i++)
+                                for (int i = 0; i < Plugin.Configuration.SelectedTrustMembers.Length; i++)
                                 {
-                                    if (Plugin.Configuration.SelectedTrusts[i] is null)
+                                    TrustMemberName? member = Plugin.Configuration.SelectedTrustMembers[i];
+
+                                    if (member is null)
                                         continue;
 
-                                    var member = Plugin.Configuration.SelectedTrusts[i];
-                                    if (!_dutySelected.Content.TrustMembers.Any(x => x.Name == member.Name))
+                                    if (_dutySelected.Content.TrustMembers.All(x => x.MemberName != member))
                                     {
-                                        Svc.Log.Debug($"Killing {Plugin.Configuration.SelectedTrusts[i].Name}");
-                                        Plugin.Configuration.SelectedTrusts[i] = null;
+                                        Svc.Log.Debug($"Killing {member}");
+                                        Plugin.Configuration.SelectedTrustMembers[i] = null;
                                     }
                                 }
 
-                                foreach (var member in _dutySelected.Content.TrustMembers)
+                                using (ImRaii.Disabled(Plugin.TrustLevelingEnabled))
                                 {
-                                    bool       enabled        = Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Name == member.Name);
-                                    CombatRole playerRole     = Player.Job.GetRole();
-                                    int        numberSelected = Plugin.Configuration.SelectedTrusts.Count(x => x != null);
-
-                                    bool canSelect = Plugin.Configuration.SelectedTrusts.CanSelectMember(member, playerRole) && member.Level >= _dutySelected.Content.ClassJobLevelRequired;
-
-                                    using (var disabled = ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
+                                    foreach (TrustMember member in _dutySelected.Content.TrustMembers)
                                     {
-                                        if (ImGui.Checkbox($"###{member.Index}{_dutySelected.id}", ref enabled))
+                                        bool       enabled        = Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName);
+                                        CombatRole playerRole     = Player.Job.GetRole();
+                                        int        numberSelected = Plugin.Configuration.SelectedTrustMembers.Count(x => x != null);
+
+                                        TrustMember?[] members = Plugin.Configuration.SelectedTrustMembers.Select(tmn => tmn != null ? TrustManager.members[(TrustMemberName)tmn] : null).ToArray();
+
+                                        bool canSelect = members.CanSelectMember(member, playerRole) && member.Level >= _dutySelected.Content.ClassJobLevelRequired;
+
+                                        using (var disabled = ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
                                         {
-                                            if (enabled)
+                                            if (ImGui.Checkbox($"###{member.Index}{_dutySelected.id}", ref enabled))
                                             {
-                                                for (int i = 0; i < 3; i++)
+                                                if (enabled)
                                                 {
-                                                    if (Plugin.Configuration.SelectedTrusts[i] is null)
+                                                    for (int i = 0; i < 3; i++)
                                                     {
-                                                        Plugin.Configuration.SelectedTrusts[i] = member;
-                                                        break;
+                                                        if (Plugin.Configuration.SelectedTrustMembers[i] is null)
+                                                        {
+                                                            Plugin.Configuration.SelectedTrustMembers[i] = member.MemberName;
+                                                            break;
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                if (Plugin.Configuration.SelectedTrusts.Where(x => x != null).Any(x => x.Name == member.Name))
+                                                else
                                                 {
-                                                    int idx = Plugin.Configuration.SelectedTrusts.IndexOf(x => x != null && x.Name == member.Name);
-                                                    Plugin.Configuration.SelectedTrusts[idx] = null;
+                                                    if (Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName))
+                                                    {
+                                                        int idx = Plugin.Configuration.SelectedTrustMembers.IndexOf(x => x != null && x == member.MemberName);
+                                                        Plugin.Configuration.SelectedTrustMembers[idx] = null;
+                                                    }
                                                 }
+
+                                                Plugin.Configuration.Save();
                                             }
-                                            Plugin.Configuration.Save();
                                         }
-                                    }
 
-                                    ImGui.SameLine(0, 2);
-                                    ImGui.SetItemAllowOverlap();
-                                    ImGui.TextColored(member.Role switch
-                                    {
-                                        TrustRole.DPS => ImGuiHelper.RoleDPSColor,
-                                        TrustRole.Healer => ImGuiHelper.RoleHealerColor,
-                                        TrustRole.Tank => ImGuiHelper.RoleTankColor,
-                                        TrustRole.AllRounder => ImGuiHelper.RoleGrahaColor,
-                                        _ => Vector4.One
-                                    }, member.Name);
-                                    ImGui.SameLine(0, 2);
-                                    ImGui.Text(member.Level.ToString());
+                                        ImGui.SameLine(0, 2);
+                                        ImGui.SetItemAllowOverlap();
+                                        ImGui.TextColored(member.Role switch
+                                        {
+                                            TrustRole.DPS => ImGuiHelper.RoleDPSColor,
+                                            TrustRole.Healer => ImGuiHelper.RoleHealerColor,
+                                            TrustRole.Tank => ImGuiHelper.RoleTankColor,
+                                            TrustRole.AllRounder => ImGuiHelper.RoleAllRounderColor,
+                                            _ => Vector4.One
+                                        }, member.Name);
+                                        if (member.Level > 0)
+                                        {
+                                            ImGui.SameLine(0, 2);
+                                            ImGui.Text(member.Level.ToString());
+                                        }
 
-
-                                    ImGui.NextColumn();
-                                }
-                                ImGui.Columns(1, null, false);
-                            }
-                        }
-
-
-
-                        if (Plugin.Configuration.Support)
-                        {
-                            ImGui.SameLine();
-                            bool leveling = Plugin.Leveling;
-                            bool equip = Plugin.Configuration.AutoEquipRecommendedGear;
-                            if (ImGui.Checkbox("Leveling", ref leveling))
-                            {
-                                if (leveling)
-                                {
-                                    if (equip){
-                                        AutoEquipHelper.Invoke();
-                                        equip = false;
-                                    }
-                                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty();
-                                    if (duty != null)
-                                    {
-                                        _dutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
-                                        Plugin.CurrentTerritoryContent = duty;
-
-                                        _dutySelected.SelectPath(out Plugin.CurrentPath);
-                                        Plugin.Leveling = leveling;
+                                        ImGui.NextColumn();
                                     }
                                 }
-                                else
-                                {
-                                    Plugin.Leveling = leveling;
-                                }
+
+                                if(ImGui.Button("Refresh"))
+                                    TrustManager.ClearCachedLevels();
+                                ImGui.NextColumn();
+                                ImGui.Columns(1, null, true);
                             }
                             ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows this list instead:\nL16-L23 (i0): TamTara \nL24-31 (i0): Totorak\nL32-40 (i0): Brayflox\nL41-52 (i0): Stone Vigil\nL53-60 (i105): Sohm Al\nL61-66 (i240): Sirensong Sea\nL67-70 (i255): Doma Castle\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
                         }

@@ -12,10 +12,10 @@ namespace AutoDuty.Helpers
         public static readonly Vector4 VersionColor = new(0, 1, 1, 1);
         public static readonly Vector4 LinkColor = new(0, 200, 238, 1);
 
-        public static readonly Vector4 RoleTankColor   = new(0, 0.5f, 1, 1);
-        public static readonly Vector4 RoleHealerColor = new(0, 1, 0, 1);
-        public static readonly Vector4 RoleDPSColor    = new(1, 0, 0, 1);
-        public static readonly Vector4 RoleGrahaColor  = new(1, 1, 0.5f, 1);
+        public static readonly Vector4 RoleTankColor       = new(0, 0.5f, 1, 1);
+        public static readonly Vector4 RoleHealerColor     = new(0, 1, 0, 1);
+        public static readonly Vector4 RoleDPSColor        = new(1, 0, 0, 1);
+        public static readonly Vector4 RoleAllRounderColor = new(1, 1, 0.5f, 1);
 
 
         public const string idColor               = "<0.5,0.5,1>";

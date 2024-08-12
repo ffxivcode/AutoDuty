@@ -52,8 +52,15 @@ public sealed class AutoDuty : IDalamudPlugin
     internal                        uint                    CurrentTerritoryType    = 0;
     internal                        int                     CurrentPath             = -1;
 
-    internal bool Leveling            = false;
-    internal bool LevelingEnabled => Configuration.Support && Leveling;
+    internal bool SupportLeveling = false;
+    internal bool SupportLevelingEnabled => Configuration.Support && this.SupportLeveling;
+
+    internal bool TrustLeveling = false;
+    internal bool TrustLevelingEnabled => Configuration.Trust && this.TrustLeveling;
+
+    internal bool LevelingEnabled => (this.Configuration.Support  || this.Configuration.Trust)    &&
+                                     (!this.Configuration.Support || this.SupportLevelingEnabled) &&
+                                     (!this.Configuration.Trust   || this.TrustLevelingEnabled);
 
 
     internal string Name => "AutoDuty";
@@ -314,15 +321,23 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
                 }
 
+                if (this.TrustLevelingEnabled)
+                {
+                    TrustManager.ClearCachedLevels(this.CurrentTerritoryContent);
+                    this._trustManager.GetLevels(this.CurrentTerritoryContent);
+                    this.TaskManager.DelayNext(50);
+                    this.TaskManager.Enqueue(() => this._trustManager.GetLevelsCheck(), "Loop-RecheckingTrustLevels");
+                }
+
                 TaskManager.Enqueue(() => {
-                    if (StopLoop)
-                    {
-                        Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");
-                        LoopsCompleteActions();
-                    }
-                    else
-                        LoopTasks();
-                },"Loop-CheckStopLoop");
+                                        if (StopLoop)
+                                        {
+                                            Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");
+                                            LoopsCompleteActions();
+                                        }
+                                        else
+                                            LoopTasks();
+                                    },"Loop-CheckStopLoop");
             }
             else
                 LoopsCompleteActions();
@@ -379,10 +394,10 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
         }
-        if (LevelingEnabled)
+        if (this.LevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
-            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty();
+            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(this.Configuration.Trust);
             if (duty != null)
             {
                 Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
@@ -787,9 +802,9 @@ public sealed class AutoDuty : IDalamudPlugin
             Job curJob = Player.GetJob();
             if (curJob != this.JobLastKnown)
             {
-                if (LevelingEnabled)
+                if (this.LevelingEnabled)
                 {
-                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty();
+                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(this.Configuration.Trust);
                     if (duty != null)
                     {
                         Plugin.CurrentTerritoryContent = duty;
@@ -799,7 +814,10 @@ public sealed class AutoDuty : IDalamudPlugin
                     else
                     {
                         Plugin.CurrentTerritoryContent = null;
-                        this.Leveling                  = false;
+                        if (this.Configuration.Support)
+                            this.SupportLeveling = false;
+                        else if (this.Configuration.Trust)
+                            this.TrustLeveling = false;
                         this.CurrentPath               = -1;
                     }
                 }

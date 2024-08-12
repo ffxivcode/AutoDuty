@@ -23,16 +23,20 @@ namespace AutoDuty.Managers
         internal static void PopulateTrustMembers()
         {
             ExcelSheet<DawnMemberUIParam>? dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
-            members.Add(TrustMemberName.Alphinaud, new TrustMember { Index = 0, Name = dawnSheet!.GetRow(1)!.Unknown0.RawString, Role = TrustRole.Healer }); // Alphinaud
-            members.Add(TrustMemberName.Alisaie, new TrustMember { Index = 1, Name = dawnSheet.GetRow(2)!.Unknown0.RawString, Role = TrustRole.DPS });    // Alisaie
-            members.Add(TrustMemberName.Thancred, new TrustMember { Index = 2, Name = dawnSheet.GetRow(3)!.Unknown0.RawString, Role = TrustRole.Tank });   // Thancred
-            members.Add(TrustMemberName.Urianger, new TrustMember { Index = 3, Name = dawnSheet.GetRow(5)!.Unknown0.RawString, Role = TrustRole.Healer }); // Urianger
-            members.Add(TrustMemberName.Yshtola, new TrustMember { Index = 4, Name = dawnSheet.GetRow(6)!.Unknown0.RawString, Role = TrustRole.DPS });    // Y'shtola
-            members.Add(TrustMemberName.Ryne, new TrustMember { Index = 5, Name = dawnSheet.GetRow(7)!.Unknown0.RawString, Role = TrustRole.DPS });    //Ryne
-            members.Add(TrustMemberName.Estinien, new TrustMember { Index = 5, Name = dawnSheet.GetRow(12)!.Unknown0.RawString, Role = TrustRole.DPS });    //Estinien
-            members.Add(TrustMemberName.Graha, new TrustMember { Index = 6, Name = dawnSheet.GetRow(10)!.Unknown0.RawString, Role = TrustRole.AllRounder });  //G'raha
-            members.Add(TrustMemberName.Zero, new TrustMember { Index = 7, Name = dawnSheet.GetRow(41)!.Unknown0.RawString, Role = TrustRole.DPS });    // Zero.. bit random
-            members.Add(TrustMemberName.Krile, new TrustMember { Index = 7, Name = dawnSheet.GetRow(60)!.Unknown0.RawString, Role = TrustRole.DPS });    // Krile
+
+            void AddMember(TrustMemberName name, uint index, TrustRole role, uint levelCap = 100) =>
+                members.Add(name, new TrustMember { Index = index, Name = dawnSheet!.GetRow((uint)name)!.Unknown0.RawString, Role = role, MemberName = name, LevelCap = levelCap});
+
+            AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer);
+            AddMember(TrustMemberName.Alisaie,   1, TrustRole.DPS);
+            AddMember(TrustMemberName.Thancred,  2, TrustRole.Tank);
+            AddMember(TrustMemberName.Urianger,  3, TrustRole.Healer);
+            AddMember(TrustMemberName.Yshtola,   4, TrustRole.DPS);
+            AddMember(TrustMemberName.Ryne,      5, TrustRole.DPS, 80);
+            AddMember(TrustMemberName.Estinien,  5, TrustRole.DPS);
+            AddMember(TrustMemberName.Graha,     6, TrustRole.AllRounder);
+            AddMember(TrustMemberName.Zero,      7, TrustRole.DPS, 90);
+            AddMember(TrustMemberName.Krile,     7, TrustRole.DPS);
         }
 
 
@@ -81,23 +85,26 @@ namespace AutoDuty.Managers
         {
             if (GenericHelpers.TryGetAddonByName<AtkUnitBase>("Dawn", out var addon))
             {
-                if (AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null) == 3)
+
+                if (AutoDuty.Plugin.Configuration.SelectedTrustMembers.Count(x => x is not null) == 3)
                 {
-                    foreach (var member in AutoDuty.Plugin.Configuration.SelectedTrusts.OrderBy(x => x.Role))
-                        Callback.Fire(addon, true, 12, member.Index);
+                    foreach (TrustMemberName member in AutoDuty.Plugin.Configuration.SelectedTrustMembers.OrderBy(x => members[(TrustMemberName)x!].Role))
+                        Callback.Fire(addon, true, 12, members[member].Index);
                 }
             }
         }
 
         public static void ResetTrustIfInvalid()
         {
-            if (AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x is not null) == 3)
+            if (AutoDuty.Plugin.Configuration.SelectedTrustMembers.Count(x => x is not null) == 3)
             {
                 CombatRole playerRole = Player.Job.GetRole();
 
-                int dps = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x?.Role is TrustRole.DPS);
-                int healers = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x?.Role is TrustRole.Healer);
-                int tanks = AutoDuty.Plugin.Configuration.SelectedTrusts.Count(x => x?.Role is TrustRole.Tank);
+                TrustMember[] trustMembers = AutoDuty.Plugin.Configuration.SelectedTrustMembers.Select(name => members[(TrustMemberName)name!]).ToArray();
+
+                int dps     = trustMembers.Count(x => x.Role is TrustRole.DPS);
+                int healers = trustMembers.Count(x => x.Role is TrustRole.Healer);
+                int tanks   = trustMembers.Count(x => x.Role is TrustRole.Tank);
 
                 bool needsReset = playerRole switch
                 {
@@ -109,7 +116,7 @@ namespace AutoDuty.Managers
 
                 if (needsReset)
                 {
-                    AutoDuty.Plugin.Configuration.SelectedTrusts = new TrustMember[3];
+                    AutoDuty.Plugin.Configuration.SelectedTrustMembers = new TrustMemberName?[3];
                     AutoDuty.Plugin.Configuration.Save();
                 }
             }
@@ -130,7 +137,23 @@ namespace AutoDuty.Managers
             }
         }
 
+        internal static void ClearCachedLevels()
+        {
+            foreach ((TrustMemberName _, TrustMember? member) in members) 
+                member.Level = 0;
+        }
+
+        internal static void ClearCachedLevels(Content content)
+        {
+            foreach (TrustMember member in content.TrustMembers)
+                member.Level = 0;
+        }
+
+        internal bool GetLevelsCheck() => 
+            !this.currentlyGettingLevels;
+
         private bool currentlyGettingLevels;
+
         internal unsafe void GetLevels(Content? content)
         {
             if (this.currentlyGettingLevels)
@@ -178,11 +201,11 @@ namespace AutoDuty.Managers
 
                     if (content.TrustMembers[index].Level <= 0)
                     {
-                        _taskManager.Enqueue(() => Callback.Fire(addon, true, 16, index));
-                        _taskManager.Enqueue(() => content.TrustMembers[index].Level = TrustHelper.GetLevelFromTrustWindow(addon));
+                        _taskManager.EnqueueImmediate(() => Callback.Fire(addon, true, 16, index));
+                        _taskManager.EnqueueImmediate(() => content.TrustMembers[index].Level = TrustHelper.GetLevelFromTrustWindow(addon));
                     }
                 }
-                _taskManager.Enqueue(() =>
+                _taskManager.EnqueueImmediate(() =>
                 {
                     if (!wasOpen)
                         AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Hide();
@@ -191,8 +214,8 @@ namespace AutoDuty.Managers
                 }, "TrustLevelCheck10");
                 if (!wasOpen)
                 {
-                    _taskManager.Enqueue(() => !GenericHelpers.IsAddonReady(addon), "TrustLevelCheck11");
-                    _taskManager.Enqueue(() => !(this.currentlyGettingLevels = false), "TrustLevelCheck12");
+                    _taskManager.EnqueueImmediate(() => !GenericHelpers.IsAddonReady(addon), "TrustLevelCheck11");
+                    _taskManager.EnqueueImmediate(() => !(this.currentlyGettingLevels = false), "TrustLevelCheck12");
                 }
             }, "TrustLevelCheck9");
         }
