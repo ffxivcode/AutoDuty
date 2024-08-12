@@ -31,6 +31,8 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using static AutoDuty.Windows.ConfigTab;
+using static FFXIVClientStructs.FFXIV.Common.Component.BGCollision.MeshPCB;
+using System.Diagnostics;
 
 namespace AutoDuty;
 
@@ -157,7 +159,10 @@ public sealed class AutoDuty : IDalamudPlugin
 
             if (Configuration.ShowOverlay && (!Configuration.HideOverlayWhenStopped || Started || Running))
                 SchedulerHelper.ScheduleAction("ShowOverlay", () => Overlay.IsOpen = true, () => ObjectHelper.IsReady);
-            
+
+            if (Configuration.ShowMainWindowOnStartup)
+                this.OpenMainUI();
+
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "\n/autoduty -> opens main window\n" +
@@ -187,7 +192,7 @@ public sealed class AutoDuty : IDalamudPlugin
             PluginInterface.UiBuilder.OpenMainUi += OpenMainUI;
 
             Svc.Framework.Update += Framework_Update;
-            //Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
+            Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
         }
@@ -441,10 +446,49 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
-        if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_Client)
+        if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_PC)
+        {
+            if (!Configuration.TerminationKeepActive)
+            {
+                Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
+                Configuration.Save();
+            }
+
+            if (OperatingSystem.IsWindows())
+            {
+                ProcessStartInfo startinfo = new("shutdown.exe", "-s -t 20");
+                Process.Start(startinfo);
+            } 
+            else if (OperatingSystem.IsLinux())
+            {
+                //Educated guess
+                ProcessStartInfo startinfo = new("shutdown", "-t 20");
+                Process.Start(startinfo);
+            } 
+            else if (OperatingSystem.IsMacOS())
+            {
+                //hell if I know
+            }
             _chat.ExecuteCommand($"/xlkill");
+        }
+        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_Client)
+        {
+            if (!Configuration.TerminationKeepActive)
+            {
+                Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
+                Configuration.Save();
+            }
+
+            _chat.ExecuteCommand($"/xlkill");
+        }
         else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Logout)
         {
+            if (!Configuration.TerminationKeepActive)
+            {
+                Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
+                Configuration.Save();
+            }
+
             TaskManager.Enqueue(() => ObjectHelper.IsReady);
             TaskManager.DelayNext(2000);
             TaskManager.Enqueue(() => _chat.ExecuteCommand($"/logout"));

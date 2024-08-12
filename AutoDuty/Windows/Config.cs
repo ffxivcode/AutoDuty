@@ -164,7 +164,8 @@ public class Configuration : IPluginConfiguration
     }
     public bool Unsynced = false;
     public bool HideUnavailableDuties = false;
-    
+
+    public bool ShowMainWindowOnStartup = false;
     //Overlay Config Options
     public bool ShowOverlay = true;
     internal bool hideOverlayWhenStopped = false;
@@ -238,25 +239,9 @@ public class Configuration : IPluginConfiguration
     public int AutoRepairPct = 50;
     internal bool autoRepairSelf = false;
     public bool AutoRepairSelf 
-    { 
-        get => autoRepairSelf; 
-        set
-        {
-            autoRepairSelf = value;
-            if (value)
-                AutoRepairCity = false;
-        }
-    }
-    internal bool autoRepairCity = true;
-    public bool AutoRepairCity
     {
-        get => autoRepairCity;
-        set
-        {
-            autoRepairCity = value;
-            if (value)
-                AutoRepairSelf = false;
-        }
+        get => autoRepairSelf; 
+        set => autoRepairSelf = value;
     }
 
     //Between Loop Config Options
@@ -320,6 +305,7 @@ public class Configuration : IPluginConfiguration
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary = [];
     public int StopItemQtyInt = 1;
     public TerminationMode TerminationMethodEnum = TerminationMode.Do_Nothing;
+    public bool TerminationKeepActive = true;
 
     //BMAI Config Options
     public bool HideBossModAIConfig = false;
@@ -430,7 +416,8 @@ public static class ConfigTab
         Do_Nothing = 0,
         Logout = 1,
         Start_AR_Multi_Mode =2, 
-        Kill_Client = 3
+        Kill_Client = 3,
+        Kill_PC = 4
     }
     public enum Role : int
     {
@@ -481,40 +468,48 @@ public static class ConfigTab
 
         if (overlayHeaderSelected == true)
         {
+            ImGui.Columns(2, "##OverlayColumns", false);
+
             if (ImGui.Checkbox("Show Overlay", ref Configuration.ShowOverlay))
                 Configuration.Save();
 
             using (var openOverlayDisable = ImRaii.Disabled(!Configuration.ShowOverlay))
             {
-                ImGui.SameLine(0, 53);
+                ImGui.NextColumn();
+
+                //ImGui.SameLine(0, 53);
                 if (ImGui.Checkbox("Hide When Stopped", ref Configuration.hideOverlayWhenStopped))
                 {
                     Configuration.HideOverlayWhenStopped = Configuration.hideOverlayWhenStopped;
                     Configuration.Save();
                 }
-
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Lock Overlay", ref Configuration.lockOverlay))
                 {
                     Configuration.LockOverlay = Configuration.lockOverlay;
                     Configuration.Save();
                 }
-                ImGui.SameLine(0, 57);
+                ImGui.NextColumn();
+                //ImGui.SameLine(0, 57);
                 if (ImGui.Checkbox("Use Transparent BG", ref Configuration.overlayNoBG))
                 {
                     Configuration.OverlayNoBG = Configuration.overlayNoBG;
                     Configuration.Save();
                 }
-
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Show Duty/Loops Text", ref Configuration.ShowDutyLoopText))
                     Configuration.Save();
-
-                ImGui.SameLine(0, 5);
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Show AD Action Text", ref Configuration.ShowActionText))
                     Configuration.Save();
-                
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Use Slider Inputs", ref Configuration.UseSliderInputs))
                     Configuration.Save();
+                ImGui.Columns(1);
             }
+
+            if (ImGui.Checkbox("Show Main Window on Startup", ref Configuration.ShowMainWindowOnStartup))
+                Configuration.Save();
         }
 
         //Start of Duty Config Settings
@@ -560,7 +555,7 @@ public static class ConfigTab
                 ImGui.Text("Select Method: ");
                 ImGui.SameLine(0, 5);
                 ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                if (ImGui.BeginCombo(" ", EnumString(Configuration.LootMethodEnum)))
+                if (ImGui.BeginCombo("##ConfigLootMethod", EnumString(Configuration.LootMethodEnum)))
                 {
                     foreach (LootMethod lootMethod in Enum.GetValues(typeof(LootMethod)))
                     {
@@ -657,30 +652,44 @@ public static class ConfigTab
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will use Boiled Eggs in inventory for +3% Exp.");
 
+            if (ImGui.Checkbox("Auto Repair", ref Configuration.AutoRepair)) 
+                Configuration.Save();
 
-            if (ImGui.Checkbox("Auto Repair via Self", ref Configuration.autoRepairSelf))
+            using (ImRaii.Disabled(!Configuration.AutoRepair))
             {
-                Configuration.AutoRepairSelf = Configuration.autoRepairSelf;
-                Configuration.Save();
-            }
-            ImGuiComponents.HelpMarker("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
-            if (ImGui.Checkbox("Auto Repair via CityNpc", ref Configuration.autoRepairCity))
-            {
-                Configuration.AutoRepairCity = Configuration.autoRepairCity;
-                Configuration.Save();
-            }
-            ImGuiComponents.HelpMarker("Will use Npc near Inn to Repair.");
-            using (var d1 = ImRaii.Disabled(!Configuration.autoRepairSelf && !Configuration.autoRepairCity))
-            {
-                if (ImGui.Checkbox("Trigger Auto Repair @", ref Configuration.AutoRepair))
+                ImGui.SameLine();
+
+                bool selfRepair = Configuration.autoRepairSelf;
+
+                if (ImGui.RadioButton("Self", selfRepair))
+                {
+                    Configuration.AutoRepairSelf = true;
                     Configuration.Save();
+                }
+                ImGui.SameLine();
+                ImGuiComponents.HelpMarker("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
+                ImGui.SameLine();
+                
+                bool cityRepair = !Configuration.autoRepairSelf;
+                if (ImGui.RadioButton("CityNpc", !selfRepair))
+                {
+                    Configuration.AutoRepairSelf = false;
+                    Configuration.Save();
+                }
+                ImGui.SameLine();
+                ImGuiComponents.HelpMarker("Will use Npc near Inn to Repair.");
+            }
 
-                ImGui.SameLine(0, 5);
+            using (var d1 = ImRaii.Disabled(!Configuration.AutoRepair))
+            {
+                ImGui.Indent();
+                ImGui.Text("Trigger @");
+                ImGui.SameLine();
                 ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
                 if (ImGui.SliderInt("##Repair@", ref Configuration.AutoRepairPct, 1, 99, "%d%%"))
                     Configuration.Save();
                 ImGui.PopItemWidth();
-
+                ImGui.Unindent();
             }
         }
 
@@ -916,18 +925,27 @@ public static class ConfigTab
             ImGui.Text("On Completion of All Loops: ");
             ImGui.SameLine(0, 10);
             ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-            if (ImGui.BeginCombo(" ", EnumString(Configuration.TerminationMethodEnum)))
+            if (ImGui.BeginCombo("##ConfigTerminationMethod", EnumString(Configuration.TerminationMethodEnum)))
             {
                 foreach (TerminationMode terminationMode in Enum.GetValues(typeof(TerminationMode)))
                 {
-                    if (ImGui.Selectable(EnumString(terminationMode)))
-                    {
-                        Configuration.TerminationMethodEnum = terminationMode;
-                        Configuration.Save();
-                    }
+                    if (terminationMode != TerminationMode.Kill_PC || (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
+                        if (ImGui.Selectable(EnumString(terminationMode)))
+                        {
+                            Configuration.TerminationMethodEnum = terminationMode;
+                            Configuration.Save();
+                        }
                 }
                 ImGui.EndCombo();
-            }       
+            }
+
+            if (Configuration.TerminationMethodEnum is TerminationMode.Kill_Client or TerminationMode.Kill_PC or TerminationMode.Logout)
+            {
+                ImGui.Indent();
+                if(ImGui.Checkbox("Keep Termination option after execution ", ref Configuration.TerminationKeepActive))
+                    Configuration.Save();
+                ImGui.Unindent();
+            }
         }     
     }
 
