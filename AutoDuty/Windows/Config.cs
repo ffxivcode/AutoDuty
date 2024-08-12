@@ -167,7 +167,17 @@ public class Configuration : IPluginConfiguration
 
     public bool ShowMainWindowOnStartup = false;
     //Overlay Config Options
-    public bool ShowOverlay = true;
+    internal bool showOverlay = true;
+    public bool ShowOverlay
+    {
+        get => showOverlay;
+        set
+        {
+            showOverlay = value;
+            if (AutoDuty.Plugin.Overlay != null)
+                AutoDuty.Plugin.Overlay.IsOpen = value;
+        }
+    }
     internal bool hideOverlayWhenStopped = false;
     public bool HideOverlayWhenStopped
     {
@@ -467,9 +477,11 @@ public static class ConfigTab
         {
             ImGui.Columns(2, "##OverlayColumns", false);
 
-            if (ImGui.Checkbox("Show Overlay", ref Configuration.ShowOverlay))
+            if (ImGui.Checkbox("Show Overlay", ref Configuration.showOverlay))
+            {
+                Configuration.ShowOverlay = Configuration.showOverlay;
                 Configuration.Save();
-
+            }
             using (var openOverlayDisable = ImRaii.Disabled(!Configuration.ShowOverlay))
             {
                 ImGui.NextColumn();
@@ -796,6 +808,7 @@ public static class ConfigTab
             }
             if (Configuration.UnhideAM)
             {
+                ImGui.SameLine(0, 5);
                 if (ImGui.Checkbox("AM", ref Configuration.AM))
                 {
                     if (!AM_IPCSubscriber.IsEnabled)

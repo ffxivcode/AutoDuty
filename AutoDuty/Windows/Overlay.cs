@@ -13,7 +13,7 @@ namespace AutoDuty.Windows;
 
 public unsafe class Overlay : Window
 {
-    public Overlay() : base("AutoDuty Overlay", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize)
+    public Overlay() : base("AutoDuty Overlay", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize)
     {
 
     }
@@ -51,7 +51,7 @@ public unsafe class Overlay : Window
                     }
                 }
             }
-    }
+        }
 
         if (Plugin.InDungeon || Plugin.Running)
         {
