@@ -152,7 +152,10 @@ public sealed class AutoDuty : IDalamudPlugin
 
             if (Configuration.ShowOverlay && (!Configuration.HideOverlayWhenStopped || Started || Running))
                 SchedulerHelper.ScheduleAction("ShowOverlay", () => Overlay.IsOpen = true, () => ObjectHelper.IsReady);
-            
+
+            if (Configuration.ShowMainWindowOnStartup)
+                this.OpenMainUI();
+
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "\n/autoduty -> opens main window\n" +

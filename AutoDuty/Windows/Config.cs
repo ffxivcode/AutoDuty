@@ -164,7 +164,8 @@ public class Configuration : IPluginConfiguration
     }
     public bool Unsynced = false;
     public bool HideUnavailableDuties = false;
-    
+
+    public bool ShowMainWindowOnStartup = false;
     //Overlay Config Options
     public bool ShowOverlay = true;
     internal bool hideOverlayWhenStopped = false;
@@ -467,40 +468,48 @@ public static class ConfigTab
 
         if (overlayHeaderSelected == true)
         {
+            ImGui.Columns(2, "##OverlayColumns", false);
+
             if (ImGui.Checkbox("Show Overlay", ref Configuration.ShowOverlay))
                 Configuration.Save();
 
             using (var openOverlayDisable = ImRaii.Disabled(!Configuration.ShowOverlay))
             {
-                ImGui.SameLine(0, 53);
+                ImGui.NextColumn();
+
+                //ImGui.SameLine(0, 53);
                 if (ImGui.Checkbox("Hide When Stopped", ref Configuration.hideOverlayWhenStopped))
                 {
                     Configuration.HideOverlayWhenStopped = Configuration.hideOverlayWhenStopped;
                     Configuration.Save();
                 }
-
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Lock Overlay", ref Configuration.lockOverlay))
                 {
                     Configuration.LockOverlay = Configuration.lockOverlay;
                     Configuration.Save();
                 }
-                ImGui.SameLine(0, 57);
+                ImGui.NextColumn();
+                //ImGui.SameLine(0, 57);
                 if (ImGui.Checkbox("Use Transparent BG", ref Configuration.overlayNoBG))
                 {
                     Configuration.OverlayNoBG = Configuration.overlayNoBG;
                     Configuration.Save();
                 }
-
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Show Duty/Loops Text", ref Configuration.ShowDutyLoopText))
                     Configuration.Save();
-
-                ImGui.SameLine(0, 5);
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Show AD Action Text", ref Configuration.ShowActionText))
                     Configuration.Save();
-                
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Use Slider Inputs", ref Configuration.UseSliderInputs))
                     Configuration.Save();
+                ImGui.Columns(1);
             }
+
+            if (ImGui.Checkbox("Show Main Window on Startup", ref Configuration.ShowMainWindowOnStartup))
+                Configuration.Save();
         }
 
         //Start of Duty Config Settings
