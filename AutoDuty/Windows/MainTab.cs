@@ -348,9 +348,9 @@ namespace AutoDuty.Windows
 
                         if (Plugin.Configuration.Trust)
                         {
+                            ImGui.Separator();
                             if (_dutySelected != null && _dutySelected.Content.TrustMembers.Count > 0)
                             {
-                                ImGui.Separator();
                                 ImGuiEx.LineCentered(() => ImGuiEx.TextUnderlined("Select your Trust Party"));
                                 ImGui.Columns(3, null, false);
 
@@ -381,7 +381,7 @@ namespace AutoDuty.Windows
 
                                         bool canSelect = members.CanSelectMember(member, playerRole) && member.Level >= _dutySelected.Content.ClassJobLevelRequired;
 
-                                        using (var disabled = ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
+                                        using (ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
                                         {
                                             if (ImGui.Checkbox($"###{member.Index}{_dutySelected.id}", ref enabled))
                                             {
@@ -433,6 +433,9 @@ namespace AutoDuty.Windows
                                     TrustManager.ClearCachedLevels();
                                 ImGui.NextColumn();
                                 ImGui.Columns(1, null, true);
+                            } else if (ImGui.Button("Refresh trust member levels"))
+                            {
+                                TrustManager.ClearCachedLevels();
                             }
                         }
 
