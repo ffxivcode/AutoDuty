@@ -6,6 +6,9 @@ namespace AutoDuty.Helpers
 {
     internal static class ConfigHelper
     {
+        private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+        private static string ConfigType(FieldInfo field) => field.FieldType.ToString();
+
         internal static bool ModifyConfig(string configName, string configValue)
         {
             FieldInfo? field = null;
@@ -38,6 +41,7 @@ namespace AutoDuty.Helpers
         internal static void ListConfig()
         {
             var i = Assembly.GetExecutingAssembly().GetType("AutoDuty.Windows.Configuration")?.GetFields(All);
+            if (i == null) return;
             foreach (var field in i)
             {
                 if (!field.FieldType.ToString().Contains("System.Collections",StringComparison.InvariantCultureIgnoreCase) && !field.FieldType.ToString().Contains("Dalamud.Plugin", StringComparison.InvariantCultureIgnoreCase) && !field.Name.Replace(">k__BackingField", "").Replace("<", "").Equals("Version",StringComparison.InvariantCultureIgnoreCase))
@@ -50,10 +54,6 @@ namespace AutoDuty.Helpers
             var i = Assembly.GetExecutingAssembly().GetType("AutoDuty.Windows.Configuration")?.GetFields(All);
             foreach (var field in i!)
             {
-                //Getting the Name
-                //Getting the Name and current value
-                //Getting the Type
-                //Svc.Log.Info($"{field.Name.Replace(">k__BackingField", "").Replace("<", "")} = {field.GetValue(AutoDuty.Plugin.Configuration)} typeOf {field.FieldType}");
                 if (field.Name.Replace(">k__BackingField", "").Replace("<", "").Equals("Version", StringComparison.InvariantCultureIgnoreCase))
                     continue;
                 if (field.Name.Replace(">k__BackingField", "").Replace("<", "").Equals(configName, StringComparison.InvariantCultureIgnoreCase))
@@ -62,10 +62,5 @@ namespace AutoDuty.Helpers
             }
             return null;
         }
-
-        private static string ConfigType(FieldInfo field) => field.FieldType.ToString();
-
-        private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
-        
     }
 }

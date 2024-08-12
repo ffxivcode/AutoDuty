@@ -145,7 +145,7 @@ namespace AutoDuty.Helpers
                     return;
                 }
             }
-            Svc.Log.Info($"{_locationIndex} < {_moveLocations.Count}");
+
             if (_locationIndex < _moveLocations.Count && ObjectHelper.IsReady)
             {
                 if (MovementHelper.Move(_moveLocations[_locationIndex], _tollerance, (_locationIndex + 1) == _moveLocations.Count ? _lastPointTollerance : _tollerance, _useFlight))

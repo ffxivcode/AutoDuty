@@ -103,7 +103,7 @@ namespace AutoDuty.Helpers
 
             if ((!_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("0/5 Selected")) || (_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_content.Name!.Contains(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase)))
             {
-                Svc.Log.Debug($"Queue Helper - We have duties that are not {_content.Name} Selected, Clearing");
+                Svc.Log.Debug($"Queue Helper - We have {_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", "")} selected, not {_content.Name}, Clearing");
                 AddonHelper.FireCallBack((AtkUnitBase*)_addonContentsFinder, true, 12, 1);
                 return;
             }

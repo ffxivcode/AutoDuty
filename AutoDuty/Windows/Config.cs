@@ -175,8 +175,10 @@ public class Configuration : IPluginConfiguration
         set 
         {
             hideOverlayWhenStopped = value;
-            if (value && AutoDuty.Plugin.Overlay != null) 
-                AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.Running || AutoDuty.Plugin.Started;
+            if (AutoDuty.Plugin.Overlay != null)
+            {
+                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.Running || AutoDuty.Plugin.Started, () => AutoDuty.Plugin.Overlay != null);
+            }
         }
     }
     internal bool lockOverlay = false;
@@ -237,12 +239,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoBoiledEgg = false;
     public bool AutoRepair = false;
     public int AutoRepairPct = 50;
-    internal bool autoRepairSelf = false;
-    public bool AutoRepairSelf 
-    {
-        get => autoRepairSelf; 
-        set => autoRepairSelf = value;
-    }
+    public bool AutoRepairSelf = false;
 
     //Between Loop Config Options
     public int WaitTimeBeforeAfterLoopActions = 0;
@@ -659,9 +656,7 @@ public static class ConfigTab
             {
                 ImGui.SameLine();
 
-                bool selfRepair = Configuration.autoRepairSelf;
-
-                if (ImGui.RadioButton("Self", selfRepair))
+                if (ImGui.RadioButton("Self", Configuration.AutoRepairSelf))
                 {
                     Configuration.AutoRepairSelf = true;
                     Configuration.Save();
@@ -670,8 +665,7 @@ public static class ConfigTab
                 ImGuiComponents.HelpMarker("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
                 ImGui.SameLine();
                 
-                bool cityRepair = !Configuration.autoRepairSelf;
-                if (ImGui.RadioButton("CityNpc", !selfRepair))
+                if (ImGui.RadioButton("CityNpc", !Configuration.AutoRepairSelf))
                 {
                     Configuration.AutoRepairSelf = false;
                     Configuration.Save();
@@ -680,7 +674,7 @@ public static class ConfigTab
                 ImGuiComponents.HelpMarker("Will use Npc near Inn to Repair.");
             }
 
-            using (var d1 = ImRaii.Disabled(!Configuration.AutoRepair))
+            using (var autoRepairDisable = ImRaii.Disabled(!Configuration.AutoRepair))
             {
                 ImGui.Indent();
                 ImGui.Text("Trigger @");
@@ -848,7 +842,7 @@ public static class ConfigTab
 
                 Configuration.Save();
 
-            using (var d1 = ImRaii.Disabled(!Configuration.StopLevel))
+            using (var stopLevelDisabled = ImRaii.Disabled(!Configuration.StopLevel))
             {
                 ImGui.SameLine(0, 10);
                 ImGui.PushItemWidth(100 * ImGuiHelpers.GlobalScale);
@@ -877,7 +871,7 @@ public static class ConfigTab
                 Configuration.Save();
 
             ImGuiComponents.HelpMarker("Note that Loop Number takes precedence over this option!");
-            using (var d1 = ImRaii.Disabled(!Configuration.StopItemQty))
+            using (var stopItemQtyDisabled = ImRaii.Disabled(!Configuration.StopItemQty))
             {
                 ImGui.PushItemWidth(250 * ImGuiHelpers.GlobalScale);
                 if (ImGui.BeginCombo("Select Item", selectedItem.Value))
@@ -929,7 +923,7 @@ public static class ConfigTab
             {
                 foreach (TerminationMode terminationMode in Enum.GetValues(typeof(TerminationMode)))
                 {
-                    if (terminationMode != TerminationMode.Kill_PC || (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
+                    if (terminationMode != TerminationMode.Kill_PC || OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
                         if (ImGui.Selectable(EnumString(terminationMode)))
                         {
                             Configuration.TerminationMethodEnum = terminationMode;
