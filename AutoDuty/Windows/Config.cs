@@ -236,7 +236,7 @@ public class Configuration : IPluginConfiguration
     }
     public bool LootTreasure = true;
     public LootMethod LootMethodEnum = LootMethod.AutoDuty;
-    public bool LootBossTreasureOnly = true;
+    public bool LootBossTreasureOnly = false;
     public int TreasureCofferScanDistance = 25;
     public bool UsingAlternativeRotationPlugin = false;
     public bool UsingAlternativeMovementPlugin = false;
