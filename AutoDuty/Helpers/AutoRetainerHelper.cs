@@ -14,8 +14,8 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke() 
         {
-            //if (!AutoRetainer_IPCSubscriber.IsEnabled || !AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
-                //return;
+            if (!AutoRetainer_IPCSubscriber.IsEnabled || !AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
+                return;
             Svc.Log.Debug("AutoRetainerHelper.Invoke");
             if (!AutoRetainer_IPCSubscriber.IsEnabled)
             {
