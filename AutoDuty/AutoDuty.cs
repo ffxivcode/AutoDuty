@@ -316,7 +316,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (Configuration.AutoBoiledEgg)
                 {
                     TaskManager.Enqueue(() => { if (InventoryHelper.ItemCount(4650) > 1 /*&& !PlayerHelper.HasStatus(48)*/) InventoryHelper.UseItem(4650); }, "Loop-AutoBoiledEgg");
-                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.DelayNext("Loop-Delay500", 500);
                 }
 
                 if (Configuration.AutoEquipRecommendedGear)
