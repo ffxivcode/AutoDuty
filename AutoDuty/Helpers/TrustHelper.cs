@@ -5,6 +5,7 @@ namespace AutoDuty.Helpers
 {
     using ECommons;
     using ECommons.DalamudServices;
+    using ECommons.ExcelServices;
     using ECommons.GameFunctions;
     using ECommons.GameHelpers;
     using FFXIVClientStructs.FFXIV.Client.Game.UI;
@@ -61,27 +62,32 @@ namespace AutoDuty.Helpers
             return false;
         }
 
-        internal static bool SetLowestTrustMembers(Content content)
+        internal static bool SetLevelingTrustMembers(Content content)
         {
             AutoDuty.Plugin.Configuration.SelectedTrustMembers = new TrustMemberName?[3];
 
             TrustMember?[] trustMembers = new TrustMember?[3];
 
-            CombatRole role = (AutoDuty.Plugin.Player?.GetJob() ?? AutoDuty.Plugin.JobLastKnown).GetRole();
+            Job        playerJob  = (AutoDuty.Plugin.Player?.GetJob() ?? AutoDuty.Plugin.JobLastKnown);
+            CombatRole playerRole = playerJob.GetRole();
 
-            Svc.Log.Info("Lowest Trust Members set");
+            ObjectHelper.JobRole playerJobRole = AutoDuty.Plugin.Player.ClassJob.GameData.GetJobRole();
+
+            Svc.Log.Info("Leveling Trust Members set");
             Svc.Log.Info(content.TrustMembers.Count.ToString());
 
             int index = 0;
 
             try
             {
-                TrustMember[] membersPossible = content.TrustMembers.OrderBy(tm => tm.Level + (tm.Level < tm.LevelCap ? 0 : 100)).ToArray();
+                TrustMember[] membersPossible = content.TrustMembers
+                                                       .OrderBy(tm => tm.Level + (tm.Level < tm.LevelCap ? 0 : 100) + 
+                                                                      (playerRole == CombatRole.DPS ? playerJobRole == tm.Job.GetJobRole() ? 0.5f : 0 : 0)).ToArray();
                 foreach (TrustMember member in membersPossible)
                 {
                     Svc.Log.Info("checking: " + member.Name);
 
-                    if (trustMembers.CanSelectMember(member, role))
+                    if (trustMembers.CanSelectMember(member, playerRole))
                     {
                         Svc.Log.Info("check successful");
                         trustMembers[index++] = member;
