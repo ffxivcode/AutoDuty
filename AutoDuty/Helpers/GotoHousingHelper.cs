@@ -5,6 +5,8 @@ using Dalamud.Game.ClientState.Objects.Types;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons;
 using System.Linq;
+using System.Numerics;
+using ECommons.GameHelpers;
 
 namespace AutoDuty.Helpers
 {
@@ -38,7 +40,7 @@ namespace AutoDuty.Helpers
         }
 
         internal static bool InPrivateHouse => Svc.ClientState.TerritoryType == 282 || Svc.ClientState.TerritoryType == 283 || Svc.ClientState.TerritoryType == 284 || Svc.ClientState.TerritoryType == 342 || Svc.ClientState.TerritoryType == 343 || Svc.ClientState.TerritoryType == 344 || Svc.ClientState.TerritoryType == 345 || Svc.ClientState.TerritoryType == 346 || Svc.ClientState.TerritoryType == 347 || Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651 || Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982;
-        internal static bool InHousingArea => Svc.ClientState.TerritoryType == 339 || Svc.ClientState.TerritoryType == 340 || Svc.ClientState.TerritoryType == 341 || Svc.ClientState.TerritoryType == 641 || Svc.ClientState.TerritoryType == 979;
+        internal static bool InHousingArea => (Svc.ClientState.TerritoryType == 339 && (TeleportHelper.FCEstateTeleportId == 56 || TeleportHelper.PersonalHomeTeleportId == 59)) || (Svc.ClientState.TerritoryType == 340 && (TeleportHelper.FCEstateTeleportId == 57 || TeleportHelper.PersonalHomeTeleportId == 60)) || (Svc.ClientState.TerritoryType == 341 && (TeleportHelper.FCEstateTeleportId == 58 || TeleportHelper.PersonalHomeTeleportId == 61)) || (Svc.ClientState.TerritoryType == 641 && (TeleportHelper.FCEstateTeleportId == 96 || TeleportHelper.PersonalHomeTeleportId == 97)) || (Svc.ClientState.TerritoryType == 979 && (TeleportHelper.FCEstateTeleportId == 164 || TeleportHelper.PersonalHomeTeleportId == 165));
         internal static bool GotoHousingRunning = false;
         private static IGameObject? _entranceGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == 2002737);
         private static bool _stop = false;
@@ -48,6 +50,7 @@ namespace AutoDuty.Helpers
         {
             if (_stop)
             {
+                Svc.Log.Debug($"Stopping GotoHousing");
                 if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                     addonSelectYesno->Close(true);
                 else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
@@ -62,7 +65,10 @@ namespace AutoDuty.Helpers
             }
 
             if (AutoDuty.Plugin.Started)
+            {
+                Svc.Log.Debug($"AutoDuty has Started, Stopping GotoHousing");
                 Stop();
+            }
 
             if (!EzThrottler.Check("GotoHousing"))
                 return;
@@ -70,8 +76,10 @@ namespace AutoDuty.Helpers
             EzThrottler.Throttle("GotoHousing", 50);
 
             if (Svc.ClientState.LocalPlayer == null)
+            {
+                Svc.Log.Debug($"Our player is null");
                 return;
-
+            }
             if (GotoHelper.GotoRunning)
                 return;
 
@@ -79,6 +87,7 @@ namespace AutoDuty.Helpers
 
             if (InPrivateHouse)
             {
+                Svc.Log.Debug($"We are in a private house, Stopping GotoHousing");
                 Stop();
                 return;
             }
@@ -87,23 +96,33 @@ namespace AutoDuty.Helpers
             {
                 if (!ObjectHelper.PlayerIsCasting)
                 {
-                    if (_which == 1)
-                        TeleportHelper.TeleportPersonalHome();
-                    else
-                        TeleportHelper.TeleportFCEstate();
+                    Svc.Log.Debug($"We are not in the correct housing area, teleporting there");
+                    if (_which == 1 && !TeleportHelper.TeleportPersonalHome() && TeleportHelper.PersonalHomeTeleportId == 0)
+                    {
+                        Stop();
+                        return;
+                    }
+                    else if (!TeleportHelper.TeleportFCEstate() && TeleportHelper.FCEstateTeleportId == 0)
+                    {
+                        Stop();
+                        return;
+                    }
                     EzThrottler.Throttle("GotoHousing", 7500, true);
                 }
                 return;
             }
             else if (ObjectHelper.IsValid)
             {
-                if (MovementHelper.Move(_entranceGameObject, 0.25f, 4f))
+                if (MovementHelper.Move(_entranceGameObject, 0.25f, 3f, false, false))
                 {
+                    Svc.Log.Debug($"We are in range of the entracne door, entering");
                     ObjectHelper.InteractWithObject(_entranceGameObject);
                     AddonHelper.ClickSelectString(0);
                     AddonHelper.ClickSelectYesno();
                     AddonHelper.ClickTalk();
                 }
+                else
+                    Svc.Log.Debug($"Moving closer to {_entranceGameObject?.Name} at location {_entranceGameObject?.Position}, we are {Vector3.Distance(_entranceGameObject?.Position ?? Vector3.Zero, Player.Position)} away");
             }
         }
     }

@@ -8,14 +8,38 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Objects.Enums;
 using ECommons.Throttlers;
+using ECommons.DalamudServices;
+using System.Linq;
 
 namespace AutoDuty.Helpers
 {
     internal unsafe static class TeleportHelper
     {
-        internal static bool TeleportFCEstate() => TeleportAetheryte(56, 0);
+        internal static bool TeleportFCEstate() => TeleportHousing(FCEstateTeleportId);
 
-        internal static bool TeleportPersonalHome() => TeleportAetheryte(59, 0);
+        internal static bool TeleportPersonalHome() => TeleportHousing(PersonalHomeTeleportId);
+
+        internal static bool TeleportApartment() => TeleportHousing(ApartmentTeleportId);
+
+        private static bool TeleportHousing(uint id)
+        {
+            if (id != 0)
+            {
+                Svc.Log.Debug($"Teleporting to AetheryteId: {id}");
+                return TeleportAetheryte(id, 0);
+            }
+            else
+            {
+                Svc.Log.Info("Unable to teleport to specified housing");
+                return false;
+            }
+        }
+
+        internal static uint PersonalHomeTeleportId => Svc.AetheryteList.FirstOrDefault(x => !x.IsApartment && (x.AetheryteData.GameData?.PlaceName.Value?.Name.ExtractText().Equals("Estate Hall (Private)", System.StringComparison.InvariantCultureIgnoreCase) ?? false))?.AetheryteId ?? 0;
+
+        internal static uint ApartmentTeleportId => Svc.AetheryteList.FirstOrDefault(x => x.IsApartment && (x.AetheryteData.GameData?.PlaceName.Value?.Name.ExtractText().Equals("Estate Hall (Private)", System.StringComparison.InvariantCultureIgnoreCase) ?? false))?.AetheryteId ?? 0;
+
+        internal static uint FCEstateTeleportId => Svc.AetheryteList.FirstOrDefault(x => x.AetheryteData.GameData?.PlaceName.Value?.Name.ExtractText().Equals("Estate Hall (Free Company)", System.StringComparison.InvariantCultureIgnoreCase) ?? false)?.AetheryteId ?? 0;
 
         internal static bool TeleportGCCity()
         {

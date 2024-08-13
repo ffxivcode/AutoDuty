@@ -15,19 +15,19 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke(uint territoryType) => Invoke(territoryType, 0);
 
-        internal static void Invoke(uint territoryType, uint gameObjectDataId) => Invoke(territoryType, [], gameObjectDataId, 0.25f, 0.25f, false, false);
+        internal static void Invoke(uint territoryType, uint gameObjectDataId) => Invoke(territoryType, [], gameObjectDataId, 0.25f, 0.25f, false, false, true);
 
-        internal static void Invoke(uint territoryType, Vector3 moveLocation) => Invoke(territoryType, [moveLocation], 0, 0.25f, 0.25f, false, false);
+        internal static void Invoke(uint territoryType, Vector3 moveLocation) => Invoke(territoryType, [moveLocation], 0, 0.25f, 0.25f, false, false, true);
 
-        internal static void Invoke(uint territoryType, List<Vector3> moveLocations) => Invoke(territoryType, moveLocations, 0, 0.25f, 0.25f, false, false);
+        internal static void Invoke(uint territoryType, List<Vector3> moveLocations) => Invoke(territoryType, moveLocations, 0, 0.25f, 0.25f, false, false, true);
 
-        internal static void Invoke(uint territoryType, uint gameObjectDataId, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false) => Invoke(territoryType, [], gameObjectDataId, tollerance, lastPointTollerance, useAethernetTravel, useFlight);
+        internal static void Invoke(uint territoryType, uint gameObjectDataId, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false, bool useMesh = true) => Invoke(territoryType, [], gameObjectDataId, tollerance, lastPointTollerance, useAethernetTravel, useFlight, useMesh);
         
-        internal static void Invoke(uint territoryType, Vector3 moveLocation, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false) => Invoke(territoryType, [moveLocation], 0, tollerance, lastPointTollerance, useAethernetTravel, useFlight);
+        internal static void Invoke(uint territoryType, Vector3 moveLocation, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false, bool useMesh = true) => Invoke(territoryType, [moveLocation], 0, tollerance, lastPointTollerance, useAethernetTravel, useFlight, useMesh);
 
-        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false) => Invoke(territoryType, moveLocations, 0, tollerance, lastPointTollerance, useAethernetTravel, useFlight);
+        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false, bool useMesh = true) => Invoke(territoryType, moveLocations, 0, tollerance, lastPointTollerance, useAethernetTravel, useFlight, useMesh);
 
-        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, uint gameObjectDataId, float tollerance, float lastPointTollerance, bool useAethernetTravel, bool useFlight)
+        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, uint gameObjectDataId, float tollerance, float lastPointTollerance, bool useAethernetTravel, bool useFlight, bool useMesh)
         {
             if (!GotoRunning)
             {
@@ -40,6 +40,7 @@ namespace AutoDuty.Helpers
                 _lastPointTollerance = lastPointTollerance;
                 _useAethernetTravel = useAethernetTravel;
                 _useFlight = useFlight;
+                _useMesh = useMesh;
                 Svc.Framework.Update += GotoUpdate;
             }
         }
@@ -58,6 +59,7 @@ namespace AutoDuty.Helpers
             _lastPointTollerance = 0.25f;
             _useAethernetTravel = false;
             _useFlight = false;
+            _useMesh = true;
             AutoDuty.Plugin.Action = "";
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
@@ -77,6 +79,7 @@ namespace AutoDuty.Helpers
         private static float _lastPointTollerance = 0.25f;
         private static bool _useAethernetTravel = false;
         private static bool _useFlight = false;
+        private static bool _useMesh = true;
         private static IGameObject? _gameObject => _gameObjectDataId > 0 ? ObjectHelper.GetObjectByDataId(_gameObjectDataId) : null;
 
         internal unsafe static void GotoUpdate(IFramework framework)
@@ -180,7 +183,7 @@ namespace AutoDuty.Helpers
                 else
                     return;
 
-                if (MovementHelper.Move(moveLoc, _tollerance, lastPointTollerance, _useFlight))
+                if (MovementHelper.Move(moveLoc, _tollerance, lastPointTollerance, _useFlight, _useMesh))
                     _locationIndex++;
                 return;
             }
