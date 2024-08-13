@@ -458,10 +458,11 @@ public static class ConfigTab
         The_Doman_Enclave = 759,
         The_Crystarium = 819,
         Eulmore = 820,
-        Old_Sharlayan = 962,
+        Old_Sharlayan = 962 /*,
+        Not Yet Implemented
         Radz_at_Han = 963,
         Tuliyollal = 1185,
-        Nexus_Arcade = 1186
+        Nexus_Arcade = 1186*/
     }
     internal static string FollowName = "";
 
