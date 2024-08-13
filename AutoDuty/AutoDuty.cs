@@ -1360,10 +1360,10 @@ public sealed class AutoDuty : IDalamudPlugin
                         SummoningBellHelper.Invoke(Configuration.PreferredSummoningBellEnum);
                         break;
                     case "fcestate":
-                        GotoHousingHelper.Invoke(1);
+                        GotoHousingHelper.Invoke(2);
                         break;
                     case "personalhome":
-                        GotoHousingHelper.Invoke(0);
+                        GotoHousingHelper.Invoke(1);
                         break;
                     default:
                         break;
