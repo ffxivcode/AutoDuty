@@ -174,6 +174,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 "/autoduty turnin -> GC Turnin\n" +
                 "/autoduty desynth -> Desynth's your inventory\n" +
                 "/autoduty repair -> Repairs your gear\n" +
+                "/autoduty equiprec-> Equips recommended gear\n" +
                 "/autoduty extract -> Extract's materia from equipment\n" +
                 "/autoduty turnin -> GC Turnin\n" +
                 "/autoduty goto -> goes to\n" +
@@ -1359,6 +1360,9 @@ public sealed class AutoDuty : IDalamudPlugin
             case "repair":
                 if (InventoryHelper.CanRepair())
                     RepairHelper.Invoke();
+                break;
+            case "equiprec":
+                AutoEquipHelper.Invoke();
                 break;
             case "extract":
                 if (QuestManager.IsQuestComplete(66174))
