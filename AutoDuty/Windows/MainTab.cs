@@ -17,6 +17,7 @@ using static AutoDuty.AutoDuty;
 namespace AutoDuty.Windows
 {
     using Dalamud.Interface.Components;
+    using ECommons.ExcelServices;
     using ECommons.GameFunctions;
 
     internal static class MainTab

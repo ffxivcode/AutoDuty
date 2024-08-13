@@ -214,6 +214,14 @@ public class MainWindow : Window, IDisposable
                 {
                     SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
                 }
+                if (ImGui.Selectable("Personal Home"))
+                {
+                    GotoHousingHelper.Invoke(1);
+                }
+                if (ImGui.Selectable("FC Estate"))
+                {
+                    GotoHousingHelper.Invoke(2);
+                }
                 ImGui.EndPopup();
             }
         }

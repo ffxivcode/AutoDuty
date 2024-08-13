@@ -10,10 +10,8 @@ namespace AutoDuty.Helpers
             return territoryType switch
             {
                 0 => 2000403, //Inn
-                /* Not Yet Implemented
                 1 => 196630, //FC_Estate
                 2 => 196630, //Personal_Home / Apartment
-                */
                 129 => 2000401, //Limsa_Lominsa_Lower_Decks
                 133 => 2000401, //Old_Gridania
                 131 => 2000401, //Uldah_Steps_of_Thal
@@ -24,10 +22,9 @@ namespace AutoDuty.Helpers
                 819 => 2010284, //The_Crystarium
                 820 => 2010284, //Eulmore
                 962 => 2000441, //Old_Sharlayan
-                /*Not Yet Implemented
-                963 => 9999999, //Radz_at_Han
-                1185 => 9999999, //Tuliyollal
-                1186 => 9999999, //Nexus_Arcade*/
+                963 => 2000441, //Radz_at_Han
+                1185 => 2000441, //Tuliyollal
+                1186 => 2000441, //Nexus_Arcade
                 _ => 0
             };
         }
@@ -60,12 +57,12 @@ namespace AutoDuty.Helpers
                 case ConfigTab.SummoningBellLocations.Inn:
                     GotoInnHelper.Invoke();
                     break;
-                    /* Not Yet Implemented
+                case ConfigTab.SummoningBellLocations.FC_Estate:
+                    GotoHousingHelper.Invoke(2);
+                    break;
                 case ConfigTab.SummoningBellLocations.Personal_Home:
+                    GotoHousingHelper.Invoke(1);
                     break;
-                case ConfigTab.SummoningBellLocations.FC_House:
-                    break;
-                    */
                 default:
                     GotoHelper.Invoke((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum, SummoningBellLocations((uint)summoningBellLocation), 0.25f, 4);
                     break;
