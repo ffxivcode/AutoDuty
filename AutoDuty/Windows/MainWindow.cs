@@ -95,7 +95,7 @@ public class MainWindow : Window, IDisposable
         {
             using (var GotoDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || RepairHelper.RepairRunning))
             {
-                if (GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning)
+                if ((GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning) || MapHelper.MoveToMapMarkerRunning || GotoHousingHelper.GotoHousingRunning)
                 {
                     if (ImGui.Button("Stop"))
                         Plugin.StopAndResetALL();
@@ -210,7 +210,7 @@ public class MainWindow : Window, IDisposable
                 {
                     MapHelper.MoveToMapMarker();
                 }
-                if (ImGui.Selectable("Preferred Summoning Bell"))
+                if (ImGui.Selectable("Summoning Bell"))
                 {
                     SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
                 }

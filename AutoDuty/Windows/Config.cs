@@ -24,7 +24,7 @@ namespace AutoDuty.Windows;
 public class Configuration : IPluginConfiguration
 {
     //Meta
-    public int Version { get => 118; set { } }
+    public int Version { get => 119; set { } }
     public HashSet<string> DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
 
