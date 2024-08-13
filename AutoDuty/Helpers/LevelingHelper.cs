@@ -44,7 +44,7 @@ namespace AutoDuty.Helpers
 
             if (trust)
             {
-                if (TrustManager.members.Any(tm => tm.Value.Level <= 0)) 
+                if (TrustManager.members.All(tm => tm.Value.Level <= 0)) 
                     return null;
 
 
