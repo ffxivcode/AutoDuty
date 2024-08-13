@@ -22,21 +22,22 @@ namespace AutoDuty.Managers
 
         internal static void PopulateTrustMembers()
         {
-            ExcelSheet<DawnMemberUIParam>? dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
+            ExcelSheet<DawnMemberUIParam>?                     dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
+            ExcelSheet<Lumina.Excel.GeneratedSheets.ClassJob>? jobSheet  = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.ClassJob>();
 
-            void AddMember(TrustMemberName name, uint index, TrustRole role, uint levelCap = 100) =>
-                members.Add(name, new TrustMember { Index = index, Name = dawnSheet!.GetRow((uint)name)!.Unknown0.RawString, Role = role, MemberName = name, LevelCap = levelCap});
+            void AddMember(TrustMemberName name, uint index, TrustRole role, uint classJob, uint levelCap = 100) =>
+                members.Add(name, new TrustMember { Index = index, Name = dawnSheet!.GetRow((uint)name)!.Unknown0.RawString, Role = role, Job = jobSheet.GetRow(classJob), MemberName = name, LevelCap = levelCap});
 
-            AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer);
-            AddMember(TrustMemberName.Alisaie,   1, TrustRole.DPS);
-            AddMember(TrustMemberName.Thancred,  2, TrustRole.Tank);
-            AddMember(TrustMemberName.Urianger,  3, TrustRole.Healer);
-            AddMember(TrustMemberName.Yshtola,   4, TrustRole.DPS);
-            AddMember(TrustMemberName.Ryne,      5, TrustRole.DPS, 80);
-            AddMember(TrustMemberName.Estinien,  5, TrustRole.DPS);
-            AddMember(TrustMemberName.Graha,     6, TrustRole.AllRounder);
-            AddMember(TrustMemberName.Zero,      7, TrustRole.DPS, 90);
-            AddMember(TrustMemberName.Krile,     7, TrustRole.DPS);
+            AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer, 40);
+            AddMember(TrustMemberName.Alisaie,   1, TrustRole.DPS, 35);
+            AddMember(TrustMemberName.Thancred,  2, TrustRole.Tank, 37);
+            AddMember(TrustMemberName.Urianger,  3, TrustRole.Healer, 33);
+            AddMember(TrustMemberName.Yshtola,   4, TrustRole.DPS, 25);
+            AddMember(TrustMemberName.Ryne,      5, TrustRole.DPS, 29, 80);
+            AddMember(TrustMemberName.Estinien,  5, TrustRole.DPS, 22);
+            AddMember(TrustMemberName.Graha,     6, TrustRole.AllRounder, 25);
+            AddMember(TrustMemberName.Zero,      7, TrustRole.DPS, 39, 90);
+            AddMember(TrustMemberName.Krile,     7, TrustRole.DPS, 42);
         }
 
 

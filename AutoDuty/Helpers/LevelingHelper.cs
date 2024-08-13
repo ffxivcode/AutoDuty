@@ -86,7 +86,7 @@ namespace AutoDuty.Helpers
                 }
             }
             if (trust && curContent != null)
-                if (!TrustHelper.SetLowestTrustMembers(curContent))
+                if (!TrustHelper.SetLevelingTrustMembers(curContent))
                     curContent = null;
 
             return curContent ?? null;
