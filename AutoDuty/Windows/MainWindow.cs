@@ -206,9 +206,13 @@ public class MainWindow : Window, IDisposable
                 {
                     GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
                 }
-                if (ImGui.Selectable("FlagMarker"))
+                if (ImGui.Selectable("Flag Marker"))
                 {
                     MapHelper.MoveToMapMarker();
+                }
+                if (ImGui.Selectable("Preferred Summoning Bell"))
+                {
+                    SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
                 }
                 ImGui.EndPopup();
             }

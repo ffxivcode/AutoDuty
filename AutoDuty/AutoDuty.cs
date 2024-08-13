@@ -33,7 +33,6 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using static AutoDuty.Windows.ConfigTab;
 using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
-using FFXIVClientStructs.FFXIV.Client.LayoutEngine;
 using Dalamud.Game.ClientState.Conditions;
 
 namespace AutoDuty;
@@ -1367,6 +1366,10 @@ public sealed class AutoDuty : IDalamudPlugin
             case "repair":
                 if (InventoryHelper.CanRepair())
                     RepairHelper.Invoke();
+                break;
+            case "autoretainer":
+            case "ar":
+                AutoRetainerHelper.Invoke();
                 break;
             case "equiprec":
                 AutoEquipHelper.Invoke();

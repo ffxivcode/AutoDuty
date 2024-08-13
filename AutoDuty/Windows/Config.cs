@@ -16,6 +16,7 @@ using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Common.Math;
 using AutoDuty.Helpers;
 using static AutoDuty.Windows.ConfigTab;
+using ECommons.ExcelServices.TerritoryEnumeration;
 
 namespace AutoDuty.Windows;
 
@@ -301,6 +302,7 @@ public class Configuration : IPluginConfiguration
     public int AutoGCTurninSlotsLeft = 5;
     public bool AutoGCTurninSlotsLeftBool = false;
     public bool EnableAutoRetainer = false;
+    public SummoningBellLocations PreferredSummoningBellEnum = 0;
     public bool AM = false;
     public bool UnhideAM = false;
 
@@ -415,7 +417,7 @@ public static class ConfigTab
         GC_Barracks = 1,
         /* Not Yet Implemented
         Personal_Home = 2,
-        FC_House = 3
+        FC_Estate = 3
         */
     }
     public enum TerminationMode : int
@@ -439,6 +441,27 @@ public static class ConfigTab
         Flank = 1,
         Rear = 2,
         Front = 3
+    }
+    public enum SummoningBellLocations : uint
+    {
+        Inn = 0,
+        /* Not Yet Implemented
+        Personal_Home = 1,
+        FC_Estate = 2,
+        */
+        Limsa_Lominsa_Lower_Decks = 129,
+        Old_Gridania = 133,
+        Uldah_Steps_of_Thal = 131,
+        The_Pillars = 419,
+        Rhalgrs_Reach = 635,
+        Kugane = 628,
+        The_Doman_Enclave = 759,
+        The_Crystarium = 819,
+        Eulmore = 820,
+        Old_Sharlayan = 962,
+        Radz_at_Han = 963,
+        Tuliyollal = 1185,
+        Nexus_Arcade = 1186
     }
     internal static string FollowName = "";
 
@@ -819,9 +842,10 @@ public static class ConfigTab
                 }
                 ImGuiComponents.HelpMarker("By enabling the usage of this option, you are agreeing to NEVER discuss this option within the Puni.sh Discord or to anyone in Puni.sh! You have been warned!!!");
             }
-            ImGui.SameLine(0, 5);
+
             if (Configuration.UnhideAM && !AM_IPCSubscriber.IsEnabled)
             {
+                ImGui.SameLine(0, 5);
                 if (Configuration.AM)
                 {
                     Configuration.AM = false;
@@ -834,8 +858,24 @@ public static class ConfigTab
                 ImGui.Text("DO NOT ASK ABOUT OR DISCUSS THIS OPTION WITHIN THE PUNI.SH DISCORD");
                 ImGui.Text("YOU HAVE BEEN WARNED!!!!!!!");
             }
+            if (Configuration.EnableAutoRetainer || Configuration.AM)
+            {
+                ImGui.Text("Preferred Summoning Bell Location: ");
+                ImGuiComponents.HelpMarker("No matter what location is chosen, if there is a summoning bell in the location you are in when this is invoked it will go there instead");
+                if (ImGui.BeginCombo("##PreferredBell", EnumString(Configuration.PreferredSummoningBellEnum)))
+                {
+                    foreach (SummoningBellLocations summoningBells in Enum.GetValues(typeof(SummoningBellLocations)))
+                    {
+                        if (ImGui.Selectable(EnumString(summoningBells)))
+                        {
+                            Configuration.PreferredSummoningBellEnum = summoningBells;
+                            Configuration.Save();
+                        }
+                    }
+                    ImGui.EndCombo();
+                }
+            }
         }
-        
 
         //Loop Termination Settings
         ImGui.Spacing();

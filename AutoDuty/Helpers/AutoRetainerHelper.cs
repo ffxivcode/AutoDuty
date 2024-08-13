@@ -6,6 +6,7 @@ using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using System.Linq;
 
 namespace AutoDuty.Helpers
 {
@@ -13,6 +14,8 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke() 
         {
+            //if (!AutoRetainer_IPCSubscriber.IsEnabled || !AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
+                //return;
             Svc.Log.Debug("AutoRetainerHelper.Invoke");
             if (!AutoRetainer_IPCSubscriber.IsEnabled)
             {
@@ -44,7 +47,7 @@ namespace AutoDuty.Helpers
         internal static bool AutoRetainerRunning = false;
         private static bool _autoRetainerStarted = false;
         private static bool _stop = false;
-        private static IGameObject? SummoningBellGameObject => ObjectHelper.GetObjectByDataId(2000403);
+        private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum));
 
         internal static unsafe void AutoRetainerUpdate(IFramework framework)
         {
@@ -100,14 +103,14 @@ namespace AutoDuty.Helpers
             }
             AutoDuty.Plugin.Action = "AutoRetainer Running";
 
-            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType != GotoInnHelper.InnTerritoryType(ObjectHelper.GrandCompany))
-            {
-                Svc.Log.Debug("Moving to Inn");
-                GotoInnHelper.Invoke();
-            }
-            else if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) > 4)
+            if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) > 4)
             {
                 MovementHelper.Move(SummoningBellGameObject, 0.25f, 4);
+            }
+            else if (SummoningBellGameObject == null && !GotoHelper.GotoRunning)
+            {
+                Svc.Log.Debug("Moving to Summoning Bell Location");
+                SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
             }
             else if (!_autoRetainerStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList) && (ObjectHelper.InteractWithObjectUntilAddon(SummoningBellGameObject, "RetainerList") == null))
             {
