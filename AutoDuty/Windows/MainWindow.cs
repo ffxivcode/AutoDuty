@@ -15,6 +15,7 @@ using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using static AutoDuty.AutoDuty;
+using static AutoDuty.Data.Enum;
 using static AutoDuty.Windows.ConfigTab;
 
 namespace AutoDuty.Windows;
@@ -214,13 +215,17 @@ public class MainWindow : Window, IDisposable
                 {
                     SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
                 }
+                if (ImGui.Selectable("Apartment"))
+                {
+                    GotoHousingHelper.Invoke(Housing.Apartment);
+                }
                 if (ImGui.Selectable("Personal Home"))
                 {
-                    GotoHousingHelper.Invoke(1);
+                    GotoHousingHelper.Invoke(Housing.Personal_Home);
                 }
                 if (ImGui.Selectable("FC Estate"))
                 {
-                    GotoHousingHelper.Invoke(2);
+                    GotoHousingHelper.Invoke(Housing.FC_Estate);
                 }
                 ImGui.EndPopup();
             }

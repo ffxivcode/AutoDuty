@@ -7,7 +7,6 @@ using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
-using Dalamud.Interface;
 
 namespace AutoDuty.Helpers
 {
@@ -28,7 +27,7 @@ namespace AutoDuty.Helpers
             if (!ObjectHelper.IsValid)
                 return false;
 
-            Svc.Log.Info($"Move(Vector3 {position}, float {tollerance} = 0.25f, float {lastPointTollerance} = 0.25f, bool {fly} = false, bool {useMesh} = true) Dist: {Vector3.Distance(Player.Object.Position, position)} <= {lastPointTollerance}");
+            Svc.Log.Debug($"Move(Vector3 {position}, float {tollerance} = 0.25f, float {lastPointTollerance} = 0.25f, bool {fly} = false, bool {useMesh} = true) Dist: {Vector3.Distance(Player.Object.Position, position)} <= {lastPointTollerance}");
 
             if (fly && !IsFlyingSupported)
                 fly = false;
@@ -47,7 +46,7 @@ namespace AutoDuty.Helpers
                 return false;
             }
 
-            if (position == Vector3.Zero || (Vector3.Distance(position, Player.Position) - 0.5f/*fix for vnav's diff Distance calc*/) <= lastPointTollerance)
+            if (position == Vector3.Zero || (Vector3.Distance(position, Player.Position) - (useMesh ? 0 : 1)/*fix for vnav's diff Distance calc*/) <= lastPointTollerance)
             {
                 if (position != Vector3.Zero)
                 {

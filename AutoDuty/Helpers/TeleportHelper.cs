@@ -15,18 +15,18 @@ namespace AutoDuty.Helpers
 {
     internal unsafe static class TeleportHelper
     {
-        internal static bool TeleportFCEstate() => TeleportHousing(FCEstateTeleportId);
+        internal static bool TeleportFCEstate() => TeleportHousing(FCEstateTeleportId, 0);
 
-        internal static bool TeleportPersonalHome() => TeleportHousing(PersonalHomeTeleportId);
+        internal static bool TeleportPersonalHome() => TeleportHousing(PersonalHomeTeleportId, 0);
 
-        internal static bool TeleportApartment() => TeleportHousing(ApartmentTeleportId);
+        internal static bool TeleportApartment() => TeleportHousing(ApartmentTeleportId, 128);
 
-        private static bool TeleportHousing(uint id)
+        private static bool TeleportHousing(uint id, byte sub)
         {
             if (id != 0)
             {
-                Svc.Log.Debug($"Teleporting to AetheryteId: {id}");
-                return TeleportAetheryte(id, 0);
+                Svc.Log.Debug($"Teleporting to AetheryteId: {id} SubIndex: {sub}");
+                return TeleportAetheryte(id, sub);
             }
             else
             {
@@ -55,7 +55,7 @@ namespace AutoDuty.Helpers
 
         internal static bool TeleportAetheryte(uint aetheryteId, byte subindex)
         {
-            if (ObjectHelper.PlayerIsCasting)
+            if (ObjectHelper.PlayerIsCasting || aetheryteId == 0)
                 return true;
 
             if (!ObjectHelper.PlayerIsCasting && EzThrottler.Throttle("TeleportAetheryte", 250))

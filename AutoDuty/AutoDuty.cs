@@ -34,6 +34,7 @@ using static AutoDuty.Windows.ConfigTab;
 using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
+using static AutoDuty.Data.Enum;
 
 namespace AutoDuty;
 
@@ -394,12 +395,15 @@ public sealed class AutoDuty : IDalamudPlugin
         
         if (!Configuration.Squadron && Configuration.RetireMode)
         {
-            if (Configuration.RetireLocationEnum == ConfigTab.RetireLocation.GC_Barracks)
+            if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
-            else if (Configuration.RetireLocationEnum == ConfigTab.RetireLocation.Inn)
+            else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
                 TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Loop-GotoInnInvoke");
-            else if (Configuration.RetireLocationEnum == ConfigTab.RetireLocation.FC_Estate || Configuration.RetireLocationEnum == ConfigTab.RetireLocation.Personal_Home)
-                TaskManager.Enqueue(() => GotoHousingHelper.Invoke((int)Configuration.RetireLocationEnum), "Loop-GotoHousingInvoke");
+            else
+            {
+                Svc.Log.Info($"{(Housing)Configuration.RetireLocationEnum} {Configuration.RetireLocationEnum}");
+                TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Loop-GotoHousingInvoke");
+            }
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GotoHousingHelper.GotoHousingRunning && !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
         }
@@ -450,7 +454,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
-        if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_PC)
+        if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
         {
             if (!Configuration.TerminationKeepActive)
             {
@@ -475,7 +479,7 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             _chat.ExecuteCommand($"/xlkill");
         }
-        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_Client)
+        else if (Configuration.TerminationMethodEnum == TerminationMode.Kill_Client)
         {
             if (!Configuration.TerminationKeepActive)
             {
@@ -485,7 +489,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
             _chat.ExecuteCommand($"/xlkill");
         }
-        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Logout)
+        else if (Configuration.TerminationMethodEnum == TerminationMode.Logout)
         {
             if (!Configuration.TerminationKeepActive)
             {
@@ -502,7 +506,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => Stage = 0);
             TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
         }
-        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Start_AR_Multi_Mode)
+        else if (Configuration.TerminationMethodEnum == TerminationMode.Start_AR_Multi_Mode)
         {
             TaskManager.Enqueue(() => _chat.ExecuteCommand($"/ays multi"));
             TaskManager.Enqueue(() => Running = false);
@@ -581,12 +585,15 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             if (!Configuration.Squadron && Configuration.RetireMode)
             {
-                if (Configuration.RetireLocationEnum == ConfigTab.RetireLocation.GC_Barracks)
+                if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
                     TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
-                else if (Configuration.RetireLocationEnum == ConfigTab.RetireLocation.Inn)
+                else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
                     TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Run-GotoInnInvoke");
-                else if (Configuration.RetireLocationEnum == ConfigTab.RetireLocation.FC_Estate || Configuration.RetireLocationEnum == ConfigTab.RetireLocation.Personal_Home)
-                    TaskManager.Enqueue(() => GotoHousingHelper.Invoke((int)Configuration.RetireLocationEnum), "Run-GotoHousingInvoke");
+                else
+                {
+                    Svc.Log.Info($"{(Housing)Configuration.RetireLocationEnum} {Configuration.RetireLocationEnum}");
+                    TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Run-GotoHousingInvoke");
+                }
                 TaskManager.DelayNext("Run-Delay50", 50);
                 TaskManager.Enqueue(() => !GotoHousingHelper.GotoHousingRunning && !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
             }
@@ -700,7 +707,7 @@ public sealed class AutoDuty : IDalamudPlugin
         //RoleBased Positional
         if (ObjectHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalEnum != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? Positional.Rear : Positional.Any))
         {
-            Configuration.PositionalEnum = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? ConfigTab.Positional.Rear : ConfigTab.Positional.Any);
+            Configuration.PositionalEnum = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? Positional.Rear : Positional.Any);
             Configuration.Save();
         }
 
@@ -1359,11 +1366,14 @@ public sealed class AutoDuty : IDalamudPlugin
                     case "summoningbell":
                         SummoningBellHelper.Invoke(Configuration.PreferredSummoningBellEnum);
                         break;
-                    case "fcestate":
-                        GotoHousingHelper.Invoke(2);
+                    case "apartment":
+                        GotoHousingHelper.Invoke(Housing.Apartment);
                         break;
                     case "personalhome":
-                        GotoHousingHelper.Invoke(1);
+                        GotoHousingHelper.Invoke(Housing.Personal_Home);
+                        break;
+                    case "fcestate":
+                        GotoHousingHelper.Invoke(Housing.FC_Estate);
                         break;
                     default:
                         break;

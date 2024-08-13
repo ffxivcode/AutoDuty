@@ -7,18 +7,19 @@ using ECommons;
 using System.Linq;
 using System.Numerics;
 using ECommons.GameHelpers;
+using static AutoDuty.Data.Enum;
 
 namespace AutoDuty.Helpers
 {
     internal static class GotoHousingHelper
     {
-        internal static void Invoke(int which)
+        internal static void Invoke(Housing whichHousing)
         {
-            if (!GotoHousingRunning && !InPrivateHouse)
+            if (!GotoHousingRunning && !InPrivateHouse(whichHousing))
             {
-                Svc.Log.Info($"Goto {(which == 1 ? "Personal Home" : "FC Estate")} Started");
+                Svc.Log.Info($"Goto {whichHousing} Started");
                 GotoHousingRunning = true;
-                _which = which;
+                _whichHousing = whichHousing;
                 SchedulerHelper.ScheduleAction("GotoHousingTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoHousingUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -29,22 +30,49 @@ namespace AutoDuty.Helpers
         internal static void Stop() 
         {
             if (GotoHousingRunning)
-                Svc.Log.Info($"Goto {(_which == 1 ? "Personal Home" : "FC Estate")} Finished");
+                Svc.Log.Info($"Goto {_whichHousing} Finished");
             SchedulerHelper.DescheduleAction("GotoHousingTimeOut");
             GotoHelper.Stop();
             _stop = true;
-            _which = 1;
+            _whichHousing = Housing.Apartment;
             AutoDuty.Plugin.Action = "";
             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
-        internal static bool InPrivateHouse => Svc.ClientState.TerritoryType == 282 || Svc.ClientState.TerritoryType == 283 || Svc.ClientState.TerritoryType == 284 || Svc.ClientState.TerritoryType == 342 || Svc.ClientState.TerritoryType == 343 || Svc.ClientState.TerritoryType == 344 || Svc.ClientState.TerritoryType == 345 || Svc.ClientState.TerritoryType == 346 || Svc.ClientState.TerritoryType == 347 || Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651 || Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982;
-        internal static bool InHousingArea => (Svc.ClientState.TerritoryType == 339 && (TeleportHelper.FCEstateTeleportId == 56 || TeleportHelper.PersonalHomeTeleportId == 59)) || (Svc.ClientState.TerritoryType == 340 && (TeleportHelper.FCEstateTeleportId == 57 || TeleportHelper.PersonalHomeTeleportId == 60)) || (Svc.ClientState.TerritoryType == 341 && (TeleportHelper.FCEstateTeleportId == 58 || TeleportHelper.PersonalHomeTeleportId == 61)) || (Svc.ClientState.TerritoryType == 641 && (TeleportHelper.FCEstateTeleportId == 96 || TeleportHelper.PersonalHomeTeleportId == 97)) || (Svc.ClientState.TerritoryType == 979 && (TeleportHelper.FCEstateTeleportId == 164 || TeleportHelper.PersonalHomeTeleportId == 165));
+        internal static bool InPrivateHouse(Housing whichHousing) =>
+            //Mist
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 59 && Svc.ClientState.TerritoryType == 608) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 59 && (Svc.ClientState.TerritoryType == 282 || Svc.ClientState.TerritoryType == 283 || Svc.ClientState.TerritoryType == 284)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 56 && (Svc.ClientState.TerritoryType == 282 || Svc.ClientState.TerritoryType == 283 || Svc.ClientState.TerritoryType == 284)) ||
+            //LavenderBeds
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 60 && Svc.ClientState.TerritoryType == 609) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 60 && (Svc.ClientState.TerritoryType == 342 || Svc.ClientState.TerritoryType == 343 || Svc.ClientState.TerritoryType == 344)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 57 && (Svc.ClientState.TerritoryType == 342 || Svc.ClientState.TerritoryType == 343 || Svc.ClientState.TerritoryType == 344)) ||
+            //Goblet
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 61 && Svc.ClientState.TerritoryType == 610) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 61 && (Svc.ClientState.TerritoryType == 345 || Svc.ClientState.TerritoryType == 346 || Svc.ClientState.TerritoryType == 347)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 58 && (Svc.ClientState.TerritoryType == 345 || Svc.ClientState.TerritoryType == 346 || Svc.ClientState.TerritoryType == 347)) ||
+            //Shirogane
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 97 && Svc.ClientState.TerritoryType == 655) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 97 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) || (whichHousing == Housing.FC_Estate && TeleportHelper.PersonalHomeTeleportId == 96 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) ||
+            //Empyreum
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 165 && Svc.ClientState.TerritoryType == 999) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 165 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982)) || (whichHousing == Housing.FC_Estate && TeleportHelper.PersonalHomeTeleportId == 164 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982));
+
+        internal static bool InHousingArea(Housing whichHousing) =>
+            //Mist
+            (Svc.ClientState.TerritoryType == 339 &&
+            ((whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 56) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 59) || (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 59))) ||
+            //Lavender Beds
+            (Svc.ClientState.TerritoryType == 340 &&
+            ((whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 57) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 60) || (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 60))) ||
+            //Goblet
+            (Svc.ClientState.TerritoryType == 341 &&
+            ((whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 58) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 61) || (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 61))) ||
+            //Shirogane
+            (Svc.ClientState.TerritoryType == 641 &&
+            ((whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 96) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 97) || (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 97))) ||
+            //Empyreum
+            (Svc.ClientState.TerritoryType == 979 &&
+            ((whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 164) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 165) || (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 165)));
+
         internal static bool GotoHousingRunning = false;
-        private static IGameObject? _entranceGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == 2002737);
+        private static IGameObject? _entranceGameObject => ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)?.FirstOrDefault(x => x.DataId == 2002737 || x.DataId == 2007402);
         private static bool _stop = false;
-        private static int _which = 1;
+        private static Housing _whichHousing = Housing.Apartment;
 
         internal unsafe static void GotoHousingUpdate(IFramework framework)
         {
@@ -83,26 +111,31 @@ namespace AutoDuty.Helpers
             if (GotoHelper.GotoRunning)
                 return;
 
-            AutoDuty.Plugin.Action = $"Retiring to {(_which == 1 ? "Personal Home" : "FC Estate")}";
+            AutoDuty.Plugin.Action = $"Retiring to {_whichHousing}";
 
-            if (InPrivateHouse)
+            if (InPrivateHouse(_whichHousing))
             {
                 Svc.Log.Debug($"We are in a private house, Stopping GotoHousing");
                 Stop();
                 return;
             }
 
-            if (!InHousingArea)
+            if (!InHousingArea(_whichHousing))
             {
                 if (!ObjectHelper.PlayerIsCasting)
                 {
                     Svc.Log.Debug($"We are not in the correct housing area, teleporting there");
-                    if (_which == 1 && !TeleportHelper.TeleportPersonalHome() && TeleportHelper.PersonalHomeTeleportId == 0)
+                    if (_whichHousing == Housing.Apartment && !TeleportHelper.TeleportApartment() && TeleportHelper.ApartmentTeleportId == 0)
                     {
                         Stop();
                         return;
                     }
-                    else if (!TeleportHelper.TeleportFCEstate() && TeleportHelper.FCEstateTeleportId == 0)
+                    else if (_whichHousing == Housing.Personal_Home && !TeleportHelper.TeleportPersonalHome() && TeleportHelper.PersonalHomeTeleportId == 0)
+                    {
+                        Stop();
+                        return;
+                    }
+                    else if (_whichHousing == Housing.FC_Estate && !TeleportHelper.TeleportFCEstate() && TeleportHelper.FCEstateTeleportId == 0)
                     {
                         Stop();
                         return;
