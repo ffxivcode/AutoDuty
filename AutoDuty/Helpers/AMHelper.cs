@@ -1,10 +1,12 @@
 ﻿using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using System.Linq;
 
 namespace AutoDuty.Helpers
 {
@@ -48,6 +50,7 @@ namespace AutoDuty.Helpers
         internal static bool AMRunning = false;
         private static bool _aMStarted = false;
         private static bool _stop = false;
+        private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum));
 
         internal static unsafe void AMUpdate(IFramework framework)
         {
@@ -106,15 +109,25 @@ namespace AutoDuty.Helpers
             }
             AutoDuty.Plugin.Action = "AM Running";
 
-            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType != GotoInnHelper.InnTerritoryType(ObjectHelper.GrandCompany))
+            if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) > 4)
             {
-                Svc.Log.Debug("Moving to Inn");
-                GotoInnHelper.Invoke();
+                Svc.Log.Debug("Moving Closer to Summoning Bell");
+                MovementHelper.Move(SummoningBellGameObject, 0.25f, 4);
             }
-            else if (!_aMStarted)
+            else if (SummoningBellGameObject == null && !GotoHelper.GotoRunning)
             {
-                Svc.Log.Debug("Starting AM");
-                AM_IPCSubscriber.Start();
+                Svc.Log.Debug("Moving to Summoning Bell Location");
+                SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
+            }
+            else if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) <= 4 && !_aMStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList) && (ObjectHelper.InteractWithObjectUntilAddon(SummoningBellGameObject, "RetainerList") == null))
+            {
+                if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
+                {
+                    Svc.Log.Debug("Starting AM");
+                    AM_IPCSubscriber.Start();
+                }
+                else
+                    Svc.Log.Debug("Interacting with SummoningBell");
             }
         }
     }

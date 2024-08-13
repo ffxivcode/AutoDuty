@@ -113,7 +113,7 @@ namespace AutoDuty.Managers
                     CombatRole.Healer => healers == 1,
                     CombatRole.Tank => tanks == 1,
                     _ => false
-                };
+                } || trustMembers.Any(tm => tm.Level < AutoDuty.Plugin.CurrentTerritoryContent?.ClassJobLevelRequired);
 
                 if (needsReset)
                 {

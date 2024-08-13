@@ -13,6 +13,10 @@ namespace AutoDuty.Helpers
 {
     internal unsafe static class TeleportHelper
     {
+        internal static bool TeleportFCEstate() => TeleportAetheryte(56, 0);
+
+        internal static bool TeleportPersonalHome() => TeleportAetheryte(59, 0);
+
         internal static bool TeleportGCCity()
         {
             //Limsa=1,128, Gridania=2,132, Uldah=3,130 -- Goto Limsa if no GC
@@ -36,12 +40,9 @@ namespace AutoDuty.Helpers
             return false;
         }
 
-        internal static bool MoveToClosestAetheryte(uint toTerritoryType)
+        internal static bool MoveToClosestAetheryte()
         {
-            //if (Svc.ClientState.TerritoryType == toTerritoryType)
-              //  return true;
-
-            IGameObject? gameObject = null;
+            IGameObject? gameObject;
             if ((gameObject = ObjectHelper.GetObjectByObjectKind(ObjectKind.Aetheryte)) == null)
                 return false;
 

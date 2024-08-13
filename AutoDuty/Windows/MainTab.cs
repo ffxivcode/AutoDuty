@@ -17,6 +17,7 @@ using static AutoDuty.AutoDuty;
 namespace AutoDuty.Windows
 {
     using Dalamud.Interface.Components;
+    using ECommons.ExcelServices;
     using ECommons.GameFunctions;
 
     internal static class MainTab
@@ -348,9 +349,9 @@ namespace AutoDuty.Windows
 
                         if (Plugin.Configuration.Trust)
                         {
+                            ImGui.Separator();
                             if (_dutySelected != null && _dutySelected.Content.TrustMembers.Count > 0)
                             {
-                                ImGui.Separator();
                                 ImGuiEx.LineCentered(() => ImGuiEx.TextUnderlined("Select your Trust Party"));
                                 ImGui.Columns(3, null, false);
 
@@ -381,7 +382,7 @@ namespace AutoDuty.Windows
 
                                         bool canSelect = members.CanSelectMember(member, playerRole) && member.Level >= _dutySelected.Content.ClassJobLevelRequired;
 
-                                        using (var disabled = ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
+                                        using (ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
                                         {
                                             if (ImGui.Checkbox($"###{member.Index}{_dutySelected.id}", ref enabled))
                                             {
@@ -433,6 +434,9 @@ namespace AutoDuty.Windows
                                     TrustManager.ClearCachedLevels();
                                 ImGui.NextColumn();
                                 ImGui.Columns(1, null, true);
+                            } else if (ImGui.Button("Refresh trust member levels"))
+                            {
+                                TrustManager.ClearCachedLevels();
                             }
                         }
 
@@ -450,7 +454,12 @@ namespace AutoDuty.Windows
 
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
 
-                    if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
+                    if ((Player.Job == Job.BLU && !Plugin.Configuration.Regular && !Plugin.Configuration.Trial && !Plugin.Configuration.Raid) || Player.Job.GetRole() == CombatRole.NonCombat)
+                    {
+                        ImGui.TextColored(new Vector4(255, 1, 0, 1), "Friendly reminder that AutoDuty sadly does NOT work \nwhen playing as a DoH or DoL!!!");
+                        if (Player.Job == Job.BLU) ImGui.TextColored(new Vector4(0, 1, 1, 1), "OR BLUE MAGE... REALLY!?");
+                    }
+                    else if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
                         Dictionary<uint, ContentHelper.Content> dictionary = [];
                         if (Plugin.Configuration.Support)

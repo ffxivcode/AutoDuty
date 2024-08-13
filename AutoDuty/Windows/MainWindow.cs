@@ -95,7 +95,7 @@ public class MainWindow : Window, IDisposable
         {
             using (var GotoDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || RepairHelper.RepairRunning))
             {
-                if (GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning)
+                if ((GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning) || MapHelper.MoveToMapMarkerRunning || GotoHousingHelper.GotoHousingRunning)
                 {
                     if (ImGui.Button("Stop"))
                         Plugin.StopAndResetALL();
@@ -206,9 +206,21 @@ public class MainWindow : Window, IDisposable
                 {
                     GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
                 }
-                if (ImGui.Selectable("FlagMarker"))
+                if (ImGui.Selectable("Flag Marker"))
                 {
                     MapHelper.MoveToMapMarker();
+                }
+                if (ImGui.Selectable("Summoning Bell"))
+                {
+                    SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
+                }
+                if (ImGui.Selectable("Personal Home"))
+                {
+                    GotoHousingHelper.Invoke(1);
+                }
+                if (ImGui.Selectable("FC Estate"))
+                {
+                    GotoHousingHelper.Invoke(2);
                 }
                 ImGui.EndPopup();
             }
