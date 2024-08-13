@@ -453,9 +453,10 @@ namespace AutoDuty.Windows
 
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
 
-                    if (Player.Job.GetRole() == CombatRole.NonCombat)
+                    if ((Player.Job == Job.BLU && !Plugin.Configuration.Regular && !Plugin.Configuration.Trial && !Plugin.Configuration.Raid) || Player.Job.GetRole() == CombatRole.NonCombat)
                     {
                         ImGui.TextColored(new Vector4(255, 1, 0, 1), "Friendly reminder that AutoDuty sadly does NOT work \nwhen playing as a DoH or DoL!!!");
+                        if (Player.Job == Job.BLU) ImGui.TextColored(new Vector4(0, 1, 1, 1), "OR BLUE MAGE... REALLY!?");
                     }
                     else if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
