@@ -31,7 +31,6 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using static AutoDuty.Windows.ConfigTab;
-using static FFXIVClientStructs.FFXIV.Common.Component.BGCollision.MeshPCB;
 using System.Diagnostics;
 
 namespace AutoDuty;
@@ -670,6 +669,7 @@ public sealed class AutoDuty : IDalamudPlugin
             _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
             _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
         }
+
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
@@ -681,8 +681,6 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!bmr)
             _chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
-
-        _chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
     }
 
     internal void BMRoleChecks()
@@ -1098,6 +1096,22 @@ public sealed class AutoDuty : IDalamudPlugin
                     return;
 
                 Action = $"Waiting For Combat";
+
+                if (ReflectionHelper.Avarice_Reflection.avariceReady && EzThrottler.Throttle("PositionalChecker", 25) && 
+                    this.Configuration is { AutoManageBossModAISettings: true, positionalAvarice: true })
+                {
+                    Positional positional = Positional.Any;
+                    if (ReflectionHelper.Avarice_Reflection.IsRear())
+                        positional = Positional.Rear;
+                    else if (ReflectionHelper.Avarice_Reflection.IsFlank())
+                        positional = Positional.Flank;
+
+                    if(this.Configuration.PositionalEnum != positional)
+                        this._chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
+
+                    this.Configuration.PositionalEnum = positional;
+                }
+
 
                 if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
                 {
