@@ -31,9 +31,10 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using static AutoDuty.Windows.ConfigTab;
-using static FFXIVClientStructs.FFXIV.Common.Component.BGCollision.MeshPCB;
 using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
+using FFXIVClientStructs.FFXIV.Client.LayoutEngine;
+using Dalamud.Game.ClientState.Conditions;
 
 namespace AutoDuty;
 
@@ -516,15 +517,20 @@ public sealed class AutoDuty : IDalamudPlugin
             MainWindow.OpenTab("Main");
         }
     }
-
+    private bool _recentlyWatchedCutscene = false;
     private void Condition_ConditionChange(Dalamud.Game.ClientState.Conditions.ConditionFlag flag, bool value)
     {
         //Svc.Log.Debug($"{flag} : {value}");
-        if (Stage != 3 && value && Started && (flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas51 || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.Jumping61))
+        if (!_dead && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != 3 && value && Started && (flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas51 || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.Jumping61))
         {
             Indexer++;
             Stage = 1;
             VNavmesh_IPCSubscriber.Path_Stop();
+        }
+        if (Conditions.IsWatchingCutscene || flag == ConditionFlag.WatchingCutscene || flag == ConditionFlag.WatchingCutscene78 || flag == ConditionFlag.OccupiedInCutSceneEvent)
+        {
+            _recentlyWatchedCutscene = true;
+            SchedulerHelper.ScheduleAction("RecentlyWatchedCutsceneTimer", () => _recentlyWatchedCutscene = false, 5000);
         }
     }
 
