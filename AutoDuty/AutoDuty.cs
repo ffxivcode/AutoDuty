@@ -33,6 +33,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using static AutoDuty.Windows.ConfigTab;
 using static FFXIVClientStructs.FFXIV.Common.Component.BGCollision.MeshPCB;
 using System.Diagnostics;
+using Lumina.Excel.GeneratedSheets;
 
 namespace AutoDuty;
 
@@ -1422,6 +1423,19 @@ public sealed class AutoDuty : IDalamudPlugin
                 break;
             case "movetoflag":
                 MapHelper.MoveToMapMarker();
+                break;
+            case "run":
+                if (argsArray.Length <= 2 || !UInt32.TryParse(argsArray[1], out uint territoryType) || !Int32.TryParse(argsArray[2], out int loopTimes))
+                {
+                    Svc.Log.Info($"Run Error: Incorrect Usage\ncorrect use /autoduty run TerritoryTypeInteger LoopTimesInteger\nexample: /autoduty run 1036 10\nYou can get the TerritoryTypeInteger from /autoduty tt name of territory (will be logged and copied to clipboard)");
+                    return;
+                }
+                Run(territoryType, loopTimes);
+                break;
+            case "tt":
+                var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
+                Svc.Log.Info($"{tt?.RowId}");
+                ImGui.SetClipboardText($"{tt?.RowId}");
                 break;
             default:
                 OpenMainUI(); 
