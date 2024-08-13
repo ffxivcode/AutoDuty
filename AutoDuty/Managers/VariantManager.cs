@@ -34,6 +34,8 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => yesno = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SelectYesno"), "RegisterVariantDuty");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("SelectYesno", out yesno) && GenericHelpers.IsAddonReady(yesno), "RegisterVariantDuty");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(yesno, true, 0, 1), "RegisterVariantDuty");
+            _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterVariantDuty");
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterVariantDuty");
         }
 
         private unsafe void OpenVVD() => AgentModule.Instance()->GetAgentByInternalId(AgentId.VVDFinder)->Show();
