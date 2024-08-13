@@ -140,7 +140,7 @@ namespace AutoDuty.Helpers
                         {
                             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
-                            if (TeleportHelper.MoveToClosestAetheryte(_territoryType))
+                            if (TeleportHelper.MoveToClosestAetheryte())
                                 TeleportHelper.TeleportAethernet(aetheryte.AethernetName.Value?.Name ?? "", _territoryType);
                         }
                         return;
@@ -157,7 +157,7 @@ namespace AutoDuty.Helpers
 
                 if (aetheryteLoc != aetheryteMe)
                 {
-                    if (TeleportHelper.MoveToClosestAetheryte(_territoryType))
+                    if (TeleportHelper.MoveToClosestAetheryte())
                     {
                         TeleportHelper.TeleportAethernet(aetheryteLoc?.AethernetName.Value?.Name ?? "", _territoryType);
                     }

@@ -415,10 +415,8 @@ public static class ConfigTab
     {
         Inn = 0,
         GC_Barracks = 1,
-        /* Not Yet Implemented
         Personal_Home = 2,
         FC_Estate = 3
-        */
     }
     public enum TerminationMode : int
     {
@@ -445,10 +443,8 @@ public static class ConfigTab
     public enum SummoningBellLocations : uint
     {
         Inn = 0,
-        /* Not Yet Implemented
         Personal_Home = 1,
         FC_Estate = 2,
-        */
         Limsa_Lominsa_Lower_Decks = 129,
         Old_Gridania = 133,
         Uldah_Steps_of_Thal = 131,
@@ -458,11 +454,10 @@ public static class ConfigTab
         The_Doman_Enclave = 759,
         The_Crystarium = 819,
         Eulmore = 820,
-        Old_Sharlayan = 962 /*,
-        Not Yet Implemented
+        Old_Sharlayan = 962,
         Radz_at_Han = 963,
         Tuliyollal = 1185,
-        Nexus_Arcade = 1186*/
+        Nexus_Arcade = 1186
     }
     internal static string FollowName = "";
 

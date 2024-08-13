@@ -105,6 +105,7 @@ namespace AutoDuty.Helpers
 
             if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) > 4)
             {
+                Svc.Log.Debug("Moving Closer to Summoning Bell");
                 MovementHelper.Move(SummoningBellGameObject, 0.25f, 4);
             }
             else if (SummoningBellGameObject == null && !GotoHelper.GotoRunning)
@@ -112,12 +113,18 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug("Moving to Summoning Bell Location");
                 SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
             }
-            else if (!_autoRetainerStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList) && (ObjectHelper.InteractWithObjectUntilAddon(SummoningBellGameObject, "RetainerList") == null))
+            else if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) <= 4 && !_autoRetainerStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList) && (ObjectHelper.InteractWithObjectUntilAddon(SummoningBellGameObject, "RetainerList") == null))
             {
-                if (VNavmesh_IPCSubscriber.Path_IsRunning())
-                    VNavmesh_IPCSubscriber.Path_Stop();
-                Svc.Log.Debug("Waiting for AutoRetainer to Start");
-                new ECommons.Automation.Chat().ExecuteCommand("/autoretainer e");
+                if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
+                {
+                    if (VNavmesh_IPCSubscriber.Path_IsRunning())
+                        VNavmesh_IPCSubscriber.Path_Stop();
+                    Svc.Log.Debug("Waiting for AutoRetainer to Start");
+                    new ECommons.Automation.Chat().ExecuteCommand("/autoretainer e");
+                }
+                else
+                    Svc.Log.Debug("Interacting with SummoningBell");
+                
             }
         }
     }
