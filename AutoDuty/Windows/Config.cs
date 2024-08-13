@@ -15,8 +15,7 @@ using AutoDuty.Managers;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Common.Math;
 using AutoDuty.Helpers;
-using static AutoDuty.Windows.ConfigTab;
-using ECommons.ExcelServices.TerritoryEnumeration;
+using static AutoDuty.Data.Enum;
 
 namespace AutoDuty.Windows;
 
@@ -404,61 +403,6 @@ public class Configuration : IPluginConfiguration
 
 public static class ConfigTab
 {
-    public enum LootMethod : int
-    {
-        AutoDuty = 0,
-        RotationSolver = 1,
-        Pandora = 2,
-        All = 3
-    }
-    public enum RetireLocation : int
-    {
-        Inn = 0,
-        GC_Barracks = 1,
-        Personal_Home = 2,
-        FC_Estate = 3
-    }
-    public enum TerminationMode : int
-    {
-        Do_Nothing = 0,
-        Logout = 1,
-        Start_AR_Multi_Mode =2, 
-        Kill_Client = 3,
-        Kill_PC = 4
-    }
-    public enum Role : int
-    {
-        Tank = 0,
-        Healer = 1,
-        Ranged_DPS = 2,
-        Melee_DPS = 3
-    }
-    public enum Positional : int
-    {
-        Any = 0,
-        Flank = 1,
-        Rear = 2,
-        Front = 3
-    }
-    public enum SummoningBellLocations : uint
-    {
-        Inn = 0,
-        Personal_Home = 1,
-        FC_Estate = 2,
-        Limsa_Lominsa_Lower_Decks = 129,
-        Old_Gridania = 133,
-        Uldah_Steps_of_Thal = 131,
-        The_Pillars = 419,
-        Rhalgrs_Reach = 635,
-        Kugane = 628,
-        The_Doman_Enclave = 759,
-        The_Crystarium = 819,
-        Eulmore = 820,
-        Old_Sharlayan = 962,
-        Radz_at_Han = 963,
-        Tuliyollal = 1185,
-        Nexus_Arcade = 1186
-    }
     internal static string FollowName = "";
 
     private static Configuration Configuration = AutoDuty.Plugin.Configuration;
@@ -473,8 +417,6 @@ public static class ConfigTab
     private static bool preLoopHeaderSelected = false;
     private static bool betweenLoopHeaderSelected = false;
     private static bool terminationHeaderSelected = false;
-
-    private static string EnumString(Enum T) => T.ToString().Replace("_", " ");
 
     public static void Draw()
     {

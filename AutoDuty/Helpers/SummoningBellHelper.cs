@@ -1,5 +1,6 @@
 ﻿using AutoDuty.Windows;
 using System.Numerics;
+using static AutoDuty.Data.Enum;
 
 namespace AutoDuty.Helpers
 {
@@ -10,8 +11,9 @@ namespace AutoDuty.Helpers
             return territoryType switch
             {
                 0 => 2000403, //Inn
-                1 => 196630, //FC_Estate
-                2 => 196630, //Personal_Home / Apartment
+                1 => 196630, //Apartment
+                2 => 196630, //Personal_Home
+                3 => 196630, //FC_Estate
                 129 => 2000401, //Limsa_Lominsa_Lower_Decks
                 133 => 2000401, //Old_Gridania
                 131 => 2000401, //Uldah_Steps_of_Thal
@@ -29,7 +31,7 @@ namespace AutoDuty.Helpers
             };
         }
 
-        private static Vector3 SummoningBellLocations(uint territoryType)
+        private static Vector3 SummoningBellVector3s(uint territoryType)
         {
             return territoryType switch
             {
@@ -50,21 +52,24 @@ namespace AutoDuty.Helpers
             };
         }
 
-        internal static void Invoke(ConfigTab.SummoningBellLocations summoningBellLocation) 
+        internal static void Invoke(SummoningBellLocations summoningBellLocation) 
         {
             switch (AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum)
             {
-                case ConfigTab.SummoningBellLocations.Inn:
+                case SummoningBellLocations.Inn:
                     GotoInnHelper.Invoke();
                     break;
-                case ConfigTab.SummoningBellLocations.FC_Estate:
-                    GotoHousingHelper.Invoke(2);
+                case SummoningBellLocations.Apartment:
+                    GotoHousingHelper.Invoke((Housing)SummoningBellLocations.Apartment);
                     break;
-                case ConfigTab.SummoningBellLocations.Personal_Home:
-                    GotoHousingHelper.Invoke(1);
+                case SummoningBellLocations.Personal_Home:
+                    GotoHousingHelper.Invoke((Housing)SummoningBellLocations.Personal_Home);
+                    break;
+                case SummoningBellLocations.FC_Estate:
+                    GotoHousingHelper.Invoke((Housing)SummoningBellLocations.FC_Estate);
                     break;
                 default:
-                    GotoHelper.Invoke((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum, SummoningBellLocations((uint)summoningBellLocation), 0.25f, 4);
+                    GotoHelper.Invoke((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum, SummoningBellVector3s((uint)summoningBellLocation), 0.25f, 4);
                     break;
             }
         }
