@@ -1140,7 +1140,6 @@ public sealed class AutoDuty : IDalamudPlugin
                         if (gos != null)
                             Svc.Targets.Target = gos;
                     }
-                    var BMR = IPCSubscriber_Common.IsReady("BossModReborn");
                     if (Configuration.AutoManageBossModAISettings)
                     {
                         if (Svc.Targets.Target != null)

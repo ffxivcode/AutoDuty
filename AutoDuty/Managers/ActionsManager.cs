@@ -72,7 +72,7 @@ namespace AutoDuty.Managers
             var boolTrueFalse = TrueFalse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
             AutoDuty.Plugin.Action = $"StopForCombat: {TrueFalse}";
             AutoDuty.Plugin.StopForCombat = boolTrueFalse;
-            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/bmrai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
         }
 
         public unsafe void ForceAttack(string _)
