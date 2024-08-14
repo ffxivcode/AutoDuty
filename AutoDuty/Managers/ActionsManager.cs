@@ -141,7 +141,7 @@ namespace AutoDuty.Managers
             switch (waitForWhat)
             {
                 case "Combat":
-                    _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "WaitFor");
+                    _taskManager.Enqueue(() => Player.Character->InCombat, int.MaxValue, "WaitFor");
                     break;
                 case "IsValid":
                     _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500, "WaitFor");
