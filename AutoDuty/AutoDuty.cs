@@ -721,7 +721,7 @@ public sealed class AutoDuty : IDalamudPlugin
         //RoleBased MaxDistanceToTargetAoE
         if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTargetAoE != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
         {
-            Configuration.MaxDistanceToTargetAoE = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
+            Configuration.MaxDistanceToTargetAoE = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank || Player?.ClassJob.GameData?.JobIndex==18 ? 3 : 10);
             Configuration.Save();
         }
 
@@ -1145,14 +1145,14 @@ public sealed class AutoDuty : IDalamudPlugin
                         {
                             VNavmesh_IPCSubscriber.Path_Stop();
 
-                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && !BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange"])[0].Equals(Configuration.MaxDistanceToTargetAoE))
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange", $"{Configuration.MaxDistanceToTargetAoE}"]);
-                            else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange"])[0].Equals(Configuration.MaxDistanceToTarget))
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange", $"{Configuration.MaxDistanceToTarget}"]);
+                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && !BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTargetAoE))
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoE}"]);
+                            else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTarget))
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTarget}"]);
 
                         }
-                        else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange"])[0].Equals(Configuration.MaxDistanceToTarget))
-                            BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange", $"{Configuration.MaxDistanceToTarget}"]);
+                        else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTarget))
+                            BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTarget}"]);
                     }
                     else
                         VNavmesh_IPCSubscriber.Path_Stop();
