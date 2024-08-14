@@ -421,16 +421,15 @@ public static class ConfigTab
 
         if (overlayHeaderSelected == true)
         {
-            ImGui.Columns(2, "##OverlayColumns", false);
-
             if (ImGui.Checkbox("Show Overlay", ref Configuration.showOverlay))
             {
                 Configuration.ShowOverlay = Configuration.showOverlay;
                 Configuration.Save();
             }
-            using (var openOverlayDisable = ImRaii.Disabled(!Configuration.ShowOverlay))
+            using (ImRaii.Disabled(!Configuration.ShowOverlay))
             {
-                ImGui.NextColumn();
+                ImGui.Indent();
+                ImGui.Columns(2, "##OverlayColumns", false);
 
                 //ImGui.SameLine(0, 53);
                 if (ImGui.Checkbox("Hide When Stopped", ref Configuration.hideOverlayWhenStopped))
@@ -461,6 +460,7 @@ public static class ConfigTab
                 if (ImGui.Checkbox("Use Slider Inputs", ref Configuration.UseSliderInputs))
                     Configuration.Save();
                 ImGui.Columns(1);
+                ImGui.Unindent();
             }
 
             if (ImGui.Checkbox("Show Main Window on Startup", ref Configuration.ShowMainWindowOnStartup))
