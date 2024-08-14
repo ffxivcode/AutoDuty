@@ -505,8 +505,9 @@ public static class ConfigTab
             if (ImGui.Checkbox("Loot Treasure Coffers", ref Configuration.LootTreasure))
                 Configuration.Save();
 
-            using (var lootTreasureDisabled = ImRaii.Disabled(!Configuration.LootTreasure))
+            using (ImRaii.Disabled(!Configuration.LootTreasure))
             {
+                ImGui.Indent();
                 ImGui.Text("Select Method: ");
                 ImGui.SameLine(0, 5);
                 ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
@@ -514,7 +515,7 @@ public static class ConfigTab
                 {
                     foreach (LootMethod lootMethod in Enum.GetValues(typeof(LootMethod)))
                     {
-                        using (var lootMethodAutoDutyDisabled = ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled) || (lootMethod == LootMethod.RotationSolver && !ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)))
+                        using (ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled) || (lootMethod == LootMethod.RotationSolver && !ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)))
                         {
                             if (ImGui.Selectable(EnumString(lootMethod)))
                             {
@@ -526,11 +527,13 @@ public static class ConfigTab
                     ImGui.EndCombo();
                 }
                 ImGuiComponents.HelpMarker("RSR Toggles Not Yet Implemented");
-                using (var lootMethodAutoDutyDisabled = ImRaii.Disabled(Configuration.LootMethodEnum != LootMethod.AutoDuty))
+                
+                using (ImRaii.Disabled(Configuration.LootMethodEnum != LootMethod.AutoDuty))
                 {
                     if (ImGui.Checkbox("Loot Boss Treasure Only", ref Configuration.LootBossTreasureOnly))
                         Configuration.Save();
                 }
+                ImGui.Unindent();
             }
             ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");         
             /*/
