@@ -2,9 +2,10 @@
   "actions": [
     "StopForCombat|-40.61, 300.20, 54.79|False",
     "MoveTo|30.56, 302.00, 109.17|",
-    "StopForCombat|29.84, 302.00, 56.86|True",
+    "StopForCombat|25.80, 302.00, 43.72|True",
     "MoveTo|29.84, 302.00, 126.74|",
-    "AutoMoveFor|29.83, 302.00, 135.95|6500",
+    "AutoMoveFor|29.83, 302.00, 135.95|8000",
+    "Wait|0, 0, 0|1000",
     "Interactable|-172.13, -504.00, 11.23|2013731 (Elevator Console)",
     "Wait|0, 0, 0|8000",
     "Revival|-98.76, -500.00, 156.89|",
@@ -18,8 +19,9 @@
     "Wait|44.58, -120.00, -129.21|300",
     "MoveTo|84.94, -120.00, -125.36|",
     "AutoMoveFor|85.12, -120.00, -116.10|4000",
-	"PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
+    "PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
     "StopForCombat|49.36, -93.90, -60.94|False",
+    "Wait|-95.53, -94.00, -80.09|2000",
     "StopForCombat|-139.71, -94.00, -81.52|True",
     "MoveTo|-187.33, -94.00, -86.08|",
     "Revival|-171.57, -94.00, -107.90|",
@@ -27,7 +29,7 @@
     "MoveTo|-172.06, -94.00, -160.17|",
     "MoveTo|-171.92, -94.00, -215.20|",
     "AutoMoveFor|-172.11, -90.61, -227.50|7000",
-    "MoveTo|89.88, 0.00, 227.16|",
+    "PausePandora|89.88, 0.00, 227.16|Auto-interact with Objects in Instances|50000|",
     "MoveTo|102.84, 0.00, 220.83|",
     "MoveTo|96.41, 0.00, 213.82|",
     "StopForCombat|118.70, 0.00, 196.30|False",
@@ -35,11 +37,17 @@
     "MoveTo|190.02, 0.00, 67.93|",
     "StopForCombat|192.54, 0.00, 95.03|True",
     "Revival|189.73, 0.00, 33.64|",
-    "Boss|189.80, 0.00, -3.01|"
+    "Boss|189.80, 0.00, -3.01|",
+    "MoveTo|189.92, 0.00, -12.38|"
   ],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 119,
+        "change": ""
+      }
+    ],
     "notes": []
   }
 }
