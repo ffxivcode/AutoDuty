@@ -25,7 +25,7 @@
     "MoveTo|-26.07, -18.80, 1.81|",
     "Interactable|0, 0, 0|2000356 (Carnation Door)",
     "Boss|14.58, -18.67, 0.05|",
-    "Wait|0, 0, 0|2000",
+    "Wait|0, 0, 0|4000",
     "Interactable|0, 0, 0|2001235 (Bloody Parchment)",
     "MoveTo|14.57, -18.68, -0.02|",
     "Interactable|0, 0, 0|2012969 (Aetherial Flow)",
