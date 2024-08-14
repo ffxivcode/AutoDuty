@@ -344,7 +344,8 @@ namespace AutoDuty.Windows
                                         Plugin.TrustLeveling = leveling;
                                 }
                             }
-                            ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows this list instead:\nL16-L23 (i0): TamTara \nL24-31 (i0): Totorak\nL32-40 (i0): Brayflox\nL41-52 (i0): Stone Vigil\nL53-60 (i105): Sohm Al\nL61-66 (i240): Sirensong Sea\nL67-70 (i255): Doma Castle\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
+                            if (!Plugin.Configuration.Trust) ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL16-L23 (i0): TamTara \nL24-31 (i0): Totorak\nL32-40 (i0): Brayflox\nL41-52 (i0): Stone Vigil\nL53-60 (i105): Sohm Al\nL61-66 (i240): Sirensong Sea\nL67-70 (i255): Doma Castle\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
+                            else ImGuiComponents.HelpMarker("TRUST Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl, as well as the LOWEST LEVEL trust members you have, in an attempt to level them all equally.. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
                         }
 
                         if (Plugin.Configuration.Trust)
@@ -453,54 +454,60 @@ namespace AutoDuty.Windows
                         ImGui.TextWrapped("AutoDuty will automatically select the best dungeon");
 
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
-
-                    if ((Player.Job == Job.BLU && !Plugin.Configuration.Regular && !Plugin.Configuration.Trial && !Plugin.Configuration.Raid) || Player.Job.GetRole() == CombatRole.NonCombat)
+                    
+                    if (Player.Available)
+                    if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
-                        ImGui.TextColored(new Vector4(255, 1, 0, 1), "Friendly reminder that AutoDuty sadly does NOT work \nwhen playing as a DoH or DoL!!!");
-                        if (Player.Job == Job.BLU) ImGui.TextColored(new Vector4(0, 1, 1, 1), "OR BLUE MAGE... REALLY!?");
-                    }
-                    else if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
-                    {
-                        Dictionary<uint, ContentHelper.Content> dictionary = [];
-                        if (Plugin.Configuration.Support)
-                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
-                        else if (Plugin.Configuration.Trust)
-                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.TrustContent).ToDictionary();
-                        else if (Plugin.Configuration.Squadron)
-                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
-                        else if (Plugin.Configuration.Regular)
-                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 2).ToDictionary();
-                        else if (Plugin.Configuration.Trial)
-                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 4).ToDictionary();
-                        else if (Plugin.Configuration.Raid)
-                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 5).ToDictionary();
-                        else if (Plugin.Configuration.Variant)
-                            dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.VariantContent).ToDictionary();
-
-                        if (dictionary.Count > 0 && ObjectHelper.IsReady)
+                        if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)))
                         {
-                            short level = PlayerHelper.GetCurrentLevelFromSheet();
-                            short ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false);
-
-                            foreach ((uint _, ContentHelper.Content? content) in dictionary)
+                            Dictionary<uint, ContentHelper.Content> dictionary = [];
+                            if (Plugin.Configuration.Support)
+                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
+                            else if (Plugin.Configuration.Trust)
+                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.TrustContent).ToDictionary();
+                            else if (Plugin.Configuration.Squadron)
+                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
+                            else if (Plugin.Configuration.Regular)
+                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 2).ToDictionary();
+                            else if (Plugin.Configuration.Trial)
+                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 4).ToDictionary();
+                            else if (Plugin.Configuration.Raid)
+                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 5).ToDictionary();
+                            else if (Plugin.Configuration.Variant)
+                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.VariantContent).ToDictionary();
+    
+                            if (dictionary.Count > 0 && ObjectHelper.IsReady)
                             {
-                                bool canRun = content.CanRun(level, ilvl) && (!_trust || content.CanTrustRun());
-                                using (var d2 = ImRaii.Disabled(!canRun))
+                                short level = PlayerHelper.GetCurrentLevelFromSheet();
+                                short ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false);
+    
+                                foreach ((uint _, ContentHelper.Content? content) in dictionary)
                                 {
-                                    if (Plugin.Configuration.HideUnavailableDuties && !canRun)
-                                        continue;
-                                    if (ImGui.Selectable($"({content.TerritoryType}) {content.DisplayName}", _dutySelected?.id == content.TerritoryType))
+                                    bool canRun = content.CanRun(level, ilvl) && (!_trust || content.CanTrustRun());
+                                    using (var d2 = ImRaii.Disabled(!canRun))
                                     {
-                                        _dutySelected = ContentPathsManager.DictionaryPaths[content.TerritoryType];
-                                        Plugin.CurrentTerritoryContent = content;
-                                        _dutySelected.SelectPath(out Plugin.CurrentPath);
+                                        if (Plugin.Configuration.HideUnavailableDuties && !canRun)
+                                            continue;
+                                        if (ImGui.Selectable($"({content.TerritoryType}) {content.DisplayName}", _dutySelected?.id == content.TerritoryType))
+                                        {
+                                            _dutySelected = ContentPathsManager.DictionaryPaths[content.TerritoryType];
+                                            Plugin.CurrentTerritoryContent = content;
+                                            _dutySelected.SelectPath(out Plugin.CurrentPath);
+                                        }
                                     }
                                 }
+                            }
+                            else
+                            {
+                                ImGui.TextColored(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
                             }
                         }
                         else
                         {
-                            ImGui.TextColored(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
+                            if (Player.Job.GetRole() == CombatRole.NonCombat || Player.Job == Job.BLU)
+                                ImGui.TextColored(new Vector4(255, 1, 0, 1), "Friendly reminder that AutoDuty sadly does NOT work \nwhen playing as a DoH or DoL!!!");
+                            if (Player.Job == Job.BLU)
+                                ImGui.TextColored(new Vector4(0, 1, 1, 1), "OR BLUE MAGE... REALLY!?");
                         }
                     }
                     else

@@ -18,8 +18,20 @@ namespace AutoDuty.Helpers
         internal static uint SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();
         internal static uint MySeals => InventoryManager.Instance()->GetCompanySeals(PlayerState.Instance()->GrandCompany);
         internal static uint MaxSeals => InventoryManager.Instance()->GetMaxCompanySeals(PlayerState.Instance()->GrandCompany);
-        internal static int ItemCount(uint itemId) => InventoryManager.Instance()->GetInventoryItemCount(itemId);
-        internal static void UseItem(uint itemId) => AgentInventoryContext.Instance()->UseItem(itemId);
+
+        internal static uint GetHQItemId(uint itemId) => itemId + 1_000_000;
+
+        internal static int ItemCount(uint itemId, bool hq = false) => InventoryManager.Instance()->GetInventoryItemCount(hq ? GetHQItemId(itemId) : itemId);
+        internal static void UseItem(uint itemId, bool hq = false) => 
+            ActionManager.Instance()->UseAction(ActionType.Item, hq ? GetHQItemId(itemId) : itemId, extraParam: 65535);
+
+        internal static void UseItemIfAvailable(uint itemId, bool allowHq = true)
+        {
+            if(allowHq && ItemCount(itemId, true) >= 1)
+                UseItem(itemId, true);
+            else if (ItemCount(itemId) >= 1) 
+                UseItem(itemId);
+        }
 
         internal unsafe static uint CurrentItemLevel()
         {

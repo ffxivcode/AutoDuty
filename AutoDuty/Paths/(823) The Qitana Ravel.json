@@ -1,6 +1,7 @@
 {
   "actions": [
     "ChatCommand|0.00, 8.10, 719.72|/vbmai followtarget on",
+    "MoveTo|0.27, 0.00, 511.11|",
     "Boss|0.17, 5.35, 314.78|",
     "MoveTo|132.96, -8.70, 187.63|",
     "MoveTo|46.85, -11.00, 78.80|",
