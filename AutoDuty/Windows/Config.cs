@@ -254,28 +254,13 @@ public class Configuration : IPluginConfiguration
     //Between Loop Config Options
     public int WaitTimeBeforeAfterLoopActions = 0;
     public bool AutoExtract = false;
-    internal bool autoExtractEquipped = true;
-    public bool AutoExtractEquipped 
-    {
-        get => autoExtractEquipped;
-        set
-        {
-            autoExtractEquipped = value;
-            if (value)
-                AutoExtractAll = false;
-        }
-    }
+
     internal bool autoExtractAll = false;
     public bool AutoExtractAll
     {
         get => autoExtractAll;
-        set
-        {
-            autoExtractAll = value;
-            if (value)
-                AutoExtractEquipped = false;
+        set => autoExtractAll = value;
         }
-    }
     internal bool autoDesynth = false;
     public bool AutoDesynth
     {
@@ -687,16 +672,15 @@ public static class ConfigTab
             ImGui.SameLine(0, 10);
             using (var d1 = ImRaii.Disabled(!Configuration.AutoExtract))
             {
-                if (ImGui.Checkbox("Extract Equipped", ref Configuration.autoExtractEquipped))
+                if (ImGui.RadioButton("Extract Equipped", !Configuration.autoExtractAll))
                 {
-                    Configuration.AutoExtractEquipped = Configuration.autoExtractEquipped;
+                    Configuration.AutoExtractAll = false;
                     Configuration.Save();
                 }
-
                 ImGui.SameLine(0, 5);
-                if (ImGui.Checkbox("Extract All", ref Configuration.autoExtractAll))
+                if (ImGui.RadioButton("Extract All", Configuration.autoExtractAll))
                 {
-                        Configuration.AutoExtractAll = Configuration.autoExtractAll;
+                        Configuration.AutoExtractAll = true;
                         Configuration.Save();
                 }
             }
