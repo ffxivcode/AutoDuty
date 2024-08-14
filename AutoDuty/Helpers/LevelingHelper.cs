@@ -50,7 +50,7 @@ namespace AutoDuty.Helpers
 
                 foreach ((TrustMemberName _, TrustMember member) in TrustManager.members)
                 {
-                    if (member.Level < lvl && member.Level < member.LevelCap)
+                    if (member.Level < lvl && member.Level < member.LevelCap && member.Level > 0)
                         lvl = (short) member.Level;
                 }
             }
