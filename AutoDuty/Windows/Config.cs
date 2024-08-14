@@ -260,7 +260,7 @@ public class Configuration : IPluginConfiguration
     {
         get => autoExtractAll;
         set => autoExtractAll = value;
-        }
+    }
     internal bool autoDesynth = false;
     public bool AutoDesynth
     {
@@ -693,19 +693,21 @@ public static class ConfigTab
                 Configuration.Save();
             }
             ImGui.SameLine(0, 5);
-            using (var autoGcTurninDisabled = ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
+            using (ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
             {
                 if (ImGui.Checkbox("Auto GC Turnin", ref Configuration.autoGCTurnin))
                 {
                     Configuration.AutoGCTurnin = Configuration.autoGCTurnin;
                     Configuration.Save();
                 }
-                using (var autoGcTurninConfigDisabled = ImRaii.Disabled(!Configuration.AutoGCTurnin))
+
+                using (ImRaii.Disabled(!Configuration.AutoGCTurnin))
                 {
+                    ImGui.Indent();
                     if (ImGui.Checkbox("Inventory Slots Left @", ref Configuration.AutoGCTurninSlotsLeftBool))
                         Configuration.Save();
                     ImGui.SameLine(0);
-                    using (var autoGcTurninSlotsLeftDisabled = ImRaii.Disabled(!Configuration.AutoGCTurninSlotsLeftBool))
+                    using (ImRaii.Disabled(!Configuration.AutoGCTurninSlotsLeftBool))
                     {
                         ImGui.PushItemWidth(125 * ImGuiHelpers.GlobalScale);
                         if (Configuration.UseSliderInputs)
@@ -715,13 +717,14 @@ public static class ConfigTab
                         }
                         else
                         {
-                            if (Configuration.AutoGCTurninSlotsLeft < 0) Configuration.AutoGCTurninSlotsLeft = 0;
-                            else if (Configuration.AutoGCTurninSlotsLeft > 140) Configuration.AutoGCTurninSlotsLeft = 140;
+                            Configuration.AutoGCTurninSlotsLeft = Math.Clamp(Configuration.AutoGCTurninSlotsLeft, 0, 140);
+
                             if (ImGui.InputInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft))
                                 Configuration.Save();
                         }
                         ImGui.PopItemWidth();
                     }
+                    ImGui.Unindent();
                 }
             }
             if (!Deliveroo_IPCSubscriber.IsEnabled)
