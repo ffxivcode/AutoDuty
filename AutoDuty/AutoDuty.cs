@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using ECommons;
 using ECommons.DalamudServices;
-using Dalamud.Game.ClientState.Objects.SubKinds;
 using AutoDuty.Managers;
 using AutoDuty.Windows;
 using AutoDuty.IPC;
@@ -93,23 +92,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     FollowHelper.SetFollow(null);
                     break;
                 case Stage.Action:
-                    if (!TaskManager.IsBusy && !_action.IsNullOrEmpty())
-                    {
-                        if (_action.Equals("Boss"))
-                        {
-                            if (Configuration.Regular && Svc.Party.PartyId > 0)
-                            {
-                                _messageSender = true;
-                                _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes($"Follow|OFF"));
-                            }
-                            _actionParams = _actionPosition;
-                        }
-                        _actions.InvokeAction(_action, [.. _actionParams]);
-                        _action = "";
-                        _actionParams = [];
-                        _actionPosition = [];
-                        _actionTollerance = 0.25f;
-                    }
+                    ActionInvoke();
                     break;
                 case Stage.Dead:
                     OnDeath();
@@ -124,7 +107,6 @@ public sealed class AutoDuty : IDalamudPlugin
     internal bool MainListClicked = false;
     internal bool Started = false;
     internal bool Running = false;
-    //internal IPlayerCharacter? Player = null;
     internal IBattleChara? BossObject;
     internal IGameObject? ClosestInteractableEventObject = null;
     internal IGameObject? ClosestTargetableBattleNpc = null;
@@ -843,6 +825,27 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => ObjectHelper.IsValid);
         TaskManager.Enqueue(() => { if (Indexer == 0) Indexer = FindWaypoint(); });
         TaskManager.Enqueue(() => Stage = Stage.Reading_Path);
+    }
+
+    private unsafe void ActionInvoke()
+    {
+        if (!TaskManager.IsBusy && !_action.IsNullOrEmpty())
+        {
+            if (_action.Equals("Boss"))
+            {
+                if (Configuration.Regular && Svc.Party.PartyId > 0)
+                {
+                    _messageSender = true;
+                    _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes($"Follow|OFF"));
+                }
+                _actionParams = _actionPosition;
+            }
+            _actions.InvokeAction(_action, [.. _actionParams]);
+            _action = "";
+            _actionParams = [];
+            _actionPosition = [];
+            _actionTollerance = 0.25f;
+        }
     }
 
     private int FindWaypoint()
