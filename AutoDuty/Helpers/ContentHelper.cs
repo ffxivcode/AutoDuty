@@ -10,6 +10,7 @@ using Lumina.Text;
 
 namespace AutoDuty.Helpers
 {
+    using ECommons.GameHelpers;
     using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
     internal static class ContentHelper
@@ -141,7 +142,7 @@ namespace AutoDuty.Helpers
 
         public static bool CanRun(this Content content, short level = -1, short ilvl = -1)
         {
-            if ((AutoDuty.Plugin.Player?.GetRole() ?? CombatRole.NonCombat) == CombatRole.NonCombat)
+            if ((Player.Available ? Player.Object.GetRole() : CombatRole.NonCombat) == CombatRole.NonCombat)
                 return false;
 
             if (!UIState.IsInstanceContentUnlocked(content.Id))

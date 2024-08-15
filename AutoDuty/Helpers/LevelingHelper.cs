@@ -4,6 +4,7 @@ namespace AutoDuty.Helpers
 {
     using System.Collections.Generic;
     using System.Linq;
+    using ECommons.GameHelpers;
     using Managers;
 
     public static class LevelingHelper
@@ -55,7 +56,7 @@ namespace AutoDuty.Helpers
                 }
             }
 
-            if (lvl < 15 || AutoDuty.Plugin.Player!.GetRole() == CombatRole.NonCombat || lvl >= 100)
+            if (lvl < 15 || Player.Object.GetRole() == CombatRole.NonCombat || lvl >= 100)
                 return null;
 
 

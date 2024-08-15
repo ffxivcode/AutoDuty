@@ -16,6 +16,7 @@ using AutoDuty.Helpers;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Text.RegularExpressions;
+using static AutoDuty.Data.Enum;
 
 namespace AutoDuty.Managers
 {
@@ -66,7 +67,7 @@ namespace AutoDuty.Managers
 
         public void StopForCombat(string TrueFalse)
         {
-            if (AutoDuty.Plugin.Player == null)
+            if (!Player.Available)
                 return;
 
             var boolTrueFalse = TrueFalse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
@@ -75,12 +76,12 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
         }
 
-        public unsafe void ForceAttack(string _)
+        public unsafe void ForceAttack(string timeoutTime)
         {
-            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack");
-            _taskManager.Enqueue(() => EzThrottler.Throttle("ForceAttack", Convert.ToInt32(500)), "ForceAttack");
-            _taskManager.Enqueue(() => EzThrottler.Check("ForceAttack"), Convert.ToInt32(500), "ForceAttack");
-            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1), "ForceAttack");
+            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack-GA16");
+            _taskManager.Enqueue(() => Svc.Targets.Target != null, 500, "ForceAttack-GA1");
+            _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1), "ForceAttack-GA1");
+            _taskManager.Enqueue(() => Player.Object.InCombat(), Convert.ToInt32(timeoutTime), "ForceAttack-WaitForCombat");
         }
 
         public unsafe void Jump(string automoveTime)
@@ -106,7 +107,7 @@ namespace AutoDuty.Managers
         
         public void ChatCommand(string commandAndArgs)
         {
-            if (AutoDuty.Plugin.Player == null)
+            if (!Player.Available)
                 return;
             AutoDuty.Plugin.Action = $"ChatCommand: {commandAndArgs}";
             _taskManager.Enqueue(() => _chat.ExecuteCommand(commandAndArgs), "ChatCommand");
@@ -115,7 +116,7 @@ namespace AutoDuty.Managers
 
         public void AutoMoveFor(string wait)
         {
-            if (AutoDuty.Plugin.Player == null)
+            if (!Player.Available)
                 return;
             AutoDuty.Plugin.Action = $"AutoMove For {wait}";
             _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "AutoMove");
@@ -160,14 +161,12 @@ namespace AutoDuty.Managers
 
         }
 
-        private bool CheckPause() => _plugin.Stage == 5;
+        private bool CheckPause() => _plugin.Stage == Stage.Paused;
 
         public unsafe void ExitDuty(string _)
         {
-            _taskManager.Enqueue(() => !Player.Character->InCombat, "ExitDuty-Invoke");
             _taskManager.Enqueue(() => { ExitDutyHelper.Invoke(); }, "ExitDuty-Invoke");
-            _taskManager.Enqueue(() => !ObjectHelper.IsReady, "ExitDuty-WaitPlayerNotReady");
-            _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "ExitDuty-WaitPlayerReady");
+            _taskManager.Enqueue(() => !ExitDutyHelper.ExitDutyRunning, "ExitDuty-WaitExitDutyRunning");
         }
 
         public unsafe bool IsAddonReady(nint addon) => addon > 0 && GenericHelpers.IsAddonReady((AtkUnitBase*)addon);

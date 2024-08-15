@@ -67,5 +67,28 @@
             Tuliyollal = 1185,
             Nexus_Arcade = 1186
         }
+
+        public enum DutyState : int
+        {
+            None = 0,
+            DutyStarted = 1,
+            DutyWiped = 2,
+            DutyRecommenced = 3,
+            DutyComplete = 4,
+        }
+
+        public enum Stage : int
+        {
+            Stopped = 0,
+            Reading_Path = 1,
+            Moving = 2,
+            Action = 3,
+            Waiting_For_Combat = 4,
+            Paused = 5,
+            Dead = 6,
+            Revived = 7,
+            Looting_Treasure = 8,
+            Looping = 9
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace AutoDuty.Managers
 
             public DutyPath? SelectPath(out int pathIndex, Job? job = null)
             {
-                job ??= AutoDuty.Plugin.Player?.GetJob();
+                job ??= Player.Object.GetJob();
 
                 if (job == null)
                 {

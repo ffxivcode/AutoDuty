@@ -66,25 +66,25 @@ public class MainWindow : Window, IDisposable
         {
             if (ImGui.Button("Stop"))
             {
-                Plugin.StopAndResetALL();
+                Plugin.Stage = Stage.Stopped;
                 return;
             }
             ImGui.SameLine(0, 5);
         }
         using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning) || Plugin.CurrentTerritoryContent == null))
             {
-                if (Plugin.Stage == 5)
+                if (Plugin.Stage == Stage.Paused)
             {
                 if (ImGui.Button("Resume"))
                 {
-                    Plugin.Stage = 1;
+                    Plugin.Stage = Stage.Reading_Path;
                 }
             }
             else
             {
                 if (ImGui.Button("Pause"))
                 {
-                    Plugin.Stage = 5;
+                    Plugin.Stage = Stage.Paused;
                 }
             }
         }
@@ -99,7 +99,7 @@ public class MainWindow : Window, IDisposable
                 if ((GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning) || MapHelper.MoveToMapMarkerRunning || GotoHousingHelper.GotoHousingRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
@@ -115,7 +115,7 @@ public class MainWindow : Window, IDisposable
                 if (GCTurninHelper.GCTurninRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
@@ -138,7 +138,7 @@ public class MainWindow : Window, IDisposable
                 if (DesynthHelper.DesynthRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
@@ -153,7 +153,7 @@ public class MainWindow : Window, IDisposable
                 if (ExtractHelper.ExtractRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
@@ -176,7 +176,7 @@ public class MainWindow : Window, IDisposable
                 if (RepairHelper.RepairRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
