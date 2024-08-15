@@ -254,27 +254,12 @@ public class Configuration : IPluginConfiguration
     //Between Loop Config Options
     public int WaitTimeBeforeAfterLoopActions = 0;
     public bool AutoExtract = false;
-    internal bool autoExtractEquipped = true;
-    public bool AutoExtractEquipped 
-    {
-        get => autoExtractEquipped;
-        set
-        {
-            autoExtractEquipped = value;
-            if (value)
-                AutoExtractAll = false;
-        }
-    }
+
     internal bool autoExtractAll = false;
     public bool AutoExtractAll
     {
         get => autoExtractAll;
-        set
-        {
-            autoExtractAll = value;
-            if (value)
-                AutoExtractEquipped = false;
-        }
+        set => autoExtractAll = value;
     }
     internal bool autoDesynth = false;
     public bool AutoDesynth
@@ -436,16 +421,15 @@ public static class ConfigTab
 
         if (overlayHeaderSelected == true)
         {
-            ImGui.Columns(2, "##OverlayColumns", false);
-
             if (ImGui.Checkbox("Show Overlay", ref Configuration.showOverlay))
             {
                 Configuration.ShowOverlay = Configuration.showOverlay;
                 Configuration.Save();
             }
-            using (var openOverlayDisable = ImRaii.Disabled(!Configuration.ShowOverlay))
+            using (ImRaii.Disabled(!Configuration.ShowOverlay))
             {
-                ImGui.NextColumn();
+                ImGui.Indent();
+                ImGui.Columns(2, "##OverlayColumns", false);
 
                 //ImGui.SameLine(0, 53);
                 if (ImGui.Checkbox("Hide When Stopped", ref Configuration.hideOverlayWhenStopped))
@@ -476,6 +460,7 @@ public static class ConfigTab
                 if (ImGui.Checkbox("Use Slider Inputs", ref Configuration.UseSliderInputs))
                     Configuration.Save();
                 ImGui.Columns(1);
+                ImGui.Unindent();
             }
 
             if (ImGui.Checkbox("Show Main Window on Startup", ref Configuration.ShowMainWindowOnStartup))
@@ -520,8 +505,9 @@ public static class ConfigTab
             if (ImGui.Checkbox("Loot Treasure Coffers", ref Configuration.LootTreasure))
                 Configuration.Save();
 
-            using (var lootTreasureDisabled = ImRaii.Disabled(!Configuration.LootTreasure))
+            using (ImRaii.Disabled(!Configuration.LootTreasure))
             {
+                ImGui.Indent();
                 ImGui.Text("Select Method: ");
                 ImGui.SameLine(0, 5);
                 ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
@@ -529,7 +515,7 @@ public static class ConfigTab
                 {
                     foreach (LootMethod lootMethod in Enum.GetValues(typeof(LootMethod)))
                     {
-                        using (var lootMethodAutoDutyDisabled = ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled) || (lootMethod == LootMethod.RotationSolver && !ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)))
+                        using (ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled) || (lootMethod == LootMethod.RotationSolver && !ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)))
                         {
                             if (ImGui.Selectable(EnumString(lootMethod)))
                             {
@@ -541,11 +527,13 @@ public static class ConfigTab
                     ImGui.EndCombo();
                 }
                 ImGuiComponents.HelpMarker("RSR Toggles Not Yet Implemented");
-                using (var lootMethodAutoDutyDisabled = ImRaii.Disabled(Configuration.LootMethodEnum != LootMethod.AutoDuty))
+                
+                using (ImRaii.Disabled(Configuration.LootMethodEnum != LootMethod.AutoDuty))
                 {
                     if (ImGui.Checkbox("Loot Boss Treasure Only", ref Configuration.LootBossTreasureOnly))
                         Configuration.Save();
                 }
+                ImGui.Unindent();
             }
             ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");         
             /*/
@@ -687,16 +675,15 @@ public static class ConfigTab
             ImGui.SameLine(0, 10);
             using (var d1 = ImRaii.Disabled(!Configuration.AutoExtract))
             {
-                if (ImGui.Checkbox("Extract Equipped", ref Configuration.autoExtractEquipped))
+                if (ImGui.RadioButton("Extract Equipped", !Configuration.autoExtractAll))
                 {
-                    Configuration.AutoExtractEquipped = Configuration.autoExtractEquipped;
+                    Configuration.AutoExtractAll = false;
                     Configuration.Save();
                 }
-
                 ImGui.SameLine(0, 5);
-                if (ImGui.Checkbox("Extract All", ref Configuration.autoExtractAll))
+                if (ImGui.RadioButton("Extract All", Configuration.autoExtractAll))
                 {
-                        Configuration.AutoExtractAll = Configuration.autoExtractAll;
+                        Configuration.AutoExtractAll = true;
                         Configuration.Save();
                 }
             }
@@ -706,19 +693,21 @@ public static class ConfigTab
                 Configuration.Save();
             }
             ImGui.SameLine(0, 5);
-            using (var autoGcTurninDisabled = ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
+            using (ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
             {
                 if (ImGui.Checkbox("Auto GC Turnin", ref Configuration.autoGCTurnin))
                 {
                     Configuration.AutoGCTurnin = Configuration.autoGCTurnin;
                     Configuration.Save();
                 }
-                using (var autoGcTurninConfigDisabled = ImRaii.Disabled(!Configuration.AutoGCTurnin))
+
+                using (ImRaii.Disabled(!Configuration.AutoGCTurnin))
                 {
+                    ImGui.Indent();
                     if (ImGui.Checkbox("Inventory Slots Left @", ref Configuration.AutoGCTurninSlotsLeftBool))
                         Configuration.Save();
                     ImGui.SameLine(0);
-                    using (var autoGcTurninSlotsLeftDisabled = ImRaii.Disabled(!Configuration.AutoGCTurninSlotsLeftBool))
+                    using (ImRaii.Disabled(!Configuration.AutoGCTurninSlotsLeftBool))
                     {
                         ImGui.PushItemWidth(125 * ImGuiHelpers.GlobalScale);
                         if (Configuration.UseSliderInputs)
@@ -728,13 +717,14 @@ public static class ConfigTab
                         }
                         else
                         {
-                            if (Configuration.AutoGCTurninSlotsLeft < 0) Configuration.AutoGCTurninSlotsLeft = 0;
-                            else if (Configuration.AutoGCTurninSlotsLeft > 140) Configuration.AutoGCTurninSlotsLeft = 140;
+                            Configuration.AutoGCTurninSlotsLeft = Math.Clamp(Configuration.AutoGCTurninSlotsLeft, 0, 140);
+
                             if (ImGui.InputInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft))
                                 Configuration.Save();
                         }
                         ImGui.PopItemWidth();
                     }
+                    ImGui.Unindent();
                 }
             }
             if (!Deliveroo_IPCSubscriber.IsEnabled)
