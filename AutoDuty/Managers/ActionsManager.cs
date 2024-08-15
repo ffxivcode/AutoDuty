@@ -52,7 +52,7 @@ namespace AutoDuty.Managers
                 {
                     Type thisType = GetType();
                     MethodInfo? actionTask = thisType.GetMethod(action);
-                    _taskManager.Enqueue(() => actionTask?.Invoke(this, p));
+                    _taskManager.Enqueue(() => actionTask?.Invoke(this, p), $"InvokeAction-{actionTask?.Name}");
                 }
                 else
                     Svc.Log.Error("no action");
@@ -76,7 +76,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
         }
 
-        public unsafe void ForceAttack(string timeoutTime)
+        public unsafe void ForceAttack(string timeoutTime = "10000")
         {
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack-GA16");
             _taskManager.Enqueue(() => Svc.Targets.Target != null, 500, "ForceAttack-GA1");
