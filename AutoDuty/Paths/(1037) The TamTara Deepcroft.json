@@ -16,6 +16,7 @@
     "Interactable|0, 0, 0|2000067 (Cultist Orb)",
     "MoveTo|-89.51, 14.90, 13.71|",
     "Interactable|0, 0, 0|2000063 (Cultist Orb)",
+    "Wait|0, 0, 0|4000",
     "Boss|-51.88, 14.05, -12.76|"
   ],
   "meta": {
