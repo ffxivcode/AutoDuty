@@ -744,7 +744,7 @@ public sealed class AutoDuty : IDalamudPlugin
         var bmr = IPCSubscriber_Common.IsReady("BossModReborn");
         var rsr = ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled;
 
-        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions {(rsr ? "true" : "false")}");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions {/*(rsr ? "true" : */"false"/*)*/}");//forbidActions currently disables followTarget in vbm.
         _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
