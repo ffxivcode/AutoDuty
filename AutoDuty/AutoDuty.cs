@@ -352,7 +352,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (Configuration.AutoBoiledEgg)
                 {
                     TaskManager.Enqueue(() => { InventoryHelper.UseItemIfAvailable(4650);/*&& !PlayerHelper.HasStatus(48)*/}, "Loop-AutoBoiledEgg");
-                    TaskManager.DelayNext("Loop-Delay500", 500);
+                    TaskManager.DelayNext("Loop-Delay2000", 2000);
                     TaskManager.Enqueue(() => ObjectHelper.IsReady);
                 }
 

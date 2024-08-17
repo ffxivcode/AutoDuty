@@ -99,7 +99,7 @@ namespace AutoDuty.Helpers
             return equipedItems->Items[itemLowest];
         }
 
-        internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) < AutoDuty.Plugin.Configuration.AutoRepairPct;// && (!AutoDuty.Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
+        internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) <= AutoDuty.Plugin.Configuration.AutoRepairPct;// && (!AutoDuty.Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
 
         //artisan
         internal static bool CanRepairItem(uint itemID)
