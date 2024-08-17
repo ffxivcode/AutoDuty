@@ -8,11 +8,39 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Objects.Enums;
 using ECommons.Throttlers;
+using ECommons.DalamudServices;
+using System.Linq;
 
 namespace AutoDuty.Helpers
 {
     internal unsafe static class TeleportHelper
     {
+        internal static bool TeleportFCEstate() => TeleportHousing(FCEstateTeleportId, 0);
+
+        internal static bool TeleportPersonalHome() => TeleportHousing(PersonalHomeTeleportId, 0);
+
+        internal static bool TeleportApartment() => TeleportHousing(ApartmentTeleportId, 128);
+
+        private static bool TeleportHousing(uint id, byte sub)
+        {
+            if (id != 0)
+            {
+                Svc.Log.Debug($"Teleporting to AetheryteId: {id} SubIndex: {sub}");
+                return TeleportAetheryte(id, sub);
+            }
+            else
+            {
+                Svc.Log.Info("Unable to teleport to specified housing");
+                return false;
+            }
+        }
+
+        internal static uint PersonalHomeTeleportId => Svc.AetheryteList.FirstOrDefault(x => !x.IsApartment && (x.AetheryteData.GameData?.PlaceName.Value?.Name.ExtractText().Equals("Estate Hall (Private)", System.StringComparison.InvariantCultureIgnoreCase) ?? false))?.AetheryteId ?? 0;
+
+        internal static uint ApartmentTeleportId => Svc.AetheryteList.FirstOrDefault(x => x.IsApartment && (x.AetheryteData.GameData?.PlaceName.Value?.Name.ExtractText().Equals("Estate Hall (Private)", System.StringComparison.InvariantCultureIgnoreCase) ?? false))?.AetheryteId ?? 0;
+
+        internal static uint FCEstateTeleportId => Svc.AetheryteList.FirstOrDefault(x => x.AetheryteData.GameData?.PlaceName.Value?.Name.ExtractText().Equals("Estate Hall (Free Company)", System.StringComparison.InvariantCultureIgnoreCase) ?? false)?.AetheryteId ?? 0;
+
         internal static bool TeleportGCCity()
         {
             //Limsa=1,128, Gridania=2,132, Uldah=3,130 -- Goto Limsa if no GC
@@ -27,7 +55,7 @@ namespace AutoDuty.Helpers
 
         internal static bool TeleportAetheryte(uint aetheryteId, byte subindex)
         {
-            if (ObjectHelper.PlayerIsCasting)
+            if (ObjectHelper.PlayerIsCasting || aetheryteId == 0)
                 return true;
 
             if (!ObjectHelper.PlayerIsCasting && EzThrottler.Throttle("TeleportAetheryte", 250))
@@ -36,12 +64,9 @@ namespace AutoDuty.Helpers
             return false;
         }
 
-        internal static bool MoveToClosestAetheryte(uint toTerritoryType)
+        internal static bool MoveToClosestAetheryte()
         {
-            //if (Svc.ClientState.TerritoryType == toTerritoryType)
-              //  return true;
-
-            IGameObject? gameObject = null;
+            IGameObject? gameObject;
             if ((gameObject = ObjectHelper.GetObjectByObjectKind(ObjectKind.Aetheryte)) == null)
                 return false;
 

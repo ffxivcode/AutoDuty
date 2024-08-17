@@ -7,23 +7,40 @@ using Lumina.Excel.GeneratedSheets;
 using AutoDuty.IPC;
 using ECommons;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Dalamud.Game.ClientState.Objects.Types;
 
 namespace AutoDuty.Helpers
 {
     internal static class GotoHelper
     {
-        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false)
+        internal static void Invoke(uint territoryType) => Invoke(territoryType, 0);
+
+        internal static void Invoke(uint territoryType, uint gameObjectDataId) => Invoke(territoryType, [], gameObjectDataId, 0.25f, 0.25f, false, false, true);
+
+        internal static void Invoke(uint territoryType, Vector3 moveLocation) => Invoke(territoryType, [moveLocation], 0, 0.25f, 0.25f, false, false, true);
+
+        internal static void Invoke(uint territoryType, List<Vector3> moveLocations) => Invoke(territoryType, moveLocations, 0, 0.25f, 0.25f, false, false, true);
+
+        internal static void Invoke(uint territoryType, uint gameObjectDataId, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false, bool useMesh = true) => Invoke(territoryType, [], gameObjectDataId, tollerance, lastPointTollerance, useAethernetTravel, useFlight, useMesh);
+        
+        internal static void Invoke(uint territoryType, Vector3 moveLocation, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false, bool useMesh = true) => Invoke(territoryType, [moveLocation], 0, tollerance, lastPointTollerance, useAethernetTravel, useFlight, useMesh);
+
+        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool useAethernetTravel = false, bool useFlight = false, bool useMesh = true) => Invoke(territoryType, moveLocations, 0, tollerance, lastPointTollerance, useAethernetTravel, useFlight, useMesh);
+
+        internal static void Invoke(uint territoryType, List<Vector3> moveLocations, uint gameObjectDataId, float tollerance, float lastPointTollerance, bool useAethernetTravel, bool useFlight, bool useMesh)
         {
             if (!GotoRunning)
             {
                 Svc.Log.Info($"Goto Started, Going to {territoryType}{(moveLocations.Count>0 ? $" and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations" : "")}");
                 GotoRunning = true;
                 _territoryType = territoryType;
+                _gameObjectDataId = gameObjectDataId;
                 _moveLocations = moveLocations;
                 _tollerance = tollerance;
                 _lastPointTollerance = lastPointTollerance;
                 _useAethernetTravel = useAethernetTravel;
                 _useFlight = useFlight;
+                _useMesh = useMesh;
                 Svc.Framework.Update += GotoUpdate;
             }
         }
@@ -35,12 +52,14 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= GotoUpdate;
             GotoRunning = false;
             _territoryType = 0;
+            _gameObjectDataId = 0;
             _moveLocations = [];
             _locationIndex = 0;
             _tollerance = 0.25f;
             _lastPointTollerance = 0.25f;
             _useAethernetTravel = false;
             _useFlight = false;
+            _useMesh = true;
             AutoDuty.Plugin.Action = "";
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
@@ -53,12 +72,15 @@ namespace AutoDuty.Helpers
         internal static bool GotoRunning = false;
 
         private static uint _territoryType = 0;
+        private static uint _gameObjectDataId = 0;
         private static List<Vector3> _moveLocations = [];
         private static int _locationIndex = 0;
         private static float _tollerance = 0.25f;
         private static float _lastPointTollerance = 0.25f;
         private static bool _useAethernetTravel = false;
         private static bool _useFlight = false;
+        private static bool _useMesh = true;
+        private static IGameObject? _gameObject => _gameObjectDataId > 0 ? ObjectHelper.GetObjectByDataId(_gameObjectDataId) : null;
 
         internal unsafe static void GotoUpdate(IFramework framework)
         {
@@ -112,7 +134,7 @@ namespace AutoDuty.Helpers
                     }
                     else
                     {
-                        if (Svc.ClientState.TerritoryType != MapHelper.GetAetheryteForAethernet(aetheryte).Territory.Value?.RowId)
+                        if (Svc.ClientState.TerritoryType != MapHelper.GetAetheryteForAethernet(aetheryte)?.Territory.Value?.RowId)
                         {
                             TeleportHelper.TeleportAetheryte(MapHelper.GetAetheryteForAethernet(aetheryte)?.RowId ?? 0, 0);
                             EzThrottler.Throttle("Goto", 7500, true);
@@ -121,7 +143,7 @@ namespace AutoDuty.Helpers
                         {
                             if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                                 ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
-                            if (TeleportHelper.MoveToClosestAetheryte(_territoryType))
+                            if (TeleportHelper.MoveToClosestAetheryte())
                                 TeleportHelper.TeleportAethernet(aetheryte.AethernetName.Value?.Name ?? "", _territoryType);
                         }
                         return;
@@ -138,17 +160,30 @@ namespace AutoDuty.Helpers
 
                 if (aetheryteLoc != aetheryteMe)
                 {
-                    if (TeleportHelper.MoveToClosestAetheryte(_territoryType))
+                    if (TeleportHelper.MoveToClosestAetheryte())
                     {
                         TeleportHelper.TeleportAethernet(aetheryteLoc?.AethernetName.Value?.Name ?? "", _territoryType);
                     }
                     return;
                 }
             }
-
-            if (_locationIndex < _moveLocations.Count && ObjectHelper.IsReady)
+            //Svc.Log.Info($"{_locationIndex < _moveLocations.Count} || ({_gameObject} != null && {ObjectHelper.GetDistanceToPlayer(_gameObject!)} > {_lastPointTollerance}) && {ObjectHelper.IsReady}");
+            if (_locationIndex < _moveLocations.Count || (_gameObject != null && ObjectHelper.GetDistanceToPlayer(_gameObject) > _lastPointTollerance) && ObjectHelper.IsReady)
             {
-                if (MovementHelper.Move(_moveLocations[_locationIndex], _tollerance, (_locationIndex + 1) == _moveLocations.Count ? _lastPointTollerance : _tollerance, _useFlight))
+                Vector3 moveLoc;
+                float lastPointTollerance = _lastPointTollerance;
+                if (_gameObject != null)
+                    moveLoc = _gameObject.Position;
+                else if (_locationIndex < _moveLocations.Count)
+                {
+                    moveLoc = _moveLocations[_locationIndex];
+                    if (_locationIndex < (_moveLocations.Count - 1))
+                        lastPointTollerance = _tollerance;
+                }
+                else
+                    return;
+
+                if (MovementHelper.Move(moveLoc, _tollerance, lastPointTollerance, _useFlight, _useMesh))
                     _locationIndex++;
                 return;
             }

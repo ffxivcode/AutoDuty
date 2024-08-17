@@ -1,6 +1,6 @@
 {
   "actions": [
-	"MoveTo|-3.68, -2.38, -5.96|",
+    "MoveTo|-3.68, -2.38, -5.96|",
     "Interactable|0, 0, 0|Tiny Key",
     "MoveTo|21.82, 7.10, 27.40|",
     "MoveTo|64.57, 3.41, -9.90|",
@@ -18,7 +18,7 @@
     "MoveTo|-95.86, 13.02, -123.64|",
     "Interactable|0, 0, 0|Swiftmake Checkgate",
     "MoveTo|-102.58, 20.74, -180.60|",
-	"MoveTo|-101.39, 20.74, -178.08|",
+    "MoveTo|-101.39, 20.74, -178.08|",
     "Interactable|0, 0, 0|Tiny Key",
     "MoveTo|-101.31, 21.31, -188.72|",
     "Interactable|0, 0, 0|Swiftmake Checkgate",

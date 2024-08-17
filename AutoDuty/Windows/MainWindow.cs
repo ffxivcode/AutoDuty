@@ -15,6 +15,7 @@ using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using static AutoDuty.AutoDuty;
+using static AutoDuty.Data.Enum;
 using static AutoDuty.Windows.ConfigTab;
 
 namespace AutoDuty.Windows;
@@ -65,25 +66,25 @@ public class MainWindow : Window, IDisposable
         {
             if (ImGui.Button("Stop"))
             {
-                Plugin.StopAndResetALL();
+                Plugin.Stage = Stage.Stopped;
                 return;
             }
             ImGui.SameLine(0, 5);
         }
         using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning) || Plugin.CurrentTerritoryContent == null))
             {
-                if (Plugin.Stage == 5)
+                if (Plugin.Stage == Stage.Paused)
             {
                 if (ImGui.Button("Resume"))
                 {
-                    Plugin.Stage = 1;
+                    Plugin.Stage = Stage.Reading_Path;
                 }
             }
             else
             {
                 if (ImGui.Button("Pause"))
                 {
-                    Plugin.Stage = 5;
+                    Plugin.Stage = Stage.Paused;
                 }
             }
         }
@@ -95,10 +96,10 @@ public class MainWindow : Window, IDisposable
         {
             using (var GotoDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || RepairHelper.RepairRunning))
             {
-                if (GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning)
+                if ((GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning) || MapHelper.MoveToMapMarkerRunning || GotoHousingHelper.GotoHousingRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
@@ -114,7 +115,7 @@ public class MainWindow : Window, IDisposable
                 if (GCTurninHelper.GCTurninRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
@@ -137,7 +138,7 @@ public class MainWindow : Window, IDisposable
                 if (DesynthHelper.DesynthRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
@@ -152,7 +153,7 @@ public class MainWindow : Window, IDisposable
                 if (ExtractHelper.ExtractRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
@@ -175,7 +176,7 @@ public class MainWindow : Window, IDisposable
                 if (RepairHelper.RepairRunning)
                 {
                     if (ImGui.Button("Stop"))
-                        Plugin.StopAndResetALL();
+                        Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
@@ -206,9 +207,25 @@ public class MainWindow : Window, IDisposable
                 {
                     GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
                 }
-                if (ImGui.Selectable("FlagMarker"))
+                if (ImGui.Selectable("Flag Marker"))
                 {
                     MapHelper.MoveToMapMarker();
+                }
+                if (ImGui.Selectable("Summoning Bell"))
+                {
+                    SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
+                }
+                if (ImGui.Selectable("Apartment"))
+                {
+                    GotoHousingHelper.Invoke(Housing.Apartment);
+                }
+                if (ImGui.Selectable("Personal Home"))
+                {
+                    GotoHousingHelper.Invoke(Housing.Personal_Home);
+                }
+                if (ImGui.Selectable("FC Estate"))
+                {
+                    GotoHousingHelper.Invoke(Housing.FC_Estate);
                 }
                 ImGui.EndPopup();
             }

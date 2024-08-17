@@ -43,6 +43,9 @@
     <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
     <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    ·
+    <a href="https://discord.com/channels/1001823907193552978/1236757595738476725/1243059104528994334">Setup guide</a>
+    
   </p>
 </div>
 

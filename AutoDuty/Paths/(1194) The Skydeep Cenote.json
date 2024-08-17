@@ -26,7 +26,12 @@
   ],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 119,
+        "change": ""
+      }
+    ],
     "notes": []
   }
 }

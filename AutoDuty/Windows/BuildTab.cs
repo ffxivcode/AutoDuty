@@ -37,7 +37,7 @@ namespace AutoDuty.Windows
 
         public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true};
 
-        private static string GetPlayerPosition => $"{Plugin.PlayerPosition.X.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Plugin.PlayerPosition.Y.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Plugin.PlayerPosition.Z.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}";
+        private static string GetPlayerPosition => $"{Player.Position.X.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Player.Position.Y.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Player.Position.Z.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}";
 
         private static void ClearAll()
         {
@@ -62,7 +62,7 @@ namespace AutoDuty.Windows
         {
             if (MainWindow.CurrentTabName != "Build")
                 MainWindow.CurrentTabName = "Build";
-            using var d = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage > 0 || Plugin.Player == null);
+            using var d = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage > 0 || !Player.Available);
             ImGui.Text($"Build Path: ({Svc.ClientState.TerritoryType}) {(ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content) ? content.DisplayName : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))}");
 
             string idText = $"({Svc.ClientState.TerritoryType}) ";

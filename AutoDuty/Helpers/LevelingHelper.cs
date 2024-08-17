@@ -4,6 +4,7 @@ namespace AutoDuty.Helpers
 {
     using System.Collections.Generic;
     using System.Linq;
+    using ECommons.GameHelpers;
     using Managers;
 
     public static class LevelingHelper
@@ -40,22 +41,21 @@ namespace AutoDuty.Helpers
         {
             ContentHelper.Content? curContent = null;
 
-            short lvl = PlayerHelper.GetCurrentLevelFromSheet();
-
+            short      lvl        = PlayerHelper.GetCurrentLevelFromSheet();
+            CombatRole combatRole = Player.Object.GetRole();
             if (trust)
             {
                 if (TrustManager.members.All(tm => tm.Value.Level <= 0)) 
                     return null;
 
+                TrustMember?[] memberTest = new TrustMember?[3];
 
                 foreach ((TrustMemberName _, TrustMember member) in TrustManager.members)
-                {
-                    if (member.Level < lvl && member.Level < member.LevelCap)
+                    if (member.Level < lvl && member.Level < member.LevelCap && member.Level > 0 && memberTest.CanSelectMember(member, combatRole))
                         lvl = (short) member.Level;
-                }
             }
 
-            if (lvl < 15 || AutoDuty.Plugin.Player!.GetRole() == CombatRole.NonCombat || lvl >= 100)
+            if (lvl < 15 || combatRole == CombatRole.NonCombat || lvl >= 100)
                 return null;
 
 
@@ -86,7 +86,7 @@ namespace AutoDuty.Helpers
                 }
             }
             if (trust && curContent != null)
-                if (!TrustHelper.SetLowestTrustMembers(curContent))
+                if (!TrustHelper.SetLevelingTrustMembers(curContent))
                     curContent = null;
 
             return curContent ?? null;

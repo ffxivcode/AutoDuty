@@ -3,7 +3,7 @@
     "StopForCombat|105.97, -21.89, -48.44|False",
     "MoveTo|32.35, -35.46, 1.86|",
     "MoveTo|13.48, -36.97, 0.56|",
-    "StopForCombat|48.16, -30.32, -22.48|True",
+    "StopForCombat|60.67, -24.97, -39.90|True",
     "MoveTo|25.38, -36.60, -0.54|",
     "StopForCombat|-24.29, -36.76, -3.77|False",
     "MoveTo|-81.84, -51.56, -72.29|",
@@ -31,7 +31,7 @@
     "StopForCombat|139.53, -184.84, -295.69|False",
     "MoveTo|137.06, -184.90, -335.19|",
     "MoveTo|99.70, -194.95, -346.83|",
-    "StopForCombat|118.62, -190.51, -332.44|True",
+    "StopForCombat|137.06, -185.00, -323.36|True",
     "Revival|100.07, -195.00, -352.96|",
     "Wait|100.39, -194.90, -363.66|7500",
     "Boss|100.08, -191.99, -439.29|",
@@ -39,7 +39,12 @@
   ],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 119,
+        "change": ""
+      }
+    ],
     "notes": []
   }
 }

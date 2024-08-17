@@ -14,7 +14,7 @@ namespace AutoDuty.Helpers
         internal static unsafe short GetCurrentLevelFromSheet(Job? job = null)
         {
             PlayerState* playerState = PlayerState.Instance();
-            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint) (job ?? AutoDuty.Plugin.Player?.GetJob() ?? AutoDuty.Plugin.JobLastKnown))?.ExpArrayIndex ?? 0];
+            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint) (job ?? (Player.Available ? Player.Object.GetJob() : AutoDuty.Plugin.JobLastKnown)))?.ExpArrayIndex ?? 0];
         }
 
         internal static unsafe short GetCurrentItemLevelFromGearSet(int gearsetId = -1, bool updateGearsetBeforeCheck = true)
@@ -37,8 +37,8 @@ namespace AutoDuty.Helpers
                 Job.GLA or Job.PLD or Job.MRD or Job.WAR or Job.DRK or Job.GNB => CombatRole.Tank,
                 Job.CNJ or Job.WHM or Job.SGE or Job.SCH or Job.AST => CombatRole.Healer,
                 Job.PGL or Job.MNK or Job.LNC or Job.DRG or Job.ROG or Job.NIN or Job.SAM or Job.RPR or Job.VPR or 
-                    Job.BRD or Job.DNC or Job.MCH or 
-                    Job.THM or Job.BLM or Job.ARC or Job.SMN or Job.RDM or Job.PCT or Job.BLU => CombatRole.DPS,
+                    Job.ARC or Job.BRD or Job.DNC or Job.MCH or
+                    Job.THM or Job.BLM or Job.ACN or Job.SMN or Job.RDM or Job.PCT or Job.BLU => CombatRole.DPS,
                 _ => CombatRole.NonCombat,
             };
         }

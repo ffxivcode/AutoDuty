@@ -1,7 +1,8 @@
 {
   "actions": [
     "MoveTo|29.84, 302.00, 126.74|",
-    "AutoMoveFor|29.83, 302.00, 135.95|6500",
+    "AutoMoveFor|29.83, 302.00, 135.95|8000",
+    "Wait|0, 0, 0|1000",
     "Interactable|-172.13, -504.00, 11.23|2013731 (Elevator Console)",
     "Wait|0, 0, 0|8000",
     "Revival|-98.76, -500.00, 156.89|",
@@ -13,7 +14,7 @@
     "MoveTo|44.58, -120.00, -129.21|",
     "MoveTo|84.94, -120.00, -125.36|",
     "AutoMoveFor|85.12, -120.00, -116.10|4000",
-	"PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
+    "PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
     "MoveTo|49.36, -93.90, -60.94|",
     "MoveTo|-187.33, -94.00, -86.08|",
     "Revival|-171.57, -94.00, -107.90|",
@@ -21,7 +22,7 @@
     "MoveTo|-172.06, -94.00, -160.17|",
     "MoveTo|-171.92, -94.00, -215.20|",
     "AutoMoveFor|-172.11, -90.61, -227.50|7000",
-    "MoveTo|89.88, 0.00, 227.16|",
+    "PausePandora|89.88, 0.00, 227.16|Auto-interact with Objects in Instances|50000|",
     "MoveTo|102.84, 0.00, 220.83|",
     "MoveTo|96.41, 0.00, 213.82|",
     "MoveTo|118.70, 0.00, 196.30|",
@@ -33,7 +34,12 @@
   ],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 119,
+        "change": ""
+      }
+    ],
     "notes": []
   }
 }

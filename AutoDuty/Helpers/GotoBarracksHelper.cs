@@ -72,7 +72,7 @@ namespace AutoDuty.Helpers
 
             if (Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany) || _barracksDoorGameObject == null || Vector3.Distance(Svc.ClientState.LocalPlayer.Position, _barracksDoorGameObject.Position) > 2f)
             {
-                GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [_barracksDoorLocation], 0.25f, 2f, false);
+                GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), _barracksDoorLocation, 0.25f, 2f, false);
                 return;
             }
             else if (ObjectHelper.IsValid)

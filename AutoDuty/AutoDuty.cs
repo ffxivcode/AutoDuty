@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using ECommons;
 using ECommons.DalamudServices;
-using Dalamud.Game.ClientState.Objects.SubKinds;
 using AutoDuty.Managers;
 using AutoDuty.Windows;
 using AutoDuty.IPC;
@@ -32,6 +31,9 @@ using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using static AutoDuty.Windows.ConfigTab;
 using System.Diagnostics;
+using Lumina.Excel.GeneratedSheets;
+using Dalamud.Game.ClientState.Conditions;
+using static AutoDuty.Data.Enum;
 
 namespace AutoDuty;
 
@@ -64,7 +66,7 @@ public sealed class AutoDuty : IDalamudPlugin
                                      (!this.Configuration.Trust   || this.TrustLevelingEnabled);
 
 
-    internal string Name => "AutoDuty";
+    internal static string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
     internal DirectoryInfo PathsDirectory;
@@ -72,13 +74,39 @@ public sealed class AutoDuty : IDalamudPlugin
     internal DirectoryInfo? AssemblyDirectoryInfo;
     internal Configuration Configuration { get; init; }
     internal WindowSystem WindowSystem = new("AutoDuty");
-    internal int Stage = 0;
+    internal Stage Stage
+    {
+        get => _stage;
+        set
+        {
+            _stage = value;
+            Svc.Log.Debug($"Stage={EnumString(_stage)}");
+            switch (value)
+            {
+                case Stage.Stopped:
+                    StopAndResetALL();
+                    break;
+                case Stage.Paused:
+                    if (VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
+                        VNavmesh_IPCSubscriber.Path_Stop();
+                    FollowHelper.SetFollow(null);
+                    break;
+                case Stage.Action:
+                    ActionInvoke();
+                    break;
+                case Stage.Dead:
+                    OnDeath();
+                    break;
+                case Stage.Revived:
+                    OnRevive();
+                    break;
+            }
+        }
+    }
     internal int Indexer = -1;
     internal bool MainListClicked = false;
     internal bool Started = false;
     internal bool Running = false;
-    internal IPlayerCharacter? Player = null;
-    internal Vector3 PlayerPosition = Vector3.Zero;
     internal IBattleChara? BossObject;
     internal IGameObject? ClosestInteractableEventObject = null;
     internal IGameObject? ClosestTargetableBattleNpc = null;
@@ -90,26 +118,28 @@ public sealed class AutoDuty : IDalamudPlugin
     internal string PathFile = "";
     internal TaskManager TaskManager;
     internal Job JobLastKnown;
-    
+    internal TrustManager TrustManager;
+    internal DutyState DutyState = DutyState.None;
+
+    private Stage _stage = Stage.Stopped;
     private const string CommandName = "/autoduty";
     private DirectoryInfo _configDirectory;
     private ActionsManager _actions;
     private Chat _chat;
     private DutySupportManager _dutySupportManager;
-    internal TrustManager _trustManager;
     private SquadronManager _squadronManager;
     private VariantManager _variantManager;
     private OverrideAFK _overrideAFK;
-    private bool _dead = false;
     private IGameObject? treasureCofferGameObject = null;
     private string _action = "";
     private float _actionTollerance = 0.25f;
     private List<object> _actionParams = [];
     private List<object> _actionPosition = [];
-    private bool _stopped = false;
     private TinyMessageBus _messageBusSend = new("AutoDutyBroadcaster");
     private TinyMessageBus _messageBusReceive = new("AutoDutyBroadcaster");
     private bool _messageSender = false;
+    private bool _recentlyWatchedCutscene = false;
+    private bool _lootTreasure;
 
     public AutoDuty()
     {
@@ -143,7 +173,7 @@ public sealed class AutoDuty : IDalamudPlugin
             _chat = new();
             _overrideAFK = new();
             _dutySupportManager = new(TaskManager);
-            _trustManager = new(TaskManager);
+            TrustManager = new(TaskManager);
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
             _actions = new(this, _chat, TaskManager);
@@ -195,10 +225,19 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
+            Svc.DutyState.DutyStarted += DutyState_DutyStarted;
+            Svc.DutyState.DutyWiped += DutyState_DutyWiped;
+            Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
+            Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
     }
+
+    private void DutyState_DutyStarted(object? sender, ushort e) => DutyState = DutyState.DutyStarted;
+    private void DutyState_DutyWiped(object? sender, ushort e) => DutyState = DutyState.DutyWiped;
+    private void DutyState_DutyRecommenced(object? sender, ushort e) => DutyState = DutyState.DutyRecommenced;
+    private void DutyState_DutyCompleted(object? sender, ushort e) => DutyState = DutyState.DutyComplete;
 
     private void MessageReceived(string message)
     {
@@ -223,11 +262,8 @@ public sealed class AutoDuty : IDalamudPlugin
                 break;
         }
     }
-
-    internal void ExitDuty()
-    {
-        _actions.ExitDuty("");
-    }
+    
+    internal void ExitDuty() => _actions.ExitDuty("");
 
     internal void LoadPath()
     {
@@ -250,18 +286,18 @@ public sealed class AutoDuty : IDalamudPlugin
             ListBoxPOSText.Clear();
             if (!ContentPathsManager.DictionaryPaths.TryGetValue(Svc.ClientState.TerritoryType, out ContentPathsManager.ContentPathContainer? container))
             {
-                PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
+                PathFile = $"{PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
                 return;
             }
+            Svc.Log.Info($"{CurrentPath} {Player.Available}");
+            ContentPathsManager.DutyPath? path = CurrentPath < 0 && Player.Available ?
+                                                     container.SelectPath(out CurrentPath) :
+                                                     container.Paths[CurrentPath > -1 ? CurrentPath : 0];
 
-            ContentPathsManager.DutyPath? path = Plugin.CurrentPath < 0 && this.Player != null ? 
-                                                     container.SelectPath(out Plugin.CurrentPath) : 
-                                                     container.Paths[Plugin.CurrentPath];
+            PathFile       = path?.FilePath ?? "";
+            ListBoxPOSText = [.. path?.Actions];
 
-            PathFile       = path.FilePath;
-            ListBoxPOSText = path.Actions.ToList();
-
-            //Svc.Log.Info("Loading Path: " + Plugin.CurrentPath);
+            //Svc.Log.Info("Loading Path: " + CurrentPath);
         }
         catch (Exception e)
         {
@@ -285,11 +321,12 @@ public sealed class AutoDuty : IDalamudPlugin
         if (t == 0)
             return;
         CurrentPath = -1;
+
         LoadPath();
 
-        if (!Running || GCTurninHelper.GCTurninRunning || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || CurrentTerritoryContent == null)
+        if (!Running || GCTurninHelper.GCTurninRunning || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || GotoHousingHelper.GotoHousingRunning || CurrentTerritoryContent == null)
         {
-            Svc.Log.Debug("We Changed Territories but are doing after loop actions or not running at all");
+            Svc.Log.Debug("We Changed Territories but are doing after loop actions or not running at all or in a Territory not supported by AutoDuty");
             return;
         }
 
@@ -306,7 +343,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (CurrentLoop < Configuration.LoopTimes)
             {
                 TaskManager.Abort();
-                TaskManager.Enqueue(() => { Stage   = 99; },    "Loop-SetStage=99");
+                TaskManager.Enqueue(() => { Stage   = Stage.Looping; },    "Loop-SetStage=99");
                 TaskManager.Enqueue(() => { Started = false; }, "Loop-SetStarted=false");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
                 TaskManager.Enqueue(() => { Action = $"Waiting {Configuration.WaitTimeBeforeAfterLoopActions}s"; }, "Loop-WaitTimeBeforeAfterLoopActionsActionSet");
@@ -314,8 +351,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
                 if (Configuration.AutoBoiledEgg)
                 {
-                    TaskManager.Enqueue(() => { if (InventoryHelper.ItemCount(4650) > 1 /*&& !PlayerHelper.HasStatus(48)*/) InventoryHelper.UseItem(4650); }, "Loop-AutoBoiledEgg");
-                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => { InventoryHelper.UseItemIfAvailable(4650);/*&& !PlayerHelper.HasStatus(48)*/}, "Loop-AutoBoiledEgg");
+                    TaskManager.DelayNext("Loop-Delay2000", 2000);
+                    TaskManager.Enqueue(() => ObjectHelper.IsReady);
                 }
 
                 if (Configuration.AutoEquipRecommendedGear)
@@ -329,9 +367,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (this.TrustLevelingEnabled)
                 {
                     TrustManager.ClearCachedLevels(this.CurrentTerritoryContent);
-                    this._trustManager.GetLevels(this.CurrentTerritoryContent);
+                    this.TrustManager.GetLevels(this.CurrentTerritoryContent);
                     this.TaskManager.DelayNext(50);
-                    this.TaskManager.Enqueue(() => this._trustManager.GetLevelsCheck(), "Loop-RecheckingTrustLevels");
+                    this.TaskManager.Enqueue(() => this.TrustManager.GetLevelsCheck(), "Loop-RecheckingTrustLevels");
                 }
 
                 TaskManager.Enqueue(() => {
@@ -348,22 +386,41 @@ public sealed class AutoDuty : IDalamudPlugin
                 LoopsCompleteActions();
         }
     }
+    
+    private void Condition_ConditionChange(ConditionFlag flag, bool value)
+    {
+        //Svc.Log.Debug($"{flag} : {value}");
+        if (Stage != Stage.Dead && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && Started && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
+        {
+            Indexer++;
+            Stage = Stage.Reading_Path;
+            VNavmesh_IPCSubscriber.Path_Stop();
+        }
+        if (Conditions.IsWatchingCutscene || flag == ConditionFlag.WatchingCutscene || flag == ConditionFlag.WatchingCutscene78 || flag == ConditionFlag.OccupiedInCutSceneEvent)
+        {
+            _recentlyWatchedCutscene = true;
+            SchedulerHelper.ScheduleAction("RecentlyWatchedCutsceneTimer", () => _recentlyWatchedCutscene = false, 5000);
+        }
+    }
 
     private unsafe void LoopTasks()
     {
         if (CurrentTerritoryContent == null) return;
+
         if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.IsEnabled && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
         {
             TaskManager.Enqueue(() => AutoRetainerHelper.Invoke(), "Loop-AutoRetainer");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !AutoRetainerHelper.AutoRetainerRunning, int.MaxValue, "Loop-WaitAutoRetainerComplete");
         }
+
         if (Configuration.AM)
         {
             TaskManager.Enqueue(() => AMHelper.Invoke(), "Loop-AM");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !AMHelper.AMRunning, int.MaxValue, "Loop-WaitAMComplete");
         }
+
         if (Configuration.AutoRepair && InventoryHelper.CanRepair())
         {
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
@@ -371,18 +428,21 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Loop-WaitAutoRepairComplete");
             TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
         }
+
         if (Configuration.AutoExtract && (QuestManager.IsQuestComplete(66174)))
         {
             TaskManager.Enqueue(() => ExtractHelper.Invoke(), "Loop-AutoExtract");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !ExtractHelper.ExtractRunning, int.MaxValue, "Loop-WaitAutoExtractComplete");
         }
+
         if (Configuration.AutoGCTurnin && (!Configuration.AutoGCTurninSlotsLeftBool || InventoryManager.Instance()->GetEmptySlotsInBag() <= Configuration.AutoGCTurninSlotsLeft) && ObjectHelper.GrandCompanyRank > 5)
         {
             TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !GCTurninHelper.GCTurninRunning, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
         }
+
         if (Configuration.AutoDesynth)
         {
             TaskManager.Enqueue(() => DesynthHelper.Invoke(), "Loop-AutoDesynth");
@@ -390,24 +450,30 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop-WaitAutoDesynthComplete");
         }
         
-        if (!Configuration.Squadron)
+        if (!Configuration.Squadron && Configuration.RetireMode)
         {
-            if (Configuration.RetireMode && Configuration.RetireLocationEnum == ConfigTab.RetireLocation.GC_Barracks)
+            if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
-            else if (Configuration.RetireMode && Configuration.RetireLocationEnum == ConfigTab.RetireLocation.Inn)
+            else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
                 TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Loop-GotoInnInvoke");
+            else
+            {
+                Svc.Log.Info($"{(Housing)Configuration.RetireLocationEnum} {Configuration.RetireLocationEnum}");
+                TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Loop-GotoHousingInvoke");
+            }
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
+            TaskManager.Enqueue(() => !GotoHousingHelper.GotoHousingRunning && !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
         }
-        if (this.LevelingEnabled)
+
+        if (LevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
-            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(this.Configuration.Trust);
+            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.Trust);
             if (duty != null)
             {
                 Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
-                this.CurrentTerritoryContent = duty;
-                ContentPathsManager.DictionaryPaths[duty.TerritoryType].SelectPath(out this.CurrentPath);
+                CurrentTerritoryContent = duty;
+                ContentPathsManager.DictionaryPaths[duty.TerritoryType].SelectPath(out CurrentPath);
             }
             else
             {
@@ -416,12 +482,16 @@ public sealed class AutoDuty : IDalamudPlugin
                 return;
             }
         }
+
         if (Configuration.Trust)
-            _trustManager.RegisterTrust(CurrentTerritoryContent);
+            TrustManager.RegisterTrust(CurrentTerritoryContent);
+
         else if (Configuration.Support)
             _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
+
         else if (Configuration.Variant)
             _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
+
         else if (Configuration.Squadron)
         {
             TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
@@ -435,6 +505,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !QueueHelper.QueueRunning, int.MaxValue, "Loop-WaitQueueComplete");
         }
+
         TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
         TaskManager.Enqueue(() => { Action = $"Looping: {CurrentTerritoryContent.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}"; }, "Loop-SetAction");
         TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
@@ -446,7 +517,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
-        if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_PC)
+        if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
         {
             if (!Configuration.TerminationKeepActive)
             {
@@ -471,7 +542,7 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             _chat.ExecuteCommand($"/xlkill");
         }
-        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Kill_Client)
+        else if (Configuration.TerminationMethodEnum == TerminationMode.Kill_Client)
         {
             if (!Configuration.TerminationKeepActive)
             {
@@ -481,7 +552,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
             _chat.ExecuteCommand($"/xlkill");
         }
-        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Logout)
+        else if (Configuration.TerminationMethodEnum == TerminationMode.Logout)
         {
             if (!Configuration.TerminationKeepActive)
             {
@@ -495,37 +566,23 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
             TaskManager.Enqueue(() => Running = false);
             TaskManager.Enqueue(() => CurrentLoop = 0);
-            TaskManager.Enqueue(() => Stage = 0);
-            TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
+            TaskManager.Enqueue(() => Stage = Stage.Stopped);
         }
-        else if (Configuration.TerminationMethodEnum == ConfigTab.TerminationMode.Start_AR_Multi_Mode)
+        else if (Configuration.TerminationMethodEnum == TerminationMode.Start_AR_Multi_Mode)
         {
             TaskManager.Enqueue(() => _chat.ExecuteCommand($"/ays multi"));
             TaskManager.Enqueue(() => Running = false);
             TaskManager.Enqueue(() => CurrentLoop = 0);
-            TaskManager.Enqueue(() => Stage = 0);
-            TaskManager.Enqueue(() => MainWindow.OpenTab("Main"));
+            TaskManager.Enqueue(() => Stage = Stage.Stopped);
         }
         else
         {
             Running = false;
             CurrentLoop = 0;
-            Stage = 0;
-            MainWindow.OpenTab("Main");
+            Stage = Stage.Stopped;
         }
     }
-
-    private void Condition_ConditionChange(Dalamud.Game.ClientState.Conditions.ConditionFlag flag, bool value)
-    {
-        //Svc.Log.Debug($"{flag} : {value}");
-        if (Stage != 3 && value && Started && (flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas51 || flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.Jumping61))
-        {
-            Indexer++;
-            Stage = 1;
-            VNavmesh_IPCSubscriber.Path_Stop();
-        }
-    }
-
+    
     public void Run(uint territoryType = 0, int loops = 0)
     {
         Svc.Log.Debug($"Run: territoryType={territoryType} loops={loops}");
@@ -549,19 +606,20 @@ public sealed class AutoDuty : IDalamudPlugin
         //MainWindow.OpenTab("Mini");
         if (Configuration.ShowOverlay)
         {
-            MainWindow.IsOpen = false;
+            //MainWindow.IsOpen = false;
             Overlay.IsOpen = true;
         }
-        Stage = 99;
+        Stage = Stage.Looping;
         Running = true;
         TaskManager.Abort();
         Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
-            if (Configuration.AutoBoiledEgg && InventoryHelper.ItemCount(4650) > 1 /*&& !PlayerHelper.HasStatus(48)*/)
+            if (Configuration.AutoBoiledEgg /*&& !PlayerHelper.HasStatus(48)*/)
             {
-                TaskManager.Enqueue(() => InventoryHelper.UseItem(4650), "Run-AutoBoiledEgg");
+                TaskManager.Enqueue(() => InventoryHelper.UseItemIfAvailable(4650), "Run-AutoBoiledEgg");
                 TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.Enqueue(() => ObjectHelper.IsReady);
             }
             if (Configuration.AutoRepair && InventoryHelper.CanRepair())
             {
@@ -570,17 +628,22 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Run-WaitAutoRepairComplete");
                 TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitANotIsOccupied");
             }
-            if (!Configuration.Squadron)
+            if (!Configuration.Squadron && Configuration.RetireMode)
             {
-                if (Configuration.RetireMode && Configuration.RetireLocationEnum == ConfigTab.RetireLocation.GC_Barracks)
+                if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
                     TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
-                else if (Configuration.RetireMode && Configuration.RetireLocationEnum == ConfigTab.RetireLocation.Inn)
+                else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
                     TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Run-GotoInnInvoke");
+                else
+                {
+                    Svc.Log.Info($"{(Housing)Configuration.RetireLocationEnum} {Configuration.RetireLocationEnum}");
+                    TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Run-GotoHousingInvoke");
+                }
                 TaskManager.DelayNext("Run-Delay50", 50);
-                TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
+                TaskManager.Enqueue(() => !GotoHousingHelper.GotoHousingRunning && !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
             }
             if (Configuration.Trust)
-                _trustManager.RegisterTrust(CurrentTerritoryContent);
+                TrustManager.RegisterTrust(CurrentTerritoryContent);
             else if (Configuration.Support)
                 _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
             else if (Configuration.Variant)
@@ -606,7 +669,7 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => StartNavigation(true), "Run");
         CurrentLoop = 1;
     }
-    private bool _lootTreasure;
+
     public void StartNavigation(bool startFromZero = true)
     {
         Svc.Log.Debug($"StartNavigation: startFromZero={startFromZero}");
@@ -626,11 +689,11 @@ public sealed class AutoDuty : IDalamudPlugin
         //MainWindow.OpenTab("Mini");
         if (Configuration.ShowOverlay)
         {
-            MainWindow.IsOpen = false;
+            //MainWindow.IsOpen = false;
             Overlay.IsOpen = true;
         }
         MainListClicked = false;
-        Stage = 1;
+        Stage = Stage.Reading_Path;
         Started = true;
         StopForCombat = true;
         _chat.ExecuteCommand($"/vnav aligncamera enable");
@@ -660,27 +723,44 @@ public sealed class AutoDuty : IDalamudPlugin
             Indexer = 0;
     }
 
+    private void DoneNavigating()
+    {
+        //we finished lets exit the duty or stop
+        if (Configuration.AutoExitDuty || CurrentLoop < Configuration.LoopTimes)
+        {
+            ExitDuty();
+            if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
+                ReflectionHelper.RotationSolver_Reflection.RotationStop();
+            _chat.ExecuteCommand($"/vbmai off");
+            _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+        }
+        else
+            Stage = Stage.Stopped;
+    }
+
     internal void SetBMSettings()
     {
         BMRoleChecks();
         var bmr = IPCSubscriber_Common.IsReady("BossModReborn");
-        if (bmr) // remove once veyn merges
-        {
-            _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
-            _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
-        }
+        var rsr = ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled;
 
+        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions {/*(rsr ? "true" : */"false"/*)*/}");//forbidActions currently disables followTarget in vbm.
+        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
         _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "MaxDistanceToTarget" : "FollowRange")} {Configuration.MaxDistanceToTarget}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig {(bmr ? "MaxDistanceToSlot " + $"{Configuration.MaxDistanceToSlot}" : "OverrideRange true")}");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
+        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlot}");
 
-        _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player!.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player!.Name)))}");
+        _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player.Name : ((Configuration.FollowRole && !FollowName.IsNullOrEmpty()) ? FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player.Name)))}");
 
         if (!bmr)
+        {
             _chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
+            _chat.ExecuteCommand($"/vbm cfg AIConfig OverrideRange true");
+        }
+        _chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
     }
 
     internal void BMRoleChecks()
@@ -688,21 +768,21 @@ public sealed class AutoDuty : IDalamudPlugin
         //RoleBased Positional
         if (ObjectHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalEnum != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? Positional.Rear : Positional.Any))
         {
-            Configuration.PositionalEnum = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? ConfigTab.Positional.Rear : ConfigTab.Positional.Any);
+            Configuration.PositionalEnum = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee ? Positional.Rear : Positional.Any);
             Configuration.Save();
         }
 
         //RoleBased MaxDistanceToTarget
-        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTarget != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
+        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTarget != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
         {
-            Configuration.MaxDistanceToTarget = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
+            Configuration.MaxDistanceToTarget = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
             Configuration.Save();
         }
 
         //RoleBased MaxDistanceToTargetAoE
-        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTargetAoE != (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
+        if (ObjectHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTargetAoE != (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10))
         {
-            Configuration.MaxDistanceToTargetAoE = (ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(ECommons.GameHelpers.Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank ? 3 : 10);
+            Configuration.MaxDistanceToTargetAoE = (ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Melee || ObjectHelper.GetJobRole(Player.Object.ClassJob.GameData!) == ObjectHelper.JobRole.Tank || Player.Object.ClassJob.GameData?.JobIndex==18 ? 3 : 10);
             Configuration.Save();
         }
 
@@ -713,9 +793,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private unsafe void OnDeath()
     {
-        _dead = true;
         StopForCombat = true;
-        Action = $"Died";
         if (VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
         if (TaskManager.IsBusy)
@@ -725,34 +803,49 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno));
             TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
         }
-        Stage = 6;
     }
 
     private unsafe void OnRevive()
     {
-        _dead = false;
-        Action = $"Revived";
         TaskManager.DelayNext(5000);
         TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
-        //IGameObject? gameObject = ObjectHelper.GetObjectByName("Shortcut");
         IGameObject? gameObject = ObjectHelper.GetObjectByDataId(2000700);
         if (gameObject == null || !gameObject.IsTargetable)
         {
-            TaskManager.Enqueue(() => { Stage = 1; } );
+            TaskManager.Enqueue(() => { Stage = Stage.Reading_Path; } );
             return;
         }
 
-        Stage = 7;
         var oldindex = Indexer;
         Indexer = FindWaypoint();
-        //Svc.Log.Info($"We Revived: we died at Index: {oldindex} and now are moving to index: {Indexer} which should be right after previous boss, and the shortcut is {gameObject.Name} at {ObjectHelper.GetDistanceToPlayer(gameObject)} Distance, moving there.");
         TaskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2));
         TaskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno"), int.MaxValue);
         TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
         TaskManager.Enqueue(() => !ObjectHelper.IsValid, 500);
         TaskManager.Enqueue(() => ObjectHelper.IsValid);
         TaskManager.Enqueue(() => { if (Indexer == 0) Indexer = FindWaypoint(); });
-        TaskManager.Enqueue(() => Stage = 1);
+        TaskManager.Enqueue(() => Stage = Stage.Reading_Path);
+    }
+
+    private unsafe void ActionInvoke()
+    {
+        if (!TaskManager.IsBusy && !_action.IsNullOrEmpty())
+        {
+            if (_action.Equals("Boss"))
+            {
+                if (Configuration.Regular && Svc.Party.PartyId > 0)
+                {
+                    _messageSender = true;
+                    _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes($"Follow|OFF"));
+                }
+                _actionParams = _actionPosition;
+            }
+            _actions.InvokeAction(_action, [.. _actionParams]);
+            _action = "";
+            _actionParams = [];
+            _actionPosition = [];
+            _actionTollerance = 0.25f;
+        }
     }
 
     private int FindWaypoint()
@@ -815,67 +908,48 @@ public sealed class AutoDuty : IDalamudPlugin
 
         return 0;
     }
-
-    int currentStage = -1;
     
+    private void GetJobAndLevelingCheck()
+    {
+        Job curJob = Player.Object.GetJob();
+        if (curJob != JobLastKnown)
+        {
+            if (LevelingEnabled)
+            {
+                ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.Trust);
+                if (duty != null)
+                {
+                    Plugin.CurrentTerritoryContent = duty;
+                    MainListClicked = true;
+                    ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryContent.TerritoryType].SelectPath(out CurrentPath);
+                }
+                else
+                {
+                    Plugin.CurrentTerritoryContent = null;
+                    if (Configuration.Support)
+                        SupportLeveling = false;
+                    else if (Configuration.Trust)
+                        TrustLeveling = false;
+                    CurrentPath = -1;
+                }
+            }
+        }
+
+        JobLastKnown = curJob;
+    }
+
     public void Framework_Update(IFramework framework)
     {
-        if (currentStage != Stage)
-        {
-            Svc.Log.Info($"Stage = {Stage}");
-            currentStage = Stage;
-        }
-        
         if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
 
-        if ((Player = Svc.ClientState.LocalPlayer) == null)
-        {
-            PlayerPosition = Vector3.Zero;
+        if (Svc.ClientState.LocalPlayer == null)
             return;
-        }
 
         if (!InDungeon && CurrentTerritoryContent != null)
-        {
-            Job curJob = Player.GetJob();
-            if (curJob != this.JobLastKnown)
-            {
-                if (this.LevelingEnabled)
-                {
-                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(this.Configuration.Trust);
-                    if (duty != null)
-                    {
-                        Plugin.CurrentTerritoryContent = duty;
-                        this.MainListClicked           = true;
-                        ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryContent.TerritoryType].SelectPath(out this.CurrentPath);
-                    }
-                    else
-                    {
-                        Plugin.CurrentTerritoryContent = null;
-                        if (this.Configuration.Support)
-                            this.SupportLeveling = false;
-                        else if (this.Configuration.Trust)
-                            this.TrustLeveling = false;
-                        this.CurrentPath               = -1;
-                    }
-                }
-            }
+            GetJobAndLevelingCheck();
 
-            this.JobLastKnown = curJob;
-        }
-
-        PlayerPosition = Player.Position;
-
-        if (!BossMod_IPCSubscriber.IsEnabled)
-            return;
-
-        if (!VNavmesh_IPCSubscriber.IsEnabled)
-            return;
-
-        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !Configuration.UsingAlternativeRotationPlugin)
-            return;
-
-        if (!ObjectHelper.IsValid)
+        if (!ObjectHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled || (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !Configuration.UsingAlternativeRotationPlugin))
             return;
 
         if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0)
@@ -887,47 +961,24 @@ public sealed class AutoDuty : IDalamudPlugin
         if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25) && MainWindow.CurrentTabName == "Build")
             ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
 
-        if (Started && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == 9)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        if (Started && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
-        if (!_dead && Started && Player.CurrentHp == 0)
-            OnDeath();
+        if (Stage != Stage.Dead && Started && Player.Object.CurrentHp == 0)
+            Stage = Stage.Dead;
 
-        if (_dead && Started && Player.CurrentHp > 0)
-            OnRevive();
+        if (Stage == Stage.Dead && Started && Player.Object.CurrentHp > 0)
+            Stage = Stage.Revived;
 
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && Started)
-        {
-            //we finished lets exit the duty
-            if (Configuration.AutoExitDuty || Running)
-            {
-                ExitDuty();
-                Started = false;
-                if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
-                    ReflectionHelper.RotationSolver_Reflection.RotationStop();
-                _chat.ExecuteCommand($"/vbmai off");
-                _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
-            }
-            if (!Running)
-                Stage = 0;
+            DoneNavigating();
 
-            Indexer = -1;
-        }
-        if (Stage > 0)
-            _stopped = false;
+        if (Stage != Stage.Action || Stage != Stage.Reading_Path || Stage != Stage.Moving || Stage != Stage.Looping)
+            Action = EnumString(Stage);
+
         switch (Stage)
         {
-            //AutoDuty is stopped or has not started
-            case 0:
-                if (EzThrottler.Throttle("Stop", 25) && !_stopped)
-                {
-                   StopAndResetALL();
-                    _stopped = true;
-                    Action = "Stopped";
-                }
-                break;
-            //We are started lets call what we need to based off our index
-            case 1:
+            case Stage.Reading_Path:
                 if (!ObjectHelper.IsReady || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
@@ -959,7 +1010,7 @@ public sealed class AutoDuty : IDalamudPlugin
                         else
                         {
                             _actionParams.RemoveAt(0);
-                            Stage = 9;
+                            Stage = Stage.Action;
                             return;
                         }
                     }
@@ -977,14 +1028,17 @@ public sealed class AutoDuty : IDalamudPlugin
 
                     if (destinationVector == Vector3.Zero)
                     {
-                        Stage = 9;
+                        Stage = Stage.Action;
                         return;
                     }
 
-                    if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+                    if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
                     {
-                        VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
-                        Stage = 2;
+                        if (_action == "MoveTo" && bool.TryParse((string)_actionParams[0], out bool useMesh) && !useMesh)
+                            VNavmesh_IPCSubscriber.Path_MoveTo([destinationVector], false);
+                        else
+                            VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
+                        Stage = Stage.Moving;
                     }
                 }
                 //also backwards compat
@@ -1006,12 +1060,11 @@ public sealed class AutoDuty : IDalamudPlugin
                     if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
                     {
                         VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
-                        Stage = 2;
+                        Stage = Stage.Moving;
                     }
                 }
                 break;
-            //Navigation
-            case 2:
+            case Stage.Moving:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
@@ -1022,33 +1075,33 @@ public sealed class AutoDuty : IDalamudPlugin
                 }
                 
                 Action = $"{Plugin.ListBoxPOSText[Indexer]}";
-                if (ObjectHelper.InCombat(Player) && Plugin.StopForCombat)
+                if (Player.Object.InCombat() && Plugin.StopForCombat)
                 {
                     if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
                         ReflectionHelper.RotationSolver_Reflection.RotationAuto();
                     VNavmesh_IPCSubscriber.Path_Stop();
-                    Stage = 4;
+                    Stage = Stage.Waiting_For_Combat;
                     break;
                 }
 
                 if (StuckHelper.IsStuck())
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
-                    Stage = 1;
+                    Stage = Stage.Reading_Path;
                     return;
                 }
 
                 if ((!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0) || (!_action.IsNullOrEmpty() && _actionPosition.Count > 0 && _actionTollerance > 0.25f && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) <= _actionTollerance))
                 {
-                    if (_action.IsNullOrEmpty())
+                    if (_action.IsNullOrEmpty() || _action.Equals("MoveTo") || _action.Equals("TreasureCoffer") || _action.Equals("Revival") )
                     {
-                        Stage = 1;
+                        Stage = Stage.Reading_Path;
                         Indexer++;
                     }
                     else
                     {
                         VNavmesh_IPCSubscriber.Path_Stop();
-                        Stage = 9;
+                        Stage = Stage.Action;
                     }
 
                     return;
@@ -1061,7 +1114,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     {
                         VNavmesh_IPCSubscriber.Path_Stop();
                         _actionParams = _actionPosition;
-                        Stage = 9;
+                        Stage = Stage.Action;
                         return;
                     }
                 }
@@ -1075,8 +1128,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     return;
                 }*/
                 break;
-            //Action
-            case 3:
+            case Stage.Action:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
@@ -1085,13 +1137,12 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 if (!TaskManager.IsBusy)
                 {
-                    Stage = 1;
+                    Stage = Stage.Reading_Path;
                     Indexer++;
                     return;
                 }
                 break;
-            //InCombat
-            case 4:
+            case Stage.Waiting_For_Combat:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
@@ -1120,12 +1171,12 @@ public sealed class AutoDuty : IDalamudPlugin
                     {
                         VNavmesh_IPCSubscriber.Path_Stop();
                         _actionParams = _actionPosition;
-                        Stage = 9;
+                        Stage = Stage.Action;
                         return;
                     }
                 }
 
-                if (ObjectHelper.InCombat(Player))
+                if (Player.Object.InCombat())
                 {
                     if (Svc.Targets.Target == null && EzThrottler.Throttle("TargetCheck"))
                     {
@@ -1135,73 +1186,44 @@ public sealed class AutoDuty : IDalamudPlugin
                         if (gos != null)
                             Svc.Targets.Target = gos;
                     }
-                    var BMR = IPCSubscriber_Common.IsReady("BossModReborn");
                     if (Configuration.AutoManageBossModAISettings)
                     {
                         if (Svc.Targets.Target != null)
                         {
                             VNavmesh_IPCSubscriber.Path_Stop();
 
-                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && !BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange"])[0].Equals(Configuration.MaxDistanceToTargetAoE))
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange", $"{Configuration.MaxDistanceToTargetAoE}"]);
-                            else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange"])[0].Equals(Configuration.MaxDistanceToTarget))
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange", $"{Configuration.MaxDistanceToTarget}"]);
+                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && !BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTargetAoE))
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoE}"]);
+                            else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTarget))
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTarget}"]);
 
                         }
-                        else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange"])[0].Equals(Configuration.MaxDistanceToTarget))
-                            BossMod_IPCSubscriber.Configuration(["AIConfig", BMR ? "MaxDistanceToTarget" : "FollowRange", $"{Configuration.MaxDistanceToTarget}"]);
+                        else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTarget))
+                            BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTarget}"]);
                     }
                     else
                         VNavmesh_IPCSubscriber.Path_Stop();
                 }
-                else if (!ObjectHelper.InCombat(Player) && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+                else if (!Player.Object.InCombat() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
-                    Stage = 1;
+                    Stage = Stage.Reading_Path;
                 }
                 break;
-            //Paused
-            case 5:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                    return;
-
-                Action = $"Paused";
-                if (VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
-                    VNavmesh_IPCSubscriber.Path_Stop();
-                FollowHelper.SetFollow(null);
-                break;
-            //OnDeath
-            case 6:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                    return;
-
-                Action = $"Died";
-                break;
-            //OnRevive
-            case 7:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                    return;
-
-                Action = $"Revived";
-                if (!TaskManager.IsBusy && ObjectHelper.IsValid)
-                    Stage = 1;
-                break;
-            //TreasureCoffer
-            case 8:
+            case Stage.Looting_Treasure:
                 //if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                Action = $"Looting Treasure";
-                if (ObjectHelper.InCombat(Player))
+                if (Player.Object.InCombat())
                 {
                     VNavmesh_IPCSubscriber.Path_Stop();
-                    Stage = 4;
+                    Stage = Stage.Waiting_For_Combat;
                     return;
                 }
 
                 if (treasureCofferGameObject == null || !treasureCofferGameObject.IsTargetable)
                 {
-                    Stage = 1;
+                    Stage = Stage.Reading_Path;
                     return;
                 }
 
@@ -1221,50 +1243,17 @@ public sealed class AutoDuty : IDalamudPlugin
                 }
                 
                 break;
-            //ActionInvoke
-            case 9:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                    return;
-
-                if (!TaskManager.IsBusy && !_action.IsNullOrEmpty())
-                {
-                    if (_action.Equals("Boss"))
-                    {
-                        if (Configuration.Regular && Svc.Party.PartyId > 0)
-                        {
-                            _messageSender = true;
-                            _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes($"Follow|OFF"));
-                        }
-                        _actionParams = _actionPosition;
-                    }
-                    _actions.InvokeAction(_action, [.. _actionParams]);
-                    _action = "";
-                    _actionParams = [];
-                    _actionPosition = [];
-                    _actionTollerance = 0.25f;
-                }
-                if (TaskManager.IsBusy)
-                    Stage = 3;
-
-                break;
-            //Looping
-            case 99:
-                if (!ObjectHelper.IsReady)
-                    return;
-
-                break;
             default:
                 break;
         }
     }
 
-    internal void StopAndResetALL()
+    private void StopAndResetALL()
     {
         Running = false;
         CurrentLoop = 0;
         MainListClicked = false;
         Started = false;
-        Stage = 0;
         CurrentLoop = 0;
         _chat.ExecuteCommand($"/vbmai off");
         _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
@@ -1301,6 +1290,9 @@ public sealed class AutoDuty : IDalamudPlugin
             VNavmesh_IPCSubscriber.Path_Stop();
         if (MapHelper.MoveToMapMarkerRunning)
             MapHelper.StopMoveToMapMarker();
+        if (GotoHousingHelper.GotoHousingRunning)
+            GotoHousingHelper.Stop();
+        
         Action = "";
     }
 
@@ -1340,10 +1332,10 @@ public sealed class AutoDuty : IDalamudPlugin
                 StopAndResetALL();
                 break;
             case "pause":
-                Plugin.Stage = 5;
+                Plugin.Stage = Stage.Paused;
                 break;
             case "resume":
-                Plugin.Stage = 1;
+                Plugin.Stage = Stage.Reading_Path;
                 break;
             case "goto":
                 switch (argsArray[1])
@@ -1356,6 +1348,18 @@ public sealed class AutoDuty : IDalamudPlugin
                         break;
                     case "gcsupply":
                         GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 2f, false);
+                        break;
+                    case "summoningbell":
+                        SummoningBellHelper.Invoke(Configuration.PreferredSummoningBellEnum);
+                        break;
+                    case "apartment":
+                        GotoHousingHelper.Invoke(Housing.Apartment);
+                        break;
+                    case "personalhome":
+                        GotoHousingHelper.Invoke(Housing.Personal_Home);
+                        break;
+                    case "fcestate":
+                        GotoHousingHelper.Invoke(Housing.FC_Estate);
                         break;
                     default:
                         break;
@@ -1374,6 +1378,10 @@ public sealed class AutoDuty : IDalamudPlugin
             case "repair":
                 if (InventoryHelper.CanRepair())
                     RepairHelper.Invoke();
+                break;
+            case "autoretainer":
+            case "ar":
+                AutoRetainerHelper.Invoke();
                 break;
             case "equiprec":
                 AutoEquipHelper.Invoke();
@@ -1427,15 +1435,36 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (Started)
                 {
                     Indexer++;
-                    Stage = 1;
+                    Stage = Stage.Reading_Path;
                 }
                 break;
             case "am":
-                Configuration.UnhideAM = !Configuration.UnhideAM;
-                Configuration.Save();
+                if (!Configuration.UnhideAM)
+                {
+                    Configuration.UnhideAM = true;
+                    Configuration.Save();
+                }
+                else
+                    AMHelper.Invoke();
                 break;
             case "movetoflag":
                 MapHelper.MoveToMapMarker();
+                break;
+            case "run":
+                if (argsArray.Length <= 2 || !UInt32.TryParse(argsArray[1], out uint territoryType) || !Int32.TryParse(argsArray[2], out int loopTimes))
+                {
+                    Svc.Log.Info($"Run Error: Incorrect Usage\ncorrect use /autoduty run TerritoryTypeInteger LoopTimesInteger\nexample: /autoduty run 1036 10\nYou can get the TerritoryTypeInteger from /autoduty tt name of territory (will be logged and copied to clipboard)");
+                    return;
+                }
+                Run(territoryType, loopTimes);
+                break;
+            case "tt":
+                var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
+                Svc.Log.Info($"{tt?.RowId}");
+                ImGui.SetClipboardText($"{tt?.RowId}");
+                break;
+            case "test":
+                TeleportHelper.TeleportAetheryte(Convert.ToUInt32(argsArray[1]), 0);
                 break;
             default:
                 OpenMainUI(); 
@@ -1443,10 +1472,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private void DrawUI()
-    {
-        WindowSystem.Draw();
-    }
+    private void DrawUI() => WindowSystem.Draw();
 
     public void OpenConfigUI()
     {
