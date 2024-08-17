@@ -398,6 +398,7 @@ public static class ConfigTab
 
     private static bool overlayHeaderSelected = false;
     private static bool dutyConfigHeaderSelected = false;
+    private static bool bmaiSettingHeaderSelected = false;
     private static bool advModeHeaderSelected = false;
     private static bool preLoopHeaderSelected = false;
     private static bool betweenLoopHeaderSelected = false;
@@ -408,11 +409,11 @@ public static class ConfigTab
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
         
-        //Start of Overlay Settings
+        //Start of Window & Overlay Settings
         ImGui.Spacing();
         ImGui.Separator();
         ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
-        var overlayHeader = ImGui.Selectable("Overlay Settings", overlayHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+        var overlayHeader = ImGui.Selectable("Window & Overlay Settings", overlayHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
         ImGui.PopStyleVar();      
         if (ImGui.IsItemHovered())
             ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
@@ -445,25 +446,25 @@ public static class ConfigTab
                 }
                 ImGui.NextColumn();
                 //ImGui.SameLine(0, 57);
+                
+                if (ImGui.Checkbox("Show Duty/Loops Text", ref Configuration.ShowDutyLoopText))
+                    Configuration.Save();
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Use Transparent BG", ref Configuration.overlayNoBG))
                 {
                     Configuration.OverlayNoBG = Configuration.overlayNoBG;
                     Configuration.Save();
                 }
                 ImGui.NextColumn();
-                if (ImGui.Checkbox("Show Duty/Loops Text", ref Configuration.ShowDutyLoopText))
-                    Configuration.Save();
-                ImGui.NextColumn();
                 if (ImGui.Checkbox("Show AD Action Text", ref Configuration.ShowActionText))
-                    Configuration.Save();
-                ImGui.NextColumn();
-                if (ImGui.Checkbox("Use Slider Inputs", ref Configuration.UseSliderInputs))
                     Configuration.Save();
                 ImGui.Columns(1);
                 ImGui.Unindent();
             }
 
             if (ImGui.Checkbox("Show Main Window on Startup", ref Configuration.ShowMainWindowOnStartup))
+                Configuration.Save();
+            if (ImGui.Checkbox("Use Slider Inputs", ref Configuration.UseSliderInputs))
                 Configuration.Save();
         }
 
@@ -491,17 +492,146 @@ public static class ConfigTab
             if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref Configuration.autoManageBossModAISettings))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Autoduty will enable BMAI and any options you configure at the start of each duty.");
-            ImGui.SameLine(0, 5);
-
-            using (var autoManageBossModAISettingsDisable = ImRaii.Disabled(!Configuration.autoManageBossModAISettings))
+            //ImGui.SameLine(0, 5);
+            
+            if (Configuration.autoManageBossModAISettings == true)
             {
-                if (ImGui.Button(Configuration.HideBossModAIConfig ? "Show" : "Hide"))
-                {
-                    Configuration.HideBossModAIConfig = !Configuration.HideBossModAIConfig;
-                    Configuration.Save();
-                }
-            }
+                var followRole = Configuration.FollowRole;
+                var maxDistanceToTargetRoleBased = Configuration.MaxDistanceToTargetRoleBased;
+                var maxDistanceToTarget = Configuration.MaxDistanceToTarget;
+                var maxDistanceToTargetAoE = Configuration.MaxDistanceToTargetAoE;
+                var positionalRoleBased = Configuration.PositionalRoleBased;
 
+                using (var autoManageBossModAISettingsDisable = ImRaii.Disabled(!Configuration.autoManageBossModAISettings))
+                {
+                    //if (ImGui.Button(Configuration.HideBossModAIConfig ? "Show" : "Hide"))
+                    //{
+                    //Configuration.HideBossModAIConfig = !Configuration.HideBossModAIConfig;
+                    //Configuration.Save();
+                    ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+                    var bmaiSettingHeader = ImGui.Selectable("> BMAI Config Options <", bmaiSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+                    ImGui.PopStyleVar();
+                    if (ImGui.IsItemHovered())
+                        ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                    if (bmaiSettingHeader)
+                        bmaiSettingHeaderSelected = !bmaiSettingHeaderSelected;
+            
+                    if (bmaiSettingHeaderSelected == true)
+                    {
+                        if (ImGui.Checkbox("Follow During Combat", ref Configuration.FollowDuringCombat))
+                            Configuration.Save();
+                        if (ImGui.Checkbox("Follow During Active BossModule", ref Configuration.FollowDuringActiveBossModule))
+                            Configuration.Save();
+                        if (ImGui.Checkbox("Follow Out Of Combat (Not Recommended)", ref Configuration.FollowOutOfCombat))
+                            Configuration.Save();
+                        if (ImGui.Checkbox("Follow Target", ref Configuration.FollowTarget))
+                            Configuration.Save();
+                        ImGui.Separator();
+                        if (ImGui.Checkbox("Follow Self", ref Configuration.followSelf))
+                        {
+                            Configuration.FollowSelf = Configuration.followSelf;
+                            Configuration.Save();
+                        }
+                        if (ImGui.Checkbox("Follow Slot #", ref Configuration.followSlot))
+                        {
+                            Configuration.FollowSlot = Configuration.followSlot;
+                            Configuration.Save();
+                        }
+                        using (var d1 = ImRaii.Disabled(!Configuration.followSlot))
+                        {
+                            ImGui.SameLine(0, 5);
+                            ImGui.PushItemWidth(70);
+                            if (ImGui.SliderInt("##FollowSlot", ref Configuration.FollowSlotInt, 1, 4))
+                                Configuration.Save();
+                            ImGui.PopItemWidth();
+                        }
+                        if (ImGui.Checkbox("Follow Role", ref Configuration.followRole))
+                        {
+                            Configuration.FollowRole = Configuration.followRole;
+                            Configuration.Save();
+                        }
+                        using (var d1 = ImRaii.Disabled(!followRole))
+                        {
+                            ImGui.SameLine(0, 10);
+                            if (ImGui.Button(EnumString(Configuration.FollowRoleEnum)))
+                            {
+                                ImGui.OpenPopup("RolePopup");
+                            }
+                            if (ImGui.BeginPopup("RolePopup"))
+                            {
+                                foreach (Role role in Enum.GetValues(typeof(Role)))
+                                {
+                                    if (ImGui.Selectable(EnumString(role)))
+                                    {
+                                        Configuration.FollowRoleEnum = role;
+                                        Configuration.Save();
+                                    }
+                                }
+                                ImGui.EndPopup();
+                            }
+                        }
+                        ImGui.Separator();
+                        if (ImGui.Checkbox("Set Max Distance To Target Based on Player Role", ref Configuration.maxDistanceToTargetRoleBased))
+                        {
+                            Configuration.MaxDistanceToTargetRoleBased = Configuration.maxDistanceToTargetRoleBased;
+                            Configuration.Save();
+                        }
+                        using (var d1 = ImRaii.Disabled(Configuration.MaxDistanceToTargetRoleBased))
+                        {
+                            ImGui.PushItemWidth(195);
+                            if (ImGui.SliderInt("Max Distance To Target", ref Configuration.MaxDistanceToTarget, 1, 30))
+                                Configuration.Save();
+                            if (ImGui.SliderInt("Max Distance To Target AoE", ref Configuration.MaxDistanceToTargetAoE, 1, 10))
+                                Configuration.Save();
+                            ImGui.PopItemWidth();
+                        }
+                        ImGui.PushItemWidth(195);
+                        if (ImGui.SliderInt("Max Distance To Slot", ref Configuration.MaxDistanceToSlot, 1, 30))
+                            Configuration.Save();
+                        ImGui.PopItemWidth();
+                        if (ImGui.Checkbox("Set Positional Based on Player Role", ref Configuration.positionalRoleBased))
+                        {
+                            Configuration.PositionalRoleBased = Configuration.positionalRoleBased;
+                            AutoDuty.Plugin.BMRoleChecks();
+                            Configuration.Save();
+                        }
+                        using (var d1 = ImRaii.Disabled(Configuration.positionalRoleBased))
+                        {
+                            ImGui.SameLine(0, 10);
+                            if (ImGui.Button(EnumString(Configuration.PositionalEnum)))
+                                ImGui.OpenPopup("PositionalPopup");
+            
+                            if (ImGui.BeginPopup("PositionalPopup"))
+                            {
+                                foreach (Positional positional in Enum.GetValues(typeof(Positional)))
+                                {
+                                    if (ImGui.Selectable(EnumString(positional)))
+                                    {
+                                        Configuration.PositionalEnum = positional;
+                                        Configuration.Save();
+                                    }
+                                }
+                                ImGui.EndPopup();
+                            }
+                        }
+                        if (ImGui.Button("Use Default BMAI Settings"))
+                        {
+                            Configuration.FollowDuringCombat = true;
+                            Configuration.FollowDuringActiveBossModule = true;
+                            Configuration.FollowOutOfCombat = false;
+                            Configuration.FollowTarget = true;
+                            Configuration.followSelf = true;
+                            Configuration.followSlot = false;
+                            Configuration.followRole = false;
+                            Configuration.maxDistanceToTargetRoleBased = true;
+                            Configuration.positionalRoleBased = true;
+                            Configuration.Save();
+                        }
+                        ImGuiComponents.HelpMarker("Clicking this will reset your BMAI config to the default and *recommended* settings for AD");
+                        ImGui.Separator();
+                    }
+                }              
+            }
             if (ImGui.Checkbox("Loot Treasure Coffers", ref Configuration.LootTreasure))
                 Configuration.Save();
 
@@ -922,130 +1052,5 @@ public static class ConfigTab
                 ImGui.Unindent();
             }
         }     
-    }
-
-    //BossModConfig
-    public static class BossModConfigTab
-    {
-        private static Configuration Configuration = AutoDuty.Plugin.Configuration;
-
-        public static void Draw()
-        {
-            if (MainWindow.CurrentTabName != "BossModConfig")
-                MainWindow.CurrentTabName = "BossModConfig";
-            var followRole = Configuration.FollowRole;
-            var maxDistanceToTargetRoleBased = Configuration.MaxDistanceToTargetRoleBased;
-            var maxDistanceToTarget = Configuration.MaxDistanceToTarget;
-            var maxDistanceToTargetAoE = Configuration.MaxDistanceToTargetAoE;
-            var positionalRoleBased = Configuration.PositionalRoleBased;
-
-            if (ImGui.Checkbox("Follow During Combat", ref Configuration.FollowDuringCombat))
-                Configuration.Save();
-
-            if (ImGui.Checkbox("Follow During Active BossModule", ref Configuration.FollowDuringActiveBossModule))
-                Configuration.Save();
-
-            if (ImGui.Checkbox("Follow Out Of Combat (Not Recommended)", ref Configuration.FollowOutOfCombat))
-                Configuration.Save();
-
-            if (ImGui.Checkbox("Follow Target", ref Configuration.FollowTarget))
-                Configuration.Save();
-
-            if (ImGui.Checkbox("Follow Self", ref Configuration.followSelf))
-            {
-                Configuration.FollowSelf = Configuration.followSelf;
-                Configuration.Save();
-            }
-
-            if (ImGui.Checkbox("Follow Slot", ref Configuration.followSlot))
-            {
-                Configuration.FollowSlot = Configuration.followSlot;
-                Configuration.Save();
-            }
-
-            using (var d1 = ImRaii.Disabled(!Configuration.followSlot))
-            {
-                ImGui.PushItemWidth(270);
-                if (ImGui.SliderInt("Follow Slot #", ref Configuration.FollowSlotInt, 1, 4))
-                    Configuration.Save();
-                ImGui.PopItemWidth();
-            }
-
-            if (ImGui.Checkbox("Follow Role", ref Configuration.followRole))
-            {
-                Configuration.FollowRole = Configuration.followRole;
-                Configuration.Save();
-            }
-
-            using (var d1 = ImRaii.Disabled(!followRole))
-            {
-                ImGui.SameLine(0, 10);
-                if (ImGui.Button(EnumString(Configuration.FollowRoleEnum)))
-                {
-                    ImGui.OpenPopup("RolePopup");
-                }
-                if (ImGui.BeginPopup("RolePopup"))
-                {
-                    foreach (Role role in Enum.GetValues(typeof(Role)))
-                    {
-                        if (ImGui.Selectable(EnumString(role)))
-                        {
-                            Configuration.FollowRoleEnum = role;
-                            Configuration.Save();
-                        }
-                    }
-                    ImGui.EndPopup();
-                }
-            }
-
-            if (ImGui.Checkbox("Set Max Distance To Target Based on Role", ref Configuration.maxDistanceToTargetRoleBased))
-            {
-                Configuration.MaxDistanceToTargetRoleBased = Configuration.maxDistanceToTargetRoleBased;
-                Configuration.Save();
-            }
-
-            using (var d1 = ImRaii.Disabled(Configuration.MaxDistanceToTargetRoleBased))
-            {
-                ImGui.PushItemWidth(195);
-                if (ImGui.SliderInt("Max Distance To Target", ref Configuration.MaxDistanceToTarget, 1, 30))
-                    Configuration.Save();
-                if (ImGui.SliderInt("Max Distance To Target AoE", ref Configuration.MaxDistanceToTargetAoE, 1, 10))
-                    Configuration.Save();
-                ImGui.PopItemWidth();
-            }
-
-            ImGui.PushItemWidth(195);
-            if (ImGui.SliderInt("Max Distance To Slot", ref Configuration.MaxDistanceToSlot, 1, 30))
-                Configuration.Save();
-
-            ImGui.PopItemWidth();
-
-            if (ImGui.Checkbox("Set Positional Based on Role", ref Configuration.positionalRoleBased))
-            {
-                Configuration.PositionalRoleBased = Configuration.positionalRoleBased;
-                AutoDuty.Plugin.BMRoleChecks();
-                Configuration.Save();
-            }
-
-            using (var d1 = ImRaii.Disabled(Configuration.positionalRoleBased))
-            {
-                ImGui.SameLine(0, 10);
-                if (ImGui.Button(EnumString(Configuration.PositionalEnum)))
-                    ImGui.OpenPopup("PositionalPopup");
-
-                if (ImGui.BeginPopup("PositionalPopup"))
-                {
-                    foreach (Positional positional in Enum.GetValues(typeof(Positional)))
-                    {
-                        if (ImGui.Selectable(EnumString(positional)))
-                        {
-                            Configuration.PositionalEnum = positional;
-                            Configuration.Save();
-                        }
-                    }
-                    ImGui.EndPopup();
-                }
-            }
-        }
     }
 }
