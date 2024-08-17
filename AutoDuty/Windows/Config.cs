@@ -376,7 +376,9 @@ public class Configuration : IPluginConfiguration
                 SchedulerHelper.ScheduleAction("PositionalRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => ObjectHelper.IsReady);
         }
     }
-    public Positional PositionalEnum = Positional.Any;
+
+    internal bool       positionalAvarice = true;
+    public   Positional PositionalEnum    = Positional.Any;
 
     public void Save()
     {
@@ -1045,6 +1047,26 @@ public static class ConfigTab
                     }
                     ImGui.EndPopup();
                 }
+            }
+
+            using (ImRaii.Disabled(!ReflectionHelper.Avarice_Reflection.avariceReady))
+            {
+                if (ImGui.Checkbox("Set Positional Based on Actions (Requires Avarice)", ref Configuration.positionalAvarice))
+                    Configuration.Save();
+
+                if (Configuration.positionalAvarice)
+                {
+                    ImGui.Indent();
+                    ImGui.Text("* Please check that you have Anticipation enabled in Avarice");
+                    ImGui.Unindent();
+                }
+            }
+            if (!ReflectionHelper.Avarice_Reflection.avariceReady)
+            {
+                ImGui.Text("* Positional requires a plugin");
+                ImGui.Text("Visit ");
+                ImGui.SameLine(0, 0);
+                ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://puni.sh/plugin/Avarice");
             }
         }
     }
