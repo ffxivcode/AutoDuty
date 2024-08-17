@@ -1,7 +1,7 @@
 {
   "actions": [
-    "ChatCommand|0, 0, 0|/bmrai off",
-	"MoveTo|-6.79, 0.02, -1.58|"
+    "ChatCommand|0, 0, 0|/vbmai off",
+    "MoveTo|-6.79, 0.02, -1.58|"
 	  ],
   "meta": {
     "createdAt": 106,
