@@ -4,6 +4,7 @@ using ECommons;
 using Dalamud.Plugin.Services;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
+
 namespace AutoDuty.Helpers
 {
     internal static class ExitDutyHelper
@@ -14,6 +15,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("ExitDuty Started");
                 ExitDutyRunning = true;
+                AutoDuty.Plugin.Stage = Stage.Other;
                 SchedulerHelper.ScheduleAction("ExitDutyTimeOut", Stop, 60000);
                 AutoDuty.Plugin.Action = "Exiting Duty";
                 _currentTerritoryType = Svc.ClientState.TerritoryType;
@@ -53,6 +55,7 @@ namespace AutoDuty.Helpers
                     Svc.Log.Info("ExitDuty Finished");
                     _stop = false;
                     ExitDutyRunning = false;
+                    AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
                     _currentTerritoryType = 0;
                     Svc.Framework.Update -= ExitDutyUpdate;
                 }

@@ -15,7 +15,6 @@ using AutoDuty.Managers;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Common.Math;
 using AutoDuty.Helpers;
-using static AutoDuty.Data.Enum;
 
 namespace AutoDuty.Windows;
 

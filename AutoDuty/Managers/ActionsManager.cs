@@ -16,7 +16,6 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using static AutoDuty.Data.Enum;
 
 namespace AutoDuty.Managers
 {

@@ -17,6 +17,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Desynth Started");
                 DesynthRunning = true;
+                AutoDuty.Plugin.Stage = Stage.Other;
                 SchedulerHelper.ScheduleAction("DesynthTimeOut", Stop, 300000);
                 AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
@@ -59,6 +60,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     DesynthRunning = false;
+                    AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
                     Svc.Framework.Update -= DesynthUpdate;
                 }
                 return;

@@ -11,7 +11,7 @@ namespace AutoDuty.Helpers
 
         internal static bool ModifyConfig(string configName, string configValue)
         {
-            FieldInfo? field = null;
+            FieldInfo? field;
             if ((field = FindConfig(configName)) == null)
             {
                 Svc.Log.Error($"Unable to find config: {configName}, please type /autoduty cfg list to see all available configs");

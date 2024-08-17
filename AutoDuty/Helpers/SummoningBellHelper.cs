@@ -1,6 +1,5 @@
 ﻿using AutoDuty.Windows;
 using System.Numerics;
-using static AutoDuty.Data.Enum;
 
 namespace AutoDuty.Helpers
 {

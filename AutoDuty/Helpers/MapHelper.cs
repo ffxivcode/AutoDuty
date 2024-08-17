@@ -91,6 +91,7 @@ namespace AutoDuty.Helpers
             }
             Svc.Log.Info("Moving to Flag Marker");
             MoveToMapMarkerRunning = true;
+            AutoDuty.Plugin.Stage = Stage.Other;
             Svc.Framework.Update += MoveToMapMarkerUpdate;
         }
 
@@ -104,6 +105,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= MoveToMapMarkerUpdate;
             VNavmesh_IPCSubscriber.Path_Stop();
             MoveToMapMarkerRunning = false;
+            AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
             flagMapMarker = null;
         }
 

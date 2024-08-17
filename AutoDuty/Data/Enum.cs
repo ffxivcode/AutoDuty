@@ -88,7 +88,8 @@
             Dead = 6,
             Revived = 7,
             Looting_Treasure = 8,
-            Looping = 9
+            Looping = 9,
+            Other = 10,
         }
     }
 }

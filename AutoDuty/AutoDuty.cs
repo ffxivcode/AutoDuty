@@ -1,3 +1,4 @@
+global using static AutoDuty.Data.Enum;
 using System;
 using System.Numerics;
 using Dalamud.Game.Command;
@@ -29,11 +30,10 @@ using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using static AutoDuty.Windows.ConfigTab;
 using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
-using static AutoDuty.Data.Enum;
+using static AutoDuty.Windows.ConfigTab;
 
 namespace AutoDuty;
 
@@ -79,6 +79,7 @@ public sealed class AutoDuty : IDalamudPlugin
         get => _stage;
         set
         {
+            PreviousStage = _stage;
             _stage = value;
             Svc.Log.Debug($"Stage={EnumString(_stage)}");
             switch (value)
@@ -103,6 +104,7 @@ public sealed class AutoDuty : IDalamudPlugin
             }
         }
     }
+    internal Stage PreviousStage = Stage.Stopped;
     internal int Indexer = -1;
     internal bool MainListClicked = false;
     internal bool Started = false;
@@ -192,7 +194,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Configuration.ShowMainWindowOnStartup)
                 this.OpenMainUI();
 
-            Svc.Commands.AddHandler("ad", new CommandInfo(OnCommand) { });
+            Svc.Commands.AddHandler("/ad", new CommandInfo(OnCommand) { });
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "\n/autoduty or /ad -> opens main window\n" +
@@ -265,7 +267,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 break;
         }
     }
-    
+
     internal void ExitDuty() => _actions.ExitDuty("");
 
     internal void LoadPath()
@@ -976,7 +978,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && Started)
             DoneNavigating();
 
-        if (Stage != Stage.Action || Stage != Stage.Reading_Path || Stage != Stage.Moving || Stage != Stage.Looping)
+        if (Stage != Stage.Other || Stage != Stage.Action || Stage != Stage.Reading_Path || Stage != Stage.Moving || Stage != Stage.Looping)
             Action = EnumString(Stage);
 
         switch (Stage)

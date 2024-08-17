@@ -1,23 +1,9 @@
 ﻿using AutoDuty.IPC;
-using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Game.Gui.Toast;
-using ECommons;
-using ECommons.Automation;
-using ECommons.CircularBuffers;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
-using ECommons.Logging;
-using ECommons.MathHelpers;
 using ECommons.Throttlers;
-using FFXIVClientStructs.FFXIV.Client.Game;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static AutoDuty.Helpers.ReaderTelepotTown;
 
 namespace AutoDuty.Helpers
 {

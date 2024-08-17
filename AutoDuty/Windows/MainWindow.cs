@@ -15,7 +15,6 @@ using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using static AutoDuty.AutoDuty;
-using static AutoDuty.Data.Enum;
 
 namespace AutoDuty.Windows;
 
@@ -70,6 +69,7 @@ public class MainWindow : Window, IDisposable
             }
             ImGui.SameLine(0, 5);
         }
+
         using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning) || Plugin.CurrentTerritoryContent == null))
             {
                 if (Plugin.Stage == Stage.Paused)

@@ -18,6 +18,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Extract Materia Started");
                 ExtractRunning = true;
+                AutoDuty.Plugin.Stage = Stage.Other;
                 SchedulerHelper.ScheduleAction("ExtractTimeOut", Stop, 300000);
                 if (AutoDuty.Plugin.Configuration.AutoExtractAll)
                     _stoppingCategory = 6;
@@ -71,6 +72,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     ExtractRunning = false;
+                    AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
                     Svc.Framework.Update -= ExtractUpdate;
                 }
                 return;
