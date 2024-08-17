@@ -978,7 +978,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && Started)
             DoneNavigating();
 
-        if (Stage != Stage.Other || Stage != Stage.Action || Stage != Stage.Reading_Path || Stage != Stage.Moving || Stage != Stage.Looping)
+        if (Stage != Stage.Other && Stage != Stage.Action && Stage != Stage.Reading_Path && Stage != Stage.Moving && Stage != Stage.Looping)
             Action = EnumString(Stage);
 
         switch (Stage)
