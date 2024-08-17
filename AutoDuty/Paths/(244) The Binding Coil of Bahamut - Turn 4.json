@@ -1,6 +1,6 @@
 {
   "actions": [
-	"MoveTo|-15.94, 0.06, 15.74|",
+    "MoveTo|-15.94, 0.06, 15.74|",
     "Interactable|0, 0, 0|Silent Terminal",
     "Wait|0, 0, 0|10000",
     "Wait|0, 0, 0|2000",

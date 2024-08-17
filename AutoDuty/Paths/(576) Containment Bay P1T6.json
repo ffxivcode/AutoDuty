@@ -1,6 +1,6 @@
 {
   "actions": [
-    "ChatCommand|0, 0, 0|/bmrai off",
+    "ChatCommand|0, 0, 0|/vbmai off",
     "MoveTo|-0.03, -0.00, 14.34|",
     "MoveTo|18.64, -0.00, 14.35|",
     "MoveTo|15.18, 0.00, -14.32|",

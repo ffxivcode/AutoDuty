@@ -1,20 +1,20 @@
-﻿using System.Reflection;
-using System;
+﻿using AutoDuty.Helpers;
+using AutoDuty.IPC;
+using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Game.ClientState.Objects.Types;
+using ECommons;
+using ECommons.Automation;
+using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
+using ECommons.GameHelpers;
+using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Component.GUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Game.ClientState.Conditions;
-using AutoDuty.IPC;
-using ECommons;
-using ECommons.Automation.LegacyTaskManager;
-using FFXIVClientStructs.FFXIV.Component.GUI;
-using ECommons.Throttlers;
-using ECommons.GameHelpers;
-using AutoDuty.Helpers;
-using ECommons.Automation;
-using FFXIVClientStructs.FFXIV.Client.Game;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using static AutoDuty.Data.Enum;
 
@@ -97,14 +97,14 @@ namespace AutoDuty.Managers
 
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2), "Jump");
 
-            if(wait > 0)
+            if (wait > 0)
             {
                 _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(100)), "Jump");
-                _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"),                           Convert.ToInt32(100), "AutoMove");
+                _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(100), "AutoMove");
                 _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "Jump");
             }
         }
-        
+
         public void ChatCommand(string commandAndArgs)
         {
             if (!Player.Available)
@@ -189,7 +189,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
-        public void TreasureCoffer(string _) 
+        public void TreasureCoffer(string _)
         {
             return;
         }
@@ -251,21 +251,35 @@ namespace AutoDuty.Managers
             AutoDuty.Plugin.Action = $"Interactable: {objectName}";
 
             Match match = RegexHelper.InteractionObjectIdRegex().Match(objectName);
-            string id    = match.Success ? match.Captures.First().Value : string.Empty;
+            string id = match.Success ? match.Captures.First().Value : string.Empty;
 
-            _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null ) ?? ObjectHelper.GetObjectByName(objectName)) != null, "Interactable");
+            _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null) ?? ObjectHelper.GetObjectByName(objectName)) != null, "Interactable");
             _taskManager.Enqueue(() => gameObject?.IsTargetable ?? true, "Interactable");
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable");
             _taskManager.Enqueue(() => Player.Character->IsCasting, 500, "Interactable");
             _taskManager.Enqueue(() => !Player.Character->IsCasting, "Interactable");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+            _taskManager.Enqueue(() =>
+            {
+                if ((bool)!gameObject?.IsTargetable)
+                {
+                    AutoDuty.Plugin.Action = "";
+                }
+                else
+                {
+                    Interactable(objectName);
+                }
+            });
         }
 
         private bool BossCheck()
         {
             if (((AutoDuty.Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
                 return true;
-            
+
+
+            if (EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
+                AutoDuty.Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
+
             return false;
         }
         private bool BossMoveCheck(Vector3 bossV3)
@@ -306,7 +320,7 @@ namespace AutoDuty.Managers
 
         public void PausePandora(string featureName, string intMs)
         {
-            if(PandorasBox_IPCSubscriber.IsEnabled)
+            if (PandorasBox_IPCSubscriber.IsEnabled)
                 _taskManager.Enqueue(() => PandorasBox_IPCSubscriber.PauseFeature(featureName, int.Parse(intMs)));
         }
 
@@ -314,7 +328,7 @@ namespace AutoDuty.Managers
         {
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
-        
+
         public void CameraFacing(string coords)
         {
             if (coords != null)
@@ -327,7 +341,7 @@ namespace AutoDuty.Managers
                 }
             }
         }
-        
+
         public enum OID : uint
         {
             Blue = 0x1E8554,
@@ -390,7 +404,7 @@ namespace AutoDuty.Managers
                         case "6":
                             _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByDataId(16140)) != null, "DutySpecificCode");
                             _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
-                            _taskManager.DelayNext("DutySpecificCode", 1000);                          
+                            _taskManager.DelayNext("DutySpecificCode", 1000);
                             if (ObjectHelper.IsValid)
                             {
                                 _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
@@ -404,15 +418,15 @@ namespace AutoDuty.Managers
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
                             _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk ignore1"), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(100)));
-                            _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(100), "DutySpecificCode"); 
-                            
+                            _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(100), "DutySpecificCode");
+
                             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
                             _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk ignore2"), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(100)));
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(100), "DutySpecificCode");
-                
+
                             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
@@ -424,7 +438,7 @@ namespace AutoDuty.Managers
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
                             _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk attack1"), "DutySpecificCode");
                             break;
-                
+
                         default: break;
                     }
                     break;

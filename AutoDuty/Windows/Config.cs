@@ -23,7 +23,7 @@ namespace AutoDuty.Windows;
 public class Configuration : IPluginConfiguration
 {
     //Meta
-    public int Version { get => 123; set { } }
+    public int Version { get => 124; set { } }
     public HashSet<string> DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
 
@@ -376,7 +376,9 @@ public class Configuration : IPluginConfiguration
                 SchedulerHelper.ScheduleAction("PositionalRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => ObjectHelper.IsReady);
         }
     }
-    public Positional PositionalEnum = Positional.Any;
+
+    internal bool       positionalAvarice = true;
+    public   Positional PositionalEnum    = Positional.Any;
 
     public void Save()
     {
