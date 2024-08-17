@@ -30,7 +30,7 @@ public class MainWindow : Window, IDisposable
     private static string openTabName = "";
 
     public MainWindow() : base(
-        "AutoDuty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize)
+        "AutoDuty" + " v0.0.0." + Plugin.Configuration.Version, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize)
     {
         SizeConstraints = new WindowSizeConstraints
         {
@@ -353,18 +353,12 @@ public class MainWindow : Window, IDisposable
     }
 
     private static List<(string, Action, Vector4?, bool)> tabList =
-        [("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)
+        [("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Info", InfoTab.Draw, null, false), ("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)
         ];
 
     public override void Draw()
     {
         DrawPopup();
-
-        if (!Plugin.Configuration.HideBossModAIConfig && !tabList.Contains(("BM-Config", BossModConfigTab.Draw, null, false)))
-            tabList.Insert(4, ("BM-Config", BossModConfigTab.Draw, null, false));
-        else if (Plugin.Configuration.HideBossModAIConfig && tabList.Contains(("BM-Config", BossModConfigTab.Draw, null, false)))
-            tabList.Remove(("BM-Config", BossModConfigTab.Draw, null, false));
-
         EzTabBar("MainTab", null, openTabName, ImGuiTabBarFlags.None, tabList.ToArray());
     }
 }
