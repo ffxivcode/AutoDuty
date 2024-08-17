@@ -14,6 +14,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("ExitDuty Started");
                 ExitDutyRunning = true;
+                SchedulerHelper.ScheduleAction("ExitDutyTimeOut", Stop, 60000);
                 AutoDuty.Plugin.Action = "Exiting Duty";
                 _currentTerritoryType = Svc.ClientState.TerritoryType;
                 Svc.Framework.Update += ExitDutyUpdate;
@@ -26,6 +27,7 @@ namespace AutoDuty.Helpers
         internal unsafe static void Stop()
         {
             AutoDuty.Plugin.Action = "";
+            SchedulerHelper.DescheduleAction("ExitDutyTimeOut");
             _stop = true;
 
             if (GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
@@ -60,8 +62,11 @@ namespace AutoDuty.Helpers
             if (!ObjectHelper.IsReady || Player.Object.InCombat())
                 return;
 
-            if (Svc.ClientState.TerritoryType != _currentTerritoryType)
+            if (Svc.ClientState.TerritoryType != _currentTerritoryType || !AutoDuty.Plugin.InDungeon)
+            {
                 Stop();
+                return;
+            }
 
             Exit();
         }
