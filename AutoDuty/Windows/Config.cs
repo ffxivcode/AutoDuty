@@ -1053,6 +1053,13 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Set Positional Based on Actions (Requires Avarice)", ref Configuration.positionalAvarice))
                     Configuration.Save();
+
+                if (Configuration.positionalAvarice)
+                {
+                    ImGui.Indent();
+                    ImGui.Text("* Please check that you have Anticipation enabled in Avarice");
+                    ImGui.Unindent();
+                }
             }
             if (!ReflectionHelper.Avarice_Reflection.avariceReady)
             {

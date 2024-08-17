@@ -125,7 +125,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private const string CommandName = "/autoduty";
     private DirectoryInfo _configDirectory;
     private ActionsManager _actions;
-    private Chat _chat;
+    internal Chat Chat;
     private DutySupportManager _dutySupportManager;
     private SquadronManager _squadronManager;
     private VariantManager _variantManager;
@@ -170,13 +170,13 @@ public sealed class AutoDuty : IDalamudPlugin
             ContentHelper.PopulateDuties();
             FileHelper.OnStart();
             FileHelper.Init();
-            _chat = new();
+            this.Chat = new();
             _overrideAFK = new();
             _dutySupportManager = new(TaskManager);
             TrustManager = new(TaskManager);
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
-            _actions = new(this, _chat, TaskManager);
+            _actions = new(this, this.Chat, TaskManager);
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
@@ -540,7 +540,7 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 //hell if I know
             }
-            _chat.ExecuteCommand($"/xlkill");
+            this.Chat.ExecuteCommand($"/xlkill");
         }
         else if (Configuration.TerminationMethodEnum == TerminationMode.Kill_Client)
         {
@@ -550,7 +550,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 Configuration.Save();
             }
 
-            _chat.ExecuteCommand($"/xlkill");
+            this.Chat.ExecuteCommand($"/xlkill");
         }
         else if (Configuration.TerminationMethodEnum == TerminationMode.Logout)
         {
@@ -562,7 +562,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
             TaskManager.Enqueue(() => ObjectHelper.IsReady);
             TaskManager.DelayNext(2000);
-            TaskManager.Enqueue(() => _chat.ExecuteCommand($"/logout"));
+            TaskManager.Enqueue(() => this.Chat.ExecuteCommand($"/logout"));
             TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
             TaskManager.Enqueue(() => Running = false);
             TaskManager.Enqueue(() => CurrentLoop = 0);
@@ -570,7 +570,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
         else if (Configuration.TerminationMethodEnum == TerminationMode.Start_AR_Multi_Mode)
         {
-            TaskManager.Enqueue(() => _chat.ExecuteCommand($"/ays multi"));
+            TaskManager.Enqueue(() => this.Chat.ExecuteCommand($"/ays multi"));
             TaskManager.Enqueue(() => Running = false);
             TaskManager.Enqueue(() => CurrentLoop = 0);
             TaskManager.Enqueue(() => Stage = Stage.Stopped);
@@ -696,9 +696,9 @@ public sealed class AutoDuty : IDalamudPlugin
         Stage = Stage.Reading_Path;
         Started = true;
         StopForCombat = true;
-        _chat.ExecuteCommand($"/vnav aligncamera enable");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
-        _chat.ExecuteCommand($"/vbmai on");
+        this.Chat.ExecuteCommand($"/vnav aligncamera enable");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        this.Chat.ExecuteCommand($"/vbmai on");
         if (Configuration.AutoManageBossModAISettings)
             SetBMSettings();
         if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
@@ -731,8 +731,8 @@ public sealed class AutoDuty : IDalamudPlugin
             ExitDuty();
             if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
                 ReflectionHelper.RotationSolver_Reflection.RotationStop();
-            _chat.ExecuteCommand($"/vbmai off");
-            _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+            this.Chat.ExecuteCommand($"/vbmai off");
+            this.Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         }
         else
             Stage = Stage.Stopped;
@@ -744,23 +744,23 @@ public sealed class AutoDuty : IDalamudPlugin
         var bmr = IPCSubscriber_Common.IsReady("BossModReborn");
         var rsr = ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled;
 
-        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions {/*(rsr ? "true" : */"false"/*)*/}");//forbidActions currently disables followTarget in vbm.
-        _chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlot}");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions {/*(rsr ? "true" : */"false"/*)*/}");//forbidActions currently disables followTarget in vbm.
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTarget}");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlot}");
 
-        _chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player.Name : ((Configuration.FollowRole && !FollowName.IsNullOrEmpty()) ? FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player.Name)))}");
+        this.Chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player.Name : ((Configuration.FollowRole && !FollowName.IsNullOrEmpty()) ? FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player.Name)))}");
 
         if (!bmr)
         {
-            _chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
-            _chat.ExecuteCommand($"/vbm cfg AIConfig OverrideRange true");
+            this.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
+            this.Chat.ExecuteCommand($"/vbm cfg AIConfig OverrideRange true");
         }
-        _chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
     }
 
     internal void BMRoleChecks()
@@ -1148,20 +1148,8 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 Action = $"Waiting For Combat";
 
-                if (ReflectionHelper.Avarice_Reflection.avariceReady && EzThrottler.Throttle("PositionalChecker", 25) && 
-                    this.Configuration is { AutoManageBossModAISettings: true, positionalAvarice: true })
-                {
-                    Positional positional = Positional.Any;
-                    if (ReflectionHelper.Avarice_Reflection.IsRear())
-                        positional = Positional.Rear;
-                    else if (ReflectionHelper.Avarice_Reflection.IsFlank())
-                        positional = Positional.Flank;
-
-                    if(this.Configuration.PositionalEnum != positional)
-                        this._chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
-
-                    this.Configuration.PositionalEnum = positional;
-                }
+                if(EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
+                    this.Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
 
 
                 if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
@@ -1255,8 +1243,8 @@ public sealed class AutoDuty : IDalamudPlugin
         MainListClicked = false;
         Started = false;
         CurrentLoop = 0;
-        _chat.ExecuteCommand($"/vbmai off");
-        _chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+        this.Chat.ExecuteCommand($"/vbmai off");
+        this.Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped)

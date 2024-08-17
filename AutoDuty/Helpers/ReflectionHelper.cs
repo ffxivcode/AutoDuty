@@ -3,13 +3,13 @@ using ECommons.Reflection;
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Reflection.Metadata.Ecma335;
+
 #nullable disable
 
 namespace AutoDuty.Helpers
 {
-    using System.Collections.Generic;
-    using ECommons.DalamudServices;
+    using ECommons.EzSharedDataManager;
+    using static global::AutoDuty.Data.Enum;
 
     internal class ReflectionHelper
     {
@@ -73,13 +73,6 @@ namespace AutoDuty.Helpers
 
         internal static class Avarice_Reflection
         {
-            /*
-            || Util.IsReaperAnticipatedRear()
-               || Util.IsSamuraiAnticipatedRear()
-               || Util.IsDragoonAnticipatedRear()
-               || Util.IsViperAnticipatedRear()
-
-            */
             private static readonly StaticBoolMethod isReaperRear;
             private static readonly StaticBoolMethod isSamuraiRear;
             private static readonly StaticBoolMethod isDragoonRear;
@@ -106,10 +99,40 @@ namespace AutoDuty.Helpers
 
             //internal static readonly FieldRef<SortedList<uint, byte>> Positionals;
 
+            public static bool PositionalChanged(out Positional positional)
+            {
+                if (avariceReady && AutoDuty.Plugin.Configuration is { AutoManageBossModAISettings: true, positionalAvarice: true })
+                {
+                    positional = Positional.Any;
+
+                    if (EzSharedData.TryGet<uint[]>("Avarice.PositionalStatus", out uint[] ret))
+                    {
+                        if (ret[1] == 1)
+                            positional = Positional.Rear;
+                        if (ret[1] == 2)
+                            positional = Positional.Flank;
+                    }
+
+                    if (AutoDuty.Plugin.Configuration.PositionalEnum != positional)
+                    {
+                        AutoDuty.Plugin.Configuration.PositionalEnum = positional;
+                        return true;
+                    }
+                }
+                positional = AutoDuty.Plugin.Configuration.PositionalEnum;
+                return false;
+            }
+
+
             static Avarice_Reflection()
             {
+                
                 if (DalamudReflector.TryGetDalamudPlugin("Avarice", out var pl, false, true))
                 {
+                    avariceReady = true;
+                    return;
+
+
                     Assembly assembly = Assembly.GetAssembly(pl.GetType());
                     /* not used anymore, but might as well keep it here as an example
                     Positionals = StaticFieldRefAccess<SortedList<uint, byte>>(assembly.GetType("Avarice.StaticData.Data").GetField("ActionPositional", BindingFlags.Static | BindingFlags.Public));
