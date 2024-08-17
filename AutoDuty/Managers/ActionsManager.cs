@@ -307,6 +307,7 @@ namespace AutoDuty.Managers
             {
                 _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null, 1000, "Boss-FindTreasure");
                 _taskManager.Enqueue(() => MovementHelper.Move(treasureCofferObject, 0.25f, 1f), int.MaxValue, "Boss-MoveTreasure");
+                _taskManager.DelayNext("Boss-WaitASecToLootChest", 1000);
             }
             _taskManager.DelayNext("Boss-Delay500", 500);
             _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss-ClearActionVar");
