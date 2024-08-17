@@ -16,7 +16,6 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using static AutoDuty.AutoDuty;
 using static AutoDuty.Data.Enum;
-using static AutoDuty.Windows.ConfigTab;
 
 namespace AutoDuty.Windows;
 
