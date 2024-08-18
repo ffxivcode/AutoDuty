@@ -10,6 +10,7 @@ using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Data.Parsing.Scene;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -262,7 +263,16 @@ namespace AutoDuty.Managers
             {
                 if ((bool)!gameObject?.IsTargetable ||
                 Svc.Condition[ConditionFlag.BetweenAreas] || 
-                Svc.Condition[ConditionFlag.BetweenAreas51] || 
+                Svc.Condition[ConditionFlag.BetweenAreas51] ||
+                Svc.Condition[ConditionFlag.BeingMoved] ||
+                Svc.Condition[ConditionFlag.Jumping61] ||
+                Svc.Condition[ConditionFlag.CarryingItem] ||
+                Svc.Condition[ConditionFlag.CarryingObject] ||
+                Svc.Condition[ConditionFlag.Occupied] ||
+                Svc.Condition[ConditionFlag.Occupied30] ||
+                Svc.Condition[ConditionFlag.Occupied33] ||
+                Svc.Condition[ConditionFlag.Occupied38] ||
+                Svc.Condition[ConditionFlag.Occupied39] ||
                 gameObject!?.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)
                 {
                     AutoDuty.Plugin.Action = "";
