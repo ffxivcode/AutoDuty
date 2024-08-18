@@ -9,6 +9,7 @@ using ECommons.Throttlers;
 using AutoDuty.IPC;
 using ECommons;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
 {
@@ -131,7 +132,7 @@ namespace AutoDuty.Helpers
             if (VNavmesh_IPCSubscriber.Path_IsRunning())
                 return;
 
-            if (GenericHelpers.TryGetAddonByName("AreaMap", out AddonAreaMap* addonAreaMap) && GenericHelpers.IsAddonReady(&addonAreaMap->AtkUnitBase))
+            if (GenericHelpers.TryGetAddonByName("AreaMap", out AtkUnitBase* addonAreaMap) && GenericHelpers.IsAddonReady(addonAreaMap))
                 addonAreaMap->Close(true);
 
             if (flagMapMarker !=null && Svc.ClientState.TerritoryType == flagMapMarker.Value.TerritoryId && ObjectHelper.GetDistanceToPlayer(flagMapMarkerVector3!.Value) < 2)
