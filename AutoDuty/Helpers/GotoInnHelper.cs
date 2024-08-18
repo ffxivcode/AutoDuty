@@ -22,6 +22,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany}");
                 GotoInnRunning = true;
+                AutoDuty.Plugin.Stage = Stage.Other;
                 SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -59,6 +60,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     GotoInnRunning = false;
+                    AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
                     Svc.Framework.Update -= GotoInnUpdate;
                 }
                 else if (Svc.Targets.Target != null)

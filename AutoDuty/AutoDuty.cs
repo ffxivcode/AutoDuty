@@ -1,3 +1,4 @@
+global using static AutoDuty.Data.Enum;
 using System;
 using System.Numerics;
 using Dalamud.Game.Command;
@@ -29,11 +30,10 @@ using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using static AutoDuty.Windows.ConfigTab;
 using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
-using static AutoDuty.Data.Enum;
+using static AutoDuty.Windows.ConfigTab;
 
 namespace AutoDuty;
 
@@ -79,6 +79,7 @@ public sealed class AutoDuty : IDalamudPlugin
         get => _stage;
         set
         {
+            PreviousStage = _stage;
             _stage = value;
             Svc.Log.Debug($"Stage={EnumString(_stage)}");
             switch (value)
@@ -103,6 +104,7 @@ public sealed class AutoDuty : IDalamudPlugin
             }
         }
     }
+    internal Stage PreviousStage = Stage.Stopped;
     internal int Indexer = -1;
     internal bool MainListClicked = false;
     internal bool Started = false;
@@ -192,29 +194,32 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Configuration.ShowMainWindowOnStartup)
                 this.OpenMainUI();
 
+            Svc.Commands.AddHandler("/ad", new CommandInfo(OnCommand) { });
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
-                HelpMessage = "\n/autoduty -> opens main window\n" +
-                "/autoduty config or cfg -> opens config window / modifies config\n" +
-                "/autoduty start -> starts autoduty when in a Duty\n" +
-                "/autoduty stop -> stops everything\n" +
-                "/autoduty pause -> pause route\n" +
-                "/autoduty resume -> resume route\n" +
-                "/autoduty turnin -> GC Turnin\n" +
-                "/autoduty desynth -> Desynth's your inventory\n" +
-                "/autoduty repair -> Repairs your gear\n" +
-                "/autoduty equiprec-> Equips recommended gear\n" +
-                "/autoduty extract -> Extract's materia from equipment\n" +
-                "/autoduty turnin -> GC Turnin\n" +
-                "/autoduty goto -> goes to\n" +
-                "/autoduty dataid -> Logs and copies your target's dataid to clipboard\n" +
-                "/autoduty exitduty -> exits duty\n" +
-                "/autoduty queue -> queues duty\n" +
-                "/autoduty moveto -> move's to territorytype and location sent\n" +
-                "/autoduty overlay -> opens overlay\n" +
-                "/autoduty overlay lock-> toggles locking the overlay\n" +
-                "/autoduty overlay nobg-> toggles the overlay's background\n" +
-                "/autoduty skipstep-> skips to the next step in the path\n"
+                HelpMessage = "\n/autoduty or /ad -> opens main window\n" +
+                "/autoduty or /ad config or cfg -> opens config window / modifies config\n" +
+                "/autoduty or /ad start -> starts autoduty when in a Duty\n" +
+                "/autoduty or /ad stop -> stops everything\n" +
+                "/autoduty or /ad pause -> pause route\n" +
+                "/autoduty or /ad resume -> resume route\n" +
+                "/autoduty or /ad turnin -> GC Turnin\n" +
+                "/autoduty or /ad desynth -> Desynth's your inventory\n" +
+                "/autoduty or /ad repair -> Repairs your gear\n" +
+                "/autoduty or /ad equiprec-> Equips recommended gear\n" +
+                "/autoduty or /ad extract -> Extract's materia from equipment\n" +
+                "/autoduty or /ad turnin -> GC Turnin\n" +
+                "/autoduty or /ad goto -> goes to\n" +
+                "/autoduty or /ad dataid -> Logs and copies your target's dataid to clipboard\n" +
+                "/autoduty or /ad exitduty -> exits duty\n" +
+                "/autoduty or /ad queue -> queues duty\n" +
+                "/autoduty or /ad moveto -> move's to territorytype and location sent\n" +
+                "/autoduty or /ad overlay -> opens overlay\n" +
+                "/autoduty or /ad overlay lock-> toggles locking the overlay\n" +
+                "/autoduty or /ad overlay nobg-> toggles the overlay's background\n" +
+                "/autoduty or /ad movetoflag -> moves to the flag map marker\n" +
+                "/autoduty or /ad run -> starts auto duty in territory type specified\n" +
+                "/autoduty or /ad tt -> logs and copies to clipboard the Territory Type number for duty specified\n"
             });
 
             PluginInterface.UiBuilder.Draw += DrawUI;
@@ -262,7 +267,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 break;
         }
     }
-    
+
     internal void ExitDuty() => _actions.ExitDuty("");
 
     internal void LoadPath()
@@ -973,7 +978,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && Started)
             DoneNavigating();
 
-        if (Stage != Stage.Action || Stage != Stage.Reading_Path || Stage != Stage.Moving || Stage != Stage.Looping)
+        if (Stage != Stage.Other && Stage != Stage.Action && Stage != Stage.Reading_Path && Stage != Stage.Moving && Stage != Stage.Looping)
             Action = EnumString(Stage);
 
         switch (Stage)
@@ -1450,9 +1455,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
                 Svc.Log.Info($"{tt?.RowId}");
                 ImGui.SetClipboardText($"{tt?.RowId}");
-                break;
-            case "test":
-                TeleportHelper.TeleportAetheryte(Convert.ToUInt32(argsArray[1]), 0);
                 break;
             default:
                 OpenMainUI(); 

@@ -7,7 +7,6 @@ using ECommons;
 using System.Linq;
 using System.Numerics;
 using ECommons.GameHelpers;
-using static AutoDuty.Data.Enum;
 
 namespace AutoDuty.Helpers
 {
@@ -19,6 +18,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto {whichHousing} Started");
                 GotoHousingRunning = true;
+                AutoDuty.Plugin.Stage = Stage.Other;
                 _whichHousing = whichHousing;
                 SchedulerHelper.ScheduleAction("GotoHousingTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoHousingUpdate;
@@ -87,6 +87,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     GotoHousingRunning = false;
+                    AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
                     Svc.Framework.Update -= GotoHousingUpdate;
                 }
                 return;

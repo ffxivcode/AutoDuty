@@ -21,6 +21,7 @@ namespace AutoDuty.Helpers
                 _content = content;
                 Svc.Log.Info($"Queueing: {content.Name}");
                 QueueRunning = true;
+                AutoDuty.Plugin.Stage = Stage.Other;
                 Svc.Framework.Update += QueueUpdate;
             }
         }
@@ -32,6 +33,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Done Queueing: {_content?.Name}");
             _content = null;
             QueueRunning = false;
+            AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
             _allConditionsMetToJoin = false;
         }
 
