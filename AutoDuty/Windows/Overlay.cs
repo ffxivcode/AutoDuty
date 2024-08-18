@@ -112,9 +112,9 @@ public unsafe class Overlay : Window
                 ImGui.SameLine(0, 5);
 
                 if (Plugin.Running || Plugin.Started)
-                    loopsText = $"{(Plugin.CurrentTerritoryContent?.DisplayName!.Length > 20 ? Plugin.CurrentTerritoryContent?.DisplayName![..17] + "..." : Plugin.CurrentTerritoryContent?.DisplayName)}{(Plugin.Running ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
+                    loopsText = $"{(Plugin.CurrentTerritoryContent?.Name!.Length > 20 ? Plugin.CurrentTerritoryContent?.Name![..17] + "..." : Plugin.CurrentTerritoryContent?.Name)}{(Plugin.Running ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
                 else
-                    loopsText = $"{(Plugin.CurrentTerritoryContent?.DisplayName!.Length > 40 ? Plugin.CurrentTerritoryContent?.DisplayName![..37] + "..." : Plugin.CurrentTerritoryContent?.DisplayName)}{(Plugin.Running ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
+                    loopsText = $"{(Plugin.CurrentTerritoryContent?.Name!.Length > 40 ? Plugin.CurrentTerritoryContent?.Name![..37] + "..." : Plugin.CurrentTerritoryContent?.Name)}{(Plugin.Running ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
 
                 ImGui.TextColored(new Vector4(93 / 255f, 226 / 255f, 231 / 255f, 1), loopsText);
             }

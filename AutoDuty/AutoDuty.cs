@@ -286,7 +286,7 @@ public sealed class AutoDuty : IDalamudPlugin
             ListBoxPOSText.Clear();
             if (!ContentPathsManager.DictionaryPaths.TryGetValue(Svc.ClientState.TerritoryType, out ContentPathsManager.ContentPathContainer? container))
             {
-                PathFile = $"{PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
+                PathFile = $"{PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.EnglishName?.Replace(":", "")}.json";
                 return;
             }
             Svc.Log.Info($"{CurrentPath} {Player.Available}");
@@ -471,7 +471,7 @@ public sealed class AutoDuty : IDalamudPlugin
             ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.Trust);
             if (duty != null)
             {
-                Svc.Log.Info("Next Leveling Duty: " + duty.DisplayName);
+                Svc.Log.Info("Next Leveling Duty: " + duty.Name);
                 CurrentTerritoryContent = duty;
                 ContentPathsManager.DictionaryPaths[duty.TerritoryType].SelectPath(out CurrentPath);
             }
@@ -507,7 +507,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
 
         TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
-        TaskManager.Enqueue(() => { Action = $"Looping: {CurrentTerritoryContent.DisplayName} {CurrentLoop} of {Configuration.LoopTimes}"; }, "Loop-SetAction");
+        TaskManager.Enqueue(() => { Action = $"Looping: {CurrentTerritoryContent.Name} {CurrentLoop} of {Configuration.LoopTimes}"; }, "Loop-SetAction");
         TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
         TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Loop-WaitPlayerValid");
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Loop-WaitDutyStarted");
@@ -612,7 +612,7 @@ public sealed class AutoDuty : IDalamudPlugin
         Stage = Stage.Looping;
         Running = true;
         TaskManager.Abort();
-        Svc.Log.Info($"Running {CurrentTerritoryContent.DisplayName} {Configuration.LoopTimes} Times");
+        Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
             if (Configuration.AutoBoiledEgg /*&& !PlayerHelper.HasStatus(48)*/)
@@ -676,7 +676,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content))
         {
             CurrentTerritoryContent = content;
-            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.Name?.Replace(":", "")}.json";
+            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.EnglishName?.Replace(":", "")}.json";
             LoadPath();
         }
         else

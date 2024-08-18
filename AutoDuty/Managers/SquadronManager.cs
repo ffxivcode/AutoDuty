@@ -21,8 +21,8 @@ namespace AutoDuty.Managers
                 _taskManager.Enqueue(() => Svc.Log.Info("GCArmyIndex was < than 0"), "RegisterSquadron");
                 return;
             }
-            _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Squadron: {content.DisplayName}"), "RegisterSquadron");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Squadron: {content.DisplayName}", "RegisterSquadron");
+            _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Squadron: {content.Name}"), "RegisterSquadron");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Squadron: {content.Name}", "RegisterSquadron");
 
             AtkUnitBase* addon = null;
 

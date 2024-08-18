@@ -63,7 +63,7 @@ namespace AutoDuty.Windows
             if (MainWindow.CurrentTabName != "Build")
                 MainWindow.CurrentTabName = "Build";
             using var d = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage > 0 || !Player.Available);
-            ImGui.Text($"Build Path: ({Svc.ClientState.TerritoryType}) {(ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content) ? content.DisplayName : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))}");
+            ImGui.Text($"Build Path: ({Svc.ClientState.TerritoryType}) {(ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content) ? content.Name : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))}");
 
             string idText = $"({Svc.ClientState.TerritoryType}) ";
             ImGui.Text(idText);
@@ -223,7 +223,7 @@ namespace AutoDuty.Windows
                 ImGui.Separator();
                 ImGui.Spacing();
             }
-            if (!ImGui.BeginListBox("##BuildList", new Vector2(355 * ImGuiHelpers.GlobalScale, 575 * ImGuiHelpers.GlobalScale))) return;
+            if (!ImGui.BeginListBox("##BuildList", new Vector2(ImGui.GetContentRegionAvail().X, 575 * ImGuiHelpers.GlobalScale))) return;
             try
             {
                 if (Plugin.InDungeon)

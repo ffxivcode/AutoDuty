@@ -92,7 +92,7 @@ namespace AutoDuty.Windows
                         multiple = true;
                         ImGui.NewLine();
                         ImGui.SameLine(1);
-                        ImGuiHelper.ColoredText(container.ColoredNameRegex, $"({key}) {container.Content.DisplayName}");
+                        ImGuiHelper.ColoredText(container.ColoredNameRegex, $"({key}) {container.Content.Name}");
                         ImGui.BeginGroup();
                         ImGui.Indent(20);
                     }
@@ -128,7 +128,7 @@ namespace AutoDuty.Windows
 
                         if (!multiple)
                         {
-                            ImGuiHelper.ColoredText(container.ColoredNameRegex, container.Content.DisplayName!);
+                            ImGuiHelper.ColoredText(container.ColoredNameRegex, container.Content.Name!);
                             ImGui.SameLine(0, 0);
                             ImGui.Text(" => ");
                             ImGui.SameLine(0, 0);

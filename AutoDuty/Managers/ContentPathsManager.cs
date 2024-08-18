@@ -26,7 +26,7 @@ namespace AutoDuty.Managers
                 this.Content = content;
                 this.id      = content.TerritoryType;
 
-                this.ColoredNameString = $"({ImGuiHelper.idColor}{this.id}</>) {ImGuiHelper.dutyColor}{this.Content!.DisplayName}</>";
+                this.ColoredNameString = $"({ImGuiHelper.idColor}{this.id}</>) {ImGuiHelper.dutyColor}{this.Content!.Name}</>";
                 this.ColoredNameRegex  = RegexHelper.ColoredTextRegex().Match(this.ColoredNameString);
             }
 
