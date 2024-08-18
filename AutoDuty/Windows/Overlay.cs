@@ -70,13 +70,19 @@ public unsafe class Overlay : Window
             ImGui.PushItemWidth(75 * ImGuiHelpers.GlobalScale);
             if (Plugin.Configuration.UseSliderInputs)
             {
-                if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
-                    Plugin.Configuration.Save();
+                if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 1, 100))
+                {
+                    if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
+                Plugin.Configuration.Save();
+                }
             }
             else
             {
                 if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
-                    Plugin.Configuration.Save();
+                {
+                    if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
+                Plugin.Configuration.Save();
+                }
             }
             ImGui.PopItemWidth();
             ImGui.SameLine(0, 5);
