@@ -543,7 +543,10 @@ public static class ConfigTab
                             ImGui.SameLine(0, 5);
                             ImGui.PushItemWidth(70);
                             if (ImGui.SliderInt("##FollowSlot", ref Configuration.FollowSlotInt, 1, 4))
+                            {
+                                Configuration.FollowSlotInt = Math.Clamp(Configuration.FollowSlotInt, 1, 4);
                                 Configuration.Save();
+                            }
                             ImGui.PopItemWidth();
                         }
                         if (ImGui.Checkbox("Follow Role", ref Configuration.followRole))
@@ -581,14 +584,23 @@ public static class ConfigTab
                         {
                             ImGui.PushItemWidth(195);
                             if (ImGui.SliderInt("Max Distance To Target", ref Configuration.MaxDistanceToTarget, 1, 30))
+                            {
+                                Configuration.MaxDistanceToTarget = Math.Clamp(Configuration.MaxDistanceToTarget, 1, 30);
                                 Configuration.Save();
+                            }
                             if (ImGui.SliderInt("Max Distance To Target AoE", ref Configuration.MaxDistanceToTargetAoE, 1, 10))
+                            {
+                                Configuration.MaxDistanceToTargetAoE = Math.Clamp(Configuration.MaxDistanceToTargetAoE, 1, 10);
                                 Configuration.Save();
+                            }
                             ImGui.PopItemWidth();
                         }
                         ImGui.PushItemWidth(195);
                         if (ImGui.SliderInt("Max Distance To Slot", ref Configuration.MaxDistanceToSlot, 1, 30))
-                            Configuration.Save();
+                            {
+                                Configuration.MaxDistanceToSlot = Math.Clamp(Configuration.MaxDistanceToSlot, 1, 30);
+                                Configuration.Save();
+                            }
                         ImGui.PopItemWidth();
                         if (ImGui.Checkbox("Set Positional Based on Player Role", ref Configuration.positionalRoleBased))
                         {
@@ -674,6 +686,7 @@ public static class ConfigTab
                 if (ImGui.SliderInt("Scan Distance", ref treasureCofferScanDistance, 1, 100))
                 {
                     Configuration.TreasureCofferScanDistance = treasureCofferScanDistance;
+                    Configuration.TreasureCofferScanDistance = Math.Clamp(Configuration.TreasureCofferScanDistance, 1, 100);
                     Configuration.Save();
                 }
             }*/
@@ -772,8 +785,11 @@ public static class ConfigTab
                 ImGui.Text("Trigger @");
                 ImGui.SameLine();
                 ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                if (ImGui.SliderInt("##Repair@", ref Configuration.AutoRepairPct, 1, 99, "%d%%"))
+                if (ImGui.SliderInt("##Repair@", ref Configuration.AutoRepairPct, 0, 99, "%d%%"))
+                {
+                    Configuration.AutoRepairPct = Math.Clamp(Configuration.AutoRepairPct, 0, 99);
                     Configuration.Save();
+                }
                 ImGui.PopItemWidth();
                 ImGui.Unindent();
             }
@@ -843,15 +859,21 @@ public static class ConfigTab
                         ImGui.PushItemWidth(125 * ImGuiHelpers.GlobalScale);
                         if (Configuration.UseSliderInputs)
                         {
-                            if (ImGui.SliderInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft, 1, 140))
+                            if (ImGui.SliderInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft, 0, 140))
+                            {
+                                Configuration.AutoGCTurninSlotsLeft = Math.Clamp(Configuration.AutoGCTurninSlotsLeft, 0, 140);
                                 Configuration.Save();
+                            }
                         }
                         else
                         {
                             Configuration.AutoGCTurninSlotsLeft = Math.Clamp(Configuration.AutoGCTurninSlotsLeft, 0, 140);
 
                             if (ImGui.InputInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft))
+                            {
+                                Configuration.AutoGCTurninSlotsLeft = Math.Clamp(Configuration.AutoGCTurninSlotsLeft, 0, 140);
                                 Configuration.Save();
+                            }
                         }
                         ImGui.PopItemWidth();
                     }
@@ -961,28 +983,30 @@ public static class ConfigTab
                 if (Configuration.UseSliderInputs)
                 {
                     if (ImGui.SliderInt("##Level", ref Configuration.StopLevelInt, 1, 100))
+                    {
+                        Configuration.StopLevelInt = Math.Clamp(Configuration.StopLevelInt, 1, 100);
                         Configuration.Save();
+                    }
                 }
                 else
                 {
                     if (ImGui.InputInt("##Level", ref Configuration.StopLevelInt))
                     {
-                        if (Configuration.StopLevelInt < 1) Configuration.StopLevelInt = 1;
-                        else if (Configuration.StopLevelInt > 100) Configuration.StopLevelInt = 100;
+                        Configuration.StopLevelInt = Math.Clamp(Configuration.StopLevelInt, 1, 100);
                         Configuration.Save();
                     }
                 }
                 ImGui.PopItemWidth();
             }
-            ImGuiComponents.HelpMarker("Note that Loop Number takes precedence over this option!");
+            ImGuiComponents.HelpMarker("Looping will stop when these conditions are reached, so long as an adequate number of loops have been allocated.");
             if (ImGui.Checkbox("Stop When No Rested XP", ref Configuration.StopNoRestedXP))
                 Configuration.Save();
 
-            ImGuiComponents.HelpMarker("Note that Loop Number takes precedence over this option!");
+            ImGuiComponents.HelpMarker("Looping will stop when these conditions are reached, so long as an adequate number of loops have been allocated.");
             if (ImGui.Checkbox("Stop Looping When Reach Item Qty", ref Configuration.StopItemQty))
                 Configuration.Save();
 
-            ImGuiComponents.HelpMarker("Note that Loop Number takes precedence over this option!");
+            ImGuiComponents.HelpMarker("Looping will stop when these conditions are reached, so long as an adequate number of loops have been allocated.");
             using (var stopItemQtyDisabled = ImRaii.Disabled(!Configuration.StopItemQty))
             {
                 ImGui.PushItemWidth(250 * ImGuiHelpers.GlobalScale);
