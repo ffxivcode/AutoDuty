@@ -257,9 +257,13 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable");
             _taskManager.Enqueue(() => Player.Character->IsCasting, 500, "Interactable");
             _taskManager.Enqueue(() => !Player.Character->IsCasting, "Interactable");
+            _taskManager.DelayNext(100);
             _taskManager.Enqueue(() =>
             {
-                if ((bool)!gameObject?.IsTargetable)
+                if ((bool)!gameObject?.IsTargetable ||
+                Svc.Condition[ConditionFlag.BetweenAreas] || 
+                Svc.Condition[ConditionFlag.BetweenAreas51] || 
+                gameObject!?.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)
                 {
                     AutoDuty.Plugin.Action = "";
                 }
