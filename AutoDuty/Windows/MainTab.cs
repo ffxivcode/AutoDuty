@@ -280,83 +280,66 @@ namespace AutoDuty.Windows
                         }
                     }
 
-                    ImGuiEx.SameLineWrapped(() =>
+                    if (ImGuiEx.CheckboxWrapped("Trust", ref Plugin.Configuration.trust))
                     {
-                        if (ImGui.Checkbox("Trust", ref Plugin.Configuration.trust))
+                        if (Plugin.Configuration.trust)
                         {
-                            if (Plugin.Configuration.trust)
-                            {
-                                Plugin.Configuration.Trust = Plugin.Configuration.trust;
-                                _dutySelected = null;
-                                Plugin.Configuration.Save();
-                            }
+                            Plugin.Configuration.Trust = Plugin.Configuration.trust;
+                            _dutySelected = null;
+                            Plugin.Configuration.Save();
                         }
-                    });
+                    }
 
-                    ImGuiEx.SameLineWrapped(() => 
-                    { 
-                        if (ImGui.Checkbox("Squadron", ref Plugin.Configuration.squadron))
-                        {
-                            if (Plugin.Configuration.squadron)
-                            {
-                                Plugin.Configuration.Squadron = Plugin.Configuration.squadron;
-                                _dutySelected = null;
-                                Plugin.Configuration.Save();
-                            }
-                        }
-                    });
-
-                    ImGuiEx.SameLineWrapped(() => 
-                    { 
-                        if (ImGui.Checkbox("Regular", ref Plugin.Configuration.regular))
-                        {
-                            if (Plugin.Configuration.regular)
-                            {
-                                Plugin.Configuration.Regular = Plugin.Configuration.regular;
-                                _dutySelected = null;
-                                Plugin.Configuration.Save();
-                            }
-                        }
-                    });
-
-                    ImGuiEx.SameLineWrapped(() =>
+                    if (ImGuiEx.CheckboxWrapped("Squadron", ref Plugin.Configuration.squadron))
                     {
-                        if (ImGui.Checkbox("Trial", ref Plugin.Configuration.trial))
+                        if (Plugin.Configuration.squadron)
                         {
-                            if (Plugin.Configuration.trial)
-                            {
-                                Plugin.Configuration.Trial = Plugin.Configuration.trial;
-                                _dutySelected = null;
-                                Plugin.Configuration.Save();
-                            }
+                            Plugin.Configuration.Squadron = Plugin.Configuration.squadron;
+                            _dutySelected = null;
+                            Plugin.Configuration.Save();
                         }
-                    });
+                    }
 
-                    ImGuiEx.SameLineWrapped(() =>
+                    if (ImGuiEx.CheckboxWrapped("Regular", ref Plugin.Configuration.regular))
                     {
-                        if (ImGui.Checkbox("Raid", ref Plugin.Configuration.raid))
+                        if (Plugin.Configuration.regular)
                         {
-                            if (Plugin.Configuration.raid)
-                            {
-                                Plugin.Configuration.Raid = Plugin.Configuration.raid;
-                                _dutySelected = null;
-                                Plugin.Configuration.Save();
-                            }
+                            Plugin.Configuration.Regular = Plugin.Configuration.regular;
+                            _dutySelected = null;
+                            Plugin.Configuration.Save();
                         }
-                    });
+                    }
 
-                    ImGuiEx.SameLineWrapped(() =>
+                    if (ImGuiEx.CheckboxWrapped("Trial", ref Plugin.Configuration.trial))
                     {
-                        if (ImGui.Checkbox("Variant", ref Plugin.Configuration.variant))
+                        if (Plugin.Configuration.trial)
                         {
-                            Plugin.Configuration.Variant = Plugin.Configuration.variant;
-                            if (Plugin.Configuration.variant)
-                            {
-                                _dutySelected = null;
-                                Plugin.Configuration.Save();
-                            }
+                            Plugin.Configuration.Trial = Plugin.Configuration.trial;
+                            _dutySelected = null;
+                            Plugin.Configuration.Save();
                         }
-                    });
+                    }
+
+                    if (ImGuiEx.CheckboxWrapped("Raid", ref Plugin.Configuration.raid))
+                    {
+                        if (Plugin.Configuration.raid)
+                        {
+                            Plugin.Configuration.Raid = Plugin.Configuration.raid;
+                            _dutySelected = null;
+                            Plugin.Configuration.Save();
+                        }
+                    }
+
+                    if (ImGuiEx.CheckboxWrapped("Variant", ref Plugin.Configuration.variant))
+                    {
+                        Plugin.Configuration.Variant = Plugin.Configuration.variant;
+                        if (Plugin.Configuration.variant)
+                        {
+                            _dutySelected = null;
+                            Plugin.Configuration.Save();
+                        }
+                    }
+
 
                     if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid || Plugin.Configuration.Variant)
                     {
@@ -371,7 +354,8 @@ namespace AutoDuty.Windows
                             bool leveling = _support ? Plugin.SupportLeveling :
                                             _trust   ? Plugin.TrustLeveling : false;
                             bool equip = Plugin.Configuration.AutoEquipRecommendedGear;
-                            if (ImGui.Checkbox("Leveling", ref leveling))
+
+                            if (ImGuiEx.CheckboxWrapped("Leveling", ref leveling))
                             {
                                 if (leveling)
                                 {
@@ -381,14 +365,14 @@ namespace AutoDuty.Windows
                                     ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Plugin.Configuration.Trust);
                                     if (duty != null)
                                     {
-                                        _dutySelected                  = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
+                                        _dutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
                                         Plugin.CurrentTerritoryContent = duty;
 
                                         _dutySelected.SelectPath(out Plugin.CurrentPath);
 
                                         if (Plugin.Configuration.Support)
-                                            Plugin.SupportLeveling            = leveling;
-                                        else if (Plugin.Configuration.Trust) 
+                                            Plugin.SupportLeveling = leveling;
+                                        else if (Plugin.Configuration.Trust)
                                             Plugin.TrustLeveling = leveling;
                                     }
                                 }
@@ -402,6 +386,7 @@ namespace AutoDuty.Windows
                             }
                             if (!Plugin.Configuration.Trust) ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL16-L23 (i0): TamTara \nL24-31 (i0): Totorak\nL32-40 (i0): Brayflox\nL41-52 (i0): Stone Vigil\nL53-60 (i105): Sohm Al\nL61-66 (i240): Sirensong Sea\nL67-70 (i255): Doma Castle\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
                             else ImGuiComponents.HelpMarker("TRUST Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl, as well as the LOWEST LEVEL trust members you have, in an attempt to level them all equally.. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
+
                         }
 
                         if (Plugin.Configuration.Trust)
@@ -504,8 +489,7 @@ namespace AutoDuty.Windows
                     }
                     if (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
                     {
-                        ImGui.SameLine(0, 5);
-                        if (ImGui.Checkbox("Unsynced", ref Plugin.Configuration.Unsynced))
+                        if (ImGuiEx.CheckboxWrapped("Unsynced", ref Plugin.Configuration.Unsynced))
                             Plugin.Configuration.Save();
                     }
                     using var d3 = ImRaii.Disabled(Plugin.LevelingEnabled);

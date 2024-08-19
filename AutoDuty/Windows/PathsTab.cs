@@ -12,6 +12,7 @@ using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
 using AutoDuty.Managers;
+using ECommons.ImGuiMethods;
 
 namespace AutoDuty.Windows
 {
@@ -53,19 +54,19 @@ namespace AutoDuty.Windows
             ImGui.SameLine();
             using (var d = ImRaii.Disabled(_selectedDutyPath == null))
             {
-                if (ImGui.Button("Open File"))
+                if (ImGuiEx.ButtonWrapped("Open File"))
                     Process.Start("explorer", _selectedDutyPath?.FilePath ?? string.Empty);
             }
             ImGui.SameLine();
             ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(0, 1, 1, 1));
-            if (ImGui.Checkbox($"Do not overwrite on update", ref _checked))
+            if (ImGuiEx.CheckboxWrapped($"Do not overwrite on update", ref _checked))
                 CheckBoxOnChange();
 
             ImGui.PopStyleColor();
             ImGui.SameLine();
             using (var savedPathsDisabled = ImRaii.Disabled(!Plugin.Configuration.PathSelections.Any(kvp => kvp.Value.Any())))
             {
-                if (ImGui.Button("Clear all cached classes"))
+                if (ImGuiEx.ButtonWrapped("Clear all cached classes"))
                 {
                     Plugin.Configuration.PathSelections.Clear();
                     Plugin.Configuration.Save();
@@ -79,7 +80,7 @@ namespace AutoDuty.Windows
             ImGui.PushStyleVar(ImGuiStyleVar.ChildBorderSize, style.FrameBorderSize);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,   style.FramePadding);
 
-            ImGui.BeginChild("##DutyList", new Vector2(500 * ImGuiHelpers.GlobalScale, 550 * ImGuiHelpers.GlobalScale), false,
+            ImGui.BeginChild("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, 0), false,
                              ImGuiWindowFlags.HorizontalScrollbar | ImGuiWindowFlags.AlwaysVerticalScrollbar);
             try
             {
@@ -87,7 +88,7 @@ namespace AutoDuty.Windows
                 {
                     bool multiple = false;
 
-                    if (container.Paths.Count > 1)
+                    if (container.Paths.Count > 0)
                     {
                         multiple = true;
                         ImGui.NewLine();
@@ -134,7 +135,7 @@ namespace AutoDuty.Windows
                             ImGui.SameLine(0, 0);
                         }
 
-                        ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
+                        ImGui.Text($"{container.Content.Name}");
 
                         ImGui.SameLine(0, 2);
                         ImGui.TextColored(ImGuiHelper.VersionColor, $"v{path.PathFile.meta.LastUpdatedVersion}");
