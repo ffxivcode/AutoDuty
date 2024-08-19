@@ -16,7 +16,8 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Barracks Started");
                 GotoBarracksRunning = true;
-                AutoDuty.Plugin.Stage = Stage.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
+                    AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("GotoBarracksTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoBarracksUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -32,7 +33,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= GotoBarracksUpdate;
             GotoHelper.Stop();
             GotoBarracksRunning = false;
-            AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
+            AutoDuty.Plugin.States -= State.Other;
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
             AutoDuty.Plugin.Action = "";

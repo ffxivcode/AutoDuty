@@ -22,7 +22,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany}");
                 GotoInnRunning = true;
-                AutoDuty.Plugin.Stage = Stage.Other;
+                _stop = false;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
+                    AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -58,9 +60,10 @@ namespace AutoDuty.Helpers
             {
                 if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
                 {
+                    Svc.Log.Debug("Stopping GotoInn");
                     _stop = false;
                     GotoInnRunning = false;
-                    AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
+                    AutoDuty.Plugin.States -= State.Other;
                     Svc.Framework.Update -= GotoInnUpdate;
                 }
                 else if (Svc.Targets.Target != null)
@@ -75,7 +78,10 @@ namespace AutoDuty.Helpers
             }
 
             if (AutoDuty.Plugin.Started)
+            {
+                Svc.Log.Debug($"AutoDuty has Started, Stopping GotoInn");
                 Stop();
+            }
 
             if (!EzThrottler.Check("GotoInn"))
                 return;
@@ -83,7 +89,10 @@ namespace AutoDuty.Helpers
             EzThrottler.Throttle("GotoInn", 50);
 
             if (Svc.ClientState.LocalPlayer == null)
+            {
+                Svc.Log.Debug($"Our player is null");
                 return;
+            }
 
             if (GotoHelper.GotoRunning)
                 return;
@@ -92,17 +101,20 @@ namespace AutoDuty.Helpers
 
             if (Svc.ClientState.TerritoryType == InnTerritoryType(_whichGrandCompany))
             {
+                Svc.Log.Debug($"We are in the Inn, stopping GotoInn");
                 Stop();
                 return;
             }
 
             if (Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany) || _innKeepGameObject == null || Vector3.Distance(Svc.ClientState.LocalPlayer.Position, _innKeepGameObject.Position) > 7f)
             {
+                Svc.Log.Debug($"We are not in the correct TT or our innkeepGO is null or out innkeepPosition is > 7f, moving there");
                 GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany), _innKeepLocation, 0.25f, 5f, false);
                 return;
             }
             else if (ObjectHelper.IsValid)
             {
+                Svc.Log.Debug($"Interacting with GO and Addons");
                 ObjectHelper.InteractWithObject(_innKeepGameObject);
                 AddonHelper.ClickSelectString(0);
                 AddonHelper.ClickSelectYesno();

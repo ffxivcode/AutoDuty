@@ -27,7 +27,7 @@ namespace AutoDuty.Helpers
             if (!ObjectHelper.IsValid)
                 return false;
 
-            Svc.Log.Debug($"Move(Vector3 {position}, float {tollerance} = 0.25f, float {lastPointTollerance} = 0.25f, bool {fly} = false, bool {useMesh} = true) Dist: {Vector3.Distance(Player.Object.Position, position)} <= {lastPointTollerance}");
+            //Svc.Log.Debug($"Move(Vector3 {position}, float {tollerance} = 0.25f, float {lastPointTollerance} = 0.25f, bool {fly} = false, bool {useMesh} = true) Dist: {Vector3.Distance(Player.Object.Position, position)} <= {lastPointTollerance}");
 
             if (fly && !IsFlyingSupported)
                 fly = false;

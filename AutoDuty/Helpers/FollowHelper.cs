@@ -2,8 +2,6 @@
 using Dalamud.Plugin.Services;
 using ECommons.DalamudServices;
 using AutoDuty.IPC;
-using static Dalamud.Game.ClientState.Keys.VirtualKey;
-using static FFXIVClientStructs.FFXIV.Client.UI.KeyStateFlags;
 using System.Numerics;
 using System.Collections.Generic; 
 

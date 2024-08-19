@@ -18,7 +18,8 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto {whichHousing} Started");
                 GotoHousingRunning = true;
-                AutoDuty.Plugin.Stage = Stage.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
+                    AutoDuty.Plugin.States |= State.Other;
                 _whichHousing = whichHousing;
                 SchedulerHelper.ScheduleAction("GotoHousingTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoHousingUpdate;
@@ -87,7 +88,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     GotoHousingRunning = false;
-                    AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
+                    AutoDuty.Plugin.States -= State.Other;
                     Svc.Framework.Update -= GotoHousingUpdate;
                 }
                 return;
@@ -109,6 +110,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug($"Our player is null");
                 return;
             }
+
             if (GotoHelper.GotoRunning)
                 return;
 
@@ -149,7 +151,7 @@ namespace AutoDuty.Helpers
             {
                 if (MovementHelper.Move(_entranceGameObject, 0.25f, 3f, false, false))
                 {
-                    Svc.Log.Debug($"We are in range of the entracne door, entering");
+                    Svc.Log.Debug($"We are in range of the entrance door, entering");
                     ObjectHelper.InteractWithObject(_entranceGameObject);
                     AddonHelper.ClickSelectString(0);
                     AddonHelper.ClickSelectYesno();

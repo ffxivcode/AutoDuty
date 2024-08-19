@@ -79,7 +79,6 @@ public sealed class AutoDuty : IDalamudPlugin
         get => _stage;
         set
         {
-            PreviousStage = _stage;
             _stage = value;
             Svc.Log.Debug($"Stage={EnumString(_stage)}");
             switch (value)
@@ -104,7 +103,7 @@ public sealed class AutoDuty : IDalamudPlugin
             }
         }
     }
-    internal Stage PreviousStage = Stage.Stopped;
+    internal State States;
     internal int Indexer = -1;
     internal bool MainListClicked = false;
     internal bool Started = false;
@@ -978,7 +977,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && Started)
             DoneNavigating();
 
-        if (Stage != Stage.Other && Stage != Stage.Action && Stage != Stage.Reading_Path && Stage != Stage.Moving && Stage != Stage.Looping)
+        if (Stage > Stage.Looping && !States.HasFlag(State.Other))
             Action = EnumString(Stage);
 
         switch (Stage)

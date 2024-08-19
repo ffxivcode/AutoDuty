@@ -542,7 +542,10 @@ namespace AutoDuty.Windows
                             }
                             else
                             {
-                                ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular to Populate the Duty List");
+                                    if (ObjectHelper.IsReady)
+                                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
+                                    else
+                                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Busy...");
                             }
                         }
                         else

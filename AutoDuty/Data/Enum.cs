@@ -81,15 +81,21 @@
         {
             Stopped = 0,
             Reading_Path = 1,
-            Moving = 2,
-            Action = 3,
-            Waiting_For_Combat = 4,
-            Paused = 5,
-            Dead = 6,
-            Revived = 7,
-            Looting_Treasure = 8,
-            Looping = 9,
-            Other = 10,
+            Action = 2,
+            Looping = 3,
+            Moving = 4,
+            Waiting_For_Combat = 5,
+            Paused = 6,
+            Dead = 7,
+            Revived = 8,
+            Looting_Treasure = 9
+        }
+
+        public enum State : int
+        {
+            Running = 0,
+            Navigating = 1,
+            Other = 2
         }
     }
 }

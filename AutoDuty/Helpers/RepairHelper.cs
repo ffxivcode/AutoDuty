@@ -19,7 +19,8 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Repair Started");
                 RepairRunning = true;
-                AutoDuty.Plugin.Stage = Stage.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
+                    AutoDuty.Plugin.States |= State.Other;
                 if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
                     SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 300000);
                 else
@@ -61,7 +62,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     RepairRunning = false;
-                    AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
+                    AutoDuty.Plugin.States -= State.Other;
                     Svc.Framework.Update -= RepairUpdate;
                 }
                 else if (Svc.Targets.Target != null)
