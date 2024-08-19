@@ -25,7 +25,8 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("AutoRetainer Started");
                 AutoRetainerRunning = true;
-                AutoDuty.Plugin.Stage = Stage.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
+                    AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("AutoRetainerTimeOut", Stop, 600000);
                 Svc.Framework.Update += AutoRetainerUpdate;
             }
@@ -58,7 +59,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     AutoRetainerRunning = false;
-                    AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
+                    AutoDuty.Plugin.States -= State.Other;
                     Svc.Framework.Update -= AutoRetainerUpdate;
                 }
                 else if (Svc.Targets.Target != null)

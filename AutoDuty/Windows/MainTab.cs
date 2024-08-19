@@ -505,7 +505,10 @@ namespace AutoDuty.Windows
                             }
                             else
                             {
-                                ImGui.TextColored(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
+                                    if (ObjectHelper.IsReady)
+                                        ImGui.TextColored(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
+                                    else
+                                        ImGui.TextColored(new Vector4(0, 1, 0, 1), "Busy...");
                             }
                         }
                         else

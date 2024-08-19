@@ -8,7 +8,6 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons.Throttlers;
 using AutoDuty.IPC;
 using ECommons;
-using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
@@ -92,7 +91,8 @@ namespace AutoDuty.Helpers
             }
             Svc.Log.Info("Moving to Flag Marker");
             MoveToMapMarkerRunning = true;
-            AutoDuty.Plugin.Stage = Stage.Other;
+            if(!AutoDuty.Plugin.States.HasFlag(State.Other))
+                AutoDuty.Plugin.States |= State.Other;
             Svc.Framework.Update += MoveToMapMarkerUpdate;
         }
 
@@ -106,7 +106,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= MoveToMapMarkerUpdate;
             VNavmesh_IPCSubscriber.Path_Stop();
             MoveToMapMarkerRunning = false;
-            AutoDuty.Plugin.Stage = AutoDuty.Plugin.PreviousStage;
+            AutoDuty.Plugin.States -= State.Other;
             flagMapMarker = null;
         }
 
