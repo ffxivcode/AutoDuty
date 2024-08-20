@@ -252,7 +252,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoRepair = false;
     public int AutoRepairPct = 50;
     public bool AutoRepairSelf = false;
-    public ENpcResidentData? PreferredRepairNPC = null;
+    public RepairNpcData? PreferredRepairNPC = null;
 
     //Between Loop Config Options
     public int WaitTimeBeforeAfterLoopActions = 0;
@@ -797,8 +797,8 @@ public static class ConfigTab
                 }
                 ImGui.PopItemWidth();
                 ImGui.Unindent();
-                ImGui.Text("Preferred Repair Vendor: ");
-                ImGuiComponents.HelpMarker("It's a good idea to match the Repair Vendor with Summoning Bell and if possible Retire Location");
+                ImGui.Text("Preferred Repair NPC: ");
+                ImGuiComponents.HelpMarker("It's a good idea to match the Repair NPC with Summoning Bell and if possible Retire Location");
                 ImGui.PushItemWidth(300  * ImGuiHelpers.GlobalScale);
                 if (ImGui.BeginCombo("##PreferredRepair", Configuration.PreferredRepairNPC != null ? $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})" : "Grand Company Inn"))
                 {
@@ -808,7 +808,7 @@ public static class ConfigTab
                         Configuration.Save();
                     }
 
-                    foreach (ENpcResidentData repairNPC in RepairNPCs)
+                    foreach (RepairNpcData repairNPC in RepairNPCs)
                     {
                         var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
 

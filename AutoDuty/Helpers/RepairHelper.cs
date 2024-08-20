@@ -8,8 +8,6 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons;
-using ECommons.GameHelpers;
-using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace AutoDuty.Helpers
 {
@@ -57,7 +55,7 @@ namespace AutoDuty.Helpers
         private unsafe static AtkUnitBase* addonRepair = null;
         private unsafe static AtkUnitBase* addonSelectYesno = null;
         private unsafe static AtkUnitBase* addonSelectIconString = null;
-        private static RepairNPCHelper.ENpcResidentData? _preferredRepairNpc => AutoDuty.Plugin.Configuration.PreferredRepairNPC;
+        private static RepairNPCHelper.RepairNpcData? _preferredRepairNpc => AutoDuty.Plugin.Configuration.PreferredRepairNPC;
 
         internal static unsafe void RepairUpdate(IFramework framework)
         {
@@ -99,10 +97,10 @@ namespace AutoDuty.Helpers
             if (Svc.ClientState.LocalPlayer == null)
                 return;
 
-            AutoDuty.Plugin.Action = "Repairing";
-
             if (GotoHelper.GotoRunning)
                 return;
+
+            AutoDuty.Plugin.Action = "Repairing";
 
             if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
             {
@@ -152,11 +150,10 @@ namespace AutoDuty.Helpers
             }
             else if (ObjectHelper.IsValid)
             {
-                Svc.Log.Info($"{GenericHelpers.TryGetAddonByName("SelectIconString", out addonSelectIconString)} && {GenericHelpers.TryGetAddonByName("SelectIconString", out addonSelectIconString) && GenericHelpers.IsAddonReady(addonSelectIconString)}");
                 if (GenericHelpers.TryGetAddonByName("SelectIconString", out addonSelectIconString) && GenericHelpers.IsAddonReady(addonSelectIconString))
                 {
-                    Svc.Log.Debug("Clicking SelectIconString(5)");
-                    AddonHelper.ClickSelectIconString(5);
+                    Svc.Log.Debug($"Clicking SelectIconString({_preferredRepairNpc?.RepairIndex})");
+                    AddonHelper.ClickSelectIconString(_preferredRepairNpc?.RepairIndex ?? 0);
                 }
                 else if (!GenericHelpers.TryGetAddonByName("Repair", out addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno))
                 {

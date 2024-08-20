@@ -20,25 +20,35 @@ namespace AutoDuty.Helpers
             public Vector3 Position { get; set; }
         }
 
-        internal static List<ENpcResidentData> RepairNPCs = [];
+        public class RepairNpcData : ENpcResidentData
+        {
+            public int RepairIndex { get; set; }
+        }
+
+        internal static List<RepairNpcData> RepairNPCs = [];
 
         private static List<ENpcResidentData> cityENpcResidents = [];
 
         internal static void PopulateRepairNPCs()
         {
             var enpcResidentsSheet = Svc.Data.GetExcelSheet<ENpcResident>();
+            var enpcBaseSheet = Svc.Data.GetExcelSheet<ENpcBase>();
             var levelSheet = Svc.Data.GetExcelSheet<Level>();
-            var menderEnpcResidents = enpcResidentsSheet?.ToList().Where(x => x.Singular.RawString.Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.RawString.Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.RawString.Contains("Repairman", StringComparison.InvariantCultureIgnoreCase));
+            var menderENpcResidents = enpcResidentsSheet?.ToList().Where(x => x.RowId != 1025308 && (x.Singular.RawString.Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.RawString.Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.RawString.Contains("Repairman", StringComparison.InvariantCultureIgnoreCase)));
+            var menderENpcBases = enpcBaseSheet?.ToList();
+
             var cityAreaTerritoryTypes = Svc.Data.GetExcelSheet<TerritoryType>()?.ToList().Where(x => x.TerritoryIntendedUse == 0);
 
-            if (menderEnpcResidents == null || cityAreaTerritoryTypes == null)
+            if (menderENpcResidents == null || cityAreaTerritoryTypes == null)
                 return;
 
             BuildEnpcFromLgbFile(cityAreaTerritoryTypes);
 
-            foreach (var mender in menderEnpcResidents)
+            foreach (var mender in menderENpcResidents)
             {
                 var level = levelSheet?.FirstOrDefault(y => y.Object == mender.RowId);
+                var eNpcBaseENpcData = menderENpcBases?.FirstOrDefault(z => z.RowId == mender.RowId)?.ENpcData;
+                var repairIndex = eNpcBaseENpcData.IndexOf(x => x == 720915);
                 uint territoryType = 0;
                 Vector3 position = Vector3.Zero;
 
@@ -46,21 +56,30 @@ namespace AutoDuty.Helpers
                 {
                     var npc = cityENpcResidents.FirstOrDefault(x => x.DataId == mender.RowId);
                     if (npc == null) continue;
-                    RepairNPCs.Add(npc);
+                    RepairNPCs.Add(new RepairNpcData
+                    {
+                        DataId = npc.DataId,
+                        Name = npc.Name,
+                        Position = npc.Position,
+                        TerritoryType = npc.TerritoryType,
+                        RepairIndex = repairIndex
+                    });
                 }
                 else
                 {
                     position = new Vector3(level.X, level.Y, level.Z);
                     territoryType = level.Territory.Value.RowId;
-                    RepairNPCs.Add(new ENpcResidentData
+                    RepairNPCs.Add(new RepairNpcData
                     {
                         DataId = mender.RowId,
                         Name = mender.Singular.RawString,
                         Position = position,
                         TerritoryType = territoryType,
+                        RepairIndex = repairIndex
                     });
                 }
             }
+            RepairNPCs.ForEach(x => Svc.Log.Info($"{x.Name} {x.RepairIndex}"));
             cityENpcResidents = [];
         }
 

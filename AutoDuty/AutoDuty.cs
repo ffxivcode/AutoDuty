@@ -947,10 +947,7 @@ public sealed class AutoDuty : IDalamudPlugin
     public void Framework_Update(IFramework framework)
     {
         if (Stage == Stage.Stopped)
-        {
-            Action = "Stopped";
             return;
-        }
 
         if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(State.Navigating) && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
