@@ -252,7 +252,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoRepair = false;
     public int AutoRepairPct = 50;
     public bool AutoRepairSelf = false;
-    public RepairNPCHelper.RepairNPC? PreferredRepairNPC = null;
+    public ENpcResidentData? PreferredRepairNPC = null;
 
     //Between Loop Config Options
     public int WaitTimeBeforeAfterLoopActions = 0;
@@ -808,7 +808,7 @@ public static class ConfigTab
                         Configuration.Save();
                     }
 
-                    foreach (RepairNPC repairNPC in RepairNPCs)
+                    foreach (ENpcResidentData repairNPC in RepairNPCs)
                     {
                         var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
 

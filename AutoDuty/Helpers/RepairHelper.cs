@@ -57,7 +57,7 @@ namespace AutoDuty.Helpers
         private unsafe static AtkUnitBase* addonRepair = null;
         private unsafe static AtkUnitBase* addonSelectYesno = null;
         private unsafe static AtkUnitBase* addonSelectIconString = null;
-        private static RepairNPCHelper.RepairNPC? _preferredRepairNpc => AutoDuty.Plugin.Configuration.PreferredRepairNPC;
+        private static RepairNPCHelper.ENpcResidentData? _preferredRepairNpc => AutoDuty.Plugin.Configuration.PreferredRepairNPC;
 
         internal static unsafe void RepairUpdate(IFramework framework)
         {
