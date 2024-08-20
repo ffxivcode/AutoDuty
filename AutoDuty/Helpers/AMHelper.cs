@@ -24,8 +24,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("AM Started");
                 AMRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("AMTimeOut", Stop, 600000);
                 Svc.Framework.Update += AMUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -62,7 +61,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     AMRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
                     Svc.Framework.Update -= AMUpdate;
                 }
                 else if (Svc.Targets.Target != null)
@@ -82,7 +81,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping AMHelper");
                 Stop();

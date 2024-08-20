@@ -25,7 +25,7 @@ namespace AutoDuty.Windows;
 public class Configuration : IPluginConfiguration
 {
     //Meta
-    public int Version { get => 127; set { } }
+    public int Version { get => 128; set { } }
     public HashSet<string> DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
 
@@ -189,7 +189,7 @@ public class Configuration : IPluginConfiguration
             hideOverlayWhenStopped = value;
             if (AutoDuty.Plugin.Overlay != null)
             {
-                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.Running || AutoDuty.Plugin.Started, () => AutoDuty.Plugin.Overlay != null);
+                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.States.HasFlag(State.Looping) || AutoDuty.Plugin.States.HasFlag(State.Navigating), () => AutoDuty.Plugin.Overlay != null);
             }
         }
     }
@@ -432,6 +432,7 @@ public static class ConfigTab
                 Configuration.ShowOverlay = Configuration.showOverlay;
                 Configuration.Save();
             }
+            ImGuiComponents.HelpMarker("Note that the quickaction buttons (TurnIn/Desynth/etc) require their respective configs to be enabled!");
             using (ImRaii.Disabled(!Configuration.ShowOverlay))
             {
                 ImGui.Indent();
