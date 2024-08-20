@@ -428,6 +428,7 @@ public static class ConfigTab
                 Configuration.ShowOverlay = Configuration.showOverlay;
                 Configuration.Save();
             }
+            ImGuiComponents.HelpMarker("Note that the quickaction buttons (TurnIn/Desynth/etc) require their respective configs to be enabled!");
             using (ImRaii.Disabled(!Configuration.ShowOverlay))
             {
                 ImGui.Indent();
