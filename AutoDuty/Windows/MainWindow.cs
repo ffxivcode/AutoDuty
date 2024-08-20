@@ -181,7 +181,7 @@ public class MainWindow : Window, IDisposable
                 {
                     if (ImGui.Button("Repair"))
                     {
-                        if (InventoryHelper.CanRepair())
+                        //if (InventoryHelper.CanRepair())
                             RepairHelper.Invoke();
                         //else
                             //ShowPopup("", "");

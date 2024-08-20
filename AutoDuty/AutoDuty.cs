@@ -121,12 +121,12 @@ public sealed class AutoDuty : IDalamudPlugin
     internal Job JobLastKnown;
     internal TrustManager TrustManager;
     internal DutyState DutyState = DutyState.None;
+    internal Chat Chat;
 
     private Stage _stage = Stage.Stopped;
     private const string CommandName = "/autoduty";
     private DirectoryInfo _configDirectory;
     private ActionsManager _actions;
-    internal Chat Chat;
     private DutySupportManager _dutySupportManager;
     private SquadronManager _squadronManager;
     private VariantManager _variantManager;
@@ -169,15 +169,16 @@ public sealed class AutoDuty : IDalamudPlugin
 
             TrustManager.PopulateTrustMembers();
             ContentHelper.PopulateDuties();
+            RepairNPCHelper.PopulateRepairNPCs();
             FileHelper.OnStart();
             FileHelper.Init();
-            this.Chat = new();
+            Chat = new();
             _overrideAFK = new();
             _dutySupportManager = new(TaskManager);
             TrustManager = new(TaskManager);
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
-            _actions = new(this, this.Chat, TaskManager);
+            _actions = new(this, Chat, TaskManager);
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
