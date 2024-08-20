@@ -732,7 +732,8 @@ public sealed class AutoDuty : IDalamudPlugin
         //we finished lets exit the duty or stop
         if (Configuration.AutoExitDuty || CurrentLoop < Configuration.LoopTimes)
         {
-            ExitDuty();
+            if (!ExitDutyHelper.ExitDutyRunning)
+                ExitDuty();
             if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
                 ReflectionHelper.RotationSolver_Reflection.RotationStop();
             this.Chat.ExecuteCommand($"/vbmai off");
@@ -1284,7 +1285,9 @@ public sealed class AutoDuty : IDalamudPlugin
             MapHelper.StopMoveToMapMarker();
         if (GotoHousingHelper.GotoHousingRunning)
             GotoHousingHelper.Stop();
-        
+        if (ExitDutyHelper.ExitDutyRunning)
+            ExitDutyHelper.Stop();
+
         Action = "";
     }
 
