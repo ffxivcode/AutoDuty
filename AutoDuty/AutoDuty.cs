@@ -176,6 +176,7 @@ public sealed class AutoDuty : IDalamudPlugin
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
             _actions = new(Plugin, Chat, TaskManager);
+            _actions = new(this, Chat, TaskManager);
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
@@ -277,14 +278,12 @@ public sealed class AutoDuty : IDalamudPlugin
                     CurrentTerritoryContent = content;
                 else
                 {
-                    InDungeon = false;
                     ListBoxPOSText.Clear();
                     PathFile = "";
                     return;
                 }
             }
             
-            InDungeon = true;
             ListBoxPOSText.Clear();
             if (!ContentPathsManager.DictionaryPaths.TryGetValue(Svc.ClientState.TerritoryType, out ContentPathsManager.ContentPathContainer? container))
             {
@@ -315,6 +314,8 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void ClientState_TerritoryChanged(ushort t)
     {
+        if (Stage == Stage.Stopped) return;
+
         Svc.Log.Debug($"ClientState_TerritoryChanged: t={t}");
        
         CurrentTerritoryType = t;
@@ -391,6 +392,7 @@ public sealed class AutoDuty : IDalamudPlugin
     
     private void Condition_ConditionChange(ConditionFlag flag, bool value)
     {
+        if (Stage == Stage.Stopped) return;
         //Svc.Log.Debug($"{flag} : {value}");
         if (Stage != Stage.Dead && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && States.HasFlag(State.Navigating) && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
         {
@@ -945,6 +947,13 @@ public sealed class AutoDuty : IDalamudPlugin
     public void Framework_Update(IFramework framework)
     {
         if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(State.Navigating) && ObjectHelper.IsValid)
+        if (Stage == Stage.Stopped)
+        {
+            Action = "Stopped";
+            return;
+        }
+
+        if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
         
         if (!Player.Available)
