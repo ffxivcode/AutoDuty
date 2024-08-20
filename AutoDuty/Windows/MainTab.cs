@@ -215,7 +215,7 @@ namespace AutoDuty.Windows
                             else if (Svc.Party.PartyId == 0 && Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced)
                                 MainWindow.ShowPopup("Error", "You must be in a group of 4 to run Regular Duties");
                             else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !ObjectHelper.PartyValidation())
-                                MainWindow.ShowPopup("Error", "You must have the correcty party makeup to run Regular Duties");
+                                MainWindow.ShowPopup("Error", "You must have the correct party makeup to run Regular Duties");
                             else if (ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
                                 Plugin.Run();
                             else

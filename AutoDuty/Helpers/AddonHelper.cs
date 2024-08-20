@@ -39,6 +39,19 @@ namespace AutoDuty.Helpers
             return false;
         }
 
+        internal static bool ClickSelectIconString(int index)
+        {
+            var addonChecker = AddonChecker("SelectIconString", out AtkUnitBase* addon, out bool seenAddon);
+
+            if (!addonChecker && seenAddon)
+                new AddonMaster.SelectIconString(addon).Entries[index].Select();
+
+            if (addonChecker && seenAddon)
+                return true;
+
+            return false;
+        }
+
         internal static bool ClickSelectYesno(bool yes = true)
         {
             var addonChecker = AddonChecker("SelectYesno", out AtkUnitBase* addon, out bool seenAddon);
