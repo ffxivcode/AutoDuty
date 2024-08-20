@@ -60,7 +60,7 @@ public class MainWindow : Window, IDisposable
 
     internal static void StopResumePause()
     {
-        using (var d = ImRaii.Disabled(!Plugin.Running && !Plugin.Started && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning))
+        using (var d = ImRaii.Disabled(!Plugin.States.HasFlag(State.Looping) && !Plugin.States.HasFlag(State.Navigating) && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning))
         {
             if (ImGui.Button("Stop"))
             {
@@ -70,7 +70,7 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine(0, 5);
         }
 
-        using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning) || Plugin.CurrentTerritoryContent == null))
+        using (var d = ImRaii.Disabled((!Plugin.States.HasFlag(State.Looping) && !Plugin.States.HasFlag(State.Navigating) && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning) || Plugin.CurrentTerritoryContent == null))
             {
                 if (Plugin.Stage == Stage.Paused)
             {
@@ -91,7 +91,7 @@ public class MainWindow : Window, IDisposable
 
     internal static void GotoAndActions()
     {
-        using (var d2 = ImRaii.Disabled(Plugin.Running || Plugin.Started))
+        using (var d2 = ImRaii.Disabled(Plugin.States.HasFlag(State.Looping) || Plugin.States.HasFlag(State.Navigating)))
         {
             using (var GotoDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || RepairHelper.RepairRunning))
             {

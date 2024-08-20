@@ -22,8 +22,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("GCTurnin Started");
                 GCTurninRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("GCTurninTimeOut", Stop, 600000);
                 Svc.Framework.Update += GCTurninUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -62,7 +61,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     GCTurninRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
                     Svc.Framework.Update -= GCTurninUpdate;
                 }
                 else if (Svc.Targets.Target != null)
@@ -78,7 +77,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping GCTurninHelper");
                 Stop();

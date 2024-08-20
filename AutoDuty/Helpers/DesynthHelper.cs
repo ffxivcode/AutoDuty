@@ -17,8 +17,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Desynth Started");
                 DesynthRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("DesynthTimeOut", Stop, 300000);
                 AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
@@ -43,7 +42,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void DesynthUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.Started || AutoDuty.Plugin.InDungeon)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating) || AutoDuty.Plugin.InDungeon)
                 Stop();
 
             if (!EzThrottler.Throttle("Desynth", 250))
@@ -61,7 +60,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     DesynthRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
                     Svc.Framework.Update -= DesynthUpdate;
                 }
                 return;

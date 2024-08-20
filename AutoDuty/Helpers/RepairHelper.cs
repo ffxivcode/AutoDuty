@@ -19,8 +19,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Repair Started");
                 RepairRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
                     SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 300000);
                 else
@@ -62,7 +61,7 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     RepairRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
                     Svc.Framework.Update -= RepairUpdate;
                 }
                 else if (Svc.Targets.Target != null)
@@ -74,7 +73,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
                 Stop();
 
             if (Conditions.IsMounted)

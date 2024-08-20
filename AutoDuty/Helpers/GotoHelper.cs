@@ -33,8 +33,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Started, Going to {territoryType}{(moveLocations.Count>0 ? $" and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations" : "")}");
                 GotoRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 _territoryType = territoryType;
                 _gameObjectDataId = gameObjectDataId;
                 _moveLocations = moveLocations;
@@ -53,7 +52,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Finished");
             Svc.Framework.Update -= GotoUpdate;
             GotoRunning = false;
-            AutoDuty.Plugin.States -= State.Other;
+            AutoDuty.Plugin.States &= ~State.Other;
             _territoryType = 0;
             _gameObjectDataId = 0;
             _moveLocations = [];
@@ -87,7 +86,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void GotoUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
                 Stop();
 
             if (!EzThrottler.Check("Goto"))

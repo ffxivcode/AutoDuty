@@ -1,4 +1,6 @@
-﻿namespace AutoDuty.Data
+﻿using System;
+
+namespace AutoDuty.Data
 {
     public class Enum
     {
@@ -91,11 +93,13 @@
             Looting_Treasure = 9
         }
 
+        [Flags]
         public enum State : int
         {
-            Running = 0,
-            Navigating = 1,
-            Other = 2
+            None = 0,
+            Looping = 1,
+            Navigating = 2,
+            Other = 4
         }
     }
 }
