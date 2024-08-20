@@ -26,7 +26,6 @@ public unsafe class Overlay : Window
     {
         if (!ObjectHelper.IsValid)
         {
-            Svc.Log.Info("no valid");
             if (!SchedulerHelper.Schedules.ContainsKey("OpenOverlay"))
                 SchedulerHelper.ScheduleAction("OpenOverlay", () => IsOpen = true, () => ObjectHelper.IsReady);
             IsOpen = false;

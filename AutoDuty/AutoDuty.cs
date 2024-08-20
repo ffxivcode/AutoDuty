@@ -112,7 +112,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal OverrideCamera OverrideCamera;
     internal MainWindow MainWindow { get; init; }
     internal Overlay Overlay { get; init; }
-    internal bool InDungeon = false;
+    internal bool InDungeon => ContentHelper.DictionaryContent.ContainsKey(Svc.ClientState.TerritoryType);
     internal string Action = "";
     internal string PathFile = "";
     internal TaskManager TaskManager;
@@ -176,7 +176,6 @@ public sealed class AutoDuty : IDalamudPlugin
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
             _actions = new(Plugin, Chat, TaskManager);
-            _actions = new(this, Chat, TaskManager);
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
@@ -375,15 +374,17 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => TrustManager.GetLevelsCheck(), "Loop-RecheckingTrustLevels");
                 }
 
-                TaskManager.Enqueue(() => {
-                                        if (StopLoop)
-                                        {
-                                            Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");
-                                            LoopsCompleteActions();
-                                        }
-                                        else
-                                            LoopTasks();
-                                    },"Loop-CheckStopLoop");
+                TaskManager.Enqueue(() => 
+                {
+                    Svc.Log.Info("gothere");
+                    if (StopLoop)
+                    {
+                        Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");
+                        LoopsCompleteActions();
+                    }
+                    else
+                        LoopTasks();
+                },"Loop-CheckStopLoop");
             }
             else
                 LoopsCompleteActions();
@@ -622,15 +623,15 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Configuration.AutoBoiledEgg /*&& !PlayerHelper.HasStatus(48)*/)
             {
                 TaskManager.Enqueue(() => InventoryHelper.UseItemIfAvailable(4650), "Run-AutoBoiledEgg");
-                TaskManager.DelayNext("Run-Delay50", 50);
-                TaskManager.Enqueue(() => ObjectHelper.IsReady);
+                TaskManager.DelayNext("Run-AutoBoiledEggDelay50", 50);
+                TaskManager.Enqueue(() => ObjectHelper.IsReady, "Run-WaitAutoBoiledEggIsReady");
             }
             if (Configuration.AutoRepair && InventoryHelper.CanRepair())
             {
                 TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
-                TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.DelayNext("Run-AutoRepairDelay50", 50);
                 TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Run-WaitAutoRepairComplete");
-                TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitANotIsOccupied");
+                TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitAutoRepairNotIsOccupied");
             }
             if (!Configuration.Squadron && Configuration.RetireMode)
             {
@@ -639,11 +640,8 @@ public sealed class AutoDuty : IDalamudPlugin
                 else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
                     TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Run-GotoInnInvoke");
                 else
-                {
-                    Svc.Log.Info($"{(Housing)Configuration.RetireLocationEnum} {Configuration.RetireLocationEnum}");
                     TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Run-GotoHousingInvoke");
-                }
-                TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.DelayNext("Run-RetireModeDelay50", 50);
                 TaskManager.Enqueue(() => !GotoHousingHelper.GotoHousingRunning && !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
             }
             if (Configuration.Trust)
@@ -655,22 +653,22 @@ public sealed class AutoDuty : IDalamudPlugin
             else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
             {
                 TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Run-Queue");
-                TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.DelayNext("Run-QueueDelay50", 50);
                 TaskManager.Enqueue(() => !QueueHelper.QueueRunning, int.MaxValue, "Run-WaitQueueComplete");
             }
             else if (Configuration.Squadron)
             {
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
-                TaskManager.DelayNext("Run-Delay50", 50);
+                TaskManager.DelayNext("Run-GotoBarracksDelay50", 50);
                 TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
                 _squadronManager.RegisterSquadron(CurrentTerritoryContent);
             }
-            TaskManager.Enqueue(() => !ObjectHelper.IsValid, "Run");
-            TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Run");
+            TaskManager.Enqueue(() => !ObjectHelper.IsValid, "Run-WaitNotValid");
+            TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Run-WaitValid");
         }
-        TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Run");
-        TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run");
-        TaskManager.Enqueue(() => StartNavigation(true), "Run");
+        TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Run-WaitDutyStarted");
+        TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run-WaitNavIsReady");
+        TaskManager.Enqueue(() => StartNavigation(true), "Run-StartNavigation");
         CurrentLoop = 1;
     }
 
@@ -946,16 +944,15 @@ public sealed class AutoDuty : IDalamudPlugin
 
     public void Framework_Update(IFramework framework)
     {
-        if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(State.Navigating) && ObjectHelper.IsValid)
         if (Stage == Stage.Stopped)
         {
             Action = "Stopped";
             return;
         }
 
-        if (EzThrottler.Throttle("OverrideAFK") && Started && ObjectHelper.IsValid)
+        if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(State.Navigating) && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
-        
+
         if (!Player.Available)
             return;
 
@@ -965,8 +962,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (!ObjectHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled || (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !Configuration.UsingAlternativeRotationPlugin))
             return;
 
-        if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0)
-            ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
+        //if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0)
+            //ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
         if (EzThrottler.Throttle("ClosestInteractableEventObject", 25) && MainWindow.CurrentTabName == "Build")
             ClosestInteractableEventObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.EventObj)?.FirstOrDefault(o => o.IsTargetable);
@@ -988,7 +985,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (Stage > Stage.Looping && !States.HasFlag(State.Other))
             Action = EnumString(Stage);
-        Svc.Log.Info($"{Stage} {States}");
+        //Svc.Log.Info($"{Stage} {States}");
         switch (Stage)
         {
             case Stage.Reading_Path:
