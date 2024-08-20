@@ -97,28 +97,32 @@ namespace AutoDuty.Helpers
                 return;
             vectorDutyListItems.ForEach(pointAtkComponentTreeListItem => listAtkComponentTreeListItems.Add(*(pointAtkComponentTreeListItem.Value)));
 
-            if (!_allConditionsMetToJoin && (_addonContentsFinder->SelectedRow == 0 || !_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase)))
+            var isCorrectContentSelected = _content.DisplayName.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase);
+            var isCorrectContentChecked = _content.DisplayName.Equals(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase);
+            var isOtherContentChecked = _addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString() != string.Empty && !isCorrectContentChecked;
+            
+            if (!_allConditionsMetToJoin && (_addonContentsFinder->SelectedRow == 0 || !isCorrectContentSelected))
             {
-                Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content.Name} because we have the wrong selection of {listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", "")}");
+                Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content.DisplayName} because we have the wrong selection of {listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", "")}");
                 AgentContentsFinder.Instance()->OpenRegularDuty(_content.ContentFinderCondition);
                 return;
             }
 
-            if ((!_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("0/5 Selected")) || (_addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && !_content.Name!.Contains(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase)))
+            if (isOtherContentChecked)
             {
-                Svc.Log.Debug($"Queue Helper - We have {_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", "")} selected, not {_content.Name}, Clearing");
+                Svc.Log.Debug($"Queue Helper - We have {_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", "")} selected, not {_content.DisplayName}, Clearing");
                 AddonHelper.FireCallBack((AtkUnitBase*)_addonContentsFinder, true, 12, 1);
                 return;
             }
 
-            if (_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase) && _addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("0/5 Selected"))
+            if (isCorrectContentSelected && !isCorrectContentChecked)
             {
                 Svc.Log.Debug("Queue Helper - Checking Duty");
                 SelectDuty(_addonContentsFinder);
                 return;
             }
 
-            if (_content.Name!.Contains(listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase) && _addonContentsFinder->NumberSelectedTextNode->NodeText.ToString().Equals("1/1 Selected") && _content.Name.Contains(_addonContentsFinder->SelectedDutyTextNode[0].Value->NodeText.ToString().Replace("...", ""), System.StringComparison.InvariantCultureIgnoreCase))
+            if (isCorrectContentSelected && isCorrectContentChecked)
             {
                 _allConditionsMetToJoin = true;
                 Svc.Log.Debug("Queue Helper - All Conditions Met, Clicking Join");
