@@ -186,7 +186,7 @@ public class Configuration : IPluginConfiguration
             hideOverlayWhenStopped = value;
             if (AutoDuty.Plugin.Overlay != null)
             {
-                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.Running || AutoDuty.Plugin.Started, () => AutoDuty.Plugin.Overlay != null);
+                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.States.HasFlag(State.Looping) || AutoDuty.Plugin.States.HasFlag(State.Navigating), () => AutoDuty.Plugin.Overlay != null);
             }
         }
     }

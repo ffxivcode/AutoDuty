@@ -91,8 +91,7 @@ namespace AutoDuty.Helpers
             }
             Svc.Log.Info("Moving to Flag Marker");
             MoveToMapMarkerRunning = true;
-            if(!AutoDuty.Plugin.States.HasFlag(State.Other))
-                AutoDuty.Plugin.States |= State.Other;
+            AutoDuty.Plugin.States |= State.Other;
             Svc.Framework.Update += MoveToMapMarkerUpdate;
         }
 
@@ -106,7 +105,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= MoveToMapMarkerUpdate;
             VNavmesh_IPCSubscriber.Path_Stop();
             MoveToMapMarkerRunning = false;
-            AutoDuty.Plugin.States -= State.Other;
+            AutoDuty.Plugin.States &= ~State.Other;
             flagMapMarker = null;
         }
 

@@ -11,12 +11,11 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke()
         {
-            if (!ExitDutyRunning)
+            if (!ExitDutyRunning && Svc.ClientState.TerritoryType != 0)
             {
                 Svc.Log.Info("ExitDuty Started");
                 ExitDutyRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("ExitDutyTimeOut", Stop, 60000);
                 AutoDuty.Plugin.Action = "Exiting Duty";
                 _currentTerritoryType = Svc.ClientState.TerritoryType;
@@ -56,7 +55,7 @@ namespace AutoDuty.Helpers
                     Svc.Log.Info("ExitDuty Finished");
                     _stop = false;
                     ExitDutyRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
                     _currentTerritoryType = 0;
                     Svc.Framework.Update -= ExitDutyUpdate;
                 }
@@ -66,7 +65,7 @@ namespace AutoDuty.Helpers
             if (!ObjectHelper.IsReady || Player.Object.InCombat())
                 return;
 
-            if (Svc.ClientState.TerritoryType != _currentTerritoryType || !AutoDuty.Plugin.InDungeon)
+            if (Svc.ClientState.TerritoryType != _currentTerritoryType || !AutoDuty.Plugin.InDungeon || Svc.ClientState.TerritoryType == 0)
             {
                 Stop();
                 return;

@@ -23,11 +23,11 @@ namespace AutoDuty.Managers
         {
             public ContentPathContainer(ContentHelper.Content content)
             {
-                this.Content = content;
-                this.id      = content.TerritoryType;
+                Content = content;
+                id      = content.TerritoryType;
 
-                this.ColoredNameString = $"({ImGuiHelper.idColor}{this.id}</>) {ImGuiHelper.dutyColor}{this.Content!.DisplayName}</>";
-                this.ColoredNameRegex  = RegexHelper.ColoredTextRegex().Match(this.ColoredNameString);
+                ColoredNameString = $"({ImGuiHelper.idColor}{id}</>) {ImGuiHelper.dutyColor}{Content!.DisplayName}</>";
+                ColoredNameRegex  = RegexHelper.ColoredTextRegex().Match(ColoredNameString);
             }
 
             public uint id { get; }
@@ -47,39 +47,39 @@ namespace AutoDuty.Managers
                 if (job == null)
                 {
                     pathIndex = 0;
-                    return this.Paths[0];
+                    return Paths[0];
                 }
 
-                if (this.Paths.Count > 1)
+                if (Paths.Count > 1)
                 {
-                    if (AutoDuty.Plugin.Configuration.PathSelections.TryGetValue(this.Content.TerritoryType, out Dictionary<Job, int>? jobConfig))
+                    if (AutoDuty.Plugin.Configuration.PathSelections.TryGetValue(Content.TerritoryType, out Dictionary<Job, int>? jobConfig))
                     {
                         if (jobConfig.TryGetValue((Job) job, out int pathId))
                         {
-                            if (pathId < this.Paths.Count)
+                            if (pathId < Paths.Count)
                             {
                                 pathIndex = pathId;
-                                return this.Paths[pathIndex];
+                                return Paths[pathIndex];
                             }
                         }
                     }
 
                     if (job.GetRole() == CombatRole.Tank)
                     {
-                        for (int index = 0; index < this.Paths.Count; index++)
+                        for (int index = 0; index < Paths.Count; index++)
                         {
-                            string curPath = this.Paths[index].Name;
+                            string curPath = Paths[index].Name;
                             if (curPath.Contains(PathIdentifiers.W2W))
                             {
                                 pathIndex = index;
-                                return this.Paths[index];
+                                return Paths[index];
                             }
                         }
                     }
                 }
 
                 pathIndex = 0;
-                return this.Paths[0];
+                return Paths[0];
             }
         }
 
@@ -87,23 +87,23 @@ namespace AutoDuty.Managers
         {
             public DutyPath(string filePath)
             {
-                this.FilePath = filePath;
-                this.FileName = Path.GetFileName(filePath);
-                this.Name     = this.FileName.Replace(".json", string.Empty);
+                FilePath = filePath;
+                FileName = Path.GetFileName(filePath);
+                Name     = FileName.Replace(".json", string.Empty);
 
-                this.UpdateColoredNames();
+                UpdateColoredNames();
             }
 
             public void UpdateColoredNames()
             {
-                Match pathMatch = RegexHelper.PathFileRegex().Match(this.FileName);
+                Match pathMatch = RegexHelper.PathFileRegex().Match(FileName);
 
-                string pathFileColor = AutoDuty.Plugin.Configuration.DoNotUpdatePathFiles.Contains(this.FileName) ? ImGuiHelper.pathFileColorNoUpdate : ImGuiHelper.pathFileColor;
-                this.id = uint.Parse(pathMatch.Groups[2].Value);
-                this.ColoredNameString = pathMatch.Success ?
+                string pathFileColor = AutoDuty.Plugin.Configuration.DoNotUpdatePathFiles.Contains(FileName) ? ImGuiHelper.pathFileColorNoUpdate : ImGuiHelper.pathFileColor;
+                id = uint.Parse(pathMatch.Groups[2].Value);
+                ColoredNameString = pathMatch.Success ?
                                              $"{pathMatch.Groups[1]}{ImGuiHelper.idColor}{pathMatch.Groups[2]}</>{pathMatch.Groups[3]}<0.8,0.8,1>{pathMatch.Groups[4]}</>{pathFileColor}{pathMatch.Groups[5]}</><0.5,0.5,0.5>{pathMatch.Groups[6]}</>" :
-                                             this.FileName;
-                this.ColoredNameRegex = RegexHelper.ColoredTextRegex().Match(this.ColoredNameString);
+                                             FileName;
+                ColoredNameRegex = RegexHelper.ColoredTextRegex().Match(ColoredNameString);
             }
 
             public uint id;
@@ -121,14 +121,14 @@ namespace AutoDuty.Managers
             {
                 get
                 {
-                    if (this.pathFile == null)
+                    if (pathFile == null)
                     {
                         try
                         {
-                            this.RevivalFound = false;
+                            RevivalFound = false;
                             string json;
 
-                            using (StreamReader streamReader = new(this.FilePath, Encoding.UTF8))
+                            using (StreamReader streamReader = new(FilePath, Encoding.UTF8))
                                 json = streamReader.ReadToEnd();
 
                             // Backwards compatibility, with instant updating
@@ -137,37 +137,37 @@ namespace AutoDuty.Managers
                                 List<string>? paths;
                                 if ((paths = JsonSerializer.Deserialize<List<string>>(json)) != null)
                                 {
-                                    this.pathFile         = PathFile.Default;
-                                    this.pathFile.actions = paths.ToArray();
+                                    pathFile         = PathFile.Default;
+                                    pathFile.actions = paths.ToArray();
                                 }
 
-                                string jsonNew = JsonSerializer.Serialize(this.PathFile, BuildTab.jsonSerializerOptions);
-                                File.WriteAllText(this.FilePath, jsonNew);
+                                string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
+                                File.WriteAllText(FilePath, jsonNew);
                             }
                             else
                             {
-                                this.pathFile = JsonSerializer.Deserialize<PathFile>(json);
+                                pathFile = JsonSerializer.Deserialize<PathFile>(json);
                             }
 
-                            foreach (string action in this.PathFile.actions)
+                            foreach (string action in PathFile.actions)
                                 if (action.Split('|')[0].Trim() == "Revival")
                                 {
-                                    this.RevivalFound = true;
+                                    RevivalFound = true;
                                     break;
                                 }
                         }
                         catch (Exception ex)
                         {
-                            Svc.Log.Info($"{this.FilePath} is not a valid duty path");
-                            DictionaryPaths[this.id].Paths.Remove(this);
+                            Svc.Log.Info($"{FilePath} is not a valid duty path");
+                            DictionaryPaths[id].Paths.Remove(this);
                         }
                     }
 
-                    return this.pathFile!;
+                    return pathFile!;
                 }
             }
 
-            public string[] Actions => this.PathFile.actions;
+            public string[] Actions => PathFile.actions;
             public         bool                  RevivalFound { get; private set; }
         }
 
@@ -193,7 +193,7 @@ namespace AutoDuty.Managers
             public int                          createdAt { get; set; }
             public List<PathFileChangelogEntry> changelog { get; set; }
 
-            public int LastUpdatedVersion => this.changelog.Count > 0 ? this.changelog.Last().version : this.createdAt;
+            public int LastUpdatedVersion => changelog.Count > 0 ? changelog.Last().version : createdAt;
 
             public List<string> notes { get; set; }
         }

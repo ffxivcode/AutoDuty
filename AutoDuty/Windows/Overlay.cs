@@ -26,26 +26,27 @@ public unsafe class Overlay : Window
     {
         if (!ObjectHelper.IsValid)
         {
+            Svc.Log.Info("no valid");
             if (!SchedulerHelper.Schedules.ContainsKey("OpenOverlay"))
                 SchedulerHelper.ScheduleAction("OpenOverlay", () => IsOpen = true, () => ObjectHelper.IsReady);
             IsOpen = false;
         }
 
-        if (!Plugin.Running && !Plugin.Started)
+        if (!Plugin.States.HasFlag(State.Looping) && !Plugin.States.HasFlag(State.Navigating))
         {
             MainWindow.GotoAndActions();
-            if (!Plugin.InDungeon || !Plugin.Started)
+            if (!Plugin.InDungeon || !Plugin.States.HasFlag(State.Navigating))
             {
                 ImGui.SameLine(0, 5);
                 if (!Plugin.InDungeon)
                     if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
                         Plugin.MainWindow.IsOpen = !Plugin.MainWindow.IsOpen;
                 ImGui.SameLine();
-                if (!Plugin.Started)
+                if (!Plugin.States.HasFlag(State.Navigating))
                 {
                     if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
                     {
-                        this.IsOpen = false;
+                        IsOpen = false;
                         Plugin.Configuration.ShowOverlay = false;
                         Plugin.MainWindow.IsOpen = true;
                     }
@@ -53,11 +54,11 @@ public unsafe class Overlay : Window
             }
         }
 
-        if (Plugin.InDungeon || Plugin.Running)
+        if (Plugin.InDungeon || Plugin.States.HasFlag(State.Navigating))
         {
             using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Svc.ClientState.TerritoryType) || Plugin.Stage > 0))
             {
-                if (!Plugin.Started && !Plugin.Running)
+                if (!Plugin.States.HasFlag(State.Navigating) && !Plugin.States.HasFlag(State.Looping))
                 {
                     if (ImGui.Button("Start"))
                     {
@@ -91,12 +92,12 @@ public unsafe class Overlay : Window
             if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
                 Plugin.MainWindow.IsOpen = !Plugin.MainWindow.IsOpen;
             
-            if (Plugin.Started || Plugin.Running)
+            if (Plugin.States.HasFlag(State.Navigating) || Plugin.States.HasFlag(State.Navigating))
             {
                 ImGui.SameLine();
                 if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
                 {
-                    this.IsOpen = false;
+                    IsOpen = false;
                     Plugin.Configuration.ShowOverlay = false;
                     Plugin.MainWindow.IsOpen = true;
                 }
@@ -117,15 +118,15 @@ public unsafe class Overlay : Window
 
                 ImGui.SameLine(0, 5);
 
-                if (Plugin.Running || Plugin.Started)
-                    loopsText = $"{(Plugin.CurrentTerritoryContent?.DisplayName!.Length > 20 ? Plugin.CurrentTerritoryContent?.DisplayName![..17] + "..." : Plugin.CurrentTerritoryContent?.DisplayName)}{(Plugin.Running ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
+                if (Plugin.States.HasFlag(State.Navigating) || Plugin.States.HasFlag(State.Navigating))
+                    loopsText = $"{(Plugin.CurrentTerritoryContent?.DisplayName!.Length > 20 ? Plugin.CurrentTerritoryContent?.DisplayName![..17] + "..." : Plugin.CurrentTerritoryContent?.DisplayName)}{(Plugin.States.HasFlag(State.Navigating) ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
                 else
-                    loopsText = $"{(Plugin.CurrentTerritoryContent?.DisplayName!.Length > 40 ? Plugin.CurrentTerritoryContent?.DisplayName![..37] + "..." : Plugin.CurrentTerritoryContent?.DisplayName)}{(Plugin.Running ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
+                    loopsText = $"{(Plugin.CurrentTerritoryContent?.DisplayName!.Length > 40 ? Plugin.CurrentTerritoryContent?.DisplayName![..37] + "..." : Plugin.CurrentTerritoryContent?.DisplayName)}{(Plugin.States.HasFlag(State.Navigating) ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
 
                 ImGui.TextColored(new Vector4(93 / 255f, 226 / 255f, 231 / 255f, 1), loopsText);
             }
         }
-        if (Plugin.InDungeon || Plugin.Running || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || DesynthHelper.DesynthRunning || QueueHelper.QueueRunning)
+        if (Plugin.InDungeon || Plugin.States.HasFlag(State.Navigating) || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || DesynthHelper.DesynthRunning || QueueHelper.QueueRunning)
         {
             if (Plugin.Configuration.ShowActionText)
             {

@@ -37,6 +37,7 @@ namespace AutoDuty.Windows
             var _trial = Plugin.Configuration.Trial;
             var _raid = Plugin.Configuration.Raid;
             var _variant = Plugin.Configuration.Variant;
+            var leveling = false;
 
             void DrawPathSelection()
             {
@@ -45,7 +46,7 @@ namespace AutoDuty.Windows
 
                 using var d = ImRaii.Disabled(Plugin is { InDungeon: true, Stage: > 0 });
 
-                if (ContentPathsManager.DictionaryPaths.TryGetValue(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0, out var container))
+                if (ContentPathsManager.DictionaryPaths.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out var container))
                 {
                     List<ContentPathsManager.DutyPath> curPaths = container.Paths;
                     if (curPaths.Count > 1)
@@ -93,7 +94,7 @@ namespace AutoDuty.Windows
                 ImGui.Spacing();
 
                 DrawPathSelection();
-                if (!Plugin.Running && !Plugin.Overlay.IsOpen)
+                if (!Plugin.States.HasFlag(State.Looping) && !Plugin.Overlay.IsOpen)
                     MainWindow.GotoAndActions();
                 using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
@@ -132,7 +133,7 @@ namespace AutoDuty.Windows
                     using (var d2 = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage == 0))
                     {
                         MainWindow.StopResumePause();
-                        if (Plugin.Started)
+                        if (Plugin.States.HasFlag(State.Navigating))
                         {
                             //ImGui.SameLine(0, 5);
                             ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
@@ -193,12 +194,12 @@ namespace AutoDuty.Windows
             }
             else
             {
-                if (!Plugin.Running && !Plugin.Overlay.IsOpen)
+                if (!Plugin.States.HasFlag(State.Looping) && !Plugin.Overlay.IsOpen)
                     MainWindow.GotoAndActions();
 
-                using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.Trust && Plugin.Configuration.SelectedTrustMembers.Count(x => x is null) > 0)))
+                using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.Trust && Plugin.Configuration.SelectedTrustMembers.Any(x => x is null))))
                 {
-                    if (!Plugin.Running)
+                    if (!Plugin.States.HasFlag(State.Looping))
                     {
                         if (ImGui.Button("Run"))
                         {
@@ -219,9 +220,9 @@ namespace AutoDuty.Windows
                     else
                         MainWindow.StopResumePause();
                 }
-                using (var d1 = ImRaii.Disabled(Plugin.Running))
+                using (ImRaii.Disabled(Plugin.States.HasFlag(State.Looping)))
                 {
-                    using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
+                    using (ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                     {
                         ImGui.SameLine(0, 15);
                         ImGui.PushItemWidth(200 * ImGuiHelpers.GlobalScale);
@@ -318,9 +319,9 @@ namespace AutoDuty.Windows
                         if (Plugin.Configuration.Support || Plugin.Configuration.Trust)
                         {
                             ImGui.SameLine();
-                            bool leveling = _support ? Plugin.SupportLeveling :
-                                            _trust   ? Plugin.TrustLeveling : false;
-                            bool equip = Plugin.Configuration.AutoEquipRecommendedGear;
+                            leveling = _support ? Plugin.SupportLeveling :
+                                            _trust && Plugin.TrustLeveling;
+                            var equip = Plugin.Configuration.AutoEquipRecommendedGear;
                             if (ImGui.Checkbox("Leveling", ref leveling))
                             {
                                 if (leveling)
@@ -331,19 +332,22 @@ namespace AutoDuty.Windows
                                     ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Plugin.Configuration.Trust);
                                     if (duty != null)
                                     {
-                                        _dutySelected                  = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
+                                        _dutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
                                         Plugin.CurrentTerritoryContent = duty;
 
                                         _dutySelected.SelectPath(out Plugin.CurrentPath);
 
                                         if (Plugin.Configuration.Support)
-                                            Plugin.SupportLeveling            = leveling;
+                                            Plugin.SupportLeveling = leveling;
                                         else if (Plugin.Configuration.Trust) 
                                             Plugin.TrustLeveling = leveling;
                                     }
                                 }
                                 else
                                 {
+                                    _dutySelected = null;
+                                    Plugin.MainListClicked = false;
+                                    Plugin.CurrentTerritoryContent = null;
                                     if (Plugin.Configuration.Support)
                                         Plugin.SupportLeveling = leveling;
                                     else if (Plugin.Configuration.Trust)
@@ -455,14 +459,12 @@ namespace AutoDuty.Windows
                         if (ImGui.Checkbox("Unsynced", ref Plugin.Configuration.Unsynced))
                             Plugin.Configuration.Save();
                     }
-                    using var d3 = ImRaii.Disabled(Plugin.LevelingEnabled);
-                    if (Plugin.LevelingEnabled)
-                        ImGui.TextWrapped("AutoDuty will automatically select the best dungeon");
-
-                    if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
                     
-                    if (Player.Available)
-                    if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
+                    if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
+
+                    if (leveling)
+                        ImGui.TextColored(new Vector4(0, 1, 0, 1), "Leveling Mode:\nAutoDuty will automatically select the best dungeon");
+                    else if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
                         if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)))
                         {

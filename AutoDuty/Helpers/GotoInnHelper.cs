@@ -23,8 +23,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany}");
                 GotoInnRunning = true;
                 _stop = false;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
@@ -63,7 +62,7 @@ namespace AutoDuty.Helpers
                     Svc.Log.Debug("Stopping GotoInn");
                     _stop = false;
                     GotoInnRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
                     Svc.Framework.Update -= GotoInnUpdate;
                 }
                 else if (Svc.Targets.Target != null)
@@ -77,7 +76,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
             {
                 Svc.Log.Debug($"AutoDuty has Started, Stopping GotoInn");
                 Stop();
