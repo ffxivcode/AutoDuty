@@ -964,8 +964,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (!ObjectHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled || (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !Configuration.UsingAlternativeRotationPlugin))
             return;
 
-        //if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0)
-            //ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
+        if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0 && InDungeon)
+            ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
         if (EzThrottler.Throttle("ClosestInteractableEventObject", 25) && MainWindow.CurrentTabName == "Build")
             ClosestInteractableEventObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.EventObj)?.FirstOrDefault(o => o.IsTargetable);
@@ -1250,9 +1250,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void StopAndResetALL()
     {
-        States &= ~State.Other;
-        States &= ~State.Navigating;
-        States &= ~State.Looping;
+        States = State.None;
         MainListClicked = false;
         CurrentLoop = 0;
         Chat.ExecuteCommand($"/vbmai off");
