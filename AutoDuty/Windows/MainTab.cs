@@ -324,6 +324,7 @@ namespace AutoDuty.Windows
                             var equip = Plugin.Configuration.AutoEquipRecommendedGear;
                             if (ImGui.Checkbox("Leveling", ref leveling))
                             {
+                                Svc.Log.Info("Leveling1");
                                 if (leveling)
                                 {
                                     if (equip)

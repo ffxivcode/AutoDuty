@@ -62,8 +62,8 @@ public sealed class AutoDuty : IDalamudPlugin
     internal bool TrustLevelingEnabled => Configuration.Trust && TrustLeveling;
 
     internal bool LevelingEnabled => (Configuration.Support || Configuration.Trust) &&
-                                     (Configuration.Support || SupportLevelingEnabled) &&
-                                     (!Configuration.Trust  || TrustLevelingEnabled);
+                                     (!Configuration.Support || SupportLevelingEnabled) &&
+                                     (!Configuration.Trust || TrustLevelingEnabled);
 
 
     internal static string Name => "AutoDuty";
@@ -289,7 +289,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 PathFile = $"{PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.Name?.Replace(":", "")}.json";
                 return;
             }
-            Svc.Log.Info($"{CurrentPath} {Player.Available}");
+            
             ContentPathsManager.DutyPath? path = CurrentPath < 0 && Player.Available ?
                                                      container.SelectPath(out CurrentPath) :
                                                      container.Paths[CurrentPath > -1 ? CurrentPath : 0];
@@ -920,6 +920,8 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (LevelingEnabled)
             {
+                Svc.Log.Info($"{(Configuration.Support || Configuration.Trust) && (Configuration.Support || SupportLevelingEnabled) && (!Configuration.Trust || TrustLevelingEnabled)} ({Configuration.Support} || {Configuration.Trust}) && ({Configuration.Support} || {SupportLevelingEnabled}) && ({!Configuration.Trust} || {TrustLevelingEnabled})");
+                Svc.Log.Info($"Leveling2 {LevelingEnabled} {SupportLeveling} {SupportLevelingEnabled} {TrustLeveling} {TrustLevelingEnabled}");
                 ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.Trust);
                 if (duty != null)
                 {
@@ -1255,6 +1257,8 @@ public sealed class AutoDuty : IDalamudPlugin
         CurrentLoop = 0;
         Chat.ExecuteCommand($"/vbmai off");
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+        if (Configuration.AutoManageRSRState)
+            ReflectionHelper.RotationSolver_Reflection.RotationStop();
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped)
