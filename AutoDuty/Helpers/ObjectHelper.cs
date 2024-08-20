@@ -112,7 +112,7 @@ namespace AutoDuty.Helpers
                 {
                     case JobRole.Tank:
                     case JobRole.Melee:
-                        radius = 3;
+                        radius = 2.6f;
                         break;
                 }
                 return radius;
@@ -130,7 +130,7 @@ namespace AutoDuty.Helpers
                 {
                     case JobRole.Tank:
                     case JobRole.Melee:
-                        radius = 3;
+                        radius = 2.6f;
                         break;
                 }
                 if (Player.Object.ClassJob.Id == 38)
