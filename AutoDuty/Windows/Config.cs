@@ -365,9 +365,9 @@ public class Configuration : IPluginConfiguration
                 SchedulerHelper.ScheduleAction("MaxDistanceToTargetRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => ObjectHelper.IsReady);
         }
     }
-    public float MaxDistanceToTarget = 2.6f;
-    public float MaxDistanceToTargetAoE = 12;
-    public float MaxDistanceToSlot = 1;
+    public float MaxDistanceToTargetFloat = 2.6f;
+    public float MaxDistanceToTargetAoEFloat = 12;
+    public float MaxDistanceToSlotFloat = 1;
     internal bool positionalRoleBased = true;
     public bool PositionalRoleBased
     {
@@ -503,8 +503,8 @@ public static class ConfigTab
             {
                 var followRole = Configuration.FollowRole;
                 var maxDistanceToTargetRoleBased = Configuration.MaxDistanceToTargetRoleBased;
-                var maxDistanceToTarget = Configuration.MaxDistanceToTarget;
-                var maxDistanceToTargetAoE = Configuration.MaxDistanceToTargetAoE;
+                var maxDistanceToTarget = Configuration.MaxDistanceToTargetFloat;
+                var MaxDistanceToTargetAoEFloat = Configuration.MaxDistanceToTargetAoEFloat;
                 var positionalRoleBased = Configuration.PositionalRoleBased;
 
                 using (var autoManageBossModAISettingsDisable = ImRaii.Disabled(!Configuration.autoManageBossModAISettings))
@@ -587,22 +587,22 @@ public static class ConfigTab
                         using (var d1 = ImRaii.Disabled(Configuration.MaxDistanceToTargetRoleBased))
                         {
                             ImGui.PushItemWidth(195);
-                            if (ImGui.SliderFloat("Max Distance To Target", ref Configuration.MaxDistanceToTarget, 1, 30))
+                            if (ImGui.SliderFloat("Max Distance To Target", ref Configuration.MaxDistanceToTargetFloat, 1, 30))
                             {
-                                Configuration.MaxDistanceToTarget = Math.Clamp(Configuration.MaxDistanceToTarget, 1, 30);
+                                Configuration.MaxDistanceToTargetFloat = Math.Clamp(Configuration.MaxDistanceToTargetFloat, 1, 30);
                                 Configuration.Save();
                             }
-                            if (ImGui.SliderFloat("Max Distance To Target AoE", ref Configuration.MaxDistanceToTargetAoE, 1, 10))
+                            if (ImGui.SliderFloat("Max Distance To Target AoE", ref Configuration.MaxDistanceToTargetAoEFloat, 1, 10))
                             {
-                                Configuration.MaxDistanceToTargetAoE = Math.Clamp(Configuration.MaxDistanceToTargetAoE, 1, 10);
+                                Configuration.MaxDistanceToTargetAoEFloat = Math.Clamp(Configuration.MaxDistanceToTargetAoEFloat, 1, 10);
                                 Configuration.Save();
                             }
                             ImGui.PopItemWidth();
                         }
                         ImGui.PushItemWidth(195);
-                        if (ImGui.SliderFloat("Max Distance To Slot", ref Configuration.MaxDistanceToSlot, 1, 30))
+                        if (ImGui.SliderFloat("Max Distance To Slot", ref Configuration.MaxDistanceToSlotFloat, 1, 30))
                             {
-                                Configuration.MaxDistanceToSlot = Math.Clamp(Configuration.MaxDistanceToSlot, 1, 30);
+                                Configuration.MaxDistanceToSlotFloat = Math.Clamp(Configuration.MaxDistanceToSlotFloat, 1, 30);
                                 Configuration.Save();
                             }
                         ImGui.PopItemWidth();
