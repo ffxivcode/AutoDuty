@@ -672,7 +672,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => !ObjectHelper.IsValid, "Run-WaitNotValid");
             TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Run-WaitValid");
         }
-        TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Run-WaitDutyStarted");
+        TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, "Run-WaitDutyStarted");
         TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run-WaitNavIsReady");
         TaskManager.Enqueue(() => StartNavigation(true), "Run-StartNavigation");
         CurrentLoop = 1;

@@ -74,12 +74,15 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
         }
 
-        public unsafe void ForceAttack(string timeoutTime = "10000")
+        public unsafe void ForceAttack(string timeoutTime)
         {
+            var tot = timeoutTime.IsNullOrEmpty() ? 10000 : int.TryParse(timeoutTime, out int time) ? time : 0;
+            if (timeoutTime.IsNullOrEmpty())
+                timeoutTime = "10000";
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack-GA16");
             _taskManager.Enqueue(() => Svc.Targets.Target != null, 500, "ForceAttack-GA1");
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1), "ForceAttack-GA1");
-            _taskManager.Enqueue(() => Player.Object.InCombat(), Convert.ToInt32(timeoutTime), "ForceAttack-WaitForCombat");
+            _taskManager.Enqueue(() => Player.Object.InCombat(), tot, "ForceAttack-WaitForCombat");
         }
 
         public unsafe void Jump(string automoveTime)
@@ -140,21 +143,29 @@ namespace AutoDuty.Managers
         public unsafe void WaitFor(string waitForWhat)
         {
             AutoDuty.Plugin.Action = $"WaitFor: {waitForWhat}";
-            switch (waitForWhat)
+            var waitForWhats = waitForWhat.Split('|');
+                
+            switch (waitForWhats[0])
             {
                 case "Combat":
-                    _taskManager.Enqueue(() => Player.Character->InCombat, int.MaxValue, "WaitFor");
+                    _taskManager.Enqueue(() => Player.Character->InCombat, int.MaxValue, "WaitFor-Combat");
                     break;
                 case "IsValid":
-                    _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500, "WaitFor");
-                    _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "WaitFor");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500, "WaitFor-NotIsValid");
+                    _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "WaitFor-IsValid");
                     break;
                 case "IsOccupied":
-                    _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, 500, "WaitFor");
-                    _taskManager.Enqueue(() => ObjectHelper.IsOccupied, int.MaxValue, "WaitFor");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, 500, "WaitFor-NotIsOccupied");
+                    _taskManager.Enqueue(() => ObjectHelper.IsOccupied, int.MaxValue, "WaitFor-IsOccupied");
                     break;
                 case "IsReady":
-                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "WaitFor");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "WaitFor-NotIsReady");
+                    _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "WaitFor-IsReady");
+                    break;
+                case "BNpcInRadius":
+                    if (waitForWhats.Length == 1)
+                        return;
+                    _taskManager.Enqueue(() => !(ObjectHelper.GetObjectsByRadius(int.TryParse(waitForWhats[1], out var radius) ? radius : 0)?.Count > 0), $"WaitFor-BNpcInRadius{waitForWhats[1]}");
                     _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "WaitFor");
                     break;
             }
@@ -219,12 +230,8 @@ namespace AutoDuty.Managers
 
         private unsafe bool InteractableCheck(IGameObject? gameObject)
         {
-            nint addon = Svc.GameGui.GetAddonByName("SelectYesno", 1);
-            if (addon > 0)
-            {
-                SelectYesno("Yes");
+            if (AddonHelper.ClickSelectYesno(true))
                 return true;
-            }
 
             if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid() || !ObjectHelper.IsValid)
                 return true;
@@ -280,7 +287,7 @@ namespace AutoDuty.Managers
                 if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
                     SchedulerHelper.ScheduleAction("InteractableEnableYesAlready",() => ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true), 5000);
                 if (PandorasBox_IPCSubscriber.IsEnabled)
-                    SchedulerHelper.ScheduleAction("InteractableEnablePandora", () => PandorasBox_IPCSubscriber.SetFeatureEnabled("Auto-interact with Objects in Instances", true), 5000);
+                    SchedulerHelper.ScheduleAction("InteractableEnablePandora", () => PandorasBox_IPCSubscriber.SetFeatureEnabled("Auto-interact with Objects in Instances", true), 15000);
             }, "Interactable-YesAlreadyPandoraSetEnableTrue");
         }
         public unsafe void Interactable(string objectName)

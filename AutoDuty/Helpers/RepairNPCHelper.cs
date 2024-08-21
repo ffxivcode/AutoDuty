@@ -79,7 +79,6 @@ namespace AutoDuty.Helpers
                     });
                 }
             }
-            RepairNPCs.ForEach(x => Svc.Log.Info($"{x.Name} {x.RepairIndex}"));
             cityENpcResidents = [];
         }
 
