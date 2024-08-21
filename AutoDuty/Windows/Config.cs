@@ -241,6 +241,7 @@ public class Configuration : IPluginConfiguration
     public LootMethod LootMethodEnum = LootMethod.AutoDuty;
     public bool LootBossTreasureOnly = false;
     public int TreasureCofferScanDistance = 25;
+    public bool OverridePartyValidation = false;
     public bool UsingAlternativeRotationPlugin = false;
     public bool UsingAlternativeMovementPlugin = false;
     public bool UsingAlternativeBossPlugin = false;
@@ -690,7 +691,12 @@ public static class ConfigTab
                 }
                 ImGui.Unindent();
             }
-            ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");         
+            ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");
+
+            if (ImGui.Checkbox("Override Party Validation", ref Configuration.OverridePartyValidation))
+                Configuration.Save();
+            ImGuiComponents.HelpMarker("AutoDuty will ignore your party makeup when queueing for duties\nThis is for Multi-Boxing Only\n*AutoDuty is not recommended to be used with other players*");
+
             /*/
         disabled for now
             using (var d0 = ImRaii.Disabled(true))
