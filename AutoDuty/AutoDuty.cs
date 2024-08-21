@@ -380,7 +380,6 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 TaskManager.Enqueue(() => 
                 {
-                    Svc.Log.Info("gothere");
                     if (StopLoop)
                     {
                         Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");

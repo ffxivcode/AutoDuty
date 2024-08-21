@@ -246,24 +246,16 @@ namespace AutoDuty.Managers
 
             return false;
         }
-        public unsafe void Interactable(string objectName)
+        private void Interactable(IGameObject? gameObject)
         {
-            IGameObject? gameObject = null;
-            AutoDuty.Plugin.Action = $"Interactable: {objectName}";
-
-            Match match = RegexHelper.InteractionObjectIdRegex().Match(objectName);
-            string id = match.Success ? match.Captures.First().Value : string.Empty;
-
-            _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null) ?? ObjectHelper.GetObjectByName(objectName)) != null, "Interactable");
-            _taskManager.Enqueue(() => gameObject?.IsTargetable ?? true, "Interactable");
-            _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable");
-            _taskManager.Enqueue(() => Player.Character->IsCasting, 500, "Interactable");
-            _taskManager.Enqueue(() => !Player.Character->IsCasting, "Interactable");
-            _taskManager.DelayNext(100);
+            _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable-InteractableCheck");
+            _taskManager.Enqueue(() => ObjectHelper.PlayerIsCasting, 500, "Interactable-WaitPlayerIsCasting");
+            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Interactable-WaitNotPlayerIsCasting");
+            _taskManager.DelayNext("Interactable-DelayNext100",100);
             _taskManager.Enqueue(() =>
             {
-                if ((bool)!gameObject?.IsTargetable ||
-                Svc.Condition[ConditionFlag.BetweenAreas] || 
+                if (!(gameObject?.IsTargetable ?? false) ||
+                Svc.Condition[ConditionFlag.BetweenAreas] ||
                 Svc.Condition[ConditionFlag.BetweenAreas51] ||
                 Svc.Condition[ConditionFlag.BeingMoved] ||
                 Svc.Condition[ConditionFlag.Jumping61] ||
@@ -274,15 +266,43 @@ namespace AutoDuty.Managers
                 Svc.Condition[ConditionFlag.Occupied33] ||
                 Svc.Condition[ConditionFlag.Occupied38] ||
                 Svc.Condition[ConditionFlag.Occupied39] ||
-                gameObject!?.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)
+                gameObject?.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)
                 {
                     AutoDuty.Plugin.Action = "";
                 }
                 else
                 {
-                    Interactable(objectName);
+                    Interactable(gameObject);
                 }
-            });
+            }, "Interactable-LoopCheck");
+            _taskManager.Enqueue(() =>
+            {
+                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                    SchedulerHelper.ScheduleAction("InteractableEnableYesAlready",() => ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true), 5000);
+                if (PandorasBox_IPCSubscriber.IsEnabled)
+                    SchedulerHelper.ScheduleAction("InteractableEnablePandora", () => PandorasBox_IPCSubscriber.SetFeatureEnabled("Auto-interact with Objects in Instances", true), 5000);
+            }, "Interactable-YesAlreadyPandoraSetEnableTrue");
+        }
+        public unsafe void Interactable(string objectName)
+        {
+            Svc.Log.Debug("Interactable-YesAlreadySetEnableFalse");
+            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
+                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
+
+            Svc.Log.Debug("Interactable-PandoraSetEnableFalse");
+            if (PandorasBox_IPCSubscriber.IsEnabled)
+                PandorasBox_IPCSubscriber.SetFeatureEnabled("Auto-interact with Objects in Instances", false);
+
+            IGameObject? gameObject = null;
+
+            AutoDuty.Plugin.Action = $"Interactable: {objectName}";
+
+            Match match = RegexHelper.InteractionObjectIdRegex().Match(objectName);
+            string id = match.Success ? match.Captures.First().Value : string.Empty;
+
+            _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null) ?? ObjectHelper.GetObjectByName(objectName)) != null, "Interactable-GetGameObject");
+            _taskManager.Enqueue(() => gameObject?.IsTargetable ?? true, "Interactable-WaitGameObjectTargetable");
+            _taskManager.Enqueue(() => Interactable(gameObject), "Interactable-InteractableLoop");
         }
 
         private bool BossCheck()
@@ -320,8 +340,9 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => { AutoDuty.Plugin.BossObject = null; }, "Boss-ClearBossObject");
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
+                _taskManager.DelayNext("Boss-TreasureDelay", 1000);
                 _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null, 1000, "Boss-FindTreasure");
-                _taskManager.Enqueue(() => MovementHelper.Move(treasureCofferObject, 0.25f, 1f), int.MaxValue, "Boss-MoveTreasure");
+                _taskManager.Enqueue(() => MovementHelper.Move(treasureCofferObject, 0.25f, 1f), 10000, "Boss-MoveTreasure");
                 _taskManager.DelayNext("Boss-WaitASecToLootChest", 1000);
             }
             _taskManager.DelayNext("Boss-Delay500", 500);
