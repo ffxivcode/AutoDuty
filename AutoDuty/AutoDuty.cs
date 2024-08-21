@@ -521,6 +521,10 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
+        if (Configuration.PlayEndSound)
+        {
+            SoundHelper.StartSound(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundEnum);
+        }
         if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
         {
             if (!Configuration.TerminationKeepActive)
