@@ -15,6 +15,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.GameHelpers;
 using static AutoDuty.Managers.ContentPathsManager;
+using ECommons.ImGuiMethods;
 
 namespace AutoDuty.Windows
 {
@@ -63,7 +64,7 @@ namespace AutoDuty.Windows
             if (MainWindow.CurrentTabName != "Build")
                 MainWindow.CurrentTabName = "Build";
             using var d = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage > 0 || !Player.Available);
-            ImGui.Text($"Build Path: ({Svc.ClientState.TerritoryType}) {(ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content) ? content.DisplayName : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))}");
+            ImGui.Text($"Build Path: ({Svc.ClientState.TerritoryType}) {(ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content) ? content.Name : TerritoryName.GetTerritoryName(Svc.ClientState.TerritoryType))}");
 
             string idText = $"({Svc.ClientState.TerritoryType}) ";
             ImGui.Text(idText);
@@ -71,6 +72,8 @@ namespace AutoDuty.Windows
             string path       = Path.GetFileName(Plugin.PathFile).Replace(idText, string.Empty).Replace(".json", string.Empty);
             string pathOrg    = path;
 
+            var textL = ImGui.CalcTextSize(".json");
+            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - textL.Length());
             if (ImGui.InputText("##BuildPathFileName", ref path, 100) && !path.Equals(pathOrg)) 
                 Plugin.PathFile = $"{Plugin.PathsDirectory.FullName}{Path.DirectorySeparatorChar}{idText}{path}.json";
 
@@ -85,7 +88,7 @@ namespace AutoDuty.Windows
                 Plugin.ListBoxPOSText.Add($"MoveTo|{GetPlayerPosition}|");
             }
             ImGui.SameLine(0, 5);
-            if (ImGui.Button("Add Action"))
+            if (ImGuiEx.ButtonWrapped("Add Action"))
             {
                 if (_showAddActionUI)
                     ClearAll();
@@ -135,13 +138,13 @@ namespace AutoDuty.Windows
                 ImGui.EndPopup();
             }
             ImGui.SameLine(0, 5);
-            if (ImGui.Button("Clear Path"))
+            if (ImGuiEx.ButtonWrapped("Clear Path"))
             {
                 Plugin.ListBoxPOSText.Clear();
                 ClearAll();
             }
             ImGui.SameLine(0, 5);
-            if (ImGui.Button("Save Path"))
+            if (ImGuiEx.ButtonWrapped("Save Path"))
             {
                 try
                 {
@@ -182,13 +185,14 @@ namespace AutoDuty.Windows
                 }
             }
             ImGui.SameLine(0, 5);
-            if (ImGui.Button("Load Path"))
+            if (ImGuiEx.ButtonWrapped("Load Path"))
             {
                 Plugin.LoadPath();
                 ClearAll();
             }
             ImGui.Text("Changelog:");
             ImGui.SameLine();
+            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
             ImGui.InputText("##Changelog", ref _changelog, 200);
             if (_showAddActionUI)
             {
@@ -199,7 +203,7 @@ namespace AutoDuty.Windows
                 ImGui.InputText(_inputTextName, ref _input, 100);
                 if (!_dropdownSelected.Item1.IsNullOrEmpty() && !_dropdownSelected.Item2.IsNullOrEmpty())
                     ImGui.SameLine(0, 5);
-                if (ImGui.Button(_addActionButton))
+                if (ImGuiEx.ButtonWrapped(_addActionButton))
                 {
                     if (_input.IsNullOrEmpty())
                     {
@@ -223,7 +227,7 @@ namespace AutoDuty.Windows
                 ImGui.Separator();
                 ImGui.Spacing();
             }
-            if (!ImGui.BeginListBox("##BuildList", new Vector2(355 * ImGuiHelpers.GlobalScale, 575 * ImGuiHelpers.GlobalScale))) return;
+            if (!ImGui.BeginListBox("##BuildList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
             try
             {
                 if (Plugin.InDungeon)
@@ -290,7 +294,7 @@ namespace AutoDuty.Windows
                     }
                 }
                 else
-                    ImGui.TextColored(new Vector4(0, 1, 0, 1), "You must enter a dungeon to Build a Path");
+                    ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "You must enter a dungeon to Build a Path");
             }
             catch (Exception) { }
             if (_scrollBottom)

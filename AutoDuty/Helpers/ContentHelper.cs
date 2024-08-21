@@ -10,6 +10,7 @@ using Lumina.Text;
 
 namespace AutoDuty.Helpers
 {
+    using Dalamud.Utility;
     using ECommons.GameHelpers;
     using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
@@ -28,7 +29,7 @@ namespace AutoDuty.Helpers
 
             internal string? Name { get; set; }
 
-            internal string? DisplayName { get; set; }
+            internal string? EnglishName { get; set; }
 
             internal uint TerritoryType { get; set; }
 
@@ -65,17 +66,10 @@ namespace AutoDuty.Helpers
 
         internal static void PopulateDuties()
         {
-            var listContentFinderCondition = Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>(Language.English);
-            var listContentFinderConditionDisplay =
-                Svc.Data.GameData.Options.DefaultExcelLanguage == Language.English ?
-                                                        listContentFinderCondition :
-                                                        Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>() ?? listContentFinderCondition;
-
-            var listDawnContent = Svc.Data.GameData.GetExcelSheet<DawnContent>(Language.English);
-
+            var listContentFinderCondition = Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>();
+            var listDawnContent = Svc.Data.GameData.GetExcelSheet<DawnContent>();
 
             if (listContentFinderCondition == null || listDawnContent == null) return;
-
 
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
@@ -84,16 +78,15 @@ namespace AutoDuty.Helpers
 
                 string CleanName(string name)
                 {
-                    string result = name;
-                    if (result[.. 3].Equals("the"))
-                        result = result.ReplaceFirst("the", "The");
-                    return result.Replace("--", "-").Replace("<italic(0)>", "").Replace("<italic(1)>", "");
+                    string result = char.ToUpper(name.First()) + name.Substring(1);
+                    return result;
                 }
 
                 var content = new Content
                 {
                     Id = contentFinderCondition.Content.Row,
-                    Name = CleanName(contentFinderCondition.Name.RawString),
+                    Name = CleanName(contentFinderCondition.Name.ExtractText()),
+                    EnglishName = CleanName(Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>(Language.English)!.GetRow(contentFinderCondition.RowId)!.Name.ExtractText()),
                     TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
                     ContentType = contentFinderCondition.ContentType.Value.RowId,
                     ContentMemberType = contentFinderCondition.ContentMemberType.Value?.RowId ?? 0,
@@ -109,9 +102,6 @@ namespace AutoDuty.Helpers
                     GCArmyContent = ListGCArmyContent.Any(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
                     GCArmyIndex = ListGCArmyContent.FindIndex(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId)
                 };
-
-                SeString? displayName = listContentFinderConditionDisplay?.GetRow(contentFinderCondition.RowId)?.Name;
-                content.DisplayName = displayName != null ? CleanName(displayName) : content.Name;
 
                 if (content.DawnContent && listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).Any())
                     content.DawnIndex = listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId < 32 ? (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId : (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId - 200;
