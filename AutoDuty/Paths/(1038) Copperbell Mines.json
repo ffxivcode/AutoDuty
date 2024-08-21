@@ -34,9 +34,9 @@
     "Interactable|1.84, -37.98, 113.05|2001538 (Powder Chamber)",
     "Interactable|4.85, -38.02, 110.96|2001534 (Blasting Device)",
     "Wait|0, 0, 0|4000",
-    "ExecuteCommand|0, 0, 0|/vbm cfg AIConfig ForbidMovement true",
+    "ChatCommand|0, 0, 0|/vbm cfg AIConfig ForbidMovement true",
     "TreasureCoffer|-65.28, -42.00, 167.21|",
-    "ExecuteCommand|-72.26, -38.17, 107.74|/vbm cfg AIConfig ForbidMovement true",
+    "ChatCommand|-72.26, -38.17, 107.74|/vbm cfg AIConfig ForbidMovement false",
     "Boss|-98.82, -57.88, 6.80|"
   ],
   "meta": {
