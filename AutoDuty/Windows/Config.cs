@@ -288,6 +288,7 @@ public class Configuration : IPluginConfiguration
     }
     public int AutoGCTurninSlotsLeft = 5;
     public bool AutoGCTurninSlotsLeftBool = false;
+    public bool AutoGCTurninUseTicket = false;
     public bool EnableAutoRetainer = false;
     public SummoningBellLocations PreferredSummoningBellEnum = 0;
     public bool AM = false;
@@ -908,6 +909,10 @@ public static class ConfigTab
                             }
                         }
                         ImGui.PopItemWidth();
+                    }
+                    if (ImGui.Checkbox("Use GC Aetheryte Ticket", ref Configuration.AutoGCTurninUseTicket))
+                    {
+                        Configuration.Save();
                     }
                     ImGui.Unindent();
                 }
