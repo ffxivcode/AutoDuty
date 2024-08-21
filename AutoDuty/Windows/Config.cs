@@ -236,6 +236,7 @@ public class Configuration : IPluginConfiguration
             HideBossModAIConfig = !value;
         }
     }
+    public bool AutoManageVnavAlignCamera = true;
     public bool LootTreasure = true;
     public LootMethod LootMethodEnum = LootMethod.AutoDuty;
     public bool LootBossTreasureOnly = false;
@@ -499,8 +500,13 @@ public static class ConfigTab
             if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref Configuration.autoManageBossModAISettings))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Autoduty will enable BMAI and any options you configure at the start of each duty.");
-            //ImGui.SameLine(0, 5);
+
+            if (ImGui.Checkbox("Auto Manage Vnav Align Camera", ref Configuration.AutoManageVnavAlignCamera))
+                Configuration.Save();
+            ImGuiComponents.HelpMarker("Autoduty will enable AlignCamera in VNav at the start of each duty, and disable it when done if it was not set.");
             
+            //ImGui.SameLine(0, 5);
+
             if (Configuration.autoManageBossModAISettings == true)
             {
                 var followRole = Configuration.FollowRole;

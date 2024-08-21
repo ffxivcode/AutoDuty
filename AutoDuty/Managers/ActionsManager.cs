@@ -6,11 +6,9 @@ using ECommons;
 using ECommons.Automation;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
-using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Data.Parsing.Scene;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,9 +117,12 @@ namespace AutoDuty.Managers
             if (!Player.Available)
                 return;
             AutoDuty.Plugin.Action = $"AutoMove For {wait}";
+            var movementMode = Svc.GameConfig.UiControl.TryGetUInt("MoveMode", out var mode) ? mode : 0;
+            _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 0); });
             _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "AutoMove");
             _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "AutoMove");
-            _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(wait), "AutoMove");
+            _taskManager.Enqueue(() => EzThrottler.Check("AutoMove") || !ObjectHelper.IsReady, Convert.ToInt32(wait), "AutoMove");
+            _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 1); });
             _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "AutoMove");
             _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "AutoMove");
         }

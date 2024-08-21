@@ -139,6 +139,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private bool _messageSender = false;
     private bool _recentlyWatchedCutscene = false;
     private bool _lootTreasure;
+    private bool _vnavAlignCameraState = false;
 
     public AutoDuty()
     {
@@ -190,7 +191,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 SchedulerHelper.ScheduleAction("ShowOverlay", () => Overlay.IsOpen = true, () => ObjectHelper.IsReady);
 
             if (Configuration.ShowMainWindowOnStartup)
-                OpenMainUI();
+                SchedulerHelper.ScheduleAction("ShowMainWindowOnStartup", () => OpenMainUI(), () => ObjectHelper.IsReady);
 
             Svc.Commands.AddHandler("/ad", new CommandInfo(OnCommand) { });
             Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
@@ -232,6 +233,8 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.DutyState.DutyWiped += DutyState_DutyWiped;
             Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
             Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
+
+            _vnavAlignCameraState = VNavmesh_IPCSubscriber.Path_GetAlignCamera();
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
@@ -523,6 +526,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
+        if (!_vnavAlignCameraState && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
+            VNavmesh_IPCSubscriber.Path_SetAlignCamera(false);
+        
         if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
         {
             if (!Configuration.TerminationKeepActive)
@@ -699,7 +705,8 @@ public sealed class AutoDuty : IDalamudPlugin
         Stage = Stage.Reading_Path;
         States |= State.Navigating;
         StopForCombat = true;
-        Chat.ExecuteCommand($"/vnav aligncamera enable");
+        if (Configuration.AutoManageVnavAlignCamera && !VNavmesh_IPCSubscriber.Path_GetAlignCamera())
+            VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
         Chat.ExecuteCommand($"/vbmai on");
         if (Configuration.AutoManageBossModAISettings)
@@ -1252,6 +1259,8 @@ public sealed class AutoDuty : IDalamudPlugin
         CurrentLoop = 0;
         Chat.ExecuteCommand($"/vbmai off");
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+        if (!_vnavAlignCameraState && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
+            VNavmesh_IPCSubscriber.Path_SetAlignCamera(false);
         if (Configuration.AutoManageRSRState)
             ReflectionHelper.RotationSolver_Reflection.RotationStop();
         if (Indexer > 0 && !MainListClicked)

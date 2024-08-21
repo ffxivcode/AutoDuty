@@ -143,7 +143,7 @@ namespace AutoDuty.Windows
                                 ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
                             }
                         }
-                        if (!ImGui.BeginListBox("##MainList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
+                        if (!ImGui.BeginListBox("##MainList", new Vector2(325 * ImGuiHelpers.GlobalScale, 375 * ImGuiHelpers.GlobalScale))) return;
 
                         if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || Plugin.Configuration.UsingAlternativeRotationPlugin))
                         {
@@ -283,7 +283,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    ImGui.SameLine(0, 5);
+                    //ImGui.SameLine(0, 5);
                     if (ImGui.Checkbox("Trial", ref Plugin.Configuration.trial))
                     {
                         if (Plugin.Configuration.trial)
@@ -293,7 +293,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                         }
                     }
-                    //ImGui.SameLine(0, 5);
+                    ImGui.SameLine(0, 5);
                     if (ImGui.Checkbox("Raid", ref Plugin.Configuration.raid))
                     {
                         if (Plugin.Configuration.raid)
@@ -466,7 +466,7 @@ namespace AutoDuty.Windows
                             Plugin.Configuration.Save();
                     }
                     
-                    if (!ImGui.BeginListBox("##DutyList", new Vector2(355 * ImGuiHelpers.GlobalScale, 425 * ImGuiHelpers.GlobalScale))) return;
+                    if (!ImGui.BeginListBox("##DutyList", new Vector2(325 * ImGuiHelpers.GlobalScale, 375 * ImGuiHelpers.GlobalScale))) return;
 
                     if (leveling)
                         ImGui.TextColored(new Vector4(0, 1, 0, 1), "Leveling Mode:\nAutoDuty will automatically select the best dungeon");
