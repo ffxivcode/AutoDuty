@@ -1178,7 +1178,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     if (Svc.Targets.Target == null && EzThrottler.Throttle("TargetCheck"))
                     {
                         //find and target closest attackable npc, if we are not targeting
-                        var gos = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateColor(o.Address) is 9 or 11 && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
+                        var gos = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateKind(o) is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
 
                         if (gos != null)
                             Svc.Targets.Target = gos;
