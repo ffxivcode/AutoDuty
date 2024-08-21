@@ -150,6 +150,7 @@ public sealed class AutoDuty : IDalamudPlugin
             ECommonsMain.Init(PluginInterface, this, Module.DalamudReflector, Module.ObjectFunctions);
 
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            SoundHelper.UpdateAudio(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundPath, Configuration.CustomSoundVolume);
 
             _configDirectory = PluginInterface.ConfigDirectory;
             PathsDirectory = new(_configDirectory.FullName + "/paths");
