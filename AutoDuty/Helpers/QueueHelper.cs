@@ -21,8 +21,7 @@ namespace AutoDuty.Helpers
                 _content = content;
                 Svc.Log.Info($"Queueing: {content.Name}");
                 QueueRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 Svc.Framework.Update += QueueUpdate;
             }
         }
@@ -34,7 +33,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Done Queueing: {_content?.Name}");
             _content = null;
             QueueRunning = false;
-            AutoDuty.Plugin.States -= State.Other;
+            AutoDuty.Plugin.States &= ~State.Other;
             _allConditionsMetToJoin = false;
         }
 

@@ -18,8 +18,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto {whichHousing} Started");
                 GotoHousingRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 _whichHousing = whichHousing;
                 SchedulerHelper.ScheduleAction("GotoHousingTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoHousingUpdate;
@@ -88,13 +87,13 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     GotoHousingRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
                     Svc.Framework.Update -= GotoHousingUpdate;
                 }
                 return;
             }
 
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
             {
                 Svc.Log.Debug($"AutoDuty has Started, Stopping GotoHousing");
                 Stop();

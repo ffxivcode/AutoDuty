@@ -1,7 +1,6 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
-using ECommons.GameHelpers;
 using ECommons.GameFunctions;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
@@ -112,7 +111,7 @@ namespace AutoDuty.Helpers
                 {
                     case JobRole.Tank:
                     case JobRole.Melee:
-                        radius = 3;
+                        radius = 2.6f;
                         break;
                 }
                 return radius;
@@ -130,7 +129,7 @@ namespace AutoDuty.Helpers
                 {
                     case JobRole.Tank:
                     case JobRole.Melee:
-                        radius = 3;
+                        radius = 2.6f;
                         break;
                 }
                 if (Player.Object.ClassJob.Id == 38)

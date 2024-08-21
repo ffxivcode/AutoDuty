@@ -40,6 +40,7 @@ namespace AutoDuty.Windows
             var _trial = Plugin.Configuration.Trial;
             var _raid = Plugin.Configuration.Raid;
             var _variant = Plugin.Configuration.Variant;
+            var leveling = false;
 
             void DrawPathSelection()
             {
@@ -48,7 +49,7 @@ namespace AutoDuty.Windows
 
                 using var d = ImRaii.Disabled(Plugin is { InDungeon: true, Stage: > 0 });
 
-                if (ContentPathsManager.DictionaryPaths.TryGetValue(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0, out var container))
+                if (ContentPathsManager.DictionaryPaths.TryGetValue(Plugin.CurrentTerritoryContent.TerritoryType, out var container))
                 {
                     List<ContentPathsManager.DutyPath> curPaths = container.Paths;
                     if (curPaths.Count > 1)
@@ -81,155 +82,132 @@ namespace AutoDuty.Windows
                 }
             }
 
-            if (Plugin.InDungeon && Plugin.CurrentTerritoryContent != null)
+            if (Plugin.InDungeon)
             {
-                var progress = VNavmesh_IPCSubscriber.IsEnabled ? VNavmesh_IPCSubscriber.Nav_BuildProgress() : 0;
-                if (progress >= 0)
-                {
-                    ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loading: ");
-                    ImGui.ProgressBar(progress, new(200, 0));
-                }
+                if (Plugin.CurrentTerritoryContent == null)
+                    Plugin.LoadPath();
                 else
-                    ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loaded Path: {(ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
-
-                ImGui.Separator();
-                ImGui.Spacing();
-
-                DrawPathSelection();
-                if (!Plugin.Running && !Plugin.Overlay.IsOpen)
-                    MainWindow.GotoAndActions();
-                using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                 {
-                    using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
+                    var progress = VNavmesh_IPCSubscriber.IsEnabled ? VNavmesh_IPCSubscriber.Nav_BuildProgress() : 0;
+                    if (progress >= 0)
                     {
-                        if (ImGui.Button("Start"))
-                        {
-                            Plugin.LoadPath();
-                            _currentStepIndex = -1;
-                            if (Plugin.MainListClicked)
-                                Plugin.StartNavigation(!Plugin.MainListClicked);
-                            else
-                                Plugin.Run(Svc.ClientState.TerritoryType);
-                        }
-                        ImGui.SameLine(0, 15);
-                    }
-                    ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                    if (Plugin.Configuration.UseSliderInputs)
-                    {
-                        if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 1, 100))
-                        {
-                            if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
-                        Plugin.Configuration.Save();
-                        }
+                        ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loading: ");
+                        ImGui.ProgressBar(progress, new(200, 0));
                     }
                     else
-                    {
-                        if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
-                        {
-                            if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
-                        Plugin.Configuration.Save();
-                        }
-                    }
-                    ImGui.PopItemWidth();
-                    ImGui.SameLine(0, 5);
-                    using (var d2 = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage == 0))
-                    {
-                        MainWindow.StopResumePause();
-                        if (Plugin.Started)
-                        {
-                            //ImGui.SameLine(0, 5);
-                            ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
-                        }
-                    }
-                    if (!ImGui.BeginListBox("##MainList", new Vector2(ImGui.GetContentRegionAvail().X, 425 * ImGuiHelpers.GlobalScale))) return;
+                        ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loaded Path: {(ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
 
-                    if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || Plugin.Configuration.UsingAlternativeRotationPlugin))
+                    ImGui.Separator();
+                    ImGui.Spacing();
+
+                    DrawPathSelection();
+                    if (!Plugin.States.HasFlag(State.Looping) && !Plugin.Overlay.IsOpen)
+                        MainWindow.GotoAndActions();
+                    using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                     {
-                        foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
+                        using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
                         {
-                            Vector4 v4 = new();
-                            if (item.index == Plugin.Indexer)
-                                v4 = new Vector4(0, 255, 0, 1);
-                            else
-                                v4 = new Vector4(255, 255, 255, 1);
-                            ImGui.TextColored(v4, item.name);
-                            if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
+                            if (ImGui.Button("Start"))
                             {
-                                if (item.index == Plugin.Indexer)
-                                {
-                                    Plugin.Indexer = -1;
-                                    Plugin.MainListClicked = false;
-                                }
+                                Plugin.LoadPath();
+                                _currentStepIndex = -1;
+                                if (Plugin.MainListClicked)
+                                    Plugin.StartNavigation(!Plugin.MainListClicked);
                                 else
-                                {
-                                    Plugin.Indexer = item.index;
-                                    Plugin.MainListClicked = true;
-                                }
+                                    Plugin.Run(Svc.ClientState.TerritoryType);
                             }
+                            ImGui.SameLine(0, 15);
                         }
-                        if (_currentStepIndex != Plugin.Indexer && _currentStepIndex > -1 && Plugin.Stage > 0)
+                        ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+                        if (Plugin.Configuration.UseSliderInputs)
                         {
-                            var lineHeight = ImGui.GetTextLineHeightWithSpacing();
-                            _currentStepIndex = Plugin.Indexer;
-                            if (_currentStepIndex > 1)
-                                ImGui.SetScrollY((_currentStepIndex - 1) * lineHeight);
-                        }
-                        else if (_currentStepIndex == -1 && Plugin.Stage > 0)
-                        {
-                            _currentStepIndex = 0;
-                            ImGui.SetScrollY(_currentStepIndex);
-                        }
-                        if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count < 1 && !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
-                        {
-                            ImGuiEx.TextWrapped(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n\n" +
-                                $"{TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryContent.TerritoryType).Split('|')[1].Trim()}({Plugin.CurrentTerritoryContent.TerritoryType}.json) in the Paths Folder:\n\n" +
-                                $"{Plugin.PathsDirectory.FullName.Replace('\\', '/')}\n\n" +
-                                $"You can check if a path is available for download at:\n");
-
-                            var oldScale = ImGui.GetIO().FontGlobalScale;
-                            ImGui.GetIO().FontGlobalScale = 0.80f;
-                            using (var f = ImRaii.PushFont(ImGui.GetFont()))
+                            if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 1, 100))
                             {
-                                ImGui.SetCursorPosX(ImGui.GetCursorPosX());
-                                var x = ImGui.GetCursorPosX();
-                                var textSize = ImGui.CalcTextSize(_pathsURL);
-                                if (ImGui.InvisibleButton("pathUrlLink", new Vector2(textSize.X, textSize.Y)))
-                                {
-                                    Util.OpenLink(_pathsURL);
-                                }
-                                ImGui.SameLine();
-                                ImGui.SetCursorPosX(x);
-                                ImGuiEx.TextUnderlined(ImGuiColors.TankBlue, $"{_pathsURL}");
-                                if (ImGui.IsItemHovered())
-                                {
-                                    ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-                                }
-                                ImGui.GetIO().FontGlobalScale = oldScale;
+                                if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
+                                Plugin.Configuration.Save();
                             }
-
-                            ImGuiEx.TextWrapped(new Vector4(0, 255, 0, 1), $"\nOr create in the Build tab.");
                         }
+                        else
+                        {
+                            if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
+                            {
+                                if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
+                                Plugin.Configuration.Save();
+                            }
+                        }
+                        ImGui.PopItemWidth();
+                        ImGui.SameLine(0, 5);
+                        using (var d2 = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage == 0))
+                        {
+                            MainWindow.StopResumePause();
+                            if (Plugin.States.HasFlag(State.Navigating))
+                            {
+                                //ImGui.SameLine(0, 5);
+                                ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
+                            }
+                        }
+                        if (!ImGui.BeginListBox("##MainList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
+
+                        if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || Plugin.Configuration.UsingAlternativeRotationPlugin))
+                        {
+                            foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
+                            {
+                                Vector4 v4 = new();
+                                if (item.index == Plugin.Indexer)
+                                    v4 = new Vector4(0, 255, 0, 1);
+                                else
+                                    v4 = new Vector4(255, 255, 255, 1);
+                                ImGui.TextColored(v4, item.name);
+                                if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
+                                {
+                                    if (item.index == Plugin.Indexer)
+                                    {
+                                        Plugin.Indexer = -1;
+                                        Plugin.MainListClicked = false;
+                                    }
+                                    else
+                                    {
+                                        Plugin.Indexer = item.index;
+                                        Plugin.MainListClicked = true;
+                                    }
+                                }
+                            }
+                            if (_currentStepIndex != Plugin.Indexer && _currentStepIndex > -1 && Plugin.Stage > 0)
+                            {
+                                var lineHeight = ImGui.GetTextLineHeightWithSpacing();
+                                _currentStepIndex = Plugin.Indexer;
+                                if (_currentStepIndex > 1)
+                                    ImGui.SetScrollY((_currentStepIndex - 1) * lineHeight);
+                            }
+                            else if (_currentStepIndex == -1 && Plugin.Stage > 0)
+                            {
+                                _currentStepIndex = 0;
+                                ImGui.SetScrollY(_currentStepIndex);
+                            }
+                            if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count < 1 && !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
+                                ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryContent.TerritoryType).Split('|')[1].Trim()}\n({Plugin.CurrentTerritoryContent.TerritoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory.FullName.Replace('\\', '/')}\nPlease download from:\n{_pathsURL}\nor Create in the Build Tab");
+                        }
+                        else
+                        {
+                            if (!VNavmesh_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeMovementPlugin)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                            if (!BossMod_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeBossPlugin)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                            if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !Plugin.Configuration.UsingAlternativeRotationPlugin)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires Rotation Solver plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json");
+                        }
+                        ImGui.EndListBox();
                     }
-                    else
-                    {
-                        if (!VNavmesh_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeMovementPlugin)
-                            ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
-                        if (!BossMod_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeBossPlugin)
-                            ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
-                        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !Plugin.Configuration.UsingAlternativeRotationPlugin)
-                            ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires Rotation Solver plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json");
-                    }
-                    ImGui.EndListBox();
                 }
             }
             else
             {
-                if (!Plugin.Running && !Plugin.Overlay.IsOpen)
+                if (!Plugin.States.HasFlag(State.Looping) && !Plugin.Overlay.IsOpen)
                     MainWindow.GotoAndActions();
 
-                using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.Trust && Plugin.Configuration.SelectedTrustMembers.Count(x => x is null) > 0)))
+                using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.Trust && Plugin.Configuration.SelectedTrustMembers.Any(x => x is null))))
                 {
-                    if (!Plugin.Running)
+                    if (!Plugin.States.HasFlag(State.Looping))
                     {
                         if (ImGui.Button("Run"))
                         {
@@ -237,10 +215,10 @@ namespace AutoDuty.Windows
                                 MainWindow.ShowPopup("Error", "You must select a version\nof the dungeon to run");
                             else if (Svc.Party.PartyId > 0 && (Plugin.Configuration.Support || Plugin.Configuration.Squadron || Plugin.Configuration.Trust))
                                 MainWindow.ShowPopup("Error", "You must not be in a party to run Support, Squadron or Trust");
-                            else if (Svc.Party.PartyId == 0 && Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced)
+                            else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !Plugin.Configuration.OverridePartyValidation && Svc.Party.PartyId == 0)
                                 MainWindow.ShowPopup("Error", "You must be in a group of 4 to run Regular Duties");
-                            else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !ObjectHelper.PartyValidation())
-                                MainWindow.ShowPopup("Error", "You must have the correcty party makeup to run Regular Duties");
+                            else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !Plugin.Configuration.OverridePartyValidation && !ObjectHelper.PartyValidation())
+                                MainWindow.ShowPopup("Error", "You must have the correct party makeup to run Regular Duties");
                             else if (ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
                                 Plugin.Run();
                             else
@@ -250,9 +228,9 @@ namespace AutoDuty.Windows
                     else
                         MainWindow.StopResumePause();
                 }
-                using (var d1 = ImRaii.Disabled(Plugin.Running))
+                using (ImRaii.Disabled(Plugin.States.HasFlag(State.Looping)))
                 {
-                    using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
+                    using (ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                     {
                         ImGui.SameLine(0, 15);
                         ImGui.PushItemWidth(200 * ImGuiHelpers.GlobalScale);
@@ -350,13 +328,13 @@ namespace AutoDuty.Windows
 
                         if (Plugin.Configuration.Support || Plugin.Configuration.Trust)
                         {
-                            ImGui.SameLine();
-                            bool leveling = _support ? Plugin.SupportLeveling :
-                                            _trust   ? Plugin.TrustLeveling : false;
+                            leveling =  _support ? Plugin.SupportLeveling :
+                                        _trust   ? Plugin.TrustLeveling : false;
                             bool equip = Plugin.Configuration.AutoEquipRecommendedGear;
 
                             if (ImGuiEx.CheckboxWrapped("Leveling", ref leveling))
                             {
+                                Svc.Log.Info("Leveling1");
                                 if (leveling)
                                 {
                                     if (equip)
@@ -378,6 +356,9 @@ namespace AutoDuty.Windows
                                 }
                                 else
                                 {
+                                    _dutySelected = null;
+                                    Plugin.MainListClicked = false;
+                                    Plugin.CurrentTerritoryContent = null;
                                     if (Plugin.Configuration.Support)
                                         Plugin.SupportLeveling = leveling;
                                     else if (Plugin.Configuration.Trust)
@@ -492,14 +473,15 @@ namespace AutoDuty.Windows
                         if (ImGuiEx.CheckboxWrapped("Unsynced", ref Plugin.Configuration.Unsynced))
                             Plugin.Configuration.Save();
                     }
-                    using var d3 = ImRaii.Disabled(Plugin.LevelingEnabled);
-                    if (Plugin.LevelingEnabled)
-                        ImGui.TextWrapped("AutoDuty will automatically select the best dungeon");
-
-                    if (!ImGui.BeginListBox("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, 425 * ImGuiHelpers.GlobalScale))) return;
                     
-                    if (Player.Available)
-                    if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
+                    if (!ImGui.BeginListBox("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
+
+                    if (Player.Job.GetRole() == CombatRole.NonCombat)
+                        ImGuiEx.TextWrapped(new Vector4(255, 1, 0, 1), "Please switch to a combat job to use AutoDuty.");
+
+                    if (leveling)
+                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Leveling Mode:\nAutoDuty will automatically select the best dungeon");
+                    else if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
                         if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)))
                         {
@@ -550,18 +532,16 @@ namespace AutoDuty.Windows
                         }
                         else
                         {
-                            if (Player.Job.GetRole() == CombatRole.NonCombat || Player.Job == Job.BLU)
-                                ImGui.TextColored(new Vector4(255, 1, 0, 1), "Friendly reminder that AutoDuty sadly does NOT work \nwhen playing as a DoH or DoL!!!");
                             if (Player.Job == Job.BLU)
-                                ImGui.TextColored(new Vector4(0, 1, 1, 1), "OR BLUE MAGE... REALLY!?");
+                                ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), "Blue Mage cannot run Trust, Duty Support, Squadron or Variant dungeons. Please switch jobs or select a different category.");
                         }
                     }
                     else
                     {
                         if (!VNavmesh_IPCSubscriber.IsEnabled)
-                            ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nFor proper navigation and movement\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                            ImGuiEx.TextWrapped(new Vector4(255, 0, 0, 1), "AutoDuty requires vnavmesh plugin to be installed and loaded for proper navigation and movement. Please add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
                         if (!BossMod_IPCSubscriber.IsEnabled)
-                            ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nFor proper named mechanic handling\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
+                            ImGuiEx.TextWrapped(new Vector4(255, 0, 0, 1), "AutoDuty requires BossMod plugin to be installed and loaded for proper mechanic handling. Please add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
                     }
                     ImGui.EndListBox();
                 }
