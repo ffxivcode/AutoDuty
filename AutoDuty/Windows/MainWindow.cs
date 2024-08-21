@@ -330,7 +330,7 @@ public class MainWindow : Window, IDisposable
             return data[0];
         }
     }
-    public static void EzTabBar(string id, string KoFiTransparent, string openTabName, ImGuiTabBarFlags flags, params (string name, Action function, Vector4? color, bool child)[] tabs)
+    public static void EzTabBar(string id, string? KoFiTransparent, string openTabName, ImGuiTabBarFlags flags, params (string name, Action function, Vector4? color, bool child)[] tabs)
     {
         ImGui.BeginTabBar(id, flags);
         foreach (var x in tabs)
@@ -363,7 +363,7 @@ public class MainWindow : Window, IDisposable
         ImGui.EndTabBar();
     }
 
-    private static List<(string, Action, Vector4?, bool)> tabList =
+    private static readonly List<(string, Action, Vector4?, bool)> tabList =
         [("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Info", InfoTab.Draw, null, false), ("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)
         ];
 
