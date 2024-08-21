@@ -16,7 +16,6 @@ using static AutoDuty.AutoDuty;
 
 namespace AutoDuty.Windows
 {
-    using Dalamud.Interface.Colors;
     using Dalamud.Interface.Components;
     using Dalamud.Utility;
     using ECommons.ExcelServices;
