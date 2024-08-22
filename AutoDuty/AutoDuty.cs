@@ -34,6 +34,7 @@ using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using static AutoDuty.Windows.ConfigTab;
+using AutoDuty.Properties;
 
 namespace AutoDuty;
 
@@ -301,7 +302,7 @@ public sealed class AutoDuty : IDalamudPlugin
             PathFile       = path?.FilePath ?? "";
             ListBoxPOSText = [.. path?.Actions];
 
-            //Svc.Log.Info("Loading Path: " + CurrentPath);
+            Svc.Log.Info("Loading Path: " + CurrentPath);
         }
         catch (Exception e)
         {
@@ -710,8 +711,8 @@ public sealed class AutoDuty : IDalamudPlugin
         Chat.ExecuteCommand($"/vbmai on");
         if (Configuration.AutoManageBossModAISettings)
             SetBMSettings();
-        if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
-            ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+        if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+            SetRotationPluginSettings(true);
         if (Configuration.LootTreasure)
         {
             if (PandorasBox_IPCSubscriber.IsEnabled)
@@ -739,14 +740,50 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (!ExitDutyHelper.ExitDutyRunning)
                 ExitDuty();
-            if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
-                ReflectionHelper.RotationSolver_Reflection.RotationStop();
+            if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+                SetRotationPluginSettings(true);
             Chat.ExecuteCommand($"/vbmai off");
             Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
             States &= ~State.Navigating;
         }
         else
             Stage = Stage.Stopped;
+    }
+
+    private void SetRotationPluginSettings(bool on)
+    {
+        if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+        {
+            if (on)
+                ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+            else
+                ReflectionHelper.RotationSolver_Reflection.RotationStop();
+        }
+        else if (BossMod_IPCSubscriber.IsEnabled)
+        {
+            if (on)
+            {
+                //check if our preset does not exist
+                if (BossMod_IPCSubscriber.Presets_Get("AutoDuty") == null)
+                {
+                    //load it
+                    Svc.Log.Debug($"AutoDuty Preset Loaded: {BossMod_IPCSubscriber.Presets_Create(Resources.AutoDutyPreset, true)}");
+                }
+
+                //set it as the active preset for both
+                if (BossMod_IPCSubscriber.Presets_GetActive() != "AutoDuty")
+                    BossMod_IPCSubscriber.Presets_SetActive("AutoDuty");
+
+                if (BossMod_IPCSubscriber.AI_GetPreset() != "AutoDuty")
+                    BossMod_IPCSubscriber.AI_SetPreset("AutoDuty");
+            }
+            else
+            {
+                //clear autorot preset
+                if (!BossMod_IPCSubscriber.Presets_GetActive().IsNullOrEmpty())
+                    BossMod_IPCSubscriber.Presets_ClearActive();
+            }
+        }
     }
 
     internal void SetBMSettings()
@@ -1092,8 +1129,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 Action = $"{Plugin.ListBoxPOSText[Indexer]}";
                 if (Player.Object.InCombat() && Plugin.StopForCombat)
                 {
-                    if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
-                        ReflectionHelper.RotationSolver_Reflection.RotationAuto();
                     VNavmesh_IPCSubscriber.Path_Stop();
                     Stage = Stage.Waiting_For_Combat;
                     break;
@@ -1146,9 +1181,6 @@ public sealed class AutoDuty : IDalamudPlugin
             case Stage.Action:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
-
-                if (Configuration.AutoManageRSRState && !Configuration.UsingAlternativeRotationPlugin)
-                    ReflectionHelper.RotationSolver_Reflection.RotationAuto();
 
                 if (!TaskManager.IsBusy)
                 {
@@ -1260,8 +1292,8 @@ public sealed class AutoDuty : IDalamudPlugin
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         if (!_vnavAlignCameraState && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             VNavmesh_IPCSubscriber.Path_SetAlignCamera(false);
-        if (Configuration.AutoManageRSRState)
-            ReflectionHelper.RotationSolver_Reflection.RotationStop();
+        if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+            SetRotationPluginSettings(true);
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped)

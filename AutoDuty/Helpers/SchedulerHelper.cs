@@ -30,7 +30,7 @@ namespace AutoDuty.Helpers
 
         private static void ScheduleAction(string name, List<Action> action, Func<bool>? condition, int timeMS, bool runOnce = true)
         {
-            if (!Schedules.TryAdd(name, new Schedule() { Action = action, Condition = condition, TimeMS = Environment.TickCount + timeMS, RunOnce = runOnce }))
+            if (!Schedules.TryAdd(name, new Schedule() { Action = action, Condition = condition, TimeMS = timeMS > 0 ?Environment.TickCount + timeMS : 0, RunOnce = runOnce }))
             {
                 Svc.Log.Debug($"SchedulerHelper - {name} already exists in SchedulerQueue, updating");
                 Schedules.Remove(name);

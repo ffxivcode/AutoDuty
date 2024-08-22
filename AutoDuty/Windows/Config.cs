@@ -225,7 +225,7 @@ public class Configuration : IPluginConfiguration
 
     //Duty Config Options
     public bool AutoExitDuty = true;
-    public bool AutoManageRSRState = true;
+    public bool AutoManageRotationPluginState = true;
     internal bool autoManageBossModAISettings = true;
     public bool AutoManageBossModAISettings
     {
@@ -494,9 +494,9 @@ public static class ConfigTab
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will automatically exit the dungeon upon completion of the path.");
 
-            if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref Configuration.AutoManageRSRState))
+            if (ImGui.Checkbox("Auto Manage Rotation Plugin State", ref Configuration.AutoManageRotationPluginState))
                 Configuration.Save();
-            ImGuiComponents.HelpMarker("Autoduty will enable RS Auto States at the start of each duty.");
+            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Rotation Solver or BossMod AutoRotation\n**AutoDuty will automaticaly determine which you are using");
 
             if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref Configuration.autoManageBossModAISettings))
                 Configuration.Save();
@@ -516,7 +516,7 @@ public static class ConfigTab
                 var MaxDistanceToTargetAoEFloat = Configuration.MaxDistanceToTargetAoEFloat;
                 var positionalRoleBased = Configuration.PositionalRoleBased;
 
-                using (var autoManageBossModAISettingsDisable = ImRaii.Disabled(!Configuration.autoManageBossModAISettings))
+                using (ImRaii.Disabled(!Configuration.autoManageBossModAISettings))
                 {
                     //if (ImGui.Button(Configuration.HideBossModAIConfig ? "Show" : "Hide"))
                     //{
@@ -551,7 +551,7 @@ public static class ConfigTab
                             Configuration.FollowSlot = Configuration.followSlot;
                             Configuration.Save();
                         }
-                        using (var d1 = ImRaii.Disabled(!Configuration.followSlot))
+                        using (ImRaii.Disabled(!Configuration.followSlot))
                         {
                             ImGui.SameLine(0, 5);
                             ImGui.PushItemWidth(70);
@@ -567,7 +567,7 @@ public static class ConfigTab
                             Configuration.FollowRole = Configuration.followRole;
                             Configuration.Save();
                         }
-                        using (var d1 = ImRaii.Disabled(!followRole))
+                        using (ImRaii.Disabled(!followRole))
                         {
                             ImGui.SameLine(0, 10);
                             if (ImGui.Button(EnumString(Configuration.FollowRoleEnum)))
@@ -593,7 +593,7 @@ public static class ConfigTab
                             Configuration.MaxDistanceToTargetRoleBased = Configuration.maxDistanceToTargetRoleBased;
                             Configuration.Save();
                         }
-                        using (var d1 = ImRaii.Disabled(Configuration.MaxDistanceToTargetRoleBased))
+                        using (ImRaii.Disabled(Configuration.MaxDistanceToTargetRoleBased))
                         {
                             ImGui.PushItemWidth(195);
                             if (ImGui.SliderFloat("Max Distance To Target", ref Configuration.MaxDistanceToTargetFloat, 1, 30))
@@ -621,7 +621,7 @@ public static class ConfigTab
                             AutoDuty.Plugin.BMRoleChecks();
                             Configuration.Save();
                         }
-                        using (var d1 = ImRaii.Disabled(Configuration.positionalRoleBased))
+                        using (ImRaii.Disabled(Configuration.positionalRoleBased))
                         {
                             ImGui.SameLine(0, 10);
                             if (ImGui.Button(EnumString(Configuration.PositionalEnum)))
@@ -720,7 +720,7 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Using Alternative Rotation Plugin", ref Configuration.UsingAlternativeRotationPlugin))
                     Configuration.Save();
-                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Rotation Solver.");
+                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Rotation Solver or BossMod AutoRotation.");
 
                 if (ImGui.Checkbox("Using Alternative Movement Plugin", ref Configuration.UsingAlternativeMovementPlugin))
                     Configuration.Save();
