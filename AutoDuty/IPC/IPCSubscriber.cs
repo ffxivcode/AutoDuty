@@ -68,13 +68,16 @@ namespace AutoDuty.IPC
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentList;
         [EzIPC] internal static readonly Func<IReadOnlyList<string>, List<string>> Configuration;
         [EzIPC("Presets.List", true)] internal static readonly Func<List<string>> Presets_List;
-        [EzIPC("Presets.Get", true)] internal static readonly Func<string, string> Presets_Get;
+        [EzIPC("Presets.Get", true)] internal static readonly Func<string, string?> Presets_Get;
         [EzIPC("Presets.ForClass", true)] internal static readonly Func<byte, List<string>> Presets_ForClass;
         [EzIPC("Presets.Create", true)] internal static readonly Func<string, bool, bool> Presets_Create;
         [EzIPC("Presets.Delete", true)] internal static readonly Func<string, bool> Presets_Delete;
         [EzIPC("Presets.GetActive", true)] internal static readonly Func<string> Presets_GetActive;
         [EzIPC("Presets.SetActive", true)] internal static readonly Func<string, bool> Presets_SetActive;
-        [EzIPC("Presets.ClearActive", true)] internal static readonly Func<bool> Presets_ClearActive;
+        //[EzIPC("Presets.ClearActive", true)] internal static readonly Func<bool> Presets_ClearActive;
+        [EzIPC("Presets.GetForceDisabled", true)] internal static readonly Func<bool> Presets_GetForceDisabled; 
+        [EzIPC("Presets.SetForceDisabled", true)] internal static readonly Func<bool> Presets_SetForceDisabled;
+        
         [EzIPC("AI.SetPreset", true)] internal static readonly Action<string> AI_SetPreset;
         [EzIPC("AI.GetPreset", true)] internal static readonly Func<string> AI_GetPreset;
 

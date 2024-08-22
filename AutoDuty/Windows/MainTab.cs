@@ -1,10 +1,14 @@
 ﻿using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using AutoDuty.Managers;
+using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using Dalamud.Utility;
 using ECommons;
 using ECommons.DalamudServices;
+using ECommons.ExcelServices;
+using ECommons.GameFunctions;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 using System;
@@ -15,12 +19,6 @@ using static AutoDuty.AutoDuty;
 
 namespace AutoDuty.Windows
 {
-    using Dalamud.Interface.Components;
-    using Dalamud.Utility;
-    using ECommons.ExcelServices;
-    using ECommons.ExcelServices.TerritoryEnumeration;
-    using ECommons.GameFunctions;
-
     internal static class MainTab
     {
         private static int _currentStepIndex = -1;

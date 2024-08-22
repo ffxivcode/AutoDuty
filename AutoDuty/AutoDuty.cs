@@ -302,7 +302,7 @@ public sealed class AutoDuty : IDalamudPlugin
             PathFile       = path?.FilePath ?? "";
             ListBoxPOSText = [.. path?.Actions];
 
-            Svc.Log.Info("Loading Path: " + CurrentPath);
+            //Svc.Log.Info($"Loading Path: {CurrentPath} {ListBoxPOSText.Count}");
         }
         catch (Exception e)
         {
@@ -741,7 +741,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (!ExitDutyHelper.ExitDutyRunning)
                 ExitDuty();
             if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
-                SetRotationPluginSettings(true);
+                SetRotationPluginSettings(false);
             Chat.ExecuteCommand($"/vbmai off");
             Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
             States &= ~State.Navigating;
@@ -764,6 +764,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (on)
             {
                 //check if our preset does not exist
+                Svc.Log.Info(BossMod_IPCSubscriber.Presets_Get("AutoDuty") ?? "null");
                 if (BossMod_IPCSubscriber.Presets_Get("AutoDuty") == null)
                 {
                     //load it
@@ -779,9 +780,9 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             else
             {
-                //clear autorot preset
-                if (!BossMod_IPCSubscriber.Presets_GetActive().IsNullOrEmpty())
-                    BossMod_IPCSubscriber.Presets_ClearActive();
+                //set disabled as preset
+                if (!BossMod_IPCSubscriber.Presets_GetForceDisabled())
+                    BossMod_IPCSubscriber.Presets_SetForceDisabled();
             }
         }
     }
@@ -1293,7 +1294,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (!_vnavAlignCameraState && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             VNavmesh_IPCSubscriber.Path_SetAlignCamera(false);
         if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
-            SetRotationPluginSettings(true);
+            SetRotationPluginSettings(false);
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped)
