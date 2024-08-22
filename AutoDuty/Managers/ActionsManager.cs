@@ -343,6 +343,8 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => BossMoveCheck(bossV3), "Boss-MoveCheck");
             if (AutoDuty.Plugin.BossObject == null)
                 _taskManager.Enqueue(() => (AutoDuty.Plugin.BossObject = ObjectHelper.GetBossObject()) != null, "Boss-GetBossObject");
+            if (AutoDuty.Plugin.Configuration.AutoManageRotationPluginState && !AutoDuty.Plugin.Configuration.UsingAlternativeRotationPlugin && ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+                _taskManager.Enqueue(() => ReflectionHelper.RotationSolver_Reflection.RotationAuto(), "Boss-ReenableRotations");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? ""}", "Boss-SetActionVar");
             _taskManager.Enqueue(() => Svc.Condition[ConditionFlag.InCombat], "Boss-WaitInCombat");
             _taskManager.Enqueue(() => BossCheck(), int.MaxValue, "Boss-BossCheck");
