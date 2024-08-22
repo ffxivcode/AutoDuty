@@ -166,8 +166,8 @@ public class Configuration : IPluginConfiguration
     }
     public bool Unsynced = false;
     public bool HideUnavailableDuties = false;
-
     public bool ShowMainWindowOnStartup = false;
+
     //Overlay Config Options
     internal bool showOverlay = true;
     public bool ShowOverlay

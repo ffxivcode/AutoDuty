@@ -708,7 +708,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.AutoManageVnavAlignCamera && !VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
-        Chat.ExecuteCommand($"/vbmai on");
+        //if (IPCSubscriber_Common.IsReady("BossModReborn"))  -- Remove after veyn merges
+            Chat.ExecuteCommand($"/vbmai on");
         if (Configuration.AutoManageBossModAISettings)
             SetBMSettings();
         if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
@@ -775,14 +776,14 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (BossMod_IPCSubscriber.Presets_GetActive() != "AutoDuty")
                     BossMod_IPCSubscriber.Presets_SetActive("AutoDuty");
 
-                if (BossMod_IPCSubscriber.AI_GetPreset() != "AutoDuty")
+                //if (BossMod_IPCSubscriber.AI_GetPreset() != "AutoDuty")  -- Remove once veyn Merges
                     BossMod_IPCSubscriber.AI_SetPreset("AutoDuty");
             }
             else
             {
                 //set disabled as preset
-                if (!BossMod_IPCSubscriber.Presets_GetForceDisabled())
-                    BossMod_IPCSubscriber.Presets_SetForceDisabled();
+                //if (!BossMod_IPCSubscriber.Presets_GetForceDisabled())  -- Remove once veyn Merges
+                //  BossMod_IPCSubscriber.Presets_SetForceDisabled();  -- Remove once veyn Merges
             }
         }
     }
@@ -1002,7 +1003,10 @@ public sealed class AutoDuty : IDalamudPlugin
         if (!InDungeon && CurrentTerritoryContent != null)
             GetJobAndLevelingCheck();
 
-        if (!ObjectHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled || (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !Configuration.UsingAlternativeRotationPlugin))
+        if (!ObjectHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled)
+            return;
+
+        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !BossMod_IPCSubscriber.IsEnabled && !Configuration.UsingAlternativeRotationPlugin)
             return;
 
         if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0 && InDungeon)
