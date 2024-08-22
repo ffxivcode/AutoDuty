@@ -84,9 +84,9 @@ but i haven't tried it yet so i leave it empty lol
 <i> You need 3 prerequisited plugins:
 1. vnavmesh
 2. BossMod or BossModReborn
-3. RotationSolverReborn </i>
+3. BossMod AutoRotation or RotationSolverReborn </i>
 
-* vnavmesh and BossMod(add repo url to dalamud)
+* vnavmesh and BossMod(AutoRotation) (add repo url to dalamud)
   ```
   https://puni.sh/api/repository/veyn
   ```
