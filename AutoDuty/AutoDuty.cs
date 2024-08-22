@@ -1036,7 +1036,7 @@ public sealed class AutoDuty : IDalamudPlugin
         switch (Stage)
         {
             case Stage.Reading_Path:
-                if (!ObjectHelper.IsReady || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
+                if (!ObjectHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
                 Action = $"{(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
@@ -1184,7 +1184,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 }*/
                 break;
             case Stage.Action:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
+                if (Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
                 if (!TaskManager.IsBusy)
