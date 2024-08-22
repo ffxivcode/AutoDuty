@@ -9,7 +9,6 @@ namespace AutoDuty.Helpers
 
         internal static void Invoke()
         {
-            return;
             if (!AutoEquipRunning)
             {
                 Svc.Log.Info("AutoEquip - Started");
