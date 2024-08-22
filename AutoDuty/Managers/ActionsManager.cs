@@ -39,7 +39,8 @@ namespace AutoDuty.Managers
             ("ForceAttack",  "false"),
             ("Jump", "automove for how long before"),
             ("PausePandora", "Which feature | how long"),
-            ("CameraFacing", "Face which Coords?")
+            ("CameraFacing", "Face which Coords?"),
+            ("ClickTalk", "false")
         ];
 
         public void InvokeAction(string action, object?[] p)
@@ -228,6 +229,8 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
+        public void ClickTalk(string _) => _taskManager.Enqueue(() => AddonHelper.ClickTalk(), "ClickTalk");
+
         private unsafe bool InteractableCheck(IGameObject? gameObject)
         {
             if (AddonHelper.ClickSelectYesno(true))
@@ -238,7 +241,7 @@ namespace AutoDuty.Managers
 
             if (AddonHelper.ClickTalk())
                 return true;
-
+            
             if (EzThrottler.Throttle("Interactable", 250))
             {
                 if (ObjectHelper.GetBattleDistanceToPlayer(gameObject) > 2f)
@@ -288,7 +291,7 @@ namespace AutoDuty.Managers
                     SchedulerHelper.ScheduleAction("InteractableEnableYesAlready",() => ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true), 5000);
                 if (PandorasBox_IPCSubscriber.IsEnabled)
                     SchedulerHelper.ScheduleAction("InteractableEnablePandora", () => PandorasBox_IPCSubscriber.SetFeatureEnabled("Auto-interact with Objects in Instances", true), 15000);
-            }, "Interactable-YesAlreadyPandoraSetEnableTrue");
+            }, "Interactable-YesAlreadyPandoraSetEnableTrueAfter15s");
         }
         public unsafe void Interactable(string objectName)
         {

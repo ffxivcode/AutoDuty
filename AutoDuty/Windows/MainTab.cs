@@ -1,11 +1,14 @@
 ﻿using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using AutoDuty.Managers;
+using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using Dalamud.Utility;
 using ECommons;
 using ECommons.DalamudServices;
-using ECommons.GameHelpers;
+using ECommons.ExcelServices;
+using ECommons.GameFunctions;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 using System;
@@ -16,17 +19,26 @@ using static AutoDuty.AutoDuty;
 
 namespace AutoDuty.Windows
 {
-    using Dalamud.Interface.Components;
-    using Dalamud.Utility;
-    using ECommons.ExcelServices;
-    using ECommons.GameFunctions;
-
     internal static class MainTab
     {
         private static int _currentStepIndex = -1;
         private static ContentPathsManager.ContentPathContainer? _dutySelected;
         private static readonly string _pathsURL = "https://github.com/ffxivcode/AutoDuty/tree/master/AutoDuty/Paths";
         internal static readonly (string Normal, string GameFont) Digits = ("0123456789", "");
+        private static List<string> LevelingDuties = [
+            "L15 (i0): Sastasha",
+            "L16-L23 (i0): The TamTara Deepcroft",
+            "L24-31 (i0): The Thousanf Maws of TotoRak", 
+            "L32-40 (i0): Brayflox's Longstop",
+            "L41-52 (i0): The Stone Vigil",
+            "L53-60 (i105): Sohm Al",
+            "L61-66 (i240): The Sirensong Sea",
+            "L67-70 (i255): Doma Castle",
+            "L71-74 (i370): Holminster Switch",
+            "L75-80 (i380): Qitana Ravel",
+            "L81-86 (i500): The Tower of Zot",
+            "L87-90 (i515): Ktisis Hyporbea",
+            "L91-100 (i630): Highest Level DT Dungeons"];
 
         internal static void Draw()
         {
@@ -147,7 +159,7 @@ namespace AutoDuty.Windows
                         }
                         if (!ImGui.BeginListBox("##MainList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
-                        if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || Plugin.Configuration.UsingAlternativeRotationPlugin))
+                        if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || BossMod_IPCSubscriber.IsEnabled  || Plugin.Configuration.UsingAlternativeRotationPlugin))
                         {
                             foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
                             {
@@ -192,8 +204,8 @@ namespace AutoDuty.Windows
                                 ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires VNavmesh plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
                             if (!BossMod_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeBossPlugin)
                                 ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires BossMod plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://puni.sh/api/repository/veyn");
-                            if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !Plugin.Configuration.UsingAlternativeRotationPlugin)
-                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires Rotation Solver plugin to be Installed and Loaded\nPlease add 3rd party repo:\nhttps://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json");
+                            if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !BossMod_IPCSubscriber.IsEnabled && !Plugin.Configuration.UsingAlternativeRotationPlugin)
+                                ImGui.TextColored(new Vector4(255, 0, 0, 1), "AutoDuty Requires a Rotation plugin to be Installed and Loaded (Either Rotation Solver Reborn or BossMod AutoRotation)");
                         }
                         ImGui.EndListBox();
                     }
@@ -333,7 +345,6 @@ namespace AutoDuty.Windows
 
                             if (ImGuiEx.CheckboxWrapped("Leveling", ref leveling))
                             {
-                                Svc.Log.Info("Leveling1");
                                 if (leveling)
                                 {
                                     if (equip)
@@ -475,65 +486,77 @@ namespace AutoDuty.Windows
                     
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
-                    if (Player.Job.GetRole() == CombatRole.NonCombat)
-                        ImGuiEx.TextWrapped(new Vector4(255, 1, 0, 1), "Please switch to a combat job to use AutoDuty.");
-
                     if (leveling)
-                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Leveling Mode:\nAutoDuty will automatically select the best dungeon");
+                    {
+                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), $"Leveling Mode: L{Player.Level} (i{PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false)})");
+                        foreach (var item in LevelingDuties)
+                        {
+                            if (item.Contains(Plugin.CurrentTerritoryContent?.Name ?? "-"))
+                                ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), $"{item}");
+                            else
+                                ImGuiEx.TextWrapped(new Vector4(1, 1, 1, 1), $"{item}");
+                        }
+                    }
                     else if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
-                        if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)))
+                        if (ObjectHelper.IsReady)
                         {
-                            Dictionary<uint, ContentHelper.Content> dictionary = [];
-                            if (Plugin.Configuration.Support)
-                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
-                            else if (Plugin.Configuration.Trust)
-                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.TrustContent).ToDictionary();
-                            else if (Plugin.Configuration.Squadron)
-                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
-                            else if (Plugin.Configuration.Regular)
-                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 2).ToDictionary();
-                            else if (Plugin.Configuration.Trial)
-                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 4).ToDictionary();
-                            else if (Plugin.Configuration.Raid)
-                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 5).ToDictionary();
-                            else if (Plugin.Configuration.Variant)
-                                dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.VariantContent).ToDictionary();
-    
-                            if (dictionary.Count > 0 && ObjectHelper.IsReady)
+                            if (Player.Job.GetRole() == CombatRole.NonCombat)
+                                ImGuiEx.TextWrapped(new Vector4(255, 1, 0, 1), "Please switch to a combat job to use AutoDuty.");
+
+                            if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)))
                             {
-                                short level = PlayerHelper.GetCurrentLevelFromSheet();
-                                short ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false);
-    
-                                foreach ((uint _, ContentHelper.Content? content) in dictionary)
+                                Dictionary<uint, ContentHelper.Content> dictionary = [];
+                                if (Plugin.Configuration.Support)
+                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
+                                else if (Plugin.Configuration.Trust)
+                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.TrustContent).ToDictionary();
+                                else if (Plugin.Configuration.Squadron)
+                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
+                                else if (Plugin.Configuration.Regular)
+                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 2).ToDictionary();
+                                else if (Plugin.Configuration.Trial)
+                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 4).ToDictionary();
+                                else if (Plugin.Configuration.Raid)
+                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 5).ToDictionary();
+                                else if (Plugin.Configuration.Variant)
+                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.VariantContent).ToDictionary();
+
+                                if (dictionary.Count > 0 && ObjectHelper.IsReady)
                                 {
-                                    bool canRun = content.CanRun(level, ilvl) && (!_trust || content.CanTrustRun());
-                                    using (var d2 = ImRaii.Disabled(!canRun))
+                                    short level = PlayerHelper.GetCurrentLevelFromSheet();
+                                    short ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false);
+
+                                    foreach ((uint _, ContentHelper.Content? content) in dictionary)
                                     {
-                                        if (Plugin.Configuration.HideUnavailableDuties && !canRun)
-                                            continue;
-                                        if (ImGui.Selectable($"({content.TerritoryType}) {content.Name}", _dutySelected?.id == content.TerritoryType))
+                                        bool canRun = content.CanRun(level, ilvl) && (!_trust || content.CanTrustRun());
+                                        using (ImRaii.Disabled(!canRun))
                                         {
-                                            _dutySelected = ContentPathsManager.DictionaryPaths[content.TerritoryType];
-                                            Plugin.CurrentTerritoryContent = content;
-                                            _dutySelected.SelectPath(out Plugin.CurrentPath);
+                                            if (Plugin.Configuration.HideUnavailableDuties && !canRun)
+                                                continue;
+                                            if (ImGui.Selectable($"({content.TerritoryType}) {content.Name}", _dutySelected?.id == content.TerritoryType))
+                                            {
+                                                _dutySelected = ContentPathsManager.DictionaryPaths[content.TerritoryType];
+                                                Plugin.CurrentTerritoryContent = content;
+                                                _dutySelected.SelectPath(out Plugin.CurrentPath);
+                                            }
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    if (ObjectHelper.IsReady)
+                                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
                                 }
                             }
                             else
                             {
-                                    if (ObjectHelper.IsReady)
-                                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
-                                    else
-                                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Busy...");
+                                if (ObjectHelper.IsReady && Player.Job == Job.BLU)
+                                    ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), "Blue Mage cannot run Trust, Duty Support, Squadron or Variant dungeons. Please switch jobs or select a different category.");
                             }
                         }
                         else
-                        {
-                            if (Player.Job == Job.BLU)
-                                ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), "Blue Mage cannot run Trust, Duty Support, Squadron or Variant dungeons. Please switch jobs or select a different category.");
-                        }
+                            ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Busy...");
                     }
                     else
                     {

@@ -67,6 +67,19 @@ namespace AutoDuty.IPC
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentBaseList;
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentList;
         [EzIPC] internal static readonly Func<IReadOnlyList<string>, List<string>> Configuration;
+        [EzIPC("Presets.List", true)] internal static readonly Func<List<string>> Presets_List;
+        [EzIPC("Presets.Get", true)] internal static readonly Func<string, string?> Presets_Get;
+        [EzIPC("Presets.ForClass", true)] internal static readonly Func<byte, List<string>> Presets_ForClass;
+        [EzIPC("Presets.Create", true)] internal static readonly Func<string, bool, bool> Presets_Create;
+        [EzIPC("Presets.Delete", true)] internal static readonly Func<string, bool> Presets_Delete;
+        [EzIPC("Presets.GetActive", true)] internal static readonly Func<string> Presets_GetActive;
+        [EzIPC("Presets.SetActive", true)] internal static readonly Func<string, bool> Presets_SetActive;
+        //[EzIPC("Presets.ClearActive", true)] internal static readonly Func<bool> Presets_ClearActive;
+        [EzIPC("Presets.GetForceDisabled", true)] internal static readonly Func<bool> Presets_GetForceDisabled; 
+        [EzIPC("Presets.SetForceDisabled", true)] internal static readonly Func<bool> Presets_SetForceDisabled;
+        
+        [EzIPC("AI.SetPreset", true)] internal static readonly Action<string> AI_SetPreset;
+        [EzIPC("AI.GetPreset", true)] internal static readonly Func<string> AI_GetPreset;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
@@ -78,7 +91,7 @@ namespace AutoDuty.IPC
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("YesAlready");
 
-        [EzIPC("YesAlready.SetPluginEnabled", applyPrefix: false)] internal static readonly Action<bool> SetPluginEnabled;
+        [EzIPC("YesAlready.SetPluginEnabled", false)] internal static readonly Action<bool> SetPluginEnabled;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }*/
@@ -102,40 +115,40 @@ namespace AutoDuty.IPC
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("vnavmesh");
 
-        [EzIPC("vnavmesh.Nav.IsReady", applyPrefix: false)] internal static readonly Func<bool> Nav_IsReady;
-        [EzIPC("vnavmesh.Nav.BuildProgress", applyPrefix: false)] internal static readonly Func<float> Nav_BuildProgress;
-        [EzIPC("vnavmesh.Nav.Reload", applyPrefix: false)] internal static readonly Action Nav_Reload;
-        [EzIPC("vnavmesh.Nav.Rebuild", applyPrefix: false)] internal static readonly Action Nav_Rebuild;
-        [EzIPC("vnavmesh.Nav.Pathfind", applyPrefix: false)] internal static readonly Func<Vector3, Vector3, bool, Task<List<Vector3>>> Nav_Pathfind;
-        [EzIPC("vnavmesh.Nav.PathfindCancelable", applyPrefix: false)] internal static readonly Func<Vector3, Vector3, bool, CancellationToken, Task<List<Vector3>>> Nav_PathfindCancelable;
-        [EzIPC("vnavmesh.Nav.PathfindCancelAll", applyPrefix: false)] internal static readonly Action Nav_PathfindCancelAll;
-        [EzIPC("vnavmesh.Nav.PathfindInProgress", applyPrefix: false)] internal static readonly Func<bool> Nav_PathfindInProgress;
-        [EzIPC("vnavmesh.Nav.PathfindNumQueued", applyPrefix: false)] internal static readonly Func<int> Nav_PathfindNumQueued;
-        [EzIPC("vnavmesh.Nav.IsAutoLoad", applyPrefix: false)] internal static readonly Func<bool> Nav_IsAutoLoad;
-        [EzIPC("vnavmesh.Nav.SetAutoLoad", applyPrefix: false)] internal static readonly Action<bool> Nav_SetAutoLoad;
+        [EzIPC("Nav.IsReady", true)] internal static readonly Func<bool> Nav_IsReady;
+        [EzIPC("Nav.BuildProgress", true)] internal static readonly Func<float> Nav_BuildProgress;
+        [EzIPC("Nav.Reload", true)] internal static readonly Action Nav_Reload;
+        [EzIPC("Nav.Rebuild", true)] internal static readonly Action Nav_Rebuild;
+        [EzIPC("Nav.Pathfind", true)] internal static readonly Func<Vector3, Vector3, bool, Task<List<Vector3>>> Nav_Pathfind;
+        [EzIPC("Nav.PathfindCancelable", true)] internal static readonly Func<Vector3, Vector3, bool, CancellationToken, Task<List<Vector3>>> Nav_PathfindCancelable;
+        [EzIPC("Nav.PathfindCancelAll", true)] internal static readonly Action Nav_PathfindCancelAll;
+        [EzIPC("Nav.PathfindInProgress", true)] internal static readonly Func<bool> Nav_PathfindInProgress;
+        [EzIPC("Nav.PathfindNumQueued", true)] internal static readonly Func<int> Nav_PathfindNumQueued;
+        [EzIPC("Nav.IsAutoLoad", true)] internal static readonly Func<bool> Nav_IsAutoLoad;
+        [EzIPC("Nav.SetAutoLoad", true)] internal static readonly Action<bool> Nav_SetAutoLoad;
 
-        [EzIPC("vnavmesh.Query.Mesh.NearestPoint", applyPrefix: false)] internal static readonly Func<Vector3, float, float, Vector3> Query_Mesh_NearestPoint;
-        [EzIPC("vnavmesh.Query.Mesh.PointOnFloor", applyPrefix: false)] internal static readonly Func<Vector3, bool, float, Vector3> Query_Mesh_PointOnFloor;
+        [EzIPC("Query.Mesh.NearestPoint", true)] internal static readonly Func<Vector3, float, float, Vector3> Query_Mesh_NearestPoint;
+        [EzIPC("Query.Mesh.PointOnFloor", true)] internal static readonly Func<Vector3, bool, float, Vector3> Query_Mesh_PointOnFloor;
 
-        [EzIPC("vnavmesh.Path.MoveTo", applyPrefix: false)] internal static readonly Action<List<Vector3>, bool> Path_MoveTo;
-        [EzIPC("vnavmesh.Path.Stop", applyPrefix: false)] internal static readonly Action Path_Stop;
-        [EzIPC("vnavmesh.Path.IsRunning", applyPrefix: false)] internal static readonly Func<bool> Path_IsRunning;
-        [EzIPC("vnavmesh.Path.NumWaypoints", applyPrefix: false)] internal static readonly Func<int> Path_NumWaypoints;
-        [EzIPC("vnavmesh.Path.GetMovementAllowed", applyPrefix: false)] internal static readonly Func<bool> Path_GetMovementAllowed;
-        [EzIPC("vnavmesh.Path.SetMovementAllowed", applyPrefix: false)] internal static readonly Action<bool> Path_SetMovementAllowed;
-        [EzIPC("vnavmesh.Path.GetAlignCamera", applyPrefix: false)] internal static readonly Func<bool> Path_GetAlignCamera;
-        [EzIPC("vnavmesh.Path.SetAlignCamera", applyPrefix: false)] internal static readonly Action<bool> Path_SetAlignCamera;
-        [EzIPC("vnavmesh.Path.GetTolerance", applyPrefix: false)] internal static readonly Func<float> Path_GetTolerance;
-        [EzIPC("vnavmesh.Path.SetTolerance", applyPrefix: false)] internal static readonly Action<float> Path_SetTolerance;
+        [EzIPC("Path.MoveTo", true)] internal static readonly Action<List<Vector3>, bool> Path_MoveTo;
+        [EzIPC("Path.Stop", true)] internal static readonly Action Path_Stop;
+        [EzIPC("Path.IsRunning", true)] internal static readonly Func<bool> Path_IsRunning;
+        [EzIPC("Path.NumWaypoints", true)] internal static readonly Func<int> Path_NumWaypoints;
+        [EzIPC("Path.GetMovementAllowed", true)] internal static readonly Func<bool> Path_GetMovementAllowed;
+        [EzIPC("Path.SetMovementAllowed", true)] internal static readonly Action<bool> Path_SetMovementAllowed;
+        [EzIPC("Path.GetAlignCamera", true)] internal static readonly Func<bool> Path_GetAlignCamera;
+        [EzIPC("Path.SetAlignCamera", true)] internal static readonly Action<bool> Path_SetAlignCamera;
+        [EzIPC("Path.GetTolerance", true)] internal static readonly Func<float> Path_GetTolerance;
+        [EzIPC("Path.SetTolerance", true)] internal static readonly Action<float> Path_SetTolerance;
 
-        [EzIPC("vnavmesh.SimpleMove.PathfindAndMoveTo", applyPrefix: false)] internal static readonly Func<Vector3, bool, bool> SimpleMove_PathfindAndMoveTo;
-        [EzIPC("vnavmesh.SimpleMove.PathfindInProgress", applyPrefix: false)] internal static readonly Func<bool> SimpleMove_PathfindInProgress;
+        [EzIPC("SimpleMove.PathfindAndMoveTo", true)] internal static readonly Func<Vector3, bool, bool> SimpleMove_PathfindAndMoveTo;
+        [EzIPC("SimpleMove.PathfindInProgress", true)] internal static readonly Func<bool> SimpleMove_PathfindInProgress;
 
-        [EzIPC("vnavmesh.Window.IsOpen", applyPrefix: false)] internal static readonly Func<bool> Window_IsOpen;
-        [EzIPC("vnavmesh.Window.SetOpen", applyPrefix: false)] internal static readonly Action<bool> Window_SetOpen;
+        [EzIPC("Window.IsOpen", true)] internal static readonly Func<bool> Window_IsOpen;
+        [EzIPC("Window.SetOpen", true)] internal static readonly Action<bool> Window_SetOpen;
 
-        [EzIPC("vnavmesh.DTR.IsShown", applyPrefix: false)] internal static readonly Func<bool> DTR_IsShown;
-        [EzIPC("vnavmesh.DTR.SetShown", applyPrefix: false)] internal static readonly Action<bool> DTR_SetShown;
+        [EzIPC("DTR.IsShown", true)] internal static readonly Func<bool> DTR_IsShown;
+        [EzIPC("DTR.SetShown", true)] internal static readonly Action<bool> DTR_SetShown;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
