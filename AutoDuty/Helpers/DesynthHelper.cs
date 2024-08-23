@@ -18,11 +18,11 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info("Desynth Started");
                 DesynthRunning = true;
                 AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("DesynthTimeOut", Stop, 300000);
                 AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -33,8 +33,6 @@ namespace AutoDuty.Helpers
             _stop = true;
             if (GenericHelpers.TryGetAddonByName("Desynth", out AtkUnitBase* addonDesynth))
                 addonDesynth->Close(true);
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool DesynthRunning = false;
@@ -61,6 +59,8 @@ namespace AutoDuty.Helpers
                     _stop = false;
                     DesynthRunning = false;
                     AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= DesynthUpdate;
                 }
                 return;

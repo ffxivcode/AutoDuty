@@ -20,14 +20,14 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Repair Started");
                 RepairRunning = true;
                 AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 _stop = false;
                 if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
                     SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 300000);
                 else
                     SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 600000);
                 Svc.Framework.Update += RepairUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -40,8 +40,6 @@ namespace AutoDuty.Helpers
             _seenAddon = false;
             AutoDuty.Plugin.Action = "";
             AgentModule.Instance()->GetAgentByInternalId(AgentId.Repair)->Hide();
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool RepairRunning = false;
@@ -66,6 +64,8 @@ namespace AutoDuty.Helpers
                     _stop = false;
                     RepairRunning = false;
                     AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= RepairUpdate;
                 }
                 else if (Svc.Targets.Target != null)

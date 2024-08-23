@@ -78,8 +78,6 @@ namespace AutoDuty.Helpers
             if (aethernetName.IsNullOrEmpty() || !ObjectHelper.IsValid)
                 return true;
 
-            ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
-
             if (!GenericHelpers.TryGetAddonByName("TelepotTown", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon))
             {
                 IGameObject? gameObject;

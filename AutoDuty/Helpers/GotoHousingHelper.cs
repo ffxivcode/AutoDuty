@@ -19,11 +19,11 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto {whichHousing} Started");
                 GotoHousingRunning = true;
                 AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 _whichHousing = whichHousing;
                 SchedulerHelper.ScheduleAction("GotoHousingTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoHousingUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -36,8 +36,6 @@ namespace AutoDuty.Helpers
             _stop = true;
             _whichHousing = Housing.Apartment;
             AutoDuty.Plugin.Action = "";
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool InPrivateHouse(Housing whichHousing) =>
@@ -88,6 +86,8 @@ namespace AutoDuty.Helpers
                     _stop = false;
                     GotoHousingRunning = false;
                     AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= GotoHousingUpdate;
                 }
                 return;

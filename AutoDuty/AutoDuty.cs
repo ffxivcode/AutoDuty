@@ -35,6 +35,7 @@ using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using static AutoDuty.Windows.ConfigTab;
 using AutoDuty.Properties;
+using static AutoDuty.Data.Enum;
 
 namespace AutoDuty;
 
@@ -140,7 +141,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private bool _messageSender = false;
     private bool _recentlyWatchedCutscene = false;
     private bool _lootTreasure;
-    private bool _vnavAlignCameraState = false;
+    private SettingsActive _settingsActive = SettingsActive.None;
 
     public AutoDuty()
     {
@@ -234,8 +235,6 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.DutyState.DutyWiped += DutyState_DutyWiped;
             Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
             Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
-
-            _vnavAlignCameraState = VNavmesh_IPCSubscriber.Path_GetAlignCamera();
         }
         catch (Exception e) { Svc.Log.Info($"Failed loading plugin\n{e}");
         }
@@ -526,9 +525,8 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
-        if (!_vnavAlignCameraState && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
-            VNavmesh_IPCSubscriber.Path_SetAlignCamera(false);
-        
+        SetGeneralSettings(false);
+
         if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
         {
             if (!Configuration.TerminationKeepActive)
@@ -623,6 +621,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
         Stage = Stage.Looping;
         States |= State.Looping;
+        SetGeneralSettings(false);
         TaskManager.Abort();
         Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         if (!InDungeon)
@@ -708,7 +707,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.AutoManageVnavAlignCamera && !VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
-        //if (IPCSubscriber_Common.IsReady("BossModReborn"))  -- Remove after veyn merges
+        if (IPCSubscriber_Common.IsReady("BossModReborn"))
             Chat.ExecuteCommand($"/vbmai on");
         if (Configuration.AutoManageBossModAISettings)
             SetBMSettings();
@@ -743,6 +742,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 ExitDuty();
             if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
                 SetRotationPluginSettings(false);
+            
             Chat.ExecuteCommand($"/vbmai off");
             Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
             States &= ~State.Navigating;
@@ -751,13 +751,53 @@ public sealed class AutoDuty : IDalamudPlugin
             Stage = Stage.Stopped;
     }
 
+    private void GetGeneralSettings()
+    {
+        if (Configuration.AutoManageVnavAlignCamera && VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
+            _settingsActive |= SettingsActive.Vnav_Align_Camera_Off;
+
+        if (ReflectionHelper.YesAlready_Reflection.IsEnabled && ReflectionHelper.YesAlready_Reflection.GetPluginEnabled())
+            _settingsActive |= SettingsActive.YesAlready;
+
+        if (PandorasBox_IPCSubscriber.IsEnabled && PandorasBox_IPCSubscriber.GetFeatureEnabled("Auto-interact with Objects in Instances"))
+            _settingsActive |= SettingsActive.Pandora_Interact_Objects;
+
+        Svc.Log.Debug($"General Settings Active: {_settingsActive}");
+
+    }
+
+    internal void SetGeneralSettings(bool on)
+    {
+        if (!on)
+            GetGeneralSettings();
+
+        if (Configuration.AutoManageVnavAlignCamera && _settingsActive.HasFlag(SettingsActive.Vnav_Align_Camera_Off))
+        {
+            Svc.Log.Debug($"Setting VnavAlignCamera: {on}");
+            VNavmesh_IPCSubscriber.Path_SetAlignCamera(on);
+        }
+        if (PandorasBox_IPCSubscriber.IsEnabled && _settingsActive.HasFlag(SettingsActive.Pandora_Interact_Objects))
+        {
+            Svc.Log.Debug($"Setting PandorasBos Auto-interact with Objects in Instances: {on}");
+            PandorasBox_IPCSubscriber.SetFeatureEnabled("Auto-interact with Objects in Instances", on);
+        }
+        if (ReflectionHelper.YesAlready_Reflection.IsEnabled && _settingsActive.HasFlag(SettingsActive.YesAlready))
+        {
+            Svc.Log.Debug($"Setting YesAlready Enabled: {on}");
+            ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(on);
+        }
+    }
+
     private void SetRotationPluginSettings(bool on)
     {
         if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
         {
             if (on)
-                ReflectionHelper.RotationSolver_Reflection.RotationAuto();
-            else
+            {
+                if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Auto)
+                    ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+            }
+            else if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
                 ReflectionHelper.RotationSolver_Reflection.RotationStop();
         }
         else if (BossMod_IPCSubscriber.IsEnabled)
@@ -765,7 +805,6 @@ public sealed class AutoDuty : IDalamudPlugin
             if (on)
             {
                 //check if our preset does not exist
-                Svc.Log.Info(BossMod_IPCSubscriber.Presets_Get("AutoDuty") ?? "null");
                 if (BossMod_IPCSubscriber.Presets_Get("AutoDuty") == null)
                 {
                     //load it
@@ -776,14 +815,14 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (BossMod_IPCSubscriber.Presets_GetActive() != "AutoDuty")
                     BossMod_IPCSubscriber.Presets_SetActive("AutoDuty");
 
-                //if (BossMod_IPCSubscriber.AI_GetPreset() != "AutoDuty")  -- Remove once veyn Merges
+                if (BossMod_IPCSubscriber.AI_GetPreset() != "AutoDuty")
                     BossMod_IPCSubscriber.AI_SetPreset("AutoDuty");
             }
             else
             {
                 //set disabled as preset
-                //if (!BossMod_IPCSubscriber.Presets_GetForceDisabled())  -- Remove once veyn Merges
-                //  BossMod_IPCSubscriber.Presets_SetForceDisabled();  -- Remove once veyn Merges
+                if (!BossMod_IPCSubscriber.Presets_GetForceDisabled())
+                    BossMod_IPCSubscriber.Presets_SetForceDisabled();
             }
         }
     }
@@ -1134,6 +1173,8 @@ public sealed class AutoDuty : IDalamudPlugin
                 Action = $"{Plugin.ListBoxPOSText[Indexer]}";
                 if (Player.Object.InCombat() && Plugin.StopForCombat)
                 {
+                    if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+                        SetRotationPluginSettings(true);
                     VNavmesh_IPCSubscriber.Path_Stop();
                     Stage = Stage.Waiting_For_Combat;
                     break;
@@ -1186,6 +1227,9 @@ public sealed class AutoDuty : IDalamudPlugin
             case Stage.Action:
                 if (Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
+
+                if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+                    SetRotationPluginSettings(true);
 
                 if (!TaskManager.IsBusy)
                 {
@@ -1295,8 +1339,7 @@ public sealed class AutoDuty : IDalamudPlugin
         CurrentLoop = 0;
         Chat.ExecuteCommand($"/vbmai off");
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
-        if (!_vnavAlignCameraState && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
-            VNavmesh_IPCSubscriber.Path_SetAlignCamera(false);
+        SetGeneralSettings(true);
         if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
             SetRotationPluginSettings(false);
         if (Indexer > 0 && !MainListClicked)
@@ -1420,7 +1463,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 DesynthHelper.Invoke();
                 break;
             case "repair":
-                if (InventoryHelper.CanRepair())
+                if (InventoryHelper.CanRepair(100))
                     RepairHelper.Invoke();
                 break;
             case "autoretainer":

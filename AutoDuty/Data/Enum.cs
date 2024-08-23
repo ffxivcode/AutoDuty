@@ -101,5 +101,14 @@ namespace AutoDuty.Data
             Navigating = 2,
             Other = 4
         }
+
+        [Flags]
+        public enum SettingsActive : int
+        {
+            None = 0,
+            Vnav_Align_Camera_Off = 1,
+            Pandora_Interact_Objects = 2,
+            YesAlready = 4
+        }
     }
 }

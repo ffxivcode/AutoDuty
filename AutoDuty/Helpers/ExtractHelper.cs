@@ -26,8 +26,6 @@ namespace AutoDuty.Helpers
                     _stoppingCategory = 0;
                 AutoDuty.Plugin.Action = "Extracting Materia";
                 Svc.Framework.Update += ExtractUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -35,15 +33,16 @@ namespace AutoDuty.Helpers
         {
             _currentCategory = 0;
             _switchedCategory = false;
+            AutoDuty.Plugin.States |= State.Other;
             AutoDuty.Plugin.Action = "";
+            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                AutoDuty.Plugin.SetGeneralSettings(false);
             SchedulerHelper.DescheduleAction("ExtractTimeOut");
             _stop = true;
             if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog))
                 addonMaterializeDialog->Close(true);
             if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize))
                 addonMaterialize->Close(true);
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool ExtractRunning = false;
@@ -73,6 +72,8 @@ namespace AutoDuty.Helpers
                     _stop = false;
                     ExtractRunning = false;
                     AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= ExtractUpdate;
                 }
                 return;

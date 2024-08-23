@@ -285,24 +285,9 @@ namespace AutoDuty.Managers
                     Interactable(gameObject);
                 }
             }, "Interactable-LoopCheck");
-            _taskManager.Enqueue(() =>
-            {
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    SchedulerHelper.ScheduleAction("InteractableEnableYesAlready",() => ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true), 5000);
-                if (PandorasBox_IPCSubscriber.IsEnabled)
-                    SchedulerHelper.ScheduleAction("InteractableEnablePandora", () => PandorasBox_IPCSubscriber.SetFeatureEnabled("Auto-interact with Objects in Instances", true), 15000);
-            }, "Interactable-YesAlreadyPandoraSetEnableTrueAfter15s");
         }
         public unsafe void Interactable(string objectName)
         {
-            Svc.Log.Debug("Interactable-YesAlreadySetEnableFalse");
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
-
-            Svc.Log.Debug("Interactable-PandoraSetEnableFalse");
-            if (PandorasBox_IPCSubscriber.IsEnabled)
-                PandorasBox_IPCSubscriber.SetFeatureEnabled("Auto-interact with Objects in Instances", false);
-
             IGameObject? gameObject = null;
 
             AutoDuty.Plugin.Action = $"Interactable: {objectName}";

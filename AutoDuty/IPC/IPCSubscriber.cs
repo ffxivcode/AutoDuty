@@ -161,6 +161,7 @@ namespace AutoDuty.IPC
 
         [EzIPC] internal static readonly Action<string, int> PauseFeature;
         [EzIPC] internal static readonly Action<string, bool> SetFeatureEnabled;
+        [EzIPC] internal static readonly Func<string, bool> GetFeatureEnabled;
         [EzIPC] internal static readonly Action<string, string, bool> SetConfigEnabled;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);

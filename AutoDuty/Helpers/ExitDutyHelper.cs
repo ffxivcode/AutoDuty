@@ -16,13 +16,12 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info("ExitDuty Started");
                 ExitDutyRunning = true;
                 AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("ExitDutyTimeOut", Stop, 60000);
                 AutoDuty.Plugin.Action = "Exiting Duty";
                 _currentTerritoryType = Svc.ClientState.TerritoryType;
                 Svc.Framework.Update += ExitDutyUpdate;
-
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -34,9 +33,6 @@ namespace AutoDuty.Helpers
 
             if (GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
                 addonContentsFinderMenu->Close(true);
-
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool ExitDutyRunning = false;
@@ -56,6 +52,8 @@ namespace AutoDuty.Helpers
                     _stop = false;
                     ExitDutyRunning = false;
                     AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     _currentTerritoryType = 0;
                     Svc.Framework.Update -= ExitDutyUpdate;
                 }
