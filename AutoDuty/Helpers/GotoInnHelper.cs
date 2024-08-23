@@ -24,10 +24,10 @@ namespace AutoDuty.Helpers
                 GotoInnRunning = true;
                 _stop = false;
                 AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -40,8 +40,6 @@ namespace AutoDuty.Helpers
             _stop = true;
             _whichGrandCompany = 0;
             AutoDuty.Plugin.Action = "";
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool GotoInnRunning = false;
@@ -63,6 +61,8 @@ namespace AutoDuty.Helpers
                     _stop = false;
                     GotoInnRunning = false;
                     AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= GotoInnUpdate;
                 }
                 else if (Svc.Targets.Target != null)

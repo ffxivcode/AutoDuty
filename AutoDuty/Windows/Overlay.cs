@@ -53,7 +53,7 @@ public unsafe class Overlay : Window
             }
         }
 
-        if (Plugin.InDungeon || Plugin.States.HasFlag(State.Navigating))
+        if (Plugin.InDungeon || Plugin.States.HasFlag(State.Looping))
         {
             using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Svc.ClientState.TerritoryType) || Plugin.Stage > 0))
             {

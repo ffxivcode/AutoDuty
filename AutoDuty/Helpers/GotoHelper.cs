@@ -34,6 +34,8 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Started, Going to {territoryType}{(moveLocations.Count>0 ? $" and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations" : "")}");
                 GotoRunning = true;
                 AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 _territoryType = territoryType;
                 _gameObjectDataId = gameObjectDataId;
                 _moveLocations = moveLocations;
@@ -53,6 +55,8 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= GotoUpdate;
             GotoRunning = false;
             AutoDuty.Plugin.States &= ~State.Other;
+            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                AutoDuty.Plugin.SetGeneralSettings(true);
             _territoryType = 0;
             _gameObjectDataId = 0;
             _moveLocations = [];
@@ -67,8 +71,6 @@ namespace AutoDuty.Helpers
                 addonSelectYesno->Close(true);
             if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
                 VNavmesh_IPCSubscriber.Path_Stop();
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool GotoRunning = false;
@@ -143,8 +145,6 @@ namespace AutoDuty.Helpers
                         }
                         else
                         {
-                            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
                             if (TeleportHelper.MoveToClosestAetheryte())
                                 TeleportHelper.TeleportAethernet(aetheryte.AethernetName.Value?.Name ?? "", _territoryType);
                         }

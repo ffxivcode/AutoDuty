@@ -28,7 +28,7 @@ namespace AutoDuty.Windows
         private static List<string> LevelingDuties = [
             "L15 (i0): Sastasha",
             "L16-L23 (i0): The TamTara Deepcroft",
-            "L24-31 (i0): The Thousanf Maws of TotoRak", 
+            "L24-31 (i0): The Thousand Maws of TotoRak", 
             "L32-40 (i0): Brayflox's Longstop",
             "L41-52 (i0): The Stone Vigil",
             "L53-60 (i105): Sohm Al",
@@ -37,7 +37,7 @@ namespace AutoDuty.Windows
             "L71-74 (i370): Holminster Switch",
             "L75-80 (i380): Qitana Ravel",
             "L81-86 (i500): The Tower of Zot",
-            "L87-90 (i515): Ktisis Hyporbea",
+            "L87-90 (i515): Ktisis Hyporboreia",
             "L91-100 (i630): Highest Level DT Dungeons"];
 
         internal static void Draw()
