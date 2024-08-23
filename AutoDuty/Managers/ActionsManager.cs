@@ -38,7 +38,7 @@ namespace AutoDuty.Managers
             ("Revival",  "false"),
             ("ForceAttack",  "false"),
             ("Jump", "automove for how long before"),
-            ("PausePandora", "Which feature | how long"),
+            //("PausePandora", "Which feature | how long"),
             ("CameraFacing", "Face which Coords?"),
             ("ClickTalk", "false")
         ];
@@ -351,8 +351,10 @@ namespace AutoDuty.Managers
 
         public void PausePandora(string featureName, string intMs)
         {
-            if (PandorasBox_IPCSubscriber.IsEnabled)
-                _taskManager.Enqueue(() => PandorasBox_IPCSubscriber.PauseFeature(featureName, int.Parse(intMs)));
+            return;
+            //disable for now until we have a need other than interact objects
+            //if (PandorasBox_IPCSubscriber.IsEnabled)
+                //_taskManager.Enqueue(() => PandorasBox_IPCSubscriber.PauseFeature(featureName, int.Parse(intMs)));
         }
 
         public void Revival(string _)
@@ -367,7 +369,7 @@ namespace AutoDuty.Managers
                 string[] v = coords.Split(", ");
                 if (v.Length == 3)
                 {
-                    Vector3 facingPos = new Vector3(float.Parse(v[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[2], System.Globalization.CultureInfo.InvariantCulture));
+                    Vector3 facingPos = new(float.Parse(v[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[2], System.Globalization.CultureInfo.InvariantCulture));
                     AutoDuty.Plugin.OverrideCamera.Face(facingPos);
                 }
             }
