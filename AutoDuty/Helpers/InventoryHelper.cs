@@ -76,7 +76,7 @@ namespace AutoDuty.Helpers
 
                 }
 
-            InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot);
+            InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot, 1);
         }
 
         public enum EquippedSlotIndex : ushort
