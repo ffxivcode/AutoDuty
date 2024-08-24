@@ -1238,7 +1238,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+                if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin && !Svc.Condition[ConditionFlag.OccupiedInCutSceneEvent])
                     SetRotationPluginSettings(true);
 
                 if (!TaskManager.IsBusy)
