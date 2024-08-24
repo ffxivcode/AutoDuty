@@ -28,7 +28,7 @@ public class MainWindow : Window, IDisposable
     private static string openTabName = "";
 
     public MainWindow() : base(
-        $"AutoDuty v0.0.0.{Plugin.Configuration.Version}###Autoduty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        $"AutoDuty v0.0.0.{Plugin.Configuration.Version}###Autoduty")
     {
         SizeConstraints = new WindowSizeConstraints
         {
@@ -91,27 +91,30 @@ public class MainWindow : Window, IDisposable
 
     internal static void GotoAndActions()
     {
-        using (var d2 = ImRaii.Disabled(Plugin.States.HasFlag(State.Looping) || Plugin.States.HasFlag(State.Navigating)))
+        using (ImRaii.Disabled(Plugin.States.HasFlag(State.Looping) || Plugin.States.HasFlag(State.Navigating)))
         {
-            using (var GotoDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || RepairHelper.RepairRunning))
+            using (ImRaii.Disabled(Plugin.Configuration.OverrideOverlayButtons && !Plugin.Configuration.GotoButton))
             {
-                if ((GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning) || MapHelper.MoveToMapMarkerRunning || GotoHousingHelper.GotoHousingRunning)
+                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || RepairHelper.RepairRunning))
                 {
-                    if (ImGui.Button("Stop"))
-                        Plugin.Stage = Stage.Stopped;
-                }
-                else
-                {
-                    if (ImGui.Button("Goto"))
+                    if ((GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning) || MapHelper.MoveToMapMarkerRunning || GotoHousingHelper.GotoHousingRunning)
                     {
-                        ImGui.OpenPopup("GotoPopup");
+                        if (ImGui.Button("Stop"))
+                            Plugin.Stage = Stage.Stopped;
+                    }
+                    else
+                    {
+                        if (ImGui.Button("Goto"))
+                        {
+                            ImGui.OpenPopup("GotoPopup");
+                        }
                     }
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var GCButton = ImRaii.Disabled(!Plugin.Configuration.AutoGCTurnin))
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoGCTurnin && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.TurninButton))
             {
-                using (var GCTurninDisabled = ImRaii.Disabled(DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning) || RepairHelper.RepairRunning))
+                using (ImRaii.Disabled(DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning) || RepairHelper.RepairRunning))
                 {
                     if (GCTurninHelper.GCTurninRunning)
                     {
@@ -135,9 +138,9 @@ public class MainWindow : Window, IDisposable
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var DesynthButton = ImRaii.Disabled(!Plugin.Configuration.AutoDesynth))
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoDesynth && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.DesynthButton))
             {
-                using (var DesynthDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
+                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
                 {
                     if (DesynthHelper.DesynthRunning)
                     {
@@ -153,9 +156,9 @@ public class MainWindow : Window, IDisposable
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var ExtractButton = ImRaii.Disabled(!Plugin.Configuration.AutoExtract))
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoExtract && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.ExtractButton))
             {
-                using (var ExtractDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
+                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
                 {
                     if (ExtractHelper.ExtractRunning)
                     {
@@ -179,9 +182,9 @@ public class MainWindow : Window, IDisposable
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var RepairButton = ImRaii.Disabled(!Plugin.Configuration.AutoRepair))
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoRepair && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.RepairButton))
             {
-                using (var RepairDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !RepairHelper.RepairRunning)))
+                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !RepairHelper.RepairRunning)))
                 {
                     if (RepairHelper.RepairRunning)
                     {
@@ -205,7 +208,7 @@ public class MainWindow : Window, IDisposable
                 }
             }
             ImGui.SameLine(0, 5);
-            using (ImRaii.Disabled(!Plugin.Configuration.AutoEquipRecommendedGear))
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoEquipRecommendedGear && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.EquipButton))
             {
                 if (AutoEquipHelper.AutoEquipRunning)
                 {

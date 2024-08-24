@@ -25,7 +25,7 @@ namespace AutoDuty.Windows;
 public class Configuration : IPluginConfiguration
 {
     //Meta
-    public int Version { get => 131; set { } }
+    public int Version { get => 132; set { } }
     public HashSet<string> DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
 
@@ -222,7 +222,14 @@ public class Configuration : IPluginConfiguration
     public bool ShowDutyLoopText = true;
     public bool ShowActionText = true;
     public bool UseSliderInputs = false;
-
+    public bool OverrideOverlayButtons = true;
+    public bool GotoButton = true;
+    public bool TurninButton = true;
+    public bool DesynthButton = true;
+    public bool ExtractButton = true;
+    public bool RepairButton = true;
+    public bool EquipButton = true;
+    
     //Duty Config Options
     public bool AutoExitDuty = true;
     public bool AutoManageRotationPluginState = true;
@@ -436,7 +443,7 @@ public static class ConfigTab
                 Configuration.ShowOverlay = Configuration.showOverlay;
                 Configuration.Save();
             }
-            ImGuiComponents.HelpMarker("Note that the quickaction buttons (TurnIn/Desynth/etc) require their respective configs to be enabled!");
+            ImGuiComponents.HelpMarker("Note that the quickaction buttons (TurnIn/Desynth/etc) require their respective configs to be enabled!\nOr Override Overlay Buttons to be Enabled");
             using (ImRaii.Disabled(!Configuration.ShowOverlay))
             {
                 ImGui.Indent();
@@ -474,8 +481,33 @@ public static class ConfigTab
 
             if (ImGui.Checkbox("Show Main Window on Startup", ref Configuration.ShowMainWindowOnStartup))
                 Configuration.Save();
-            if (ImGui.Checkbox("Use Slider Inputs", ref Configuration.UseSliderInputs))
+            ImGui.SameLine();
+            if (ImGui.Checkbox("Slider Inputs", ref Configuration.UseSliderInputs))
                 Configuration.Save();
+            if (ImGui.Checkbox("Override Overlay Buttons", ref Configuration.OverrideOverlayButtons))
+                Configuration.Save();
+            ImGuiComponents.HelpMarker("Overlay buttons by default are enabled if their config is enabled\nThis will allow you to chose which buttons are enabled");
+            if (Configuration.OverrideOverlayButtons)
+            {
+                ImGui.Indent();
+                ImGui.Columns(3, "##OverlayButtonColumns", false);
+                if (ImGui.Checkbox("Goto", ref Configuration.GotoButton))
+                    Configuration.Save();
+                if (ImGui.Checkbox("Turnin", ref Configuration.TurninButton))
+                    Configuration.Save();
+                ImGui.NextColumn();
+                if (ImGui.Checkbox("Desynth", ref Configuration.DesynthButton))
+                    Configuration.Save();
+                if (ImGui.Checkbox("Extract", ref Configuration.ExtractButton))
+                    Configuration.Save();
+                ImGui.NextColumn();
+                if (ImGui.Checkbox("Repair", ref Configuration.RepairButton))
+                    Configuration.Save();
+                if (ImGui.Checkbox("Equip", ref Configuration.EquipButton))
+                    Configuration.Save();
+                ImGui.Columns(1);
+                ImGui.Unindent();
+            }
         }
 
         //Start of Duty Config Settings

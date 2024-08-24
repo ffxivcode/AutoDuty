@@ -75,7 +75,7 @@ namespace AutoDuty.IPC
         [EzIPC("Presets.Delete", true)] internal static readonly Func<string, bool> Presets_Delete;
         [EzIPC("Presets.GetActive", true)] internal static readonly Func<string> Presets_GetActive;
         [EzIPC("Presets.SetActive", true)] internal static readonly Func<string, bool> Presets_SetActive;
-        //[EzIPC("Presets.ClearActive", true)] internal static readonly Func<bool> Presets_ClearActive;
+        [EzIPC("Presets.ClearActive", true)] internal static readonly Func<bool> Presets_ClearActive;
         [EzIPC("Presets.GetForceDisabled", true)] internal static readonly Func<bool> Presets_GetForceDisabled; 
         [EzIPC("Presets.SetForceDisabled", true)] internal static readonly Func<bool> Presets_SetForceDisabled;
         

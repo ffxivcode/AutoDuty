@@ -35,7 +35,6 @@ using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using static AutoDuty.Windows.ConfigTab;
 using AutoDuty.Properties;
-using static AutoDuty.Data.Enum;
 
 namespace AutoDuty;
 
@@ -907,6 +906,7 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         TaskManager.DelayNext(5000);
         TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
+        TaskManager.Enqueue(() => BossMod_IPCSubscriber.Presets_ClearActive());
         IGameObject? gameObject = ObjectHelper.GetObjectByDataId(2000700);
         if (gameObject == null || !gameObject.IsTargetable)
         {
