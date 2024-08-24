@@ -204,6 +204,30 @@ public class MainWindow : Window, IDisposable
                     }
                 }
             }
+            ImGui.SameLine(0, 5);
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoEquipRecommendedGear))
+            {
+                if (AutoEquipHelper.AutoEquipRunning)
+                {
+                    if (ImGui.Button("Stop"))
+                        Plugin.Stage = Stage.Stopped;
+                }
+                else
+                {
+                    if (ImGui.Button("Equip"))
+                    {
+                        AutoEquipHelper.Invoke();
+                        //else
+                        //ShowPopup("", "");
+                    }
+
+                    //if ()
+                    ToolTip("Click to Equip Gear");
+                    //else
+                    //ToolTip("");
+                }
+            }
+
             if (ImGui.BeginPopup("GotoPopup"))
             {
                 if (ImGui.Selectable("Barracks"))

@@ -250,6 +250,7 @@ public class Configuration : IPluginConfiguration
     public bool RetireMode = false;
     public RetireLocation RetireLocationEnum = RetireLocation.Inn;
     public bool AutoEquipRecommendedGear;
+    public bool AutoEquipRecommendedGearGearsetter;
     public bool AutoBoiledEgg = false;
     public bool AutoRepair = false;
     public int AutoRepairPct = 50;
@@ -767,7 +768,36 @@ public static class ConfigTab
             }
             if (ImGui.Checkbox("Auto Equip Recommended Gear", ref Configuration.AutoEquipRecommendedGear))
                 Configuration.Save();
+
             ImGuiComponents.HelpMarker("Uses Gear from Armory Chest Only");
+
+
+            if (Configuration.AutoEquipRecommendedGear)
+            {
+                ImGui.Indent();
+                using (ImRaii.Disabled(!Gearsetter_IPCSubscriber.IsEnabled))
+                {
+                    if (ImGui.Checkbox("Consider items outside of armoury chest", ref Configuration.AutoEquipRecommendedGearGearsetter))
+                        Configuration.Save();
+                }
+
+                if (!Gearsetter_IPCSubscriber.IsEnabled)
+                {
+                    if (Configuration.AutoEquipRecommendedGearGearsetter)
+                    {
+                        Configuration.AutoEquipRecommendedGearGearsetter = false;
+                        Configuration.Save();
+                    }
+
+                    ImGui.Text("* Items outside the armoury chest requires Gearsetter plugin");
+                    ImGui.Text("Get @ ");
+                    ImGui.SameLine(0, 0);
+                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
+                }
+
+                ImGui.Unindent();
+            }
+
             if (ImGui.Checkbox("Auto Consume Boiled Eggs", ref Configuration.AutoBoiledEgg))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will use Boiled Eggs in inventory for +3% Exp.");

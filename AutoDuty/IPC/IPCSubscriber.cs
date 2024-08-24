@@ -1,6 +1,7 @@
 ﻿using ECommons.DalamudServices;
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -105,6 +106,17 @@ namespace AutoDuty.IPC
         [EzIPC] internal static readonly Func<bool> IsTurnInRunning;
         //[EzIPC] internal static readonly Action TurnInStarted;
         //[EzIPC] internal static readonly Action TurnInStopped;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
+    internal static class Gearsetter_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Gearsetter_IPCSubscriber), "Gearsetter");
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Gearsetter");
+
+        [EzIPC] internal static readonly Func<byte, List<(uint ItemId, InventoryType? SourceInventory, byte? SourceInventorySlot)>> GetRecommendationsForGearset;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
