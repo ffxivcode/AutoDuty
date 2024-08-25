@@ -325,6 +325,7 @@ namespace AutoDuty.Managers
         {
             Svc.Log.Info($"Starting Action Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? "null"}");
             IGameObject? treasureCofferObject = null;
+            AutoDuty.Plugin.SkipTreasureCoffer = false;
             _taskManager.Enqueue(() => BossMoveCheck(bossV3), "Boss-MoveCheck");
             if (AutoDuty.Plugin.BossObject == null)
                 _taskManager.Enqueue(() => (AutoDuty.Plugin.BossObject = ObjectHelper.GetBossObject()) != null, "Boss-GetBossObject");

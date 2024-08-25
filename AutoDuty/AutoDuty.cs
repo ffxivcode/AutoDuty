@@ -101,6 +101,10 @@ public sealed class AutoDuty : IDalamudPlugin
                 case Stage.Revived:
                     OnRevive();
                     break;
+                case Stage.Condition:
+                    Action = $"ConditionChange";
+                    SchedulerHelper.ScheduleAction("ConditionChangeStageReadingPath", () => _stage = Stage.Reading_Path, () => !Svc.Condition[ConditionFlag.BetweenAreas] && !Svc.Condition[ConditionFlag.BetweenAreas51] && !Svc.Condition[ConditionFlag.Jumping61]);
+                    break;
             }
         }
     }
@@ -114,6 +118,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal MainWindow MainWindow { get; init; }
     internal Overlay Overlay { get; init; }
     internal bool InDungeon => ContentHelper.DictionaryContent.ContainsKey(Svc.ClientState.TerritoryType);
+    internal bool SkipTreasureCoffer = false;
     internal string Action = "";
     internal string PathFile = "";
     internal TaskManager TaskManager;
@@ -386,8 +391,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Stage != Stage.Dead && Stage != Stage.Revived && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && States.HasFlag(State.Navigating) && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
         {
             Indexer++;
-            Stage = Stage.Reading_Path;
             VNavmesh_IPCSubscriber.Path_Stop();
+            Stage = Stage.Condition;
         }
         if (Conditions.IsWatchingCutscene || flag == ConditionFlag.WatchingCutscene || flag == ConditionFlag.WatchingCutscene78 || flag == ConditionFlag.OccupiedInCutSceneEvent)
         {
@@ -891,6 +896,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private unsafe void OnDeath()
     {
         StopForCombat = true;
+        SkipTreasureCoffer = true;
         if (VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
         if (TaskManager.IsBusy)
@@ -1079,7 +1085,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && States.HasFlag(State.Navigating))
             DoneNavigating();
 
-        if (Stage > Stage.Looping && !States.HasFlag(State.Other))
+        if (Stage > Stage.Condition && !States.HasFlag(State.Other))
             Action = EnumString(Stage);
         //Svc.Log.Info($"{Stage} {States}");
         switch (Stage)
@@ -1097,7 +1103,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     _action = (string)_actionParams[0];
                     _actionTollerance = _action == "Interactable" ? 2f : 0.25f;
 
-                    if ((!Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && _action.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
+                    if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && _action.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
                     {
                         Indexer++;
                         return;

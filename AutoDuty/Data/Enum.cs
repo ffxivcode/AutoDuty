@@ -85,12 +85,13 @@ namespace AutoDuty.Data
             Reading_Path = 1,
             Action = 2,
             Looping = 3,
-            Moving = 4,
-            Waiting_For_Combat = 5,
-            Paused = 6,
-            Dead = 7,
-            Revived = 8,
-            Looting_Treasure = 9
+            Condition = 4,
+            Moving = 5,
+            Waiting_For_Combat = 6,
+            Paused = 7,
+            Dead = 8,
+            Revived = 9,
+            Looting_Treasure = 10
         }
 
         [Flags]
