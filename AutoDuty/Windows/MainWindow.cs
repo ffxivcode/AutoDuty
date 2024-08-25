@@ -289,7 +289,7 @@ public class MainWindow : Window, IDisposable
         float textWidth = ImGui.CalcTextSize(text).X;
 
         ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f);
-        ImGui.Text(text);
+        ImGui.TextWrapped(text);
     }
 
     internal static bool CenteredButton(string label, float percentWidth, float xIndent = 0)
