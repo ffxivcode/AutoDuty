@@ -35,8 +35,8 @@ namespace AutoDuty.Windows
             if (ImGui.Button("Punish Discord"))
                 Process.Start("explorer.exe", punishDiscordUrl);
             ImGui.SetCursorPosX((ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize("FFXIVCode Discord").X) / 2);
-            //if (ImGui.Button("FFXIVCode Discord"))
-              //  Process.Start("explorer.exe", ffxivcodeDiscordUrl);
+            if (ImGui.Button("FFXIVCode Discord"))
+                Process.Start("explorer.exe", ffxivcodeDiscordUrl);
         }
     }
 }
