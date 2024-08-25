@@ -389,7 +389,10 @@ namespace AutoDuty.Managers
             IGameObject? gameObject = null;
             switch (Svc.ClientState.TerritoryType)
             {
-                //Sastasha - From BossMod
+                //Sastasha
+                //Blue -  2000213
+                //Red -  2000214
+                //Green - 2000215
                 case 1036:
                     switch (stage)
                     {
@@ -399,19 +402,26 @@ namespace AutoDuty.Managers
                             {
                                 if (gameObject != null)
                                 {
-                                    GlobalStringStore = ((OID)gameObject.DataId).ToString();
-                                    Svc.Log.Info(((OID)gameObject.DataId).ToString());
+                                    switch ((OID)gameObject.DataId)
+                                    {
+                                        case OID.Blue:
+                                            GlobalStringStore = "2000213";
+                                            break;
+                                        case OID.Red:
+                                            GlobalStringStore = "2000214";
+                                            break;
+                                        case OID.Green:
+                                            GlobalStringStore = "2000215";
+                                            break;
+                                    }
                                 }
                             }, "DutySpecificCode");
                             break;
                         case "2":
-                            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(GlobalStringStore + " Coral Formation")) != null, "DutySpecificCode");
-                            _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
-                            _taskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") != null, "DutySpecificCode");
-                            _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), "DutySpecificCode");
+                            _taskManager.Enqueue(() => Interactable(GlobalStringStore ?? ""), "DutySpecificCode");
                             break;
                         case "3":
-                            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName("Inconspicuous Switch")) != null, "DutySpecificCode");
+                            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByDataId(2000216)) != null, "DutySpecificCode");
                             _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
                             _taskManager.DelayNext("DutySpecificCode", 1000);
                             _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");

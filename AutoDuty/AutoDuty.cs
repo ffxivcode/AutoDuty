@@ -1560,6 +1560,10 @@ public sealed class AutoDuty : IDalamudPlugin
                 Svc.Log.Info($"{tt?.RowId}");
                 ImGui.SetClipboardText($"{tt?.RowId}");
                 break;
+            case "spew":
+                var targetObject = ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "");
+                Svc.Log.Info($"DataId: {targetObject?.DataId} EntityId: {targetObject?.EntityId} GameObjectId: {targetObject?.GameObjectId}");
+                break;
             default:
                 OpenMainUI(); 
                 break;
