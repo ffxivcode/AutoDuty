@@ -40,9 +40,12 @@
     <!--<a href="https://github.com/ffxivcode/AutoDuty"><strong>Explore the docs »</strong></a>
     <br />-->
     <br />
- <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+ <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Puni.sh Discord</a>
     ·
-    <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+ <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">FFXIV Code Discord</a>
+    ·
+    <a
+    · href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
     <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
     ·
