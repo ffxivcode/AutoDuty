@@ -978,7 +978,7 @@ public static class ConfigTab
             terminationHeaderSelected = !terminationHeaderSelected;
         if (terminationHeaderSelected == true)
         {
-            SoundHelper.UpdateAudio(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundPath, Configuration.CustomSoundVolume);
+            //SoundHelper.UpdateAudio(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundPath, Configuration.CustomSoundVolume);
             ImGui.Separator();
 
             if (ImGui.Checkbox("Stop Looping @ Level", ref Configuration.StopLevel))
@@ -1068,9 +1068,9 @@ public static class ConfigTab
                 if (ImGuiEx.IconButton(FontAwesomeIcon.Play, "##ConfigSoundTest", new Vector2(ImGui.GetItemRectSize().Y)))
                     SoundHelper.StartSound(Configuration.PlayEndSound,Configuration.CustomSound,Configuration.SoundEnum);
                 ImGui.SameLine();
-                if (Configuration.CustomSound)
-                    DrawCustomSound();
-                else
+                //if (Configuration.CustomSound)
+                //    DrawCustomSound();
+                //else
                     DrawGameSound();
             }
 
@@ -1101,7 +1101,7 @@ public static class ConfigTab
         }     
     }
 
-    private static void DrawCustomSound()
+    /*private static void DrawCustomSound()
     {
         ImGui.SameLine(0, 10);
         ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
@@ -1129,8 +1129,7 @@ public static class ConfigTab
         }
         if (ImGui.IsItemHovered())
             ImGui.SetTooltip("Switch Back to Game Sound");
-
-    }
+    }*/
 
     private static void DrawGameSound()
     {
@@ -1150,12 +1149,12 @@ public static class ConfigTab
             ImGui.EndCombo();
         }
 
-        ImGui.SameLine();
+        /*ImGui.SameLine();
         if (!ImGui.Button("Custom"))
             return;
 
         Configuration.CustomSound = true;
-        SoundHelper.UpdateAudio(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundPath, Configuration.CustomSoundVolume);
+        SoundHelper.UpdateAudio(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundPath, Configuration.CustomSoundVolume);*/
         Configuration.Save();
     }
 }

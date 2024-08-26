@@ -1,24 +1,24 @@
 ﻿using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using NAudio.Wave;
+//using NAudio.Wave;
 using System;
 
 namespace AutoDuty.Helpers
 {
     public static class SoundHelper
     {
-        private static AudioFileReader? _audioFile;
-        private static WaveOutEvent? _audioEvent;
+        //private static AudioFileReader? _audioFile;
+        //private static WaveOutEvent? _audioEvent;
 
-        public static bool SoundReady
-            => _audioFile != null && _audioEvent != null;
+        //public static bool SoundReady
+        //    => _audioFile != null && _audioEvent != null;
 
         public static bool StartSound(bool PlayEndSound, bool CustomSound, Sounds SoundEnum = Sounds.None)
         {
             if (!PlayEndSound)
                 return false;
 
-            if (CustomSound)
+            /*if (CustomSound)
             {
                 if (_audioFile == null || _audioEvent == null)
                 {
@@ -31,21 +31,22 @@ namespace AutoDuty.Helpers
                 _audioEvent!.Play();
                 //Svc.Log.Error("DidYouHearAnything?");
                 return true;
-            }
+            }*/
 
             UIModule.PlaySound((uint)SoundEnum);
             return true;
         }
 
-        public static void DisposeAudio()
+        /*public static void DisposeAudio()
         {
             _audioFile?.Dispose();
             _audioFile = null;
             _audioEvent?.Dispose();
             _audioEvent = null;
         }
+        */
 
-        public static void UpdateAudio(bool PlayEndSound, bool CustomSound, string SoundPath, float CustomSoundVolume = 0.5f)
+        /*public static void UpdateAudio(bool PlayEndSound, bool CustomSound, string SoundPath, float CustomSoundVolume = 0.5f)
         {
             if (!(PlayEndSound && CustomSound))
             {
@@ -67,6 +68,6 @@ namespace AutoDuty.Helpers
                 //Dalamud.Log.Error(ex, "Error attempting to setup sound.");
                 DisposeAudio();
             }
-        }
+        }*/
     }
 }
