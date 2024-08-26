@@ -40,9 +40,9 @@
     <!--<a href="https://github.com/ffxivcode/AutoDuty"><strong>Explore the docs »</strong></a>
     <br />-->
     <br />
- <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Puni.sh Discord</a>
+ <a href="https://discord.com/channels/1001823907193552978/1236757595738476725">Puni.sh Discord</a>
     ·
- <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">FFXIV Code Discord</a>
+ <a href="https://discord.com/channels/1241050921732014090/1273374407653462017">FFXIV Code Discord</a>
     ·
     <a
     · href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
