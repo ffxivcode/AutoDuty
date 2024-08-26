@@ -978,7 +978,6 @@ public static class ConfigTab
             terminationHeaderSelected = !terminationHeaderSelected;
         if (terminationHeaderSelected == true)
         {
-            //SoundHelper.UpdateAudio(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundPath, Configuration.CustomSoundVolume);
             ImGui.Separator();
 
             if (ImGui.Checkbox("Stop Looping @ Level", ref Configuration.StopLevel))
@@ -1068,9 +1067,6 @@ public static class ConfigTab
                 if (ImGuiEx.IconButton(FontAwesomeIcon.Play, "##ConfigSoundTest", new Vector2(ImGui.GetItemRectSize().Y)))
                     SoundHelper.StartSound(Configuration.PlayEndSound,Configuration.CustomSound,Configuration.SoundEnum);
                 ImGui.SameLine();
-                //if (Configuration.CustomSound)
-                //    DrawCustomSound();
-                //else
                     DrawGameSound();
             }
 
@@ -1101,36 +1097,6 @@ public static class ConfigTab
         }     
     }
 
-    /*private static void DrawCustomSound()
-    {
-        ImGui.SameLine(0, 10);
-        ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-        if (ImGui.SliderFloat("##ConfigCustomSoundVolume", ref Configuration.CustomSoundVolume, 0, 1, $"Volume: {Configuration.CustomSoundVolume * 100:F1}%%"))
-        {
-            SoundHelper.UpdateAudio(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundPath, Configuration.CustomSoundVolume);
-            //SoundHelper.StartSound(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundEnum);
-            Configuration.Save();
-        }
-        ImGui.SameLine();
-
-        ImGui.SetNextItemWidth(-(ImGui.GetItemRectSize().Y + ImGui.GetStyle().ItemSpacing.X * 2));
-        if (ImGui.InputTextWithHint("##ConfigCustomSoundPath", "Sound File Path", ref Configuration.SoundPath, 256))
-        {
-            SoundHelper.UpdateAudio(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundPath, Configuration.CustomSoundVolume);
-            Configuration.Save();
-        }
-
-        ImGui.SameLine();
-        if (ImGuiEx.IconButton(FontAwesomeIcon.Cross, "##ConfigNoCustomSound", new Vector2(-1, ImGui.GetItemRectSize().Y)))
-            {
-            Configuration.CustomSound = false;
-            SoundHelper.DisposeAudio();
-            Configuration.Save();
-        }
-        if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Switch Back to Game Sound");
-    }*/
-
     private static void DrawGameSound()
     {
         ImGui.SameLine(0, 10);
@@ -1148,13 +1114,6 @@ public static class ConfigTab
             }
             ImGui.EndCombo();
         }
-
-        /*ImGui.SameLine();
-        if (!ImGui.Button("Custom"))
-            return;
-
-        Configuration.CustomSound = true;
-        SoundHelper.UpdateAudio(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundPath, Configuration.CustomSoundVolume);*/
         Configuration.Save();
     }
 }
