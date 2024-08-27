@@ -9,6 +9,20 @@ namespace AutoDuty.Helpers
         private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
         private static string ConfigType(FieldInfo field) => field.FieldType.ToString();
 
+        internal static string GetConfig(string configName)
+        {
+            FieldInfo? field;
+            if ((field = FindConfig(configName)) == null)
+            {
+                Svc.Log.Error($"Unable to find config: {configName}, please type /autoduty cfg list to see all available configs");
+                return string.Empty;
+            }
+            else if (field.FieldType.ToString().Contains("System.Collections", StringComparison.InvariantCultureIgnoreCase) || field.FieldType.ToString().Contains("Dalamud.Plugin", StringComparison.InvariantCultureIgnoreCase))
+                return string.Empty;
+            else
+                return field.GetValue(AutoDuty.Plugin.Configuration)?.ToString() ?? string.Empty;
+        }
+
         internal static bool ModifyConfig(string configName, string configValue)
         {
             FieldInfo? field;

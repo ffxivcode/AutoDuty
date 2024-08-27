@@ -135,6 +135,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private readonly SquadronManager _squadronManager;
     private readonly VariantManager _variantManager;
     private readonly OverrideAFK _overrideAFK;
+    private readonly IPCProvider _ipcProvider;
     private IGameObject? treasureCofferGameObject = null;
     private string _action = "";
     private float _actionTollerance = 0.25f;
@@ -179,6 +180,7 @@ public sealed class AutoDuty : IDalamudPlugin
             FileHelper.Init();
             Chat = new();
             _overrideAFK = new();
+            _ipcProvider = new();
             _dutySupportManager = new(TaskManager);
             TrustManager = new(TaskManager);
             _squadronManager = new(TaskManager);
