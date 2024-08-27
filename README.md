@@ -33,8 +33,10 @@
   </a>
 
 <h3 align="center"><b>AutoDuty</b></h3>
+ <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository#:~:text=You%27re%20under%20no,for%20your%20project.">(License Information)</a>
 
   <p align="center">
+     <br />
     Run's Duties <br /> Requires vnavmesh and BossMod or BossModReborn and RotationSolverReborn
     <br />
     <!--<a href="https://github.com/ffxivcode/AutoDuty"><strong>Explore the docs »</strong></a>
