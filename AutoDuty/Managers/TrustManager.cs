@@ -47,8 +47,8 @@ namespace AutoDuty.Managers
                 return;
             int queueIndex = content.TrustIndex;
 
-            _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.DisplayName}"), "RegisterTrust");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Trust: {content.DisplayName}", "RegisterTrust");
+            _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.Name}"), "RegisterTrust");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Trust: {content.Name}", "RegisterTrust");
             AtkUnitBase* addon = null;
 
             if (!ObjectHelper.IsValid)
@@ -58,13 +58,13 @@ namespace AutoDuty.Managers
             }
 
             _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dawn"), "RegisterTrust");
-            _taskManager.Enqueue(() => { if (addon == null) this.OpenDawn(); }, "RegisterTrust");
+            _taskManager.Enqueue(() => { if (addon == null) OpenDawn(); }, "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, (content.ExVersion)), "RegisterTrust");
             _taskManager.DelayNext("RegisterTrust", 50);
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, queueIndex), "RegisterTrust");
-            _taskManager.Enqueue(this.TurnOffAllMembers);
-            _taskManager.Enqueue(this.TurnOnConfigMembers);
+            _taskManager.Enqueue(TurnOffAllMembers);
+            _taskManager.Enqueue(TurnOnConfigMembers);
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 14), "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterTrust");
@@ -151,13 +151,13 @@ namespace AutoDuty.Managers
         }
 
         internal bool GetLevelsCheck() => 
-            !this.currentlyGettingLevels;
+            !currentlyGettingLevels;
 
         private bool currentlyGettingLevels;
 
         internal unsafe void GetLevels(Content? content)
         {
-            if (this.currentlyGettingLevels)
+            if (currentlyGettingLevels)
                 return;
 
             content ??= AutoDuty.Plugin.CurrentTerritoryContent;
@@ -171,7 +171,7 @@ namespace AutoDuty.Managers
                 return;
             
 
-            this.currentlyGettingLevels = true;
+            currentlyGettingLevels = true;
 
             AtkUnitBase* addon = null;
             bool wasOpen = false;
@@ -187,7 +187,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dawn"), "TrustLevelCheck3");
             _taskManager.Enqueue(() =>
             {
-                if (addon == null || !GenericHelpers.IsAddonReady(addon)) this.OpenDawn();
+                if (addon == null || !GenericHelpers.IsAddonReady(addon)) OpenDawn();
                 else wasOpen = true;
             }, "TrustLevelCheck4");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "TrustLevelCheck5");
@@ -211,12 +211,12 @@ namespace AutoDuty.Managers
                     if (!wasOpen)
                         AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Hide();
                     else
-                        this.currentlyGettingLevels = false;
+                        currentlyGettingLevels = false;
                 }, "TrustLevelCheck10");
                 if (!wasOpen)
                 {
                     _taskManager.EnqueueImmediate(() => !GenericHelpers.IsAddonReady(addon), "TrustLevelCheck11");
-                    _taskManager.EnqueueImmediate(() => !(this.currentlyGettingLevels = false), "TrustLevelCheck12");
+                    _taskManager.EnqueueImmediate(() => !(currentlyGettingLevels = false), "TrustLevelCheck12");
                 }
             }, "TrustLevelCheck9");
         }

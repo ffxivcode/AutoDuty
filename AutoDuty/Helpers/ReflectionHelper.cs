@@ -24,6 +24,13 @@ namespace AutoDuty.Helpers
                 if (DalamudReflector.TryGetDalamudPlugin("YesAlready", out var pl, false, true))
                     pl.GetFoP("Config").SetFoP("Enabled", trueFalse);
             }
+
+            internal static bool GetPluginEnabled()
+            {
+                if (DalamudReflector.TryGetDalamudPlugin("YesAlready", out var pl, false, true))
+                    return (bool)pl.GetFoP("Config").GetFoP("Enabled");
+                else return false;
+            }
         }
 
         internal static class RotationSolver_Reflection

@@ -12,7 +12,7 @@ namespace AutoDuty.Helpers
 {
     internal static class AutoRetainerHelper
     {
-        internal static void Invoke() 
+        internal static void Invoke()
         {
             if (!AutoRetainer_IPCSubscriber.IsEnabled || !AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
                 return;
@@ -25,14 +25,13 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("AutoRetainer Started");
                 AutoRetainerRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("AutoRetainerTimeOut", Stop, 600000);
                 Svc.Framework.Update += AutoRetainerUpdate;
             }
         }
 
-        internal static void Stop() 
+        internal static void Stop()
         {
             Svc.Log.Debug("AutoRetainerHelper.Stop");
             if (AutoRetainerRunning)
@@ -41,41 +40,40 @@ namespace AutoDuty.Helpers
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("AutoRetainerTimeOut");
             _autoRetainerStarted = false;
+            Svc.Framework.Update -= AutoRetainerUpdate;
+            Svc.Framework.Update += AutoRetainerStopUpdate;
             if (AutoRetainer_IPCSubscriber.IsBusy())
                 AutoRetainer_IPCSubscriber.AbortAllTasks();
-            _stop = true;
         }
 
         internal static bool AutoRetainerRunning = false;
         private static bool _autoRetainerStarted = false;
-        private static bool _stop = false;
         private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum));
+
+        internal static unsafe void AutoRetainerStopUpdate(IFramework framework)
+        {
+
+            if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
+            {
+                AutoRetainerRunning = false;
+                AutoDuty.Plugin.States &= ~State.Other;
+                Svc.Framework.Update -= AutoRetainerStopUpdate;
+            }
+            else if (Svc.Targets.Target != null)
+                Svc.Targets.Target = null;
+            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                addonSelectYesno->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
+                addonSelectString->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList))
+                addonRetainerList->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("RetainerTaskAsk", out AtkUnitBase* addonRetainerSell))
+                addonRetainerSell->Close(true);
+        }
 
         internal static unsafe void AutoRetainerUpdate(IFramework framework)
         {
-            if (_stop)
-            {
-                if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
-                {
-                    _stop = false;
-                    AutoRetainerRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
-                    Svc.Framework.Update -= AutoRetainerUpdate;
-                }
-                else if (Svc.Targets.Target != null)
-                    Svc.Targets.Target = null;
-                else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                    addonSelectYesno->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
-                    addonSelectString->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList))
-                    addonRetainerList->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("RetainerTaskAsk", out AtkUnitBase* addonRetainerSell))
-                    addonRetainerSell->Close(true);
-                return;
-            }
-
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping AutoRetainerHelper");
                 Stop();

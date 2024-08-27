@@ -17,6 +17,9 @@ using FFXIVClientStructs.FFXIV.Common.Math;
 using AutoDuty.Helpers;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using Dalamud.Interface;
+using static AutoDuty.Helpers.RepairNPCHelper;
+using ECommons.MathHelpers;
+using System.Globalization;
 
 namespace AutoDuty.Windows;
 
@@ -24,7 +27,7 @@ namespace AutoDuty.Windows;
 public class Configuration : IPluginConfiguration
 {
     //Meta
-    public int Version { get => 127; set { } }
+    public int Version { get => 133; set { } }
     public HashSet<string> DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
 
@@ -165,8 +168,8 @@ public class Configuration : IPluginConfiguration
     }
     public bool Unsynced = false;
     public bool HideUnavailableDuties = false;
-
     public bool ShowMainWindowOnStartup = false;
+
     //Overlay Config Options
     internal bool showOverlay = true;
     public bool ShowOverlay
@@ -188,7 +191,7 @@ public class Configuration : IPluginConfiguration
             hideOverlayWhenStopped = value;
             if (AutoDuty.Plugin.Overlay != null)
             {
-                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.Running || AutoDuty.Plugin.Started, () => AutoDuty.Plugin.Overlay != null);
+                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.States.HasFlag(State.Looping) || AutoDuty.Plugin.States.HasFlag(State.Navigating), () => AutoDuty.Plugin.Overlay != null);
             }
         }
     }
@@ -221,10 +224,17 @@ public class Configuration : IPluginConfiguration
     public bool ShowDutyLoopText = true;
     public bool ShowActionText = true;
     public bool UseSliderInputs = false;
-
+    public bool OverrideOverlayButtons = true;
+    public bool GotoButton = true;
+    public bool TurninButton = true;
+    public bool DesynthButton = true;
+    public bool ExtractButton = true;
+    public bool RepairButton = true;
+    public bool EquipButton = true;
+    
     //Duty Config Options
     public bool AutoExitDuty = true;
-    public bool AutoManageRSRState = true;
+    public bool AutoManageRotationPluginState = true;
     internal bool autoManageBossModAISettings = true;
     public bool AutoManageBossModAISettings
     {
@@ -235,10 +245,12 @@ public class Configuration : IPluginConfiguration
             HideBossModAIConfig = !value;
         }
     }
+    public bool AutoManageVnavAlignCamera = true;
     public bool LootTreasure = true;
     public LootMethod LootMethodEnum = LootMethod.AutoDuty;
     public bool LootBossTreasureOnly = false;
     public int TreasureCofferScanDistance = 25;
+    public bool OverridePartyValidation = false;
     public bool UsingAlternativeRotationPlugin = false;
     public bool UsingAlternativeMovementPlugin = false;
     public bool UsingAlternativeBossPlugin = false;
@@ -247,10 +259,12 @@ public class Configuration : IPluginConfiguration
     public bool RetireMode = false;
     public RetireLocation RetireLocationEnum = RetireLocation.Inn;
     public bool AutoEquipRecommendedGear;
+    public bool AutoEquipRecommendedGearGearsetter;
     public bool AutoBoiledEgg = false;
     public bool AutoRepair = false;
     public int AutoRepairPct = 50;
     public bool AutoRepairSelf = false;
+    public RepairNpcData? PreferredRepairNPC = null;
 
     //Between Loop Config Options
     public int WaitTimeBeforeAfterLoopActions = 0;
@@ -286,6 +300,7 @@ public class Configuration : IPluginConfiguration
     }
     public int AutoGCTurninSlotsLeft = 5;
     public bool AutoGCTurninSlotsLeftBool = false;
+    public bool AutoGCTurninUseTicket = false;
     public bool EnableAutoRetainer = false;
     public SummoningBellLocations PreferredSummoningBellEnum = 0;
     public bool AM = false;
@@ -368,9 +383,9 @@ public class Configuration : IPluginConfiguration
                 SchedulerHelper.ScheduleAction("MaxDistanceToTargetRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => ObjectHelper.IsReady);
         }
     }
-    public int MaxDistanceToTarget = 3;
-    public int MaxDistanceToTargetAoE = 12;
-    public int MaxDistanceToSlot = 1;
+    public float MaxDistanceToTargetFloat = 2.6f;
+    public float MaxDistanceToTargetAoEFloat = 12;
+    public float MaxDistanceToSlotFloat = 1;
     internal bool positionalRoleBased = true;
     public bool PositionalRoleBased
     {
@@ -436,6 +451,7 @@ public static class ConfigTab
                 Configuration.ShowOverlay = Configuration.showOverlay;
                 Configuration.Save();
             }
+            ImGuiComponents.HelpMarker("Note that the quickaction buttons (TurnIn/Desynth/etc) require their respective configs to be enabled!\nOr Override Overlay Buttons to be Enabled");
             using (ImRaii.Disabled(!Configuration.ShowOverlay))
             {
                 ImGui.Indent();
@@ -473,8 +489,33 @@ public static class ConfigTab
 
             if (ImGui.Checkbox("Show Main Window on Startup", ref Configuration.ShowMainWindowOnStartup))
                 Configuration.Save();
-            if (ImGui.Checkbox("Use Slider Inputs", ref Configuration.UseSliderInputs))
+            ImGui.SameLine();
+            if (ImGui.Checkbox("Slider Inputs", ref Configuration.UseSliderInputs))
                 Configuration.Save();
+            if (ImGui.Checkbox("Override Overlay Buttons", ref Configuration.OverrideOverlayButtons))
+                Configuration.Save();
+            ImGuiComponents.HelpMarker("Overlay buttons by default are enabled if their config is enabled\nThis will allow you to chose which buttons are enabled");
+            if (Configuration.OverrideOverlayButtons)
+            {
+                ImGui.Indent();
+                ImGui.Columns(3, "##OverlayButtonColumns", false);
+                if (ImGui.Checkbox("Goto", ref Configuration.GotoButton))
+                    Configuration.Save();
+                if (ImGui.Checkbox("Turnin", ref Configuration.TurninButton))
+                    Configuration.Save();
+                ImGui.NextColumn();
+                if (ImGui.Checkbox("Desynth", ref Configuration.DesynthButton))
+                    Configuration.Save();
+                if (ImGui.Checkbox("Extract", ref Configuration.ExtractButton))
+                    Configuration.Save();
+                ImGui.NextColumn();
+                if (ImGui.Checkbox("Repair", ref Configuration.RepairButton))
+                    Configuration.Save();
+                if (ImGui.Checkbox("Equip", ref Configuration.EquipButton))
+                    Configuration.Save();
+                ImGui.Columns(1);
+                ImGui.Unindent();
+            }
         }
 
         //Start of Duty Config Settings
@@ -494,24 +535,29 @@ public static class ConfigTab
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will automatically exit the dungeon upon completion of the path.");
 
-            if (ImGui.Checkbox("Auto Manage Rotation Solver State", ref Configuration.AutoManageRSRState))
+            if (ImGui.Checkbox("Auto Manage Rotation Plugin State", ref Configuration.AutoManageRotationPluginState))
                 Configuration.Save();
-            ImGuiComponents.HelpMarker("Autoduty will enable RS Auto States at the start of each duty.");
+            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Rotation Solver or BossMod AutoRotation\n**AutoDuty will automaticaly determine which you are using");
 
             if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref Configuration.autoManageBossModAISettings))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Autoduty will enable BMAI and any options you configure at the start of each duty.");
-            //ImGui.SameLine(0, 5);
+
+            if (ImGui.Checkbox("Auto Manage Vnav Align Camera", ref Configuration.AutoManageVnavAlignCamera))
+                Configuration.Save();
+            ImGuiComponents.HelpMarker("Autoduty will enable AlignCamera in VNav at the start of each duty, and disable it when done if it was not set.");
             
+            //ImGui.SameLine(0, 5);
+
             if (Configuration.autoManageBossModAISettings == true)
             {
                 var followRole = Configuration.FollowRole;
                 var maxDistanceToTargetRoleBased = Configuration.MaxDistanceToTargetRoleBased;
-                var maxDistanceToTarget = Configuration.MaxDistanceToTarget;
-                var maxDistanceToTargetAoE = Configuration.MaxDistanceToTargetAoE;
+                var maxDistanceToTarget = Configuration.MaxDistanceToTargetFloat;
+                var MaxDistanceToTargetAoEFloat = Configuration.MaxDistanceToTargetAoEFloat;
                 var positionalRoleBased = Configuration.PositionalRoleBased;
 
-                using (var autoManageBossModAISettingsDisable = ImRaii.Disabled(!Configuration.autoManageBossModAISettings))
+                using (ImRaii.Disabled(!Configuration.autoManageBossModAISettings))
                 {
                     //if (ImGui.Button(Configuration.HideBossModAIConfig ? "Show" : "Hide"))
                     //{
@@ -546,7 +592,7 @@ public static class ConfigTab
                             Configuration.FollowSlot = Configuration.followSlot;
                             Configuration.Save();
                         }
-                        using (var d1 = ImRaii.Disabled(!Configuration.followSlot))
+                        using (ImRaii.Disabled(!Configuration.followSlot))
                         {
                             ImGui.SameLine(0, 5);
                             ImGui.PushItemWidth(70);
@@ -562,7 +608,7 @@ public static class ConfigTab
                             Configuration.FollowRole = Configuration.followRole;
                             Configuration.Save();
                         }
-                        using (var d1 = ImRaii.Disabled(!followRole))
+                        using (ImRaii.Disabled(!followRole))
                         {
                             ImGui.SameLine(0, 10);
                             if (ImGui.Button(EnumString(Configuration.FollowRoleEnum)))
@@ -588,25 +634,25 @@ public static class ConfigTab
                             Configuration.MaxDistanceToTargetRoleBased = Configuration.maxDistanceToTargetRoleBased;
                             Configuration.Save();
                         }
-                        using (var d1 = ImRaii.Disabled(Configuration.MaxDistanceToTargetRoleBased))
+                        using (ImRaii.Disabled(Configuration.MaxDistanceToTargetRoleBased))
                         {
                             ImGui.PushItemWidth(195);
-                            if (ImGui.SliderInt("Max Distance To Target", ref Configuration.MaxDistanceToTarget, 1, 30))
+                            if (ImGui.SliderFloat("Max Distance To Target", ref Configuration.MaxDistanceToTargetFloat, 1, 30))
                             {
-                                Configuration.MaxDistanceToTarget = Math.Clamp(Configuration.MaxDistanceToTarget, 1, 30);
+                                Configuration.MaxDistanceToTargetFloat = Math.Clamp(Configuration.MaxDistanceToTargetFloat, 1, 30);
                                 Configuration.Save();
                             }
-                            if (ImGui.SliderInt("Max Distance To Target AoE", ref Configuration.MaxDistanceToTargetAoE, 1, 10))
+                            if (ImGui.SliderFloat("Max Distance To Target AoE", ref Configuration.MaxDistanceToTargetAoEFloat, 1, 10))
                             {
-                                Configuration.MaxDistanceToTargetAoE = Math.Clamp(Configuration.MaxDistanceToTargetAoE, 1, 10);
+                                Configuration.MaxDistanceToTargetAoEFloat = Math.Clamp(Configuration.MaxDistanceToTargetAoEFloat, 1, 10);
                                 Configuration.Save();
                             }
                             ImGui.PopItemWidth();
                         }
                         ImGui.PushItemWidth(195);
-                        if (ImGui.SliderInt("Max Distance To Slot", ref Configuration.MaxDistanceToSlot, 1, 30))
+                        if (ImGui.SliderFloat("Max Distance To Slot", ref Configuration.MaxDistanceToSlotFloat, 1, 30))
                             {
-                                Configuration.MaxDistanceToSlot = Math.Clamp(Configuration.MaxDistanceToSlot, 1, 30);
+                                Configuration.MaxDistanceToSlotFloat = Math.Clamp(Configuration.MaxDistanceToSlotFloat, 1, 30);
                                 Configuration.Save();
                             }
                         ImGui.PopItemWidth();
@@ -616,7 +662,7 @@ public static class ConfigTab
                             AutoDuty.Plugin.BMRoleChecks();
                             Configuration.Save();
                         }
-                        using (var d1 = ImRaii.Disabled(Configuration.positionalRoleBased))
+                        using (ImRaii.Disabled(Configuration.positionalRoleBased))
                         {
                             ImGui.SameLine(0, 10);
                             if (ImGui.Button(EnumString(Configuration.PositionalEnum)))
@@ -686,7 +732,12 @@ public static class ConfigTab
                 }
                 ImGui.Unindent();
             }
-            ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");         
+            ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");
+
+            if (ImGui.Checkbox("Override Party Validation", ref Configuration.OverridePartyValidation))
+                Configuration.Save();
+            ImGuiComponents.HelpMarker("AutoDuty will ignore your party makeup when queueing for duties\nThis is for Multi-Boxing Only\n*AutoDuty is not recommended to be used with other players*");
+
             /*/
         disabled for now
             using (var d0 = ImRaii.Disabled(true))
@@ -710,7 +761,7 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Using Alternative Rotation Plugin", ref Configuration.UsingAlternativeRotationPlugin))
                     Configuration.Save();
-                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Rotation Solver.");
+                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Rotation Solver or BossMod AutoRotation.");
 
                 if (ImGui.Checkbox("Using Alternative Movement Plugin", ref Configuration.UsingAlternativeMovementPlugin))
                     Configuration.Save();
@@ -757,7 +808,36 @@ public static class ConfigTab
             }
             if (ImGui.Checkbox("Auto Equip Recommended Gear", ref Configuration.AutoEquipRecommendedGear))
                 Configuration.Save();
+
             ImGuiComponents.HelpMarker("Uses Gear from Armory Chest Only");
+
+
+            if (Configuration.AutoEquipRecommendedGear)
+            {
+                ImGui.Indent();
+                using (ImRaii.Disabled(!Gearsetter_IPCSubscriber.IsEnabled))
+                {
+                    if (ImGui.Checkbox("Consider items outside of armoury chest", ref Configuration.AutoEquipRecommendedGearGearsetter))
+                        Configuration.Save();
+                }
+
+                if (!Gearsetter_IPCSubscriber.IsEnabled)
+                {
+                    if (Configuration.AutoEquipRecommendedGearGearsetter)
+                    {
+                        Configuration.AutoEquipRecommendedGearGearsetter = false;
+                        Configuration.Save();
+                    }
+
+                    ImGui.Text("* Items outside the armoury chest requires Gearsetter plugin");
+                    ImGui.Text("Get @ ");
+                    ImGui.SameLine(0, 0);
+                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
+                }
+
+                ImGui.Unindent();
+            }
+
             if (ImGui.Checkbox("Auto Consume Boiled Eggs", ref Configuration.AutoBoiledEgg))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will use Boiled Eggs in inventory for +3% Exp.");
@@ -800,6 +880,33 @@ public static class ConfigTab
                 }
                 ImGui.PopItemWidth();
                 ImGui.Unindent();
+                ImGui.Text("Preferred Repair NPC: ");
+                ImGuiComponents.HelpMarker("It's a good idea to match the Repair NPC with Summoning Bell and if possible Retire Location");
+                ImGui.PushItemWidth(300  * ImGuiHelpers.GlobalScale);
+                if (ImGui.BeginCombo("##PreferredRepair", Configuration.PreferredRepairNPC != null ? $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})" : "Grand Company Inn"))
+                {
+                    if (ImGui.Selectable("Grand Company Inn"))
+                    {
+                        Configuration.PreferredRepairNPC = null;
+                        Configuration.Save();
+                    }
+
+                    foreach (RepairNpcData repairNPC in RepairNPCs)
+                    {
+                        var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
+
+                        if (territoryType == null) continue;
+
+                        if (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
+                        {
+                            Configuration.PreferredRepairNPC = repairNPC;
+                            Configuration.Save();
+                        }
+                    }
+
+                    ImGui.EndCombo();
+                }
+                ImGui.PopItemWidth();
             }
         }
 
@@ -884,6 +991,10 @@ public static class ConfigTab
                             }
                         }
                         ImGui.PopItemWidth();
+                    }
+                    if (ImGui.Checkbox("Use GC Aetheryte Ticket", ref Configuration.AutoGCTurninUseTicket))
+                    {
+                        Configuration.Save();
                     }
                     ImGui.Unindent();
                 }

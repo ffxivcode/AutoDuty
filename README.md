@@ -40,7 +40,12 @@
     <!--<a href="https://github.com/ffxivcode/AutoDuty"><strong>Explore the docs »</strong></a>
     <br />-->
     <br />
-    <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+ <a href="https://discord.com/channels/1001823907193552978/1236757595738476725">Puni.sh Discord</a>
+    ·
+ <a href="https://discord.com/channels/1241050921732014090/1273374407653462017">FFXIV Code Discord</a>
+    ·
+    <a
+    · href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
     <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
     ·
@@ -84,9 +89,9 @@ but i haven't tried it yet so i leave it empty lol
 <i> You need 3 prerequisited plugins:
 1. vnavmesh
 2. BossMod or BossModReborn
-3. RotationSolverReborn </i>
+3. BossMod AutoRotation or RotationSolverReborn </i>
 
-* vnavmesh and BossMod(add repo url to dalamud)
+* vnavmesh and BossMod(AutoRotation) (add repo url to dalamud)
   ```
   https://puni.sh/api/repository/veyn
   ```

@@ -18,8 +18,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Extract Materia Started");
                 ExtractRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
                 SchedulerHelper.ScheduleAction("ExtractTimeOut", Stop, 300000);
                 if (AutoDuty.Plugin.Configuration.AutoExtractAll)
                     _stoppingCategory = 6;
@@ -27,8 +26,6 @@ namespace AutoDuty.Helpers
                     _stoppingCategory = 0;
                 AutoDuty.Plugin.Action = "Extracting Materia";
                 Svc.Framework.Update += ExtractUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -36,15 +33,16 @@ namespace AutoDuty.Helpers
         {
             _currentCategory = 0;
             _switchedCategory = false;
+            AutoDuty.Plugin.States |= State.Other;
             AutoDuty.Plugin.Action = "";
+            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                AutoDuty.Plugin.SetGeneralSettings(false);
             SchedulerHelper.DescheduleAction("ExtractTimeOut");
             _stop = true;
             if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog))
                 addonMaterializeDialog->Close(true);
             if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize))
                 addonMaterialize->Close(true);
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool ExtractRunning = false;
@@ -57,7 +55,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void ExtractUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.Started || AutoDuty.Plugin.InDungeon)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating) || AutoDuty.Plugin.InDungeon)
                 Stop();
 
             if (!EzThrottler.Throttle("Extract", 250))
@@ -73,7 +71,9 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     ExtractRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= ExtractUpdate;
                 }
                 return;

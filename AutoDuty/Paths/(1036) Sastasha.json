@@ -1,26 +1,27 @@
 {
   "actions": [
     "DutySpecificCode|347.75, 44.14, -223.21|1",
+    "TreasureCoffer|132.58, 27.83, -100.06|",
     "DutySpecificCode|90.26, 27.20, -56.04|2",
-    "DutySpecificCode|63.66, 32.85, -31.63|3",
+    "DutySpecificCode|0, 0, 0|3",
     "Boss|71.80, 30.37, -44.91|",
-    "MoveTo|63.56, 32.83, -31.59|",
     "Interactable|0, 0, 0|2000216 (Inconspicuous Switch)",
     "Boss|-27.17, 22.86, 56.34|",
-    "MoveTo|-91.82, 13.84, 145.88|",
-    "Interactable|0, 0, 0|2000250 (Captain's Quarters Key)",
-    "MoveTo|-95.10, 19.90, 171.10|",
-    "Interactable|0, 0, 0|2000227 (Captain's Quarters)",
-    "MoveTo|-95.15, 20.01, 190.03|",
-    "Interactable|0, 0, 0|2000255 (Waverider Gate Key)",
-    "MoveTo|-129.54, 16.30, 156.32|",
-    "Interactable|0, 0, 0|2000231 (Waverider Gate)",
+    "Interactable|-91.82, 13.84, 145.88|2000250 (Captain\u0027s Quarters Key)",
+    "Interactable|-95.10, 19.90, 171.10|2000227 (Captain\u0027s Quarters)",
+    "Interactable|-95.15, 20.01, 190.03|2000255 (Waverider Gate Key)",
+    "Interactable|-129.54, 16.30, 156.32|2000231 (Waverider Gate)",
     "Boss|-183.12, 6.38, 244.52|",
     "Boss|-332.47, 5.57, 317.23|"
   ],
   "meta": {
     "createdAt": 122,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 132,
+        "change": ""
+      }
+    ],
     "notes": []
   }
 }

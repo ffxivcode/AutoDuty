@@ -18,13 +18,12 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto {whichHousing} Started");
                 GotoHousingRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 _whichHousing = whichHousing;
                 SchedulerHelper.ScheduleAction("GotoHousingTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoHousingUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -37,8 +36,6 @@ namespace AutoDuty.Helpers
             _stop = true;
             _whichHousing = Housing.Apartment;
             AutoDuty.Plugin.Action = "";
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool InPrivateHouse(Housing whichHousing) =>
@@ -49,9 +46,9 @@ namespace AutoDuty.Helpers
             //Goblet
             (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 61 && Svc.ClientState.TerritoryType == 610) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 61 && (Svc.ClientState.TerritoryType == 345 || Svc.ClientState.TerritoryType == 346 || Svc.ClientState.TerritoryType == 347)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 58 && (Svc.ClientState.TerritoryType == 345 || Svc.ClientState.TerritoryType == 346 || Svc.ClientState.TerritoryType == 347)) ||
             //Shirogane
-            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 97 && Svc.ClientState.TerritoryType == 655) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 97 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) || (whichHousing == Housing.FC_Estate && TeleportHelper.PersonalHomeTeleportId == 96 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) ||
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 97 && Svc.ClientState.TerritoryType == 655) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 97 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 96 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) ||
             //Empyreum
-            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 165 && Svc.ClientState.TerritoryType == 999) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 165 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982)) || (whichHousing == Housing.FC_Estate && TeleportHelper.PersonalHomeTeleportId == 164 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982));
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 165 && Svc.ClientState.TerritoryType == 999) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 165 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 164 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982));
 
         internal static bool InHousingArea(Housing whichHousing) =>
             //Mist
@@ -88,13 +85,15 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     GotoHousingRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= GotoHousingUpdate;
                 }
                 return;
             }
 
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
             {
                 Svc.Log.Debug($"AutoDuty has Started, Stopping GotoHousing");
                 Stop();

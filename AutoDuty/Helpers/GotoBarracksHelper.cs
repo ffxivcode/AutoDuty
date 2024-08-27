@@ -16,12 +16,11 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Barracks Started");
                 GotoBarracksRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GotoBarracksTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoBarracksUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -33,12 +32,12 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= GotoBarracksUpdate;
             GotoHelper.Stop();
             GotoBarracksRunning = false;
-            AutoDuty.Plugin.States -= State.Other;
+            AutoDuty.Plugin.States &= ~State.Other;
+            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                AutoDuty.Plugin.SetGeneralSettings(true);
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
             AutoDuty.Plugin.Action = "";
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool GotoBarracksRunning = false;
@@ -51,7 +50,7 @@ namespace AutoDuty.Helpers
 
         internal static void GotoBarracksUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
                 Stop();
 
             if (!EzThrottler.Check("GotoBarracks"))

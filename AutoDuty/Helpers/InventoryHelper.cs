@@ -13,6 +13,9 @@ using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
 {
+    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+    using Lumina.Excel;
+
     internal unsafe static class InventoryHelper
     {
         internal static uint SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();
@@ -31,6 +34,65 @@ namespace AutoDuty.Helpers
                 UseItem(itemId, true);
             else if (ItemCount(itemId) >= 1) 
                 UseItem(itemId);
+        }
+
+        internal static void EquipGear(InventoryType type, int slotIndex, bool? ring = null)
+        {
+            InventoryItem* item = InventoryManager.Instance()->GetInventorySlot(type, slotIndex);
+
+            ExcelSheet<Item>? items    = Svc.Data.GetExcelSheet<Item>();
+            Item?             itemData = items?.GetRow(item->ItemId);
+            EquippedSlotIndex targetSlot = itemData!.EquipSlotCategory.Value switch
+            {
+                { MainHand: > 0 } => EquippedSlotIndex.MainHand,
+                { OffHand : > 0 } => EquippedSlotIndex.Offhand,
+                { Head    : > 0 } => EquippedSlotIndex.Helm,
+                { Body    : > 0 } => EquippedSlotIndex.Body,
+                { Gloves  : > 0 } => EquippedSlotIndex.Hands,
+                { Legs    : > 0 } => EquippedSlotIndex.Legs,
+                { Feet    : > 0 } => EquippedSlotIndex.Feet,
+                { Ears    : > 0 } => EquippedSlotIndex.Earring,
+                { Neck    : > 0 } => EquippedSlotIndex.Neck,
+                { Wrists  : > 0 } => EquippedSlotIndex.Wrist,
+                { FingerL : > 0 } => EquippedSlotIndex.Ring1,
+                { FingerR : > 0 } => EquippedSlotIndex.Ring1,
+                _ => throw new ArgumentOutOfRangeException("the heck is " + item->ItemId)
+            };
+
+            if (targetSlot == EquippedSlotIndex.Ring1)
+                if (ring.HasValue)
+                {
+                    targetSlot = ring.Value ? EquippedSlotIndex.Ring1 : EquippedSlotIndex.Ring2;
+                }
+                else
+                {
+                    InventoryContainer* equipped = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
+
+                    InventoryItem ring1Slot = equipped->Items[(int)EquippedSlotIndex.Ring1];
+                    InventoryItem ring2Slot = equipped->Items[(int)EquippedSlotIndex.Ring2];
+                    targetSlot = items?.GetRow(ring1Slot.ItemId)?.LevelItem.Value?.RowId < items?.GetRow(ring2Slot.ItemId)?.LevelItem.Value?.RowId ?
+                                     EquippedSlotIndex.Ring1 :
+                                     EquippedSlotIndex.Ring2;
+
+                }
+
+            InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot, 1);
+        }
+
+        public enum EquippedSlotIndex : ushort
+        {
+            MainHand = 0,
+            Offhand = 1,
+            Helm = 2,
+            Body = 3,
+            Hands = 4,
+            Legs = 6,
+            Feet = 7,
+            Earring = 8,
+            Neck = 9,
+            Wrist = 10,
+            Ring1 = 11,
+            Ring2 = 12
         }
 
         internal unsafe static uint CurrentItemLevel()
@@ -100,6 +162,7 @@ namespace AutoDuty.Helpers
         }
 
         internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) <= AutoDuty.Plugin.Configuration.AutoRepairPct;// && (!AutoDuty.Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
+        internal static bool CanRepair(uint percent) => (LowestEquippedItem().Condition / 300f) < percent;// && (!AutoDuty.Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
 
         //artisan
         internal static bool CanRepairItem(uint itemID)

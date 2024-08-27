@@ -91,8 +91,9 @@ namespace AutoDuty.Helpers
             }
             Svc.Log.Info("Moving to Flag Marker");
             MoveToMapMarkerRunning = true;
-            if(!AutoDuty.Plugin.States.HasFlag(State.Other))
-                AutoDuty.Plugin.States |= State.Other;
+            AutoDuty.Plugin.States |= State.Other;
+            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                AutoDuty.Plugin.SetGeneralSettings(false);
             Svc.Framework.Update += MoveToMapMarkerUpdate;
         }
 
@@ -106,7 +107,9 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= MoveToMapMarkerUpdate;
             VNavmesh_IPCSubscriber.Path_Stop();
             MoveToMapMarkerRunning = false;
-            AutoDuty.Plugin.States -= State.Other;
+            AutoDuty.Plugin.States &= ~State.Other;
+            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                AutoDuty.Plugin.SetGeneralSettings(true);
             flagMapMarker = null;
         }
 
@@ -117,6 +120,13 @@ namespace AutoDuty.Helpers
 
             if (!ObjectHelper.IsReady)
                 return;
+
+            if (flagMapMarker != null && Svc.ClientState.TerritoryType == flagMapMarker.Value.TerritoryId && ObjectHelper.GetDistanceToPlayer(flagMapMarkerVector3!.Value) < 2)
+            {
+                StopMoveToMapMarker();
+                GotoHelper.Stop();
+                return;
+            }
 
             if (flagMapMarker != null && Svc.ClientState.TerritoryType == flagMapMarker.Value.TerritoryId && flagMapMarkerVector3 != null && flagMapMarkerVector3.Value.Y == 0)
             {
@@ -134,13 +144,6 @@ namespace AutoDuty.Helpers
 
             if (GenericHelpers.TryGetAddonByName("AreaMap", out AtkUnitBase* addonAreaMap) && GenericHelpers.IsAddonReady(addonAreaMap))
                 addonAreaMap->Close(true);
-
-            if (flagMapMarker !=null && Svc.ClientState.TerritoryType == flagMapMarker.Value.TerritoryId && ObjectHelper.GetDistanceToPlayer(flagMapMarkerVector3!.Value) < 2)
-            {
-                StopMoveToMapMarker();
-                GotoHelper.Stop();
-                return;
-            }
 
             if (IsFlagMarkerSet)
             {

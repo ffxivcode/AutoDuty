@@ -28,7 +28,7 @@ public class MainWindow : Window, IDisposable
     private static string openTabName = "";
 
     public MainWindow() : base(
-        $"AutoDuty v0.0.0.{Plugin.Configuration.Version}###Autoduty", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize)
+        $"AutoDuty v0.0.0.{Plugin.Configuration.Version}###Autoduty")
     {
         SizeConstraints = new WindowSizeConstraints
         {
@@ -60,7 +60,7 @@ public class MainWindow : Window, IDisposable
 
     internal static void StopResumePause()
     {
-        using (var d = ImRaii.Disabled(!Plugin.Running && !Plugin.Started && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning))
+        using (var d = ImRaii.Disabled(!Plugin.States.HasFlag(State.Looping) && !Plugin.States.HasFlag(State.Navigating) && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning))
         {
             if (ImGui.Button("Stop"))
             {
@@ -70,7 +70,7 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine(0, 5);
         }
 
-        using (var d = ImRaii.Disabled((!Plugin.Running && !Plugin.Started && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning) || Plugin.CurrentTerritoryContent == null))
+        using (var d = ImRaii.Disabled((!Plugin.States.HasFlag(State.Looping) && !Plugin.States.HasFlag(State.Navigating) && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning) || Plugin.CurrentTerritoryContent == null))
             {
                 if (Plugin.Stage == Stage.Paused)
             {
@@ -91,107 +91,146 @@ public class MainWindow : Window, IDisposable
 
     internal static void GotoAndActions()
     {
-        using (var d2 = ImRaii.Disabled(Plugin.Running || Plugin.Started))
+        using (ImRaii.Disabled(Plugin.States.HasFlag(State.Looping) || Plugin.States.HasFlag(State.Navigating)))
         {
-            using (var GotoDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || RepairHelper.RepairRunning))
+            using (ImRaii.Disabled(Plugin.Configuration.OverrideOverlayButtons && !Plugin.Configuration.GotoButton))
             {
-                if ((GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning) || MapHelper.MoveToMapMarkerRunning || GotoHousingHelper.GotoHousingRunning)
+                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || RepairHelper.RepairRunning))
                 {
-                    if (ImGui.Button("Stop"))
-                        Plugin.Stage = Stage.Stopped;
-                }
-                else
-                {
-                    if (ImGui.Button("Goto"))
+                    if ((GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning) || MapHelper.MoveToMapMarkerRunning || GotoHousingHelper.GotoHousingRunning)
                     {
-                        ImGui.OpenPopup("GotoPopup");
+                        if (ImGui.Button("Stop"))
+                            Plugin.Stage = Stage.Stopped;
+                    }
+                    else
+                    {
+                        if (ImGui.Button("Goto"))
+                        {
+                            ImGui.OpenPopup("GotoPopup");
+                        }
                     }
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var GCTurninDisabled = ImRaii.Disabled(DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning) || RepairHelper.RepairRunning))
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoGCTurnin && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.TurninButton))
             {
-                if (GCTurninHelper.GCTurninRunning)
+                using (ImRaii.Disabled(DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning) || RepairHelper.RepairRunning))
                 {
-                    if (ImGui.Button("Stop"))
-                        Plugin.Stage = Stage.Stopped;
-                }
-                else
-                {
-                    if (ImGui.Button("TurnIn"))
+                    if (GCTurninHelper.GCTurninRunning)
                     {
+                        if (ImGui.Button("Stop"))
+                            Plugin.Stage = Stage.Stopped;
+                    }
+                    else
+                    {
+                        if (ImGui.Button("TurnIn"))
+                        {
+                            if (Deliveroo_IPCSubscriber.IsEnabled)
+                                GCTurninHelper.Invoke();
+                            else
+                                ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                        }
                         if (Deliveroo_IPCSubscriber.IsEnabled)
-                            GCTurninHelper.Invoke();
+                            ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
                         else
-                            ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                            ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
                     }
-                    if (Deliveroo_IPCSubscriber.IsEnabled)
-                        ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
-                    else
-                        ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var DesynthDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoDesynth && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.DesynthButton))
             {
-                if (DesynthHelper.DesynthRunning)
+                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
                 {
-                    if (ImGui.Button("Stop"))
-                        Plugin.Stage = Stage.Stopped;
-                }
-                else
-                {
-                    if (ImGui.Button("Desynth"))
-                        DesynthHelper.Invoke();
-                    ToolTip("Click to Desynth all Items in Inventory");
-                }
-            }
-            ImGui.SameLine(0, 5);
-            using (var ExtractDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
-            {
-                if (ExtractHelper.ExtractRunning)
-                {
-                    if (ImGui.Button("Stop"))
-                        Plugin.Stage = Stage.Stopped;
-                }
-                else
-                {
-                    if (ImGui.Button("Extract"))
+                    if (DesynthHelper.DesynthRunning)
                     {
+                        if (ImGui.Button("Stop"))
+                            Plugin.Stage = Stage.Stopped;
+                    }
+                    else
+                    {
+                        if (ImGui.Button("Desynth"))
+                            DesynthHelper.Invoke();
+                        ToolTip("Click to Desynth all Items in Inventory");
+                    }
+                }
+            }
+            ImGui.SameLine(0, 5);
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoExtract && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.ExtractButton))
+            {
+                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
+                {
+                    if (ExtractHelper.ExtractRunning)
+                    {
+                        if (ImGui.Button("Stop"))
+                            Plugin.Stage = Stage.Stopped;
+                    }
+                    else
+                    {
+                        if (ImGui.Button("Extract"))
+                        {
+                            if (QuestManager.IsQuestComplete(66174))
+                                ExtractHelper.Invoke();
+                            else
+                                ShowPopup("Missing Quest Completion", "Materia Extraction requires having completed quest: Forging the Spirit");
+                        }
                         if (QuestManager.IsQuestComplete(66174))
-                            ExtractHelper.Invoke();
+                            ToolTip("Click to Extract Materia");
                         else
-                            ShowPopup("Missing Quest Completion", "Materia Extraction requires having completed quest: Forging the Spirit");
+                            ToolTip("Materia Extraction requires having completed quest: Forging the Spirit");
                     }
-                    if (QuestManager.IsQuestComplete(66174))
-                        ToolTip("Click to Extract Materia");
-                    else
-                        ToolTip("Materia Extraction requires having completed quest: Forging the Spirit");
                 }
             }
             ImGui.SameLine(0, 5);
-            using (var RepairDisabled = ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !RepairHelper.RepairRunning)))
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoRepair && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.RepairButton))
             {
-                if (RepairHelper.RepairRunning)
+                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !RepairHelper.RepairRunning)))
+                {
+                    if (RepairHelper.RepairRunning)
+                    {
+                        if (ImGui.Button("Stop"))
+                            Plugin.Stage = Stage.Stopped;
+                    }
+                    else
+                    {
+                        if (ImGui.Button("Repair"))
+                        {
+                            if (InventoryHelper.CanRepair(100))
+                                RepairHelper.Invoke();
+                            //else
+                                //ShowPopup("", "");
+                        }
+                        //if ()
+                            ToolTip("Click to Repair");
+                        //else
+                            //ToolTip("");
+                    }
+                }
+            }
+            ImGui.SameLine(0, 5);
+            using (ImRaii.Disabled(!Plugin.Configuration.AutoEquipRecommendedGear && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.EquipButton))
+            {
+                if (AutoEquipHelper.AutoEquipRunning)
                 {
                     if (ImGui.Button("Stop"))
                         Plugin.Stage = Stage.Stopped;
                 }
                 else
                 {
-                    if (ImGui.Button("Repair"))
+                    if (ImGui.Button("Equip"))
                     {
-                        if (InventoryHelper.CanRepair())
-                            RepairHelper.Invoke();
+                        AutoEquipHelper.Invoke();
                         //else
-                            //ShowPopup("", "");
+                        //ShowPopup("", "");
                     }
+
                     //if ()
-                        ToolTip("Click to Repair");
+                    ToolTip("Click to Equip Gear");
                     //else
-                        //ToolTip("");
+                    //ToolTip("");
                 }
             }
+
             if (ImGui.BeginPopup("GotoPopup"))
             {
                 if (ImGui.Selectable("Barracks"))
@@ -250,7 +289,7 @@ public class MainWindow : Window, IDisposable
         float textWidth = ImGui.CalcTextSize(text).X;
 
         ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f);
-        ImGui.Text(text);
+        ImGui.TextWrapped(text);
     }
 
     internal static bool CenteredButton(string label, float percentWidth, float xIndent = 0)
@@ -318,7 +357,7 @@ public class MainWindow : Window, IDisposable
             return data[0];
         }
     }
-    public static void EzTabBar(string id, string KoFiTransparent, string openTabName, ImGuiTabBarFlags flags, params (string name, Action function, Vector4? color, bool child)[] tabs)
+    public static void EzTabBar(string id, string? KoFiTransparent, string openTabName, ImGuiTabBarFlags flags, params (string name, Action function, Vector4? color, bool child)[] tabs)
     {
         ImGui.BeginTabBar(id, flags);
         foreach (var x in tabs)
@@ -351,7 +390,7 @@ public class MainWindow : Window, IDisposable
         ImGui.EndTabBar();
     }
 
-    private static List<(string, Action, Vector4?, bool)> tabList =
+    private static readonly List<(string, Action, Vector4?, bool)> tabList =
         [("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Info", InfoTab.Draw, null, false), ("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)
         ];
 

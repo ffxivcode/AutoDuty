@@ -24,12 +24,11 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("AM Started");
                 AMRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("AMTimeOut", Stop, 600000);
                 Svc.Framework.Update += AMUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -45,8 +44,6 @@ namespace AutoDuty.Helpers
             if (AM_IPCSubscriber.IsRunning())
                 AM_IPCSubscriber.Stop();
             _stop = true;
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool AMRunning = false;
@@ -62,7 +59,9 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     AMRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= AMUpdate;
                 }
                 else if (Svc.Targets.Target != null)
@@ -82,7 +81,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping AMHelper");
                 Stop();

@@ -23,12 +23,11 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany}");
                 GotoInnRunning = true;
                 _stop = false;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -41,15 +40,13 @@ namespace AutoDuty.Helpers
             _stop = true;
             _whichGrandCompany = 0;
             AutoDuty.Plugin.Action = "";
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool GotoInnRunning = false;
         internal static uint InnTerritoryType(uint _grandCompany) => _grandCompany == 1 ? 177u : (_grandCompany == 2 ? 179u : 178u);
         internal static uint ExitInnDoorDataId(uint _grandCompany) => _grandCompany == 1 ? 2001010u : (_grandCompany == 2 ? 2000087u : 2001011u);
         private static uint _whichGrandCompany = 0;
-        private static List<Vector3> _innKeepLocation => _whichGrandCompany == 1 ? [new Vector3(0.80804193f, 40.100555f, 35.524208f), new Vector3(15.42688f, 39.99999f, 12.466553f)] : (_whichGrandCompany == 2 ? [new Vector3(25.6627f, -8f, 99.74237f)] : [new Vector3(28.85994f, 6.999999f, -80.12716f)]);
+        private static List<Vector3> _innKeepLocation => _whichGrandCompany == 1 ? [new Vector3(15.42688f, 39.99999f, 12.466553f)] : (_whichGrandCompany == 2 ? [new Vector3(25.6627f, -8f, 99.74237f)] : [new Vector3(28.85994f, 6.999999f, -80.12716f)]);
         private static uint _innKeepDataId => _whichGrandCompany == 1 ? 1000974u : (_whichGrandCompany == 2 ? 1000102u : 1001976u);
         private static IGameObject? _innKeepGameObject => ObjectHelper.GetObjectByDataId(_innKeepDataId);
         private static bool _stop = false;
@@ -63,7 +60,9 @@ namespace AutoDuty.Helpers
                     Svc.Log.Debug("Stopping GotoInn");
                     _stop = false;
                     GotoInnRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= GotoInnUpdate;
                 }
                 else if (Svc.Targets.Target != null)
@@ -77,7 +76,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
             {
                 Svc.Log.Debug($"AutoDuty has Started, Stopping GotoInn");
                 Stop();

@@ -35,11 +35,11 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static uint PersonalHomeTeleportId => Svc.AetheryteList.FirstOrDefault(x => !x.IsApartment && (x.AetheryteData.GameData?.PlaceName.Value?.Name.ExtractText().Equals("Estate Hall (Private)", System.StringComparison.InvariantCultureIgnoreCase) ?? false))?.AetheryteId ?? 0;
+        internal static uint PersonalHomeTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: false, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(59, 60, 61, 97, 165))?.AetheryteId ?? 0;
 
-        internal static uint ApartmentTeleportId => Svc.AetheryteList.FirstOrDefault(x => x.IsApartment && (x.AetheryteData.GameData?.PlaceName.Value?.Name.ExtractText().Equals("Estate Hall (Private)", System.StringComparison.InvariantCultureIgnoreCase) ?? false))?.AetheryteId ?? 0;
+        internal static uint ApartmentTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: true, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(59, 60, 61, 97, 165))?.AetheryteId ?? 0;
 
-        internal static uint FCEstateTeleportId => Svc.AetheryteList.FirstOrDefault(x => x.AetheryteData.GameData?.PlaceName.Value?.Name.ExtractText().Equals("Estate Hall (Free Company)", System.StringComparison.InvariantCultureIgnoreCase) ?? false)?.AetheryteId ?? 0;
+        internal static uint FCEstateTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: false, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(56, 57, 58, 96, 164))?.AetheryteId ?? 0;
 
         internal static bool TeleportGCCity()
         {
@@ -77,8 +77,6 @@ namespace AutoDuty.Helpers
         {
             if (aethernetName.IsNullOrEmpty() || !ObjectHelper.IsValid)
                 return true;
-
-            ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
 
             if (!GenericHelpers.TryGetAddonByName("TelepotTown", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon))
             {

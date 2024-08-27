@@ -1,4 +1,6 @@
-﻿namespace AutoDuty.Data
+﻿using System;
+
+namespace AutoDuty.Data
 {
     public class Enum
     {
@@ -83,19 +85,31 @@
             Reading_Path = 1,
             Action = 2,
             Looping = 3,
-            Moving = 4,
-            Waiting_For_Combat = 5,
-            Paused = 6,
-            Dead = 7,
-            Revived = 8,
-            Looting_Treasure = 9
+            Condition = 4,
+            Moving = 5,
+            Waiting_For_Combat = 6,
+            Paused = 7,
+            Dead = 8,
+            Revived = 9,
+            Looting_Treasure = 10
         }
 
+        [Flags]
         public enum State : int
         {
-            Running = 0,
-            Navigating = 1,
-            Other = 2
+            None = 0,
+            Looping = 1,
+            Navigating = 2,
+            Other = 4
+        }
+
+        [Flags]
+        public enum SettingsActive : int
+        {
+            None = 0,
+            Vnav_Align_Camera_Off = 1,
+            Pandora_Interact_Objects = 2,
+            YesAlready = 4
         }
 
         public enum Sounds : byte

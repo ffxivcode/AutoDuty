@@ -22,12 +22,11 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("GCTurnin Started");
                 GCTurninRunning = true;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Other))
-                    AutoDuty.Plugin.States |= State.Other;
+                AutoDuty.Plugin.States |= State.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GCTurninTimeOut", Stop, 600000);
                 Svc.Framework.Update += GCTurninUpdate;
-                if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                    ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(false);
             }
         }
 
@@ -41,8 +40,6 @@ namespace AutoDuty.Helpers
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("GCTurninTimeOut");
             _stop = true;
-            if (ReflectionHelper.YesAlready_Reflection.IsEnabled)
-                ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(true);
         }
 
         internal static bool GCTurninRunning = false;
@@ -50,6 +47,7 @@ namespace AutoDuty.Helpers
 
         private static IGameObject? _personnelOfficerGameObject => ObjectHelper.GetObjectByDataId(_personnelOfficerDataId);
         private static uint _personnelOfficerDataId => ObjectHelper.GrandCompany == 1 ? 1002388u : (ObjectHelper.GrandCompany == 2 ? 1002394u : 1002391u);
+        private static uint _aetheryteTicketId = ObjectHelper.GrandCompany == 1 ? 21069u : (ObjectHelper.GrandCompany == 2 ? 21070u : 21071u);
         private static bool _deliverooStarted = false;
         private static Chat _chat = new();
         private static bool _stop = false;
@@ -62,7 +60,9 @@ namespace AutoDuty.Helpers
                 {
                     _stop = false;
                     GCTurninRunning = false;
-                    AutoDuty.Plugin.States -= State.Other;
+                    AutoDuty.Plugin.States &= ~State.Other;
+                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                        AutoDuty.Plugin.SetGeneralSettings(true);
                     Svc.Framework.Update -= GCTurninUpdate;
                 }
                 else if (Svc.Targets.Target != null)
@@ -78,7 +78,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (AutoDuty.Plugin.Started)
+            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping GCTurninHelper");
                 Stop();
@@ -106,10 +106,16 @@ namespace AutoDuty.Helpers
             }
             AutoDuty.Plugin.Action = "GC Turning In";
 
-            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany))
+            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany))
             {
                 Svc.Log.Debug("Moving to GC Supply");
-                GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(UIState.Instance()->PlayerState.GrandCompany), [GCSupplyLocation], 0.25f, 2f, false);
+                if (AutoDuty.Plugin.Configuration.AutoGCTurninUseTicket && InventoryHelper.ItemCount(_aetheryteTicketId) > 0)
+                {
+                    if (!ObjectHelper.PlayerIsCasting)
+                        InventoryHelper.UseItem(_aetheryteTicketId);
+                }
+                else
+                    GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCSupplyLocation], 0.25f, 2f, false);
                 return;
             }
 
