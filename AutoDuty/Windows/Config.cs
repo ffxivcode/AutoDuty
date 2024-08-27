@@ -15,6 +15,8 @@ using AutoDuty.Managers;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Common.Math;
 using AutoDuty.Helpers;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using Dalamud.Interface;
 using static AutoDuty.Helpers.RepairNPCHelper;
 using ECommons.MathHelpers;
 using System.Globalization;
@@ -311,6 +313,11 @@ public class Configuration : IPluginConfiguration
     public bool StopItemQty = false;
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary = [];
     public int StopItemQtyInt = 1;
+    public bool PlayEndSound = false;
+    public bool CustomSound = false;
+    public float CustomSoundVolume = 0.5f;
+    public Sounds SoundEnum = Sounds.None;
+    public string SoundPath = "";
     public TerminationMode TerminationMethodEnum = TerminationMode.Do_Nothing;
     public bool TerminationKeepActive = true;
 
@@ -411,6 +418,7 @@ public static class ConfigTab
     private static Dictionary<uint, string> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x.Name.RawString)!;
     private static string stopItemQtyItemNameInput = "";
     private static KeyValuePair<uint, string> selectedItem = new(0, "");
+    private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
     private static bool overlayHeaderSelected = false;
     private static bool dutyConfigHeaderSelected = false;
@@ -1163,6 +1171,16 @@ public static class ConfigTab
                 }
                 ImGui.EndListBox();
             }
+            if (ImGui.Checkbox("Play Sound on Completion of All Loops: ", ref Configuration.PlayEndSound)) //Heavily Inspired by ChatAlerts
+                Configuration.Save();
+            using (var playEndSoundDisabled = ImRaii.Disabled(!Configuration.PlayEndSound))
+            {
+                if (ImGuiEx.IconButton(FontAwesomeIcon.Play, "##ConfigSoundTest", new Vector2(ImGui.GetItemRectSize().Y)))
+                    SoundHelper.StartSound(Configuration.PlayEndSound,Configuration.CustomSound,Configuration.SoundEnum);
+                ImGui.SameLine();
+                    DrawGameSound();
+            }
+
             ImGui.Text("On Completion of All Loops: ");
             ImGui.SameLine(0, 10);
             ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
@@ -1188,5 +1206,25 @@ public static class ConfigTab
                 ImGui.Unindent();
             }
         }     
+    }
+
+    private static void DrawGameSound()
+    {
+        ImGui.SameLine(0, 10);
+        ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+        if (ImGui.BeginCombo("##ConfigEndSoundMethod", Configuration.SoundEnum.ToName()))
+        {
+            foreach (var sound in _validSounds)
+            {
+                if (ImGui.Selectable(sound.ToName()))
+                {
+                    Configuration.SoundEnum = sound;
+                    UIModule.PlaySound((uint)sound);
+                    Configuration.Save();
+                }
+            }
+            ImGui.EndCombo();
+        }
+        Configuration.Save();
     }
 }
