@@ -152,8 +152,12 @@ namespace AutoDuty.Helpers
             {
                 if (_index < _entrancePath.Count)
                 {
-                    if (MovementHelper.Move(_entrancePath[_index], 0.25f, 3f, false, false))
+                    Svc.Log.Debug($"Our entrancePath has entries, moving to index {_index} which is {_entrancePath[_index]}");
+                    if (((_index + 1) != _entrancePath.Count && MovementHelper.Move(_entrancePath[_index], 0.25f, 0.25f, false, false)) || MovementHelper.Move(_entrancePath[_index], 0.25f, 3f, false, false))
+                    {
+                        Svc.Log.Debug($"We are at index {_index} increasing our index");
                         _index++;
+                    }
                 }
                 else if (MovementHelper.Move(_entranceGameObject, 0.25f, 3f, false, false))
                 {

@@ -812,6 +812,7 @@ public static class ConfigTab
                     if (ImGui.Button("Add Current Position"))
                     {
                         Configuration.PersonalHomeEntrancePath.Add(Player.Position);
+                        Configuration.Save();
                     }
                     ImGuiComponents.HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
                     try
@@ -836,6 +837,7 @@ public static class ConfigTab
                     if (ImGui.Button("Add Current Position"))
                     {
                         Configuration.FCEstateEntrancePath.Add(Player.Position);
+                        Configuration.Save();
                     }
                     ImGuiComponents.HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
                     try
