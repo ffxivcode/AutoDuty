@@ -6,7 +6,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons;
 using System.Linq;
 using System.Numerics;
-using ECommons.GameHelpers;
+using System.Collections.Generic;
 
 namespace AutoDuty.Helpers
 {
@@ -71,6 +71,8 @@ namespace AutoDuty.Helpers
         private static IGameObject? _entranceGameObject => ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)?.FirstOrDefault(x => x.DataId == 2002737 || x.DataId == 2007402);
         private static bool _stop = false;
         private static Housing _whichHousing = Housing.Apartment;
+        private static List<Vector3> _entrancePath => _whichHousing == Housing.Personal_Home ? AutoDuty.Plugin.Configuration.PersonalHomeEntrancePath : AutoDuty.Plugin.Configuration.FCEstateEntrancePath;
+        private static int _index = 0;
 
         internal unsafe static void GotoHousingUpdate(IFramework framework)
         {
@@ -148,7 +150,12 @@ namespace AutoDuty.Helpers
             }
             else if (ObjectHelper.IsValid)
             {
-                if (MovementHelper.Move(_entranceGameObject, 0.25f, 3f, false, false))
+                if (_index < _entrancePath.Count)
+                {
+                    if (MovementHelper.Move(_entrancePath[_index], 0.25f, 3f, false, false))
+                        _index++;
+                }
+                else if (MovementHelper.Move(_entranceGameObject, 0.25f, 3f, false, false))
                 {
                     Svc.Log.Debug($"We are in range of the entrance door, entering");
                     ObjectHelper.InteractWithObject(_entranceGameObject);

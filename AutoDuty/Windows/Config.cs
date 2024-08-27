@@ -258,6 +258,8 @@ public class Configuration : IPluginConfiguration
     //PreLoop Config Options
     public bool RetireMode = false;
     public RetireLocation RetireLocationEnum = RetireLocation.Inn;
+    public List<System.Numerics.Vector3> PersonalHomeEntrancePath = [];
+    public List<System.Numerics.Vector3> FCEstateEntrancePath = [];
     public bool AutoEquipRecommendedGear;
     public bool AutoEquipRecommendedGearGearsetter;
     public bool AutoBoiledEgg = false;
@@ -805,6 +807,54 @@ public static class ConfigTab
                     }
                     ImGui.EndCombo();
                 }
+                if (Configuration.RetireMode && Configuration.RetireLocationEnum == RetireLocation.Personal_Home)
+                {
+                    if (ImGui.Button("Add Current Position"))
+                    {
+                        Configuration.PersonalHomeEntrancePath.Add(Player.Position);
+                    }
+                    ImGuiComponents.HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
+                    try
+                    {
+                        if (!ImGui.BeginListBox("##PersonalHomeVector3List", new System.Numerics.Vector2(325 * ImGuiHelpers.GlobalScale, 80 * ImGuiHelpers.GlobalScale))) return;
+
+                        foreach (var item in Configuration.PersonalHomeEntrancePath)
+                        {
+                            ImGui.Selectable($"{item}");
+                            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                            {
+                                Configuration.PersonalHomeEntrancePath.Remove(item);
+                                Configuration.Save();
+                            }
+                        }
+                        ImGui.EndListBox();
+                    }
+                    catch (Exception) { }
+                }
+                if (Configuration.RetireMode && Configuration.RetireLocationEnum == RetireLocation.FC_Estate)
+                {
+                    if (ImGui.Button("Add Current Position"))
+                    {
+                        Configuration.FCEstateEntrancePath.Add(Player.Position);
+                    }
+                    ImGuiComponents.HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
+                    try
+                    {
+                        if (!ImGui.BeginListBox("##FCEstateVector3List", new System.Numerics.Vector2(325 * ImGuiHelpers.GlobalScale, 80 * ImGuiHelpers.GlobalScale))) return;
+
+                        foreach (var item in Configuration.FCEstateEntrancePath)
+                        {
+                            ImGui.Selectable($"{item}");
+                            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                            {
+                                Configuration.FCEstateEntrancePath.Remove(item);
+                                Configuration.Save();
+                            }
+                        }
+                        ImGui.EndListBox();
+                    }
+                    catch (Exception) { }
+                }
             }
             if (ImGui.Checkbox("Auto Equip Recommended Gear", ref Configuration.AutoEquipRecommendedGear))
                 Configuration.Save();
@@ -864,7 +914,7 @@ public static class ConfigTab
                     Configuration.Save();
                 }
                 ImGui.SameLine();
-                ImGuiComponents.HelpMarker("Will use Npc near Inn to Repair.");
+                ImGuiComponents.HelpMarker("Will use Preferred repair npc to Repair.");
             }
 
             using (var autoRepairDisable = ImRaii.Disabled(!Configuration.AutoRepair))
