@@ -901,6 +901,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private unsafe void OnDeath()
     {
+        if ((Configuration.Regular || Configuration.Trial || Configuration.Raid) && !Configuration.Unsynced)
+            return;
+
         StopForCombat = true;
         SkipTreasureCoffer = true;
         if (VNavmesh_IPCSubscriber.Path_IsRunning())
@@ -916,6 +919,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private unsafe void OnRevive()
     {
+        if ((Configuration.Regular || Configuration.Trial || Configuration.Raid) && !Configuration.Unsynced)
+            return;
+
         TaskManager.DelayNext(5000);
         TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
         TaskManager.Enqueue(() => BossMod_IPCSubscriber.Presets_ClearActive());
