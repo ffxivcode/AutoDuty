@@ -121,6 +121,13 @@ namespace AutoDuty.Helpers
             if (!ObjectHelper.IsReady)
                 return;
 
+            if (flagMapMarker != null && Svc.ClientState.TerritoryType == flagMapMarker.Value.TerritoryId && ObjectHelper.GetDistanceToPlayer(flagMapMarkerVector3!.Value) < 2)
+            {
+                StopMoveToMapMarker();
+                GotoHelper.Stop();
+                return;
+            }
+
             if (flagMapMarker != null && Svc.ClientState.TerritoryType == flagMapMarker.Value.TerritoryId && flagMapMarkerVector3 != null && flagMapMarkerVector3.Value.Y == 0)
             {
                 flagMapMarkerVector3 = VNavmesh_IPCSubscriber.Query_Mesh_PointOnFloor(new(flagMapMarker.Value.XFloat, 1024, flagMapMarker.Value.YFloat), false, 5);
@@ -137,13 +144,6 @@ namespace AutoDuty.Helpers
 
             if (GenericHelpers.TryGetAddonByName("AreaMap", out AtkUnitBase* addonAreaMap) && GenericHelpers.IsAddonReady(addonAreaMap))
                 addonAreaMap->Close(true);
-
-            if (flagMapMarker !=null && Svc.ClientState.TerritoryType == flagMapMarker.Value.TerritoryId && ObjectHelper.GetDistanceToPlayer(flagMapMarkerVector3!.Value) < 2)
-            {
-                StopMoveToMapMarker();
-                GotoHelper.Stop();
-                return;
-            }
 
             if (IsFlagMarkerSet)
             {

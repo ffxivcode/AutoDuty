@@ -7,6 +7,7 @@ using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace AutoDuty.Helpers
 {
@@ -29,10 +30,10 @@ namespace AutoDuty.Helpers
 
             //Svc.Log.Debug($"Move(Vector3 {position}, float {tollerance} = 0.25f, float {lastPointTollerance} = 0.25f, bool {fly} = false, bool {useMesh} = true) Dist: {Vector3.Distance(Player.Object.Position, position)} <= {lastPointTollerance}");
 
-            if (fly && !IsFlyingSupported)
+            if (fly && (!IsFlyingSupported || !PlayerState.Instance()->IsAetherCurrentZoneComplete(Svc.ClientState.TerritoryType)))
                 fly = false;
 
-            if (fly && !Conditions.IsMounted)
+            if (!Conditions.IsMounted && IsFlyingSupported)
             {
                 if (!ObjectHelper.PlayerIsCasting)
                     ActionManager.Instance()->UseAction(ActionType.GeneralAction, 9);
