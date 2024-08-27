@@ -51,7 +51,7 @@ namespace AutoDuty.Helpers
             {
                 if (position != Vector3.Zero)
                 {
-                    AutoDuty.Plugin.OverrideCamera.Face(position);
+                    //AutoDuty.Plugin.OverrideCamera.Face(position);
                     VNavmesh_IPCSubscriber.Path_Stop();
                 }
                 return true;
