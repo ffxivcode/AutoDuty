@@ -33,7 +33,6 @@ namespace AutoDuty.Helpers
                 return true;
 
             UseItemIfAvailable(itemId, allowHq);
-            EzThrottler.Throttle("UseItemUntilStatus", 2000);
             return false;
         }
 
