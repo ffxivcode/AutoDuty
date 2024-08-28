@@ -403,7 +403,7 @@ namespace AutoDuty.Windows
                                     }
                                 }
 
-                                using (ImRaii.Disabled(Plugin.TrustLevelingEnabled))
+                                using (ImRaii.Disabled(Plugin.TrustLevelingEnabled && TrustManager.members.Any(tm => tm.Value.Level < tm.Value.LevelCap)))
                                 {
                                     foreach (TrustMember member in _dutySelected.Content.TrustMembers)
                                     {
