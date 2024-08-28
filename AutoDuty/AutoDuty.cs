@@ -426,8 +426,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.AutoBoiledEgg)
         {
             TaskManager.Enqueue(() => { InventoryHelper.UseItemIfAvailable(4650);/*&& !PlayerHelper.HasStatus(48)*/}, "Loop-AutoBoiledEgg");
-            TaskManager.DelayNext("Loop-Delay2000", 2000);
-            TaskManager.Enqueue(() => ObjectHelper.IsReady);
+            TaskManager.DelayNext("Loop-Delay200", 200);
+            TaskManager.Enqueue(() => ObjectHelper.IsReadyFull);
         }
 
         if (Configuration.AutoEquipRecommendedGear)
@@ -435,7 +435,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => AutoEquipHelper.Invoke(), "Loop-AutoEquip");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Loop-WaitAutoEquipComplete");
-            TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
+            TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
         }
 
         if (Configuration.AM)
@@ -450,7 +450,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Loop-WaitAutoRepairComplete");
-            TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
+            TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
         }
 
         if (Configuration.AutoExtract && (QuestManager.IsQuestComplete(66174)))
