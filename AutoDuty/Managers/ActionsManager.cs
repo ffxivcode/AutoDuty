@@ -134,10 +134,12 @@ namespace AutoDuty.Managers
         public unsafe void Wait(string wait)
         {
             AutoDuty.Plugin.Action = $"Wait: {wait}";
-            _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
+            if (AutoDuty.Plugin.StopForCombat)
+                _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
             _taskManager.Enqueue(() => EzThrottler.Throttle("Wait", Convert.ToInt32(wait)), "Wait");
             _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(wait), "Wait");
-            _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
+            if (AutoDuty.Plugin.StopForCombat)
+                _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 

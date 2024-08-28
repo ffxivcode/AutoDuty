@@ -156,7 +156,7 @@ public sealed class AutoDuty : IDalamudPlugin
             ECommonsMain.Init(PluginInterface, Plugin, Module.DalamudReflector, Module.ObjectFunctions);
 
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-
+            ConfigTab.BuildManuals();
             _configDirectory = PluginInterface.ConfigDirectory;
             PathsDirectory = new(_configDirectory.FullName + "/paths");
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
@@ -423,11 +423,13 @@ public sealed class AutoDuty : IDalamudPlugin
             }
         }
 
-        if (Configuration.AutoBoiledEgg)
+        if (Configuration.AutoConsume)
         {
-            TaskManager.Enqueue(() => { InventoryHelper.UseItemIfAvailable(4650);/*&& !PlayerHelper.HasStatus(48)*/}, "Loop-AutoBoiledEgg");
-            TaskManager.DelayNext("Loop-Delay2000", 2000);
-            TaskManager.Enqueue(() => ObjectHelper.IsReady);
+            foreach (var item in Configuration.AutoConsumeItems)
+            {
+                TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq), $"Loop-AutoConsume({item.Value.Name})");
+                TaskManager.Enqueue(() => ObjectHelper.IsReadyFull);
+            }
         }
 
         if (Configuration.AutoEquipRecommendedGear)
@@ -435,7 +437,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => AutoEquipHelper.Invoke(), "Loop-AutoEquip");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Loop-WaitAutoEquipComplete");
-            TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
+            TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
         }
 
         if (Configuration.AM)
@@ -450,7 +452,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Loop-WaitAutoRepairComplete");
-            TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Loop-WaitANotIsOccupied");
+            TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
         }
 
         if (Configuration.AutoExtract && (QuestManager.IsQuestComplete(66174)))
@@ -646,11 +648,13 @@ public sealed class AutoDuty : IDalamudPlugin
         Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
-            if (Configuration.AutoBoiledEgg /*&& !PlayerHelper.HasStatus(48)*/)
+            if (Configuration.AutoConsume)
             {
-                TaskManager.Enqueue(() => InventoryHelper.UseItemIfAvailable(4650), "Run-AutoBoiledEgg");
-                TaskManager.DelayNext("Run-AutoBoiledEggDelay50", 50);
-                TaskManager.Enqueue(() => ObjectHelper.IsReady, "Run-WaitAutoBoiledEggIsReady");
+                foreach (var item in Configuration.AutoConsumeItems)
+                {
+                    TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq), $"Run-AutoConsume({item.Value.Name})");
+                    TaskManager.Enqueue(() => ObjectHelper.IsReady);
+                }
             }
             if (Configuration.AutoRepair && InventoryHelper.CanRepair())
             {
@@ -1554,13 +1558,8 @@ public sealed class AutoDuty : IDalamudPlugin
                 }
                 break;
             case "am":
-                if (!Configuration.UnhideAM)
-                {
-                    Configuration.UnhideAM = true;
-                    Configuration.Save();
-                }
-                else
-                    AMHelper.Invoke();
+                Configuration.UnhideAM ^= true;
+                Configuration.Save();
                 break;
             case "movetoflag":
                 MapHelper.MoveToMapMarker();
