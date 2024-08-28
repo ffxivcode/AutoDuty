@@ -20,6 +20,7 @@ using Dalamud.Interface;
 using static AutoDuty.Helpers.RepairNPCHelper;
 using ECommons.MathHelpers;
 using System.Globalization;
+using static AutoDuty.Windows.ConfigTab;
 
 namespace AutoDuty.Windows;
 
@@ -267,7 +268,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoRepairSelf = false;
     public RepairNpcData? PreferredRepairNPC = null;
     public bool AutoConsume = false;
-    public Dictionary<ushort, KeyValuePair<uint, string>> AutoConsumeItems = [];
+    public Dictionary<ushort, ConsumableItem> AutoConsumeItems = [];
 
     //Between Loop Config Options
     public int WaitTimeBeforeAfterLoopActions = 0;
@@ -422,10 +423,18 @@ public static class ConfigTab
     private static string stopItemQtyItemNameInput = "";
     private static KeyValuePair<uint, string> stopItemQtySelectedItem = new(0, "");
 
-    private static List<Item> ConsumableItems { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty() && x.ItemUICategory.Value?.RowId is 44 or 46 && x.ItemAction.Value?.Data[0] is 48 or 49).ToList() ?? [];
+    public class ConsumableItem
+    {
+        public uint ItemId;
+        public string Name = string.Empty;
+        public bool CanBeHq;
+        public ushort StatusId;
+    }
+
+    private static List<ConsumableItem> ConsumableItems { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty() && x.ItemUICategory.Value?.RowId is 44 or 46 && x.ItemAction.Value?.Data[0] is 48 or 49).Select(x => new ConsumableItem() { StatusId = x.ItemAction.Value!.Data[0], ItemId = x.RowId, Name = x.Name.RawString, CanBeHq = x.CanBeHq }).ToList() ?? [];
 
     private static string consumableItemsItemNameInput = "";
-    private static KeyValuePair<ushort, (uint, string)> consumableItemsSelectedItem = new();
+    private static ConsumableItem consumableItemsSelectedItem = new();
 
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
@@ -436,6 +445,17 @@ public static class ConfigTab
     private static bool preLoopHeaderSelected = false;
     private static bool betweenLoopHeaderSelected = false;
     private static bool terminationHeaderSelected = false;
+
+    public static void BuildManuals()
+    {
+        ConsumableItems.Add(new ConsumableItem { StatusId = 1086, ItemId = 14945, Name = "Squadron Enlistment Manual", CanBeHq = false });
+        ConsumableItems.Add(new ConsumableItem { StatusId = 1080, ItemId = 14948, Name = "Squadron Battle Manual", CanBeHq = false });
+        ConsumableItems.Add(new ConsumableItem { StatusId = 1081, ItemId = 14949, Name = "Squadron Survival Manual", CanBeHq = false });
+        ConsumableItems.Add(new ConsumableItem { StatusId = 1082, ItemId = 14950, Name = "Squadron Engineering Manual", CanBeHq = false });
+        ConsumableItems.Add(new ConsumableItem { StatusId = 1083, ItemId = 14951, Name = "Squadron Spiritbonding Manual", CanBeHq = false });
+        ConsumableItems.Add(new ConsumableItem { StatusId = 1084, ItemId = 14952, Name = "Squadron Rationing Manual", CanBeHq = false });
+        ConsumableItems.Add(new ConsumableItem { StatusId = 1085, ItemId = 14953, Name = "Squadron Gear Maintenance Manual", CanBeHq = false });
+    }
 
     public static void Draw()
     {
@@ -959,14 +979,14 @@ public static class ConfigTab
             if (Configuration.AutoConsume)
             {
                 ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 115);
-                if (ImGui.BeginCombo("##SelectAutoConsumeItem", consumableItemsSelectedItem.Value.Item2))
+                if (ImGui.BeginCombo("##SelectAutoConsumeItem", consumableItemsSelectedItem.Name))
                 {
                     ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref consumableItemsItemNameInput, 1000);
-                    foreach (var item in ConsumableItems.Where(x => x.Name.RawString.Contains(consumableItemsItemNameInput, StringComparison.InvariantCultureIgnoreCase))!)
+                    foreach (var item in ConsumableItems.Where(x => x.Name.Contains(consumableItemsItemNameInput, StringComparison.InvariantCultureIgnoreCase))!)
                     {
-                        if (ImGui.Selectable($"{item.Name.RawString}"))
+                        if (ImGui.Selectable($"{item.Name}"))
                         {
-                            consumableItemsSelectedItem = new(item.ItemAction.Value?.Data[0] ?? 0,(item.RowId, item.Name.RawString));
+                            consumableItemsSelectedItem = item;
                         }
                     }
                     ImGui.EndCombo();
@@ -974,14 +994,14 @@ public static class ConfigTab
                 ImGui.PopItemWidth();
 
                 ImGui.SameLine(0, 5);
-                using (ImRaii.Disabled(consumableItemsSelectedItem.Value.Item2.IsNullOrEmpty()))
+                using (ImRaii.Disabled(consumableItemsSelectedItem == null))
                 {
                     if (ImGui.Button("Add Item"))
                     {
-                        if (!Configuration.AutoConsumeItems.TryAdd(consumableItemsSelectedItem.Key, new (consumableItemsSelectedItem.Value.Item1, consumableItemsSelectedItem.Value.Item2)))
+                        if (!Configuration.AutoConsumeItems.TryAdd(consumableItemsSelectedItem!.StatusId, consumableItemsSelectedItem))
                         {
-                            Configuration.AutoConsumeItems.Remove(consumableItemsSelectedItem.Key);
-                            Configuration.AutoConsumeItems.Add(consumableItemsSelectedItem.Key, new(consumableItemsSelectedItem.Value.Item1, consumableItemsSelectedItem.Value.Item2));
+                            Configuration.AutoConsumeItems.Remove(consumableItemsSelectedItem.StatusId);
+                            Configuration.AutoConsumeItems.Add(consumableItemsSelectedItem.StatusId, consumableItemsSelectedItem);
                         }
                         Configuration.Save();
                     }
@@ -991,7 +1011,7 @@ public static class ConfigTab
 
                 foreach (var item in Configuration.AutoConsumeItems)
                 {
-                    ImGui.Selectable($"{item.Value.Value}");
+                    ImGui.Selectable($"{item.Value.Name}");
                     if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                     {
                         Configuration.AutoConsumeItems.Remove(item);

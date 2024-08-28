@@ -156,7 +156,7 @@ public sealed class AutoDuty : IDalamudPlugin
             ECommonsMain.Init(PluginInterface, Plugin, Module.DalamudReflector, Module.ObjectFunctions);
 
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-
+            ConfigTab.BuildManuals();
             _configDirectory = PluginInterface.ConfigDirectory;
             PathsDirectory = new(_configDirectory.FullName + "/paths");
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
@@ -427,8 +427,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             foreach (var item in Configuration.AutoConsumeItems)
             {
-                TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.Key, item.Key), "Loop-AutoConsume");
-                TaskManager.DelayNext("Loop-Delay2000", 2000);
+                TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq), $"Loop-AutoConsume({item.Value.Name})");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady);
             }
         }
@@ -653,7 +652,7 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 foreach (var item in Configuration.AutoConsumeItems)
                 {
-                    TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.Key, item.Key), $"Run-AutoConsume({item.Value.Value})");
+                    TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq), $"Run-AutoConsume({item.Value.Name})");
                     TaskManager.Enqueue(() => ObjectHelper.IsReady);
                 }
             }
