@@ -15,6 +15,7 @@ namespace AutoDuty.Managers
     using Lumina.Excel;
     using Lumina.Excel.GeneratedSheets2;
     using static ContentHelper;
+    using static ObjectHelper;
 
     internal partial class TrustManager(TaskManager _taskManager)
     {
@@ -25,19 +26,30 @@ namespace AutoDuty.Managers
             ExcelSheet<DawnMemberUIParam>?                     dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
             ExcelSheet<Lumina.Excel.GeneratedSheets.ClassJob>? jobSheet  = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.ClassJob>();
 
-            void AddMember(TrustMemberName name, uint index, TrustRole role, uint classJob, uint levelCap = 100) =>
-                members.Add(name, new TrustMember { Index = index, Name = dawnSheet!.GetRow((uint)name)!.Unknown0.RawString, Role = role, Job = jobSheet.GetRow(classJob), MemberName = name, LevelCap = levelCap});
+            void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100) =>
+                members.Add(name,
+                            new TrustMember
+                            {
+                                Index    = index, 
+                                Name = dawnSheet!.GetRow((uint)name)!.Unknown0.RawString, 
+                                Role = role, 
+                                Job = jobSheet.GetRow((uint)classJob), 
+                                MemberName = name,
+                                LevelInit = levelInit,
+                                Level = levelInit,
+                                LevelCap = levelCap
+                            });
 
-            AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer, 40);
-            AddMember(TrustMemberName.Alisaie,   1, TrustRole.DPS, 35);
-            AddMember(TrustMemberName.Thancred,  2, TrustRole.Tank, 37);
-            AddMember(TrustMemberName.Urianger,  3, TrustRole.Healer, 33);
-            AddMember(TrustMemberName.Yshtola,   4, TrustRole.DPS, 25);
-            AddMember(TrustMemberName.Ryne,      5, TrustRole.DPS, 29, 80);
-            AddMember(TrustMemberName.Estinien,  5, TrustRole.DPS, 22);
-            AddMember(TrustMemberName.Graha,     6, TrustRole.AllRounder, 25);
-            AddMember(TrustMemberName.Zero,      7, TrustRole.DPS, 39, 90);
-            AddMember(TrustMemberName.Krile,     7, TrustRole.DPS, 42);
+            AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer,     ClassJobType.Sage);
+            AddMember(TrustMemberName.Alisaie,   1, TrustRole.DPS,        ClassJobType.RedMage);
+            AddMember(TrustMemberName.Thancred,  2, TrustRole.Tank,       ClassJobType.Gunbreaker);
+            AddMember(TrustMemberName.Urianger,  3, TrustRole.Healer,     ClassJobType.Astrologian);
+            AddMember(TrustMemberName.Yshtola,   4, TrustRole.DPS,        ClassJobType.BlackMage);
+            AddMember(TrustMemberName.Ryne,      5, TrustRole.DPS,        ClassJobType.Rogue,       71, 80);
+            AddMember(TrustMemberName.Estinien,  5, TrustRole.DPS,        ClassJobType.Dragoon,     81);
+            AddMember(TrustMemberName.Graha,     6, TrustRole.AllRounder, ClassJobType.BlackMage,   81);
+            AddMember(TrustMemberName.Zero,      7, TrustRole.DPS,        ClassJobType.Reaper,      90, 90);
+            AddMember(TrustMemberName.Krile,     7, TrustRole.DPS,        ClassJobType.Pictomancer, 91);
         }
 
 
@@ -51,9 +63,9 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Trust: {content.Name}", "RegisterTrust");
             AtkUnitBase* addon = null;
 
-            if (!ObjectHelper.IsValid)
+            if (!IsValid)
             {
-                _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterTrust");
+                _taskManager.Enqueue(() => IsValid, int.MaxValue, "RegisterTrust");
                 _taskManager.DelayNext("RegisterTrust", 2000);
             }
 
@@ -141,13 +153,13 @@ namespace AutoDuty.Managers
         internal static void ClearCachedLevels()
         {
             foreach ((TrustMemberName _, TrustMember? member) in members) 
-                member.Level = 0;
+                member.ResetLevel();
         }
 
         internal static void ClearCachedLevels(Content content)
         {
             foreach (TrustMember member in content.TrustMembers)
-                member.Level = 0;
+                member.ResetLevel();
         }
 
         internal bool GetLevelsCheck() => 
@@ -164,7 +176,7 @@ namespace AutoDuty.Managers
             if (content?.DawnIndex < 1)
                 return;
 
-            if (!content.TrustMembers.Any(tm => tm.Level <= 0))
+            if (content.TrustMembers.TrueForAll(tm => tm.LevelIsSet))
                 return;
             
             if (!content.CanTrustRun(false))
@@ -178,9 +190,9 @@ namespace AutoDuty.Managers
 
             int queueIndex = content.TrustIndex;
 
-            if (!ObjectHelper.IsValid)
+            if (!IsValid)
             {
-                _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "TrustLevelCheck1");
+                _taskManager.Enqueue(() => IsValid, int.MaxValue, "TrustLevelCheck1");
                 _taskManager.DelayNext("TrustLevelCheck2", 2000);
             }
 
@@ -200,10 +212,10 @@ namespace AutoDuty.Managers
                 {
                     int index = id;
 
-                    if (content.TrustMembers[index].Level <= 0)
+                    if (!content.TrustMembers[index].LevelIsSet)
                     {
                         _taskManager.EnqueueImmediate(() => Callback.Fire(addon, true, 16, index));
-                        _taskManager.EnqueueImmediate(() => content.TrustMembers[index].Level = TrustHelper.GetLevelFromTrustWindow(addon));
+                        _taskManager.EnqueueImmediate(() => content.TrustMembers[index].SetLevel(TrustHelper.GetLevelFromTrustWindow(addon)));
                     }
                 }
                 _taskManager.EnqueueImmediate(() =>
