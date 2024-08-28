@@ -403,7 +403,7 @@ namespace AutoDuty.Windows
                                     }
                                 }
 
-                                using (ImRaii.Disabled(Plugin.TrustLevelingEnabled))
+                                using (ImRaii.Disabled(Plugin.TrustLevelingEnabled && TrustManager.members.Any(tm => tm.Value.Level < tm.Value.LevelCap)))
                                 {
                                     foreach (TrustMember member in _dutySelected.Content.TrustMembers)
                                     {
@@ -456,7 +456,7 @@ namespace AutoDuty.Windows
                                         if (member.Level > 0)
                                         {
                                             ImGui.SameLine(0, 2);
-                                            ImGuiEx.TextV($"{member.Level.ToString().ReplaceByChar(Digits.Normal, Digits.GameFont)}");
+                                            ImGuiEx.TextV(member.Level < member.LevelCap ? ImGuiHelper.White : ImGuiHelper.MaxLevelColor, $"{member.Level.ToString().ReplaceByChar(Digits.Normal, Digits.GameFont)}");
                                         }
 
                                         ImGui.NextColumn();

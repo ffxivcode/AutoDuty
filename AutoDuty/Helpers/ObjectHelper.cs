@@ -207,7 +207,6 @@ namespace AutoDuty.Helpers
             Ninja = 30,
             Machinist = 31,
             DarkKnight = 32,
-            Astralogian = 33,
             Astrologian = 33,
             Samurai = 34,
             RedMage = 35,
@@ -216,6 +215,7 @@ namespace AutoDuty.Helpers
             Dancer = 38,
             Reaper = 39,
             Sage = 40,
+            Pictomancer = 42
         }
 
         internal static unsafe bool IsValid => Svc.Condition.Any()
