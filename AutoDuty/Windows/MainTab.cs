@@ -456,7 +456,7 @@ namespace AutoDuty.Windows
                                         if (member.Level > 0)
                                         {
                                             ImGui.SameLine(0, 2);
-                                            ImGuiEx.TextV($"{member.Level.ToString().ReplaceByChar(Digits.Normal, Digits.GameFont)}");
+                                            ImGuiEx.TextV(member.Level < member.LevelCap ? ImGuiHelper.White : ImGuiHelper.MaxLevelColor, $"{member.Level.ToString().ReplaceByChar(Digits.Normal, Digits.GameFont)}");
                                         }
 
                                         ImGui.NextColumn();
