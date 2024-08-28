@@ -21,11 +21,11 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("AutoRetainer requires a plugin, visit https://puni.sh/plugin/AutoRetainer for more info");
             }
-            else if (!AutoRetainerRunning)
+            else if (State != ActionState.Running)
             {
                 Svc.Log.Info("AutoRetainer Started");
-                AutoRetainerRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
                 SchedulerHelper.ScheduleAction("AutoRetainerTimeOut", Stop, 600000);
                 Svc.Framework.Update += AutoRetainerUpdate;
             }
@@ -34,7 +34,7 @@ namespace AutoDuty.Helpers
         internal static void Stop()
         {
             Svc.Log.Debug("AutoRetainerHelper.Stop");
-            if (AutoRetainerRunning)
+            if (State == ActionState.Running)
                 Svc.Log.Info("AutoRetainer Finished");
             GotoInnHelper.Stop();
             AutoDuty.Plugin.Action = "";
@@ -46,7 +46,7 @@ namespace AutoDuty.Helpers
                 AutoRetainer_IPCSubscriber.AbortAllTasks();
         }
 
-        internal static bool AutoRetainerRunning = false;
+        internal static ActionState State = ActionState.None;
         private static bool _autoRetainerStarted = false;
         private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum));
 
@@ -55,8 +55,8 @@ namespace AutoDuty.Helpers
 
             if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
             {
-                AutoRetainerRunning = false;
-                AutoDuty.Plugin.States &= ~State.Other;
+                State = ActionState.None;
+                AutoDuty.Plugin.States &= ~PluginState.Other;
                 Svc.Framework.Update -= AutoRetainerStopUpdate;
             }
             else if (Svc.Targets.Target != null)
@@ -73,7 +73,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void AutoRetainerUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping AutoRetainerHelper");
                 Stop();
@@ -97,7 +97,7 @@ namespace AutoDuty.Helpers
 
             if (!ObjectHelper.IsValid) return;
 
-            if (GotoHelper.GotoRunning)
+            if (GotoHelper.State == ActionState.Running)
             {
                 Svc.Log.Debug("Goto Running");
                 return;
@@ -109,7 +109,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug("Moving Closer to Summoning Bell");
                 MovementHelper.Move(SummoningBellGameObject, 0.25f, 4);
             }
-            else if (SummoningBellGameObject == null && !GotoHelper.GotoRunning)
+            else if (SummoningBellGameObject == null && GotoHelper.State != ActionState.Running)
             {
                 Svc.Log.Debug("Moving to Summoning Bell Location");
                 SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);

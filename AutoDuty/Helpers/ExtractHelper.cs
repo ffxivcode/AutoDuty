@@ -14,11 +14,11 @@ namespace AutoDuty.Helpers
         {
             if (!QuestManager.IsQuestComplete(66174))
                 Svc.Log.Info("Materia Extraction requires having completed quest: Forging the Spirit");
-            else if (!ExtractRunning)
+            else if (State != ActionState.Running)
             {
                 Svc.Log.Info("Extract Materia Started");
-                ExtractRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
                 SchedulerHelper.ScheduleAction("ExtractTimeOut", Stop, 300000);
                 if (AutoDuty.Plugin.Configuration.AutoExtractAll)
                     _stoppingCategory = 6;
@@ -33,51 +33,49 @@ namespace AutoDuty.Helpers
         {
             _currentCategory = 0;
             _switchedCategory = false;
-            AutoDuty.Plugin.States |= State.Other;
+            AutoDuty.Plugin.States |= PluginState.Other;
             AutoDuty.Plugin.Action = "";
-            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+            if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                 AutoDuty.Plugin.SetGeneralSettings(false);
             SchedulerHelper.DescheduleAction("ExtractTimeOut");
-            _stop = true;
+            Svc.Framework.Update += ExtractStopUpdate;
+            Svc.Framework.Update -= ExtractUpdate;
             if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog))
                 addonMaterializeDialog->Close(true);
             if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize))
                 addonMaterialize->Close(true);
         }
 
-        internal static bool ExtractRunning = false;
+        internal static ActionState State = ActionState.None;
 
         private static int _currentCategory = 0;
         private static int _stoppingCategory;
         private static bool _switchedCategory = false;
-        private static bool _stop = false;
 
+        internal static unsafe void ExtractStopUpdate(IFramework framework)
+        {
+            if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialogClose))
+                addonMaterializeDialogClose->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterializeClose))
+                addonMaterializeClose->Close(true);
+            else
+            {
+                State = ActionState.None;
+                AutoDuty.Plugin.States &= ~PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Svc.Framework.Update -= ExtractStopUpdate;
+            }
+            return;
+        }
 
         internal static unsafe void ExtractUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(State.Navigating) || AutoDuty.Plugin.InDungeon)
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating) || AutoDuty.Plugin.InDungeon)
                 Stop();
 
             if (!EzThrottler.Throttle("Extract", 250))
                 return;
-
-            if (_stop)
-            {
-                if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialogClose))
-                    addonMaterializeDialogClose->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterializeClose))
-                    addonMaterializeClose->Close(true);
-                else
-                {
-                    _stop = false;
-                    ExtractRunning = false;
-                    AutoDuty.Plugin.States &= ~State.Other;
-                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
-                        AutoDuty.Plugin.SetGeneralSettings(true);
-                    Svc.Framework.Update -= ExtractUpdate;
-                }
-                return;
-            }
 
             if (Conditions.IsMounted)
             {

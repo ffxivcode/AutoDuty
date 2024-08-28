@@ -20,12 +20,12 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info("AM requires a plugin, visit https://discord.gg/JzSxThjKnd for more info");
                 Svc.Log.Info("DO NOT ask in Puni.sh discord about this option");
             }
-            else if (!AMRunning)
+            else if (State != ActionState.Running)
             {
                 Svc.Log.Info("AM Started");
-                AMRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                     AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("AMTimeOut", Stop, 600000);
                 Svc.Framework.Update += AMUpdate;
@@ -35,7 +35,7 @@ namespace AutoDuty.Helpers
         internal static void Stop() 
         {
             Svc.Log.Debug("AMHelper.Stop");
-            if (AMRunning)
+            if (State == ActionState.Running)
                 Svc.Log.Info("AM Finished");
             GotoInnHelper.Stop();
             AutoDuty.Plugin.Action = "";
@@ -43,45 +43,48 @@ namespace AutoDuty.Helpers
             _aMStarted = false;
             if (AM_IPCSubscriber.IsRunning())
                 AM_IPCSubscriber.Stop();
-            _stop = true;
+            Svc.Framework.Update += AMStopUpdate;
+            Svc.Framework.Update -= AMUpdate;
         }
 
-        internal static bool AMRunning = false;
+        internal static ActionState State = ActionState.None;
+
         private static bool _aMStarted = false;
-        private static bool _stop = false;
         private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum));
+
+        internal static unsafe void AMStopUpdate(IFramework framework)
+        {
+            if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
+            {
+                State = ActionState.None;
+                AutoDuty.Plugin.States &= ~PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Svc.Framework.Update -= AMUpdate;
+            }
+            else if (Svc.Targets.Target != null)
+                Svc.Targets.Target = null;
+            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                addonSelectYesno->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
+                addonSelectString->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList))
+                addonRetainerList->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("RetainerSellList", out AtkUnitBase* addonRetainerSellList))
+                addonRetainerSellList->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("RetainerSell", out AtkUnitBase* addonRetainerSell))
+                addonRetainerSell->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("ItemSearchResult", out AtkUnitBase* addonItemSearchResult))
+                addonItemSearchResult->Close(true);
+            return;
+        }
 
         internal static unsafe void AMUpdate(IFramework framework)
         {
-            if (_stop)
-            {
-                if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
-                {
-                    _stop = false;
-                    AMRunning = false;
-                    AutoDuty.Plugin.States &= ~State.Other;
-                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
-                        AutoDuty.Plugin.SetGeneralSettings(true);
-                    Svc.Framework.Update -= AMUpdate;
-                }
-                else if (Svc.Targets.Target != null)
-                    Svc.Targets.Target = null;
-                else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                    addonSelectYesno->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
-                    addonSelectString->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList))
-                    addonRetainerList->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("RetainerSellList", out AtkUnitBase* addonRetainerSellList))
-                    addonRetainerSellList->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("RetainerSell", out AtkUnitBase* addonRetainerSell))
-                    addonRetainerSell->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("ItemSearchResult", out AtkUnitBase* addonItemSearchResult))
-                    addonItemSearchResult->Close(true);
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Paused))
                 return;
-            }
 
-            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping AMHelper");
                 Stop();
@@ -104,7 +107,7 @@ namespace AutoDuty.Helpers
 
             if (!ObjectHelper.IsValid) return;
 
-            if (GotoHelper.GotoRunning)
+            if (GotoHelper.State == ActionState.Running)
             {
                 Svc.Log.Debug("Goto Running");
                 return;
@@ -116,7 +119,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug("Moving Closer to Summoning Bell");
                 MovementHelper.Move(SummoningBellGameObject, 0.25f, 4);
             }
-            else if (SummoningBellGameObject == null && !GotoHelper.GotoRunning)
+            else if (SummoningBellGameObject == null && GotoHelper.State != ActionState.Running)
             {
                 Svc.Log.Debug("Moving to Summoning Bell Location");
                 SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);

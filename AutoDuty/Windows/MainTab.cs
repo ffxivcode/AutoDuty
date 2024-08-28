@@ -112,51 +112,32 @@ namespace AutoDuty.Windows
                     ImGui.Spacing();
 
                     DrawPathSelection();
-                    if (!Plugin.States.HasFlag(State.Looping) && !Plugin.Overlay.IsOpen)
+                    if (!Plugin.States.HasFlag(PluginState.Looping) && !Plugin.Overlay.IsOpen)
                         MainWindow.GotoAndActions();
-                    using (var d = ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
+                    using (ImRaii.Disabled(!VNavmesh_IPCSubscriber.IsEnabled || !Plugin.InDungeon || !VNavmesh_IPCSubscriber.Nav_IsReady() || !BossMod_IPCSubscriber.IsEnabled))
                     {
-                        using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || Plugin.Stage > 0))
+                        using (ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType)))
                         {
-                            if (ImGui.Button("Start"))
+                            if (Plugin.Stage == 0)
                             {
-                                Plugin.LoadPath();
-                                _currentStepIndex = -1;
-                                if (Plugin.MainListClicked)
-                                    Plugin.StartNavigation(!Plugin.MainListClicked);
-                                else
-                                    Plugin.Run(Svc.ClientState.TerritoryType);
+                                if (ImGui.Button("Start"))
+                                {
+                                    Plugin.LoadPath();
+                                    _currentStepIndex = -1;
+                                    if (Plugin.MainListClicked)
+                                        Plugin.StartNavigation(!Plugin.MainListClicked);
+                                    else
+                                        Plugin.Run(Svc.ClientState.TerritoryType);
+                                }
                             }
+                            else
+                                MainWindow.StopResumePause();
                             ImGui.SameLine(0, 15);
                         }
-                        ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                        if (Plugin.Configuration.UseSliderInputs)
-                        {
-                            if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 1, 100))
-                            {
-                                if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
-                                Plugin.Configuration.Save();
-                            }
-                        }
-                        else
-                        {
-                            if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
-                            {
-                                if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
-                                Plugin.Configuration.Save();
-                            }
-                        }
+                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                        MainWindow.LoopsConfig();
                         ImGui.PopItemWidth();
-                        ImGui.SameLine(0, 5);
-                        using (var d2 = ImRaii.Disabled(!Plugin.InDungeon || Plugin.Stage == 0))
-                        {
-                            MainWindow.StopResumePause();
-                            if (Plugin.States.HasFlag(State.Navigating))
-                            {
-                                //ImGui.SameLine(0, 5);
-                                ImGui.TextColored(new Vector4(0, 255f, 0, 1), $"{Plugin.Action}");
-                            }
-                        }
+
                         if (!ImGui.BeginListBox("##MainList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
                         if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || BossMod_IPCSubscriber.IsEnabled  || Plugin.Configuration.UsingAlternativeRotationPlugin))
@@ -213,12 +194,12 @@ namespace AutoDuty.Windows
             }
             else
             {
-                if (!Plugin.States.HasFlag(State.Looping) && !Plugin.Overlay.IsOpen)
+                if (!Plugin.States.HasFlag(PluginState.Looping) && !Plugin.Overlay.IsOpen)
                     MainWindow.GotoAndActions();
 
-                using (var d2 = ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.Trust && Plugin.Configuration.SelectedTrustMembers.Any(x => x is null))))
+                using (ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.Trust && Plugin.Configuration.SelectedTrustMembers.Any(x => x is null))))
                 {
-                    if (!Plugin.States.HasFlag(State.Looping))
+                    if (!Plugin.States.HasFlag(PluginState.Looping))
                     {
                         if (ImGui.Button("Run"))
                         {
@@ -239,22 +220,13 @@ namespace AutoDuty.Windows
                     else
                         MainWindow.StopResumePause();
                 }
-                using (ImRaii.Disabled(Plugin.States.HasFlag(State.Looping)))
+                using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Looping)))
                 {
                     using (ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                     {
                         ImGui.SameLine(0, 15);
-                        ImGui.PushItemWidth(200 * ImGuiHelpers.GlobalScale);
-                        if (Plugin.Configuration.UseSliderInputs)
-                        {
-                            if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100))
-                                Plugin.Configuration.Save();
-                        }
-                        else
-                        {
-                            if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
-                                Plugin.Configuration.Save();
-                        }
+                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                        MainWindow.LoopsConfig();
                         ImGui.PopItemWidth();
                     }
 

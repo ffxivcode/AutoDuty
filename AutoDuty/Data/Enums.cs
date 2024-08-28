@@ -2,7 +2,7 @@
 
 namespace AutoDuty.Data
 {
-    public class Enum
+    public class Enums
     {
         public static string EnumString(System.Enum T) => T?.ToString()?.Replace("_", " ") ?? "";
 
@@ -94,13 +94,20 @@ namespace AutoDuty.Data
             Looting_Treasure = 10
         }
 
+        public enum ActionState : int
+        {
+            None = 0,
+            Running = 1
+        }
+
         [Flags]
-        public enum State : int
+        public enum PluginState : int
         {
             None = 0,
             Looping = 1,
             Navigating = 2,
-            Other = 4
+            Paused = 4,
+            Other = 8
         }
 
         [Flags]
@@ -133,33 +140,5 @@ namespace AutoDuty.Data
             Sound15 = 0x33,
             Sound16 = 0x34,
         }
-    }
-}
-
-public static class SoundsExtensions
-{
-    public static string ToName(this Sounds value)
-    {
-        return value switch
-        {
-            Sounds.None => "None",
-            Sounds.Sound01 => "Sound Effect 1",
-            Sounds.Sound02 => "Sound Effect 2",
-            Sounds.Sound03 => "Sound Effect 3",
-            Sounds.Sound04 => "Sound Effect 4",
-            Sounds.Sound05 => "Sound Effect 5",
-            Sounds.Sound06 => "Sound Effect 6",
-            Sounds.Sound07 => "Sound Effect 7",
-            Sounds.Sound08 => "Sound Effect 8",
-            Sounds.Sound09 => "Sound Effect 9",
-            Sounds.Sound10 => "Sound Effect 10",
-            Sounds.Sound11 => "Sound Effect 11",
-            Sounds.Sound12 => "Sound Effect 12",
-            Sounds.Sound13 => "Sound Effect 13",
-            Sounds.Sound14 => "Sound Effect 14",
-            Sounds.Sound15 => "Sound Effect 15",
-            Sounds.Sound16 => "Sound Effect 16",
-            _ => "Unknown",
-        };
     }
 }

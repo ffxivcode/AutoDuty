@@ -31,75 +31,57 @@ public unsafe class Overlay : Window
             IsOpen = false;
         }
 
-        if (!Plugin.States.HasFlag(State.Looping) && !Plugin.States.HasFlag(State.Navigating))
+        if (!Plugin.States.HasFlag(PluginState.Looping) && !Plugin.States.HasFlag(PluginState.Navigating))
         {
             MainWindow.GotoAndActions();
-            if (!Plugin.InDungeon || !Plugin.States.HasFlag(State.Navigating))
+            if (!Plugin.InDungeon)
             {
                 ImGui.SameLine(0, 5);
-                if (!Plugin.InDungeon)
-                    if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
-                        Plugin.MainWindow.IsOpen = !Plugin.MainWindow.IsOpen;
-                ImGui.SameLine();
-                if (!Plugin.States.HasFlag(State.Navigating))
-                {
-                    if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
-                    {
-                        IsOpen = false;
-                        Plugin.Configuration.ShowOverlay = false;
-                        Plugin.MainWindow.IsOpen = true;
-                    }
-                }
-            }
-        }
-
-        if (Plugin.InDungeon || Plugin.States.HasFlag(State.Looping))
-        {
-            using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Svc.ClientState.TerritoryType) || Plugin.Stage > 0))
-            {
-                if (!Plugin.States.HasFlag(State.Navigating) && !Plugin.States.HasFlag(State.Looping))
-                {
-                    if (ImGui.Button("Start"))
-                    {
-                        Plugin.LoadPath();
-                        Plugin.Run(Svc.ClientState.TerritoryType);
-                    }
-                    ImGui.SameLine(0, 5);
-                }
-            }
-            ImGui.PushItemWidth(75 * ImGuiHelpers.GlobalScale);
-            if (Plugin.Configuration.UseSliderInputs)
-            {
-                if (ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 1, 100))
-                {
-                    if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
-                Plugin.Configuration.Save();
-                }
-            }
-            else
-            {
-                if (ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes))
-                {
-                    if (Plugin.Configuration.LoopTimes < 1) Plugin.Configuration.LoopTimes = 1;
-                Plugin.Configuration.Save();
-                }
-            }
-            ImGui.PopItemWidth();
-            ImGui.SameLine(0, 5);
-            MainWindow.StopResumePause();
-            ImGui.SameLine();
-            if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
-                Plugin.MainWindow.IsOpen = !Plugin.MainWindow.IsOpen;
-            
-            if (Plugin.States.HasFlag(State.Navigating) || Plugin.States.HasFlag(State.Navigating))
-            {
-                ImGui.SameLine();
+                if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
+                    Plugin.MainWindow.IsOpen = !Plugin.MainWindow.IsOpen;
+                ImGui.SameLine(0, 5);
                 if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
                 {
                     IsOpen = false;
                     Plugin.Configuration.ShowOverlay = false;
                     Plugin.MainWindow.IsOpen = true;
                 }
+            }
+        }
+
+        if (Plugin.InDungeon || Plugin.States.HasFlag(PluginState.Looping))
+        {
+            using (var d1 = ImRaii.Disabled(!Plugin.InDungeon || !ContentPathsManager.DictionaryPaths.ContainsKey(Svc.ClientState.TerritoryType)))
+            {
+                if (Plugin.Stage == 0)
+                {
+                    if (!Plugin.States.HasFlag(PluginState.Navigating) && !Plugin.States.HasFlag(PluginState.Looping))
+                    {
+                        if (ImGui.Button("Start"))
+                        {
+                            Plugin.LoadPath();
+                            Plugin.Run(Svc.ClientState.TerritoryType);
+                        }
+                    }
+                }
+                else
+                    MainWindow.StopResumePause();
+                ImGui.SameLine(0, 5);
+            }
+            ImGui.PushItemWidth(75 * ImGuiHelpers.GlobalScale);
+            MainWindow.LoopsConfig();
+            ImGui.PopItemWidth();
+            ImGui.SameLine();
+            if (ImGuiEx.IconButton($"\uf013##Config", "OpenAutoDuty"))
+                Plugin.MainWindow.IsOpen = !Plugin.MainWindow.IsOpen;
+            
+
+            ImGui.SameLine();
+            if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.WindowClose, "CloseOverlay"))
+            {
+                IsOpen = false;
+                Plugin.Configuration.ShowOverlay = false;
+                Plugin.MainWindow.IsOpen = true;
             }
 
             if (Plugin.Configuration.ShowDutyLoopText)
@@ -117,15 +99,15 @@ public unsafe class Overlay : Window
 
                 ImGui.SameLine(0, 5);
 
-                if (Plugin.States.HasFlag(State.Navigating) || Plugin.States.HasFlag(State.Navigating))
-                    loopsText = $"{(Plugin.CurrentTerritoryContent?.Name!.Length > 20 ? Plugin.CurrentTerritoryContent?.Name![..17] + "..." : Plugin.CurrentTerritoryContent?.Name)}{(Plugin.States.HasFlag(State.Navigating) ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
+                if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.States.HasFlag(PluginState.Navigating))
+                    loopsText = $"{(Plugin.CurrentTerritoryContent?.Name!.Length > 20 ? Plugin.CurrentTerritoryContent?.Name![..17] + "..." : Plugin.CurrentTerritoryContent?.Name)}{(Plugin.States.HasFlag(PluginState.Navigating) ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
                 else
-                    loopsText = $"{(Plugin.CurrentTerritoryContent?.Name!.Length > 40 ? Plugin.CurrentTerritoryContent?.Name![..37] + "..." : Plugin.CurrentTerritoryContent?.Name)}{(Plugin.States.HasFlag(State.Navigating) ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
+                    loopsText = $"{(Plugin.CurrentTerritoryContent?.Name!.Length > 40 ? Plugin.CurrentTerritoryContent?.Name![..37] + "..." : Plugin.CurrentTerritoryContent?.Name)}{(Plugin.States.HasFlag(PluginState.Navigating) ? $": {Plugin.CurrentLoop} of {Plugin.Configuration.LoopTimes} Loops" : "")}";
 
                 ImGui.TextColored(new Vector4(93 / 255f, 226 / 255f, 231 / 255f, 1), loopsText);
             }
         }
-        if (Plugin.InDungeon || Plugin.States.HasFlag(State.Navigating) || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || DesynthHelper.DesynthRunning || QueueHelper.QueueRunning)
+        if (Plugin.InDungeon || Plugin.States.HasFlag(PluginState.Navigating) || RepairHelper.State == ActionState.Running || GotoHelper.State == ActionState.Running || GotoInnHelper.State == ActionState.Running || GotoBarracksHelper.State == ActionState.Running || GCTurninHelper.State == ActionState.Running || ExtractHelper.State == ActionState.Running || DesynthHelper.State == ActionState.Running || QueueHelper.State == ActionState.Running)
         {
             if (Plugin.Configuration.ShowActionText)
             {

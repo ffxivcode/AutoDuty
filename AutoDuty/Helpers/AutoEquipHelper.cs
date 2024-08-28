@@ -1,25 +1,22 @@
 using ECommons.DalamudServices;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using AutoDuty.IPC;
+using System.Collections.Generic;
 
 namespace AutoDuty.Helpers
 {
-    using System;
-    using System.Collections.Generic;
-    using Windows;
-    using FFXIVClientStructs.FFXIV.Client.Game;
-    using IPC;
-
     internal unsafe class AutoEquipHelper
     {
-        internal static bool AutoEquipRunning = false;
+        internal static ActionState State = ActionState.None;
 
         internal static void Invoke()
         {
-            if (!AutoEquipRunning)
+            if (State != ActionState.Running)
             {
                 Svc.Log.Info("AutoEquip - Started");
-                AutoEquipRunning       =  true;
-                AutoDuty.Plugin.States |= State.Other;
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
 
                 int extraDelay = 0;
 
@@ -58,8 +55,8 @@ namespace AutoDuty.Helpers
                                                                                                           RaptureGearsetModule.Instance()->UpdateGearset(RaptureGearsetModule.Instance()->CurrentGearsetIndex), 50);
                                                                        SchedulerHelper.ScheduleAction("AutoEquip_FinishedLog", () => Svc.Log.Info($"AutoEquip - Finished"), 500);
 
-                                                                       SchedulerHelper.ScheduleAction("AutoEquip_SetRunningFalse",  () => AutoEquipRunning       =  false,        500);
-                                                                       SchedulerHelper.ScheduleAction("AutoEquip_SetPreviousStage", () => AutoDuty.Plugin.States &= ~State.Other, 500);
+                                                                       SchedulerHelper.ScheduleAction("AutoEquip_SetRunningFalse",  () => State = ActionState.None,        500);
+                                                                       SchedulerHelper.ScheduleAction("AutoEquip_SetPreviousStage", () => AutoDuty.Plugin.States &= ~PluginState.Other, 500);
                                                                        SchedulerHelper.ScheduleAction("AutoEquip_SetActionBlank",   () => AutoDuty.Plugin.Action =  "",           500);
                                                                    }, 650 + extraDelay);
             }
