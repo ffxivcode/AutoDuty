@@ -2,6 +2,7 @@
 using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using System.Linq;
 using System;
@@ -13,27 +14,41 @@ using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
 {
-    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-    using Lumina.Excel;
-
     internal unsafe static class InventoryHelper
     {
         internal static uint SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();
         internal static uint MySeals => InventoryManager.Instance()->GetCompanySeals(PlayerState.Instance()->GrandCompany);
         internal static uint MaxSeals => InventoryManager.Instance()->GetMaxCompanySeals(PlayerState.Instance()->GrandCompany);
 
-        internal static uint GetHQItemId(uint itemId) => itemId + 1_000_000;
+        internal static int ItemCount(uint itemId) => InventoryManager.Instance()->GetInventoryItemCount(itemId);
 
-        internal static int ItemCount(uint itemId, bool hq = false) => InventoryManager.Instance()->GetInventoryItemCount(hq ? GetHQItemId(itemId) : itemId);
-        internal static void UseItem(uint itemId, bool hq = false) => 
-            ActionManager.Instance()->UseAction(ActionType.Item, hq ? GetHQItemId(itemId) : itemId, extraParam: 65535);
+        internal static void UseItem(uint itemId) => ActionManager.Instance()->UseAction(ActionType.Item, itemId, extraParam: 65535);
+
+        internal static bool UseItemUntilStatus(uint itemId, uint statusId)
+        {
+            if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !ObjectHelper.IsReady)
+                return false;
+
+            if (PlayerHelper.HasStatus(statusId))
+                return true;
+
+            UseItemIfAvailable(itemId, Svc.Data.GetExcelSheet<Item>()?.GetRow(itemId)?.CanBeHq ?? false);
+            EzThrottler.Throttle("UseItemUntilStatus", 2000);
+            return false;
+        }
 
         internal static void UseItemIfAvailable(uint itemId, bool allowHq = true)
         {
-            if(allowHq && ItemCount(itemId, true) >= 1)
-                UseItem(itemId, true);
-            else if (ItemCount(itemId) >= 1) 
+            if (allowHq && ItemCount(itemId + 1_000_000) >= 1)
+            {
+                Svc.Log.Debug($"Using Item: {itemId + 1_000_000}");
+                UseItem(itemId + 1_000_000);
+            }
+            else if (ItemCount(itemId) >= 1)
+            {
                 UseItem(itemId);
+                Svc.Log.Debug($"Using Item: {itemId}");
+            }
         }
 
         internal static void EquipGear(InventoryType type, int slotIndex, bool? ring = null)
