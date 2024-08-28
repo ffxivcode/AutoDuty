@@ -607,6 +607,16 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => CurrentLoop = 0);
             TaskManager.Enqueue(() => Stage = Stage.Stopped);
         }
+        else if (Configuration.TerminationMethodEnum == TerminationMode.Custom)
+        {
+            Configuration.TerminationCustomCommand
+                .Split("\n")
+                .Where(c => c.StartsWith('/'))
+                .Each(c => TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
+            TaskManager.Enqueue(() => States &= ~State.Looping);
+            TaskManager.Enqueue(() => CurrentLoop = 0);
+            TaskManager.Enqueue(() => Stage = Stage.Stopped);
+        }
         else
         {
             States &= ~State.Looping;
@@ -652,10 +662,13 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 foreach (var item in Configuration.AutoConsumeItems)
                 {
-                    TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq), $"Run-AutoConsume({item.Value.Name})");
+                    TaskManager.Enqueue(
+                        () => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq),
+                        $"Run-AutoConsume({item.Value.Name})");
                     TaskManager.Enqueue(() => ObjectHelper.IsReady);
                 }
             }
+
             if (Configuration.AutoRepair && InventoryHelper.CanRepair())
             {
                 TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
@@ -663,6 +676,12 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Run-WaitAutoRepairComplete");
                 TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitAutoRepairNotIsOccupied");
             }
+
+            if (Configuration.ShouldExecuteCommand)
+                Configuration.ExecuteCommand
+                    .Split("\n")
+                    .Where(c => c.StartsWith('/'))
+                    .Each(c=> TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
             if (!Configuration.Squadron && Configuration.RetireMode)
             {
                 if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)

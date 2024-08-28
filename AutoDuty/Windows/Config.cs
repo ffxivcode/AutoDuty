@@ -317,6 +317,9 @@ public class Configuration : IPluginConfiguration
     public bool StopItemQty = false;
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary = [];
     public int StopItemQtyInt = 1;
+    public TerminationMode StartingTerminationMethodEnum = TerminationMode.Do_Nothing;
+    public bool ShouldExecuteCommand;
+    public string ExecuteCommand = "";
     public bool PlayEndSound = false;
     public bool CustomSound = false;
     public float CustomSoundVolume = 0.5f;
@@ -324,6 +327,7 @@ public class Configuration : IPluginConfiguration
     public string SoundPath = "";
     public TerminationMode TerminationMethodEnum = TerminationMode.Do_Nothing;
     public bool TerminationKeepActive = true;
+    public string TerminationCustomCommand = "";
 
     //BMAI Config Options
     public bool HideBossModAIConfig = false;
@@ -1279,6 +1283,20 @@ public static class ConfigTab
                 }
                 ImGui.EndListBox();
             }
+            
+            if (ImGui.Checkbox("Execute Commands on Starting of All Loops ", ref Configuration.ShouldExecuteCommand))
+                Configuration.Save();
+            
+            ImGuiComponents.HelpMarker("Execute commands at the start of all loops.\nFor example, /echo test");
+            
+            if (Configuration.ShouldExecuteCommand)
+            {
+                ImGui.Indent();
+                if (ImGuiEx.InputTextMultilineExpanding("##ExecuteCommand", ref Configuration.ExecuteCommand))
+                    Configuration.Save();
+                ImGui.Unindent();
+            }
+            
             if (ImGui.Checkbox("Play Sound on Completion of All Loops: ", ref Configuration.PlayEndSound)) //Heavily Inspired by ChatAlerts
                 Configuration.Save();
             if (Configuration.PlayEndSound)
@@ -1310,6 +1328,16 @@ public static class ConfigTab
             {
                 ImGui.Indent();
                 if (ImGui.Checkbox("Keep Termination option after execution ", ref Configuration.TerminationKeepActive))
+                    Configuration.Save();
+                ImGui.Unindent();
+            }
+
+            if (Configuration.TerminationMethodEnum is TerminationMode.Custom)
+            {
+                ImGui.Indent();
+                ImGui.Text("Custom Command: ");
+                ImGuiComponents.HelpMarker("Execute commands at the completion of all loops.\nFor example, /echo test");
+                if (ImGuiEx.InputTextMultilineExpanding("##CustomCommand", ref Configuration.TerminationCustomCommand))
                     Configuration.Save();
                 ImGui.Unindent();
             }

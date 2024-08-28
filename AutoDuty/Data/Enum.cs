@@ -33,7 +33,8 @@ namespace AutoDuty.Data
             Logout = 1,
             Start_AR_Multi_Mode = 2,
             Kill_Client = 3,
-            Kill_PC = 4
+            Kill_PC = 4,
+            Custom = 5,
         }
         public enum Role : int
         {
