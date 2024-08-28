@@ -369,7 +369,8 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.DelayNext("Loop-WaitTimeBeforeAfterLoopActions", Configuration.WaitTimeBeforeAfterLoopActions * 1000);
                     TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
                 }
-                if (TrustLevelingEnabled)
+                
+                if (TrustLevelingEnabled && TrustManager.members.Any(tm => tm.Value.Level < tm.Value.LevelCap))
                 {
                     TrustManager.ClearCachedLevels(CurrentTerritoryContent);
                     TrustManager.GetLevels(CurrentTerritoryContent);
