@@ -287,8 +287,19 @@ public class Configuration : IPluginConfiguration
         set
         {
             autoDesynth = value;
-            if (value)
+            if (value && !AutoDesynthSkillUp)
                 AutoGCTurnin = false;
+        }
+    }
+    internal bool autoDesynthSkillUp = false;
+    public bool AutoDesynthSkillUp
+    {
+        get => autoDesynthSkillUp;
+        set
+        {
+            autoDesynthSkillUp = value;
+            if (!value && AutoGCTurnin)
+                AutoDesynth = false;
         }
     }
     internal bool autoGCTurnin = false;
@@ -298,7 +309,7 @@ public class Configuration : IPluginConfiguration
         set
         {
             autoGCTurnin = value;
-            if (value)
+            if (value && !AutoDesynthSkillUp)
                 AutoDesynth = false;
         }
     }
@@ -1067,6 +1078,7 @@ public static class ConfigTab
                 Configuration.AutoDesynth = Configuration.autoDesynth;
                 Configuration.Save();
             }
+           
             ImGui.SameLine(0, 5);
             using (ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
             {
@@ -1124,7 +1136,17 @@ public static class ConfigTab
                 ImGui.SameLine(0, 0);
                 ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
             }
-            using (var autoRetainerDisabled = ImRaii.Disabled(!AutoRetainer_IPCSubscriber.IsEnabled))
+            if (Configuration.AutoDesynth)
+            {
+                ImGui.Indent();
+                if (ImGui.Checkbox("Only Skill Ups", ref Configuration.autoDesynthSkillUp))
+                {
+                    Configuration.AutoDesynthSkillUp = Configuration.autoDesynthSkillUp;
+                    Configuration.Save();
+                }
+                ImGui.Unindent();
+            }
+            using (ImRaii.Disabled(!AutoRetainer_IPCSubscriber.IsEnabled))
             {
                 if (ImGui.Checkbox("Enable AutoRetainer Integration", ref Configuration.EnableAutoRetainer))
                     Configuration.Save();
