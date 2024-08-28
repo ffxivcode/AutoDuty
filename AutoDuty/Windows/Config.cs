@@ -1328,21 +1328,21 @@ public static class ConfigTab
                     ImGui.EndListBox();
                 }
                 
-            if (ImGui.Checkbox("Execute Commands on Starting of All Loops ", ref Configuration.ShouldExecuteCommand))
-                Configuration.Save();
-            
-            ImGuiComponents.HelpMarker("Execute commands at the start of all loops.\nFor example, /echo test");
-            
-            if (Configuration.ShouldExecuteCommand)
-            {
-                ImGui.Indent();
-                if (ImGuiEx.InputTextMultilineExpanding("##ExecuteCommand", ref Configuration.ExecuteCommand))
+                if (ImGui.Checkbox("Execute Commands on Starting of All Loops ", ref Configuration.ShouldExecuteCommand))
                     Configuration.Save();
-                ImGui.Unindent();
-            }
-            
-            if (ImGui.Checkbox("Play Sound on Completion of All Loops: ", ref Configuration.PlayEndSound)) //Heavily Inspired by ChatAlerts
-                    Configuration.Save();
+                
+                ImGuiComponents.HelpMarker("Execute commands at the start of all loops.\nFor example, /echo test");
+                
+                if (Configuration.ShouldExecuteCommand)
+                {
+                    ImGui.Indent();
+                    if (ImGuiEx.InputTextMultilineExpanding("##ExecuteCommand", ref Configuration.ExecuteCommand))
+                        Configuration.Save();
+                    ImGui.Unindent();
+                }
+                
+                if (ImGui.Checkbox("Play Sound on Completion of All Loops: ", ref Configuration.PlayEndSound)) //Heavily Inspired by ChatAlerts
+                        Configuration.Save();
                 if (Configuration.PlayEndSound)
                 {
                     if (ImGuiEx.IconButton(FontAwesomeIcon.Play, "##ConfigSoundTest", new Vector2(ImGui.GetItemRectSize().Y)))

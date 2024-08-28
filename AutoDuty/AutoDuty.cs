@@ -619,16 +619,16 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => CurrentLoop = 0);
                 TaskManager.Enqueue(() => Stage = Stage.Stopped);
             }
-        else if (Configuration.TerminationMethodEnum == TerminationMode.Custom)
-        {
-            Configuration.TerminationCustomCommand
-                .Split("\n")
-                .Where(c => c.StartsWith('/'))
-                .Each(c => TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
-            TaskManager.Enqueue(() => States &= ~PluginState.Looping);
-            TaskManager.Enqueue(() => CurrentLoop = 0);
-            TaskManager.Enqueue(() => Stage = Stage.Stopped);
-        }
+            else if (Configuration.TerminationMethodEnum == TerminationMode.Custom)
+            {
+                Configuration.TerminationCustomCommand
+                    .Split("\n")
+                    .Where(c => c.StartsWith('/'))
+                    .Each(c => TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
+                TaskManager.Enqueue(() => States &= ~PluginState.Looping);
+                TaskManager.Enqueue(() => CurrentLoop = 0);
+                TaskManager.Enqueue(() => Stage = Stage.Stopped);
+            }
         }
 
         States &= ~PluginState.Looping;
@@ -689,20 +689,21 @@ public sealed class AutoDuty : IDalamudPlugin
                     }
                 }
     
-            if (Configuration.AutoRepair && InventoryHelper.CanRepair())
+                if (Configuration.AutoRepair && InventoryHelper.CanRepair())
                 {
                     TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
                     TaskManager.DelayNext("Run-AutoRepairDelay50", 50);
                     TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Run-WaitAutoRepairComplete");
                     TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitAutoRepairNotIsOccupied");
                 }
-    
-            if (Configuration.ShouldExecuteCommand)
-                Configuration.ExecuteCommand
-                    .Split("\n")
-                    .Where(c => c.StartsWith('/'))
-                    .Each(c=> TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
-            if (!Configuration.Squadron && Configuration.RetireMode)
+        
+                if (Configuration.ShouldExecuteCommand)
+                    Configuration.ExecuteCommand
+                        .Split("\n")
+                        .Where(c => c.StartsWith('/'))
+                        .Each(c=> TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
+                        
+                if (!Configuration.Squadron && Configuration.RetireMode)
                 {
                     if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
                         TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
