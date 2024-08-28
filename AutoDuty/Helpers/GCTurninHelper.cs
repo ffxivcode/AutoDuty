@@ -18,12 +18,12 @@ namespace AutoDuty.Helpers
             Svc.Log.Debug("GCTurninHelper.Invoke");
             if (!Deliveroo_IPCSubscriber.IsEnabled)
                 Svc.Log.Info("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
-            else if (!GCTurninRunning)
+            else if (State != ActionState.Running)
             {
                 Svc.Log.Info("GCTurnin Started");
-                GCTurninRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                     AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GCTurninTimeOut", Stop, 600000);
                 Svc.Framework.Update += GCTurninUpdate;
@@ -33,16 +33,17 @@ namespace AutoDuty.Helpers
         internal static void Stop() 
         {
             Svc.Log.Debug("GCTurninHelper.Stop");
-            if (GCTurninRunning)
+            if (State == ActionState.Running)
                 Svc.Log.Info("GCTurnin Finished");
             _deliverooStarted = false;
             GotoHelper.Stop();
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("GCTurninTimeOut");
-            _stop = true;
+            Svc.Framework.Update += GCTurninStopUpdate;
+            Svc.Framework.Update -= GCTurninUpdate;
         }
 
-        internal static bool GCTurninRunning = false;
+        internal static ActionState State = ActionState.None;
         internal static Vector3 GCSupplyLocation => ObjectHelper.GrandCompany == 1 ? new Vector3(94.02183f, 40.27537f, 74.475525f) : (ObjectHelper.GrandCompany == 2 ? new Vector3(-68.678566f, -0.5015295f, -8.470145f) : new Vector3(-142.82619f, 4.0999994f, -106.31349f));
 
         private static IGameObject? _personnelOfficerGameObject => ObjectHelper.GetObjectByDataId(_personnelOfficerDataId);
@@ -50,35 +51,33 @@ namespace AutoDuty.Helpers
         private static uint _aetheryteTicketId = ObjectHelper.GrandCompany == 1 ? 21069u : (ObjectHelper.GrandCompany == 2 ? 21070u : 21071u);
         private static bool _deliverooStarted = false;
         private static Chat _chat = new();
-        private static bool _stop = false;
+
+        internal static unsafe void GCTurninStopUpdate(IFramework framework)
+        {
+            if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
+            {
+                State = ActionState.None;
+                AutoDuty.Plugin.States &= ~PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Svc.Framework.Update -= GCTurninStopUpdate;
+            }
+            else if (Svc.Targets.Target != null)
+                Svc.Targets.Target = null;
+            else if (GenericHelpers.TryGetAddonByName("GrandCompanySupplyReward", out AtkUnitBase* addonGrandCompanySupplyReward))
+                addonGrandCompanySupplyReward->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                addonSelectYesno->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
+                addonSelectString->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("GrandCompanySupplyList", out AtkUnitBase* addonGrandCompanySupplyList))
+                addonGrandCompanySupplyList->Close(true);
+            return;
+        }
 
         internal static unsafe void GCTurninUpdate(IFramework framework)
         {
-            if (_stop)
-            {
-                if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
-                {
-                    _stop = false;
-                    GCTurninRunning = false;
-                    AutoDuty.Plugin.States &= ~State.Other;
-                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
-                        AutoDuty.Plugin.SetGeneralSettings(true);
-                    Svc.Framework.Update -= GCTurninUpdate;
-                }
-                else if (Svc.Targets.Target != null)
-                    Svc.Targets.Target = null;
-                else if (GenericHelpers.TryGetAddonByName("GrandCompanySupplyReward", out AtkUnitBase* addonGrandCompanySupplyReward))
-                    addonGrandCompanySupplyReward->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                    addonSelectYesno->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
-                    addonSelectString->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("GrandCompanySupplyList", out AtkUnitBase* addonGrandCompanySupplyList))
-                    addonGrandCompanySupplyList->Close(true);
-                return;
-            }
-
-            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping GCTurninHelper");
                 Stop();
@@ -99,14 +98,14 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("Turnin", 250))
                 return;
 
-            if (GotoHelper.GotoRunning)
+            if (GotoHelper.State == ActionState.Running)
             {
                 //Svc.Log.Debug("Goto Running");
                 return;
             }
             AutoDuty.Plugin.Action = "GC Turning In";
 
-            if (!GotoHelper.GotoRunning && Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany))
+            if (GotoHelper.State != ActionState.Running && Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany))
             {
                 Svc.Log.Debug("Moving to GC Supply");
                 if (AutoDuty.Plugin.Configuration.AutoGCTurninUseTicket && InventoryHelper.ItemCount(_aetheryteTicketId) > 0)

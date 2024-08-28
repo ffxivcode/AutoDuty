@@ -14,12 +14,12 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke(Housing whichHousing)
         {
-            if (!GotoHousingRunning && !InPrivateHouse(whichHousing))
+            if (State != ActionState.Running && !InPrivateHouse(whichHousing))
             {
                 Svc.Log.Info($"Goto {whichHousing} Started");
-                GotoHousingRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                     AutoDuty.Plugin.SetGeneralSettings(false);
                 _whichHousing = whichHousing;
                 SchedulerHelper.ScheduleAction("GotoHousingTimeOut", Stop, 600000);
@@ -29,11 +29,12 @@ namespace AutoDuty.Helpers
 
         internal static void Stop() 
         {
-            if (GotoHousingRunning)
+            if (State == ActionState.Running)
                 Svc.Log.Info($"Goto {_whichHousing} Finished");
             SchedulerHelper.DescheduleAction("GotoHousingTimeOut");
             GotoHelper.Stop();
-            _stop = true;
+            Svc.Framework.Update += GotoHousingStopUpdate;
+            Svc.Framework.Update -= GotoHousingUpdate;
             _whichHousing = Housing.Apartment;
             AutoDuty.Plugin.Action = "";
         }
@@ -49,7 +50,6 @@ namespace AutoDuty.Helpers
             (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 97 && Svc.ClientState.TerritoryType == 655) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 97 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 96 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) ||
             //Empyreum
             (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 165 && Svc.ClientState.TerritoryType == 999) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 165 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 164 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982));
-
         internal static bool InHousingArea(Housing whichHousing) =>
             //Mist
             (Svc.ClientState.TerritoryType == 339 &&
@@ -66,36 +66,34 @@ namespace AutoDuty.Helpers
             //Empyreum
             (Svc.ClientState.TerritoryType == 979 &&
             ((whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 164) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 165) || (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 165)));
+        internal static ActionState State = ActionState.None;
 
-        internal static bool GotoHousingRunning = false;
         private static IGameObject? _entranceGameObject => ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)?.FirstOrDefault(x => x.DataId == 2002737 || x.DataId == 2007402);
-        private static bool _stop = false;
         private static Housing _whichHousing = Housing.Apartment;
         private static List<Vector3> _entrancePath => _whichHousing == Housing.Personal_Home ? AutoDuty.Plugin.Configuration.PersonalHomeEntrancePath : AutoDuty.Plugin.Configuration.FCEstateEntrancePath;
         private static int _index = 0;
 
+        internal unsafe static void GotoHousingStopUpdate(IFramework framework)
+        {
+            Svc.Log.Debug($"Stopping GotoHousing");
+            if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                addonSelectYesno->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
+                addonSelectString->Close(true);
+            else if (ObjectHelper.IsReady)
+            {
+                State = ActionState.None;
+                AutoDuty.Plugin.States &= ~PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Svc.Framework.Update -= GotoHousingStopUpdate;
+            }
+            return;
+        }
+
         internal unsafe static void GotoHousingUpdate(IFramework framework)
         {
-            if (_stop)
-            {
-                Svc.Log.Debug($"Stopping GotoHousing");
-                if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                    addonSelectYesno->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
-                    addonSelectString->Close(true);
-                else if (ObjectHelper.IsReady)
-                {
-                    _stop = false;
-                    GotoHousingRunning = false;
-                    AutoDuty.Plugin.States &= ~State.Other;
-                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
-                        AutoDuty.Plugin.SetGeneralSettings(true);
-                    Svc.Framework.Update -= GotoHousingUpdate;
-                }
-                return;
-            }
-
-            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug($"AutoDuty has Started, Stopping GotoHousing");
                 Stop();
@@ -112,7 +110,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (GotoHelper.GotoRunning)
+            if (GotoHelper.State == ActionState.Running)
                 return;
 
             AutoDuty.Plugin.Action = $"Retiring to {_whichHousing}";

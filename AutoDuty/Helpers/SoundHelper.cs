@@ -1,7 +1,4 @@
-﻿using ECommons.DalamudServices;
-using FFXIVClientStructs.FFXIV.Client.UI;
-//using NAudio.Wave;
-using System;
+﻿using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace AutoDuty.Helpers
 {

@@ -12,12 +12,12 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke()
         {
-            if (!GotoBarracksRunning && Svc.ClientState.TerritoryType != BarracksTerritoryType(ObjectHelper.GrandCompany))
+            if (State != ActionState.Running && Svc.ClientState.TerritoryType != BarracksTerritoryType(ObjectHelper.GrandCompany))
             {
                 Svc.Log.Info($"Goto Barracks Started");
-                GotoBarracksRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                     AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GotoBarracksTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoBarracksUpdate;
@@ -26,21 +26,21 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void Stop() 
         {
-            if (GotoBarracksRunning)
+            if (State == ActionState.Running)
                 Svc.Log.Info($"Goto Barracks Finished");
             SchedulerHelper.DescheduleAction("GotoBarracksTimeOut");
             Svc.Framework.Update -= GotoBarracksUpdate;
             GotoHelper.Stop();
-            GotoBarracksRunning = false;
-            AutoDuty.Plugin.States &= ~State.Other;
-            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+            State = ActionState.None;
+            AutoDuty.Plugin.States &= ~PluginState.Other;
+            if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                 AutoDuty.Plugin.SetGeneralSettings(true);
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
             AutoDuty.Plugin.Action = "";
         }
 
-        internal static bool GotoBarracksRunning = false;
+        internal static ActionState State = ActionState.None;
         internal static uint BarracksTerritoryType(uint _grandCompany) => _grandCompany == 1 ? 536u : (_grandCompany == 2 ? 534u : 535u);
         internal static uint ExitBarracksDoorDataId(uint _grandCompany) => _grandCompany == 1 ? 2007528u : (_grandCompany == 2 ? 2006963u : 2007530u);
 
@@ -50,7 +50,7 @@ namespace AutoDuty.Helpers
 
         internal static void GotoBarracksUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
                 Stop();
 
             if (!EzThrottler.Check("GotoBarracks"))
@@ -61,7 +61,7 @@ namespace AutoDuty.Helpers
             if (Svc.ClientState.LocalPlayer == null)
                 return;
 
-            if (GotoHelper.GotoRunning)
+            if (GotoHelper.State == ActionState.Running)
                 return;
 
             AutoDuty.Plugin.Action = "Retiring to Barracks";

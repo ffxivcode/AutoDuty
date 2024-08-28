@@ -58,9 +58,15 @@ public class MainWindow : Window, IDisposable
         ImGui.SameLine(0, 5);
     }
 
+    internal static void LoopsConfig()
+    {
+        if ((Plugin.Configuration.UseSliderInputs && ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100)) || (!Plugin.Configuration.UseSliderInputs && ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes)))
+            Plugin.Configuration.Save();
+    }
+
     internal static void StopResumePause()
     {
-        using (var d = ImRaii.Disabled(!Plugin.States.HasFlag(State.Looping) && !Plugin.States.HasFlag(State.Navigating) && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning))
+        using (ImRaii.Disabled(!Plugin.States.HasFlag(PluginState.Looping) && !Plugin.States.HasFlag(PluginState.Navigating) && RepairHelper.State != ActionState.Running && GotoHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GCTurninHelper.State != ActionState.Running && ExtractHelper.State != ActionState.Running && DesynthHelper.State != ActionState.Running))
         {
             if (ImGui.Button("Stop"))
             {
@@ -70,13 +76,15 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine(0, 5);
         }
 
-        using (var d = ImRaii.Disabled((!Plugin.States.HasFlag(State.Looping) && !Plugin.States.HasFlag(State.Navigating) && !RepairHelper.RepairRunning && !GotoHelper.GotoRunning && !GotoInnHelper.GotoInnRunning && !GotoBarracksHelper.GotoBarracksRunning && !GCTurninHelper.GCTurninRunning && !ExtractHelper.ExtractRunning && !DesynthHelper.DesynthRunning) || Plugin.CurrentTerritoryContent == null))
-            {
-                if (Plugin.Stage == Stage.Paused)
+        using (ImRaii.Disabled((!Plugin.States.HasFlag(PluginState.Looping) && !Plugin.States.HasFlag(PluginState.Navigating) && RepairHelper.State != ActionState.Running && GotoHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GCTurninHelper.State != ActionState.Running && ExtractHelper.State != ActionState.Running && DesynthHelper.State != ActionState.Running) || Plugin.CurrentTerritoryContent == null))
+        {
+            if (Plugin.Stage == Stage.Paused)
             {
                 if (ImGui.Button("Resume"))
                 {
-                    Plugin.Stage = Stage.Reading_Path;
+                    Plugin.TaskManager.SetStepMode(false);
+                    Plugin.Stage = Plugin.PreviousStage;
+                    Plugin.States &= ~PluginState.Paused;
                 }
             }
             else
@@ -91,13 +99,13 @@ public class MainWindow : Window, IDisposable
 
     internal static void GotoAndActions()
     {
-        using (ImRaii.Disabled(Plugin.States.HasFlag(State.Looping) || Plugin.States.HasFlag(State.Navigating)))
+        using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Looping) || Plugin.States.HasFlag(PluginState.Navigating)))
         {
             using (ImRaii.Disabled(Plugin.Configuration.OverrideOverlayButtons && !Plugin.Configuration.GotoButton))
             {
-                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || RepairHelper.RepairRunning))
+                using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && GotoHelper.State != ActionState.Running))
                 {
-                    if ((GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning && !RepairHelper.RepairRunning) || MapHelper.MoveToMapMarkerRunning || GotoHousingHelper.GotoHousingRunning)
+                    if ((GotoHelper.State == ActionState.Running && GCTurninHelper.State != ActionState.Running && RepairHelper.State != ActionState.Running) || MapHelper.State == ActionState.Running || GotoHousingHelper.State == ActionState.Running)
                     {
                         if (ImGui.Button("Stop"))
                             Plugin.Stage = Stage.Stopped;
@@ -114,9 +122,9 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine(0, 5);
             using (ImRaii.Disabled(!Plugin.Configuration.AutoGCTurnin && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.TurninButton))
             {
-                using (ImRaii.Disabled(DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !GCTurninHelper.GCTurninRunning) || RepairHelper.RepairRunning))
+                using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && GCTurninHelper.State != ActionState.Running))
                 {
-                    if (GCTurninHelper.GCTurninRunning)
+                    if (GCTurninHelper.State == ActionState.Running)
                     {
                         if (ImGui.Button("Stop"))
                             Plugin.Stage = Stage.Stopped;
@@ -140,9 +148,9 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine(0, 5);
             using (ImRaii.Disabled(!Plugin.Configuration.AutoDesynth && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.DesynthButton))
             {
-                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || ExtractHelper.ExtractRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
+                using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && DesynthHelper.State != ActionState.Running))
                 {
-                    if (DesynthHelper.DesynthRunning)
+                    if (DesynthHelper.State == ActionState.Running)
                     {
                         if (ImGui.Button("Stop"))
                             Plugin.Stage = Stage.Stopped;
@@ -158,9 +166,9 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine(0, 5);
             using (ImRaii.Disabled(!Plugin.Configuration.AutoExtract && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.ExtractButton))
             {
-                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || GotoHelper.GotoRunning || RepairHelper.RepairRunning))
+                using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && ExtractHelper.State != ActionState.Running))
                 {
-                    if (ExtractHelper.ExtractRunning)
+                    if (ExtractHelper.State == ActionState.Running)
                     {
                         if (ImGui.Button("Stop"))
                             Plugin.Stage = Stage.Stopped;
@@ -184,9 +192,9 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine(0, 5);
             using (ImRaii.Disabled(!Plugin.Configuration.AutoRepair && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.RepairButton))
             {
-                using (ImRaii.Disabled(GCTurninHelper.GCTurninRunning || DesynthHelper.DesynthRunning || ExtractHelper.ExtractRunning || (GotoHelper.GotoRunning && !RepairHelper.RepairRunning)))
+                using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && RepairHelper.State != ActionState.Running))
                 {
-                    if (RepairHelper.RepairRunning)
+                    if (RepairHelper.State == ActionState.Running)
                     {
                         if (ImGui.Button("Stop"))
                             Plugin.Stage = Stage.Stopped;
@@ -210,24 +218,27 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine(0, 5);
             using (ImRaii.Disabled(!Plugin.Configuration.AutoEquipRecommendedGear && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.EquipButton))
             {
-                if (AutoEquipHelper.AutoEquipRunning)
+                using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && AutoEquipHelper.State != ActionState.Running))
                 {
-                    if (ImGui.Button("Stop"))
-                        Plugin.Stage = Stage.Stopped;
-                }
-                else
-                {
-                    if (ImGui.Button("Equip"))
+                    if (AutoEquipHelper.State == ActionState.Running)
                     {
-                        AutoEquipHelper.Invoke();
-                        //else
-                        //ShowPopup("", "");
+                        if (ImGui.Button("Stop"))
+                            Plugin.Stage = Stage.Stopped;
                     }
+                    else
+                    {
+                        if (ImGui.Button("Equip"))
+                        {
+                            AutoEquipHelper.Invoke();
+                            //else
+                            //ShowPopup("", "");
+                        }
 
-                    //if ()
-                    ToolTip("Click to Equip Gear");
-                    //else
-                    //ToolTip("");
+                        //if ()
+                        ToolTip("Click to Equip Gear");
+                        //else
+                        //ToolTip("");
+                    }
                 }
             }
 
@@ -251,7 +262,7 @@ public class MainWindow : Window, IDisposable
                 }
                 if (ImGui.Selectable("Summoning Bell"))
                 {
-                    SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
+                    SummoningBellHelper.Invoke(Plugin.Configuration.PreferredSummoningBellEnum);
                 }
                 if (ImGui.Selectable("Apartment"))
                 {

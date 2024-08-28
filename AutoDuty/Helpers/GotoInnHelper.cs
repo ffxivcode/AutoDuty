@@ -18,13 +18,12 @@ namespace AutoDuty.Helpers
             else
                 _whichGrandCompany = whichGrandCompany;
 
-            if (!GotoInnRunning && Svc.ClientState.TerritoryType != InnTerritoryType(_whichGrandCompany))
+            if (State != ActionState.Running && Svc.ClientState.TerritoryType != InnTerritoryType(_whichGrandCompany))
             {
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany}");
-                GotoInnRunning = true;
-                _stop = false;
-                AutoDuty.Plugin.States |= State.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                     AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;
@@ -33,50 +32,50 @@ namespace AutoDuty.Helpers
 
         internal static void Stop() 
         {
-            if (GotoInnRunning)
+            if (State == ActionState.Running)
                 Svc.Log.Info($"Goto Inn Finished");
             SchedulerHelper.DescheduleAction("GotoInnTimeOut");
             GotoHelper.Stop();
-            _stop = true;
+            Svc.Framework.Update += GotoInnStopUpdate;
+            Svc.Framework.Update -= GotoInnUpdate;
             _whichGrandCompany = 0;
             AutoDuty.Plugin.Action = "";
         }
 
-        internal static bool GotoInnRunning = false;
+        internal static ActionState State = ActionState.None;
         internal static uint InnTerritoryType(uint _grandCompany) => _grandCompany == 1 ? 177u : (_grandCompany == 2 ? 179u : 178u);
         internal static uint ExitInnDoorDataId(uint _grandCompany) => _grandCompany == 1 ? 2001010u : (_grandCompany == 2 ? 2000087u : 2001011u);
+
         private static uint _whichGrandCompany = 0;
         private static List<Vector3> _innKeepLocation => _whichGrandCompany == 1 ? [new Vector3(15.42688f, 39.99999f, 12.466553f)] : (_whichGrandCompany == 2 ? [new Vector3(25.6627f, -8f, 99.74237f)] : [new Vector3(28.85994f, 6.999999f, -80.12716f)]);
         private static uint _innKeepDataId => _whichGrandCompany == 1 ? 1000974u : (_whichGrandCompany == 2 ? 1000102u : 1001976u);
         private static IGameObject? _innKeepGameObject => ObjectHelper.GetObjectByDataId(_innKeepDataId);
-        private static bool _stop = false;
+
+        internal unsafe static void GotoInnStopUpdate(IFramework framework)
+        {
+            if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
+            {
+                Svc.Log.Debug("Stopping GotoInn");
+                State = ActionState.None;
+                AutoDuty.Plugin.States &= ~PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Svc.Framework.Update -= GotoInnStopUpdate;
+            }
+            else if (Svc.Targets.Target != null)
+                Svc.Targets.Target = null;
+            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                addonSelectYesno->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
+                addonSelectString->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk))
+                addonTalk->Close(true);
+            return;
+        }
 
         internal unsafe static void GotoInnUpdate(IFramework framework)
         {
-            if (_stop)
-            {
-                if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
-                {
-                    Svc.Log.Debug("Stopping GotoInn");
-                    _stop = false;
-                    GotoInnRunning = false;
-                    AutoDuty.Plugin.States &= ~State.Other;
-                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
-                        AutoDuty.Plugin.SetGeneralSettings(true);
-                    Svc.Framework.Update -= GotoInnUpdate;
-                }
-                else if (Svc.Targets.Target != null)
-                    Svc.Targets.Target = null;
-                else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                    addonSelectYesno->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
-                    addonSelectString->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk))
-                    addonTalk->Close(true);
-                return;
-            }
-
-            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug($"AutoDuty has Started, Stopping GotoInn");
                 Stop();
@@ -93,7 +92,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (GotoHelper.GotoRunning)
+            if (GotoHelper.State == ActionState.Running)
                 return;
 
             AutoDuty.Plugin.Action = "Retiring to Inn";
