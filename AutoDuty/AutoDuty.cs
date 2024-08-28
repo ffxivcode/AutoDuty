@@ -433,13 +433,11 @@ public sealed class AutoDuty : IDalamudPlugin
         }
 
         if (Configuration.AutoConsume)
-        {
-            foreach (var item in Configuration.AutoConsumeItems)
+            Configuration.AutoConsumeItems.Each(x =>
             {
-                TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq), $"Loop-AutoConsume({item.Value.Name})");
-                TaskManager.Enqueue(() => ObjectHelper.IsReadyFull);
-            }
-        }
+                TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Loop-AutoConsume({x.Value.Name})");
+                TaskManager.Enqueue(() => ObjectHelper.IsReady);
+            });
 
         if (Configuration.AutoEquipRecommendedGear)
         {
@@ -557,6 +555,8 @@ public sealed class AutoDuty : IDalamudPlugin
         
         if (Configuration.EnableTerminationActions)
         {
+            if (Configuration.ExecuteCommandsTermination)
+                Configuration.CustomCommandsTermination.Each(Chat.ExecuteCommand);
             if (Configuration.PlayEndSound)
             {
                 SoundHelper.StartSound(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundEnum);
@@ -619,16 +619,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => CurrentLoop = 0);
                 TaskManager.Enqueue(() => Stage = Stage.Stopped);
             }
-            else if (Configuration.TerminationMethodEnum == TerminationMode.Custom)
-            {
-                Configuration.TerminationCustomCommand
-                    .Split("\n")
-                    .Where(c => c.StartsWith('/'))
-                    .Each(c => TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
-                TaskManager.Enqueue(() => States &= ~PluginState.Looping);
-                TaskManager.Enqueue(() => CurrentLoop = 0);
-                TaskManager.Enqueue(() => Stage = Stage.Stopped);
-            }
         }
 
         States &= ~PluginState.Looping;
@@ -680,15 +670,16 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (Configuration.EnablePreLoopActions)
             {
+                if (Configuration.ExecuteCommandsPreLoop)
+                    Configuration.CustomCommandsPreLoop.Each(x => TaskManager.Enqueue(() => Chat.ExecuteCommand(x), "Run-ExecuteCommandsPreLoop"));
+                
                 if (Configuration.AutoConsume)
-                {
-                    foreach (var item in Configuration.AutoConsumeItems)
+                    Configuration.AutoConsumeItems.Each(x =>
                     {
-                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq), $"Run-AutoConsume({item.Value.Name})");
+                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Run-AutoConsume({x.Value.Name})");
                         TaskManager.Enqueue(() => ObjectHelper.IsReady);
-                    }
-                }
-    
+                    });
+
                 if (Configuration.AutoRepair && InventoryHelper.CanRepair())
                 {
                     TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
@@ -696,13 +687,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Run-WaitAutoRepairComplete");
                     TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitAutoRepairNotIsOccupied");
                 }
-        
-                if (Configuration.ShouldExecuteCommand)
-                    Configuration.ExecuteCommand
-                        .Split("\n")
-                        .Where(c => c.StartsWith('/'))
-                        .Each(c=> TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
-                        
+
                 if (!Configuration.Squadron && Configuration.RetireMode)
                 {
                     if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)

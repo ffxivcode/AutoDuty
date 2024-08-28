@@ -258,6 +258,8 @@ public class Configuration : IPluginConfiguration
 
     //PreLoop Config Options
     public bool EnablePreLoopActions = true;
+    public bool ExecuteCommandsPreLoop = false;
+    public List<string> CustomCommandsPreLoop = [];
     public bool RetireMode = false;
     public RetireLocation RetireLocationEnum = RetireLocation.Inn;
     public List<System.Numerics.Vector3> PersonalHomeEntrancePath = [];
@@ -269,7 +271,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoRepairSelf = false;
     public RepairNpcData? PreferredRepairNPC = null;
     public bool AutoConsume = false;
-    public Dictionary<ushort, ConsumableItem> AutoConsumeItems = [];
+    public List<KeyValuePair<ushort, ConsumableItem>> AutoConsumeItems = [];
 
     //Between Loop Config Options
     public bool EnableBetweenLoopActions = true;
@@ -331,9 +333,8 @@ public class Configuration : IPluginConfiguration
     public bool StopItemQty = false;
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary = [];
     public int StopItemQtyInt = 1;
-    public TerminationMode StartingTerminationMethodEnum = TerminationMode.Do_Nothing;
-    public bool ShouldExecuteCommand;
-    public string ExecuteCommand = "";
+    public bool ExecuteCommandsTermination = false;
+    public List<string> CustomCommandsTermination = [];
     public bool PlayEndSound = false;
     public bool CustomSound = false;
     public float CustomSoundVolume = 0.5f;
@@ -341,8 +342,7 @@ public class Configuration : IPluginConfiguration
     public string SoundPath = "";
     public TerminationMode TerminationMethodEnum = TerminationMode.Do_Nothing;
     public bool TerminationKeepActive = true;
-    public string TerminationCustomCommand = "";
-
+    
     //BMAI Config Options
     public bool HideBossModAIConfig = false;
     public bool FollowDuringCombat = true;
@@ -436,7 +436,8 @@ public static class ConfigTab
     internal static string FollowName = "";
 
     private static Configuration Configuration = AutoDuty.Plugin.Configuration;
-
+    private static string preLoopCommand = string.Empty; 
+    private static string terminationCommand = string.Empty;
     private static Dictionary<uint, string> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x.Name.RawString) ?? [];
     private static string stopItemQtyItemNameInput = "";
     private static KeyValuePair<uint, string> stopItemQtySelectedItem = new(0, "");
@@ -831,6 +832,50 @@ public static class ConfigTab
             using (ImRaii.Disabled(!Configuration.EnablePreLoopActions))
             {
                 ImGui.Separator();
+                if (ImGui.Checkbox("Execute commands on start of all loops: ", ref Configuration.ExecuteCommandsPreLoop))
+                    Configuration.Save();
+
+                ImGuiComponents.HelpMarker("Execute commands on start of all loops.\nFor example, /echo test");
+
+                if (Configuration.ExecuteCommandsPreLoop)
+                {
+                    ImGui.Indent();
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 185);
+                    if (ImGui.InputTextWithHint("##PreLoopCommand", "enter command starting with /", ref preLoopCommand, 500, ImGuiInputTextFlags.EnterReturnsTrue))
+                    {
+                        if (!preLoopCommand.IsNullOrEmpty() && preLoopCommand[0] == '/' && (ImGui.IsKeyDown(ImGuiKey.Enter) || ImGui.IsKeyDown(ImGuiKey.KeypadEnter)))
+                        {
+                            Configuration.CustomCommandsPreLoop.Add(preLoopCommand);
+                            preLoopCommand = string.Empty;
+                            Configuration.Save();
+                        }
+                    }
+                    ImGui.PopItemWidth();
+                    
+                    ImGui.SameLine(0, 5);
+                    using (ImRaii.Disabled(preLoopCommand.IsNullOrEmpty() || preLoopCommand[0] != '/'))
+                    {
+                        if (ImGui.Button("Add Command"))
+                        {
+                            Configuration.CustomCommandsPreLoop.Add(preLoopCommand);
+                            Configuration.Save();
+                        }
+                    }
+                    if (!ImGui.BeginListBox("##PreLoopCommandList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.CustomCommandsPreLoop.Count) + 5))) return;
+
+                    foreach (var item in Configuration.CustomCommandsPreLoop)
+                    {
+                        ImGui.Selectable($"{item}");
+                        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                        {
+                            Configuration.CustomCommandsPreLoop.Remove(item);
+                            Configuration.Save();
+                        }
+                    }
+                    ImGui.EndListBox();
+                    ImGui.Unindent();
+                }
+
                 if (ImGui.Checkbox("Retire To ", ref Configuration.RetireMode))
                     Configuration.Save();
 
@@ -1022,19 +1067,18 @@ public static class ConfigTab
                     {
                         if (ImGui.Button("Add Item"))
                         {
-                            if (!Configuration.AutoConsumeItems.TryAdd(consumableItemsSelectedItem!.StatusId, consumableItemsSelectedItem))
-                            {
-                                Configuration.AutoConsumeItems.Remove(consumableItemsSelectedItem.StatusId);
-                                Configuration.AutoConsumeItems.Add(consumableItemsSelectedItem.StatusId, consumableItemsSelectedItem);
-                            }
+                            if (Configuration.AutoConsumeItems.Any(x => x.Key == consumableItemsSelectedItem!.StatusId))
+                                Configuration.AutoConsumeItems.RemoveAll(x => x.Key == consumableItemsSelectedItem!.StatusId);
+                             
+                            Configuration.AutoConsumeItems.Add(new (consumableItemsSelectedItem!.StatusId, consumableItemsSelectedItem));
                             Configuration.Save();
                         }
                     }
-                    //ImGui.PopItemWidth();
                     if (!ImGui.BeginListBox("##ConsumableItemList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.AutoConsumeItems.Count) + 5))) return;
 
                     foreach (var item in Configuration.AutoConsumeItems)
                     {
+                        if (item.Value == null) continue;
                         ImGui.Selectable($"{item.Value.Name}");
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                         {
@@ -1327,20 +1371,52 @@ public static class ConfigTab
                     }
                     ImGui.EndListBox();
                 }
-                
-                if (ImGui.Checkbox("Execute Commands on Starting of All Loops ", ref Configuration.ShouldExecuteCommand))
+
+                if (ImGui.Checkbox("Execute commands on termination of all loops: ", ref Configuration.ExecuteCommandsPreLoop))
                     Configuration.Save();
-                
-                ImGuiComponents.HelpMarker("Execute commands at the start of all loops.\nFor example, /echo test");
-                
-                if (Configuration.ShouldExecuteCommand)
+
+                ImGuiComponents.HelpMarker("Execute commands on termination of all loops.\nFor example, /echo test");
+
+                if (Configuration.ExecuteCommandsPreLoop)
                 {
                     ImGui.Indent();
-                    if (ImGuiEx.InputTextMultilineExpanding("##ExecuteCommand", ref Configuration.ExecuteCommand))
-                        Configuration.Save();
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 185);
+                    if (ImGui.InputTextWithHint("##TerminationCommand", "enter command starting with /", ref terminationCommand, 500, ImGuiInputTextFlags.EnterReturnsTrue))
+                    {
+                        if (!terminationCommand.IsNullOrEmpty() && terminationCommand[0] == '/' && (ImGui.IsKeyDown(ImGuiKey.Enter) || ImGui.IsKeyDown(ImGuiKey.KeypadEnter)))
+                        {
+                            Configuration.CustomCommandsTermination.Add(terminationCommand);
+                            terminationCommand = string.Empty;
+                            Configuration.Save();
+                        }
+                    }    
+                    ImGui.PopItemWidth();
+
+                    ImGui.SameLine(0, 5);
+                    using (ImRaii.Disabled(terminationCommand.IsNullOrEmpty() || terminationCommand[0] != '/'))
+                    {
+                        if (ImGui.Button("Add Command"))
+                        {
+                            Configuration.CustomCommandsTermination.Add(terminationCommand);
+                            terminationCommand = string.Empty;
+                            Configuration.Save();
+                        }
+                    }
+                    if (!ImGui.BeginListBox("##TerminationCommandList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.CustomCommandsTermination.Count) + 5))) return;
+
+                    foreach (var item in Configuration.CustomCommandsTermination)
+                    {
+                        ImGui.Selectable($"{item}");
+                        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                        {
+                            Configuration.CustomCommandsTermination.Remove(item);
+                            Configuration.Save();
+                        }
+                    }
+                    ImGui.EndListBox();
                     ImGui.Unindent();
                 }
-                
+
                 if (ImGui.Checkbox("Play Sound on Completion of All Loops: ", ref Configuration.PlayEndSound)) //Heavily Inspired by ChatAlerts
                         Configuration.Save();
                 if (Configuration.PlayEndSound)
@@ -1375,16 +1451,6 @@ public static class ConfigTab
                         Configuration.Save();
                     ImGui.Unindent();
                 }
-            }
-
-            if (Configuration.TerminationMethodEnum is TerminationMode.Custom)
-            {
-                ImGui.Indent();
-                ImGui.Text("Custom Command: ");
-                ImGuiComponents.HelpMarker("Execute commands at the completion of all loops.\nFor example, /echo test");
-                if (ImGuiEx.InputTextMultilineExpanding("##CustomCommand", ref Configuration.TerminationCustomCommand))
-                    Configuration.Save();
-                ImGui.Unindent();
             }
         }     
     }
