@@ -15,14 +15,13 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke()
         {
-            if (!RepairRunning)
+            if (State != ActionState.Running)
             {
                 Svc.Log.Info($"Repair Started");
-                RepairRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                     AutoDuty.Plugin.SetGeneralSettings(false);
-                _stop = false;
                 if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
                     SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 300000);
                 else
@@ -33,56 +32,55 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void Stop() 
         {
-            if (RepairRunning)
+            if (State == ActionState.Running)
                 Svc.Log.Info($"Repair Finished");
             SchedulerHelper.DescheduleAction("RepairTimeOut");
-            _stop = true;
+            Svc.Framework.Update += RepairStopUpdate;
+            Svc.Framework.Update -= RepairUpdate;
             _seenAddon = false;
             AutoDuty.Plugin.Action = "";
             AgentModule.Instance()->GetAgentByInternalId(AgentId.Repair)->Hide();
         }
 
-        internal static bool RepairRunning = false;
-            
+        internal static ActionState State = ActionState.None;
+
         private static Vector3 _repairVendorLocation => _preferredRepairNpc != null ? _preferredRepairNpc.Position : (ObjectHelper.GrandCompany == 1 ? new Vector3(17.715698f, 40.200005f, 3.9520264f) : (ObjectHelper.GrandCompany == 2 ? new Vector3(24.826416f, -8, 93.18677f) : new Vector3(32.85266f, 6.999999f, -81.31531f)));
         private static uint _repairVendorDataId => _preferredRepairNpc != null ? _preferredRepairNpc.DataId : (ObjectHelper.GrandCompany == 1 ? 1003251u : (ObjectHelper.GrandCompany == 2 ? 1000394u : 1004416u));
         private static IGameObject? _repairVendorGameObject => ObjectHelper.GetObjectByDataId(_repairVendorDataId);
         private static uint _repairVendorTerritoryType => _preferredRepairNpc != null ? _preferredRepairNpc.TerritoryType : ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany);
         private static bool _seenAddon = false;
-        private static bool _stop = false;
         private unsafe static AtkUnitBase* addonRepair = null;
         private unsafe static AtkUnitBase* addonSelectYesno = null;
         private unsafe static AtkUnitBase* addonSelectIconString = null;
         private static RepairNPCHelper.RepairNpcData? _preferredRepairNpc => AutoDuty.Plugin.Configuration.PreferredRepairNPC;
 
+        internal static unsafe void RepairStopUpdate(IFramework framework)
+        {
+            if (!Svc.Condition[ConditionFlag.OccupiedInQuestEvent])
+            {
+                State = ActionState.None;
+                AutoDuty.Plugin.States &= ~PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Svc.Framework.Update -= RepairStopUpdate;
+            }
+            else if (Svc.Targets.Target != null)
+                Svc.Targets.Target = null;
+            else if (GenericHelpers.TryGetAddonByName("SelectIconString", out AtkUnitBase* addonSelectIconString))
+                addonSelectIconString->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
+                addonSelectYesno->Close(true);
+            else if (GenericHelpers.TryGetAddonByName("Repair", out AtkUnitBase* addonRepair))
+                addonRepair->Close(true);
+            return;
+        }
+
         internal static unsafe void RepairUpdate(IFramework framework)
         {
-            if (_stop)
-            {
-                if (!Svc.Condition[ConditionFlag.OccupiedInQuestEvent])
-                {
-                    _stop = false;
-                    RepairRunning = false;
-                    AutoDuty.Plugin.States &= ~State.Other;
-                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
-                        AutoDuty.Plugin.SetGeneralSettings(true);
-                    Svc.Framework.Update -= RepairUpdate;
-                }
-                else if (Svc.Targets.Target != null)
-                    Svc.Targets.Target = null;
-                else if (GenericHelpers.TryGetAddonByName("SelectIconString", out AtkUnitBase* addonSelectIconString))
-                    addonSelectIconString->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                    addonSelectYesno->Close(true);
-                else if (GenericHelpers.TryGetAddonByName("Repair", out AtkUnitBase* addonRepair))
-                    addonRepair->Close(true);
-                return;
-            }
-
-            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
                 Stop();
 
-            if (Conditions.IsMounted && !GotoHelper.GotoRunning)
+            if (Conditions.IsMounted && GotoHelper.State != ActionState.Running)
             {
                 Svc.Log.Debug("Dismounting");
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 23);
@@ -97,7 +95,7 @@ namespace AutoDuty.Helpers
             if (Svc.ClientState.LocalPlayer == null)
                 return;
 
-            if (GotoHelper.GotoRunning)
+            if (GotoHelper.State == ActionState.Running)
                 return;
 
             AutoDuty.Plugin.Action = "Repairing";

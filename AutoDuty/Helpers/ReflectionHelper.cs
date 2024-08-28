@@ -9,7 +9,7 @@ using System.Reflection.Emit;
 namespace AutoDuty.Helpers
 {
     using ECommons.EzSharedDataManager;
-    using static global::AutoDuty.Data.Enum;
+    using static global::AutoDuty.Data.Enums;
 
     internal class ReflectionHelper
     {

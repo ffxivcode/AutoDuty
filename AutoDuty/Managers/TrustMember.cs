@@ -12,8 +12,25 @@
         public string                                Name       { get; set; }
         public TrustMemberName                       MemberName { get; set; }
 
-        public uint Level    { get; set; }
-        public uint LevelCap { get; set; }
+        public uint Level     { get; set; }
+        public uint LevelCap  { get; set; }
+        public uint LevelInit { get; set; }
+        public bool LevelIsSet  { get; set; }
+
+        public void ResetLevel()
+        {
+            this.LevelIsSet = false;
+            this.Level      = this.LevelInit;
+        }
+
+        public void SetLevel(uint level)
+        {
+            if (level >= this.LevelInit)
+            {
+                this.LevelIsSet = true;
+                this.Level      = level;
+            }
+        }
     }
 
     public enum TrustMemberName : byte

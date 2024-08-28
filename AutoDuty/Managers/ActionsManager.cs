@@ -181,7 +181,7 @@ namespace AutoDuty.Managers
         public unsafe void ExitDuty(string _)
         {
             _taskManager.Enqueue(() => { ExitDutyHelper.Invoke(); }, "ExitDuty-Invoke");
-            _taskManager.Enqueue(() => !ExitDutyHelper.ExitDutyRunning, "ExitDuty-WaitExitDutyRunning");
+            _taskManager.Enqueue(() => ExitDutyHelper.State != ActionState.Running, "ExitDuty-WaitExitDutyRunning");
         }
 
         public unsafe bool IsAddonReady(nint addon) => addon > 0 && GenericHelpers.IsAddonReady((AtkUnitBase*)addon);
@@ -235,13 +235,17 @@ namespace AutoDuty.Managers
 
         private unsafe bool InteractableCheck(IGameObject? gameObject)
         {
-            if (AddonHelper.ClickSelectYesno(true))
+            if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno) && !AddonHelper.ClickSelectYesno(true))
+                return false;
+            else if (AddonHelper.ClickSelectYesno(true))
+                return true;
+
+            if (GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk) && GenericHelpers.IsAddonReady(addonTalk) && !AddonHelper.ClickTalk())
+                return false;
+            else if (AddonHelper.ClickTalk())
                 return true;
 
             if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid() || !ObjectHelper.IsValid)
-                return true;
-
-            if (AddonHelper.ClickTalk())
                 return true;
             
             if (EzThrottler.Throttle("Interactable", 250))
@@ -258,7 +262,7 @@ namespace AutoDuty.Managers
 
             return false;
         }
-        private void Interactable(IGameObject? gameObject)
+        private unsafe void Interactable(IGameObject? gameObject)
         {
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable-InteractableCheck");
             _taskManager.Enqueue(() => ObjectHelper.PlayerIsCasting, 500, "Interactable-WaitPlayerIsCasting");
@@ -266,7 +270,11 @@ namespace AutoDuty.Managers
             _taskManager.DelayNext("Interactable-DelayNext100",100);
             _taskManager.Enqueue(() =>
             {
-                if (!(gameObject?.IsTargetable ?? false) ||
+                var boolAddonSelectYesno = GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno);
+
+                var boolAddonTalk = GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk) && GenericHelpers.IsAddonReady(addonTalk);
+
+                if (!boolAddonSelectYesno && !boolAddonTalk && (!(gameObject?.IsTargetable ?? false) ||
                 Svc.Condition[ConditionFlag.BetweenAreas] ||
                 Svc.Condition[ConditionFlag.BetweenAreas51] ||
                 Svc.Condition[ConditionFlag.BeingMoved] ||
@@ -278,7 +286,7 @@ namespace AutoDuty.Managers
                 Svc.Condition[ConditionFlag.Occupied33] ||
                 Svc.Condition[ConditionFlag.Occupied38] ||
                 Svc.Condition[ConditionFlag.Occupied39] ||
-                gameObject?.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)
+                gameObject?.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj))
                 {
                     AutoDuty.Plugin.Action = "";
                 }
@@ -297,7 +305,16 @@ namespace AutoDuty.Managers
             Match match = RegexHelper.InteractionObjectIdRegex().Match(objectName);
             string id = match.Success ? match.Captures.First().Value : string.Empty;
 
-            _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null) ?? ObjectHelper.GetObjectByName(objectName)) != null, "Interactable-GetGameObject");
+            _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null) ?? ObjectHelper.GetObjectByName(objectName)) != null || Player.Character->InCombat, "Interactable-GetGameObjectUnlessInCombat");
+            _taskManager.Enqueue(() => 
+            { 
+                if (Player.Character->InCombat) 
+                {  
+                    _taskManager.Abort();
+                    _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Interactable-InCombatWait");
+                    Interactable(objectName);
+                } 
+            }, "Interactable-InCombatCheck");
             _taskManager.Enqueue(() => gameObject?.IsTargetable ?? true, "Interactable-WaitGameObjectTargetable");
             _taskManager.Enqueue(() => Interactable(gameObject), "Interactable-InteractableLoop");
         }

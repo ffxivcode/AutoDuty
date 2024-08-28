@@ -29,12 +29,12 @@ namespace AutoDuty.Helpers
 
         internal static void Invoke(uint territoryType, List<Vector3> moveLocations, uint gameObjectDataId, float tollerance, float lastPointTollerance, bool useAethernetTravel, bool useFlight, bool useMesh)
         {
-            if (!GotoRunning)
+            if (State != ActionState.Running)
             {
                 Svc.Log.Info($"Goto Started, Going to {territoryType}{(moveLocations.Count>0 ? $" and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations" : "")}");
-                GotoRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                     AutoDuty.Plugin.SetGeneralSettings(false);
                 _territoryType = territoryType;
                 _gameObjectDataId = gameObjectDataId;
@@ -50,12 +50,12 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void Stop() 
         {
-            if (GotoRunning)
+            if (State == ActionState.Running)
                 Svc.Log.Info($"Goto Finished");
             Svc.Framework.Update -= GotoUpdate;
-            GotoRunning = false;
-            AutoDuty.Plugin.States &= ~State.Other;
-            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+            State = ActionState.None;
+            AutoDuty.Plugin.States &= ~PluginState.Other;
+            if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                 AutoDuty.Plugin.SetGeneralSettings(true);
             _territoryType = 0;
             _gameObjectDataId = 0;
@@ -73,7 +73,7 @@ namespace AutoDuty.Helpers
                 VNavmesh_IPCSubscriber.Path_Stop();
         }
 
-        internal static bool GotoRunning = false;
+        internal static ActionState State = ActionState.None;
 
         private static uint _territoryType = 0;
         private static uint _gameObjectDataId = 0;
@@ -88,7 +88,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void GotoUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(State.Navigating))
+            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
                 Stop();
 
             if (!EzThrottler.Check("Goto"))

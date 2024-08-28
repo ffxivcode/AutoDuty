@@ -16,12 +16,12 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke(Content? content)
         {
-            if (!QueueRunning && content != null)
+            if (State != ActionState.Running && content != null)
             {
                 _content = content;
                 Svc.Log.Info($"Queueing: {content.Name}");
-                QueueRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
                 Svc.Framework.Update += QueueUpdate;
             }
         }
@@ -29,15 +29,15 @@ namespace AutoDuty.Helpers
         internal static void Stop()
         {
             Svc.Framework.Update -= QueueUpdate;
-            if (QueueRunning)
+            if (State == ActionState.Running)
                 Svc.Log.Info($"Done Queueing: {_content?.Name}");
             _content = null;
-            QueueRunning = false;
-            AutoDuty.Plugin.States &= ~State.Other;
+            State = ActionState.None;
+            AutoDuty.Plugin.States &= ~PluginState.Other;
             _allConditionsMetToJoin = false;
         }
 
-        internal static bool QueueRunning = false;
+        internal static ActionState State = ActionState.None;
 
         private static Content? _content = null;
         private static AddonContentsFinder* _addonContentsFinder = null;

@@ -40,11 +40,8 @@ namespace AutoDuty.Helpers
 
         private static bool CanTrustRunMembers(Content content)
         {
-            if (content.TrustMembers.Any(tm => tm.Level <= 0))
-            {
+            if (content.TrustMembers.Any(tm => !tm.LevelIsSet)) 
                 AutoDuty.Plugin.TrustManager.GetLevels(content);
-                return false;
-            }
 
             TrustMember?[] members = new TrustMember?[3];
 

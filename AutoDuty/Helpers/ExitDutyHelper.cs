@@ -3,7 +3,6 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons;
 using Dalamud.Plugin.Services;
 using ECommons.DalamudServices;
-using ECommons.GameHelpers;
 
 namespace AutoDuty.Helpers
 {
@@ -11,12 +10,12 @@ namespace AutoDuty.Helpers
     {
         internal static void Invoke()
         {
-            if (!ExitDutyRunning && Svc.ClientState.TerritoryType != 0)
+            if (State != ActionState.Running && Svc.ClientState.TerritoryType != 0)
             {
                 Svc.Log.Info("ExitDuty Started");
-                ExitDutyRunning = true;
-                AutoDuty.Plugin.States |= State.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+                State = ActionState.Running;
+                AutoDuty.Plugin.States |= PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                     AutoDuty.Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("ExitDutyTimeOut", Stop, 60000);
                 AutoDuty.Plugin.Action = "Exiting Duty";
@@ -29,37 +28,36 @@ namespace AutoDuty.Helpers
         {
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("ExitDutyTimeOut");
-            _stop = true;
+            Svc.Framework.Update += ExitDutyStopUpdate;
+            Svc.Framework.Update -= ExitDutyUpdate;
 
             if (GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
                 addonContentsFinderMenu->Close(true);
         }
 
-        internal static bool ExitDutyRunning = false;
+        internal static ActionState State = ActionState.None;
 
-        private static bool _stop = false;
         private static uint _currentTerritoryType = 0;
+
+        internal static unsafe void ExitDutyStopUpdate(IFramework framework)
+        {
+            if (GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
+                addonContentsFinderMenu->Close(true);
+            else
+            {
+                Svc.Log.Info("ExitDuty Finished");
+                State = ActionState.None;
+                AutoDuty.Plugin.States &= ~PluginState.Other;
+                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
+                    AutoDuty.Plugin.SetGeneralSettings(true);
+                _currentTerritoryType = 0;
+                Svc.Framework.Update -= ExitDutyStopUpdate;
+            }
+            return;
+        }
 
         internal static unsafe void ExitDutyUpdate(IFramework framework)
         {
-            if (_stop)
-            {
-                if (GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
-                    addonContentsFinderMenu->Close(true);
-                else
-                {
-                    Svc.Log.Info("ExitDuty Finished");
-                    _stop = false;
-                    ExitDutyRunning = false;
-                    AutoDuty.Plugin.States &= ~State.Other;
-                    if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
-                        AutoDuty.Plugin.SetGeneralSettings(true);
-                    _currentTerritoryType = 0;
-                    Svc.Framework.Update -= ExitDutyUpdate;
-                }
-                return;
-            }
-
             if (!ObjectHelper.IsReady || Player.Object.InCombat())
                 return;
 

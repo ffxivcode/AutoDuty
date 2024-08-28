@@ -90,14 +90,14 @@ namespace AutoDuty.Helpers
                 return;
             }
             Svc.Log.Info("Moving to Flag Marker");
-            MoveToMapMarkerRunning = true;
-            AutoDuty.Plugin.States |= State.Other;
-            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+            State = ActionState.Running;
+            AutoDuty.Plugin.States |= PluginState.Other;
+            if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                 AutoDuty.Plugin.SetGeneralSettings(false);
             Svc.Framework.Update += MoveToMapMarkerUpdate;
         }
 
-        internal static bool MoveToMapMarkerRunning = false;
+        internal static ActionState State = ActionState.None;
 
         private static Vector3? flagMapMarkerVector3 = Vector3.Zero;
         private static FlagMapMarker? flagMapMarker = null;
@@ -106,9 +106,9 @@ namespace AutoDuty.Helpers
         {
             Svc.Framework.Update -= MoveToMapMarkerUpdate;
             VNavmesh_IPCSubscriber.Path_Stop();
-            MoveToMapMarkerRunning = false;
-            AutoDuty.Plugin.States &= ~State.Other;
-            if (!AutoDuty.Plugin.States.HasFlag(State.Looping))
+            State = ActionState.None;
+            AutoDuty.Plugin.States &= ~PluginState.Other;
+            if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                 AutoDuty.Plugin.SetGeneralSettings(true);
             flagMapMarker = null;
         }
@@ -136,7 +136,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (GotoHelper.GotoRunning)
+            if (GotoHelper.State == ActionState.Running)
                 return;
 
             if (VNavmesh_IPCSubscriber.Path_IsRunning())

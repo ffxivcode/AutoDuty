@@ -1,4 +1,5 @@
-global using static AutoDuty.Data.Enum;
+global using static AutoDuty.Data.Enums;
+global using AutoDuty.Data;
 global using ECommons.GameHelpers;
 using System;
 using System.Numerics;
@@ -75,22 +76,24 @@ public sealed class AutoDuty : IDalamudPlugin
     internal DirectoryInfo? AssemblyDirectoryInfo;
     internal Configuration Configuration { get; init; }
     internal WindowSystem WindowSystem = new("AutoDuty");
+    internal Stage PreviousStage = Stage.Stopped;
     internal Stage Stage
     {
         get => _stage;
         set
         {
-            _stage = value;
-            Svc.Log.Debug($"Stage={EnumString(_stage)}");
             switch (value)
             {
                 case Stage.Stopped:
                     StopAndResetALL();
                     break;
                 case Stage.Paused:
+                    PreviousStage = Stage;
                     if (VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
                         VNavmesh_IPCSubscriber.Path_Stop();
                     FollowHelper.SetFollow(null);
+                    TaskManager.SetStepMode(true);
+                    States |= PluginState.Paused;
                     break;
                 case Stage.Action:
                     ActionInvoke();
@@ -106,9 +109,11 @@ public sealed class AutoDuty : IDalamudPlugin
                     SchedulerHelper.ScheduleAction("ConditionChangeStageReadingPath", () => _stage = Stage.Reading_Path, () => !Svc.Condition[ConditionFlag.BetweenAreas] && !Svc.Condition[ConditionFlag.BetweenAreas51] && !Svc.Condition[ConditionFlag.Jumping61]);
                     break;
             }
+            _stage = value;
+            Svc.Log.Debug($"Stage={EnumString(_stage)}");
         }
     }
-    internal State States = State.None;
+    internal PluginState States = PluginState.None;
     internal int Indexer = -1;
     internal bool MainListClicked = false;
     internal IBattleChara? BossObject;
@@ -195,7 +200,7 @@ public sealed class AutoDuty : IDalamudPlugin
             WindowSystem.AddWindow(MainWindow);
             WindowSystem.AddWindow(Overlay);
 
-            if (Configuration.ShowOverlay && (!Configuration.HideOverlayWhenStopped || States.HasFlag(State.Looping) || States.HasFlag(State.Navigating)))
+            if (Configuration.ShowOverlay && (!Configuration.HideOverlayWhenStopped || States.HasFlag(PluginState.Looping) || States.HasFlag(PluginState.Navigating)))
                 SchedulerHelper.ScheduleAction("ShowOverlay", () => Overlay.IsOpen = true, () => ObjectHelper.IsReady);
 
             if (Configuration.ShowMainWindowOnStartup)
@@ -336,13 +341,13 @@ public sealed class AutoDuty : IDalamudPlugin
 
         LoadPath();
 
-        if (!States.HasFlag(State.Looping) || GCTurninHelper.GCTurninRunning || RepairHelper.RepairRunning || GotoHelper.GotoRunning || GotoInnHelper.GotoInnRunning || GotoBarracksHelper.GotoBarracksRunning || GotoHousingHelper.GotoHousingRunning || CurrentTerritoryContent == null)
+        if (!States.HasFlag(PluginState.Looping) || GCTurninHelper.State == ActionState.Running || RepairHelper.State == ActionState.Running || GotoHelper.State == ActionState.Running || GotoInnHelper.State == ActionState.Running || GotoBarracksHelper.State == ActionState.Running || GotoHousingHelper.State == ActionState.Running || CurrentTerritoryContent == null)
         {
             Svc.Log.Debug("We Changed Territories but are doing after loop actions or not running at all or in a Territory not supported by AutoDuty");
             return;
         }
 
-        if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped && !States.HasFlag(State.Looping))
+        if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped && !States.HasFlag(PluginState.Looping))
         {
             Overlay.IsOpen = false;
             MainWindow.IsOpen = true;
@@ -356,13 +361,16 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 TaskManager.Abort();
                 TaskManager.Enqueue(() => { Stage   = Stage.Looping; },    "Loop-SetStage=99");
-                TaskManager.Enqueue(() => { States &= ~State.Navigating; }, "Loop-RemoveNavigationState");
+                TaskManager.Enqueue(() => { States &= ~PluginState.Navigating; }, "Loop-RemoveNavigationState");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
-                TaskManager.Enqueue(() => { Action = $"Waiting {Configuration.WaitTimeBeforeAfterLoopActions}s"; }, "Loop-WaitTimeBeforeAfterLoopActionsActionSet");
-                TaskManager.DelayNext("Loop-WaitTimeBeforeAfterLoopActions", Configuration.WaitTimeBeforeAfterLoopActions * 1000);
-                TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
+                if (Configuration.EnableBetweenLoopActions)
+                {
+                    TaskManager.Enqueue(() => { Action = $"Waiting {Configuration.WaitTimeBeforeAfterLoopActions}s"; }, "Loop-WaitTimeBeforeAfterLoopActionsActionSet");
+                    TaskManager.DelayNext("Loop-WaitTimeBeforeAfterLoopActions", Configuration.WaitTimeBeforeAfterLoopActions * 1000);
+                    TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
+                }
                 
-                if (TrustLevelingEnabled)
+                if (TrustLevelingEnabled && TrustManager.members.Any(tm => tm.Value.Level < tm.Value.LevelCap))
                 {
                     TrustManager.ClearCachedLevels(CurrentTerritoryContent);
                     TrustManager.GetLevels(CurrentTerritoryContent);
@@ -372,14 +380,15 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 TaskManager.Enqueue(() => 
                 {
-                    if (StopLoop)
+                    if (Configuration.EnableTerminationActions && StopLoop)
                     {
                         Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");
                         LoopsCompleteActions();
                     }
-                    else
+                    else if (Configuration.EnableBetweenLoopActions)
                         LoopTasks();
                 },"Loop-CheckStopLoop");
+
             }
             else
                 LoopsCompleteActions();
@@ -390,7 +399,7 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (Stage == Stage.Stopped) return;
         //Svc.Log.Debug($"{flag} : {value}");
-        if (Stage != Stage.Dead && Stage != Stage.Revived && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && States.HasFlag(State.Navigating) && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
+        if (Stage != Stage.Dead && Stage != Stage.Revived && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && States.HasFlag(PluginState.Navigating) && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
         {
             Indexer++;
             VNavmesh_IPCSubscriber.Path_Stop();
@@ -413,7 +422,7 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 TaskManager.Enqueue(() => AutoRetainerHelper.Invoke(), "Loop-AutoRetainer");
                 TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => !AutoRetainerHelper.AutoRetainerRunning, int.MaxValue, "Loop-WaitAutoRetainerComplete");
+                TaskManager.Enqueue(() => AutoRetainerHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoRetainerComplete");
             }
             else
             {
@@ -436,7 +445,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             TaskManager.Enqueue(() => AutoEquipHelper.Invoke(), "Loop-AutoEquip");
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !AutoEquipHelper.AutoEquipRunning, int.MaxValue, "Loop-WaitAutoEquipComplete");
+            TaskManager.Enqueue(() => AutoEquipHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoEquipComplete");
             TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
         }
 
@@ -444,14 +453,14 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             TaskManager.Enqueue(() => AMHelper.Invoke(), "Loop-AM");
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !AMHelper.AMRunning, int.MaxValue, "Loop-WaitAMComplete");
+            TaskManager.Enqueue(() => AMHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAMComplete");
         }
 
         if (Configuration.AutoRepair && InventoryHelper.CanRepair())
         {
             TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Loop-WaitAutoRepairComplete");
+            TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoRepairComplete");
             TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
         }
 
@@ -459,21 +468,21 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             TaskManager.Enqueue(() => ExtractHelper.Invoke(), "Loop-AutoExtract");
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !ExtractHelper.ExtractRunning, int.MaxValue, "Loop-WaitAutoExtractComplete");
+            TaskManager.Enqueue(() => ExtractHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoExtractComplete");
         }
 
         if (Configuration.AutoGCTurnin && (!Configuration.AutoGCTurninSlotsLeftBool || InventoryManager.Instance()->GetEmptySlotsInBag() <= Configuration.AutoGCTurninSlotsLeft) && ObjectHelper.GrandCompanyRank > 5)
         {
             TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !GCTurninHelper.GCTurninRunning, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
+            TaskManager.Enqueue(() => GCTurninHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
         }
 
         if (Configuration.AutoDesynth)
         {
             TaskManager.Enqueue(() => DesynthHelper.Invoke(), "Loop-AutoDesynth");
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !DesynthHelper.DesynthRunning, int.MaxValue, "Loop-WaitAutoDesynthComplete");
+            TaskManager.Enqueue(() => DesynthHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoDesynthComplete");
         }
         
         if (!Configuration.Squadron && Configuration.RetireMode)
@@ -488,7 +497,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Loop-GotoHousingInvoke");
             }
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !GotoHousingHelper.GotoHousingRunning && !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
+            TaskManager.Enqueue(() => GotoHousingHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitGotoComplete");
         }
 
         if (LevelingEnabled)
@@ -522,14 +531,14 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Loop-WaitGotoComplete");
+            TaskManager.Enqueue(() => GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitGotoComplete");
             _squadronManager.RegisterSquadron(CurrentTerritoryContent);
         }
         else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
         {
             TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Loop-Queue");
             TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => !QueueHelper.QueueRunning, int.MaxValue, "Loop-WaitQueueComplete");
+            TaskManager.Enqueue(() => QueueHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitQueueComplete");
         }
 
         TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
@@ -543,91 +552,93 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
-        if (Configuration.PlayEndSound)
-        {
-            SoundHelper.StartSound(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundEnum);
-        }
+        
         SetGeneralSettings(false);
-
-        if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
+        
+        if (Configuration.EnableTerminationActions)
         {
-            if (!Configuration.TerminationKeepActive)
+            if (Configuration.PlayEndSound)
             {
-                Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
-                Configuration.Save();
+                SoundHelper.StartSound(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundEnum);
             }
+            if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
+            {
+                if (!Configuration.TerminationKeepActive)
+                {
+                    Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
+                    Configuration.Save();
+                }
 
-            if (OperatingSystem.IsWindows())
-            {
-                ProcessStartInfo startinfo = new("shutdown.exe", "-s -t 20");
-                Process.Start(startinfo);
-            } 
-            else if (OperatingSystem.IsLinux())
-            {
-                //Educated guess
-                ProcessStartInfo startinfo = new("shutdown", "-t 20");
-                Process.Start(startinfo);
-            } 
-            else if (OperatingSystem.IsMacOS())
-            {
-                //hell if I know
+                if (OperatingSystem.IsWindows())
+                {
+                    ProcessStartInfo startinfo = new("shutdown.exe", "-s -t 20");
+                    Process.Start(startinfo);
+                }
+                else if (OperatingSystem.IsLinux())
+                {
+                    //Educated guess
+                    ProcessStartInfo startinfo = new("shutdown", "-t 20");
+                    Process.Start(startinfo);
+                }
+                else if (OperatingSystem.IsMacOS())
+                {
+                    //hell if I know
+                }
+                Chat.ExecuteCommand($"/xlkill");
             }
-            Chat.ExecuteCommand($"/xlkill");
-        }
-        else if (Configuration.TerminationMethodEnum == TerminationMode.Kill_Client)
-        {
-            if (!Configuration.TerminationKeepActive)
+            else if (Configuration.TerminationMethodEnum == TerminationMode.Kill_Client)
             {
-                Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
-                Configuration.Save();
-            }
+                if (!Configuration.TerminationKeepActive)
+                {
+                    Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
+                    Configuration.Save();
+                }
 
-            Chat.ExecuteCommand($"/xlkill");
-        }
-        else if (Configuration.TerminationMethodEnum == TerminationMode.Logout)
-        {
-            if (!Configuration.TerminationKeepActive)
-            {
-                Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
-                Configuration.Save();
+                Chat.ExecuteCommand($"/xlkill");
             }
+            else if (Configuration.TerminationMethodEnum == TerminationMode.Logout)
+            {
+                if (!Configuration.TerminationKeepActive)
+                {
+                    Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
+                    Configuration.Save();
+                }
 
-            TaskManager.Enqueue(() => ObjectHelper.IsReady);
-            TaskManager.DelayNext(2000);
-            TaskManager.Enqueue(() => Chat.ExecuteCommand($"/logout"));
-            TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
-            TaskManager.Enqueue(() => States &= ~State.Looping);
-            TaskManager.Enqueue(() => CurrentLoop = 0);
-            TaskManager.Enqueue(() => Stage = Stage.Stopped);
-        }
-        else if (Configuration.TerminationMethodEnum == TerminationMode.Start_AR_Multi_Mode)
-        {
-            TaskManager.Enqueue(() => Chat.ExecuteCommand($"/ays multi"));
-            TaskManager.Enqueue(() => States &= ~State.Looping);
-            TaskManager.Enqueue(() => CurrentLoop = 0);
-            TaskManager.Enqueue(() => Stage = Stage.Stopped);
-        }
+                TaskManager.Enqueue(() => ObjectHelper.IsReady);
+                TaskManager.DelayNext(2000);
+                TaskManager.Enqueue(() => Chat.ExecuteCommand($"/logout"));
+                TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
+                TaskManager.Enqueue(() => States &= ~PluginState.Looping);
+                TaskManager.Enqueue(() => CurrentLoop = 0);
+                TaskManager.Enqueue(() => Stage = Stage.Stopped);
+            }
+            else if (Configuration.TerminationMethodEnum == TerminationMode.Start_AR_Multi_Mode)
+            {
+                TaskManager.Enqueue(() => Chat.ExecuteCommand($"/ays multi"));
+                TaskManager.Enqueue(() => States &= ~PluginState.Looping);
+                TaskManager.Enqueue(() => CurrentLoop = 0);
+                TaskManager.Enqueue(() => Stage = Stage.Stopped);
+            }
         else if (Configuration.TerminationMethodEnum == TerminationMode.Custom)
         {
             Configuration.TerminationCustomCommand
                 .Split("\n")
                 .Where(c => c.StartsWith('/'))
                 .Each(c => TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
-            TaskManager.Enqueue(() => States &= ~State.Looping);
+            TaskManager.Enqueue(() => States &= ~PluginState.Looping);
             TaskManager.Enqueue(() => CurrentLoop = 0);
             TaskManager.Enqueue(() => Stage = Stage.Stopped);
         }
-        else
-        {
-            States &= ~State.Looping;
-            CurrentLoop = 0;
-            Stage = Stage.Stopped;
         }
+
+        States &= ~PluginState.Looping;
+        CurrentLoop = 0;
+        Stage = Stage.Stopped;
     }
-    
-    public void Run(uint territoryType = 0, int loops = 0)
+
+    public void Run(uint territoryType = 0, int loops = 0, bool bareMode = false)
     {
-        Svc.Log.Debug($"Run: territoryType={territoryType} loops={loops}");
+        Svc.Log.Debug($"Run: territoryType={territoryType} loops={loops} bareMode={bareMode}");
         if (territoryType > 0)
         {
             if (ContentHelper.DictionaryContent.TryGetValue(territoryType, out var content))
@@ -639,11 +650,20 @@ public sealed class AutoDuty : IDalamudPlugin
             }
         }
 
+        if (CurrentTerritoryContent == null)
+            return;
+
         if (loops > 0)
             Configuration.LoopTimes = loops;
 
-        if (CurrentTerritoryContent == null)
-            return;
+        if (bareMode)
+        {
+            Configuration.EnablePreLoopActions = false;
+            Configuration.EnableBetweenLoopActions = false;
+            Configuration.EnableTerminationActions = false;
+        }
+
+        Svc.Log.Info($"Running AutoDuty in {CurrentTerritoryContent.EnglishName}, Looping {Configuration.LoopTimes} times{(bareMode ? " in BareMode (No Pre, Between or Termination Loop Actions)" : "")}");
 
         //MainWindow.OpenTab("Mini");
         if (Configuration.ShowOverlay)
@@ -652,46 +672,47 @@ public sealed class AutoDuty : IDalamudPlugin
             Overlay.IsOpen = true;
         }
         Stage = Stage.Looping;
-        States |= State.Looping;
+        States |= PluginState.Looping;
         SetGeneralSettings(false);
         TaskManager.Abort();
         Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
-            if (Configuration.AutoConsume)
+            if (Configuration.EnablePreLoopActions)
             {
-                foreach (var item in Configuration.AutoConsumeItems)
+                if (Configuration.AutoConsume)
                 {
-                    TaskManager.Enqueue(
-                        () => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq),
-                        $"Run-AutoConsume({item.Value.Name})");
-                    TaskManager.Enqueue(() => ObjectHelper.IsReady);
+                    foreach (var item in Configuration.AutoConsumeItems)
+                    {
+                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(item.Value.ItemId, item.Key, item.Value.CanBeHq), $"Run-AutoConsume({item.Value.Name})");
+                        TaskManager.Enqueue(() => ObjectHelper.IsReady);
+                    }
                 }
-            }
-
+    
             if (Configuration.AutoRepair && InventoryHelper.CanRepair())
-            {
-                TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
-                TaskManager.DelayNext("Run-AutoRepairDelay50", 50);
-                TaskManager.Enqueue(() => !RepairHelper.RepairRunning, int.MaxValue, "Run-WaitAutoRepairComplete");
-                TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitAutoRepairNotIsOccupied");
-            }
-
+                {
+                    TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
+                    TaskManager.DelayNext("Run-AutoRepairDelay50", 50);
+                    TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Run-WaitAutoRepairComplete");
+                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitAutoRepairNotIsOccupied");
+                }
+    
             if (Configuration.ShouldExecuteCommand)
                 Configuration.ExecuteCommand
                     .Split("\n")
                     .Where(c => c.StartsWith('/'))
                     .Each(c=> TaskManager.Enqueue(() => Chat.ExecuteCommand(c), "Run-ExecuteCommands"));
             if (!Configuration.Squadron && Configuration.RetireMode)
-            {
-                if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
-                    TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
-                else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
-                    TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Run-GotoInnInvoke");
-                else
-                    TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Run-GotoHousingInvoke");
-                TaskManager.DelayNext("Run-RetireModeDelay50", 50);
-                TaskManager.Enqueue(() => !GotoHousingHelper.GotoHousingRunning && !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
+                {
+                    if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
+                        TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
+                    else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
+                        TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Run-GotoInnInvoke");
+                    else
+                        TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Run-GotoHousingInvoke");
+                    TaskManager.DelayNext("Run-RetireModeDelay50", 50);
+                    TaskManager.Enqueue(() => GotoHousingHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Run-WaitGotoComplete");
+                }
             }
             if (Configuration.Trust)
                 TrustManager.RegisterTrust(CurrentTerritoryContent);
@@ -703,13 +724,13 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Run-Queue");
                 TaskManager.DelayNext("Run-QueueDelay50", 50);
-                TaskManager.Enqueue(() => !QueueHelper.QueueRunning, int.MaxValue, "Run-WaitQueueComplete");
+                TaskManager.Enqueue(() => QueueHelper.State != ActionState.Running, int.MaxValue, "Run-WaitQueueComplete");
             }
             else if (Configuration.Squadron)
             {
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
                 TaskManager.DelayNext("Run-GotoBarracksDelay50", 50);
-                TaskManager.Enqueue(() => !GotoBarracksHelper.GotoBarracksRunning && !GotoInnHelper.GotoInnRunning, int.MaxValue, "Run-WaitGotoComplete");
+                TaskManager.Enqueue(() => GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Run-WaitGotoComplete");
                 _squadronManager.RegisterSquadron(CurrentTerritoryContent);
             }
             TaskManager.Enqueue(() => !ObjectHelper.IsValid, "Run-WaitNotValid");
@@ -745,7 +766,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
         MainListClicked = false;
         Stage = Stage.Reading_Path;
-        States |= State.Navigating;
+        States |= PluginState.Navigating;
         StopForCombat = true;
         if (Configuration.AutoManageVnavAlignCamera && !VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
@@ -781,14 +802,14 @@ public sealed class AutoDuty : IDalamudPlugin
         //we finished lets exit the duty or stop
         if (Configuration.AutoExitDuty || CurrentLoop < Configuration.LoopTimes)
         {
-            if (!ExitDutyHelper.ExitDutyRunning)
+            if (ExitDutyHelper.State != ActionState.Running)
                 ExitDuty();
             if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
                 SetRotationPluginSettings(false);
             
             Chat.ExecuteCommand($"/vbmai off");
             Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
-            States &= ~State.Navigating;
+            States &= ~PluginState.Navigating;
         }
         else
             Stage = Stage.Stopped;
@@ -1084,7 +1105,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Stage == Stage.Stopped)
             return;
 
-        if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(State.Navigating) && ObjectHelper.IsValid)
+        if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(PluginState.Navigating) && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
 
         if (!Player.Available)
@@ -1108,19 +1129,19 @@ public sealed class AutoDuty : IDalamudPlugin
         if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25) && MainWindow.CurrentTabName == "Build")
             ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
 
-        if (States.HasFlag(State.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
-        if (Stage != Stage.Dead && States.HasFlag(State.Navigating) && Player.Object.CurrentHp == 0)
+        if (Stage != Stage.Dead && States.HasFlag(PluginState.Navigating) && Player.Object.CurrentHp == 0)
             Stage = Stage.Dead;
 
-        if (Stage == Stage.Dead && States.HasFlag(State.Navigating) && Player.Object.CurrentHp > 0)
+        if (Stage == Stage.Dead && States.HasFlag(PluginState.Navigating) && Player.Object.CurrentHp > 0)
             Stage = Stage.Revived;
 
-        if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && States.HasFlag(State.Navigating))
+        if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && States.HasFlag(PluginState.Navigating))
             DoneNavigating();
 
-        if (Stage > Stage.Condition && !States.HasFlag(State.Other))
+        if (Stage > Stage.Condition && !States.HasFlag(PluginState.Other))
             Action = EnumString(Stage);
         //Svc.Log.Info($"{Stage} {States}");
         switch (Stage)
@@ -1194,8 +1215,8 @@ public sealed class AutoDuty : IDalamudPlugin
                     if (!ListBoxPOSText[Indexer].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
                     {
                         MainWindow.ShowPopup("Error", $"Error in line {Indexer} of path file\nFormat: Action|123, 0, 321|ActionParams(if needed)");
-                        States &= ~State.Looping;
-                        States &= ~State.Navigating;
+                        States &= ~PluginState.Looping;
+                        States &= ~PluginState.Navigating;
                         CurrentLoop = 0;
                         MainListClicked = false;
                         Stage = 0;
@@ -1385,7 +1406,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void StopAndResetALL()
     {
-        States = State.None;
+        States = PluginState.None;
         MainListClicked = false;
         CurrentLoop = 0;
         Chat.ExecuteCommand($"/vbmai off");
@@ -1402,33 +1423,33 @@ public sealed class AutoDuty : IDalamudPlugin
         if (TaskManager.IsBusy)
             TaskManager.Abort();
         FollowHelper.SetFollow(null);
-        if (ExtractHelper.ExtractRunning)
+        if (ExtractHelper.State == ActionState.Running)
             ExtractHelper.Stop();
-        if (GCTurninHelper.GCTurninRunning)
+        if (GCTurninHelper.State == ActionState.Running)
             GCTurninHelper.Stop();
-        if (DesynthHelper.DesynthRunning)
+        if (DesynthHelper.State == ActionState.Running)
             DesynthHelper.Stop();
-        if (GotoHelper.GotoRunning)
+        if (GotoHelper.State == ActionState.Running)
             GotoHelper.Stop();
-        if (GotoInnHelper.GotoInnRunning)
+        if (GotoInnHelper.State == ActionState.Running)
             GotoInnHelper.Stop();
-        if (GotoBarracksHelper.GotoBarracksRunning)
+        if (GotoBarracksHelper.State == ActionState.Running)
             GotoBarracksHelper.Stop();
-        if (RepairHelper.RepairRunning)
+        if (RepairHelper.State == ActionState.Running)
             RepairHelper.Stop();
-        if (QueueHelper.QueueRunning)
+        if (QueueHelper.State == ActionState.Running)
             QueueHelper.Stop();
-        if (AMHelper.AMRunning)
+        if (AMHelper.State == ActionState.Running)
             AMHelper.Stop();
-        if (AutoRetainerHelper.AutoRetainerRunning)
+        if (AutoRetainerHelper.State == ActionState.Running)
             AutoRetainerHelper.Stop();
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
-        if (MapHelper.MoveToMapMarkerRunning)
+        if (MapHelper.State == ActionState.Running)
             MapHelper.StopMoveToMapMarker();
-        if (GotoHousingHelper.GotoHousingRunning)
+        if (GotoHousingHelper.State == ActionState.Running)
             GotoHousingHelper.Stop();
-        if (ExitDutyHelper.ExitDutyRunning)
+        if (ExitDutyHelper.State == ActionState.Running)
             ExitDutyHelper.Stop();
 
         Action = "";
@@ -1570,7 +1591,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 }    
                 break;
             case "skipstep":
-                if (States.HasFlag(State.Navigating))
+                if (States.HasFlag(PluginState.Navigating))
                 {
                     Indexer++;
                     Stage = Stage.Reading_Path;
@@ -1584,12 +1605,13 @@ public sealed class AutoDuty : IDalamudPlugin
                 MapHelper.MoveToMapMarker();
                 break;
             case "run":
-                if (argsArray.Length <= 2 || !UInt32.TryParse(argsArray[1], out uint territoryType) || !Int32.TryParse(argsArray[2], out int loopTimes))
+                if (argsArray.Length <= 3 || !UInt32.TryParse(argsArray[1], out uint territoryType) || !Int32.TryParse(argsArray[2], out int loopTimes))
                 {
-                    Svc.Log.Info($"Run Error: Incorrect Usage\ncorrect use /autoduty run TerritoryTypeInteger LoopTimesInteger\nexample: /autoduty run 1036 10\nYou can get the TerritoryTypeInteger from /autoduty tt name of territory (will be logged and copied to clipboard)");
+                    Svc.Log.Info($"Run Error: Incorrect Usage\ncorrect use /autoduty run TerritoryTypeInteger LoopTimesInteger (optional) BareModeBool\nexample: /autoduty run 1036 10 true\nYou can get the TerritoryTypeInteger from /autoduty tt name of territory (will be logged and copied to clipboard)");
                     return;
                 }
-                Run(territoryType, loopTimes);
+
+                Run(territoryType, loopTimes, argsArray.Length > 3 && bool.TryParse(argsArray[3], out bool parsedBool) && parsedBool);
                 break;
             case "tt":
                 var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
