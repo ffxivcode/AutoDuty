@@ -559,7 +559,6 @@ public sealed class AutoDuty : IDalamudPlugin
         
         if (Configuration.EnableTerminationActions)
         {
-            Svc.Log.Info("term");
             if (Configuration.ExecuteCommandsTermination)
             {
                 Svc.Log.Debug($"ExecutingCommandsTermination, executing {Configuration.CustomCommandsTermination.Count} commands");
@@ -679,7 +678,11 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Configuration.EnablePreLoopActions)
             {
                 if (Configuration.ExecuteCommandsPreLoop)
+                {
+                    Svc.Log.Debug($"ExecutingCommandsPreLoop, executing {Configuration.CustomCommandsTermination.Count} commands");
                     Configuration.CustomCommandsPreLoop.Each(x => TaskManager.Enqueue(() => Chat.ExecuteCommand(x), "Run-ExecuteCommandsPreLoop"));
+                }
+                    
                 
                 if (Configuration.AutoConsume)
                     Configuration.AutoConsumeItems.Each(x =>
