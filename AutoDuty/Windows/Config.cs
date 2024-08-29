@@ -863,14 +863,22 @@ public static class ConfigTab
                     }
                     if (!ImGui.BeginListBox("##PreLoopCommandList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.CustomCommandsPreLoop.Count) + 5))) return;
 
-                    foreach (var item in Configuration.CustomCommandsPreLoop)
+                    var removeItem = false;
+                    var removeAt = 0;
+
+                    foreach (var item in Configuration.CustomCommandsPreLoop.Select((Value, Index) => (Value, Index)))
                     {
-                        ImGui.Selectable($"{item}");
+                        ImGui.Selectable($"{item.Value}");
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                         {
-                            Configuration.CustomCommandsPreLoop.Remove(item);
-                            Configuration.Save();
+                            removeItem = true;
+                            removeAt = item.Index;
                         }
+                    }
+                    if (removeItem)
+                    {
+                        Configuration.CustomCommandsPreLoop.RemoveAt(removeAt);
+                        Configuration.Save();
                     }
                     ImGui.EndListBox();
                     ImGui.Unindent();
@@ -903,22 +911,30 @@ public static class ConfigTab
                             Configuration.Save();
                         }
                         ImGuiComponents.HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
-                        try
-                        {
-                            if (!ImGui.BeginListBox("##PersonalHomeVector3List", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.PersonalHomeEntrancePath.Count) + 5))) return;
 
-                            foreach (var item in Configuration.PersonalHomeEntrancePath)
+                        if (!ImGui.BeginListBox("##PersonalHomeVector3List", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.PersonalHomeEntrancePath.Count) + 5))) return;
+
+                        var removeItem = false;
+                        var removeAt = 0;
+
+                        foreach (var item in Configuration.PersonalHomeEntrancePath.Select((Value, Index) => (Value, Index)))
+                        {
+                            ImGui.Selectable($"{item.Value}");
+                            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                             {
-                                ImGui.Selectable($"{item}");
-                                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                                {
-                                    Configuration.PersonalHomeEntrancePath.Remove(item);
-                                    Configuration.Save();
-                                }
+                                removeItem = true;
+                                removeAt = item.Index;
                             }
-                            ImGui.EndListBox();
                         }
-                        catch (Exception) { }
+
+                        if (removeItem)
+                        {
+                            Configuration.PersonalHomeEntrancePath.RemoveAt(removeAt);
+                            Configuration.Save();
+                        }
+
+                        ImGui.EndListBox();
+
                     }
                     if (Configuration.RetireMode && Configuration.RetireLocationEnum == RetireLocation.FC_Estate)
                     {
@@ -928,22 +944,26 @@ public static class ConfigTab
                             Configuration.Save();
                         }
                         ImGuiComponents.HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
-                        try
-                        {
-                            if (!ImGui.BeginListBox("##FCEstateVector3List", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.FCEstateEntrancePath.Count) + 5))) return;
 
-                            foreach (var item in Configuration.FCEstateEntrancePath)
+                        if (!ImGui.BeginListBox("##FCEstateVector3List", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.FCEstateEntrancePath.Count) + 5))) return;
+
+                        var removeItem = false;
+                        var removeAt = 0;
+
+                        foreach (var item in Configuration.FCEstateEntrancePath.Select((Value, Index) => (Value, Index)))
+                        {
+                            ImGui.Selectable($"{item.Value}");
+                            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                             {
-                                ImGui.Selectable($"{item}");
-                                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                                {
-                                    Configuration.FCEstateEntrancePath.Remove(item);
-                                    Configuration.Save();
-                                }
+                                removeItem = true;
+                                removeAt = item.Index;
                             }
-                            ImGui.EndListBox();
                         }
-                        catch (Exception) { }
+
+                        Configuration.FCEstateEntrancePath.RemoveAt(removeAt);
+                        Configuration.Save();
+
+                        ImGui.EndListBox();
                     }
                 }
                 if (ImGui.Checkbox("Auto Equip Recommended Gear", ref Configuration.AutoEquipRecommendedGear))
@@ -1075,18 +1095,23 @@ public static class ConfigTab
                         }
                     }
                     if (!ImGui.BeginListBox("##ConsumableItemList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.AutoConsumeItems.Count) + 5))) return;
-
+                    var boolRemoveItem = false;
+                    KeyValuePair<ushort, ConsumableItem> removeItem = new();
                     foreach (var item in Configuration.AutoConsumeItems)
                     {
-                        if (item.Value == null) continue;
                         ImGui.Selectable($"{item.Value.Name}");
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                         {
-                            Configuration.AutoConsumeItems.Remove(item);
-                            Configuration.Save();
+                            boolRemoveItem = true;
+                            removeItem = item;
                         }
                     }
                     ImGui.EndListBox();
+                    if (boolRemoveItem)
+                    {
+                        Configuration.AutoConsumeItems.Remove(removeItem);
+                        Configuration.Save();
+                    }
                 }
             }
         }
@@ -1372,12 +1397,12 @@ public static class ConfigTab
                     ImGui.EndListBox();
                 }
 
-                if (ImGui.Checkbox("Execute commands on termination of all loops: ", ref Configuration.ExecuteCommandsPreLoop))
+                if (ImGui.Checkbox("Execute commands on termination of all loops: ", ref Configuration.ExecuteCommandsTermination))
                     Configuration.Save();
 
                 ImGuiComponents.HelpMarker("Execute commands on termination of all loops.\nFor example, /echo test");
 
-                if (Configuration.ExecuteCommandsPreLoop)
+                if (Configuration.ExecuteCommandsTermination)
                 {
                     ImGui.Indent();
                     ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 185);
@@ -1404,16 +1429,26 @@ public static class ConfigTab
                     }
                     if (!ImGui.BeginListBox("##TerminationCommandList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.CustomCommandsTermination.Count) + 5))) return;
 
-                    foreach (var item in Configuration.CustomCommandsTermination)
+                    var removeItem = false;
+                    int removeAt = 0;
+
+                    foreach (var item in Configuration.CustomCommandsTermination.Select((Value, Index) => (Value, Index)))
                     {
-                        ImGui.Selectable($"{item}");
+                        ImGui.Selectable($"{item.Value}");
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                         {
-                            Configuration.CustomCommandsTermination.Remove(item);
-                            Configuration.Save();
+                            removeItem = true;
+                            removeAt = item.Index;
                         }
                     }
                     ImGui.EndListBox();
+
+                    if (removeItem)
+                    {
+                        Configuration.CustomCommandsTermination.RemoveAt(removeAt);
+                        Configuration.Save();
+                    }
+
                     ImGui.Unindent();
                 }
 

@@ -360,7 +360,8 @@ public sealed class AutoDuty : IDalamudPlugin
             if (CurrentLoop < Configuration.LoopTimes)
             {
                 TaskManager.Abort();
-                TaskManager.Enqueue(() => { Stage   = Stage.Looping; },    "Loop-SetStage=99");
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Loop {CurrentLoop} of {Configuration.LoopTimes}"), "Loop-Debug");
+                TaskManager.Enqueue(() => { Stage = Stage.Looping; }, "Loop-SetStage=99");
                 TaskManager.Enqueue(() => { States &= ~PluginState.Navigating; }, "Loop-RemoveNavigationState");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
                 if (Configuration.EnableBetweenLoopActions)
@@ -369,7 +370,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.DelayNext("Loop-WaitTimeBeforeAfterLoopActions", Configuration.WaitTimeBeforeAfterLoopActions * 1000);
                     TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
                 }
-                
+
                 if (TrustLevelingEnabled && TrustManager.members.Any(tm => tm.Value.Level < tm.Value.LevelCap))
                 {
                     TrustManager.ClearCachedLevels(CurrentTerritoryContent);
@@ -378,20 +379,24 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => TrustManager.GetLevelsCheck(), "Loop-RecheckingTrustLevels");
                 }
 
-                TaskManager.Enqueue(() => 
+                TaskManager.Enqueue(() =>
                 {
-                    if (Configuration.EnableTerminationActions && StopLoop)
+                    if (StopLoop)
                     {
                         Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");
                         LoopsCompleteActions();
                     }
                     else if (Configuration.EnableBetweenLoopActions)
                         LoopTasks();
-                },"Loop-CheckStopLoop");
+                }, "Loop-CheckStopLoop");
 
             }
             else
-                LoopsCompleteActions();
+            {
+                TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Loop {CurrentLoop} == {Configuration.LoopTimes} we are done Looping, Invoking LoopsCompleteActions"), "Loop-Debug");
+                TaskManager.Enqueue(() => LoopsCompleteActions(), "Loop-LoopCompleteActions");
+            }
         }
     }
     
@@ -550,13 +555,16 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
-        
         SetGeneralSettings(false);
         
         if (Configuration.EnableTerminationActions)
         {
+            Svc.Log.Info("term");
             if (Configuration.ExecuteCommandsTermination)
-                Configuration.CustomCommandsTermination.Each(Chat.ExecuteCommand);
+            {
+                Svc.Log.Debug($"ExecutingCommandsTermination, executing {Configuration.CustomCommandsTermination.Count} commands");
+                Configuration.CustomCommandsTermination.Each(x => Chat.ExecuteCommand(x));
+            }
             if (Configuration.PlayEndSound)
             {
                 SoundHelper.StartSound(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundEnum);
@@ -623,7 +631,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         States &= ~PluginState.Looping;
         CurrentLoop = 0;
-        Stage = Stage.Stopped;
+        SchedulerHelper.ScheduleAction("SetStageStopped", () => Stage = Stage.Stopped, 1);
     }
 
     public void Run(uint territoryType = 0, int loops = 0, bool bareMode = false)
