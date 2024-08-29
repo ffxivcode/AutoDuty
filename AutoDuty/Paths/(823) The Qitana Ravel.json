@@ -1,5 +1,6 @@
 {
   "actions": [
+    "MoveTo|5.17, 0.00, 516.31|",
     "Boss|0.17, 5.35, 314.78|",
     "TreasureCoffer|132.96, -8.70, 187.63|",
     "TreasureCoffer|46.85, -11.00, 78.80|",
@@ -16,6 +17,10 @@
     "changelog": [
       {
         "version": 132,
+        "change": ""
+      },
+      {
+        "version": 135,
         "change": ""
       }
     ],

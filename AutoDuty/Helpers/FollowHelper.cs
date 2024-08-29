@@ -3,7 +3,8 @@ using Dalamud.Plugin.Services;
 using ECommons.DalamudServices;
 using AutoDuty.IPC;
 using System.Numerics;
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
 {
@@ -12,11 +13,14 @@ namespace AutoDuty.Helpers
         private static IGameObject? _followTarget = null;
         private static float _followDistance = 0.25f;
         private static bool _updateHooked = false;
-        private static bool _enabled
+        private static bool _enabled = false;
+
+        internal static bool Enabled
         {
             get => _enabled;
             set
             {
+                _enabled = value;
                 if (value && !_updateHooked) {
                     _updateHooked = true;
                     Svc.Framework.Update += FollowUpdate;
@@ -30,19 +34,17 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static bool IsFollowing => _enabled;
-
         internal static void SetFollow(IGameObject? gameObject, float followDistance = 0)
         {
             if (gameObject != null)
             {
                 _followTarget = gameObject;
-                _enabled = true;
+                Enabled = true;
             }
             else
             {
                 _followTarget = null;
-                _enabled = false;
+                Enabled = false;
             }
             if (followDistance > 0)
                 _followDistance = followDistance;
@@ -54,7 +56,7 @@ namespace AutoDuty.Helpers
 
         private static void FollowUpdate(IFramework framework)
         {
-            if (_followTarget == null || Svc.ClientState.LocalPlayer == null)
+            if (_followTarget == null || Svc.ClientState.LocalPlayer == null || !EzThrottler.Throttle("FollowUpdate", 50))
                 return;
 
             if (ObjectHelper.GetDistanceToPlayer(_followTarget) >= _followDistance)

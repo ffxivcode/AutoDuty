@@ -1,5 +1,6 @@
 global using static AutoDuty.Data.Enums;
-global using AutoDuty.Data;
+global using static AutoDuty.Data.Extensions;
+global using static AutoDuty.Data.Classes;
 global using ECommons.GameHelpers;
 using System;
 using System.Numerics;
@@ -148,7 +149,6 @@ public sealed class AutoDuty : IDalamudPlugin
     private List<object> _actionPosition = [];
     private readonly TinyMessageBus _messageBusSend = new("AutoDutyBroadcaster");
     private readonly TinyMessageBus _messageBusReceive = new("AutoDutyBroadcaster");
-    private bool _messageSender = false;
     private bool _recentlyWatchedCutscene = false;
     private bool _lootTreasure;
     private SettingsActive _settingsActive = SettingsActive.None;
@@ -256,28 +256,19 @@ public sealed class AutoDuty : IDalamudPlugin
     private void DutyState_DutyRecommenced(object? sender, ushort e) => DutyState = DutyState.DutyRecommenced;
     private void DutyState_DutyCompleted(object? sender, ushort e) => DutyState = DutyState.DutyComplete;
 
-    private void MessageReceived(string message)
+    private void MessageReceived(string messageJson)
     {
-        if (Svc.ClientState.LocalPlayer is null || message.IsNullOrEmpty() || _messageSender)
+        if (!Player.Available || messageJson.IsNullOrEmpty())
             return;
 
-        var messageArray = message.Split('|');
+        var message = System.Text.Json.JsonSerializer.Deserialize<Message>(messageJson);
 
-        switch (messageArray[0])
-        {
-            case "Follow":
-                if (messageArray[1] == "OFF")
-                    FollowHelper.SetFollow(null);
-                var gameObject = ObjectHelper.GetObjectByName(messageArray[1]);
-                if (gameObject == null || (FollowHelper.IsFollowing && gameObject.Name.TextValue == messageArray[1]))
-                    return;
-                FollowHelper.SetFollow(gameObject);
-                break;
-            case "Action":
-                break;
-            default:
-                break;
-        }
+        if (message == null) return;
+
+        if (message.Sender == Player.Name || message.Action.Count == 0 || !Svc.Party.Any(x => x.Name.ExtractText() == message.Sender))
+            return;
+
+        message.Action.Each(x => x.Invoke());
     }
 
     internal void ExitDuty() => _actions.ExitDuty("");
@@ -888,13 +879,25 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    internal void SetBMSettings()
+    internal void SetBMSettings(bool defaults = false)
     {
         BMRoleChecks();
         var bmr = IPCSubscriber_Common.IsReady("BossModReborn");
-        var rsr = ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled;
-        
-        Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions {/*(rsr ? "true" : */"false"/*)*/}");//forbidActions currently disables followTarget in vbm.
+
+        if (defaults)
+        {
+            Configuration.FollowDuringCombat = true;
+            Configuration.FollowDuringActiveBossModule = true;
+            Configuration.FollowOutOfCombat = false;
+            Configuration.FollowTarget = true;
+            Configuration.FollowSelf = true;
+            Configuration.FollowSlot = false;
+            Configuration.FollowRole = false;
+            Configuration.MaxDistanceToTargetRoleBased = true;
+            Configuration.PositionalRoleBased = true;
+        }
+
+        Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
         Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
         Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
         Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
@@ -992,8 +995,19 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 if (Configuration.Regular && Svc.Party.PartyId > 0)
                 {
-                    _messageSender = true;
-                    _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes($"Follow|OFF"));
+                    Message message = new()
+                    {
+                        Sender = Player.Name,
+                        Action = 
+                        [
+                            () => FollowHelper.SetFollow(null),
+                            () => SetBMSettings(true)
+                        ]
+                    };
+
+                    var messageJson = System.Text.Json.JsonSerializer.Serialize(message);
+
+                    _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
                 }
                 _actionParams = _actionPosition;
             }
@@ -1160,6 +1174,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     {
                         if (!Configuration.Unsynced)
                         {
+                            Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because we are not unsynced");
                             Indexer++;
                             return;
                         }
@@ -1246,8 +1261,15 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 if (Configuration.Regular && Svc.Party.PartyId > 0)
                 {
-                    _messageSender = true;
-                    _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes($"Follow|{Player.Name}"));
+                    Message message = new()
+                    {
+                        Sender = Player.Name,
+                        Action = [() => FollowHelper.SetFollow(ObjectHelper.GetObjectByName(Player.Name))]
+                    };
+
+                    var messageJson = System.Text.Json.JsonSerializer.Serialize(message);
+
+                    _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
                 }
                 
                 Action = $"{Plugin.ListBoxPOSText[Indexer]}";
@@ -1415,6 +1437,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private void StopAndResetALL()
     {
         States = PluginState.None;
+        TaskManager.SetStepMode(false);
         MainListClicked = false;
         CurrentLoop = 0;
         Chat.ExecuteCommand($"/vbmai off");
