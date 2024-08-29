@@ -2,11 +2,9 @@
 using AutoDuty.IPC;
 using AutoDuty.Managers;
 using Dalamud.Interface.Components;
-using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
 using ECommons;
-using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
@@ -262,6 +260,7 @@ namespace AutoDuty.Windows
                                 }
                                 if (ImGui.Selectable("Auto"))
                                 {
+                                    Svc.Log.Info("aitp");
                                     Plugin.Configuration.LevelingModeEnum = Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust;
                                     Plugin.Configuration.Save();
                                     if (Plugin.Configuration.AutoEquipRecommendedGear)

@@ -2,8 +2,6 @@
 using System;
 using Dalamud.Plugin.Services;
 using ECommons.DalamudServices;
-using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using static AutoDuty.Helpers.SchedulerHelper;
 using ECommons;
 
 namespace AutoDuty.Helpers
@@ -35,32 +33,40 @@ namespace AutoDuty.Helpers
         {
             if (!Schedules.TryAdd(name, new Schedule() { Action = action, Condition = condition, TimeMS = timeMS > 0 ?Environment.TickCount + timeMS : 0, RunOnce = runOnce }))
             {
-                Svc.Log.Debug($"SchedulerHelper - {name} already exists in SchedulerQueue, updating");
-                Schedules.Remove(name);
-                Schedules.TryAdd(name, new Schedule() { Action = action, Condition = condition, TimeMS = Environment.TickCount + timeMS, RunOnce = runOnce });
+                Svc.Log.Debug($"SchedulerHelper - {name} already exists in Scheduler, updating");
+                Schedules[name] = new Schedule() { Action = action, Condition = condition, TimeMS = timeMS > 0 ? Environment.TickCount + timeMS : 0, RunOnce = runOnce };
             }
             else
-                Svc.Log.Debug($"SchedulerHelper - {name} Added to queue");
+                Svc.Log.Debug($"SchedulerHelper - {name} Added to Scheduler");
         }
 
         internal static bool DescheduleAction(string name) => Schedules.Remove(name);
 
-        private static List<string> _schedulesToRemove = [];
+        private static readonly Queue<string> _schedulesToRemove = [];
 
         internal static void ScheduleInvoker(IFramework _)
         {
-            _schedulesToRemove = [];
             foreach (var schedule in Schedules)
             {
                 if (schedule.Value.TimeMS != 0 ? Environment.TickCount >= schedule.Value.TimeMS : schedule.Value.Condition?.Invoke() ?? false)
                 {
                     Svc.Log.Debug($"SchedulerHelper - Executing action {schedule.Key}");
                     schedule.Value.Action.ForEach(a => a.Invoke());
-                    if (schedule.Value.RunOnce)
-                        _schedulesToRemove.Add(schedule.Key);
+                    if (schedule.Value.RunOnce || schedule.Value.Condition != null)
+                        _schedulesToRemove.Enqueue(schedule.Key);
+                    else
+                        schedule.Value.TimeMS += Environment.TickCount;
                 }
             }
-            _schedulesToRemove.ForEach(x => Schedules.Remove(x));
+
+            while (_schedulesToRemove.Count !=0)
+            {
+                var schedule = _schedulesToRemove.Dequeue();
+                if (schedule.IsNullOrEmpty())
+                    return;
+                Svc.Log.Debug($"SchedulerHelper - {schedule} Removed from Scheduler");
+                Schedules.Remove(schedule);
+            }
         }
     }
 }
