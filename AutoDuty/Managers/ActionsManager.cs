@@ -2,10 +2,12 @@
 using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.Automation;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
+using ECommons.GameFunctions;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -122,13 +124,13 @@ namespace AutoDuty.Managers
                 return;
             AutoDuty.Plugin.Action = $"AutoMove For {wait}";
             var movementMode = Svc.GameConfig.UiControl.TryGetUInt("MoveMode", out var mode) ? mode : 0;
-            _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 0); });
-            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "AutoMove");
-            _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "AutoMove");
-            _taskManager.Enqueue(() => EzThrottler.Check("AutoMove") || !ObjectHelper.IsReady, Convert.ToInt32(wait), "AutoMove");
-            _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 1); });
-            _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "AutoMove");
-            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "AutoMove");
+            _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 0); }, "AutoMove-MoveMode");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "AutoMove-On");
+            _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "AutoMove-Throttle");
+            _taskManager.Enqueue(() => EzThrottler.Check("AutoMove") || !ObjectHelper.IsReady, Convert.ToInt32(wait), "AutoMove-CheckThrottleOrNotReady");
+            _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 1); }, "AutoMove-MoveMode2");
+            _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "AutoMove-WaitIsReady");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "AutoMove-Off");
         }
 
         public unsafe void Wait(string wait)
@@ -147,7 +149,7 @@ namespace AutoDuty.Managers
         {
             AutoDuty.Plugin.Action = $"WaitFor: {waitForWhat}";
             var waitForWhats = waitForWhat.Split('|');
-                
+
             switch (waitForWhats[0])
             {
                 case "Combat":
@@ -235,6 +237,9 @@ namespace AutoDuty.Managers
 
         private unsafe bool InteractableCheck(IGameObject? gameObject)
         {
+            if (Conditions.IsMounted || Conditions.IsMounted2)
+                return true;
+
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno) && !AddonHelper.ClickSelectYesno(true))
                 return false;
             else if (AddonHelper.ClickSelectYesno(true))
@@ -247,7 +252,7 @@ namespace AutoDuty.Managers
 
             if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid() || !ObjectHelper.IsValid)
                 return true;
-            
+
             if (EzThrottler.Throttle("Interactable", 250))
             {
                 if (ObjectHelper.GetBattleDistanceToPlayer(gameObject) > 2f)
@@ -267,7 +272,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable-InteractableCheck");
             _taskManager.Enqueue(() => ObjectHelper.PlayerIsCasting, 500, "Interactable-WaitPlayerIsCasting");
             _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Interactable-WaitNotPlayerIsCasting");
-            _taskManager.DelayNext("Interactable-DelayNext100",100);
+            _taskManager.DelayNext("Interactable-DelayNext100", 100);
             _taskManager.Enqueue(() =>
             {
                 var boolAddonSelectYesno = GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno);
@@ -275,6 +280,8 @@ namespace AutoDuty.Managers
                 var boolAddonTalk = GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk) && GenericHelpers.IsAddonReady(addonTalk);
 
                 if (!boolAddonSelectYesno && !boolAddonTalk && (!(gameObject?.IsTargetable ?? false) ||
+                Conditions.IsMounted ||
+                Conditions.IsMounted2 ||
                 Svc.Condition[ConditionFlag.BetweenAreas] ||
                 Svc.Condition[ConditionFlag.BetweenAreas51] ||
                 Svc.Condition[ConditionFlag.BeingMoved] ||
@@ -306,14 +313,14 @@ namespace AutoDuty.Managers
             string id = match.Success ? match.Captures.First().Value : string.Empty;
 
             _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null) ?? ObjectHelper.GetObjectByName(objectName)) != null || Player.Character->InCombat, "Interactable-GetGameObjectUnlessInCombat");
-            _taskManager.Enqueue(() => 
-            { 
-                if (Player.Character->InCombat) 
-                {  
+            _taskManager.Enqueue(() =>
+            {
+                if (Player.Character->InCombat)
+                {
                     _taskManager.Abort();
                     _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Interactable-InCombatWait");
                     Interactable(objectName);
-                } 
+                }
             }, "Interactable-InCombatCheck");
             _taskManager.Enqueue(() => gameObject?.IsTargetable ?? true, "Interactable-WaitGameObjectTargetable");
             _taskManager.Enqueue(() => Interactable(gameObject), "Interactable-InteractableLoop");
@@ -374,7 +381,7 @@ namespace AutoDuty.Managers
             return;
             //disable for now until we have a need other than interact objects
             //if (PandorasBox_IPCSubscriber.IsEnabled)
-                //_taskManager.Enqueue(() => PandorasBox_IPCSubscriber.PauseFeature(featureName, int.Parse(intMs)));
+            //_taskManager.Enqueue(() => PandorasBox_IPCSubscriber.PauseFeature(featureName, int.Parse(intMs)));
         }
 
         public void Revival(string _)
@@ -404,11 +411,50 @@ namespace AutoDuty.Managers
 
         private string? GlobalStringStore;
 
+        private unsafe void PraeUpdate(IFramework _)
+        {
+            if (!EzThrottler.Throttle("PraeUpdate", 50))
+                return;
+
+            var objects = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc);
+
+            if (objects != null)
+            {
+                var protoArmOrDoor = objects.FirstOrDefault(x => x.IsTargetable && x.DataId is 14566 or 14616 && ObjectHelper.GetDistanceToPlayer(x) <= 25);
+                if (protoArmOrDoor != null)
+                    Svc.Targets.Target = protoArmOrDoor;
+            }
+
+            if (Svc.Targets.Target != null && Svc.Targets.Target.IsHostile())
+            {
+                var dir = Vector2.Normalize(new Vector2(Svc.Targets.Target.Position.X, Svc.Targets.Target.Position.Z) - new Vector2(Player.Position.X, Player.Position.Z));
+                float rot = (float)Math.Atan2(dir.X, dir.Y);
+
+                Player.Object.Struct()->SetRotation(rot);
+
+                var targetPosition = Svc.Targets.Target.Position;
+                ActionManager.Instance()->UseActionLocation(ActionType.Action, 1128, Player.Object.GameObjectId, &targetPosition);
+            }
+        }
+
         public unsafe void DutySpecificCode(string stage)
         {
             IGameObject? gameObject = null;
             switch (Svc.ClientState.TerritoryType)
             {
+                //Prae
+                case 1044:
+                    switch (stage)
+                    {
+                        case "1":
+                            Svc.Framework.Update += PraeUpdate;
+                            Interactable("2012819");
+                            break;
+                        case "2":
+                            Svc.Framework.Update -= PraeUpdate;
+                            break;
+                    }
+                    break;
                 //Sastasha
                 //Blue -  2000213
                 //Red -  2000214

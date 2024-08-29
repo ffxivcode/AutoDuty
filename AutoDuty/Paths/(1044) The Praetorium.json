@@ -1,30 +1,31 @@
 {
   "actions": [
-    "MoveTo|196.44, 186.00, -5.37|",
-    "Interactable|0, 0, 0|2012811 (Magitek Terminal)",
-    "MoveTo|172.81, 156.00, -25.49|",
-    "Interactable|0, 0, 0|2012813 (Magitek Transporter)",
+    "Interactable|196.44, 186.00, -5.37|2012811 (Magitek Terminal)",
+    "MoveTo|226.77, 156.00, 1.32|",
+    "Interactable|172.81, 156.00, -25.49|2012813 (Magitek Transporter)",
     "Boss|191.97, 76.00, 0.02|",
-    "MoveTo|174.78, 76.00, 3.76|",
-    "Interactable|0, 0, 0|2012815 (Magitek Terminal)",
+    "Interactable|174.78, 76.00, 3.76|2012815 (Magitek Terminal)",
     "DutySpecificCode|174.68, 102.00, -66.46|1",
-    "MoveTo|229.97, 64.39, 66.59|",
-    "Wait|83.61, -107.99, -31.14|5000",
-    "Target|83.61, -107.99, -31.14|Proto Ultima Arm Unit",
-    "Wait|51.00, -107.99, -72.18|2000",
-    "Target|51.00, -107.99, -72.18|Proto Ultima Arm Unit",
-    "Wait|-24.32, -104.00, 0.08|2000",
-    "MoveTo|-68.62, -103.81, -0.14|",
-    "ForceAttack|0, 0, 0|",
-    "Target|-65.00, -103.97, 0.24|Cermet Blast Door",
-    "Wait|0, 0, 0|5000",
-    "DutySpecificCode|-83.86, -103.94, -0.08|2",
+    "MoveTo|241.73, 66.38, 86.07|",
+    "AutoMoveFor|237.91, 68.03, 79.14|10000",
+    "WaitFor|83.61, -107.99, -31.14|Combat",
+    "MoveTo|84.45, -107.89, -72.12",
+    "WaitFor|51.00, -107.99, -72.18|Combat",
+    "WaitFor|-24.32, -104.00, 0.08|Combat",
+    "WaitFor|-24.32, -104.00, 0.08|Combat",
+    "StopForCombat|-24.32, -104.00, 0.08|false",
+    "WaitFor|-60.12, -103.94, 0.06|Combat",
+    "StopForCombat|0, 0, 0|true",
+    "WaitFor|0, 0, 0|IsReady",
+    "MoveTo|-83.86, -103.94, -0.08|false",
+    "DutySpecificCode|0, 0, 0|2",
     "Boss|-164.13, -104.40, -0.09|",
-    "MoveTo|-238.41, -104.00, -19.20|",
-    "Interactable|0, 0, 0|2012817 (Magitek Terminal)",
-    "Wait|0, 0, 0|10000",
-    "MoveTo|-551.28, -268.00, 219.99|",
-    "Boss|-566.27, -268.00, 219.83|"
+    "MoveTo|-202.18, -103.91, -0.61|",
+    "MoveTo|-210.61, -103.99, -0.63|false",
+    "Interactable|-238.41, -104.00, -19.20|2012817 (Magitek Terminal)",
+    "WaitFor|0, 0, 0|IsReady",
+    "Boss|-566.27, -268.00, 219.83|",
+    "WaitFor|0, 0, 0|IsReady"
   ],
   "meta": {
     "createdAt": 106,
@@ -32,6 +33,10 @@
       {
         "version": 114,
         "change": "Added ForceAttack for Cermet Door as fallback (No DutySpecCode) and Added a Wait and MoveTo before final boss to prevent leaving early."
+      },
+      {
+        "version": 135,
+        "change": "Added Duty Specific Code for Magitek stage"
       }
     ],
     "notes": []
