@@ -62,7 +62,7 @@ namespace AutoDuty.Windows
                     if (curPaths.Count > 1)
                     {
                         int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
-                        ImGui.PushItemWidth(240 * ImGuiHelpers.GlobalScale);
+                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize("Clear Saved Path").X);
                         if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths.Select(dp => dp.Name)], curPaths.Count))
                         {
                             if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent!.TerritoryType))

@@ -2,6 +2,9 @@
 using System;
 using Dalamud.Plugin.Services;
 using ECommons.DalamudServices;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using static AutoDuty.Helpers.SchedulerHelper;
+using ECommons;
 
 namespace AutoDuty.Helpers
 {
@@ -42,8 +45,11 @@ namespace AutoDuty.Helpers
 
         internal static bool DescheduleAction(string name) => Schedules.Remove(name);
 
+        private static List<string> _schedulesToRemove = [];
+
         internal static void ScheduleInvoker(IFramework _)
         {
+            _schedulesToRemove = [];
             foreach (var schedule in Schedules)
             {
                 if (schedule.Value.TimeMS != 0 ? Environment.TickCount >= schedule.Value.TimeMS : schedule.Value.Condition?.Invoke() ?? false)
@@ -51,9 +57,10 @@ namespace AutoDuty.Helpers
                     Svc.Log.Debug($"SchedulerHelper - Executing action {schedule.Key}");
                     schedule.Value.Action.ForEach(a => a.Invoke());
                     if (schedule.Value.RunOnce)
-                        Schedules.Remove(schedule.Key);
+                        _schedulesToRemove.Add(schedule.Key);
                 }
             }
+            _schedulesToRemove.ForEach(x => Schedules.Remove(x));
         }
     }
 }
