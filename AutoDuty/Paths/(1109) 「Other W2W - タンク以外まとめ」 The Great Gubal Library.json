@@ -1,0 +1,47 @@
+{
+  "actions": [
+    "MoveTo|-319.01, 0.00, 0.07|",
+
+    "Boss|-5.27, 0.00, -0.51|",
+
+    "StopForCombat|45.26, 0.00, 0.04|False",
+    "TreasureCoffer|101.92, -8.00, -25.58|",
+    "MoveTo|86.97, -8.00, 35.07|",
+    "StopForCombat|98.02, -8.00, 17.16|True",
+
+    "StopForCombat|99.18, -8.00, 35.78|False",
+    "MoveTo|70.01, -8.14, 72.26|",
+    "StopForCombat|77.36, -8.00, 61.80|True",
+
+    "TreasureCoffer|50.34, -9.00, 75.69|",
+    "StopForCombat|77.79, -8.00, 72.05|False",
+    "StopForCombat|114.76, -9.00, 74.41|True",
+
+    "StopForCombat|121.71, -8.00, 73.41|False",
+    "StopForCombat|154.48, -9.00, 98.94|True",
+
+    "Boss|177.63, -7.91, 23.66|",
+
+    "StopForCombat|225.96, -24.00, -74.49|False",
+    "MoveTo|297.80, -24.00, -60.86|",
+    "StopForCombat|274.43, -24.00, -88.73|True",
+
+    "StopForCombat|297.80, -24.00, -60.86|False",
+    "MoveTo|272.01, -24.00, -27.72|",
+    "StopForCombat|283.13, -24.00, -29.69|True",
+
+    "TreasureCoffer|248.89, -24.00, -21.28|",
+
+    "StopForCombat|229.02, -24.00, -41.61|False",
+    "StopForCombat|264.43, -40.00, -61.72|True",
+
+    "TreasureCoffer|224.94, -40.00, -51.07|",
+
+    "Boss|374.56, -39.00, -59.86|"
+  ],
+  "meta": {
+    "createdAt": 136,
+    "changelog": [],
+    "notes": []
+  }
+}
