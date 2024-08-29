@@ -37,6 +37,8 @@ using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using static AutoDuty.Windows.ConfigTab;
 using AutoDuty.Properties;
+using System.Security.Cryptography;
+using System.Reflection.Metadata.Ecma335;
 
 namespace AutoDuty;
 
@@ -1337,7 +1339,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 if(EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
                     Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
 
-
                 if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
                 {
                     BossObject = ObjectHelper.GetBossObject(25);
@@ -1360,22 +1361,38 @@ public sealed class AutoDuty : IDalamudPlugin
                         if (gos != null)
                             Svc.Targets.Target = gos;
                     }
-                    if (Configuration.AutoManageBossModAISettings)
+                    if (Configuration.AutoManageBossModAISettings && EzThrottler.Throttle("MaxDistanceToTargetCheck"))
                     {
+                        var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0], out float floatMDT);
+
+                        if (!gotMDT)
+                            return;
+
                         if (Svc.Targets.Target != null)
                         {
-                            VNavmesh_IPCSubscriber.Path_Stop();
+                            if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_IsRunning())
+                                VNavmesh_IPCSubscriber.Path_Stop();
 
-                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && !BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTargetAoEFloat))
+                            if (ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15) > 2 && floatMDT != Configuration.MaxDistanceToTargetAoEFloat)
+                            {
+                                Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetAoEFloat}, because BM MaxDistanceToTarget={floatMDT}");
                                 BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoEFloat}"]);
-                            else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTargetFloat))
+                            }
+                            else if (floatMDT != Configuration.MaxDistanceToTargetFloat)
+                            {
+                                Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM MaxDistanceToTarget={floatMDT}");
                                 BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"]);
-
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"]);
+                            }
                         }
-                        else if (!BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0].Equals(Configuration.MaxDistanceToTargetFloat))
+                        else if (floatMDT != Configuration.MaxDistanceToTargetFloat)
+                        {
+                            Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM  MaxDistanceToTarget={floatMDT}");
                             BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"]);
+                            BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"]);
+                        }
                     }
-                    else
+                    else if(!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_IsRunning())
                         VNavmesh_IPCSubscriber.Path_Stop();
                 }
                 else if (!Player.Object.InCombat() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
