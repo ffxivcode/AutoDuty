@@ -447,10 +447,12 @@ namespace AutoDuty.Managers
                     switch (stage)
                     {
                         case "1":
+                            AutoDuty.Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
                             Svc.Framework.Update += PraeUpdate;
                             Interactable("2012819");
                             break;
                         case "2":
+                            AutoDuty.Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
                             Svc.Framework.Update -= PraeUpdate;
                             break;
                     }
