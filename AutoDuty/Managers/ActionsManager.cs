@@ -153,7 +153,7 @@ namespace AutoDuty.Managers
             switch (waitForWhats[0])
             {
                 case "Combat":
-                    _taskManager.Enqueue(() => Player.Character->InCombat, int.MaxValue, "WaitFor-Combat");
+                    _taskManager.Enqueue(() => Player.Character->InCombat, "WaitFor-Combat");
                     break;
                 case "IsValid":
                     _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500, "WaitFor-NotIsValid");
