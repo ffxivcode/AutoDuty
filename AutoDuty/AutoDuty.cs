@@ -1156,6 +1156,17 @@ public sealed class AutoDuty : IDalamudPlugin
                     _action = (string)_actionParams[0];
                     _actionTollerance = _action == "Interactable" ? 2f : 0.25f;
 
+                    if (_action.StartsWith("Unsynced", StringComparison.InvariantCultureIgnoreCase)) 
+                    {
+                        if (!Configuration.Unsynced)
+                        {
+                            Indexer++;
+                            return;
+                        }
+                        else
+                            _action = _action.Remove(0, 8);
+                    }
+
                     if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && _action.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
                     {
                         Indexer++;
