@@ -271,7 +271,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoRepairSelf = false;
     public RepairNpcData? PreferredRepairNPC = null;
     public bool AutoConsume = false;
-    public List<KeyValuePair<ushort, ConsumableItem>> AutoConsumeItems = [];
+    public List<KeyValuePair<ushort, ConsumableItem>> AutoConsumeItemsList = [];
 
     //Between Loop Config Options
     public bool EnableBetweenLoopActions = true;
@@ -959,10 +959,11 @@ public static class ConfigTab
                                 removeAt = item.Index;
                             }
                         }
-
-                        Configuration.FCEstateEntrancePath.RemoveAt(removeAt);
-                        Configuration.Save();
-
+                        if (removeItem)
+                        { 
+                            Configuration.FCEstateEntrancePath.RemoveAt(removeAt);
+                            Configuration.Save();
+                        }
                         ImGui.EndListBox();
                     }
                 }
@@ -1087,17 +1088,17 @@ public static class ConfigTab
                     {
                         if (ImGui.Button("Add Item"))
                         {
-                            if (Configuration.AutoConsumeItems.Any(x => x.Key == consumableItemsSelectedItem!.StatusId))
-                                Configuration.AutoConsumeItems.RemoveAll(x => x.Key == consumableItemsSelectedItem!.StatusId);
+                            if (Configuration.AutoConsumeItemsList.Any(x => x.Key == consumableItemsSelectedItem!.StatusId))
+                                Configuration.AutoConsumeItemsList.RemoveAll(x => x.Key == consumableItemsSelectedItem!.StatusId);
                              
-                            Configuration.AutoConsumeItems.Add(new (consumableItemsSelectedItem!.StatusId, consumableItemsSelectedItem));
+                            Configuration.AutoConsumeItemsList.Add(new (consumableItemsSelectedItem!.StatusId, consumableItemsSelectedItem));
                             Configuration.Save();
                         }
                     }
-                    if (!ImGui.BeginListBox("##ConsumableItemList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.AutoConsumeItems.Count) + 5))) return;
+                    if (!ImGui.BeginListBox("##ConsumableItemList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.AutoConsumeItemsList.Count) + 5))) return;
                     var boolRemoveItem = false;
                     KeyValuePair<ushort, ConsumableItem> removeItem = new();
-                    foreach (var item in Configuration.AutoConsumeItems)
+                    foreach (var item in Configuration.AutoConsumeItemsList)
                     {
                         ImGui.Selectable($"{item.Value.Name}");
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
@@ -1109,7 +1110,7 @@ public static class ConfigTab
                     ImGui.EndListBox();
                     if (boolRemoveItem)
                     {
-                        Configuration.AutoConsumeItems.Remove(removeItem);
+                        Configuration.AutoConsumeItemsList.Remove(removeItem);
                         Configuration.Save();
                     }
                 }

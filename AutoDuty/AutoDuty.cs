@@ -429,7 +429,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
 
         if (Configuration.AutoConsume)
-            Configuration.AutoConsumeItems.Each(x =>
+            Configuration.AutoConsumeItemsList.Each(x =>
             {
                 TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Loop-AutoConsume({x.Value.Name})");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady);
@@ -676,7 +676,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     
                 
                 if (Configuration.AutoConsume)
-                    Configuration.AutoConsumeItems.Each(x =>
+                    Configuration.AutoConsumeItemsList.Each(x =>
                     {
                         TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Run-AutoConsume({x.Value.Name})");
                         TaskManager.Enqueue(() => ObjectHelper.IsReady);
