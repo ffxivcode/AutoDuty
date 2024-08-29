@@ -58,16 +58,9 @@ public sealed class AutoDuty : IDalamudPlugin
     internal                        uint                    CurrentTerritoryType    = 0;
     internal                        int                     CurrentPath             = -1;
 
-    internal bool SupportLeveling = false;
-    internal bool SupportLevelingEnabled => Configuration.Support && SupportLeveling;
-
-    internal bool TrustLeveling = false;
-    internal bool TrustLevelingEnabled => Configuration.Trust && TrustLeveling;
-
-    internal bool LevelingEnabled => (Configuration.Support || Configuration.Trust) &&
-                                     (!Configuration.Support || SupportLevelingEnabled) &&
-                                     (!Configuration.Trust || TrustLevelingEnabled);
-
+    internal bool SupportLevelingEnabled => Configuration.LevelingModeEnum == LevelingMode.Support;
+    internal bool TrustLevelingEnabled => Configuration.LevelingModeEnum == LevelingMode.Trust;
+    internal bool LevelingEnabled => Configuration.LevelingModeEnum != LevelingMode.None;
 
     internal static string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
@@ -479,7 +472,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => DesynthHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoDesynthComplete");
         }
         
-        if (!Configuration.Squadron && Configuration.RetireMode)
+        if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)
         {
             if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
@@ -497,7 +490,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (LevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
-            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.Trust);
+            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.DutyModeEnum == DutyMode.Trust);
             if (duty != null)
             {
                 Svc.Log.Info("Next Leveling Duty: " + duty.Name);
@@ -512,23 +505,23 @@ public sealed class AutoDuty : IDalamudPlugin
             }
         }
 
-        if (Configuration.Trust)
+        if (Configuration.DutyModeEnum == DutyMode.Trust)
             TrustManager.RegisterTrust(CurrentTerritoryContent);
 
-        else if (Configuration.Support)
+        else if (Configuration.DutyModeEnum == DutyMode.Support)
             _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
 
-        else if (Configuration.Variant)
+        else if (Configuration.DutyModeEnum == DutyMode.Variant)
             _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
 
-        else if (Configuration.Squadron)
+        else if (Configuration.DutyModeEnum == DutyMode.Squadron)
         {
             TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitGotoComplete");
             _squadronManager.RegisterSquadron(CurrentTerritoryContent);
         }
-        else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
+        else if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid)
         {
             TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Loop-Queue");
             TaskManager.DelayNext("Loop-Delay50", 50);
@@ -690,7 +683,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitAutoRepairNotIsOccupied");
                 }
 
-                if (!Configuration.Squadron && Configuration.RetireMode)
+                if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)
                 {
                     if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
                         TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
@@ -702,19 +695,19 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => GotoHousingHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Run-WaitGotoComplete");
                 }
             }
-            if (Configuration.Trust)
+            if (Configuration.DutyModeEnum == DutyMode.Trust)
                 TrustManager.RegisterTrust(CurrentTerritoryContent);
-            else if (Configuration.Support)
+            else if (Configuration.DutyModeEnum == DutyMode.Support)
                 _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
-            else if (Configuration.Variant)
+            else if (Configuration.DutyModeEnum == DutyMode.Variant)
                 _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
-            else if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
+            else if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid)
             {
                 TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Run-Queue");
                 TaskManager.DelayNext("Run-QueueDelay50", 50);
                 TaskManager.Enqueue(() => QueueHelper.State != ActionState.Running, int.MaxValue, "Run-WaitQueueComplete");
             }
-            else if (Configuration.Squadron)
+            else if (Configuration.DutyModeEnum == DutyMode.Squadron)
             {
                 TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
                 TaskManager.DelayNext("Run-GotoBarracksDelay50", 50);
@@ -945,7 +938,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private unsafe void OnDeath()
     {
-        if ((Configuration.Regular || Configuration.Trial || Configuration.Raid) && !Configuration.Unsynced)
+        if ((Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid) && !Configuration.Unsynced)
             return;
 
         StopForCombat = true;
@@ -954,7 +947,7 @@ public sealed class AutoDuty : IDalamudPlugin
             VNavmesh_IPCSubscriber.Path_Stop();
         if (TaskManager.IsBusy)
             TaskManager.Abort();
-        if (Configuration.Regular || Configuration.Trial || Configuration.Raid)
+        if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid)
         {
             TaskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno));
             TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
@@ -963,7 +956,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private unsafe void OnRevive()
     {
-        if ((Configuration.Regular || Configuration.Trial || Configuration.Raid) && !Configuration.Unsynced)
+        if ((Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid) && !Configuration.Unsynced)
             return;
 
         TaskManager.DelayNext(5000);
@@ -993,7 +986,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (_action.Equals("Boss"))
             {
-                if (Configuration.Regular && Svc.Party.PartyId > 0)
+                if (Configuration.DutyModeEnum == DutyMode.Regular && Svc.Party.PartyId > 0)
                 {
                     Message message = new()
                     {
@@ -1087,9 +1080,8 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (LevelingEnabled)
             {
-                Svc.Log.Info($"{(Configuration.Support || Configuration.Trust) && (Configuration.Support || SupportLevelingEnabled) && (!Configuration.Trust || TrustLevelingEnabled)} ({Configuration.Support} || {Configuration.Trust}) && ({Configuration.Support} || {SupportLevelingEnabled}) && ({!Configuration.Trust} || {TrustLevelingEnabled})");
-                Svc.Log.Info($"Leveling2 {LevelingEnabled} {SupportLeveling} {SupportLevelingEnabled} {TrustLeveling} {TrustLevelingEnabled}");
-                ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.Trust);
+                Svc.Log.Info($"{(Configuration.DutyModeEnum == DutyMode.Support || Configuration.DutyModeEnum == DutyMode.Trust) && (Configuration.DutyModeEnum == DutyMode.Support || SupportLevelingEnabled) && (Configuration.DutyModeEnum != DutyMode.Trust || TrustLevelingEnabled)} ({Configuration.DutyModeEnum == DutyMode.Support} || {Configuration.DutyModeEnum == DutyMode.Trust}) && ({Configuration.DutyModeEnum == DutyMode.Support} || {SupportLevelingEnabled}) && ({Configuration.DutyModeEnum != DutyMode.Trust} || {TrustLevelingEnabled})");
+                ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.DutyModeEnum == DutyMode.Trust);
                 if (duty != null)
                 {
                     Plugin.CurrentTerritoryContent = duty;
@@ -1099,10 +1091,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 else
                 {
                     Plugin.CurrentTerritoryContent = null;
-                    if (Configuration.Support)
-                        SupportLeveling = false;
-                    else if (Configuration.Trust)
-                        TrustLeveling = false;
                     CurrentPath = -1;
                 }
             }
@@ -1259,7 +1247,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
                     return;
 
-                if (Configuration.Regular && Svc.Party.PartyId > 0)
+                if (Configuration.DutyModeEnum == DutyMode.Regular && Svc.Party.PartyId > 0)
                 {
                     Message message = new()
                     {

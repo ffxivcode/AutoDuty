@@ -100,6 +100,25 @@ namespace AutoDuty.Data
             Running = 1
         }
 
+        public enum DutyMode : int
+        {
+            None = 0,
+            Support = 1,
+            Trust = 2,
+            Squadron = 3,
+            Regular = 4,
+            Trial = 5,
+            Raid = 6,
+            Variant = 7
+        }
+
+        public enum LevelingMode : int
+        {
+            None = 0,
+            Support = 1,
+            Trust = 2
+        }
+
         [Flags]
         public enum PluginState : int
         {

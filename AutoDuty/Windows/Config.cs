@@ -34,135 +34,41 @@ public class Configuration : IPluginConfiguration
 
     //General Options
     public int LoopTimes = 1;
-    internal bool support = false;
-    public bool Support
+    internal DutyMode dutyModeEnum = DutyMode.None;
+    public DutyMode DutyModeEnum
     {
-        get => support;
+        get => dutyModeEnum;
         set
         {
-            support = value;
-            if (value)
-            {
-                Variant = false;
-                Raid = false;
-                Trial = false;
-                Regular = false;
-                Trust = false;
-                Squadron = false;
-                AutoDuty.Plugin.CurrentTerritoryContent = null;
-            }
+            dutyModeEnum = value;
+            AutoDuty.Plugin.CurrentTerritoryContent = null;
+            MainTab.DutySelected = null;
+            LevelingModeEnum = LevelingMode.None;
         }
     }
-    internal bool trust = false;
-    public bool Trust
+    private LevelingMode levelingModeEnum = LevelingMode.None;
+    public LevelingMode LevelingModeEnum
     {
-        get => trust;
+        get => levelingModeEnum;
         set
         {
-            trust = value;
-            if (value)
+            levelingModeEnum = value;
+
+            if (value != LevelingMode.None)
             {
-                Variant = false;
-                Raid = false;
-                Trial = false;
-                Regular = false;
-                Support = false;
-                Squadron = false;
-                AutoDuty.Plugin.CurrentTerritoryContent = null;
+                ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(DutyModeEnum == DutyMode.Trust);
+
+                if (duty != null)
+                {
+                    MainTab.DutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
+                    AutoDuty.Plugin.CurrentTerritoryContent = duty;
+                    MainTab.DutySelected.SelectPath(out AutoDuty.Plugin.CurrentPath);
+                }
             }
-        }
-    }
-    internal bool squadron = false;
-    public bool Squadron
-    {
-        get => squadron;
-        set
-        {
-            squadron = value;
-            if (value)
+            else
             {
-                Variant = false;
-                Raid = false;
-                Trial = false;
-                Regular = false;
-                Support = false;
-                Trust = false;
-                AutoDuty.Plugin.CurrentTerritoryContent = null;
-            }
-        }
-    }
-    internal bool regular = false;
-    public bool Regular
-    {
-        get => regular;
-        set
-        {
-            regular = value;
-            if (value)
-            {
-                Variant = false;
-                Raid = false;
-                Trial = false;
-                Support = false;
-                Trust = false;
-                Squadron = false;
-                AutoDuty.Plugin.CurrentTerritoryContent = null;
-            }
-        }
-    }
-    internal bool trial = false;
-    public bool Trial
-    {
-        get => trial;
-        set
-        {
-            trial = value;
-            if (value)
-            {
-                Variant = false;
-                Raid = false;
-                Regular = false;
-                Support = false;
-                Trust = false;
-                Squadron = false;
-                AutoDuty.Plugin.CurrentTerritoryContent = null;
-            }
-        }
-    }
-    internal bool raid = false;
-    public bool Raid
-    {
-        get => raid;
-        set
-        {
-            raid = value;
-            if (value)
-            {
-                Variant = false;
-                Trial = false;
-                Regular = false;
-                Support = false;
-                Trust = false;
-                Squadron = false;
-                AutoDuty.Plugin.CurrentTerritoryContent = null;
-            }
-        }
-    }
-    internal bool variant = false;
-    public bool Variant
-    {
-        get => variant;
-        set
-        {
-            variant = value;
-            if (value)
-            {
-                Raid = false;
-                Trial = false;
-                Regular = false;
-                Support = false;
-                Trust = false;
-                Squadron = false;
+                MainTab.DutySelected = null;
+                AutoDuty.Plugin.MainListClicked = false;
                 AutoDuty.Plugin.CurrentTerritoryContent = null;
             }
         }

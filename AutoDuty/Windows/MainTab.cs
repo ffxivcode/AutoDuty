@@ -6,6 +6,7 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
 using ECommons;
+using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
@@ -21,10 +22,11 @@ namespace AutoDuty.Windows
 {
     internal static class MainTab
     {
-        private static int _currentStepIndex = -1;
-        private static ContentPathsManager.ContentPathContainer? _dutySelected;
-        private static readonly string _pathsURL = "https://github.com/ffxivcode/AutoDuty/tree/master/AutoDuty/Paths";
+        internal static ContentPathsManager.ContentPathContainer? DutySelected;
         internal static readonly (string Normal, string GameFont) Digits = ("0123456789", "");
+
+        private static int _currentStepIndex = -1;
+        private static readonly string _pathsURL = "https://github.com/ffxivcode/AutoDuty/tree/master/AutoDuty/Paths";
         private static List<string> LevelingDuties = [
             "L15 (i0): Sastasha",
             "L16-L23 (i0): The TamTara Deepcroft",
@@ -44,16 +46,10 @@ namespace AutoDuty.Windows
         {
             if (MainWindow.CurrentTabName != "Main")
                 MainWindow.CurrentTabName = "Main";
-            var _support = Plugin.Configuration.Support;
-            var _trust = Plugin.Configuration.Trust;
-            var _squadron = Plugin.Configuration.Squadron;
-            var _regular = Plugin.Configuration.Regular;
-            var _trial = Plugin.Configuration.Trial;
-            var _raid = Plugin.Configuration.Raid;
-            var _variant = Plugin.Configuration.Variant;
-            var leveling = false;
+            var dutyMode = Plugin.Configuration.DutyModeEnum;
+            var levelingMode = Plugin.Configuration.LevelingModeEnum;
 
-            void DrawPathSelection()
+            static void DrawPathSelection()
             {
                 if (Plugin.CurrentTerritoryContent == null || !ObjectHelper.IsReady)
                     return;
@@ -197,19 +193,19 @@ namespace AutoDuty.Windows
                 if (!Plugin.States.HasFlag(PluginState.Looping) && !Plugin.Overlay.IsOpen)
                     MainWindow.GotoAndActions();
 
-                using (ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.Trust && Plugin.Configuration.SelectedTrustMembers.Any(x => x is null))))
+                using (ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && Plugin.Configuration.SelectedTrustMembers.Any(x => x is null))))
                 {
                     if (!Plugin.States.HasFlag(PluginState.Looping))
                     {
                         if (ImGui.Button("Run"))
                         {
-                            if (!Plugin.Configuration.Support && !Plugin.Configuration.Trust && !Plugin.Configuration.Squadron && !Plugin.Configuration.Regular && !Plugin.Configuration.Trial && !Plugin.Configuration.Raid && !Plugin.Configuration.Variant)
+                            if (Plugin.Configuration.DutyModeEnum == DutyMode.None)
                                 MainWindow.ShowPopup("Error", "You must select a version\nof the dungeon to run");
-                            else if (Svc.Party.PartyId > 0 && (Plugin.Configuration.Support || Plugin.Configuration.Squadron || Plugin.Configuration.Trust))
+                            else if (Svc.Party.PartyId > 0 && (Plugin.Configuration.DutyModeEnum == DutyMode.Support || Plugin.Configuration.DutyModeEnum == DutyMode.Squadron || Plugin.Configuration.DutyModeEnum == DutyMode.Trust))
                                 MainWindow.ShowPopup("Error", "You must not be in a party to run Support, Squadron or Trust");
-                            else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !Plugin.Configuration.OverridePartyValidation && Svc.Party.PartyId == 0)
+                            else if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular && !Plugin.Configuration.Unsynced && !Plugin.Configuration.OverridePartyValidation && Svc.Party.PartyId == 0)
                                 MainWindow.ShowPopup("Error", "You must be in a group of 4 to run Regular Duties");
-                            else if (Plugin.Configuration.Regular && !Plugin.Configuration.Unsynced && !Plugin.Configuration.OverridePartyValidation && !ObjectHelper.PartyValidation())
+                            else if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular && !Plugin.Configuration.Unsynced && !Plugin.Configuration.OverridePartyValidation && !ObjectHelper.PartyValidation())
                                 MainWindow.ShowPopup("Error", "You must have the correct party makeup to run Regular Duties");
                             else if (ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
                                 Plugin.Run();
@@ -229,133 +225,63 @@ namespace AutoDuty.Windows
                         MainWindow.LoopsConfig();
                         ImGui.PopItemWidth();
                     }
-
-
-                    if (ImGui.Checkbox("Support", ref Plugin.Configuration.support))
+                    ImGui.TextColored(Plugin.Configuration.DutyModeEnum == DutyMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Duty Mode: ");
+                    ImGui.SameLine(0);
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                    if (ImGui.BeginCombo("##DutyModeEnum", EnumString(Plugin.Configuration.DutyModeEnum)))
                     {
-                        if (Plugin.Configuration.support)
+                        foreach (DutyMode mode in Enum.GetValues(typeof(DutyMode)))
                         {
-                            Plugin.Configuration.Support = Plugin.Configuration.support;
-                            _dutySelected = null;
-                            Plugin.Configuration.Save();
+                            if (ImGui.Selectable(EnumString(mode)))
+                            {
+                                Plugin.Configuration.DutyModeEnum = mode;
+                                Plugin.Configuration.Save();
+                            }
                         }
+                        ImGui.EndCombo();
                     }
-
-                    if (ImGuiEx.CheckboxWrapped("Trust", ref Plugin.Configuration.trust))
-                    {
-                        if (Plugin.Configuration.trust)
-                        {
-                            Plugin.Configuration.Trust = Plugin.Configuration.trust;
-                            _dutySelected = null;
-                            Plugin.Configuration.Save();
-                        }
-                    }
-
-                    if (ImGuiEx.CheckboxWrapped("Squadron", ref Plugin.Configuration.squadron))
-                    {
-                        if (Plugin.Configuration.squadron)
-                        {
-                            Plugin.Configuration.Squadron = Plugin.Configuration.squadron;
-                            _dutySelected = null;
-                            Plugin.Configuration.Save();
-                        }
-                    }
-
-                    if (ImGuiEx.CheckboxWrapped("Regular", ref Plugin.Configuration.regular))
-                    {
-                        if (Plugin.Configuration.regular)
-                        {
-                            Plugin.Configuration.Regular = Plugin.Configuration.regular;
-                            _dutySelected = null;
-                            Plugin.Configuration.Save();
-                        }
-                    }
-
-                    if (ImGuiEx.CheckboxWrapped("Trial", ref Plugin.Configuration.trial))
-                    {
-                        if (Plugin.Configuration.trial)
-                        {
-                            Plugin.Configuration.Trial = Plugin.Configuration.trial;
-                            _dutySelected = null;
-                            Plugin.Configuration.Save();
-                        }
-                    }
-
-                    if (ImGuiEx.CheckboxWrapped("Raid", ref Plugin.Configuration.raid))
-                    {
-                        if (Plugin.Configuration.raid)
-                        {
-                            Plugin.Configuration.Raid = Plugin.Configuration.raid;
-                            _dutySelected = null;
-                            Plugin.Configuration.Save();
-                        }
-                    }
-
-                    if (ImGuiEx.CheckboxWrapped("Variant", ref Plugin.Configuration.variant))
-                    {
-                        Plugin.Configuration.Variant = Plugin.Configuration.variant;
-                        if (Plugin.Configuration.variant)
-                        {
-                            _dutySelected = null;
-                            Plugin.Configuration.Save();
-                        }
-                    }
-
-
-                    if (Plugin.Configuration.Support || Plugin.Configuration.Trust || Plugin.Configuration.Squadron || Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid || Plugin.Configuration.Variant)
+                    ImGui.PopItemWidth();
+                    if (Plugin.Configuration.DutyModeEnum != DutyMode.None)
                     {
                         //ImGui.SameLine(0, 15);
                         ImGui.Separator();
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref Plugin.Configuration.HideUnavailableDuties))
                             Plugin.Configuration.Save();
 
-                        if (Plugin.Configuration.Support || Plugin.Configuration.Trust)
+                        if (Plugin.Configuration.DutyModeEnum == DutyMode.Support || Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
                         {
-                            leveling =  _support ? Plugin.SupportLeveling :
-                                        _trust   ? Plugin.TrustLeveling : false;
+                            ImGui.TextColored(Plugin.Configuration.LevelingModeEnum == LevelingMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Leveling Mode: ");
+                            ImGui.SameLine(0);
+                            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                            if (ImGui.BeginCombo("##LevelingModeEnum", Plugin.Configuration.LevelingModeEnum == LevelingMode.None ? "None" : "Auto"))
+                            {
+                                if (ImGui.Selectable("None"))
+                                {
+                                    Plugin.Configuration.LevelingModeEnum = LevelingMode.None;
+                                    Plugin.Configuration.Save();
+                                }
+                                if (ImGui.Selectable("Auto"))
+                                {
+                                    Plugin.Configuration.LevelingModeEnum = Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust;
+                                    Plugin.Configuration.Save();
+                                    if (Plugin.Configuration.AutoEquipRecommendedGear)
+                                        AutoEquipHelper.Invoke();
+                                }
+                                ImGui.EndCombo();
+                            }
+                            ImGui.PopItemWidth();
+                            
                             bool equip = Plugin.Configuration.AutoEquipRecommendedGear;
 
-                            if (ImGuiEx.CheckboxWrapped("Leveling", ref leveling))
-                            {
-                                if (leveling)
-                                {
-                                    if (equip)
-                                        AutoEquipHelper.Invoke();
-
-                                    ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Plugin.Configuration.Trust);
-                                    if (duty != null)
-                                    {
-                                        _dutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
-                                        Plugin.CurrentTerritoryContent = duty;
-
-                                        _dutySelected.SelectPath(out Plugin.CurrentPath);
-
-                                        if (Plugin.Configuration.Support)
-                                            Plugin.SupportLeveling = leveling;
-                                        else if (Plugin.Configuration.Trust)
-                                            Plugin.TrustLeveling = leveling;
-                                    }
-                                }
-                                else
-                                {
-                                    _dutySelected = null;
-                                    Plugin.MainListClicked = false;
-                                    Plugin.CurrentTerritoryContent = null;
-                                    if (Plugin.Configuration.Support)
-                                        Plugin.SupportLeveling = leveling;
-                                    else if (Plugin.Configuration.Trust)
-                                        Plugin.TrustLeveling = leveling;
-                                }
-                            }
-                            if (!Plugin.Configuration.Trust) ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL16-L23 (i0): TamTara \nL24-31 (i0): Totorak\nL32-40 (i0): Brayflox\nL41-52 (i0): Stone Vigil\nL53-60 (i105): Sohm Al\nL61-66 (i240): Sirensong Sea\nL67-70 (i255): Doma Castle\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
+                            if (Plugin.Configuration.DutyModeEnum != DutyMode.Trust) ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL16-L23 (i0): TamTara \nL24-31 (i0): Totorak\nL32-40 (i0): Brayflox\nL41-52 (i0): Stone Vigil\nL53-60 (i105): Sohm Al\nL61-66 (i240): Sirensong Sea\nL67-70 (i255): Doma Castle\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
                             else ImGuiComponents.HelpMarker("TRUST Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl, as well as the LOWEST LEVEL trust members you have, in an attempt to level them all equally.. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
 
                         }
 
-                        if (Plugin.Configuration.Trust)
+                        if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
                         {
                             ImGui.Separator();
-                            if (_dutySelected != null && _dutySelected.Content.TrustMembers.Count > 0)
+                            if (DutySelected != null && DutySelected.Content.TrustMembers.Count > 0)
                             {
                                 ImGuiEx.LineCentered(() => ImGuiEx.TextUnderlined("Select your Trust Party"));
                                 ImGui.Columns(3, null, false);
@@ -368,7 +294,7 @@ namespace AutoDuty.Windows
                                     if (member is null)
                                         continue;
 
-                                    if (_dutySelected.Content.TrustMembers.All(x => x.MemberName != member))
+                                    if (DutySelected.Content.TrustMembers.All(x => x.MemberName != member))
                                     {
                                         Svc.Log.Debug($"Killing {member}");
                                         Plugin.Configuration.SelectedTrustMembers[i] = null;
@@ -377,7 +303,7 @@ namespace AutoDuty.Windows
 
                                 using (ImRaii.Disabled(Plugin.TrustLevelingEnabled && TrustManager.members.Any(tm => tm.Value.Level < tm.Value.LevelCap)))
                                 {
-                                    foreach (TrustMember member in _dutySelected.Content.TrustMembers)
+                                    foreach (TrustMember member in DutySelected.Content.TrustMembers)
                                     {
                                         bool       enabled        = Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName);
                                         CombatRole playerRole     = Player.Job.GetRole();
@@ -385,11 +311,11 @@ namespace AutoDuty.Windows
 
                                         TrustMember?[] members = Plugin.Configuration.SelectedTrustMembers.Select(tmn => tmn != null ? TrustManager.members[(TrustMemberName)tmn] : null).ToArray();
 
-                                        bool canSelect = members.CanSelectMember(member, playerRole) && member.Level >= _dutySelected.Content.ClassJobLevelRequired;
+                                        bool canSelect = members.CanSelectMember(member, playerRole) && member.Level >= DutySelected.Content.ClassJobLevelRequired;
 
                                         using (ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
                                         {
-                                            if (ImGui.Checkbox($"###{member.Index}{_dutySelected.id}", ref enabled))
+                                            if (ImGui.Checkbox($"###{member.Index}{DutySelected.id}", ref enabled))
                                             {
                                                 if (enabled)
                                                 {
@@ -435,7 +361,7 @@ namespace AutoDuty.Windows
                                     }
                                 }
 
-                                if (_dutySelected.Content.TrustMembers.Count == 7)
+                                if (DutySelected.Content.TrustMembers.Count == 7)
                                     ImGui.NextColumn();
 
                                 if(ImGui.Button("Refresh", new Vector2(ImGui.GetContentRegionAvail().X, 0)))
@@ -450,7 +376,7 @@ namespace AutoDuty.Windows
 
                         DrawPathSelection();
                     }
-                    if (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)
+                    if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)
                     {
                         if (ImGuiEx.CheckboxWrapped("Unsynced", ref Plugin.Configuration.Unsynced))
                             Plugin.Configuration.Save();
@@ -458,7 +384,7 @@ namespace AutoDuty.Windows
                     
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
-                    if (leveling)
+                    if (Plugin.Configuration.LevelingModeEnum != LevelingMode.None)
                     {
                         ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), $"Leveling Mode: L{Player.Level} (i{PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false)})");
                         foreach (var item in LevelingDuties)
@@ -476,22 +402,22 @@ namespace AutoDuty.Windows
                             if (Player.Job.GetRole() == CombatRole.NonCombat)
                                 ImGuiEx.TextWrapped(new Vector4(255, 1, 0, 1), "Please switch to a combat job to use AutoDuty.");
 
-                            if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.Regular || Plugin.Configuration.Trial || Plugin.Configuration.Raid)))
+                            if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)))
                             {
                                 Dictionary<uint, ContentHelper.Content> dictionary = [];
-                                if (Plugin.Configuration.Support)
+                                if (Plugin.Configuration.DutyModeEnum == DutyMode.Support)
                                     dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
-                                else if (Plugin.Configuration.Trust)
+                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
                                     dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.TrustContent).ToDictionary();
-                                else if (Plugin.Configuration.Squadron)
+                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Squadron)
                                     dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
-                                else if (Plugin.Configuration.Regular)
+                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular)
                                     dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 2).ToDictionary();
-                                else if (Plugin.Configuration.Trial)
+                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Trial)
                                     dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 4).ToDictionary();
-                                else if (Plugin.Configuration.Raid)
+                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Raid)
                                     dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 5).ToDictionary();
-                                else if (Plugin.Configuration.Variant)
+                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Variant)
                                     dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.VariantContent).ToDictionary();
 
                                 if (dictionary.Count > 0 && ObjectHelper.IsReady)
@@ -501,16 +427,16 @@ namespace AutoDuty.Windows
 
                                     foreach ((uint _, ContentHelper.Content? content) in dictionary)
                                     {
-                                        bool canRun = content.CanRun(level, ilvl) && (!_trust || content.CanTrustRun());
+                                        bool canRun = content.CanRun(level, ilvl) && (Plugin.Configuration.DutyModeEnum != DutyMode.Trust || content.CanTrustRun());
                                         using (ImRaii.Disabled(!canRun))
                                         {
                                             if (Plugin.Configuration.HideUnavailableDuties && !canRun)
                                                 continue;
-                                            if (ImGui.Selectable($"({content.TerritoryType}) {content.Name}", _dutySelected?.id == content.TerritoryType))
+                                            if (ImGui.Selectable($"({content.TerritoryType}) {content.Name}", DutySelected?.id == content.TerritoryType))
                                             {
-                                                _dutySelected = ContentPathsManager.DictionaryPaths[content.TerritoryType];
+                                                DutySelected = ContentPathsManager.DictionaryPaths[content.TerritoryType];
                                                 Plugin.CurrentTerritoryContent = content;
-                                                _dutySelected.SelectPath(out Plugin.CurrentPath);
+                                                DutySelected.SelectPath(out Plugin.CurrentPath);
                                             }
                                         }
                                     }
@@ -544,7 +470,7 @@ namespace AutoDuty.Windows
 
         internal static void PathsUpdated()
         {
-            _dutySelected = null;
+            DutySelected = null;
         }
     }
 }
