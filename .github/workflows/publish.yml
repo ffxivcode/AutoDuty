@@ -15,9 +15,6 @@ jobs:
         with:
           submodules: true
 
-      - name: Get Tag Name
-        run: echo "tag=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')" >> $GITHUB_ENV
-
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
@@ -32,7 +29,7 @@ jobs:
         run: dotnet restore
 
       - name: Build Project
-        run: dotnet build --configuration Release AutoDuty/AutoDuty.csproj -p:AssemblyVersion=${{ env.tag }}
+        run: dotnet build --configuration Release AutoDuty/AutoDuty.csproj -p:AssemblyVersion=${{ github.ref_name }}
 
       - name: Publish Version
         uses: PunishXIV/dynamis-action@v1
@@ -40,7 +37,7 @@ jobs:
         with:
           plugin_id: 54
           internal_name: "AutoDuty"
-          version_number: ${{ env.tag }}
+          version_number: ${{ github.ref_name }}
           path: "AutoDuty/bin/Release/AutoDuty/latest.zip"
           type: "latest"
           dalamud_version: "10"
