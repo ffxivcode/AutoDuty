@@ -2,7 +2,9 @@
 
 <img align="right" width="150" height="150" src="logo.png">
 
-AutoDuty (AD) is a Dalamud plugin for FFXIV that serves as a tool to assist in the creation and following of paths through dungeons and duties. It's designed to enable automatic looping of instanced content with Duty Support, Trusts, or Squadrons. AD also boasts a wide range of plugins that it integrates with. Support for it can be found in the [Puni.sh Discord server](https://discord.gg/punishxiv).
+AutoDuty (AD) is a Dalamud plugin for FFXIV that serves as a tool to assist in the creation and following of paths through dungeons and duties. It's designed to enable automatic looping of instanced content with Duty Support, Trusts, or Squadrons.
+
+Support for it can be found in the [Puni.sh Discord server](https://discord.gg/punishxiv).
 
 _Unlicensed code, which follows [default copyright law](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository#choosing-the-right-license)_
 
@@ -14,9 +16,9 @@ Each dungeon supported by AutoDuty has a pre-configured path laid out, which sho
 
 The paths will also run over all loot containers and, when configured, will pick up the loot and do something with it while either in between dungeon runs or after your set amount of runs are over.
 
-Creating paths is also supported and easily accomplished within AutoDuty by using the `Build` tab at the top. Here, you can place waypoints and generate a path for a dungeon if it's not supported.
+Creating paths is also supported and easily accomplished within AutoDuty by using the `Build` tab at the top. For path status, please refer to the pinned spreadsheet in the AutoDuty channel in the [support Discord](https://discord.gg/punishxiv).
 
-# Automatic Job Leveling
+# Automatic Leveling
 
 <img align="right" height="250" src="Assets/leveling.png">
 
