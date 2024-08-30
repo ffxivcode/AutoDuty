@@ -1,4 +1,4 @@
-name: Build & Publish to Dynamis
+name: Build & Publish to Dynamis Latest
 
 on:
   release:
