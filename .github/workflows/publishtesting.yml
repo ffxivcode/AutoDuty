@@ -1,8 +1,8 @@
 name: Build & Publish to Dynamis
 
 on:
-  prereleased:
-    types: [published]
+  release:
+    types: [prereleased]
 
 jobs:
   Build:
