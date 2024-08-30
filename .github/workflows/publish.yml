@@ -10,37 +10,44 @@ jobs:
     env:
       DALAMUD_HOME: /tmp/dalamud
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          submodules: true
+      # - name: Checkout Repository
+      #   uses: actions/checkout@v4
+      #   with:
+      #     submodules: true
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 8.0.x
+      # - name: Set up .NET
+      #   uses: actions/setup-dotnet@v3
+      #   with:
+      #     dotnet-version: 8.0.x
 
-      - name: Download Dalamud Latest
+      # - name: Download Dalamud Latest
+      #   run: |
+      #     wget https://goatcorp.github.io/dalamud-distrib/latest.zip -O ${{ env.DALAMUD_HOME }}.zip
+      #     unzip ${{ env.DALAMUD_HOME }}.zip -d ${{ env.DALAMUD_HOME }}
+
+      # - name: Restore Project
+      #   run: dotnet restore
+
+      # - name: Build Project
+      #   run: dotnet build --configuration Release AutoDuty/AutoDuty.csproj -p:AssemblyVersion=${{ github.ref_name }}
+
+      # Sanity check
+      - name: Strip Formatting From Release Body
         run: |
-          wget https://goatcorp.github.io/dalamud-distrib/latest.zip -O ${{ env.DALAMUD_HOME }}.zip
-          unzip ${{ env.DALAMUD_HOME }}.zip -d ${{ env.DALAMUD_HOME }}
+          echo "${{ github.event.release.body }}"
+          echo "stripped_body=$(echo ${{ github.event.release.body }} | sed 's/<[^>]*>//g')" >> $GITHUB_ENV
+          echo "${{ env.stripped_body }}"
 
-      - name: Restore Project
-        run: dotnet restore
-
-      - name: Build Project
-        run: dotnet build --configuration Release AutoDuty/AutoDuty.csproj -p:AssemblyVersion=${{ github.ref_name }}
-
-      - name: Publish Version
-        uses: PunishXIV/dynamis-action@v1
-        id: dynamis
-        with:
-          plugin_id: 54
-          internal_name: "AutoDuty"
-          version_number: ${{ github.ref_name }}
-          path: "AutoDuty/bin/Release/AutoDuty/latest.zip"
-          type: "latest"
-          dalamud_version: "10"
-          changelog: ${{ github.event.release.body }}
-        env:
-          PUBLISHER_KEY: ${{ secrets.PUBLISHER_KEY }}
+      # - name: Publish Version
+      #   uses: PunishXIV/dynamis-action@v1
+      #   id: dynamis
+      #   with:
+      #     plugin_id: 54
+      #     internal_name: "AutoDuty"
+      #     version_number: ${{ github.ref_name }}
+      #     path: "AutoDuty/bin/Release/AutoDuty/latest.zip"
+      #     type: "latest"
+      #     dalamud_version: "10"
+      #     changelog: ${{ env.stripped_body }}
+      #   env:
+      #     PUBLISHER_KEY: ${{ secrets.PUBLISHER_KEY }}
