@@ -43,10 +43,3 @@ jobs:
           dalamud_version: "10"
         env:
           PUBLISHER_KEY: ${{ secrets.PUBLISHER_KEY }}
-
-      - name: Echo Environment Variables
-        run: |
-          echo "github.ref ${{ github.ref }}"
-          echo "github.ref_name ${{ github.ref_name }}"
-          echo "github.event.release.name ${{ github.event.release.name }}"
-          echo "github.event.release.body ${{ github.event.release.body }}"
