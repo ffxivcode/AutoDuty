@@ -36,7 +36,6 @@ AutoDuty supports a wide range of automations and integrations with other plugin
 | -------- | -------- | -------- | -------- |
 | Move to an inn, house, or FC house <br /> Auto self-repair or NPC repair <br /> Execute commands (i.e. SND scripts) <br /> Auto consume items | Loot treasure coffers <br /> Automatically manage plugin states | Auto extract materia <br /> Auto desynth loot <br /> Auto turn in loot to GC <br /> Use AutoRetainer <br /> Auto equip best gear | Stop looping at a level <br /> Stop looping when you run out of rested XP <br /> Shut down your computer |
 
-<br />
 <hr />
 
 # Installation
