@@ -1,0 +1,44 @@
+{
+  "actions": [
+    "Wait|5.35, 16.34, -426.29|10000",
+    "Wait|5.22, 16.34, -421.52|10000",
+
+    "StopForCombat|-4.44, 19.93, -371.43|False",
+    "MoveTo|9.41, 1.94, -311.25|",
+    "StopForCombat|-12.43, 3.85, -325.57|True",
+
+    "Boss|-2.91, 2.90, -204.68|",
+
+    "StopForCombat|-12.12, 18.76, -148.05|False",
+    "TreasureCoffer|3.21, 6.06, -97.63|",
+    "MoveTo|2.13, 5.96, -101.78|",
+    "MoveTo|24.08, 4.24, -100.32|",
+    "MoveTo|-20.19, 5.95, -48.73|",
+    "StopForCombat|12.71, 4.39, -63.32|True",
+
+    "MoveTo|-71.03, 14.45, -30.08|",
+    "MoveTo|-74.17, 12.74, -28.65|",
+    "TreasureCoffer|-84.92, 12.49, -29.23|",
+    "MoveTo|-58.48, 21.08, 9.83|",
+
+    "StopForCombat|-56.64, 18.35, 14.17|False",
+    "StopForCombat|-28.00, 16.35, 15.63|True",
+
+    "Boss|-8.42, 4.45, 91.40|",
+
+    "StopForCombat|-13.14, 1.13, 137.00|False",
+    "MoveTo|11.54, -2.59, 194.32|",
+    "MoveTo|5.23, -3.28, 215.86|",
+    "StopForCombat|-12.04, -2.18, 178.04|True",
+
+    "TreasureCoffer|23.32, -3.70, 226.70|",
+    "TreasureCoffer|-25.32, 9.76, 349.40|",
+
+    "Boss|-44.42, 7.75, 475.33|"
+  ],
+  "meta": {
+    "createdAt": 138,
+    "changelog": [],
+    "notes": []
+  }
+}
