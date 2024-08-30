@@ -1,138 +1,69 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
-<a id="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
+# AutoDuty
 
+<img align="right" width="150" height="150" src="logo.png">
 
+AutoDuty (AD) is a Dalamud plugin for FFXIV that serves as a tool to assist in the creation and following of paths through dungeons and duties. It's designed to enable automatic looping of instanced content with Duty Support, Trusts, or Squadrons. AD also boasts a wide range of plugins that it integrates with. Support for it can be found in the [Puni.sh Discord server](https://discord.gg/punishxiv).
 
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
+_Unlicensed code, which follows [default copyright law](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository#choosing-the-right-license)_
 
+# Dungeon Paths
 
+<img align="right" height="250" src="Assets/paths.png">
 
-<!-- PROJECT LOGO -->
+Each dungeon supported by AutoDuty has a pre-configured path laid out, which should complete the dungeon without any issues. If any issues are encountered, make sure to reach out in the [support Discord](https://discord.gg/punishxiv).
+
+The paths will also run over all loot containers and, when configured, will pick up the loot and do something with it while either in between dungeon runs or after your set amount of runs are over.
+
+Creating paths is also supported and easily accomplished within AutoDuty by using the `Build` tab at the top. Here, you can place waypoints and generate a path for a dungeon if it's not supported.
+
+# Automatic Job Leveling
+
+<img align="right" height="250" src="Assets/leveling.png">
+
+AutoDuty has a leveling feature that will continuously run you through the "correct" dungeon to level through. The dungeon is typically determined by path quality, support for boss fights, and obviously the level of the dungeon.
+
+With AutoDuty, you can level a job from 15 to the max level very quickly and fully AFK, provided you have the correct gear and the option in the AD configuration to automatically the best gear.
+
+This plugin can also level trusts for you in the same way it levels your jobs. It can intelligently select the trust members that need to level and level them all to max, fully AFK.
+
+# Automations
+
+AutoDuty supports a wide range of automations and integrations with other plugins. Below are just some of what AD can offer while automating instanced content:
+
+| Before runs | During the run | Between runs | After the runs |
+| -------- | -------- | -------- | -------- |
+| Move to an inn, house, or FC house <br /> Auto self-repair or NPC repair <br /> Execute commands (i.e. SND scripts) <br /> Auto consume items | Loot treasure coffers <br /> Automatically manage plugin states | Auto extract materia <br /> Auto desynth loot <br /> Auto turn in loot to GC <br /> Use AutoRetainer <br /> Auto equip best gear | Stop looping at a level <br /> Stop looping when you run out of rested XP <br /> Shut down your computer |
+
 <br />
-<div align="center">
-  <a href="https://github.com/ffxivcode/AutoDuty">
-    <img src="./logo.png" alt="Logo" width="120" height="120">
-  </a>
+<hr />
 
-<h3 align="center"><b>AutoDuty</b></h3>
- <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository#:~:text=You%27re%20under%20no,for%20your%20project.">(License Information)</a>
+# Installation
 
-  <p align="center">
-     <br />
-    Run's Duties <br /> Requires vnavmesh and BossMod or BossModReborn and RotationSolverReborn
-    <br />
-    <!--<a href="https://github.com/ffxivcode/AutoDuty"><strong>Explore the docs »</strong></a>
-    <br />-->
-    <br />
- <a href="https://discord.com/channels/1001823907193552978/1236757595738476725">Puni.sh Discord</a>
-    ·
- <a href="https://discord.com/channels/1241050921732014090/1273374407653462017">FFXIV Code Discord</a>
-    ·
-    <a
-    · href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    ·
-    <a href="https://github.com/ffxivcode/AutoDuty/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
-    ·
-    <a href="https://discord.com/channels/1001823907193552978/1236757595738476725/1243059104528994334">Setup guide</a>
-    
-  </p>
-</div>
+Add `https://puni.sh/api/repository/herc` to your plugin repositories and then search for `AutoDuty` in the Plugin Installer to install AutoDuty.
 
-<!-- ABOUT THE PROJECT
-## About The Project
-this is the place of showing screenshots of using this plugin
+Settings can be accessed via the Plugin Installer or using the chat command `/ad`.
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+## Required Plugins
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `ffxivcode`, `AutoDuty`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+Additionally, the following plugins are required. Right-click the name of the plugin and copy the URL to use it to add to your repositories in-game.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
--->
+- [vnavmesh](https://puni.sh/api/repository/veyn): Automatic navigation with waypoints
+- [Rotation Solver Reborn](https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json): Automatic rotation execution, all jobs supported
+- [Boss Mod](https://puni.sh/api/repository/veyn) or [BossModReborn](https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json): Automatic fight execution for bosses
 
+## Optional Plugins
 
-### Built With
+The following plugins are optional. They integrate with AutoDuty well and in some cases can be triggered by AD itself.
 
-<p align = "center"><a href="https://www.w3schools.com/cs/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/csharp/csharp-original.svg" alt="csharp" width="40" height="40"/> </a>
-<a href="https://dotnet.microsoft.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dot-net/dot-net-original-wordmark.svg" alt="dotnet" width="40" height="40"/> </a>
-<a href="https://git-scm.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a></p>
+- [Deliveroo](https://plugins.carvel.li): Automatically turns in items to your Grand Company
+- [AutoRetainer](https://love.puni.sh/ment.json): Automatically manages your retainers and submersibles as well as sends them out on ventures
 
-<!-- GETTING STARTED
-## Getting Started
+# Getting help
 
-this is the place to show how to use this plugin
-but i haven't tried it yet so i leave it empty lol
--->
+When you've found a bug or think you have some issue with the plugin, please ask in [Discord](https://discord.gg/punishxiv). It might be a known issue or people might be able to help you quickly. Additionally, sometimes it might be an issue with one of the required plugins. Users in Discord will be able to help triage the issue and send you to the right place.
 
-### Prerequisites
-#### Software
-* Dalamud(integrated in XIVQuickLauncher)
-  ```
-  https://github.com/goatcorp/FFXIVQuickLauncher
-  ```
-#### Plugins
-<i> You need 3 prerequisited plugins:
-1. vnavmesh
-2. BossMod or BossModReborn
-3. BossMod AutoRotation or RotationSolverReborn </i>
+Best practice is not to say "I died in this dungeon and I don't know why." Please make sure to include as much detail as possible. What boss were you on? Did you get stuck in a specific spot?
 
-* vnavmesh and BossMod(AutoRotation) (add repo url to dalamud)
-  ```
-  https://puni.sh/api/repository/veyn
-  ```
+For support with Boss Mod and vnavmesh, please ask in the [Puni.sh Discord server](https://discord.gg/punishxiv). For support with BossModReborn and Rotation Solver Reborn, please ask in the [Combat Reborn Discord server](https://discord.gg/p54TZMPnC9).
 
-* BossModReborn and RotationSolverReborn(add repo url to dalamud)
-  ```
-  https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json
-  ```
-
-### Installation
-
-1. add repo url to dalamud
-   ```
-   https://puni.sh/api/repository/herc
-   ```
-2. install all the prerequisited plugins mentioned in <a href="#plugins">Plugins</a>
-3. install this plugin in dalamud's plugin store
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/ffxivcode/AutoDuty.svg?style=for-the-badge
-[contributors-url]: https://github.com/ffxivcode/AutoDuty/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/ffxivcode/AutoDuty.svg?style=for-the-badge
-[forks-url]: https://github.com/ffxivcode/AutoDuty/network/members
-[stars-shield]: https://img.shields.io/github/stars/ffxivcode/AutoDuty.svg?style=for-the-badge
-[stars-url]: https://github.com/ffxivcode/AutoDuty/stargazers
-[issues-shield]: https://img.shields.io/github/issues/ffxivcode/AutoDuty.svg?style=for-the-badge
-[issues-url]: https://github.com/ffxivcode/AutoDuty/issues
+Lastly, feel free to create issues with feature requests and bug reports.
