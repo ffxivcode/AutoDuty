@@ -41,7 +41,13 @@ jobs:
       - name: Strip Formatting From Release Body
         run: |
           echo "stripped_body=$(echo ${{ github.event.release.body }} | sed 's/<[^>]*>//g')" >> $GITHUB_ENV
-
+          
+      - name: Strip formatting from release body ai
+        run: |
+          echo "${{ github.event.release.body }}" | sed 's/<[^>]*>//g' > stripped_body.txt
+          stripped_body=$(cat stripped_body.txt)
+          echo "Stripped Body: $stripped_body"
+          
       - name: Publish Version
         uses: PunishXIV/dynamis-action@v1
         id: dynamis
