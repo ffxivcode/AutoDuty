@@ -41,5 +41,6 @@ jobs:
           path: "AutoDuty/bin/Release/AutoDuty/latest.zip"
           type: "latest"
           dalamud_version: "10"
+          changelog: ${{ github.event.release.body }}
         env:
           PUBLISHER_KEY: ${{ secrets.PUBLISHER_KEY }}
