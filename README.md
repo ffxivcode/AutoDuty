@@ -24,7 +24,7 @@ Creating paths is also supported and easily accomplished within AutoDuty by usin
 
 AutoDuty has a leveling feature that will continuously run you through the "correct" dungeon to level through. The dungeon is typically determined by path quality, support for boss fights, and obviously the level of the dungeon.
 
-With AutoDuty, you can level a job from 15 to the max level very quickly and fully AFK, provided you have the correct gear and the option in the AD configuration to automatically the best gear.
+With AutoDuty, you can level a job from 15 to the max level very quickly and fully AFK, provided you have the correct gear and the option in the AD configuration to automatically equip the best gear.
 
 This plugin can also level trusts for you in the same way it levels your jobs. It can intelligently select trust members and level them all to max, fully AFK.
 
