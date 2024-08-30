@@ -37,8 +37,7 @@ using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using static AutoDuty.Windows.ConfigTab;
 using AutoDuty.Properties;
-using System.Security.Cryptography;
-using System.Reflection.Metadata.Ecma335;
+using System.Reflection;
 
 namespace AutoDuty;
 
@@ -180,7 +179,7 @@ public sealed class AutoDuty : IDalamudPlugin
         try
         {
             Plugin = this;
-            ECommonsMain.Init(PluginInterface, Plugin, Module.DalamudReflector, Module.ObjectFunctions);
+            ECommonsMain.Init(PluginInterface, Plugin, ECommons.Module.DalamudReflector, ECommons.Module.ObjectFunctions);
 
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             ConfigTab.BuildManuals();
@@ -188,7 +187,9 @@ public sealed class AutoDuty : IDalamudPlugin
             PathsDirectory = new(_configDirectory.FullName + "/paths");
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
-
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Version? version = assembly.GetName().Version;
+            Configuration.Version = version!.Revision;
             if (!_configDirectory.Exists)
                 _configDirectory.Create();
             if (!PathsDirectory.Exists)
@@ -1477,7 +1478,8 @@ public sealed class AutoDuty : IDalamudPlugin
     private void StopAndResetALL()
     {
         States = PluginState.None;
-        TaskManager.SetStepMode(false);
+        TaskManager?.SetStepMode(false);
+        TaskManager?.Abort();
         MainListClicked = false;
         CurrentLoop = 0;
         Chat.ExecuteCommand($"/vbmai off");
@@ -1491,8 +1493,6 @@ public sealed class AutoDuty : IDalamudPlugin
             Overlay.IsOpen = false;
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
-        if (TaskManager.IsBusy)
-            TaskManager.Abort();
         FollowHelper.SetFollow(null);
         if (ExtractHelper.State == ActionState.Running)
             ExtractHelper.Stop();
