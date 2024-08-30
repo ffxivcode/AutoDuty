@@ -76,10 +76,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="$(ProjectDir)Paths\*"
-          DestinationFolder="$(ProjectDir)$(OutDir)"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(ProjectDir)Paths\*&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
 </Project>
