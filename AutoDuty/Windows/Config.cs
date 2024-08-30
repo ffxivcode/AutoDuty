@@ -28,7 +28,7 @@ namespace AutoDuty.Windows;
 public class Configuration : IPluginConfiguration
 {
     //Meta
-    public int Version { get => 138; set { } }
+    public int Version { get; set; }
     public HashSet<string> DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
 
@@ -43,36 +43,10 @@ public class Configuration : IPluginConfiguration
             dutyModeEnum = value;
             AutoDuty.Plugin.CurrentTerritoryContent = null;
             MainTab.DutySelected = null;
-            LevelingModeEnum = LevelingMode.None;
+            AutoDuty.Plugin.LevelingModeEnum = LevelingMode.None;
         }
     }
-    private LevelingMode levelingModeEnum = LevelingMode.None;
-    public LevelingMode LevelingModeEnum
-    {
-        get => levelingModeEnum;
-        set
-        {
-            levelingModeEnum = value;
-
-            if (value != LevelingMode.None)
-            {
-                ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(DutyModeEnum == DutyMode.Trust);
-
-                if (duty != null)
-                {
-                    MainTab.DutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
-                    AutoDuty.Plugin.CurrentTerritoryContent = duty;
-                    MainTab.DutySelected.SelectPath(out AutoDuty.Plugin.CurrentPath);
-                }
-            }
-            else
-            {
-                MainTab.DutySelected = null;
-                AutoDuty.Plugin.MainListClicked = false;
-                AutoDuty.Plugin.CurrentTerritoryContent = null;
-            }
-        }
-    }
+    
     public bool Unsynced = false;
     public bool HideUnavailableDuties = false;
     public bool ShowMainWindowOnStartup = false;

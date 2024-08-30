@@ -13,7 +13,7 @@ namespace AutoDuty.Helpers
 {
     internal static class MovementHelper
     {
-        public static bool IsFlyingSupported => Svc.ClientState.TerritoryType != 0 && Svc.Data.GetExcelSheet<TerritoryType>()!.GetRow(Svc.ClientState.TerritoryType)?.TerritoryIntendedUse is 1 or 49 or 47;
+        public unsafe static bool IsFlyingSupported => Svc.ClientState.TerritoryType != 0 && Svc.Data.GetExcelSheet<TerritoryType>()!.GetRow(Svc.ClientState.TerritoryType)?.TerritoryIntendedUse is 1 or 49 or 47 && PlayerState.Instance()->IsAetherCurrentZoneComplete(Svc.Data.GetExcelSheet<TerritoryType>()!.GetRow(Svc.ClientState.TerritoryType)!.Unknown32);
 
         internal static bool Move(IGameObject? gameObject, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false, bool useMesh = true)
         {
@@ -30,7 +30,7 @@ namespace AutoDuty.Helpers
 
             //Svc.Log.Debug($"Move(Vector3 {position}, float {tollerance} = 0.25f, float {lastPointTollerance} = 0.25f, bool {fly} = false, bool {useMesh} = true) Dist: {Vector3.Distance(Player.Object.Position, position)} <= {lastPointTollerance}");
 
-            if (fly && (!IsFlyingSupported || !PlayerState.Instance()->IsAetherCurrentZoneComplete(Svc.ClientState.TerritoryType)))
+            if (fly && !IsFlyingSupported)
                 fly = false;
 
             if (!Conditions.IsMounted && IsFlyingSupported)

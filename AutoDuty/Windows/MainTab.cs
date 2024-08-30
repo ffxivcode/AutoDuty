@@ -45,7 +45,7 @@ namespace AutoDuty.Windows
             if (MainWindow.CurrentTabName != "Main")
                 MainWindow.CurrentTabName = "Main";
             var dutyMode = Plugin.Configuration.DutyModeEnum;
-            var levelingMode = Plugin.Configuration.LevelingModeEnum;
+            var levelingMode = Plugin.LevelingModeEnum;
 
             static void DrawPathSelection()
             {
@@ -242,26 +242,23 @@ namespace AutoDuty.Windows
                     if (Plugin.Configuration.DutyModeEnum != DutyMode.None)
                     {
                         //ImGui.SameLine(0, 15);
-                        ImGui.Separator();
-                        if (ImGui.Checkbox("Hide Unavailable Duties", ref Plugin.Configuration.HideUnavailableDuties))
-                            Plugin.Configuration.Save();
-
+                        
                         if (Plugin.Configuration.DutyModeEnum == DutyMode.Support || Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
                         {
-                            ImGui.TextColored(Plugin.Configuration.LevelingModeEnum == LevelingMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Leveling Mode: ");
+                            ImGui.TextColored(Plugin.LevelingModeEnum == LevelingMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Leveling Mode: ");
                             ImGui.SameLine(0);
                             ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                            if (ImGui.BeginCombo("##LevelingModeEnum", Plugin.Configuration.LevelingModeEnum == LevelingMode.None ? "None" : "Auto"))
+                            if (ImGui.BeginCombo("##LevelingModeEnum", Plugin.LevelingModeEnum == LevelingMode.None ? "None" : "Auto"))
                             {
                                 if (ImGui.Selectable("None"))
                                 {
-                                    Plugin.Configuration.LevelingModeEnum = LevelingMode.None;
+                                    Plugin.LevelingModeEnum = LevelingMode.None;
                                     Plugin.Configuration.Save();
                                 }
                                 if (ImGui.Selectable("Auto"))
                                 {
                                     Svc.Log.Info("aitp");
-                                    Plugin.Configuration.LevelingModeEnum = Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust;
+                                    Plugin.LevelingModeEnum = Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust;
                                     Plugin.Configuration.Save();
                                     if (Plugin.Configuration.AutoEquipRecommendedGear)
                                         AutoEquipHelper.Invoke();
@@ -374,16 +371,20 @@ namespace AutoDuty.Windows
                         }
 
                         DrawPathSelection();
-                    }
-                    if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)
-                    {
-                        if (ImGuiEx.CheckboxWrapped("Unsynced", ref Plugin.Configuration.Unsynced))
+                        ImGui.Separator();
+                        if (ImGui.Checkbox("Hide Unavailable Duties", ref Plugin.Configuration.HideUnavailableDuties))
                             Plugin.Configuration.Save();
+                        if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)
+                        {
+                            if (ImGuiEx.CheckboxWrapped("Unsynced", ref Plugin.Configuration.Unsynced))
+                                Plugin.Configuration.Save();
+                        }
                     }
+                    
                     
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
-                    if (Plugin.Configuration.LevelingModeEnum != LevelingMode.None)
+                    if (Plugin.LevelingModeEnum != LevelingMode.None)
                     {
                         ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), $"Leveling Mode: L{Player.Level} (i{PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false)})");
                         foreach (var item in LevelingDuties)

@@ -1,8 +1,11 @@
-name: Build & Publish to Dynamis Latest
+name: Build & Publish to Dynamis Testing
 
 on:
   release:
-    types: [released]
+    types: [prereleased]
+
+permissions:
+  actions: write
 
 jobs:
   Build:
@@ -31,14 +34,6 @@ jobs:
       - name: Build Project
         run: dotnet build --configuration Release AutoDuty/AutoDuty.csproj -p:AssemblyVersion=${{ github.ref_name }}
 
-      - name: Print Release Body
-        run: |
-          echo "${{ github.event.release.body }}"
-
-      - name: Strip Formatting From Release Body
-        run: |
-          echo "stripped_body=$(echo ${{ github.event.release.body }} | sed 's/<[^>]*>//g')" >> $GITHUB_ENV
-
       - name: Publish Version
         uses: PunishXIV/dynamis-action@v1
         id: dynamis
@@ -47,8 +42,8 @@ jobs:
           internal_name: "AutoDuty"
           version_number: ${{ github.ref_name }}
           path: "AutoDuty/bin/Release/AutoDuty/latest.zip"
-          type: "latest"
+          type: "testing"
           dalamud_version: "10"
-          changelog: ${{ env.stripped_body }}
+          changelog: ${{ github.event.release.body }}
         env:
           PUBLISHER_KEY: ${{ secrets.PUBLISHER_KEY }}
