@@ -3,8 +3,10 @@ name: Build & Publish to Dynamis Testing
 on:
   release:
     types: [prereleased]
+
 permissions:
   actions: write
+
 jobs:
   Build:
     runs-on: ubuntu-latest
