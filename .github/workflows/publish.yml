@@ -2,7 +2,7 @@ name: Build & Publish to Dynamis
 
 on:
   release:
-    types: [published]
+    types: [released]
 
 jobs:
   Build:
