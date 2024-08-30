@@ -60,9 +60,9 @@ public sealed class AutoDuty : IDalamudPlugin
     internal                        uint                    CurrentTerritoryType    = 0;
     internal                        int                     CurrentPath             = -1;
 
-    internal bool SupportLevelingEnabled => Configuration.LevelingModeEnum == LevelingMode.Support;
-    internal bool TrustLevelingEnabled => Configuration.LevelingModeEnum == LevelingMode.Trust;
-    internal bool LevelingEnabled => Configuration.LevelingModeEnum != LevelingMode.None;
+    internal bool SupportLevelingEnabled => LevelingModeEnum == LevelingMode.Support;
+    internal bool TrustLevelingEnabled => LevelingModeEnum == LevelingMode.Trust;
+    internal bool LevelingEnabled => LevelingModeEnum != LevelingMode.None;
 
     internal static string Name => "AutoDuty";
     internal static AutoDuty Plugin { get; private set; }
@@ -109,6 +109,32 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.Log.Debug($"Stage={EnumString(_stage)}");
         }
     }
+    internal LevelingMode LevelingModeEnum
+    {
+        get => levelingModeEnum;
+        set
+        {
+            levelingModeEnum = value;
+
+            if (value != LevelingMode.None)
+            {
+                ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.DutyModeEnum == DutyMode.Trust);
+
+                if (duty != null)
+                {
+                    MainTab.DutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
+                    CurrentTerritoryContent = duty;
+                    MainTab.DutySelected.SelectPath(out CurrentPath);
+                }
+            }
+            else
+            {
+                MainTab.DutySelected = null;
+                MainListClicked = false;
+                CurrentTerritoryContent = null;
+            }
+        }
+    }
     internal PluginState States = PluginState.None;
     internal int Indexer = -1;
     internal bool MainListClicked = false;
@@ -128,6 +154,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal DutyState DutyState = DutyState.None;
     internal Chat Chat;
 
+    private LevelingMode levelingModeEnum = LevelingMode.None;
     private Stage _stage = Stage.Stopped;
     private const string CommandName = "/autoduty";
     private readonly DirectoryInfo _configDirectory;
