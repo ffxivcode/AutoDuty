@@ -16,7 +16,7 @@ Each dungeon supported by AutoDuty has a pre-configured path laid out, which sho
 
 The paths will also run over all loot containers and, when configured, will pick up the loot and do something with it while either in between dungeon runs or after your set amount of runs are over.
 
-Creating paths is also supported and easily accomplished within AutoDuty by using the `Build` tab at the top. For path status, please refer to the pinned spreadsheet in the AutoDuty channel in the [support Discord](https://discord.gg/punishxiv).
+Creating paths is also supported and easily accomplished within AutoDuty by using the `Build` tab at the top. For path status, please refer to the [pinned spreadsheet](https://discord.com/channels/1001823907193552978/1236757595738476725/1243059104528994334) in the AutoDuty channel of the [support Discord](https://discord.gg/punishxiv).
 
 # Automatic Leveling
 
@@ -26,7 +26,7 @@ AutoDuty has a leveling feature that will continuously run you through the "corr
 
 With AutoDuty, you can level a job from 15 to the max level very quickly and fully AFK, provided you have the correct gear and the option in the AD configuration to automatically the best gear.
 
-This plugin can also level trusts for you in the same way it levels your jobs. It can intelligently select the trust members that need to level and level them all to max, fully AFK.
+This plugin can also level trusts for you in the same way it levels your jobs. It can intelligently select trust members and level them all to max, fully AFK.
 
 # Automations
 
@@ -34,7 +34,7 @@ AutoDuty supports a wide range of automations and integrations with other plugin
 
 | Before runs | During the run | Between runs | After the runs |
 | -------- | -------- | -------- | -------- |
-| Move to an inn, house, or FC house <br /> Auto self-repair or NPC repair <br /> Execute commands (i.e. SND scripts) <br /> Auto consume items | Loot treasure coffers <br /> Automatically manage plugin states | Auto extract materia <br /> Auto desynth loot <br /> Auto turn in loot to GC <br /> Use AutoRetainer <br /> Auto equip best gear | Stop looping at a level <br /> Stop looping when you run out of rested XP <br /> Shut down your computer |
+| Move to an inn, house, or FC house <br /> Auto self- or NPC- repair <br /> Execute commands (i.e. SND scripts) <br /> Auto consume items | Loot treasure coffers <br /> Manage plugin states | Auto extract materia <br /> Auto desynth loot <br /> Auto turn in loot to GC <br /> Use AutoRetainer <br /> Auto equip best gear | Stop looping at a level <br /> Stop looping when you run out of rested XP <br /> Turn on AutoRetainer multi mode <br /> Shut down your computer |
 
 <hr />
 
@@ -50,7 +50,7 @@ Additionally, the following plugins are required. Right-click the name of the pl
 
 - [vnavmesh](https://puni.sh/api/repository/veyn): Automatic navigation with waypoints
 - [Rotation Solver Reborn](https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json): Automatic rotation execution, all jobs supported
-- [Veyn's Boss Mod](https://puni.sh/api/repository/veyn) or [BossModReborn](https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json): Automatic fight execution for bosses
+- [Veyn's Boss Mod](https://puni.sh/api/repository/veyn) or [BossmodReborn](https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json): Automatic fight execution for bosses
 
 ## Optional Plugins
 
@@ -63,7 +63,7 @@ The following plugins are optional. They integrate with AutoDuty well and in som
 
 When you've found a bug or think you have some issue with the plugin, please ask in [Discord](https://discord.gg/punishxiv). It might be a known issue or people might be able to help you quickly. Additionally, sometimes it might be an issue with one of the required plugins. Users in Discord will be able to help triage the issue and send you to the right place.
 
-Best practice is not to say "I died in this dungeon and I don't know why." Please make sure to include as much detail as possible. What boss were you on? Did you get stuck in a specific spot?
+Best practice is to not say "I died in this dungeon and I don't know why." Please make sure to include as much detail as possible. What boss were you on? Did you get stuck in a specific spot?
 
 For support with Veyn's Boss Mod and vnavmesh, please ask in the [Puni.sh Discord server](https://discord.gg/punishxiv). For support with BossModReborn and Rotation Solver Reborn, please ask in the [Combat Reborn Discord server](https://discord.gg/p54TZMPnC9).
 
