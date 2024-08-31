@@ -77,10 +77,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <Target Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'" Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Condition="'$([System.OperatingSystem]::IsLinux())'" Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="cp &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
-  <Target Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))'" Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Condition="'$([System.OperatingSystem]::IsWindows())'" Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="copy &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
 </Project>
