@@ -67,7 +67,7 @@ namespace AutoDuty.IPC
         [EzIPC] internal static readonly Func<string, bool> ActiveModuleHasComponent;
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentBaseList;
         [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentList;
-        [EzIPC] internal static readonly Func<IReadOnlyList<string>, List<string>> Configuration;
+        [EzIPC] internal static readonly Func<IReadOnlyList<string>, bool, List<string>> Configuration;
         [EzIPC("Presets.List", true)] internal static readonly Func<List<string>> Presets_List;
         [EzIPC("Presets.Get", true)] internal static readonly Func<string, string?> Presets_Get;
         [EzIPC("Presets.ForClass", true)] internal static readonly Func<byte, List<string>> Presets_ForClass;
