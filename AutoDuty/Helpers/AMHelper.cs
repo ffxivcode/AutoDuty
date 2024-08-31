@@ -60,7 +60,7 @@ namespace AutoDuty.Helpers
                 AutoDuty.Plugin.States &= ~PluginState.Other;
                 if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                     AutoDuty.Plugin.SetGeneralSettings(true);
-                Svc.Framework.Update -= AMUpdate;
+                Svc.Framework.Update -= AMStopUpdate;
             }
             else if (Svc.Targets.Target != null)
                 Svc.Targets.Target = null;
