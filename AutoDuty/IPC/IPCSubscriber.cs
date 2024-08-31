@@ -59,7 +59,7 @@ namespace AutoDuty.IPC
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod");
 
-        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("BossMod") || IPCSubscriber_Common.IsReady("BossModReborn");
+        internal static bool IsEnabled => (IPCSubscriber_Common.IsReady("BossMod") && IPCSubscriber_Common.Version("BossMod") >= new Version(0, 0, 0, 218)) || (IPCSubscriber_Common.IsReady("BossModReborn") && IPCSubscriber_Common.Version("BossModReborn") >= new Version(7, 2, 0, 94));
 
         [EzIPC] internal static readonly Func<bool> IsMoving;
         [EzIPC] internal static readonly Func<int> ForbiddenZonesCount;
@@ -182,6 +182,8 @@ namespace AutoDuty.IPC
     internal class IPCSubscriber_Common
     {
         internal static bool IsReady(string pluginName) => DalamudReflector.TryGetDalamudPlugin(pluginName, out _, false, true);
+
+        internal static Version Version(string pluginName) => DalamudReflector.TryGetDalamudPlugin(pluginName, out var dalamudPlugin, false, true) ? dalamudPlugin.GetType().Assembly.GetName().Version : new Version(0, 0, 0, 0);
 
         internal static void DisposeAll(EzIPCDisposalToken[] _disposalTokens)
         {
