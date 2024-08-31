@@ -1389,9 +1389,9 @@ public sealed class AutoDuty : IDalamudPlugin
                         if (gos != null)
                             Svc.Targets.Target = gos;
                     }
-                    if (Configuration.AutoManageBossModAISettings)
+                    if (Configuration.AutoManageBossModAISettings && !IPCSubscriber_Common.IsReady("BossModReborn"))
                     {
-                        var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0], out float floatMDT);
+                        var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
 
                         if (!gotMDT)
                             return;
@@ -1406,13 +1406,13 @@ public sealed class AutoDuty : IDalamudPlugin
                             if (enemyCount > 2 && floatMDT != Configuration.MaxDistanceToTargetAoEFloat)
                             {
                                 Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetAoEFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoEFloat}"]);
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoEFloat}"], false);
                             }
                             else if (enemyCount <3 && floatMDT != Configuration.MaxDistanceToTargetFloat)
                             {
                                 Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"]);
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"]);
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
+                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
                             }
                         }
                     }
@@ -1423,13 +1423,13 @@ public sealed class AutoDuty : IDalamudPlugin
                 {
                     if (Configuration.AutoManageBossModAISettings)
                     {
-                        var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"])[0], out float floatMDT);
+                        var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
 
                         if (gotMDT && floatMDT != Configuration.MaxDistanceToTargetFloat)
                         {
                             Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM  MaxDistanceToTarget={floatMDT}");
-                            BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"]);
-                            BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"]);
+                            BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
+                            BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
                         }
                     }
 
