@@ -706,7 +706,7 @@ public static class ConfigTab
 
         if (preLoopHeaderSelected == true)
         {
-            if (ImGui.Checkbox("Enable", ref Configuration.EnablePreLoopActions))
+            if (ImGui.Checkbox("Enable###PreLoopEnable", ref Configuration.EnablePreLoopActions))
                 Configuration.Save();
 
             using (ImRaii.Disabled(!Configuration.EnablePreLoopActions))
@@ -1010,7 +1010,7 @@ public static class ConfigTab
 
         if (betweenLoopHeaderSelected == true)
         {
-            if (ImGui.Checkbox("Enable", ref Configuration.EnableBetweenLoopActions))
+            if (ImGui.Checkbox("Enable###BetweenLoopEnable", ref Configuration.EnableBetweenLoopActions))
                 Configuration.Save();
 
             using (ImRaii.Disabled(!Configuration.EnableBetweenLoopActions))
@@ -1191,7 +1191,7 @@ public static class ConfigTab
             terminationHeaderSelected = !terminationHeaderSelected;
         if (terminationHeaderSelected == true)
         {
-            if (ImGui.Checkbox("Enable", ref Configuration.EnableTerminationActions))
+            if (ImGui.Checkbox("Enable###TerminationEnable", ref Configuration.EnableTerminationActions))
                 Configuration.Save();
 
             using (ImRaii.Disabled(!Configuration.EnableTerminationActions))

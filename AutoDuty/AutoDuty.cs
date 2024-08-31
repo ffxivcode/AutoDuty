@@ -332,10 +332,10 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private unsafe bool StopLoop => CurrentTerritoryContent == null ||
-                                    (Configuration.StopLevel && ECommons.GameHelpers.Player.Level >= Configuration.StopLevelInt) || 
+    private unsafe bool StopLoop => Configuration.EnableTerminationActions && (CurrentTerritoryContent == null ||
+                                    (Configuration.StopLevel && Player.Level >= Configuration.StopLevelInt) || 
                                     (Configuration.StopNoRestedXP && AgentHUD.Instance()->ExpRestedExperience == 0) || 
-                                    (Configuration.StopItemQty && Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value));
+                                    (Configuration.StopItemQty && Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value)));
 
     private void ClientState_TerritoryChanged(ushort t)
     {
