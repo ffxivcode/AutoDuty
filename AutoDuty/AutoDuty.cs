@@ -1519,6 +1519,8 @@ public sealed class AutoDuty : IDalamudPlugin
             GotoHousingHelper.Stop();
         if (ExitDutyHelper.State == ActionState.Running)
             ExitDutyHelper.Stop();
+        if (AutoEquipHelper.State == ActionState.Running)
+            AutoEquipHelper.Stop();
 
         Action = "";
     }
