@@ -77,7 +77,7 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <Target Condition="'$(OS)'=='Unix'" Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Condition="'$(OS)'!='Windows_NT'" Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="cp &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
   <Target Condition="'$(OS)'=='Windows_NT'" Name="PostBuild" AfterTargets="PostBuildEvent">
