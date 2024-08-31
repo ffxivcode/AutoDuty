@@ -21,5 +21,7 @@ namespace AutoDuty.IPC
         [EzIPC] public bool IsNavigating() => AutoDuty.Plugin.States.HasFlag(PluginState.Navigating);
         [EzIPC] public bool IsLooping() => AutoDuty.Plugin.States.HasFlag(PluginState.Looping);
         [EzIPC] public bool IsStopped() => AutoDuty.Plugin.Stage == Stage.Stopped;
+        [EzIPC] public bool ContentHasPath(uint territoryType) => ContentHelper.DictionaryContent.ContainsKey(territoryType);
+        
     }
 }
