@@ -83,5 +83,8 @@
   <Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="copy &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="echo $(OS)" />
+  </Target>
 </Project>
 
