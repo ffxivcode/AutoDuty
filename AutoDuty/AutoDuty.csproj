@@ -77,14 +77,11 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <Target Condition="$([MSBuild]::IsOSPlatform('Linux'))" Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Condition="'$(OS)'=='Unix'" Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="cp &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
-  <Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Condition="'$(OS)'=='Windows_NT'" Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="copy &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
-  </Target>
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="echo $(OS)" />
   </Target>
 </Project>
 
