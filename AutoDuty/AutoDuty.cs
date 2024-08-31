@@ -53,11 +53,11 @@ namespace AutoDuty;
 public sealed class AutoDuty : IDalamudPlugin
 {
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
-    internal                        List<string>            ListBoxPOSText  { get; set; }         = [];
-    internal                        int                     CurrentLoop             = 0;
-    internal                        ContentHelper.Content?  CurrentTerritoryContent = null;
-    internal                        uint                    CurrentTerritoryType    = 0;
-    internal                        int                     CurrentPath             = -1;
+    internal List<string> ListBoxPOSText { get; set; } = [];
+    internal int CurrentLoop = 0;
+    internal ContentHelper.Content? CurrentTerritoryContent = null;
+    internal uint CurrentTerritoryType = 0;
+    internal int CurrentPath = -1;
 
     internal bool SupportLevelingEnabled => LevelingModeEnum == LevelingMode.Support;
     internal bool TrustLevelingEnabled => LevelingModeEnum == LevelingMode.Trust;
@@ -488,6 +488,13 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => ExtractHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoExtractComplete");
         }
 
+        if (Configuration.AutoDesynth)
+        {
+            TaskManager.Enqueue(() => DesynthHelper.Invoke(), "Loop-AutoDesynth");
+            TaskManager.DelayNext("Loop-Delay50", 50);
+            TaskManager.Enqueue(() => DesynthHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoDesynthComplete");
+        }
+
         if (Configuration.AutoGCTurnin && (!Configuration.AutoGCTurninSlotsLeftBool || InventoryManager.Instance()->GetEmptySlotsInBag() <= Configuration.AutoGCTurninSlotsLeft) && ObjectHelper.GrandCompanyRank > 5)
         {
             TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
@@ -495,13 +502,6 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => GCTurninHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
         }
 
-        if (Configuration.AutoDesynth)
-        {
-            TaskManager.Enqueue(() => DesynthHelper.Invoke(), "Loop-AutoDesynth");
-            TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => DesynthHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoDesynthComplete");
-        }
-        
         if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)
         {
             if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)

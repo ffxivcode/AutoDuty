@@ -109,34 +109,35 @@ namespace AutoDuty.Helpers
                 }
                 else if (addonSalvageItemSelector->ItemCount > 0)
                 {
-                    if (AutoDuty.Plugin.Configuration.AutoDesynthSkillUp)
+                    var foundOne = false;
+                    for (int i = 0; i < AgentSalvage.Instance()->ItemCount; i++)
                     {
-                        var foundOne = false;
-                        for (int i = 0; i < AgentSalvage.Instance()->ItemCount; i++)
-                        {
-                            var item = AgentSalvage.Instance()->ItemList[i];
-                            var itemSheetRow = Svc.Data.Excel.GetSheet<Item>()?.GetRow(InventoryManager.Instance()->GetInventorySlot(item.InventoryType, (int)item.InventorySlot)->ItemId);
-                            var itemLevel = itemSheetRow?.LevelItem.Value?.RowId;
-                            var desynthLevel = PlayerState.Instance()->GetDesynthesisLevel(item.ClassJob);
-                            if (itemLevel == null || itemSheetRow == null) continue;
+                        var item = AgentSalvage.Instance()->ItemList[i];
+                        var itemId = InventoryManager.Instance()->GetInventorySlot(item.InventoryType, (int)item.InventorySlot)->ItemId;
 
-                            if (desynthLevel < itemLevel + 50)
-                            {
-                                Svc.Log.Debug($"Salvaging Item({i}): {itemSheetRow.Name.RawString} with iLvl {itemLevel} because our desynth level is {desynthLevel}");
-                                foundOne = true;
-                                AddonHelper.FireCallBack((AtkUnitBase*)addonSalvageItemSelector, true, 12, i);
-                                return;
-                            }
-                        }
-                        if (!foundOne)
+                        if (itemId == 10146) continue;
+
+                        var itemSheetRow = Svc.Data.Excel.GetSheet<Item>()?.GetRow(itemId);
+                        var itemLevel = itemSheetRow?.LevelItem.Value?.RowId;
+                        var desynthLevel = PlayerState.Instance()->GetDesynthesisLevel(item.ClassJob);
+
+                        if (itemLevel == null || itemSheetRow == null) continue;
+
+                        if (!AutoDuty.Plugin.Configuration.AutoDesynthSkillUp || desynthLevel < itemLevel + 50)
                         {
-                            addonSalvageItemSelector->Close(true);
-                            Svc.Log.Info("Desynth Finished");
-                            Stop();
+                            Svc.Log.Debug($"Salvaging Item({i}): {itemSheetRow.Name.RawString} with iLvl {itemLevel} because our desynth level is {desynthLevel}");
+                            foundOne = true;
+                            AddonHelper.FireCallBack((AtkUnitBase*)addonSalvageItemSelector, true, 12, i);
+                            return;
                         }
                     }
-                    else
-                        AddonHelper.FireCallBack((AtkUnitBase*)addonSalvageItemSelector, true, 12, 0);
+
+                    if (!foundOne)
+                    {
+                        addonSalvageItemSelector->Close(true);
+                        Svc.Log.Info("Desynth Finished");
+                        Stop();
+                    }
                 }
                 else
                 {
