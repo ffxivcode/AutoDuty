@@ -4,7 +4,7 @@
 
 AutoDuty (AD) is a Dalamud plugin for FFXIV that serves as a tool to assist in the creation and following of paths through dungeons and duties. It's designed to enable automatic looping of instanced content with Duty Support, Trusts, or Squadrons.
 
-Support for it can be found in the [Puni.sh Discord server](https://discord.gg/punishxiv).
+Support for it can be found in the [this channel](https://discord.com/channels/1001823907193552978/1236757595738476725) of the [Puni.sh Discord server](https://discord.gg/punishxiv).
 
 _Unlicensed code, which follows [default copyright law](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository#choosing-the-right-license)_
 
@@ -16,7 +16,7 @@ Each dungeon supported by AutoDuty has a pre-configured path laid out, which sho
 
 The paths will also run over all loot containers and, when configured, will pick up the loot and do something with it while either in between dungeon runs or after your set amount of runs are over.
 
-Creating paths is also supported and easily accomplished within AutoDuty by using the `Build` tab at the top. For path status, please refer to the [pinned spreadsheet](https://discord.com/channels/1001823907193552978/1236757595738476725/1243059104528994334) in the AutoDuty channel of the [support Discord](https://discord.gg/punishxiv).
+Creating paths is also supported and easily accomplished within AutoDuty by using the `Build` tab at the top. For path status, please refer to the [pinned spreadsheet](https://discord.com/channels/1001823907193552978/1236757595738476725/1243059104528994334) in the [AutoDuty channel](https://discord.com/channels/1001823907193552978/1236757595738476725) of the [support Discord](https://discord.gg/punishxiv).
 
 # Automatic Leveling
 
@@ -62,10 +62,10 @@ The following plugins are optional. They integrate with AutoDuty well and in som
 
 # Getting help
 
-When you've found a bug or think you have some issue with the plugin, please ask in [Discord](https://discord.gg/punishxiv). It might be a known issue or people might be able to help you quickly. Additionally, sometimes it might be an issue with one of the required plugins. Users in Discord will be able to help triage the issue and send you to the right place.
+When you've found a bug or think you have an issue with the plugin, please ask in [this channel](https://discord.com/channels/1001823907193552978/1236757595738476725) in the [Puni.sh Discord server](https://discord.gg/punishxiv). It might be a known issue or people might be able to help you quickly. Additionally, sometimes it might be an issue with one of the required plugins. Users in Discord will be able to help triage the issue and send you to the right place.
 
 Best practice is to not say "I died in this dungeon and I don't know why." Please make sure to include as much detail as possible. What boss were you on? Did you get stuck in a specific spot?
 
-For support with Veyn's Boss Mod and vnavmesh, please ask in the [Puni.sh Discord server](https://discord.gg/punishxiv). For support with BossModReborn and Rotation Solver Reborn, please ask in the [Combat Reborn Discord server](https://discord.gg/p54TZMPnC9).
+For support with Veyn's Boss Mod and vnavmesh, please ask in [this channel](https://discord.com/channels/1001823907193552978/1191076246860349450) in the [Puni.sh Discord server](https://discord.gg/punishxiv). For support with BossModReborn and Rotation Solver Reborn, please ask in the [Combat Reborn Discord server](https://discord.gg/p54TZMPnC9).
 
 Lastly, feel free to create issues with feature requests and bug reports.
