@@ -135,7 +135,7 @@ namespace AutoDuty.Windows
                             ImGui.SameLine(0, 0);
                         }
 
-                        ImGui.Text($"{container.Content.Name}");
+                        ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
 
                         ImGui.SameLine(0, 2);
                         ImGui.TextColored(ImGuiHelper.VersionColor, $"v{path.PathFile.meta.LastUpdatedVersion}");
