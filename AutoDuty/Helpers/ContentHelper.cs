@@ -130,7 +130,7 @@ namespace AutoDuty.Helpers
             DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.TerritoryType).ToDictionary();
         }
 
-        public static bool CanRun(this Content content, short level = -1, short ilvl = -1)
+        public static bool CanRun(this Content content, short level = -1)
         {
             if ((Player.Available ? Player.Object.GetRole() : CombatRole.NonCombat) == CombatRole.NonCombat)
                 return false;
@@ -141,12 +141,9 @@ namespace AutoDuty.Helpers
             if (level < 0) 
                 level = PlayerHelper.GetCurrentLevelFromSheet();
 
-            if (ilvl < 0) 
-                ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet();
-
             return content.ClassJobLevelRequired <= level                                 &&
                    ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) &&
-                   content.ItemLevelRequired <= ilvl;
+                   content.ItemLevelRequired <= InventoryHelper.CurrentItemLevel;
         }
     }
 }

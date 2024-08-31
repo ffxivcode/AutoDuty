@@ -109,7 +109,9 @@ namespace AutoDuty.Helpers
             Ring2 = 12
         }
 
-        internal unsafe static uint CurrentItemLevel()
+        internal static ushort CurrentItemLevel => *(ushort*)((nint)(AgentStatus.Instance()) + 48);
+
+        /*internal unsafe static uint CurrentItemLevelUI()
         {
             if (GenericHelpers.TryGetAddonByName("Character", out AddonCharacter* addonCharacter) && GenericHelpers.IsAddonReady((AtkUnitBase*)addonCharacter))
             {
@@ -125,9 +127,10 @@ namespace AutoDuty.Helpers
                     AgentStatus.Instance()->Show();
                 return 0;
             }
-        }
+        }*/
+        
 
-        internal static uint CurrentItemLevelCalc()
+        /*internal static uint CurrentItemLevelCalc()
         {
             var equipedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
             uint itemLevelTotal = 0;
@@ -155,7 +158,7 @@ namespace AutoDuty.Helpers
                 itemLevelTotal += itemLevelOfMainHand;
 
             return itemLevelTotal / 12;
-        }
+        }*/
 
         internal static InventoryItem LowestEquippedItem()
         {
