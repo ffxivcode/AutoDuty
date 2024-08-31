@@ -35,9 +35,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
-using static AutoDuty.Windows.ConfigTab;
 using AutoDuty.Properties;
-using System.Reflection;
 
 namespace AutoDuty;
 
@@ -180,16 +178,15 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             Plugin = this;
             ECommonsMain.Init(PluginInterface, Plugin, ECommons.Module.DalamudReflector, ECommons.Module.ObjectFunctions);
-
+            
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             ConfigTab.BuildManuals();
             _configDirectory = PluginInterface.ConfigDirectory;
             PathsDirectory = new(_configDirectory.FullName + "/paths");
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            Version? version = assembly.GetName().Version;
-            Configuration.Version = version!.Revision;
+            Configuration.Version = PluginInterface.Manifest.AssemblyVersion.Revision;
+
             if (!_configDirectory.Exists)
                 _configDirectory.Create();
             if (!PathsDirectory.Exists)
@@ -928,7 +925,7 @@ public sealed class AutoDuty : IDalamudPlugin
         Chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
         Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTargetFloat}");
         Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlotFloat}");
-        Chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player.Name : ((Configuration.FollowRole && !FollowName.IsNullOrEmpty()) ? FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player.Name)))}");
+        Chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player.Name)))}");
 
         if (!bmr)
         {
