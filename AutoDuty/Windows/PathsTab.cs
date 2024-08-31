@@ -22,6 +22,8 @@ namespace AutoDuty.Windows
         private static ContentPathsManager.DutyPath? _selectedDutyPath;
         private static bool                          _checked = false;
 
+        private static readonly Dictionary<uint, bool> headers = [];
+
         private static void CheckBoxOnChange()
         {
             if (_selectedDutyPath == null)
@@ -64,13 +66,20 @@ namespace AutoDuty.Windows
 
             ImGui.PopStyleColor();
             ImGui.SameLine();
-            using (var savedPathsDisabled = ImRaii.Disabled(!Plugin.Configuration.PathSelections.Any(kvp => kvp.Value.Any())))
+            using (ImRaii.Disabled(!Plugin.Configuration.PathSelections.Any(kvp => kvp.Value.Any())))
             {
                 if (ImGuiEx.ButtonWrapped("Clear all cached classes"))
                 {
                     Plugin.Configuration.PathSelections.Clear();
                     Plugin.Configuration.Save();
                 }
+            }
+
+            bool anyHeaderOpen = headers.Values.Any(b => b);
+            if (ImGuiEx.ButtonWrapped(anyHeaderOpen ? "Collapse All" : "Reveal All"))
+            {
+                foreach (uint key in headers.Keys) 
+                    headers[key] = !anyHeaderOpen;
             }
 
 
@@ -84,80 +93,90 @@ namespace AutoDuty.Windows
                              ImGuiWindowFlags.HorizontalScrollbar | ImGuiWindowFlags.AlwaysVerticalScrollbar);
             try
             {
-                foreach ((uint key, ContentPathsManager.ContentPathContainer? container) in ContentPathsManager.DictionaryPaths)
+                foreach ((_, ContentPathsManager.ContentPathContainer? container) in ContentPathsManager.DictionaryPaths)
                 {
                     bool multiple = false;
+
+                    if(!headers.TryGetValue(container.id, out bool open))
+                        headers[container.id] = open = true;
 
                     if (container.Paths.Count > 0)
                     {
                         multiple = true;
-                        ImGui.NewLine();
-                        ImGui.SameLine(1);
-                        ImGuiHelper.ColoredText(container.ColoredNameRegex, $"({key}) {container.Content.Name}");
-                        ImGui.BeginGroup();
-                        ImGui.Indent(20);
+                        if(ImGui.Selectable("##PathHeader_" + container.id, false))
+                            headers[container.id] = !open;
+                        ImGui.SameLine();
+                        ImGuiHelper.ColoredText(container.ColoredNameRegex, $"({container.id}) {container.Content.Name}");
                     }
 
                     List<Tuple<CombatRole, Job>>[] pathJobs = Enumerable.Range(0, container.Paths.Count).Select(_ => new List<Tuple<CombatRole, Job>>()).ToArray();
 
-                    if (multiple)
-                        if (Plugin.Configuration.PathSelections.TryGetValue(key, out Dictionary<Job, int>? pathSelections))
-                            foreach ((Job job, int index) in pathSelections)
-                                pathJobs[index].Add(new Tuple<CombatRole, Job>(job.GetRole(), job));
-
-                    for (int pathIndex = 0; pathIndex < container.Paths.Count; pathIndex++)
+                    if (open)
                     {
-                        ContentPathsManager.DutyPath path = container.Paths[pathIndex];
-
-                        if (ImGui.Selectable("###PathList" + path.FileName, path == _selectedDutyPath))
-                        {
-                            if (path == _selectedDutyPath)
-                            {
-                                _selectedDutyPath = null;
-                            }
-                            else
-                            {
-                                _checked          = Plugin.Configuration.DoNotUpdatePathFiles.Contains(path.FileName);
-                                _selectedDutyPath = path;
-                            }
-                        }
-
-                        if(ImGui.IsItemHovered() && path.PathFile.meta.notes.Count > 0)
-                            ImGui.SetTooltip(string.Join("\n", path.PathFile.meta.notes));
-                        ImGui.SetItemAllowOverlap();
-                        ImGui.SameLine(multiple ? 20 : 1);
-
-                        if (!multiple)
-                        {
-                            ImGuiHelper.ColoredText(container.ColoredNameRegex, container.Content.Name!);
-                            ImGui.SameLine(0, 0);
-                            ImGui.Text(" => ");
-                            ImGui.SameLine(0, 0);
-                        }
-
-                        ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
-
-                        ImGui.SameLine(0, 2);
-                        ImGui.TextColored(ImGuiHelper.VersionColor, $"v{path.PathFile.meta.LastUpdatedVersion}");
-
                         if (multiple)
                         {
-                            foreach ((CombatRole role, Job job) in pathJobs[pathIndex])
+                            ImGui.BeginGroup();
+                            ImGui.Indent(20);
+
+                            if (Plugin.Configuration.PathSelections.TryGetValue(container.id, out Dictionary<Job, int>? pathSelections))
+                                foreach ((Job job, int index) in pathSelections)
+                                    pathJobs[index].Add(new Tuple<CombatRole, Job>(job.GetRole(), job));
+                        }
+
+                        for (int pathIndex = 0; pathIndex < container.Paths.Count; pathIndex++)
+                        {
+                            ContentPathsManager.DutyPath path = container.Paths[pathIndex];
+
+                            if (ImGui.Selectable("###PathList" + path.FileName, path == _selectedDutyPath))
                             {
-                                ImGui.SameLine(0, 2);
-                                ImGui.TextColored(role switch
+                                if (path == _selectedDutyPath)
                                 {
-                                    CombatRole.DPS => ImGuiHelper.RoleDPSColor,
-                                    CombatRole.Healer => ImGuiHelper.RoleHealerColor,
-                                    CombatRole.Tank => ImGuiHelper.RoleTankColor,
-                                    _ => Vector4.One
-                                }, job.ToString());
+                                    _selectedDutyPath = null;
+                                }
+                                else
+                                {
+                                    _checked          = Plugin.Configuration.DoNotUpdatePathFiles.Contains(path.FileName);
+                                    _selectedDutyPath = path;
+                                }
+                            }
+
+                            if (ImGui.IsItemHovered() && path.PathFile.meta.notes.Count > 0)
+                                ImGui.SetTooltip(string.Join("\n", path.PathFile.meta.notes));
+                            ImGui.SetItemAllowOverlap();
+                            ImGui.SameLine(multiple ? 20 : 1);
+
+                            if (!multiple)
+                            {
+                                ImGuiHelper.ColoredText(container.ColoredNameRegex, container.Content.Name!);
+                                ImGui.SameLine(0, 0);
+                                ImGui.Text(" => ");
+                                ImGui.SameLine(0, 0);
+                            }
+
+                            ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
+
+                            ImGui.SameLine(0, 2);
+                            ImGui.TextColored(ImGuiHelper.VersionColor, $"v{path.PathFile.meta.LastUpdatedVersion}");
+
+                            if (multiple)
+                            {
+                                foreach ((CombatRole role, Job job) in pathJobs[pathIndex])
+                                {
+                                    ImGui.SameLine(0, 2);
+                                    ImGui.TextColored(role switch
+                                    {
+                                        CombatRole.DPS => ImGuiHelper.RoleDPSColor,
+                                        CombatRole.Healer => ImGuiHelper.RoleHealerColor,
+                                        CombatRole.Tank => ImGuiHelper.RoleTankColor,
+                                        _ => Vector4.One
+                                    }, job.ToString());
+                                }
                             }
                         }
-                    }
 
-                    if (multiple)
-                        ImGui.EndGroup();
+                        if (multiple)
+                            ImGui.EndGroup();
+                    }
                 }
             }
             catch (InvalidOperationException ex)
