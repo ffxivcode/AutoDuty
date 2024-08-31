@@ -24,6 +24,9 @@ namespace AutoDuty.Helpers
                         1041u, // Brayflox's Longstop
                         1042u, // Stone Vigil
                         1064u, // Sohm Al
+                        1065u, // The Aery
+                        1066u, // The Vault
+                        1109u, // The Great Gubal Library
                         1142u, // Sirensong Sea
                         1144u, // Doma Castle
                         837u,  // Holminster
