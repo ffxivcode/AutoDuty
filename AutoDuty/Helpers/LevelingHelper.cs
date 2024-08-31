@@ -58,12 +58,9 @@ namespace AutoDuty.Helpers
             if (lvl < 15 || combatRole == CombatRole.NonCombat || lvl >= 100)
                 return null;
 
-
-            short ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet();
-            
             if(lvl is >= 16 and < 91)
                 foreach (ContentHelper.Content duty in LevelingDuties)
-                    if (duty.CanRun(lvl, ilvl) && (!trust || duty.CanTrustRun()))
+                    if (duty.CanRun(lvl) && (!trust || duty.CanTrustRun()))
                     {
                         curContent = duty;
                         break;
@@ -77,7 +74,7 @@ namespace AutoDuty.Helpers
                     {
                         if (curContent == null || curContent.ClassJobLevelRequired < content.ClassJobLevelRequired)
                         {
-                            if (content.CanRun(lvl, ilvl) && (!trust || content.CanTrustRun()) && (content.ClassJobLevelRequired < 50 || content.ClassJobLevelRequired % 10 != 0))
+                            if (content.CanRun(lvl) && (!trust || content.CanTrustRun()) && (content.ClassJobLevelRequired < 50 || content.ClassJobLevelRequired % 10 != 0))
                             {
                                 curContent = content;
                             }

@@ -427,7 +427,7 @@ namespace AutoDuty.Windows
 
                                     foreach ((uint _, ContentHelper.Content? content) in dictionary)
                                     {
-                                        bool canRun = content.CanRun(level, ilvl) && (Plugin.Configuration.DutyModeEnum != DutyMode.Trust || content.CanTrustRun());
+                                        bool canRun = content.CanRun(level) && (Plugin.Configuration.DutyModeEnum != DutyMode.Trust || content.CanTrustRun());
                                         using (ImRaii.Disabled(!canRun))
                                         {
                                             if (Plugin.Configuration.HideUnavailableDuties && !canRun)
