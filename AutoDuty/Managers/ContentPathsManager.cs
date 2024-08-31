@@ -100,7 +100,7 @@ namespace AutoDuty.Managers
                 string pathFileColor = AutoDuty.Plugin.Configuration.DoNotUpdatePathFiles.Contains(FileName) ? ImGuiHelper.pathFileColorNoUpdate : ImGuiHelper.pathFileColor;
                 id = uint.Parse(pathMatch.Groups[2].Value);
                 ColoredNameString = pathMatch.Success ?
-                                             $"{pathMatch.Groups[1]}{ImGuiHelper.idColor}{pathMatch.Groups[2]}</>{pathMatch.Groups[3]}<0.8,0.8,1>{pathMatch.Groups[4]}</>{pathFileColor}{pathMatch.Groups[5]}</><0.5,0.5,0.5>{pathMatch.Groups[6]}</>" :
+                                             $"<0.8,0.8,1>{pathMatch.Groups[4]}</>{pathFileColor}{pathMatch.Groups[5]}</>" :
                                              FileName;
                 ColoredNameRegex = RegexHelper.ColoredTextRegex().Match(ColoredNameString);
             }
