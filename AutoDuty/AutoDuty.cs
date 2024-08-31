@@ -1389,7 +1389,7 @@ public sealed class AutoDuty : IDalamudPlugin
                         if (gos != null)
                             Svc.Targets.Target = gos;
                     }
-                    if (Configuration.AutoManageBossModAISettings && !IPCSubscriber_Common.IsReady("BossModReborn"))
+                    if (Configuration.AutoManageBossModAISettings)
                     {
                         var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
 
@@ -1421,7 +1421,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 }
                 else if (!Player.Object.InCombat() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
                 {
-                    if (Configuration.AutoManageBossModAISettings && !IPCSubscriber_Common.IsReady("BossModReborn"))
+                    if (Configuration.AutoManageBossModAISettings)
                     {
                         var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
 
