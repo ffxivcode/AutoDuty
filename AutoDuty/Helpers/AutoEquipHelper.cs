@@ -44,7 +44,6 @@ namespace AutoDuty.Helpers
             GotoInnHelper.Stop();
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("AutoEquipTimeOut");
-            //Svc.Framework.Update += AutoEquipStopUpdate;
             Svc.Framework.Update -= AutoEquipUpdate;
             Svc.Framework.Update -= AutoEquipGearSetterUpdate;
             State = ActionState.None;
