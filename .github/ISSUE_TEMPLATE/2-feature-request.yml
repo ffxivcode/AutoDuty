@@ -1,0 +1,33 @@
+name: Feature Request
+description: Suggest a new feature for the plugin.
+title: "[Feature Request] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: textarea
+    id: the-problem
+    attributes:
+      label: What problem are you trying to fix?
+      description: Describe what the problem that you're trying to fix by creating this request. Please be clear and concise.
+    validations:
+      required: true
+  - type: textarea
+    id: the-solution
+    attributes:
+      label: What is the solution to the problem?
+      description: Provide a description of what you want to change about the plugin's behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: alternative-solutions
+    attributes:
+      label: Alternative solutions
+      description: List some alternative solutions you are using or have considered using.
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Please add any other context or screenshots pertaining to the feature request here.
