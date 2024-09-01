@@ -860,7 +860,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private void SetRotationPluginSettings(bool on)
+    internal void SetRotationPluginSettings(bool on)
     {
         if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
         {

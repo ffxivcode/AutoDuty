@@ -33,10 +33,11 @@ namespace AutoDuty.Managers
             ("MoveToObject","Object Name?"),
             ("DutySpecificCode","step #?"),
             ("BossMod","on / off"),
+            ("Rotation", "on / off"),
             ("Target","Target what?"),
             ("AutoMoveFor", "how long?"),
             ("ChatCommand","Command with args?"),
-            ("StopForCombat","True/False"),
+            ("StopForCombat","true/false"),
             ("Revival",  "false"),
             ("ForceAttack",  "false"),
             ("Jump", "automove for how long before"),
@@ -65,6 +66,27 @@ namespace AutoDuty.Managers
         }
 
         public void BossMod(string sts) => _chat.ExecuteCommand($"/vbmai {sts}");
+
+        private bool _autoManageRotationPluginState = false;
+        public void Rotation(string sts)
+        {
+            if (sts.Equals("off", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (AutoDuty.Plugin.Configuration.AutoManageRotationPluginState)
+                {
+                    _autoManageRotationPluginState = true;
+                    AutoDuty.Plugin.Configuration.AutoManageRotationPluginState = false;
+                }
+                AutoDuty.Plugin.SetRotationPluginSettings(false);
+            }
+            else if (sts.Equals("on", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (_autoManageRotationPluginState)
+                    AutoDuty.Plugin.Configuration.AutoManageRotationPluginState = true;
+
+                AutoDuty.Plugin.SetRotationPluginSettings(true);
+            }
+        }
 
         public void StopForCombat(string TrueFalse)
         {
