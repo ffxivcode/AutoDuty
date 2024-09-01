@@ -1,0 +1,45 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please make sure someone else hasn't reported the same bug by going to the [issues page](https://github.com/ffxivcode/AutoDuty/issues) and searching for a similar issue. If you find a similar issue, please react to the initial post with 👍 to increase its priority.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also, what did you expect to happen? Please put any screenshots you can share here as well.
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of the plugin are you using?
+      options:
+        - Release
+        - Testing
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce the error
+      description: List all of the steps we can take to reproduce this error.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output from `/xllog`.
+      render: shell
+  - type: textarea
+    id: other-plugins
+    attributes:
+      label: Other relevant plugins installed
+      description: List all of the other plugins you have installed that might be relevant to this issue.
