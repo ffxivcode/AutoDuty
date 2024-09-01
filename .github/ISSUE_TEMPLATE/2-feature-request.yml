@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this feature request!
+        Please make sure someone else hasn't requested the same feature by going to the [issues page](https://github.com/ffxivcode/AutoDuty/issues) and searching for a similar request.
   - type: textarea
     id: the-problem
     attributes:
