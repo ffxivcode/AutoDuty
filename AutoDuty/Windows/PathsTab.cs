@@ -153,10 +153,10 @@ namespace AutoDuty.Windows
                                 ImGui.SameLine(0, 0);
                             }
 
-                            ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
 
+                            ImGui.TextColored(ImGuiHelper.VersionColor, $"(v{path.PathFile.meta.LastUpdatedVersion})");
                             ImGui.SameLine(0, 2);
-                            ImGui.TextColored(ImGuiHelper.VersionColor, $"v{path.PathFile.meta.LastUpdatedVersion}");
+                            ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
 
                             if (multiple)
                             {
