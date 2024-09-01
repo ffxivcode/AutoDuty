@@ -11,12 +11,16 @@ using ECommons.GameFunctions;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using static FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureMacroModule.Macro.Delegates;
 
 namespace AutoDuty.Managers
 {
@@ -43,7 +47,9 @@ namespace AutoDuty.Managers
             ("Jump", "automove for how long before"),
             //("PausePandora", "Which feature | how long"),
             ("CameraFacing", "Face which Coords?"),
-            ("ClickTalk", "false")
+            ("ClickTalk", "false"),
+            ("ConditionAction","condition;args,action;args"),
+            ("ModifyIndex", "what number (0-based)")
         ];
 
         public void InvokeAction(string action, object?[] p)
@@ -64,8 +70,45 @@ namespace AutoDuty.Managers
                 //Svc.Log.Error(ex.ToString());
             }
         }
+        
+        public unsafe void ConditionAction(string conditionAction)
+        {
+            if (!conditionAction.Any(x => x.Equals(','))) return;
+
+            AutoDuty.Plugin.Action = $"ConditionAction: {conditionAction}";
+            var condition = conditionAction.Split(",")[0];
+            var conditionArray = condition.Split(";");
+            var action = conditionAction.Split(',')[1];
+            var actionArray = action.Split(";");
+            var invokeAction = false;
+            
+            switch (conditionArray[0])
+            {
+                case "Item":
+                    uint itemId = uint.TryParse(conditionArray[1], out var id) ? id : 0;
+                    uint itemqty = uint.TryParse(conditionArray[2], out var qty) ? qty : 1;
+                    Svc.Log.Debug($"ConditionAction: Checking Item: {itemId} Qty: {InventoryHelper.ItemCount(itemId)} >= {itemqty}");
+                    if (conditionArray.Length > 1 && InventoryHelper.ItemCount(itemId) >= qty)
+                            invokeAction = true;
+                    break;
+            }
+            if (invokeAction)
+            {
+                var actionActual = actionArray[1];
+                string actionArguments = actionArray.Length > 1 ? actionArray[2] : "";
+                Svc.Log.Debug($"ConditionAction: Invoking Action: {actionActual} with Arguments: {actionArguments}");
+                InvokeAction(actionActual, [actionArguments]);
+            }
+        }
 
         public void BossMod(string sts) => _chat.ExecuteCommand($"/vbmai {sts}");
+
+        public void ModifyIndex(string index)
+        {
+            if (!int.TryParse(index, out int _index)) return;
+            AutoDuty.Plugin.Indexer = _index;
+            AutoDuty.Plugin.Stage = Stage.Reading_Path;
+        }
 
         private bool _autoManageRotationPluginState = false;
         public void Rotation(string sts)
@@ -352,7 +395,6 @@ namespace AutoDuty.Managers
         {
             if (((AutoDuty.Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
                 return true;
-
 
             if (EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
                 AutoDuty.Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
