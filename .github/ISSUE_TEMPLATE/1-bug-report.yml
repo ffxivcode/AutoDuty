@@ -31,7 +31,7 @@ body:
     attributes:
       label: Steps to reproduce the error
       description: List all of the steps we can take to reproduce this error.
-      placeholder: 1. I logged into the game.\n2. I opened the plugin.
+      placeholder: 1. I logged into the game... etc.
     validations:
       required: true
   - type: textarea
@@ -40,3 +40,9 @@ body:
       label: Relevant log output
       description: Please copy and paste any relevant log output from `/xllog`.
       render: shell
+  - type: textarea
+    id: other-plugins
+    attributes:
+      label: Other relevant plugins installed
+      description: List all of the other plugins you have installed that might be relevant to this issue.
+      placeholder: AutoRetainer, Veyn's Boss Mod, etc.
