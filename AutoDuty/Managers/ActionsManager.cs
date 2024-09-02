@@ -13,7 +13,6 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
@@ -62,9 +61,9 @@ namespace AutoDuty.Managers
                 else
                     Svc.Log.Error("no action");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Svc.Log.Error(ex.ToString());
+                Svc.Log.Error(ex.ToString());
             }
         }
         
@@ -78,21 +77,44 @@ namespace AutoDuty.Managers
             var action = conditionAction.Split(',')[1];
             var actionArray = action.Split(";");
             var invokeAction = false;
-            
+            Svc.Log.Debug($"{condition} {conditionArray.Length} {action} {actionArray.Length}");
             switch (conditionArray[0])
             {
-                case "Item":
-                    uint itemId = uint.TryParse(conditionArray[1], out var id) ? id : 0;
-                    uint itemqty = uint.TryParse(conditionArray[2], out var qty) ? qty : 1;
-                    Svc.Log.Debug($"ConditionAction: Checking Item: {itemId} Qty: {InventoryHelper.ItemCount(itemId)} >= {itemqty}");
-                    if (conditionArray.Length > 1 && InventoryHelper.ItemCount(itemId) >= qty)
+                case "ItemGreaterThan":
+                    uint itemIdgt = conditionArray.Length > 1 && uint.TryParse(conditionArray[1], out var idgt) ? idgt : 0;
+                    uint itemqtygt = conditionArray.Length > 2 && uint.TryParse(conditionArray[2], out var qtygt) ? qtygt : 1;
+                    Svc.Log.Debug($"ConditionAction: Checking Item: {itemIdgt} Qty: {InventoryHelper.ItemCount(itemIdgt)} >= {itemqtygt}");
+                    if (itemIdgt != 0 && InventoryHelper.ItemCount(itemIdgt) >= itemqtygt)
                             invokeAction = true;
+                    break;
+                case "ItemLessThan":
+                    uint itemIdlt = conditionArray.Length > 1 && uint.TryParse(conditionArray[1], out var idlt) ? idlt : 0;
+                    uint itemqtylt = conditionArray.Length > 2 && uint.TryParse(conditionArray[2], out var qtylt) ? qtylt : 1;
+                    Svc.Log.Debug($"ConditionAction: Checking Item: {itemIdlt} Qty: {InventoryHelper.ItemCount(itemIdlt)} < {itemqtylt}");
+                    if (itemIdlt != 0 && InventoryHelper.ItemCount(itemIdlt) < itemqtylt)
+                        invokeAction = true;
+                    break;
+                case "ObjectNotTargetable":
+                    if (conditionArray.Length > 1)
+                    {
+                        IGameObject? gameObject = null;
+                        if ((gameObject = ObjectHelper.GetObjectByDataId(uint.TryParse(conditionArray[1], out uint dataId) ? dataId : 0)) != null && !gameObject.IsTargetable)
+                            invokeAction = true;
+                    }
+                    break;
+                case "ObjectTargetable":
+                    if (conditionArray.Length > 1)
+                    {
+                        IGameObject? gameObject = null;
+                        if ((gameObject = ObjectHelper.GetObjectByDataId(uint.TryParse(conditionArray[1], out uint dataId) ? dataId : 0)) != null && gameObject.IsTargetable)
+                            invokeAction = true;
+                    }
                     break;
             }
             if (invokeAction)
             {
-                var actionActual = actionArray[1];
-                string actionArguments = actionArray.Length > 1 ? actionArray[2] : "";
+                var actionActual = actionArray[0];
+                string actionArguments = actionArray.Length > 1 ? actionArray[1] : "";
                 Svc.Log.Debug($"ConditionAction: Invoking Action: {actionActual} with Arguments: {actionArguments}");
                 InvokeAction(actionActual, [actionArguments]);
             }
