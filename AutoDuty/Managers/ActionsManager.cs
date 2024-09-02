@@ -11,8 +11,6 @@ using ECommons.GameFunctions;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +18,6 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using static FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureMacroModule.Macro.Delegates;
 
 namespace AutoDuty.Managers
 {
