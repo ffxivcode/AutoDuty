@@ -40,7 +40,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug($"SchedulerHelper - {name} Added to Scheduler");
         }
 
-        internal static bool DescheduleAction(string name) => Schedules.Remove(name);
+        internal static void DescheduleAction(string name) => _schedulesToRemove.Enqueue(name);
 
         private static readonly Queue<string> _schedulesToRemove = [];
 
