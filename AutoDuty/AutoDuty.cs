@@ -384,6 +384,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 if (TrustLevelingEnabled && TrustManager.members.Any(tm => tm.Value.Level < tm.Value.LevelCap))
                 {
+                    TaskManager.Enqueue(() => Svc.Log.Debug($"Trust Leveling Enabled"), "Loop-Debug");
                     TrustManager.ClearCachedLevels(CurrentTerritoryContent);
                     TrustManager.GetLevels(CurrentTerritoryContent);
                     TaskManager.DelayNext(50);
@@ -394,16 +395,17 @@ public sealed class AutoDuty : IDalamudPlugin
                 {
                     if (StopLoop)
                     {
-                        Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop");
+                        TaskManager.Enqueue(() => Svc.Log.Info($"Loop Stop Condition Encountered, Stopping Loop"));
                         LoopsCompleteActions();
                     }
-                    else if (Configuration.EnableBetweenLoopActions)
+                    else
                         LoopTasks();
                 }, "Loop-CheckStopLoop");
 
             }
             else
             {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Loops Done"), "Loop-Debug");
                 TaskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Loop {CurrentLoop} == {Configuration.LoopTimes} we are done Looping, Invoking LoopsCompleteActions"), "Loop-Debug");
                 TaskManager.Enqueue(() => LoopsCompleteActions(), "Loop-LoopCompleteActions");
@@ -417,6 +419,7 @@ public sealed class AutoDuty : IDalamudPlugin
         //Svc.Log.Debug($"{flag} : {value}");
         if (Stage != Stage.Dead && Stage != Stage.Revived && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && States.HasFlag(PluginState.Navigating) && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
         {
+            Svc.Log.Info($"Condition_ConditionChange: Indexer Increase and Change Stage to Condition");
             Indexer++;
             VNavmesh_IPCSubscriber.Path_Stop();
             Stage = Stage.Condition;
@@ -432,88 +435,101 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (CurrentTerritoryContent == null) return;
 
-        if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.IsEnabled && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
+        if (Configuration.EnableBetweenLoopActions)
         {
-            if (Configuration.EnableAutoRetainer)
+            if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.IsEnabled && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
             {
-                TaskManager.Enqueue(() => AutoRetainerHelper.Invoke(), "Loop-AutoRetainer");
+                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoRetainer BetweenLoop Actions"));
+                if (Configuration.EnableAutoRetainer)
+                {
+                    TaskManager.Enqueue(() => AutoRetainerHelper.Invoke(), "Loop-AutoRetainer");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => AutoRetainerHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoRetainerComplete");
+                }
+                else
+                {
+                    TaskManager.Enqueue(() => AutoRetainer_IPCSubscriber.IsBusy(), 15000, "Loop-AutoRetainerIntegrationDisabledWait15sRetainerSense");
+                    TaskManager.Enqueue(() => !AutoRetainer_IPCSubscriber.IsBusy(), int.MaxValue, "Loop-AutoRetainerIntegrationDisabledWaitARNotBusy");
+                    TaskManager.Enqueue(() => AutoRetainerHelper.Stop(), "Loop-AutoRetainerStop");
+                }
+            }
+
+            if (Configuration.AutoConsume)
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoConsume Between Loop Actions"));
+                Configuration.AutoConsumeItemsList.Each(x =>
+                {
+                    TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Loop-AutoConsume({x.Value.Name})");
+                    TaskManager.Enqueue(() => ObjectHelper.IsReady);
+                });
+            }
+
+            if (Configuration.AutoEquipRecommendedGear)
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoEquipRecommendedGear Between Loop Action"));
+                TaskManager.Enqueue(() => AutoEquipHelper.Invoke(), "Loop-AutoEquip");
                 TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => AutoRetainerHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoRetainerComplete");
+                TaskManager.Enqueue(() => AutoEquipHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoEquipComplete");
+                TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
             }
-            else
+
+            if (Configuration.AM)
             {
-                TaskManager.Enqueue(() => AutoRetainer_IPCSubscriber.IsBusy(), 15000, "Loop-AutoRetainerIntegrationDisabledWait15sRetainerSense");
-                TaskManager.Enqueue(() => !AutoRetainer_IPCSubscriber.IsBusy(), int.MaxValue, "Loop-AutoRetainerIntegrationDisabledWaitARNotBusy");
-                TaskManager.Enqueue(() => AutoRetainerHelper.Stop(), "Loop-AutoRetainerStop");
+                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoMarket Between Loop Action"));
+                TaskManager.Enqueue(() => AMHelper.Invoke(), "Loop-AM");
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => AMHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAMComplete");
+            }
+
+            if (Configuration.AutoRepair && InventoryHelper.CanRepair())
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoRepair Between Loop Action"));
+                TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoRepairComplete");
+                TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
+            }
+
+            if (Configuration.AutoExtract && (QuestManager.IsQuestComplete(66174)))
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoExtract Between Loop Action"));
+                TaskManager.Enqueue(() => ExtractHelper.Invoke(), "Loop-AutoExtract");
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => ExtractHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoExtractComplete");
+            }
+
+            if (Configuration.AutoDesynth)
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoDesynth Between Loop Action"));
+                TaskManager.Enqueue(() => DesynthHelper.Invoke(), "Loop-AutoDesynth");
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => DesynthHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoDesynthComplete");
+            }
+
+            if (Configuration.AutoGCTurnin && (!Configuration.AutoGCTurninSlotsLeftBool || InventoryManager.Instance()->GetEmptySlotsInBag() <= Configuration.AutoGCTurninSlotsLeft) && ObjectHelper.GrandCompanyRank > 5)
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"GC Turnin Between Loop Action"));
+                TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => GCTurninHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
+            }
+
+            if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Retire Between Loop Action"));
+                if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
+                    TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
+                else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
+                    TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Loop-GotoInnInvoke");
+                else
+                {
+                    Svc.Log.Info($"{(Housing)Configuration.RetireLocationEnum} {Configuration.RetireLocationEnum}");
+                    TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Loop-GotoHousingInvoke");
+                }
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => GotoHousingHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitGotoComplete");
             }
         }
-
-        if (Configuration.AutoConsume)
-            Configuration.AutoConsumeItemsList.Each(x =>
-            {
-                TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Loop-AutoConsume({x.Value.Name})");
-                TaskManager.Enqueue(() => ObjectHelper.IsReady);
-            });
-
-        if (Configuration.AutoEquipRecommendedGear)
-        {
-            TaskManager.Enqueue(() => AutoEquipHelper.Invoke(), "Loop-AutoEquip");
-            TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => AutoEquipHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoEquipComplete");
-            TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
-        }
-
-        if (Configuration.AM)
-        {
-            TaskManager.Enqueue(() => AMHelper.Invoke(), "Loop-AM");
-            TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => AMHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAMComplete");
-        }
-
-        if (Configuration.AutoRepair && InventoryHelper.CanRepair())
-        {
-            TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
-            TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoRepairComplete");
-            TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
-        }
-
-        if (Configuration.AutoExtract && (QuestManager.IsQuestComplete(66174)))
-        {
-            TaskManager.Enqueue(() => ExtractHelper.Invoke(), "Loop-AutoExtract");
-            TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => ExtractHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoExtractComplete");
-        }
-
-        if (Configuration.AutoDesynth)
-        {
-            TaskManager.Enqueue(() => DesynthHelper.Invoke(), "Loop-AutoDesynth");
-            TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => DesynthHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoDesynthComplete");
-        }
-
-        if (Configuration.AutoGCTurnin && (!Configuration.AutoGCTurninSlotsLeftBool || InventoryManager.Instance()->GetEmptySlotsInBag() <= Configuration.AutoGCTurninSlotsLeft) && ObjectHelper.GrandCompanyRank > 5)
-        {
-            TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
-            TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => GCTurninHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
-        }
-
-        if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)
-        {
-            if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
-                TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Loop-GotoBarracksInvoke");
-            else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
-                TaskManager.Enqueue(() => GotoInnHelper.Invoke(), "Loop-GotoInnInvoke");
-            else
-            {
-                Svc.Log.Info($"{(Housing)Configuration.RetireLocationEnum} {Configuration.RetireLocationEnum}");
-                TaskManager.Enqueue(() => GotoHousingHelper.Invoke((Housing)Configuration.RetireLocationEnum), "Loop-GotoHousingInvoke");
-            }
-            TaskManager.DelayNext("Loop-Delay50", 50);
-            TaskManager.Enqueue(() => GotoHousingHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitGotoComplete");
-        }
-
         if (LevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
@@ -531,7 +547,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 return;
             }
         }
-
+        TaskManager.Enqueue(() => Svc.Log.Debug($"Registering New Loop"));
         if (Configuration.DutyModeEnum == DutyMode.Trust)
             TrustManager.RegisterTrust(CurrentTerritoryContent);
 
@@ -554,13 +570,14 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => QueueHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitQueueComplete");
         }
-
+        TaskManager.Enqueue(() => Svc.Log.Debug($"Incrementing LoopCount, Setting Action Var, Wait for CorrectTerritory, PlayerIsValid, DutyStarted, and NavIsReady"));
         TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
         TaskManager.Enqueue(() => { Action = $"Looping: {CurrentTerritoryContent.Name} {CurrentLoop} of {Configuration.LoopTimes}"; }, "Loop-SetAction");
         TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
         TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Loop-WaitPlayerValid");
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Loop-WaitDutyStarted");
         TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Loop-WaitNavReady");
+        TaskManager.Enqueue(() => Svc.Log.Debug($"StartNavigation"));
         TaskManager.Enqueue(() => StartNavigation(true), "Loop-StartNavigation");
     }
 
@@ -570,17 +587,20 @@ public sealed class AutoDuty : IDalamudPlugin
         
         if (Configuration.EnableTerminationActions)
         {
+            TaskManager.Enqueue(() => Svc.Log.Debug($"TerminationActions are Enabled"));
             if (Configuration.ExecuteCommandsTermination)
             {
-                Svc.Log.Debug($"ExecutingCommandsTermination, executing {Configuration.CustomCommandsTermination.Count} commands");
+                TaskManager.Enqueue(() => Svc.Log.Debug($"ExecutingCommandsTermination, executing {Configuration.CustomCommandsTermination.Count} commands"));
                 Configuration.CustomCommandsTermination.Each(x => Chat.ExecuteCommand(x));
             }
             if (Configuration.PlayEndSound)
             {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Playing End Sound"));
                 SoundHelper.StartSound(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundEnum);
             }
             if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
             {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Killing PC"));
                 if (!Configuration.TerminationKeepActive)
                 {
                     Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
@@ -606,6 +626,7 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             else if (Configuration.TerminationMethodEnum == TerminationMode.Kill_Client)
             {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Killing Client"));
                 if (!Configuration.TerminationKeepActive)
                 {
                     Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
@@ -616,6 +637,7 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             else if (Configuration.TerminationMethodEnum == TerminationMode.Logout)
             {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Logging Out"));
                 if (!Configuration.TerminationKeepActive)
                 {
                     Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
@@ -632,13 +654,14 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             else if (Configuration.TerminationMethodEnum == TerminationMode.Start_AR_Multi_Mode)
             {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Starting AR Multi Mode"));
                 TaskManager.Enqueue(() => Chat.ExecuteCommand($"/ays multi"));
                 TaskManager.Enqueue(() => States &= ~PluginState.Looping);
                 TaskManager.Enqueue(() => CurrentLoop = 0);
                 TaskManager.Enqueue(() => Stage = Stage.Stopped);
             }
         }
-
+        Svc.Log.Debug($"Removing Looping, Setting CurrentLoop to 0, and Setting Stage to Stopped");
         States &= ~PluginState.Looping;
         CurrentLoop = 0;
         SchedulerHelper.ScheduleAction("SetStageStopped", () => Stage = Stage.Stopped, 1);
@@ -690,20 +713,24 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 if (Configuration.ExecuteCommandsPreLoop)
                 {
-                    Svc.Log.Debug($"ExecutingCommandsPreLoop, executing {Configuration.CustomCommandsTermination.Count} commands");
+                    TaskManager.Enqueue(() => Svc.Log.Debug($"ExecutingCommandsPreLoop, executing {Configuration.CustomCommandsTermination.Count} commands"));
                     Configuration.CustomCommandsPreLoop.Each(x => TaskManager.Enqueue(() => Chat.ExecuteCommand(x), "Run-ExecuteCommandsPreLoop"));
                 }
-                    
-                
+
+
                 if (Configuration.AutoConsume)
+                {
+                    TaskManager.Enqueue(() => Svc.Log.Debug($"AutoConsume PreLoop Action"));
                     Configuration.AutoConsumeItemsList.Each(x =>
                     {
                         TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Run-AutoConsume({x.Value.Name})");
                         TaskManager.Enqueue(() => ObjectHelper.IsReady);
                     });
+                }
 
                 if (Configuration.AutoRepair && InventoryHelper.CanRepair())
                 {
+                    TaskManager.Enqueue(() => Svc.Log.Debug($"AutoRepair PreLoop Action"));
                     TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
                     TaskManager.DelayNext("Run-AutoRepairDelay50", 50);
                     TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Run-WaitAutoRepairComplete");
@@ -712,6 +739,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)
                 {
+                    TaskManager.Enqueue(() => Svc.Log.Debug($"Retire PreLoop Action"));
                     if (Configuration.RetireLocationEnum == RetireLocation.GC_Barracks)
                         TaskManager.Enqueue(() => GotoBarracksHelper.Invoke(), "Run-GotoBarracksInvoke");
                     else if (Configuration.RetireLocationEnum == RetireLocation.Inn)
@@ -722,6 +750,8 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => GotoHousingHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Run-WaitGotoComplete");
                 }
             }
+
+            TaskManager.Enqueue(() => Svc.Log.Debug($"Queueing First Run"));
             if (Configuration.DutyModeEnum == DutyMode.Trust)
                 TrustManager.RegisterTrust(CurrentTerritoryContent);
             else if (Configuration.DutyModeEnum == DutyMode.Support)
@@ -744,8 +774,10 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => !ObjectHelper.IsValid, "Run-WaitNotValid");
             TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Run-WaitValid");
         }
+        TaskManager.Enqueue(() => Svc.Log.Debug($"Done Queueing-WaitDutyStarted, NavIsReady"));
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, "Run-WaitDutyStarted");
         TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run-WaitNavIsReady");
+        TaskManager.Enqueue(() => Svc.Log.Debug($"Start Navigation"));
         TaskManager.Enqueue(() => StartNavigation(true), "Run-StartNavigation");
         CurrentLoop = 1;
     }
