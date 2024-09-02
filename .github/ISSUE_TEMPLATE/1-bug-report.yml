@@ -14,15 +14,11 @@ body:
       description: Also, what did you expect to happen? Please put any screenshots you can share here as well.
     validations:
       required: true
-  - type: dropdown
-    id: version
+  - type: input
+    id: version-number
     attributes:
-      label: Version
-      description: What version of the plugin are you using?
-      options:
-        - Release
-        - Testing
-      default: 0
+      label: Version Number
+      description: What version number of AutoDuty are you on? This is displayed in the title bar of the plugin window.
     validations:
       required: true
   - type: textarea
@@ -42,4 +38,4 @@ body:
     id: other-plugins
     attributes:
       label: Other relevant plugins installed
-      description: List all of the other plugins you have installed that might be relevant to this issue.
+      description: List all of the other plugins you have installed that might be relevant to this issue and their version numbers.
