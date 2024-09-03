@@ -424,6 +424,7 @@ namespace AutoDuty.Managers
 
             return false;
         }
+
         private bool BossMoveCheck(Vector3 bossV3)
         {
             if (AutoDuty.Plugin.BossObject != null && AutoDuty.Plugin.BossObject.InCombat())
@@ -434,10 +435,30 @@ namespace AutoDuty.Managers
             return MovementHelper.Move(bossV3);
         }
 
+        private void BossLoot(List<IGameObject>? gameObjects, int index)
+        {
+            if (gameObjects == null || gameObjects.Count < 1)
+            {
+                _taskManager.DelayNext("Boss-WaitASecToLootChest", 1000);
+                return;
+            }
+
+            _taskManager.Enqueue(() => MovementHelper.Move(gameObjects[index], 0.25f, 1f));
+            _taskManager.Enqueue(() =>
+            {
+                index++;
+                if (gameObjects.Count > index)
+                    BossLoot(gameObjects, index);
+                else
+                    _taskManager.DelayNext("Boss-WaitASecToLootChest", 1000);
+            });
+        }
+
         public void Boss(Vector3 bossV3)
         {
             Svc.Log.Info($"Starting Action Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? "null"}");
-            IGameObject? treasureCofferObject = null;
+            int index = 0;
+            List<IGameObject>? treasureCofferObjects = null;
             AutoDuty.Plugin.SkipTreasureCoffer = false;
             _taskManager.Enqueue(() => BossMoveCheck(bossV3), "Boss-MoveCheck");
             if (AutoDuty.Plugin.BossObject == null)
@@ -447,20 +468,13 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => BossCheck(), int.MaxValue, "Boss-BossCheck");
             _taskManager.Enqueue(() => { AutoDuty.Plugin.StopForCombat = true; }, "Boss-SetStopForCombatTrue");
             _taskManager.Enqueue(() => { AutoDuty.Plugin.BossObject = null; }, "Boss-ClearBossObject");
+            
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
                 _taskManager.DelayNext("Boss-TreasureDelay", 1000);
-                _taskManager.Enqueue(() => (treasureCofferObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) < 50)) != null, 1000, "Boss-FindTreasure");
-                _taskManager.Enqueue(() => MovementHelper.Move(treasureCofferObject, 0.25f, 1f), 10000, "Boss-MoveTreasure");
-                _taskManager.DelayNext("Boss-WaitASecToLootChest", 1000);
+                _taskManager.Enqueue(() => treasureCofferObjects = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => ObjectHelper.GetDistanceToPlayer(x) <= 30).ToList(), "Boss-GetTreasureChests");
+                _taskManager.Enqueue(() => BossLoot(treasureCofferObjects, index), "Boss-LootCheck");
             }
-            _taskManager.DelayNext("Boss-Delay500", 500);
-            _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = ""; }, "Boss-ClearActionVar");
-            _taskManager.Enqueue(() =>
-            {
-                if (IPCSubscriber_Common.IsReady("BossModReborn") && AutoDuty.Plugin.Configuration.AutoManageBossModAISettings)
-                    AutoDuty.Plugin.SetBMSettings();
-            }, "Boss-SetFollowTargetBMR");
         }
 
         public void PausePandora(string featureName, string intMs)

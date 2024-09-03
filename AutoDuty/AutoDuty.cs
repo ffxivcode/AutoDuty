@@ -1038,7 +1038,7 @@ public sealed class AutoDuty : IDalamudPlugin
         Indexer = FindWaypoint();
         TaskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2));
         TaskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno"), int.MaxValue);
-        TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
+        TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), int.MaxValue);
         TaskManager.Enqueue(() => !ObjectHelper.IsValid, 500);
         TaskManager.Enqueue(() => ObjectHelper.IsValid);
         TaskManager.Enqueue(() => { if (Indexer == 0) Indexer = FindWaypoint(); });
