@@ -41,7 +41,6 @@ namespace AutoDuty.Helpers
             Svc.Log.Debug("AutoEquipHelper.Stop");
             if (State == ActionState.Running)
                 Svc.Log.Info("AutoEquip Finished");
-            GotoInnHelper.Stop();
             AutoDuty.Plugin.Action = "";
             SchedulerHelper.DescheduleAction("AutoEquipTimeOut");
             Svc.Framework.Update -= AutoEquipUpdate;
@@ -51,6 +50,8 @@ namespace AutoDuty.Helpers
             if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
                 AutoDuty.Plugin.SetGeneralSettings(true);
             _statesExecuted = AutoEquipState.None;
+            _index = 0;
+            _gearset = null;
         }
 
         [Flags]
