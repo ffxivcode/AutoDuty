@@ -34,8 +34,7 @@ namespace AutoDuty.Helpers
 
         internal static bool UseItemUntilAnimationLock(uint itemId, bool allowHq = true)
         {
-            Svc.Log.Info($"UseItemUntilAnimationLock {ObjectHelper.AnimationLock}");
-            if (ObjectHelper.AnimationLock > 0)
+            if (ObjectHelper.IsAnimationLocked)
                 return true;
 
             if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !ObjectHelper.IsReady || Player.Character->IsCasting)

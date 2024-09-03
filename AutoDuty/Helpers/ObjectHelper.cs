@@ -228,14 +228,15 @@ namespace AutoDuty.Helpers
         && (Svc.Condition[ConditionFlag.Jumping]
         || Svc.Condition[ConditionFlag.Jumping61]);
 
-        internal static unsafe float AnimationLock => ActionManager.Instance()->AnimationLock;
+        internal static unsafe bool IsAnimationLocked => ActionManager.Instance()->AnimationLock > 0;
 
         internal static unsafe bool IsReady => IsValid && !IsOccupied;
 
         internal static unsafe bool IsOccupied => GenericHelpers.IsOccupied();
 
-        internal static unsafe bool IsReadyFull    => IsValid    && !IsOccupiedFull;
-        internal static unsafe bool IsOccupiedFull => IsOccupied && AnimationLock > 0;
+        internal static unsafe bool IsReadyFull    => IsValid && !IsOccupiedFull;
+
+        internal static unsafe bool IsOccupiedFull => IsOccupied || IsAnimationLocked;
 
         internal static unsafe bool InCombat(this IBattleChara battleChara) => battleChara.Struct()->Character.InCombat;
 
