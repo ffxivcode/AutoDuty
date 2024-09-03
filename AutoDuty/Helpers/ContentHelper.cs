@@ -13,6 +13,7 @@ namespace AutoDuty.Helpers
     using Dalamud.Utility;
     using ECommons.GameHelpers;
     using FFXIVClientStructs.FFXIV.Client.Game.UI;
+    using FFXIVClientStructs.FFXIV.Component.GUI;
 
     internal static class ContentHelper
     {
@@ -64,6 +65,20 @@ namespace AutoDuty.Helpers
             internal List<TrustMember> TrustMembers { get; set; } = new();
         }
 
+        private unsafe static int DawnIndex(uint index, uint ex)
+        {
+            return ex switch
+            {
+                0 => (int)index - 200,
+                1 => (int)index - 215,
+                2 => (int)index - 224,
+                3 => (int)index - 1,
+                4 => (int)index - 12,
+                5 => (int)index - 23,
+                _ => -1
+            };
+        }
+
         internal static void PopulateDuties()
         {
             var listContentFinderCondition = Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>();
@@ -76,7 +91,7 @@ namespace AutoDuty.Helpers
                 if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value == null || contentFinderCondition.TerritoryType.Value.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 && contentFinderCondition.ContentType.Value.RowId != 30) || contentFinderCondition.Name.RawString.IsNullOrEmpty())
                     continue;
 
-                string CleanName(string name)
+                static string CleanName(string name)
                 {
                     string result = char.ToUpper(name.First()) + name.Substring(1);
                     return result;
@@ -104,7 +119,7 @@ namespace AutoDuty.Helpers
                 };
 
                 if (content.DawnContent && listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).Any())
-                    content.DawnIndex = listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId < 32 ? (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId : (int)listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).First().RowId - 200;
+                    content.DawnIndex = DawnIndex(listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId)?.RowId ?? 999, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId);
 
                 if (content.TrustContent)
                 {
@@ -123,7 +138,8 @@ namespace AutoDuty.Helpers
                     if (content.ExVersion == 5)
                         content.TrustMembers.Add(TrustManager.members[TrustMemberName.Krile]);
                 }
-
+                if (content.DawnContent)
+                    Svc.Log.Info($"{content.EnglishName} {content.DawnIndex}");
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);
             }
 

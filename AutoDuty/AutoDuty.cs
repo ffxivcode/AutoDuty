@@ -570,7 +570,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
         else if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid)
         {
-            TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Loop-Queue");
+            TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent, Configuration.DutyModeEnum), "Loop-Queue");
             TaskManager.DelayNext("Loop-Delay50", 50);
             TaskManager.Enqueue(() => QueueHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitQueueComplete");
         }
@@ -760,13 +760,13 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => Svc.Log.Debug($"Queueing First Run"));
             if (Configuration.DutyModeEnum == DutyMode.Trust)
                 TrustManager.RegisterTrust(CurrentTerritoryContent);
-            else if (Configuration.DutyModeEnum == DutyMode.Support)
-                _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
+            //else if (Configuration.DutyModeEnum == DutyMode.Support)
+                //_dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
             else if (Configuration.DutyModeEnum == DutyMode.Variant)
                 _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
-            else if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid)
+            else if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid || Configuration.DutyModeEnum == DutyMode.Support)
             {
-                TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent), "Run-Queue");
+                TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent, Configuration.DutyModeEnum), "Run-Queue");
                 TaskManager.DelayNext("Run-QueueDelay50", 50);
                 TaskManager.Enqueue(() => QueueHelper.State != ActionState.Running, int.MaxValue, "Run-WaitQueueComplete");
             }
@@ -1207,7 +1207,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (Stage > Stage.Condition && !States.HasFlag(PluginState.Other))
             Action = EnumString(Stage);
-        //Svc.Log.Info($"{Stage} {States}");
+        
         switch (Stage)
         {
             case Stage.Reading_Path:
@@ -1677,7 +1677,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 _actions.ExitDuty("");
                 break;
             case "queue":
-                QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null);
+                QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null, Configuration.DutyModeEnum);
                 break;
             case "overlay":
                 if (argsArray.Length == 1)
