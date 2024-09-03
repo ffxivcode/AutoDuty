@@ -13,7 +13,7 @@ namespace AutoDuty.IPC
 {
     internal static class AutoRetainer_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AutoRetainer_IPCSubscriber), "AutoRetainer.PluginState");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AutoRetainer_IPCSubscriber), "AutoRetainer.PluginState", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("AutoRetainer");
 
@@ -31,7 +31,7 @@ namespace AutoDuty.IPC
 
     internal static class AM_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AM_IPCSubscriber), "AutoBot");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AM_IPCSubscriber), "AutoBot", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("AutoBot");
 
@@ -44,7 +44,7 @@ namespace AutoDuty.IPC
 
     internal static class Marketbuddy_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Marketbuddy_IPCSubscriber), "Marketbuddy");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Marketbuddy_IPCSubscriber), "Marketbuddy", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Marketbuddy");
 
@@ -54,10 +54,10 @@ namespace AutoDuty.IPC
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
-
+    
     internal static class BossMod_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => (IPCSubscriber_Common.IsReady("BossMod") && IPCSubscriber_Common.Version("BossMod") >= new Version(0, 0, 0, 218)) || (IPCSubscriber_Common.IsReady("BossModReborn") && IPCSubscriber_Common.Version("BossModReborn") >= new Version(7, 2, 0, 94));
 
@@ -84,11 +84,11 @@ namespace AutoDuty.IPC
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
-    
+
     /* Seem's YesAlready is not Initializing this
     internal static class YesAlready_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(YesAlready_IPCSubscriber), "YesAlready");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(YesAlready_IPCSubscriber), "YesAlready", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("YesAlready");
 
@@ -99,7 +99,7 @@ namespace AutoDuty.IPC
 
     internal static class Deliveroo_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Deliveroo_IPCSubscriber), "Deliveroo");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Deliveroo_IPCSubscriber), "Deliveroo", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Deliveroo");
 
@@ -112,7 +112,7 @@ namespace AutoDuty.IPC
 
     internal static class Gearsetter_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Gearsetter_IPCSubscriber), "Gearsetter");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Gearsetter_IPCSubscriber), "Gearsetter", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Gearsetter");
 
@@ -123,7 +123,7 @@ namespace AutoDuty.IPC
 
     internal static class VNavmesh_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(VNavmesh_IPCSubscriber), "vnavmesh");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(VNavmesh_IPCSubscriber), "vnavmesh", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("vnavmesh");
 
@@ -167,7 +167,7 @@ namespace AutoDuty.IPC
 
     internal static class PandorasBox_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(PandorasBox_IPCSubscriber), "PandorasBox");
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(PandorasBox_IPCSubscriber), "PandorasBox", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("PandorasBox");
 
