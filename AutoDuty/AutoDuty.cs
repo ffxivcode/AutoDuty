@@ -460,8 +460,11 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => Svc.Log.Debug($"AutoConsume Between Loop Actions"));
                 Configuration.AutoConsumeItemsList.Each(x =>
                 {
-                    TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Loop-AutoConsume({x.Value.Name})");
-                    TaskManager.Enqueue(() => ObjectHelper.IsReady);
+                    if (Configuration.AutoConsumeIgnoreStatus)
+                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilAnimationLock(x.Value.ItemId, x.Value.CanBeHq), $"Loop-AutoConsume({x.Value.Name})");
+                    else
+                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Loop-AutoConsume({x.Value.Name})");
+                    TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitPlayerIsReadyFull");
                 });
             }
 
@@ -488,7 +491,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
                 TaskManager.DelayNext("Loop-Delay50", 50);
                 TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoRepairComplete");
-                TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
+                TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitIsReadyFull");
             }
 
             if (Configuration.AutoExtract && (QuestManager.IsQuestComplete(66174)))
@@ -718,14 +721,16 @@ public sealed class AutoDuty : IDalamudPlugin
                     Configuration.CustomCommandsPreLoop.Each(x => TaskManager.Enqueue(() => Chat.ExecuteCommand(x), "Run-ExecuteCommandsPreLoop"));
                 }
 
-
                 if (Configuration.AutoConsume)
                 {
                     TaskManager.Enqueue(() => Svc.Log.Debug($"AutoConsume PreLoop Action"));
                     Configuration.AutoConsumeItemsList.Each(x =>
                     {
-                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Run-AutoConsume({x.Value.Name})");
-                        TaskManager.Enqueue(() => ObjectHelper.IsReady);
+                        if (Configuration.AutoConsumeIgnoreStatus)
+                            TaskManager.Enqueue(() => InventoryHelper.UseItemUntilAnimationLock(x.Value.ItemId, x.Value.CanBeHq), $"Run-AutoConsume({x.Value.Name})");
+                        else
+                            TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Run-AutoConsume({x.Value.Name})");
+                        TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Run-WaitPlayerIsReadyFull");
                     });
                 }
 
@@ -735,7 +740,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => RepairHelper.Invoke(), "Run-AutoRepair");
                     TaskManager.DelayNext("Run-AutoRepairDelay50", 50);
                     TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Run-WaitAutoRepairComplete");
-                    TaskManager.Enqueue(() => !ObjectHelper.IsOccupied, "Run-WaitAutoRepairNotIsOccupied");
+                    TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Run-WaitAutoRepairIsReadyFull");
                 }
 
                 if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)

@@ -151,6 +151,7 @@ public class Configuration : IPluginConfiguration
     public bool AutoRepairSelf = false;
     public RepairNpcData? PreferredRepairNPC = null;
     public bool AutoConsume = false;
+    public bool AutoConsumeIgnoreStatus = false;
     public List<KeyValuePair<ushort, ConsumableItem>> AutoConsumeItemsList = [];
 
     //Between Loop Config Options
@@ -948,6 +949,12 @@ public static class ConfigTab
                 ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop (if status does not exist)");
                 if (Configuration.AutoConsume)
                 {
+                    ImGui.SameLine(0, 5);
+                    if (ImGui.Checkbox("Ignore Status", ref Configuration.AutoConsumeIgnoreStatus))
+                        Configuration.Save();
+
+                    ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop every time (even if status does exists)");
+                    
                     ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 115);
                     if (ImGui.BeginCombo("##SelectAutoConsumeItem", consumableItemsSelectedItem.Name))
                     {

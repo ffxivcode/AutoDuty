@@ -228,7 +228,7 @@ namespace AutoDuty.Helpers
         && (Svc.Condition[ConditionFlag.Jumping]
         || Svc.Condition[ConditionFlag.Jumping61]);
 
-        private static unsafe float AnimationLock => ActionManager.Instance()->AnimationLock;
+        internal static unsafe float AnimationLock => ActionManager.Instance()->AnimationLock;
 
         internal static unsafe bool IsReady => IsValid && !IsOccupied;
 

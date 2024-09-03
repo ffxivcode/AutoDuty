@@ -4,12 +4,8 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
-using System.Linq;
 using System;
-using ECommons;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
@@ -31,6 +27,19 @@ namespace AutoDuty.Helpers
 
             if (PlayerHelper.HasStatus(statusId))
                 return true;
+
+            UseItemIfAvailable(itemId, allowHq);
+            return false;
+        }
+
+        internal static bool UseItemUntilAnimationLock(uint itemId, bool allowHq = true)
+        {
+            Svc.Log.Info($"UseItemUntilAnimationLock {ObjectHelper.AnimationLock}");
+            if (ObjectHelper.AnimationLock > 0)
+                return true;
+
+            if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !ObjectHelper.IsReady || Player.Character->IsCasting)
+                return false;
 
             UseItemIfAvailable(itemId, allowHq);
             return false;
