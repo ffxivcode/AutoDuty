@@ -157,7 +157,6 @@ public sealed class AutoDuty : IDalamudPlugin
     private const string CommandName = "/autoduty";
     private readonly DirectoryInfo _configDirectory;
     private readonly ActionsManager _actions;
-    private readonly DutySupportManager _dutySupportManager;
     private readonly SquadronManager _squadronManager;
     private readonly VariantManager _variantManager;
     private readonly OverrideAFK _overrideAFK;
@@ -207,7 +206,6 @@ public sealed class AutoDuty : IDalamudPlugin
             Chat = new();
             _overrideAFK = new();
             _ipcProvider = new();
-            _dutySupportManager = new(TaskManager);
             TrustManager = new(TaskManager);
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
@@ -555,9 +553,6 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.DutyModeEnum == DutyMode.Trust)
             TrustManager.RegisterTrust(CurrentTerritoryContent);
 
-        else if (Configuration.DutyModeEnum == DutyMode.Support)
-            _dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
-
         else if (Configuration.DutyModeEnum == DutyMode.Variant)
             _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
 
@@ -568,7 +563,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitGotoComplete");
             _squadronManager.RegisterSquadron(CurrentTerritoryContent);
         }
-        else if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid)
+        else if (Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid, DutyMode.Support))
         {
             TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent, Configuration.DutyModeEnum), "Loop-Queue");
             TaskManager.DelayNext("Loop-Delay50", 50);
@@ -760,11 +755,9 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => Svc.Log.Debug($"Queueing First Run"));
             if (Configuration.DutyModeEnum == DutyMode.Trust)
                 TrustManager.RegisterTrust(CurrentTerritoryContent);
-            //else if (Configuration.DutyModeEnum == DutyMode.Support)
-                //_dutySupportManager.RegisterDutySupport(CurrentTerritoryContent);
             else if (Configuration.DutyModeEnum == DutyMode.Variant)
                 _variantManager.RegisterVariantDuty(CurrentTerritoryContent);
-            else if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid || Configuration.DutyModeEnum == DutyMode.Support)
+            else if (Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid, DutyMode.Support))
             {
                 TaskManager.Enqueue(() => QueueHelper.Invoke(CurrentTerritoryContent, Configuration.DutyModeEnum), "Run-Queue");
                 TaskManager.DelayNext("Run-QueueDelay50", 50);
