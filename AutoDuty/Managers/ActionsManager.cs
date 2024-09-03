@@ -67,6 +67,10 @@ namespace AutoDuty.Managers
             }
         }
         
+        public void Follow(string who) => FollowHelper.SetFollow(ObjectHelper.GetObjectByName(who));
+
+        public void SetBMSettings(string defaultSettings) => AutoDuty.Plugin.SetBMSettings(bool.TryParse(defaultSettings, out bool defaultsettings) && defaultsettings);
+
         public unsafe void ConditionAction(string conditionAction)
         {
             if (!conditionAction.Any(x => x.Equals(','))) return;

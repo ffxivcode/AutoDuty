@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 
 namespace AutoDuty.Data
@@ -8,7 +8,7 @@ namespace AutoDuty.Data
         public class Message
         {
             public string Sender { get; set; } = string.Empty;
-            public List<Action> Action { get; set; } = [];
+            public List<(string,string)> Action { get; set; } = [];
         }
     }
 }

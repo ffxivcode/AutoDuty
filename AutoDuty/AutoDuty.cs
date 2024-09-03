@@ -65,6 +65,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
     internal DirectoryInfo PathsDirectory;
+    internal DirectoryInfo ImagesDirectory;
     internal FileInfo AssemblyFileInfo;
     internal DirectoryInfo? AssemblyDirectoryInfo;
     internal Configuration Configuration { get; init; }
@@ -177,7 +178,7 @@ public sealed class AutoDuty : IDalamudPlugin
         try
         {
             Plugin = this;
-            ECommonsMain.Init(PluginInterface, Plugin, ECommons.Module.DalamudReflector, ECommons.Module.ObjectFunctions);
+            ECommonsMain.Init(PluginInterface, Plugin, Module.DalamudReflector, Module.ObjectFunctions);
             
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             ConfigTab.BuildManuals();
@@ -288,7 +289,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (message.Sender == Player.Name || message.Action.Count == 0 || !Svc.Party.Any(x => x.Name.ExtractText() == message.Sender))
             return;
 
-        message.Action.Each(x => x.Invoke());
+        message.Action.Each(x => _actions.InvokeAction(x.Item1, [x.Item2]));
     }
 
     internal void ExitDuty() => _actions.ExitDuty("");
@@ -1050,10 +1051,10 @@ public sealed class AutoDuty : IDalamudPlugin
                     Message message = new()
                     {
                         Sender = Player.Name,
-                        Action = 
+                        Action =
                         [
-                            () => FollowHelper.SetFollow(null),
-                            () => SetBMSettings(true)
+                            ("Follow", "null"),
+                            ("SetBMSettings", "true")
                         ]
                     };
 
@@ -1311,7 +1312,10 @@ public sealed class AutoDuty : IDalamudPlugin
                     Message message = new()
                     {
                         Sender = Player.Name,
-                        Action = [() => FollowHelper.SetFollow(ObjectHelper.GetObjectByName(Player.Name))]
+                        Action =
+                        [
+                            ("Follow", $"{Player.Name}")
+                        ]
                     };
 
                     var messageJson = System.Text.Json.JsonSerializer.Serialize(message);
