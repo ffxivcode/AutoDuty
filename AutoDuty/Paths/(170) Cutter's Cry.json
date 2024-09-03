@@ -1,0 +1,29 @@
+{
+  "actions": [
+    "MoveTo|267.51, -2.40, 86.06|",
+    "Wait|0, 0, 0|10000",
+    "MoveTo|247.43, -3.53, 98.03|",
+    "Wait|0, 0, 0|2000",
+    "MoveTo|267.51, -2.40, 86.06|",
+    "Wait|0, 0, 0|3000",
+    "Interactable|261.46, -3.56, 89.48|2000460 (Shifting Sands)",
+    "AutoMoveFor|114.54, -0.19, 185.03|6000",
+    "Wait|0, 0, 0|8000",
+    "Interactable|80.75, -0.41, 153.73|2000461 (Shifting Sands)",
+    "AutoMoveFor|-18.21, 1.61, 114.16|3000",
+    "Boss|-25.34, -11.68, 198.30|",
+    "TreasureCoffer|-15.76, -9.41, 208.49|",
+    "Interactable|-9.57, -6.34, 215.08|2000464 (Shifting Sands)",
+    "Interactable|302.96, -0.70, -112.54|2000465 (Shifting Sands)",
+    "Interactable|321.23, 0.37, -232.49|2000466 (Shifting Sands)",
+    "Boss|-145.29, -4.86, 163.05|",
+    "TreasureCoffer|-144.05, -4.36, 140.80|",
+    "Interactable|-143.80, -3.92, 136.91|2000469 (Shifting Sands)",
+    "Boss|-181.99, -4.90, -204.07|"
+  ],
+  "meta": {
+    "createdAt": 144,
+    "changelog": [],
+    "notes": []
+  }
+}
