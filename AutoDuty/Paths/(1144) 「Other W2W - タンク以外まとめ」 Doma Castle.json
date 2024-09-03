@@ -1,5 +1,6 @@
 {
   "actions": [
+    "ChatCommand|0, 0, 0|ac Sprint",
     "StopForCombat|332.19, 16.75, 171.64|False",
     "MoveTo|288.39, 24.50, 89.64|",
     "StopForCombat|304.76, 23.78, 127.31|True",
@@ -8,7 +9,12 @@
     "StopForCombat|307.25, 24.75, -0.82|True",
 
     "StopForCombat|288.20, 24.75, -7.11|False",
+    "MoveTo|253.05, 32.49, -11.16|",
+    "Wait|0, 0, 0|2200",
+    "Rotation|0, 0, 0|Off",
     "MoveTo|201.56, 36.03, 16.60|",
+    "ChatCommand|0, 0, 0|ac Sprint",
+    "Rotation|0, 0, 0|On",
     "StopForCombat|241.71, 32.75, -10.20|True",
 
     "Boss|116.86, 40.58, 15.62|",
@@ -18,20 +24,27 @@
     "StopForCombat|33.72, 40.00, 84.29|True",
 
     "TreasureCoffer|12.80, 40.00, 133.40|",
-    "StopForCombat|-9.07, 40.15, 101.64|False",
-    "MoveTo|-69.43, 42.00, 128.26|",
-    "Wait|0, 0, 0|3200",
+
+    "StopForCombat|-2.59, 40.15, 106.31|False",
+    "Wait|-33.31, 42.00, 96.36|2200",
+    "StopForCombat|-63.30, 42.00, 126.37|True",
+
     "TreasureCoffer|-103.25, 42.00, 146.79|",
-    "MoveTo|-129.82, 44.00, 105.94|",
-    "StopForCombat|-77.81, 42.00, 126.34|True",
+
+    "StopForCombat|-100.57, 42.15, 121.96|False",
+    "Wait|-116.61, 44.00, 100.31|3200",
+    "StopForCombat|-146.32, 44.00, 109.91|True",
 
     "Boss|-245.86, 45.50, 130.54|",
 
     "StopForCombat|-240.06, 44.00, 101.49|False",
-    "MoveTo|-219.72, 56.00, -41.65|",
-    "StopForCombat|-216.91, 48.00, 10.92|True",
+    "MoveTo|-239.95, 48.00, 16.83|",
+    "Wait|0, 0, 0|4700",
+    "MoveTo|-219.44, 56.00, -36.24|",
+    "StopForCombat|-214.46, 48.00, 7.11|True",
 
     "TreasureCoffer|-202.84, 56.00, -43.46|",
+
     "StopForCombat|-237.16, 61.50, -67.49|False",
     "StopForCombat|-239.75, 65.80, -108.72|True",
 
@@ -40,7 +53,7 @@
     "Boss|-240.15, 67.00, -203.10|"
   ],
   "meta": {
-    "createdAt": 143,
+    "createdAt": 145,
     "changelog": [],
     "notes": []
   }
