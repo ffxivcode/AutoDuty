@@ -4,9 +4,11 @@ using System.Numerics;
 using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons;
+using ECommons.DalamudServices;
 using ECommons.EzSharedDataManager;
 using ECommons.Funding;
 using ECommons.ImGuiMethods;
@@ -407,7 +409,21 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        DrawPopup();
-        EzTabBar("MainTab", null, openTabName, ImGuiTabBarFlags.None, tabList.ToArray());
+        if (false)
+        {
+            ImGui.TextColored(new Vector4(252 / 255f, 249 / 255f, 209 / 255f, 1), "Welcome to AutoDuty");
+            var clippyImage = Svc.Texture.GetFromFile($"{Plugin.ImagesDirectory}/ADClippy.png").GetWrapOrDefault();
+            if (clippyImage != null)
+            {
+                ImGuiHelpers.ScaledIndent(55f);
+                ImGui.Image(clippyImage.ImGuiHandle, new Vector2(clippyImage.Width, clippyImage.Height));
+                ImGuiHelpers.ScaledIndent(-55f);
+            }
+        }
+        else
+        {
+            DrawPopup();
+            EzTabBar("MainTab", null, openTabName, ImGuiTabBarFlags.None, tabList.ToArray());
+        }
     }
 }

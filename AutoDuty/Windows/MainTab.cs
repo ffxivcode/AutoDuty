@@ -63,7 +63,18 @@ namespace AutoDuty.Windows
                     if (curPaths.Count > 1)
                     {
                         int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
-                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize("Clear Saved Path").X);
+                        using (ImRaii.Disabled(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || !Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType].ContainsKey(Svc.ClientState.LocalPlayer.GetJob())))
+                        {
+                            if (ImGui.Button("Clear Saved Path"))
+                            {
+                                Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType].Remove(Svc.ClientState.LocalPlayer.GetJob());
+                                Plugin.Configuration.Save();
+                                if (!Plugin.InDungeon)
+                                    container.SelectPath(out Plugin.CurrentPath);
+                            }
+                        }
+                        ImGui.SameLine();
+                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
                         if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths.Select(dp => dp.Name)], curPaths.Count))
                         {
                             if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent!.TerritoryType))
@@ -75,17 +86,6 @@ namespace AutoDuty.Windows
                             Plugin.LoadPath();
                         }
                         ImGui.PopItemWidth();
-                        ImGui.SameLine();
-
-                        using var d2 = ImRaii.Disabled(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ||
-                                                       !Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType].ContainsKey(Svc.ClientState.LocalPlayer.GetJob()));
-                        if (ImGui.Button("Clear Saved Path"))
-                        {
-                            Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType].Remove(Svc.ClientState.LocalPlayer.GetJob());
-                            Plugin.Configuration.Save();
-                            if (!Plugin.InDungeon)
-                                container.SelectPath(out Plugin.CurrentPath);
-                        }
                     }
                 }
             }
