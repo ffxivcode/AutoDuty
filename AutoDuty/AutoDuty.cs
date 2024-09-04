@@ -412,6 +412,23 @@ public sealed class AutoDuty : IDalamudPlugin
     private void Condition_ConditionChange(ConditionFlag flag, bool value)
     {
         if (Stage == Stage.Stopped) return;
+
+        if (flag == ConditionFlag.Unconscious)
+        {
+            if (value && (Stage != Stage.Dead || DeathHelper.DeathState != PlayerLifeState.Dead))
+            {
+                Svc.Log.Debug($"We Died, Setting Stage to Dead");
+                DeathHelper.DeathState = PlayerLifeState.Dead;
+                Stage = Stage.Dead;
+            }
+            else if (!value && (Stage != Stage.Revived || DeathHelper.DeathState != PlayerLifeState.Revived))
+            {
+                Svc.Log.Debug($"We Revived, Setting Stage to Revived");
+                DeathHelper.DeathState = PlayerLifeState.Revived;
+                Stage = Stage.Revived;
+            }
+            return;
+        }
         //Svc.Log.Debug($"{flag} : {value}");
         if (Stage != Stage.Dead && Stage != Stage.Revived && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && States.HasFlag(PluginState.Navigating) && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
         {
@@ -873,8 +890,10 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    internal void SetRotationPluginSettings(bool on)
+    internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false)
     {
+        if (!Configuration.AutoManageRotationPluginState && !ignoreConfig) return;
+
         if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
         {
             if (on)

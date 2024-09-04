@@ -1,5 +1,4 @@
 ﻿using AutoDuty.IPC;
-using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin.Services;
 using ECommons;
@@ -17,25 +16,25 @@ namespace AutoDuty.Helpers
         private static PlayerLifeState _deathState = PlayerLifeState.Alive;
         internal static PlayerLifeState DeathState
         {
-            get
+            get => _deathState;
+            set
             {
-                if (!AutoDuty.Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) || AutoDuty.Plugin.Configuration.Unsynced)
-                    return _deathState;
-                else if (Player.Object.CurrentHp == 0 && _deathState != PlayerLifeState.Dead)
+                if (AutoDuty.Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) && !AutoDuty.Plugin.Configuration.Unsynced)
+                    return;
+                else if (value == PlayerLifeState.Dead)
                 {
+                    Svc.Log.Debug("DeathHelper - Player is Dead changing state to Dead");
                     OnDeath();
-                    return _deathState = PlayerLifeState.Dead;
                 }
-                else if (Player.Object.CurrentHp > 0 && _deathState != PlayerLifeState.Revived)
+                else if (value == PlayerLifeState.Revived)
                 {
+                    Svc.Log.Debug("DeathHelper - Player is Revived changing state to Revived");
                     _oldIndex = AutoDuty.Plugin.Indexer;
                     BossMod_IPCSubscriber.Presets_ClearActive();
                     _findShortcutStartTime = Environment.TickCount;
                     FindShortcut();
-                    return _deathState = PlayerLifeState.Revived;
                 }
-                else
-                    return _deathState;
+                _deathState = value;
             }
         }
 
@@ -58,7 +57,7 @@ namespace AutoDuty.Helpers
                 if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
                     AddonHelper.ClickSelectYesno();
                 else
-                    SchedulerHelper.ScheduleAction("OnDeath", () => OnDeath(), 500);
+                    SchedulerHelper.ScheduleAction("OnDeath", OnDeath, 500);
             }
         }
 
@@ -151,6 +150,7 @@ namespace AutoDuty.Helpers
         {
             Svc.Framework.Update -= OnRevive;
             AutoDuty.Plugin.Stage = Stage.Reading_Path;
+            Svc.Log.Debug("DeathHelper - Player is Alive, and we are done with Revived Actions, changing state to Alive");
             _deathState = PlayerLifeState.Alive;
         }
 

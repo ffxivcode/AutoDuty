@@ -144,14 +144,14 @@ namespace AutoDuty.Managers
                     _autoManageRotationPluginState = true;
                     AutoDuty.Plugin.Configuration.AutoManageRotationPluginState = false;
                 }
-                AutoDuty.Plugin.SetRotationPluginSettings(false);
+                AutoDuty.Plugin.SetRotationPluginSettings(false, true);
             }
             else if (sts.Equals("on", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (_autoManageRotationPluginState)
                     AutoDuty.Plugin.Configuration.AutoManageRotationPluginState = true;
 
-                AutoDuty.Plugin.SetRotationPluginSettings(true);
+                AutoDuty.Plugin.SetRotationPluginSettings(true, true);
             }
         }
 
