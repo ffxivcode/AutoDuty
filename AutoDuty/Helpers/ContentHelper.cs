@@ -74,7 +74,7 @@ namespace AutoDuty.Helpers
                 2 => (int)index - 224,
                 3 => (int)index - 1,
                 4 => (int)index - 12,
-                5 => (int)index - 23,
+                5 => (int)index - 24,
                 _ => -1
             };
         }
