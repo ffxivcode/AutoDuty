@@ -57,9 +57,9 @@ namespace AutoDuty.IPC
     
     internal static class BossMod_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod", SafeWrapper.IPCException);
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod", SafeWrapper.AnyException);
 
-        internal static bool IsEnabled => (IPCSubscriber_Common.IsReady("BossMod") && IPCSubscriber_Common.Version("BossMod") >= new Version(0, 0, 0, 218)) || (IPCSubscriber_Common.IsReady("BossModReborn") && IPCSubscriber_Common.Version("BossModReborn") >= new Version(7, 2, 0, 94));
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("BossMod") || IPCSubscriber_Common.IsReady("BossModReborn");
 
         [EzIPC] internal static readonly Func<bool> IsMoving;
         [EzIPC] internal static readonly Func<int> ForbiddenZonesCount;

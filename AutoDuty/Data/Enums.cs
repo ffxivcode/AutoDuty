@@ -159,5 +159,27 @@ namespace AutoDuty.Data
             Sound15 = 0x33,
             Sound16 = 0x34,
         }
+
+        public enum TrustMemberName : byte
+        {
+            Alphinaud = 1,
+            Alisaie = 2,
+            Thancred = 3,
+            Urianger = 5,
+            Yshtola = 6,
+            Ryne = 7,
+            Estinien = 12,
+            Graha = 10,
+            Zero = 41,
+            Krile = 60
+        }
+
+        public enum TrustRole : byte
+        {
+            DPS = 0,
+            Healer = 1,
+            Tank = 2,
+            AllRounder = 3
+        }
     }
 }

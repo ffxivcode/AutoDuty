@@ -51,12 +51,12 @@ namespace AutoDuty.Helpers
             CombatRole combatRole = Player.Object.GetRole();
             if (trust)
             {
-                if (TrustManager.members.All(tm => !tm.Value.LevelIsSet)) 
+                if (TrustHelper.Members.All(tm => !tm.Value.LevelIsSet)) 
                     return null;
 
                 TrustMember?[] memberTest = new TrustMember?[3];
 
-                foreach ((TrustMemberName _, TrustMember member) in TrustManager.members)
+                foreach ((TrustMemberName _, TrustMember member) in TrustHelper.Members)
                     if (member.Level < lvl && member.Level < member.LevelCap && member.LevelIsSet && memberTest.CanSelectMember(member, combatRole))
                         lvl = (short)member.Level;
             }
