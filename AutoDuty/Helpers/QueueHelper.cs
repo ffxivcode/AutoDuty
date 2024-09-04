@@ -64,6 +64,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Debug("Queue Helper - Opening Dawn Support");
                 AgentModule.Instance()->GetAgentByInternalId(AgentId.DawnStory)->Show();
+                EzThrottler.Throttle("QueueHelper", 500, true);
                 return;
             }
 
@@ -122,6 +123,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content.Name} because we have the wrong selection of {listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", "")}");
                 AgentContentsFinder.Instance()->OpenRegularDuty(_content.ContentFinderCondition);
+                EzThrottler.Throttle("QueueHelper", 500, true);
                 return;
             }
 
@@ -154,7 +156,9 @@ namespace AutoDuty.Helpers
             if (_content == null || AutoDuty.Plugin.InDungeon || Svc.ClientState.TerritoryType == _content?.TerritoryType)
                 Stop();
 
-            if (!EzThrottler.Throttle("QueueHelper", 250) || !ObjectHelper.IsValid || ContentsFinderConfirm() || Conditions.IsInDutyQueue) return;
+            if (!EzThrottler.Check("QueueHelper") || !ObjectHelper.IsValid || ContentsFinderConfirm() || Conditions.IsInDutyQueue) return;
+
+            EzThrottler.Throttle("QueueHelper", 250);
 
             switch (_dutyMode)
             {
