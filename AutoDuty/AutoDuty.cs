@@ -185,8 +185,7 @@ public sealed class AutoDuty : IDalamudPlugin
             PathsDirectory = new(_configDirectory.FullName + "/paths");
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
-            Configuration.Version = PluginInterface.Manifest.AssemblyVersion.Revision;
-            Configuration.Save();
+
             if (!_configDirectory.Exists)
                 _configDirectory.Create();
             if (!PathsDirectory.Exists)
