@@ -77,20 +77,20 @@ namespace AutoDuty.Helpers
 
                 if (content.TrustContent)
                 {
-                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Alphinaud]);
-                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Alisaie]);
-                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Thancred]);
-                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Urianger]);
-                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Yshtola]);
-                    content.TrustMembers.Add(TrustManager.members[content.ExVersion == 3 ?
+                    content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Alphinaud]);
+                    content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Alisaie]);
+                    content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Thancred]);
+                    content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Urianger]);
+                    content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Yshtola]);
+                    content.TrustMembers.Add(TrustHelper.Members[content.ExVersion == 3 ?
                                                                       TrustMemberName.Ryne :
                                                                       TrustMemberName.Estinien
                                                                  ]);
-                    content.TrustMembers.Add(TrustManager.members[TrustMemberName.Graha]);
+                    content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Graha]);
                     if (content.TerritoryType is >= 1097 and <= 1164)
-                        content.TrustMembers.Add(TrustManager.members[TrustMemberName.Zero]);
+                        content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Zero]);
                     if (content.ExVersion == 5)
-                        content.TrustMembers.Add(TrustManager.members[TrustMemberName.Krile]);
+                        content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Krile]);
                 }
                 
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);

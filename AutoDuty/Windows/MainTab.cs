@@ -223,8 +223,6 @@ namespace AutoDuty.Windows
                     ImGui.PopItemWidth();
                     if (Plugin.Configuration.DutyModeEnum != DutyMode.None)
                     {
-                        //ImGui.SameLine(0, 15);
-                        
                         if (Plugin.Configuration.DutyModeEnum == DutyMode.Support || Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
                         {
                             ImGui.TextColored(Plugin.LevelingModeEnum == LevelingMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Leveling Mode: ");
@@ -239,7 +237,6 @@ namespace AutoDuty.Windows
                                 }
                                 if (ImGui.Selectable("Auto"))
                                 {
-                                    Svc.Log.Info("aitp");
                                     Plugin.LevelingModeEnum = Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust;
                                     Plugin.Configuration.Save();
                                     if (Plugin.Configuration.AutoEquipRecommendedGear)
@@ -263,7 +260,7 @@ namespace AutoDuty.Windows
                                 ImGuiEx.LineCentered(() => ImGuiEx.TextUnderlined("Select your Trust Party"));
                                 ImGui.Columns(3, null, false);
 
-                                TrustManager.ResetTrustIfInvalid();
+                                TrustHelper.ResetTrustIfInvalid();
                                 for (int i = 0; i < Plugin.Configuration.SelectedTrustMembers.Length; i++)
                                 {
                                     TrustMemberName? member = Plugin.Configuration.SelectedTrustMembers[i];
@@ -278,7 +275,7 @@ namespace AutoDuty.Windows
                                     }
                                 }
 
-                                using (ImRaii.Disabled(Plugin.TrustLevelingEnabled && TrustManager.members.Any(tm => tm.Value.Level < tm.Value.LevelCap)))
+                                using (ImRaii.Disabled(Plugin.TrustLevelingEnabled && TrustHelper.Members.Any(tm => tm.Value.Level < tm.Value.LevelCap)))
                                 {
                                     foreach (TrustMember member in DutySelected.Content.TrustMembers)
                                     {
@@ -286,7 +283,7 @@ namespace AutoDuty.Windows
                                         CombatRole playerRole     = Player.Job.GetRole();
                                         int        numberSelected = Plugin.Configuration.SelectedTrustMembers.Count(x => x != null);
 
-                                        TrustMember?[] members = Plugin.Configuration.SelectedTrustMembers.Select(tmn => tmn != null ? TrustManager.members[(TrustMemberName)tmn] : null).ToArray();
+                                        TrustMember?[] members = Plugin.Configuration.SelectedTrustMembers.Select(tmn => tmn != null ? TrustHelper.Members[(TrustMemberName)tmn] : null).ToArray();
 
                                         bool canSelect = members.CanSelectMember(member, playerRole) && member.Level >= DutySelected.Content.ClassJobLevelRequired;
 
@@ -342,12 +339,12 @@ namespace AutoDuty.Windows
                                     ImGui.NextColumn();
 
                                 if(ImGui.Button("Refresh", new Vector2(ImGui.GetContentRegionAvail().X, 0)))
-                                    TrustManager.ClearCachedLevels();
+                                    TrustHelper.ClearCachedLevels();
                                 ImGui.NextColumn();
                                 ImGui.Columns(1, null, true);
                             } else if (ImGui.Button("Refresh trust member levels"))
                             {
-                                TrustManager.ClearCachedLevels();
+                                TrustHelper.ClearCachedLevels();
                             }
                         }
 
