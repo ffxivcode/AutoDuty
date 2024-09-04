@@ -1,6 +1,7 @@
 global using static AutoDuty.Data.Enums;
 global using static AutoDuty.Data.Extensions;
 global using static AutoDuty.Data.Classes;
+global using AutoDuty.Managers;
 global using ECommons.GameHelpers;
 using System;
 using System.Numerics;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using System.IO;
 using ECommons;
 using ECommons.DalamudServices;
-using AutoDuty.Managers;
 using AutoDuty.Windows;
 using AutoDuty.IPC;
 using ECommons.Automation.LegacyTaskManager;
@@ -53,7 +53,7 @@ public sealed class AutoDuty : IDalamudPlugin
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     internal List<string> ListBoxPOSText { get; set; } = [];
     internal int CurrentLoop = 0;
-    internal ContentHelper.Content? CurrentTerritoryContent = null;
+    internal Content? CurrentTerritoryContent = null;
     internal uint CurrentTerritoryType = 0;
     internal int CurrentPath = -1;
 
@@ -65,7 +65,6 @@ public sealed class AutoDuty : IDalamudPlugin
     internal static AutoDuty Plugin { get; private set; }
     internal bool StopForCombat = true;
     internal DirectoryInfo PathsDirectory;
-    internal DirectoryInfo ImagesDirectory;
     internal FileInfo AssemblyFileInfo;
     internal DirectoryInfo? AssemblyDirectoryInfo;
     internal Configuration Configuration { get; init; }
@@ -112,17 +111,23 @@ public sealed class AutoDuty : IDalamudPlugin
         get => levelingModeEnum;
         set
         {
-            levelingModeEnum = value;
-
             if (value != LevelingMode.None)
             {
-                ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.DutyModeEnum == DutyMode.Trust);
+                Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(value == LevelingMode.Trust);
 
                 if (duty != null)
                 {
+                    levelingModeEnum = value;
                     MainTab.DutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
                     CurrentTerritoryContent = duty;
                     MainTab.DutySelected.SelectPath(out CurrentPath);
+                }
+                else
+                {
+                    MainTab.DutySelected = null;
+                    MainListClicked = false;
+                    CurrentTerritoryContent = null;
+                    levelingModeEnum = LevelingMode.None;
                 }
             }
             else
@@ -130,6 +135,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 MainTab.DutySelected = null;
                 MainListClicked = false;
                 CurrentTerritoryContent = null;
+                levelingModeEnum = LevelingMode.None;
             }
         }
     }
@@ -535,7 +541,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (LevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
-            ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.DutyModeEnum == DutyMode.Trust);
+            Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(LevelingModeEnum == LevelingMode.Trust);
             if (duty != null)
             {
                 Svc.Log.Info("Next Leveling Duty: " + duty.Name);
@@ -1139,7 +1145,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (LevelingEnabled)
             {
                 Svc.Log.Info($"{(Configuration.DutyModeEnum == DutyMode.Support || Configuration.DutyModeEnum == DutyMode.Trust) && (Configuration.DutyModeEnum == DutyMode.Support || SupportLevelingEnabled) && (Configuration.DutyModeEnum != DutyMode.Trust || TrustLevelingEnabled)} ({Configuration.DutyModeEnum == DutyMode.Support} || {Configuration.DutyModeEnum == DutyMode.Trust}) && ({Configuration.DutyModeEnum == DutyMode.Support} || {SupportLevelingEnabled}) && ({Configuration.DutyModeEnum != DutyMode.Trust} || {TrustLevelingEnabled})");
-                ContentHelper.Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(Configuration.DutyModeEnum == DutyMode.Trust);
+                Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(LevelingModeEnum == LevelingMode.Trust);
                 if (duty != null)
                 {
                     Plugin.CurrentTerritoryContent = duty;

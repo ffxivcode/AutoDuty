@@ -3,17 +3,13 @@ using ECommons.DalamudServices;
 using System.Collections.Generic;
 using System.Linq;
 using ECommons.GameFunctions;
-using global::AutoDuty.Managers;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina.Data;
 using Lumina.Excel.GeneratedSheets2;
-using Lumina.Text;
 
 namespace AutoDuty.Helpers
 {
     using Dalamud.Utility;
-    using ECommons.GameHelpers;
-    using FFXIVClientStructs.FFXIV.Client.Game.UI;
-    using FFXIVClientStructs.FFXIV.Component.GUI;
 
     internal static class ContentHelper
     {
@@ -22,48 +18,6 @@ namespace AutoDuty.Helpers
         private static List<uint> ListGCArmyContent { get; set; } = [162, 1039, 1041, 1042, 171, 172, 159, 160, 349, 362, 188, 1064, 1066, 430, 510];
         
         private static List<uint> ListVVDContent { get; set; } = [1069, 1137, 1176]; //[1069, 1075, 1076, 1137, 1155, 1156, 1176, 1179, 1180]; *Criterions
-
-
-        internal class Content
-        {
-            internal uint Id { get; set; }
-
-            internal string? Name { get; set; }
-
-            internal string? EnglishName { get; set; }
-
-            internal uint TerritoryType { get; set; }
-
-            internal uint ExVersion { get; set; }
-
-            internal byte ClassJobLevelRequired { get; set; }
-
-            internal uint ItemLevelRequired { get; set; }
-
-            internal bool DawnContent { get; set; } = false;
-
-            internal int DawnIndex { get; set; } = -1;
-
-            internal uint ContentFinderCondition { get; set; }
-
-            internal uint ContentType { get; set; }
-
-            internal uint ContentMemberType { get; set; }
-
-            internal bool TrustContent { get; set; } = false;
-
-            internal int TrustIndex { get; set; } = -1;
-
-            internal bool VariantContent { get; set; } = false;
-
-            internal int VVDIndex { get; set; } = -1;
-
-            internal bool GCArmyContent { get; set; } = false;
-
-            internal int GCArmyIndex { get; set; } = -1;
-
-            internal List<TrustMember> TrustMembers { get; set; } = new();
-        }
 
         private unsafe static int DawnIndex(uint index, uint ex)
         {
@@ -138,7 +92,7 @@ namespace AutoDuty.Helpers
                     if (content.ExVersion == 5)
                         content.TrustMembers.Add(TrustManager.members[TrustMemberName.Krile]);
                 }
-
+                
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);
             }
 
@@ -156,9 +110,7 @@ namespace AutoDuty.Helpers
             if (level < 0) 
                 level = PlayerHelper.GetCurrentLevelFromSheet();
 
-            return content.ClassJobLevelRequired <= level                                 &&
-                   ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) &&
-                   content.ItemLevelRequired <= InventoryHelper.CurrentItemLevel;
+            return content.ClassJobLevelRequired <= level && ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) && content.ItemLevelRequired <= InventoryHelper.CurrentItemLevel;
         }
     }
 }

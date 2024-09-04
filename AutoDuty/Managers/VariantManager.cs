@@ -9,7 +9,7 @@ namespace AutoDuty.Managers
 {
     internal class VariantManager(TaskManager _taskManager)
     {
-        internal unsafe void RegisterVariantDuty(ContentHelper.Content content)
+        internal unsafe void RegisterVariantDuty(Content content)
         {
             if (content.VVDIndex < 0)
                 return;

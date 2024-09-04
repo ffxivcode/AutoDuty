@@ -25,23 +25,6 @@ namespace AutoDuty.Windows
 
         private static int _currentStepIndex = -1;
         private static readonly string _pathsURL = "https://github.com/ffxivcode/AutoDuty/tree/master/AutoDuty/Paths";
-        private static List<string> LevelingDuties = [
-            "L15 (i0): Sastasha",
-            "L16-L23 (i0): The TamTara Deepcroft",
-            "L24-31 (i0): The Thousand Maws of TotoRak", 
-            "L32-40 (i0): Brayflox's Longstop",
-            "L41-52 (i0): The Stone Vigil",
-            "L53-54 (i105): Sohm Al",
-            "L55-56 (i110): The Aery",
-            "L57-58 (i115): The Vault",
-            "L59-60 (i120): The Great Gubal Library",
-            "L61-66 (i240): The Sirensong Sea",
-            "L67-70 (i255): Doma Castle",
-            "L71-74 (i370): Holminster Switch",
-            "L75-80 (i380): Qitana Ravel",
-            "L81-86 (i500): The Tower of Zot",
-            "L87-90 (i515): Ktisis Hyporboreia",
-            "L91-100 (i630): Highest Level DT Dungeons"];
 
         internal static void Draw()
         {
@@ -270,7 +253,6 @@ namespace AutoDuty.Windows
 
                             if (Plugin.Configuration.DutyModeEnum != DutyMode.Trust) ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL16-L23 (i0): TamTara \nL24-31 (i0): Totorak\nL32-40 (i0): Brayflox\nL41-52 (i0): Stone Vigil\nL53-60 (i105): Sohm Al\nL61-66 (i240): Sirensong Sea\nL67-70 (i255): Doma Castle\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
                             else ImGuiComponents.HelpMarker("TRUST Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl, as well as the LOWEST LEVEL trust members you have, in an attempt to level them all equally.. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
-
                         }
 
                         if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
@@ -300,7 +282,7 @@ namespace AutoDuty.Windows
                                 {
                                     foreach (TrustMember member in DutySelected.Content.TrustMembers)
                                     {
-                                        bool       enabled        = Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName);
+                                        bool enabled = Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName);
                                         CombatRole playerRole     = Player.Job.GetRole();
                                         int        numberSelected = Plugin.Configuration.SelectedTrustMembers.Count(x => x != null);
 
@@ -380,18 +362,23 @@ namespace AutoDuty.Windows
                         }
                     }
                     
-                    
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
                     if (Plugin.LevelingModeEnum != LevelingMode.None)
                     {
                         ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), $"Leveling Mode: L{Player.Level} (i{PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false)})");
-                        foreach (var item in LevelingDuties)
+                        foreach (var item in LevelingHelper.LevelingDuties.Select((Value, Index) => (Value, Index)))
                         {
-                            if (item.Contains(Plugin.CurrentTerritoryContent?.Name ?? "-"))
-                                ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), $"{item}");
-                            else
-                                ImGuiEx.TextWrapped(new Vector4(1, 1, 1, 1), $"{item}");
+                            if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.TrustContent)
+                                continue;
+                            var disabled = !item.Value.CanRun() || (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.CanTrustRun(true));
+                            if (!Plugin.Configuration.HideUnavailableDuties || !disabled)
+                            {
+                                using (ImRaii.Disabled(disabled))
+                                {
+                                    ImGuiEx.TextWrapped(item.Value == Plugin.CurrentTerritoryContent ? new Vector4(0, 1, 1, 1) : new Vector4(1, 1, 1, 1), $"L{item.Value.ClassJobLevelRequired} (i{item.Value.ItemLevelRequired}): {item.Value.EnglishName}");
+                                }
+                            }
                         }
                     }
                     else if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
@@ -403,7 +390,7 @@ namespace AutoDuty.Windows
 
                             if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)))
                             {
-                                Dictionary<uint, ContentHelper.Content> dictionary = [];
+                                Dictionary<uint, Content> dictionary = [];
                                 if (Plugin.Configuration.DutyModeEnum == DutyMode.Support)
                                     dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
                                 else if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
@@ -424,7 +411,7 @@ namespace AutoDuty.Windows
                                     short level = PlayerHelper.GetCurrentLevelFromSheet();
                                     short ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false);
 
-                                    foreach ((uint _, ContentHelper.Content? content) in dictionary)
+                                    foreach ((uint _, Content? content) in dictionary)
                                     {
                                         bool canRun = content.CanRun(level) && (Plugin.Configuration.DutyModeEnum != DutyMode.Trust || content.CanTrustRun());
                                         using (ImRaii.Disabled(!canRun))

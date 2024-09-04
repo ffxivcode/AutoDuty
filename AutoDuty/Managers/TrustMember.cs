@@ -1,9 +1,5 @@
 ﻿namespace AutoDuty.Managers
 {
-    using ECommons;
-    using Lumina.Excel.GeneratedSheets;
-    using ClassJob = Lumina.Excel.GeneratedSheets2.ClassJob;
-
     public class TrustMember
     {
         public uint                                  Index      { get; set; }

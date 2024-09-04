@@ -1,17 +1,14 @@
 ﻿using ECommons.GameFunctions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AutoDuty.Helpers
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using ECommons.GameHelpers;
-    using Managers;
-
-    public static class LevelingHelper
+    internal static class LevelingHelper
     {
-        private static ContentHelper.Content[] levelingDuties = [];
+        private static Content[] levelingDuties = [];
 
-        private static ContentHelper.Content[] LevelingDuties
+        internal static Content[] LevelingDuties
         {
             get
             {
@@ -19,6 +16,7 @@ namespace AutoDuty.Helpers
                 {
                     uint[] ids =
                     [
+                        1036u, // Sastasha
                         1037u, // TamTara Deepcroft
                         1039u, // The Thousand Maws of Toto-Rak
                         1041u, // Brayflox's Longstop
@@ -33,18 +31,23 @@ namespace AutoDuty.Helpers
                         823u,  // Qitana
                         952u,  // Tower of Zot
                         974u,  // Ktisis Hyperboreia
+                        1167u, // Ihuykatumu
+                        1193u, // Worqor Zormor
+                        1194u, // The Skydeep Cenote
+                        1198u, // Vanguard
+                        1208u, // Origenics
                     ];
-                    levelingDuties = ids.Select(id => ContentHelper.DictionaryContent.GetValueOrDefault(id)).Where(c => c != null).Cast<ContentHelper.Content>().Reverse().ToArray();
+                    levelingDuties = [.. ids.Select(id => ContentHelper.DictionaryContent.GetValueOrDefault(id)).Where(c => c != null).Cast<Content>().OrderBy(x => x.ClassJobLevelRequired).ThenBy(x => x.ItemLevelRequired).ThenBy(x => x.ExVersion).ThenBy(x => x.DawnIndex)];
                 }
                 return levelingDuties;
             }
         }
 
-        internal static ContentHelper.Content? SelectHighestLevelingRelevantDuty(bool trust = false)
+        internal static Content? SelectHighestLevelingRelevantDuty(bool trust = false)
         {
-            ContentHelper.Content? curContent = null;
+            Content? curContent = null;
 
-            short      lvl        = PlayerHelper.GetCurrentLevelFromSheet();
+            var lvl = PlayerHelper.GetCurrentLevelFromSheet();
             CombatRole combatRole = Player.Object.GetRole();
             if (trust)
             {
@@ -55,23 +58,18 @@ namespace AutoDuty.Helpers
 
                 foreach ((TrustMemberName _, TrustMember member) in TrustManager.members)
                     if (member.Level < lvl && member.Level < member.LevelCap && member.LevelIsSet && memberTest.CanSelectMember(member, combatRole))
-                        lvl = (short) member.Level;
+                        lvl = (short)member.Level;
             }
 
             if (lvl < 15 || combatRole == CombatRole.NonCombat || lvl >= 100)
                 return null;
 
-            if(lvl is >= 16 and < 91)
-                foreach (ContentHelper.Content duty in LevelingDuties)
-                    if (duty.CanRun(lvl) && (!trust || duty.CanTrustRun()))
-                    {
-                        curContent = duty;
-                        break;
-                    }
+            if (lvl >= 15)
+                curContent = levelingDuties.LastOrDefault(x => x.CanRun(lvl) && (!trust || x.CanTrustRun()));
 
             if (curContent == null)
             {
-                foreach ((uint _, ContentHelper.Content? content) in ContentHelper.DictionaryContent)
+                foreach ((uint _, Content? content) in ContentHelper.DictionaryContent)
                 {
                     if (content.DawnContent)
                     {
@@ -85,11 +83,12 @@ namespace AutoDuty.Helpers
                     }
                 }
             }
+
             if (trust && curContent != null)
                 if (!TrustHelper.SetLevelingTrustMembers(curContent))
                     curContent = null;
 
-            return curContent ?? null;
+            return curContent;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace AutoDuty.Managers
 
         internal class ContentPathContainer
         {
-            public ContentPathContainer(ContentHelper.Content content)
+            public ContentPathContainer(Content content)
             {
                 Content = content;
                 id      = content.TerritoryType;
@@ -31,7 +31,7 @@ namespace AutoDuty.Managers
 
             public uint id { get; }
 
-            public ContentHelper.Content Content { get; }
+            public Content Content { get; }
 
             public List<DutyPath> Paths { get; } = [];
 
