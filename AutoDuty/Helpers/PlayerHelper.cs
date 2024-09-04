@@ -1,7 +1,6 @@
 ﻿using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
-using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel.GeneratedSheets;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
@@ -11,6 +10,10 @@ namespace AutoDuty.Helpers
 {
     internal static class PlayerHelper
     {
+        internal static uint GetMaxDesynthLevel => Svc.Data.Excel.GetSheet<Item>()?.Where(x => x.Desynth > 0).OrderBy(x => x.LevelItem.Row).LastOrDefault()?.LevelItem.Row ?? 0;
+
+        internal unsafe static float GetDesynthLevel(uint classJobId) => PlayerState.Instance()->GetDesynthesisLevel(classJobId);
+
         internal static unsafe short GetCurrentLevelFromSheet(Job? job = null)
         {
             PlayerState* playerState = PlayerState.Instance();

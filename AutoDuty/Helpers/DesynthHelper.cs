@@ -3,7 +3,6 @@ using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -25,6 +24,7 @@ namespace AutoDuty.Helpers
                 SchedulerHelper.ScheduleAction("DesynthTimeOut", Stop, 300000);
                 AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
+                _maxDesynthLevel = PlayerHelper.GetMaxDesynthLevel;
             }
         }
 
@@ -40,6 +40,8 @@ namespace AutoDuty.Helpers
 
         internal static ActionState State = ActionState.None;
 
+        private static float _maxDesynthLevel = 1;
+        
         internal static unsafe void DesynthStopUpdate(IFramework framework)
         {
             if (GenericHelpers.TryGetAddonByName("SalvageResult", out AtkUnitBase* addonSalvageResultClose))
@@ -58,6 +60,7 @@ namespace AutoDuty.Helpers
             }
             return;
         }
+
         internal static unsafe void DesynthUpdate(IFramework framework)
         {
             if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating) || AutoDuty.Plugin.InDungeon)
@@ -119,11 +122,11 @@ namespace AutoDuty.Helpers
 
                         var itemSheetRow = Svc.Data.Excel.GetSheet<Item>()?.GetRow(itemId);
                         var itemLevel = itemSheetRow?.LevelItem.Value?.RowId;
-                        var desynthLevel = PlayerState.Instance()->GetDesynthesisLevel(item.ClassJob);
+                        var desynthLevel = PlayerHelper.GetDesynthLevel(item.ClassJob);
 
                         if (itemLevel == null || itemSheetRow == null) continue;
 
-                        if (!AutoDuty.Plugin.Configuration.AutoDesynthSkillUp || desynthLevel < itemLevel + 50)
+                        if (!AutoDuty.Plugin.Configuration.AutoDesynthSkillUp || (desynthLevel < itemLevel + 50 && desynthLevel < _maxDesynthLevel))
                         {
                             Svc.Log.Debug($"Salvaging Item({i}): {itemSheetRow.Name.RawString} with iLvl {itemLevel} because our desynth level is {desynthLevel}");
                             foundOne = true;
