@@ -157,6 +157,8 @@ namespace AutoDuty.Helpers
 
         public static void ResetTrustIfInvalid()
         {
+            if (!ObjectHelper.IsValid) return;
+
             if (AutoDuty.Plugin.Configuration.SelectedTrustMembers.Count(x => x is not null) == 3)
             {
                 CombatRole playerRole = Player.Job.GetRole();
