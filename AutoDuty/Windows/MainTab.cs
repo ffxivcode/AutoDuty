@@ -141,11 +141,7 @@ namespace AutoDuty.Windows
                         {
                             foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
                             {
-                                Vector4 v4 = new();
-                                if (item.index == Plugin.Indexer)
-                                    v4 = new Vector4(0, 255, 0, 1);
-                                else
-                                    v4 = new Vector4(255, 255, 255, 1);
+                                var v4 = item.index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (item.name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
                                 ImGui.TextColored(v4, item.name);
                                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
                                 {

@@ -24,6 +24,7 @@ namespace AutoDuty.Managers
     {
         public readonly List<(string, string)> ActionsList =
         [
+            ("<-- Comment -->","comment?"),
             ("Wait","how long?"),
             ("WaitFor","for?"),
             ("Boss","false"),

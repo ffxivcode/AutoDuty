@@ -13,7 +13,6 @@ using AutoDuty.Helpers;
 using Dalamud.Interface.Utility;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
-using ECommons.GameHelpers;
 using static AutoDuty.Managers.ContentPathsManager;
 using ECommons.ImGuiMethods;
 
@@ -59,7 +58,7 @@ namespace AutoDuty.Windows
                 Plugin.ListBoxPOSText[index] = action;
             ClearAll();
         }
-        internal static void Draw()
+        internal unsafe static void Draw()
         {
             if (MainWindow.CurrentTabName != "Build")
                 MainWindow.CurrentTabName = "Build";
@@ -210,7 +209,12 @@ namespace AutoDuty.Windows
                         MainWindow.ShowPopup("Error", "You must enter an input");
                         return;
                     }
-                    if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty() && (_input.Count(c => c == '|') < 2 || !_input.Split('|')[1].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.')))
+                    if (_dropdownSelected.Item1.Equals("<-- Comment -->", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        AddAction($"<-- {_input} -->");
+                        return;
+                    }
+                    if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty() && !_input.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) && (_input.Count(c => c == '|') < 2 || !_input.Split('|')[1].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.')))
                         MainWindow.ShowPopup("Error", "Input is not in the correct format\nAction|Position|ActionParams(if needed)");
                     if (_dontMove && _dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty())
                         AddAction($"{_input.Split('|')[0]}|0, 0, 0|{_input.Split('|')[2]}", _buildListSelected);
@@ -234,9 +238,12 @@ namespace AutoDuty.Windows
                 {
                     foreach (var item in Plugin.ListBoxPOSText.Select((Value, Index) => (Value, Index)))
                     {
+                        var v4 = item.Value.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
+
+                        ImGui.PushStyleColor(ImGuiCol.Text, v4);
                         if (ImGui.Selectable(item.Value, item.Index == _buildListSelected, ImGuiSelectableFlags.AllowDoubleClick))
                         {
-                            if(_dragDrop)
+                            if (_dragDrop)
                             {
                                 _dragDrop = false;
                                 return;
@@ -257,7 +264,25 @@ namespace AutoDuty.Windows
                                 _inputIW = 400 * ImGuiHelpers.GlobalScale;
                             }
                         }
-                        if (ImGui.IsItemActive() && !ImGui.IsItemHovered())
+                        ImGui.PopStyleColor();
+                        
+                        if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+                        {
+                            // Do stuff on Selectable() double click.
+                            if (item.Value.Any(c => c == '|') && !item.Value.Split('|')[1].Equals("0, 0, 0"))
+                            {
+                                ImGui.SetClipboardText(item.Value.Split('|')[1]);
+                                //if (Player.Available)
+                                    //Player.GameObject->SetPosition(float.Parse(item.Value.Split('|')[1].Split(',')[0]), float.Parse(item.Value.Split('|')[1].Split(',')[1]), float.Parse(item.Value.Split('|')[1].Split(',')[2]));
+                            }
+                            else
+                            {
+                                ImGui.SetClipboardText(item.Value);
+                                //if (Player.Available)
+                                    //Player.GameObject->SetPosition(float.Parse(item.Value.Split(',')[0]), float.Parse(item.Value.Split(',')[1]), float.Parse(item.Value.Split(',')[2]));
+                            }
+                        }
+                        if (ImGui.IsItemActive() && !ImGui.IsItemHovered() && !ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                         {
                             int n_next = item.Index + (ImGui.GetMouseDragDelta(0).Y < 0f ? -1 : 1);
                             if (n_next >= 0 && n_next < Plugin.ListBoxPOSText.Count)
@@ -268,22 +293,6 @@ namespace AutoDuty.Windows
                                 ImGui.ResetMouseDragDelta();
                                 _dragDrop = true;
                                 ClearAll();
-                            }
-                        }
-                        if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
-                        {
-                            // Do stuff on Selectable() double click.
-                            if (item.Value.Any(c => c == '|') && !item.Value.Split('|')[1].Equals("0, 0, 0"))
-                            {
-                                ImGui.SetClipboardText(item.Value.Split('|')[1]);
-                                //if (AutoDuty.Plugin.Player != null)
-                                //    ((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)AutoDuty.Plugin.Player.Address)->SetPosition(float.Parse(item.Split('|')[1].Split(',')[0]), float.Parse(item.Split('|')[1].Split(',')[1]), float.Parse(item.Split('|')[1].Split(',')[2]));
-                            }
-                            else
-                            {
-                                ImGui.SetClipboardText(item.Value);
-                                //if (AutoDuty.Plugin.Player != null)
-                                //    ((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)AutoDuty.Plugin.Player.Address)->SetPosition(float.Parse(item.Split(',')[0]), float.Parse(item.Split(',')[1]), float.Parse(item.Split(',')[2]));
                             }
                         }
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
