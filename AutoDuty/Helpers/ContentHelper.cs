@@ -138,8 +138,7 @@ namespace AutoDuty.Helpers
                     if (content.ExVersion == 5)
                         content.TrustMembers.Add(TrustManager.members[TrustMemberName.Krile]);
                 }
-                if (content.DawnContent)
-                    Svc.Log.Info($"{content.EnglishName} {content.DawnIndex}");
+
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);
             }
 

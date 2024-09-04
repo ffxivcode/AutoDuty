@@ -1209,8 +1209,15 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 Action = $"{(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
                 //Backwards Compatibility
-                if (ListBoxPOSText[Indexer].Contains('|'))
+                if (ListBoxPOSText[Indexer].Contains('|') || ListBoxPOSText[Indexer].StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
                 {
+                    if (ListBoxPOSText[Indexer].StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because it is a comment");
+                        Indexer++;
+                        return;
+                    }
+
                     _actionPosition = [];
                     _actionParams = [.. ListBoxPOSText[Indexer].Split('|')];
                     _action = (string)_actionParams[0];
@@ -1218,7 +1225,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
                     if (_action.StartsWith("Unsynced", StringComparison.InvariantCultureIgnoreCase)) 
                     {
-                        if (!Configuration.Unsynced)
+                        if (!Configuration.Unsynced && Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial))
                         {
                             Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because we are not unsynced");
                             Indexer++;
@@ -1227,6 +1234,20 @@ public sealed class AutoDuty : IDalamudPlugin
                         else
                             _action = _action.Remove(0, 8);
                     }
+
+                    if (_action.StartsWith("Synced", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (Configuration.Unsynced)
+                        {
+                            Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because we are not synced");
+                            Indexer++;
+                            return;
+                        }
+                        else
+                            _action = _action.Remove(0, 6);
+                    }
+
+                    
 
                     if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && _action.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
                     {
