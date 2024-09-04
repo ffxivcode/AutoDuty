@@ -204,9 +204,9 @@ public sealed class AutoDuty : IDalamudPlugin
             FileHelper.OnStart();
             FileHelper.Init();
             Chat = new();
+            TrustManager = new(TaskManager);
             _overrideAFK = new();
             _ipcProvider = new();
-            TrustManager = new(TaskManager);
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
             _actions = new(Plugin, Chat, TaskManager);

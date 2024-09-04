@@ -22,31 +22,31 @@ namespace AutoDuty.Managers
 {
     internal class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
     {
-        public readonly List<(string, string)> ActionsList =
+        public readonly List<(string, string, string)> ActionsList =
         [
-            ("<-- Comment -->","comment?"),
-            ("Wait","how long?"),
-            ("WaitFor","for?"),
-            ("Boss","false"),
-            ("Interactable","interact with?"),
-            ("TreasureCoffer","false"),
-            ("SelectYesno","yes or no?"),
-            ("MoveToObject","Object Name?"),
-            ("DutySpecificCode","step #?"),
-            ("BossMod","on / off"),
-            ("Rotation", "on / off"),
-            ("Target","Target what?"),
-            ("AutoMoveFor", "how long?"),
-            ("ChatCommand","Command with args?"),
-            ("StopForCombat","true/false"),
-            ("Revival",  "false"),
-            ("ForceAttack",  "false"),
-            ("Jump", "automove for how long before"),
+            ("<-- Comment -->","comment?","Adds a comment to the path, AutoDuty will do nothing but display them"),
+            ("Wait","how long?", "Adds a Wait (x seconds) step to the path, after moving to the position AutoDuty will wait x seconds"),
+            ("WaitFor","for?","Adds a WaitFor (Condition) step to the path, after moving to the position AutoDuty will wait for a condition from the following list:\nCombat - waits until in combat\nIsReady - waits until the player is ready\nIsValid - waits until the player is valid\nIsOccupied - waits until the player is occupied\nBNpcInRadius - waits until a battle npc either spawns or path's into the radius specified"),
+            ("Boss","false", "Add a Boss step to the path, after and while moving to the position AutoDuty will attempt to find the boss object, if not found will wait 10s at the position for the boss to spawn and will then Invoke the Boss Action"),
+            ("Interactable","interact with?", "Adds a Interactable step to the path, after moving to within 2 of the position AutoDuty will interact with the object specified (Recommended to input DataId) until the object is no longer targetable, you meet certain conditions or a YesNo/Talk addon appears"),
+            ("TreasureCoffer","false", "Adds a TreasureCoffer flag to the path, AutoDuty will loot any treasure coffers automatically if it gets within interact range of one (While Config Loop Option is on), this is just a flag to mark the positions of Treasure Coffers, note: AutoDuty will ignore this Path entry when Looting is disabled or Boss LootOnly is enabled"),
+            ("SelectYesno","yes or no?", "Adds a SelectYesno step to the path, after moving to the position AutoDuty will click Yes or no on this addon"),
+            ("MoveToObject","Object Name?", "Adds a MoveToObject step to the path, AutoDuty will will move the object specified (Recommend input DataId)"),
+            ("DutySpecificCode","step #?", "Adds a DutySpecificCode step to the path, after moving to the position AutoDuty will invoke the DutySpecific Action for this TerritoryType and the step # specified"),
+            ("BossMod", "on / off", "Adds a BossMod step to the path, after moving to the position AutoDuty will turn BossMod on or off"),
+            ("Rotation", "on / off", "Adds a Rotation step to the path, after moving to the position AutoDuty will turn Rotation Plugin on or off"),
+            ("Target", "Target what?", "Adds a Target step to the path, after moving to the position AutoDuty will Target the object specified (Recommend inputing DataId)"),
+            ("AutoMoveFor", "how long?", "Adds a AutoMoveFor step to the path, AutoDuty will turn on Standard Mode and AutoMoveFor time specified or until player is not ready"),
+            ("ChatCommand","Command with args?", "Adds a ChatCommand step to the path, after moving to the position AutoDuty will execute the Command specified"),
+            ("StopForCombat","true/false", "Adds a StopForCombat step to the path, after moving to the position AutoDuty will turn StopForCombat on or off"),
+            ("Revival", "false", "Adds a Revive flag to the pathh, is is just a flag to mark the positions of Revival Points, note: AutoDuty will ignore this path entry during navigation"),
+            ("ForceAttack",  "false", "Adds a ForceAttack step to the path, after moving to the position AutoDuty will ForceAttack the closest mob"),
+            ("Jump", "automove for how long before", "Adds a jump step to the path, after AutoMoving AutoDuty will Jump"),
             //("PausePandora", "Which feature | how long"),
-            ("CameraFacing", "Face which Coords?"),
-            ("ClickTalk", "false"),
-            ("ConditionAction","condition;args,action;args"),
-            ("ModifyIndex", "what number (0-based)")
+            ("CameraFacing", "Face which Coords?", "Adds a CameraFacing step to the path, after moving to the position AutoDuty will face the coordinates specified"),
+            ("ClickTalk", "false", "Adds a ClickTalk step to the path, after moving to the position AutoDuty will Click the talk addon"),
+            ("ConditionAction","condition;args,action;args", "Adds a ConditionAction step to the path, after moving to the position AutoDuty will check the condition specified and invoke Action"),
+            ("ModifyIndex", "what number (0-based)", "Adds a ModifyIndex step to the path, after moving to the position AutoDuty will Modify the index to the number specified")
         ];
 
         public void InvokeAction(string action, object?[] p)
