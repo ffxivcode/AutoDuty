@@ -983,51 +983,6 @@ public sealed class AutoDuty : IDalamudPlugin
             ConfigTab.FollowName = ObjectHelper.GetPartyMemberFromRole($"{Configuration.FollowRoleEnum}")?.Name.ExtractText() ?? "";
     }
 
-    private unsafe void OnDeath()
-    {
-        if ((Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid) && !Configuration.Unsynced)
-            return;
-
-        StopForCombat = true;
-        SkipTreasureCoffer = true;
-        if (VNavmesh_IPCSubscriber.Path_IsRunning())
-            VNavmesh_IPCSubscriber.Path_Stop();
-        if (TaskManager.IsBusy)
-            TaskManager.Abort();
-        if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid)
-        {
-            TaskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno));
-            TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
-        }
-    }
-
-    private unsafe void OnRevive()
-    {
-        if ((Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid) && !Configuration.Unsynced)
-            return;
-
-        TaskManager.DelayNext(5000);
-        TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
-        TaskManager.Enqueue(() => BossMod_IPCSubscriber.Presets_ClearActive());
-        IGameObject? gameObject = ObjectHelper.GetObjectByDataId(2000700);
-        if (gameObject == null || !gameObject.IsTargetable)
-        {
-            TaskManager.Enqueue(() => { Stage = Stage.Reading_Path; } );
-            return;
-        }
-
-        var oldindex = Indexer;
-        Indexer = FindWaypoint();
-        TaskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2));
-        TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
-        TaskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno"), int.MaxValue);
-        TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), int.MaxValue);
-        TaskManager.Enqueue(() => !ObjectHelper.IsValid, 500);
-        TaskManager.Enqueue(() => ObjectHelper.IsValid);
-        TaskManager.Enqueue(() => { if (Indexer == 0) Indexer = FindWaypoint(); });
-        TaskManager.Enqueue(() => Stage = Stage.Reading_Path);
-    }
-
     private unsafe void ActionInvoke()
     {
         if (!TaskManager.IsBusy && !_action.IsNullOrEmpty())
