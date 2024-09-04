@@ -10,6 +10,7 @@ using Lumina.Excel.GeneratedSheets2;
 namespace AutoDuty.Helpers
 {
     using Dalamud.Utility;
+    using static global::AutoDuty.Data.Classes;
 
     internal static class ContentHelper
     {
@@ -29,6 +30,17 @@ namespace AutoDuty.Helpers
                 3 => (int)index - 1,
                 4 => (int)index - 12,
                 5 => (int)index - 24,
+                _ => -1
+            };
+        }
+
+        private unsafe static int TrustIndex(int index, uint ex)
+        {
+            return ex switch
+            {
+                3 => index,
+                4 => index - 11,
+                5 => index - 22,
                 _ => -1
             };
         }
@@ -65,7 +77,7 @@ namespace AutoDuty.Helpers
                     ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
                     DawnContent = listDawnContent.Any(dawnContent => dawnContent.Content.Value == contentFinderCondition),
                     TrustContent = listDawnContent.Any(dawnContent => dawnContent.Content.Value == contentFinderCondition && dawnContent.Unknown13),
-                    TrustIndex = listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value == contentFinderCondition),
+                    TrustIndex = TrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value == contentFinderCondition), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId),
                     VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                     VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                     GCArmyContent = ListGCArmyContent.Any(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
@@ -92,10 +104,10 @@ namespace AutoDuty.Helpers
                     if (content.ExVersion == 5)
                         content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Krile]);
                 }
-                
+
                 DictionaryContent.Add(contentFinderCondition.TerritoryType.Value.RowId, content);
             }
-
+            
             DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.TerritoryType).ToDictionary();
         }
 

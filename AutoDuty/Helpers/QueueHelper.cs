@@ -86,10 +86,10 @@ namespace AutoDuty.Helpers
                 AddonHelper.FireCallBack(addonDawn, true, 20, (_content!.ExVersion - 3));
                 return;
             }
-            else if (addonDawn->AtkValues[151].UInt != _content.DawnIndex)
+            else if (addonDawn->AtkValues[151].UInt != _content.TrustIndex)
             {
-                Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} at index: {_content.DawnIndex}");
-                AddonHelper.FireCallBack(addonDawn, true, 15, _content.DawnIndex);
+                Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} at index: {_content.TrustIndex}");
+                AddonHelper.FireCallBack(addonDawn, true, 15, _content.TrustIndex);
             }
             else if (!_turnedOffTrustMembers)
             {
