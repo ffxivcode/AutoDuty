@@ -409,21 +409,7 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (false)
-        {
-            ImGui.TextColored(new Vector4(252 / 255f, 249 / 255f, 209 / 255f, 1), "Welcome to AutoDuty");
-            var clippyImage = Svc.Texture.GetFromFile($"{Plugin.ImagesDirectory}/ADClippy.png").GetWrapOrDefault();
-            if (clippyImage != null)
-            {
-                ImGuiHelpers.ScaledIndent(55f);
-                ImGui.Image(clippyImage.ImGuiHandle, new Vector2(clippyImage.Width, clippyImage.Height));
-                ImGuiHelpers.ScaledIndent(-55f);
-            }
-        }
-        else
-        {
-            DrawPopup();
-            EzTabBar("MainTab", null, openTabName, ImGuiTabBarFlags.None, tabList.ToArray());
-        }
+        DrawPopup();
+        EzTabBar("MainTab", null, openTabName, ImGuiTabBarFlags.None, tabList.ToArray());
     }
 }

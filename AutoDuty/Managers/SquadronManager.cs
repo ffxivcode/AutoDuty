@@ -14,7 +14,7 @@ namespace AutoDuty.Managers
         internal bool InteractedWithSergeant = false;
         internal bool OpeningMissions = false;
         internal bool ViewingMissions = false;
-        internal unsafe void RegisterSquadron(ContentHelper.Content content)
+        internal unsafe void RegisterSquadron(Content content)
         {
             if (content.GCArmyIndex < 0)
             {

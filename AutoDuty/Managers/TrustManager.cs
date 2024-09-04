@@ -1,44 +1,40 @@
-﻿using AutoDuty.Helpers;
+﻿using static AutoDuty.Helpers.ObjectHelper;
+using AutoDuty.Helpers;
 using ECommons;
 using ECommons.Automation;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
-using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.GeneratedSheets2;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AutoDuty.Managers
 {
-    using System.Collections.Generic;
-    using Lumina.Excel;
-    using Lumina.Excel.GeneratedSheets2;
-    using static ContentHelper;
-    using static ObjectHelper;
-
     internal partial class TrustManager(TaskManager _taskManager)
     {
         internal static readonly Dictionary<TrustMemberName, TrustMember> members = [];
 
         internal static void PopulateTrustMembers()
         {
-            ExcelSheet<DawnMemberUIParam>?                     dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
-            ExcelSheet<Lumina.Excel.GeneratedSheets.ClassJob>? jobSheet  = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.ClassJob>();
+            var dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
+            var jobSheet = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.ClassJob>();
 
-            void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100) =>
-                members.Add(name,
-                            new TrustMember
-                            {
-                                Index    = index, 
-                                Name = dawnSheet!.GetRow((uint)name)!.Unknown0.RawString, 
-                                Role = role, 
-                                Job = jobSheet.GetRow((uint)classJob), 
-                                MemberName = name,
-                                LevelInit = levelInit,
-                                Level = levelInit,
-                                LevelCap = levelCap
-                            });
+            if (dawnSheet == null || jobSheet == null) return;
+
+            void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100) => members.Add(name, new TrustMember 
+            {
+                Index = index, 
+                Name = dawnSheet.GetRow((uint)name)!.Unknown0.RawString, 
+                Role = role, 
+                Job = jobSheet.GetRow((uint)classJob)!, 
+                MemberName = name,
+                LevelInit = levelInit,
+                Level = levelInit,
+                LevelCap = levelCap
+            });
 
             AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer,     ClassJobType.Sage);
             AddMember(TrustMemberName.Alisaie,   1, TrustRole.DPS,        ClassJobType.RedMage);
@@ -52,12 +48,10 @@ namespace AutoDuty.Managers
             AddMember(TrustMemberName.Krile,     7, TrustRole.DPS,        ClassJobType.Pictomancer, 91);
         }
 
-
         internal unsafe void RegisterTrust(Content content)
         {
             if (content.TrustIndex < 0)
                 return;
-            int queueIndex = content.TrustIndex;
 
             _taskManager.Enqueue(() => Svc.Log.Info($"Queueing Trust: {content.Name}"), "RegisterTrust");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Queueing Trust: {content.Name}", "RegisterTrust");
@@ -72,26 +66,14 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dawn"), "RegisterTrust");
             _taskManager.Enqueue(() => { if (addon == null) OpenDawn(); }, "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("Dawn", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, (content.ExVersion)), "RegisterTrust");
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 20, content.ExVersion), "RegisterTrust");
             _taskManager.DelayNext("RegisterTrust", 50);
-            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, queueIndex), "RegisterTrust");
+            _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 15, content.TrustIndex), "RegisterTrust");
             _taskManager.Enqueue(TurnOffAllMembers);
             _taskManager.Enqueue(TurnOnConfigMembers);
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 14), "RegisterTrust");
             _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("ContentsFinderConfirm", out addon) && GenericHelpers.IsAddonReady(addon), "RegisterTrust");
             _taskManager.Enqueue(() => AddonHelper.FireCallBack(addon, true, 8), "RegisterTrust");
-        }
-
-        private static int QueueIndex(ContentHelper.Content content)
-        {
-            int indexModifier = 1;
-            if (content.DawnIndex >= 17) //Skips Trials mistakenly present in the Trusts list because I (Vera) can't figure out how to parse them out in ContentHelper.cs
-                indexModifier++;
-            if (content.DawnIndex >= 26)
-                indexModifier++;
-            if (content.DawnIndex >= 30)
-                indexModifier++;
-            return content.DawnIndex - indexModifier;
         }
 
         private unsafe void TurnOnConfigMembers()
@@ -162,8 +144,7 @@ namespace AutoDuty.Managers
                 member.ResetLevel();
         }
 
-        internal bool GetLevelsCheck() => 
-            !currentlyGettingLevels;
+        internal bool GetLevelsCheck() => !currentlyGettingLevels;
 
         private bool currentlyGettingLevels;
 
@@ -173,7 +154,10 @@ namespace AutoDuty.Managers
                 return;
 
             content ??= AutoDuty.Plugin.CurrentTerritoryContent;
-            if (content?.DawnIndex < 1)
+
+            if (content == null) return;
+
+            if (content.DawnIndex < 1)
                 return;
 
             if (content.TrustMembers.TrueForAll(tm => tm.LevelIsSet))
@@ -181,7 +165,6 @@ namespace AutoDuty.Managers
             
             if (!content.CanTrustRun(false))
                 return;
-            
 
             currentlyGettingLevels = true;
 

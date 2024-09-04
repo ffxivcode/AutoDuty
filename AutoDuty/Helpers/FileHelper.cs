@@ -87,7 +87,7 @@ namespace AutoDuty.Helpers
             MainTab.PathsUpdated();
             PathsTab.PathsUpdated();
 
-            foreach ((uint _, ContentHelper.Content? content) in ContentHelper.DictionaryContent)
+            foreach ((uint _, Content? content) in ContentHelper.DictionaryContent)
             {
                 IEnumerable<FileInfo> files = Plugin.PathsDirectory.EnumerateFiles($"({content.TerritoryType})*.json", SearchOption.AllDirectories);
 
