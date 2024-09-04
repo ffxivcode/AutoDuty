@@ -182,7 +182,7 @@ namespace AutoDuty.Data
             AllRounder = 3
         }
 
-        public enum PlayerState
+        public enum PlayerLifeState
         {
             Alive = 0,
             Dead = 1,

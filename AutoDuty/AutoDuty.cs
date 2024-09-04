@@ -90,12 +90,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 case Stage.Action:
                     ActionInvoke();
                     break;
-                case Stage.Dead:
-                    OnDeath();
-                    break;
-                case Stage.Revived:
-                    OnRevive();
-                    break;
                 case Stage.Condition:
                     Action = $"ConditionChange";
                     SchedulerHelper.ScheduleAction("ConditionChangeStageReadingPath", () => _stage = Stage.Reading_Path, () => !Svc.Condition[ConditionFlag.BetweenAreas] && !Svc.Condition[ConditionFlag.BetweenAreas51] && !Svc.Condition[ConditionFlag.Jumping61]);
@@ -1072,11 +1066,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
-        if (Stage != Stage.Dead && States.HasFlag(PluginState.Navigating) && Player.Object.CurrentHp == 0)
+        if (Stage != Stage.Dead && States.HasFlag(PluginState.Navigating) && DeathHelper.DeathState == PlayerLifeState.Dead)
             Stage = Stage.Dead;
-
-        if (Stage == Stage.Dead && States.HasFlag(PluginState.Navigating) && Player.Object.CurrentHp > 0)
-            Stage = Stage.Revived;
 
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && States.HasFlag(PluginState.Navigating))
             DoneNavigating();

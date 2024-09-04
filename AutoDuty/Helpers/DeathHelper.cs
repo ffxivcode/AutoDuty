@@ -1,12 +1,10 @@
 ﻿using AutoDuty.IPC;
-using AutoDuty.Windows;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
 using System.Linq;
@@ -16,25 +14,25 @@ namespace AutoDuty.Helpers
 {
     internal static class DeathHelper
     {
-        private static PlayerState _deathState = PlayerState.Alive;
-        internal static PlayerState DeathState
+        private static PlayerLifeState _deathState = PlayerLifeState.Alive;
+        internal static PlayerLifeState DeathState
         {
             get
             {
                 if (!AutoDuty.Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) || AutoDuty.Plugin.Configuration.Unsynced)
                     return _deathState;
-                else if (Player.Object.CurrentHp == 0 && _deathState != PlayerState.Dead)
+                else if (Player.Object.CurrentHp == 0 && _deathState != PlayerLifeState.Dead)
                 {
                     OnDeath();
-                    return _deathState = PlayerState.Dead;
+                    return _deathState = PlayerLifeState.Dead;
                 }
-                else if (Player.Object.CurrentHp > 0 && _deathState != PlayerState.Revived)
+                else if (Player.Object.CurrentHp > 0 && _deathState != PlayerLifeState.Revived)
                 {
                     _oldIndex = AutoDuty.Plugin.Indexer;
                     BossMod_IPCSubscriber.Presets_ClearActive();
                     _findShortcutStartTime = Environment.TickCount;
-                    Svc.Framework.Update += OnRevive;
-                    return _deathState = PlayerState.Revived;
+                    FindShortcut();
+                    return _deathState = PlayerLifeState.Revived;
                 }
                 else
                     return _deathState;
@@ -67,6 +65,7 @@ namespace AutoDuty.Helpers
         private static int _oldIndex = 0;
         private static IGameObject? _gameObject => ObjectHelper.GetObjectByDataId(2000700);
         private static int _findShortcutStartTime = 0;
+
         private static int FindWaypoint()
         {
             if (AutoDuty.Plugin.Indexer == 0)
@@ -131,169 +130,51 @@ namespace AutoDuty.Helpers
         private static void FindShortcut()
         {
             if (_gameObject == null && Environment.TickCount <= (_findShortcutStartTime + 5000))
-                FindShortcut();
-
-            if ((gameObject = ObjectHelper.GetObjectByDataId(2000700)) == null || !gameObject.IsTargetable)
             {
-                Svc.Log.Debug($"OnRevive: Unable to find Shortcut");
+                Svc.Log.Debug($"OnRevive: Searching for shortcut");
+                SchedulerHelper.ScheduleAction("FindShortcut", FindShortcut, 500);
                 return;
             }
+
+            if (_gameObject == null || !_gameObject!.IsTargetable)
+            {
+                Svc.Log.Debug($"OnRevive: Couldn't find shortcut");
+                Stop();
+                return;
+            }
+
+            Svc.Log.Debug("OnRevive: Found shortcut");
+            Svc.Framework.Update += OnRevive;
+        }
+
+        private static void Stop()
+        {
+            Svc.Framework.Update -= OnRevive;
+            AutoDuty.Plugin.Stage = Stage.Reading_Path;
+            _deathState = PlayerLifeState.Alive;
         }
 
         private static unsafe void OnRevive(IFramework _)
         {
             if (!EzThrottler.Throttle("OnRevive", 500) || !ObjectHelper.IsValid || ObjectHelper.PlayerIsCasting) return;
 
-            if (gameObject == null || !gameObject.IsTargetable)
+            if (_gameObject == null || !_gameObject.IsTargetable)
             {
+                Svc.Log.Debug("OnRevive: Done");
                 if (AutoDuty.Plugin.Indexer == 0) AutoDuty.Plugin.Indexer = FindWaypoint();
-                AutoDuty.Plugin.Stage = Stage.Reading_Path;
-                _deathState = PlayerState.Alive;
+                Stop();
                 return;
             }
 
             if (_oldIndex == AutoDuty.Plugin.Indexer)
                 AutoDuty.Plugin.Indexer = FindWaypoint();
 
-            if (!MovementHelper.Move(gameObject, 0.25f, 2))
-                Svc.Log.Debug($"OnRevive: Moving to {gameObject.Name} at: {gameObject.Position} which is {ObjectHelper.GetDistanceToPlayer(gameObject)} away");
-            else if (ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") == null)
-                Svc.Log.Debug($"OnRevive: Interacting with {gameObject.Name} until SelectYesno Addon appears");
+            if (!MovementHelper.Move(_gameObject, 0.25f, 2))
+                Svc.Log.Debug($"OnRevive: Moving to {_gameObject.Name} at: {_gameObject.Position} which is {ObjectHelper.GetDistanceToPlayer(_gameObject)} away");
+            else if (ObjectHelper.InteractWithObjectUntilAddon(_gameObject, "SelectYesno") == null)
+                Svc.Log.Debug($"OnRevive: Interacting with {_gameObject.Name} until SelectYesno Addon appears");
             else if (!AddonHelper.ClickSelectYesno())
                 Svc.Log.Debug($"OnRevive: Clicking Yes");
-
-            TaskManager.Enqueue(() => { if (Indexer == 0) Indexer = FindWaypoint(); });
-            TaskManager.Enqueue(() => Stage = Stage.Reading_Path);
-
-
-
-            
-        }
-
-        internal static void Invoke() 
-        {
-            Svc.Log.Debug("AMHelper.Invoke");
-            if (!AM_IPCSubscriber.IsEnabled)
-            {
-                Svc.Log.Info("AM requires a plugin, visit https://discord.gg/JzSxThjKnd for more info");
-                Svc.Log.Info("DO NOT ask in Puni.sh discord about this option");
-            }
-            else if (State != ActionState.Running)
-            {
-                Svc.Log.Info("AM Started");
-                State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
-                SchedulerHelper.ScheduleAction("AMTimeOut", Stop, 600000);
-                Svc.Framework.Update += AMUpdate;
-            }
-        }
-
-        
-
-        internal static void Stop() 
-        {
-            Svc.Log.Debug("AMHelper.Stop");
-            if (State == ActionState.Running)
-                Svc.Log.Info("AM Finished");
-            GotoInnHelper.Stop();
-            AutoDuty.Plugin.Action = "";
-            SchedulerHelper.DescheduleAction("AMTimeOut");
-            _aMStarted = false;
-            if (AM_IPCSubscriber.IsRunning())
-                AM_IPCSubscriber.Stop();
-            Svc.Framework.Update += AMStopUpdate;
-            Svc.Framework.Update -= AMUpdate;
-        }
-
-        internal static ActionState State = ActionState.None;
-
-        private static bool _aMStarted = false;
-        private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum));
-
-        internal static unsafe void AMStopUpdate(IFramework framework)
-        {
-            if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
-            {
-                State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(true);
-                Svc.Framework.Update -= AMStopUpdate;
-            }
-            else if (Svc.Targets.Target != null)
-                Svc.Targets.Target = null;
-            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                addonSelectYesno->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
-                addonSelectString->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList))
-                addonRetainerList->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("RetainerSellList", out AtkUnitBase* addonRetainerSellList))
-                addonRetainerSellList->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("RetainerSell", out AtkUnitBase* addonRetainerSell))
-                addonRetainerSell->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("ItemSearchResult", out AtkUnitBase* addonItemSearchResult))
-                addonItemSearchResult->Close(true);
-            return;
-        }
-
-        internal static unsafe void AMUpdate(IFramework framework)
-        {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Paused))
-                return;
-
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
-            {
-                Svc.Log.Debug("AutoDuty is Started, Stopping AMHelper");
-                Stop();
-            }
-            if (!_aMStarted && AM_IPCSubscriber.IsRunning())
-            {
-                Svc.Log.Info("AM has Started");
-                _aMStarted = true;
-                return;
-            }
-            else if (_aMStarted && !AM_IPCSubscriber.IsRunning())
-            {
-                Svc.Log.Debug("AM is Complete");
-                Stop();
-                return;
-            }
-
-            if (!EzThrottler.Throttle("AM", 250))
-                return;
-
-            if (!ObjectHelper.IsValid) return;
-
-            if (GotoHelper.State == ActionState.Running)
-            {
-                Svc.Log.Debug("Goto Running");
-                return;
-            }
-            AutoDuty.Plugin.Action = "AM Running";
-
-            if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) > 4)
-            {
-                Svc.Log.Debug("Moving Closer to Summoning Bell");
-                MovementHelper.Move(SummoningBellGameObject, 0.25f, 4);
-            }
-            else if (SummoningBellGameObject == null && GotoHelper.State != ActionState.Running)
-            {
-                Svc.Log.Debug("Moving to Summoning Bell Location");
-                SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
-            }
-            else if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) <= 4 && !_aMStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList) && (ObjectHelper.InteractWithObjectUntilAddon(SummoningBellGameObject, "RetainerList") == null))
-            {
-                if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
-                {
-                    Svc.Log.Debug("Starting AM");
-                    AM_IPCSubscriber.Start();
-                }
-                else
-                    Svc.Log.Debug("Interacting with SummoningBell");
-            }
         }
     }
 }
