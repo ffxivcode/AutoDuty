@@ -7,6 +7,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using System;
 using System.Collections.Generic;
 using static AutoDuty.Helpers.ContentHelper;
 
@@ -60,11 +61,10 @@ namespace AutoDuty.Helpers
 
         internal static void QueueSupport()
         {
-            if (!GenericHelpers.TryGetAddonByName("DawnStory", out AtkUnitBase* addonDawnStory) || !GenericHelpers.IsAddonReady(addonDawnStory))
+            if (!GenericHelpers.TryGetAddonByName("DawnStory", out AtkUnitBase* addonDawnStory) || !GenericHelpers.IsAddonReady(addonDawnStory) && EzThrottler.Throttle("OpenDawnSupport", 5000))
             {
                 Svc.Log.Debug("Queue Helper - Opening Dawn Support");
                 AgentModule.Instance()->GetAgentByInternalId(AgentId.DawnStory)->Show();
-                EzThrottler.Throttle("QueueHelper", 500, true);
                 return;
             }
 
@@ -156,9 +156,7 @@ namespace AutoDuty.Helpers
             if (_content == null || AutoDuty.Plugin.InDungeon || Svc.ClientState.TerritoryType == _content?.TerritoryType)
                 Stop();
 
-            if (!EzThrottler.Check("QueueHelper") || !ObjectHelper.IsValid || ContentsFinderConfirm() || Conditions.IsInDutyQueue) return;
-
-            EzThrottler.Throttle("QueueHelper", 250);
+            if (!EzThrottler.Throttle("QueueHelper", 250)|| !ObjectHelper.IsValid || ContentsFinderConfirm() || Conditions.IsInDutyQueue) return;
 
             switch (_dutyMode)
             {
