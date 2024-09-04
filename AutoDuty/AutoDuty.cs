@@ -31,7 +31,6 @@ using ImGuiNET;
 using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
@@ -1015,67 +1014,6 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private int FindWaypoint()
-    {
-        if (Indexer == 0)
-        {
-            //Svc.Log.Info($"Finding Closest Waypoint {ListBoxPOSText.Count}");
-            float closestWaypointDistance = float.MaxValue;
-            int closestWaypointIndex = -1;
-            float currentDistance = 0;
-
-            for (int i = 0; i < ListBoxPOSText.Count; i++)
-            {
-                string node = ListBoxPOSText[i];
-
-                if (node.Contains("Boss|") && node.Replace("Boss|", "").All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
-                {
-                    currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
-
-                    if (currentDistance < closestWaypointDistance)
-                    {
-                        closestWaypointDistance = currentDistance;
-                        closestWaypointIndex    = i;
-                    }
-                }
-                else if (node.All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
-                {
-                    currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
-                    //Svc.Log.Info($"cd: {currentDistance}");
-                    if (currentDistance < closestWaypointDistance)
-                    {
-                        closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
-                        closestWaypointIndex = i;
-                    }
-                }
-            }
-            //Svc.Log.Info($"Closest Waypoint was {closestWaypointIndex}");
-            return closestWaypointIndex + 1;
-        }
-
-        if (Indexer != -1)
-        {
-            bool revivalFound = ContentPathsManager.DictionaryPaths[CurrentTerritoryType].Paths[CurrentPath].RevivalFound;
-
-            //Svc.Log.Info("Finding Last Boss");
-            for (int i = Indexer; i >= 0; i--)
-            {
-                if (revivalFound)
-                {
-                    if (ListBoxPOSText[i].Contains("Revival|") && i != Indexer)
-                        return i;
-                }
-                else
-                {
-                    if (ListBoxPOSText[i].Contains("Boss|") && i != Indexer)
-                        return i + 1;
-                }
-            }
-        }
-
-        return 0;
-    }
-    
     private void GetJobAndLevelingCheck()
     {
         Job curJob = Player.Object.GetJob();

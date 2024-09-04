@@ -6,9 +6,11 @@ using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using System.ComponentModel.Design;
+using System;
 using System.Linq;
+using System.Numerics;
 
 namespace AutoDuty.Helpers
 {
@@ -28,6 +30,9 @@ namespace AutoDuty.Helpers
                 }
                 else if (Player.Object.CurrentHp > 0 && _deathState != PlayerState.Revived)
                 {
+                    _oldIndex = AutoDuty.Plugin.Indexer;
+                    BossMod_IPCSubscriber.Presets_ClearActive();
+                    _findShortcutStartTime = Environment.TickCount;
                     Svc.Framework.Update += OnRevive;
                     return _deathState = PlayerState.Revived;
                 }
@@ -59,33 +64,110 @@ namespace AutoDuty.Helpers
             }
         }
 
-        private static unsafe void OnRevive(IFramework _)
+        private static int _oldIndex = 0;
+        private static IGameObject? _gameObject => ObjectHelper.GetObjectByDataId(2000700);
+        private static int _findShortcutStartTime = 0;
+        private static int FindWaypoint()
         {
-            if (AutoDuty.Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) && !AutoDuty.Plugin.Configuration.Unsynced)
+            if (AutoDuty.Plugin.Indexer == 0)
             {
-                Svc.Framework.Update -= OnRevive;
+                //Svc.Log.Info($"Finding Closest Waypoint {ListBoxPOSText.Count}");
+                float closestWaypointDistance = float.MaxValue;
+                int closestWaypointIndex = -1;
+                float currentDistance = 0;
+
+                for (int i = 0; i < AutoDuty.Plugin.ListBoxPOSText.Count; i++)
+                {
+                    string node = AutoDuty.Plugin.ListBoxPOSText[i];
+
+                    if (node.Contains("Boss|") && node.Replace("Boss|", "").All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
+                    {
+                        currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Replace("Boss|", "").Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Replace("Boss|", "").Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Replace("Boss|", "").Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
+
+                        if (currentDistance < closestWaypointDistance)
+                        {
+                            closestWaypointDistance = currentDistance;
+                            closestWaypointIndex = i;
+                        }
+                    }
+                    else if (node.All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
+                    {
+                        currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
+                        //Svc.Log.Info($"cd: {currentDistance}");
+                        if (currentDistance < closestWaypointDistance)
+                        {
+                            closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
+                            closestWaypointIndex = i;
+                        }
+                    }
+                }
+                //Svc.Log.Info($"Closest Waypoint was {closestWaypointIndex}");
+                return closestWaypointIndex + 1;
             }
 
-            TaskManager.DelayNext(5000);
-            TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
-            TaskManager.Enqueue(() => BossMod_IPCSubscriber.Presets_ClearActive());
-            IGameObject? gameObject = ObjectHelper.GetObjectByDataId(2000700);
+            if (AutoDuty.Plugin.Indexer != -1)
+            {
+                bool revivalFound = ContentPathsManager.DictionaryPaths[AutoDuty.Plugin.CurrentTerritoryType].Paths[AutoDuty.Plugin.CurrentPath].RevivalFound;
+
+                //Svc.Log.Info("Finding Last Boss");
+                for (int i = AutoDuty.Plugin.Indexer; i >= 0; i--)
+                {
+                    if (revivalFound)
+                    {
+                        if (AutoDuty.Plugin.ListBoxPOSText[i].Contains("Revival|") && i != AutoDuty.Plugin.Indexer)
+                            return i;
+                    }
+                    else
+                    {
+                        if (AutoDuty.Plugin.ListBoxPOSText[i].Contains("Boss|") && i != AutoDuty.Plugin.Indexer)
+                            return i + 1;
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        private static void FindShortcut()
+        {
+            if (_gameObject == null && Environment.TickCount <= (_findShortcutStartTime + 5000))
+                FindShortcut();
+
+            if ((gameObject = ObjectHelper.GetObjectByDataId(2000700)) == null || !gameObject.IsTargetable)
+            {
+                Svc.Log.Debug($"OnRevive: Unable to find Shortcut");
+                return;
+            }
+        }
+
+        private static unsafe void OnRevive(IFramework _)
+        {
+            if (!EzThrottler.Throttle("OnRevive", 500) || !ObjectHelper.IsValid || ObjectHelper.PlayerIsCasting) return;
+
             if (gameObject == null || !gameObject.IsTargetable)
             {
-                TaskManager.Enqueue(() => { Stage = Stage.Reading_Path; });
+                if (AutoDuty.Plugin.Indexer == 0) AutoDuty.Plugin.Indexer = FindWaypoint();
+                AutoDuty.Plugin.Stage = Stage.Reading_Path;
+                _deathState = PlayerState.Alive;
                 return;
             }
 
-            var oldindex = Indexer;
-            Indexer = FindWaypoint();
-            TaskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2));
-            TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
-            TaskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno"), int.MaxValue);
-            TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), int.MaxValue);
-            TaskManager.Enqueue(() => !ObjectHelper.IsValid, 500);
-            TaskManager.Enqueue(() => ObjectHelper.IsValid);
+            if (_oldIndex == AutoDuty.Plugin.Indexer)
+                AutoDuty.Plugin.Indexer = FindWaypoint();
+
+            if (!MovementHelper.Move(gameObject, 0.25f, 2))
+                Svc.Log.Debug($"OnRevive: Moving to {gameObject.Name} at: {gameObject.Position} which is {ObjectHelper.GetDistanceToPlayer(gameObject)} away");
+            else if (ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno") == null)
+                Svc.Log.Debug($"OnRevive: Interacting with {gameObject.Name} until SelectYesno Addon appears");
+            else if (!AddonHelper.ClickSelectYesno())
+                Svc.Log.Debug($"OnRevive: Clicking Yes");
+
             TaskManager.Enqueue(() => { if (Indexer == 0) Indexer = FindWaypoint(); });
             TaskManager.Enqueue(() => Stage = Stage.Reading_Path);
+
+
+
+            
         }
 
         internal static void Invoke() 
