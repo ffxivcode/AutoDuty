@@ -15,12 +15,13 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using static AutoDuty.Managers.ContentPathsManager;
 using ECommons.ImGuiMethods;
+using Dalamud.Interface.Components;
 
 namespace AutoDuty.Windows
 {
     internal static class BuildTab
     {
-        internal static List<(string, string)>? ActionsList { get; set; }
+        internal static List<(string, string, string)>? ActionsList { get; set; }
 
         private static bool _scrollBottom = false;
         private static string _changelog = string.Empty;
@@ -30,7 +31,7 @@ namespace AutoDuty.Windows
         private static bool _dontMove = false;
         private static float _inputIW = 200 * ImGuiHelpers.GlobalScale;
         private static bool _showAddActionUI = false;
-        private static (string, string) _dropdownSelected = ("", "");
+        private static (string, string, string) _dropdownSelected = ("", "", "");
         private static int _buildListSelected = -1;
         private static string _addActionButton = "Add"; 
         private static bool _dragDrop = false;
@@ -43,7 +44,7 @@ namespace AutoDuty.Windows
         {
             _input = "";
             _action = "";
-            _dropdownSelected = ("", "");
+            _dropdownSelected = ("", "", "");
             _buildListSelected = -1;
             _dontMove = false;
             _showAddActionUI = false;
@@ -81,19 +82,21 @@ namespace AutoDuty.Windows
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
+            
             if (ImGui.Button("Add POS"))
             {
                 _scrollBottom = true;
                 Plugin.ListBoxPOSText.Add($"MoveTo|{GetPlayerPosition}|");
             }
             ImGui.SameLine(0, 5);
+            ImGuiComponents.HelpMarker("Adds a MoveTo step to the path, AutoDuty will Move to the specified position");
             if (ImGuiEx.ButtonWrapped("Add Action"))
             {
                 if (_showAddActionUI)
                     ClearAll();
                 ImGui.OpenPopup("AddActionPopup");
             }
-
+            ImGuiComponents.HelpMarker("Opens the Add Action popup menu to add action steps to the path");
             if (ImGui.BeginPopup("AddActionPopup"))
             {
                 if (ActionsList == null)
@@ -133,6 +136,7 @@ namespace AutoDuty.Windows
                         _showAddActionUI = !item.Item2.Equals("false");
                         _inputTextName = item.Item2;
                     }
+                    ImGuiComponents.HelpMarker(item.Item3);
                 }
                 ImGui.EndPopup();
             }
@@ -142,6 +146,7 @@ namespace AutoDuty.Windows
                 Plugin.ListBoxPOSText.Clear();
                 ClearAll();
             }
+            ImGuiComponents.HelpMarker("Clears the entire path, NOTE: there is no confirmation");
             ImGui.SameLine(0, 5);
             if (ImGuiEx.ButtonWrapped("Save Path"))
             {
@@ -171,7 +176,7 @@ namespace AutoDuty.Windows
 
                     pathFile ??= PathFile.Default;
 
-                    pathFile.actions = Plugin.ListBoxPOSText.ToArray();
+                    pathFile.actions = [.. Plugin.ListBoxPOSText];
 
                     string json = JsonSerializer.Serialize(pathFile, jsonSerializerOptions);
                     File.WriteAllText(Plugin.PathFile, json);
@@ -183,12 +188,14 @@ namespace AutoDuty.Windows
                     //throw;
                 }
             }
+            ImGuiComponents.HelpMarker("Saves the path to the path file specified or the default");
             ImGui.SameLine(0, 5);
             if (ImGuiEx.ButtonWrapped("Load Path"))
             {
                 Plugin.LoadPath();
                 ClearAll();
             }
+            ImGuiComponents.HelpMarker("Loads the path");
             ImGui.Text("Changelog:");
             ImGui.SameLine();
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
@@ -257,7 +264,7 @@ namespace AutoDuty.Windows
                             {
                                 _buildListSelected = item.Index;
                                 _showAddActionUI = true;
-                                _dropdownSelected = ("", "");
+                                _dropdownSelected = ("", "", "");
                                 _addActionButton = "Modify";
                                 _inputTextName = "";
                                 _input = item.Value;
