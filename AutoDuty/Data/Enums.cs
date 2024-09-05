@@ -181,5 +181,12 @@ namespace AutoDuty.Data
             Tank = 2,
             AllRounder = 3
         }
+
+        public enum PlayerLifeState
+        {
+            Alive = 0,
+            Dead = 1,
+            Revived = 2
+        }
     }
 }

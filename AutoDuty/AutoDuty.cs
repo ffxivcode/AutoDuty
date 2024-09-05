@@ -31,7 +31,6 @@ using ImGuiNET;
 using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
@@ -90,12 +89,6 @@ public sealed class AutoDuty : IDalamudPlugin
                     break;
                 case Stage.Action:
                     ActionInvoke();
-                    break;
-                case Stage.Dead:
-                    OnDeath();
-                    break;
-                case Stage.Revived:
-                    OnRevive();
                     break;
                 case Stage.Condition:
                     Action = $"ConditionChange";
@@ -419,6 +412,23 @@ public sealed class AutoDuty : IDalamudPlugin
     private void Condition_ConditionChange(ConditionFlag flag, bool value)
     {
         if (Stage == Stage.Stopped) return;
+
+        if (flag == ConditionFlag.Unconscious)
+        {
+            if (value && (Stage != Stage.Dead || DeathHelper.DeathState != PlayerLifeState.Dead))
+            {
+                Svc.Log.Debug($"We Died, Setting Stage to Dead");
+                DeathHelper.DeathState = PlayerLifeState.Dead;
+                Stage = Stage.Dead;
+            }
+            else if (!value && (Stage != Stage.Revived || DeathHelper.DeathState != PlayerLifeState.Revived))
+            {
+                Svc.Log.Debug($"We Revived, Setting Stage to Revived");
+                DeathHelper.DeathState = PlayerLifeState.Revived;
+                Stage = Stage.Revived;
+            }
+            return;
+        }
         //Svc.Log.Debug($"{flag} : {value}");
         if (Stage != Stage.Dead && Stage != Stage.Revived && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && States.HasFlag(PluginState.Navigating) && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
         {
@@ -880,8 +890,10 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    internal void SetRotationPluginSettings(bool on)
+    internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false)
     {
+        if (!Configuration.AutoManageRotationPluginState && !ignoreConfig) return;
+
         if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
         {
             if (on)
@@ -983,51 +995,6 @@ public sealed class AutoDuty : IDalamudPlugin
             ConfigTab.FollowName = ObjectHelper.GetPartyMemberFromRole($"{Configuration.FollowRoleEnum}")?.Name.ExtractText() ?? "";
     }
 
-    private unsafe void OnDeath()
-    {
-        if ((Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid) && !Configuration.Unsynced)
-            return;
-
-        StopForCombat = true;
-        SkipTreasureCoffer = true;
-        if (VNavmesh_IPCSubscriber.Path_IsRunning())
-            VNavmesh_IPCSubscriber.Path_Stop();
-        if (TaskManager.IsBusy)
-            TaskManager.Abort();
-        if (Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid)
-        {
-            TaskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno));
-            TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
-        }
-    }
-
-    private unsafe void OnRevive()
-    {
-        if ((Configuration.DutyModeEnum == DutyMode.Regular || Configuration.DutyModeEnum == DutyMode.Trial || Configuration.DutyModeEnum == DutyMode.Raid) && !Configuration.Unsynced)
-            return;
-
-        TaskManager.DelayNext(5000);
-        TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
-        TaskManager.Enqueue(() => BossMod_IPCSubscriber.Presets_ClearActive());
-        IGameObject? gameObject = ObjectHelper.GetObjectByDataId(2000700);
-        if (gameObject == null || !gameObject.IsTargetable)
-        {
-            TaskManager.Enqueue(() => { Stage = Stage.Reading_Path; } );
-            return;
-        }
-
-        var oldindex = Indexer;
-        Indexer = FindWaypoint();
-        TaskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2));
-        TaskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting);
-        TaskManager.Enqueue(() => ObjectHelper.InteractWithObjectUntilAddon(gameObject, "SelectYesno"), int.MaxValue);
-        TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno(), int.MaxValue);
-        TaskManager.Enqueue(() => !ObjectHelper.IsValid, 500);
-        TaskManager.Enqueue(() => ObjectHelper.IsValid);
-        TaskManager.Enqueue(() => { if (Indexer == 0) Indexer = FindWaypoint(); });
-        TaskManager.Enqueue(() => Stage = Stage.Reading_Path);
-    }
-
     private unsafe void ActionInvoke()
     {
         if (!TaskManager.IsBusy && !_action.IsNullOrEmpty())
@@ -1060,67 +1027,6 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private int FindWaypoint()
-    {
-        if (Indexer == 0)
-        {
-            //Svc.Log.Info($"Finding Closest Waypoint {ListBoxPOSText.Count}");
-            float closestWaypointDistance = float.MaxValue;
-            int closestWaypointIndex = -1;
-            float currentDistance = 0;
-
-            for (int i = 0; i < ListBoxPOSText.Count; i++)
-            {
-                string node = ListBoxPOSText[i];
-
-                if (node.Contains("Boss|") && node.Replace("Boss|", "").All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
-                {
-                    currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Replace("Boss|", "").Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
-
-                    if (currentDistance < closestWaypointDistance)
-                    {
-                        closestWaypointDistance = currentDistance;
-                        closestWaypointIndex    = i;
-                    }
-                }
-                else if (node.All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
-                {
-                    currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
-                    //Svc.Log.Info($"cd: {currentDistance}");
-                    if (currentDistance < closestWaypointDistance)
-                    {
-                        closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
-                        closestWaypointIndex = i;
-                    }
-                }
-            }
-            //Svc.Log.Info($"Closest Waypoint was {closestWaypointIndex}");
-            return closestWaypointIndex + 1;
-        }
-
-        if (Indexer != -1)
-        {
-            bool revivalFound = ContentPathsManager.DictionaryPaths[CurrentTerritoryType].Paths[CurrentPath].RevivalFound;
-
-            //Svc.Log.Info("Finding Last Boss");
-            for (int i = Indexer; i >= 0; i--)
-            {
-                if (revivalFound)
-                {
-                    if (ListBoxPOSText[i].Contains("Revival|") && i != Indexer)
-                        return i;
-                }
-                else
-                {
-                    if (ListBoxPOSText[i].Contains("Boss|") && i != Indexer)
-                        return i + 1;
-                }
-            }
-        }
-
-        return 0;
-    }
-    
     private void GetJobAndLevelingCheck()
     {
         Job curJob = Player.Object.GetJob();
@@ -1178,12 +1084,6 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
-
-        if (Stage != Stage.Dead && States.HasFlag(PluginState.Navigating) && Player.Object.CurrentHp == 0)
-            Stage = Stage.Dead;
-
-        if (Stage == Stage.Dead && States.HasFlag(PluginState.Navigating) && Player.Object.CurrentHp > 0)
-            Stage = Stage.Revived;
 
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && States.HasFlag(PluginState.Navigating))
             DoneNavigating();
@@ -1566,7 +1466,8 @@ public sealed class AutoDuty : IDalamudPlugin
             ExitDutyHelper.Stop();
         if (AutoEquipHelper.State == ActionState.Running)
             AutoEquipHelper.Stop();
-
+        if (DeathHelper.DeathState == PlayerLifeState.Revived)
+            DeathHelper.Stop();
         Action = "";
     }
 
