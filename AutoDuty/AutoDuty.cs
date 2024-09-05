@@ -59,8 +59,10 @@ public sealed class AutoDuty : IDalamudPlugin
         get => currentTerritoryContent;
         set
         {
-            CurrentPlayerItemLevelandClassJob = new(InventoryHelper.CurrentItemLevel, Player.Job);
-            currentTerritoryContent = value;
+            this.CurrentPlayerItemLevelandClassJob = ObjectHelper.IsValid ? 
+                                                         new(InventoryHelper.CurrentItemLevel, Player.Job) : 
+                                                         new(0, Job.BLU);
+            currentTerritoryContent                = value;
         }
     }
     internal uint CurrentTerritoryType = 0;
