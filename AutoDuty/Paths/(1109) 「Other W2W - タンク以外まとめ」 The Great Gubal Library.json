@@ -1,66 +1,84 @@
 {
   "actions": [
+    "<-- Trash Pack / 雑魚 1 -->",
     "StopForCombat|-368.35, 0.00, 0.18|False",
     "StopForCombat|-342.01, 0.00, -0.46|True",
 
+    "<-- Trash Pack / 雑魚 2 -->",
+    "<-- Not double-pulling these cuz too far apart -->",
     "StopForCombat|-313.82, 0.00, -0.09|False",
     "StopForCombat|-274.29, -6.00, -0.44|True",
 
+    "<-- Trash Pack / 雑魚 3 -->",
     "StopForCombat|-233.45, 0.00, -36.29|False",
     "StopForCombat|-207.24, 6.00, -61.54|True",
 
+    "<-- Trash Pack / 雑魚 4 -->",
     "StopForCombat|-173.17, 12.00, -33.83|False",
     "StopForCombat|-143.59, 6.00, -4.20|True",
 
+    "<-- Trash Pack / 雑魚 5 -->",
     "StopForCombat|-96.25, 0.00, 0.03|False",
     "StopForCombat|-74.13, 0.00, -0.03|True",
 
+    "<-- Boss / ボス 1 -->",
     "Boss|-5.27, 0.00, -0.51|",
 
+    "<-- Trash Packs / 雑魚 6 & 7 -->",
     "StopForCombat|45.26, 0.00, 0.04|False",
     "MoveTo|96.08, -8.00, 0.03|",
-    "Wait|0, 0, 0|2200",
-    "Rotation|0, 0, 0|Off",
+    "SyncedWait|0, 0, 0|2200",
+    "SyncedRotation|0, 0, 0|Off",
     "TreasureCoffer|101.92, -8.00, -25.58|",
     "MoveTo|84.62, -8.00, 36.05|",
-    "Rotation|0, 0, 0|On",
-    "StopForCombat|98.02, -8.00, 17.16|True",
+    "SyncedRotation|0, 0, 0|On",
+    "SyncedStopForCombat|98.02, -8.00, 17.16|True",
+    "UnsyncedStopForCombat|0, 0, 0|True",
 
+    "<-- Trash Pack / 雑魚 8 -->",
     "StopForCombat|80.88, -8.00, 39.98|False",
     "MoveTo|70.01, -8.14, 72.26|",
     "StopForCombat|77.36, -8.00, 61.80|True",
 
+    "<-- Trash Pack / 雑魚 9 -->",
     "TreasureCoffer|50.34, -9.00, 75.69|",
     "StopForCombat|77.79, -8.00, 72.05|False",
     "StopForCombat|114.76, -9.00, 74.41|True",
 
+    "<-- Trash Pack / 雑魚 10 -->",
     "StopForCombat|120.82, -8.00, 73.26|False",
     "StopForCombat|128.07, -8.00, 97.03|True",
 
+    "<-- Boss / ボス 2 -->",
     "Boss|177.63, -7.91, 23.66|",
 
+    "<-- Trash Pack / 雑魚 11 -->",
     "StopForCombat|177.88, -8.00, -15.99|False",
     "StopForCombat|199.42, -20.00, -66.28|True",
 
+    "<-- Trash Packs / 雑魚 12 & 13 -->",
     "StopForCombat|225.96, -24.00, -74.49|False",
-    "MoveTo|297.80, -24.00, -60.86|",
-    "StopForCombat|274.43, -24.00, -88.73|True",
+    "MoveTo|297.81, -24.00, -62.17|",
+    "SyncedStopForCombat|274.43, -24.00, -88.73|True",
+    "UnsyncedStopForCombat|0, 0, 0|True",
 
+    "<-- Trash Pack / 雑魚 14 -->",
     "StopForCombat|297.80, -24.00, -60.86|False",
     "MoveTo|272.01, -24.00, -27.72|",
-    "StopForCombat|283.13, -24.00, -29.69|True",
-
+    "SyncedStopForCombat|283.13, -24.00, -29.69|True",
+    "UnsyncedStopForCombat|0, 0, 0|True",
     "TreasureCoffer|248.89, -24.00, -21.28|",
 
+    "<-- Trash Pack / 雑魚 15 -->",
     "StopForCombat|229.02, -24.00, -41.61|False",
     "StopForCombat|264.43, -40.00, -61.72|True",
-
     "TreasureCoffer|224.94, -40.00, -51.07|",
 
+    "<-- Boss / ボス 3 -->",
     "Boss|374.56, -39.00, -59.86|"
   ],
   "meta": {
-    "createdAt": 145,
+    "createdAt": 155,
     "changelog": [],
     "notes": []
   }
