@@ -66,7 +66,7 @@ namespace AutoDuty.Helpers
         {
             if (TrustHelper.State == ActionState.Running) return;
 
-            if (!GenericHelpers.TryGetAddonByName("Dawn", out AtkUnitBase* addonDawn) || !GenericHelpers.IsAddonReady(addonDawn) && EzThrottler.Throttle("OpenDawn", 5000))
+            if ((!GenericHelpers.TryGetAddonByName("Dawn", out AtkUnitBase* addonDawn) || !GenericHelpers.IsAddonReady(addonDawn))&& EzThrottler.Throttle("OpenDawn", 5000))
             {
                 Svc.Log.Debug("Queue Helper - Opening Dawn");
                 AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Show();
@@ -128,7 +128,7 @@ namespace AutoDuty.Helpers
 
         internal static void QueueSupport()
         {
-            if (!GenericHelpers.TryGetAddonByName("DawnStory", out AtkUnitBase* addonDawnStory) || !GenericHelpers.IsAddonReady(addonDawnStory) && EzThrottler.Throttle("OpenDawnStory", 5000))
+            if ((!GenericHelpers.TryGetAddonByName("DawnStory", out AtkUnitBase* addonDawnStory) || !GenericHelpers.IsAddonReady(addonDawnStory)) && EzThrottler.Throttle("OpenDawnStory", 5000))
             {
                 Svc.Log.Debug("Queue Helper - Opening DawnStory");
                 AgentModule.Instance()->GetAgentByInternalId(AgentId.DawnStory)->Show();
