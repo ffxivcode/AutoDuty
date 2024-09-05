@@ -333,6 +333,18 @@ public sealed class AutoDuty : IDalamudPlugin
                                     (Configuration.StopNoRestedXP && AgentHUD.Instance()->ExpRestedExperience == 0) || 
                                     (Configuration.StopItemQty && Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value)));
 
+    private void TrustLeveling()
+    {
+        if (TrustLevelingEnabled && TrustHelper.Members.Any(tm => tm.Value.Level < tm.Value.LevelCap))
+        {
+            TaskManager.Enqueue(() => Svc.Log.Debug($"Trust Leveling Enabled"), "TrustLeveling-Debug");
+            TaskManager.Enqueue(() => TrustHelper.ClearCachedLevels(CurrentTerritoryContent!), "TrustLeveling-ClearCachedLevels");
+            TaskManager.Enqueue(() => TrustHelper.GetLevels(CurrentTerritoryContent), "TrustLeveling-GetLevels");
+            TaskManager.DelayNext(50);
+            TaskManager.Enqueue(() => TrustHelper.State != ActionState.Running, "TrustLeveling-RecheckingTrustLevels");
+        }
+    }
+
     private void ClientState_TerritoryChanged(ushort t)
     {
         if (Stage == Stage.Stopped) return;
@@ -378,14 +390,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     TaskManager.Enqueue(() => { Action = $"After Loop Actions"; }, "Loop-AfterLoopActionsSetAction");
                 }
 
-                if (TrustLevelingEnabled && TrustHelper.Members.Any(tm => tm.Value.Level < tm.Value.LevelCap))
-                {
-                    TaskManager.Enqueue(() => Svc.Log.Debug($"Trust Leveling Enabled"), "Loop-Debug");
-                    TrustHelper.ClearCachedLevels(CurrentTerritoryContent);
-                    TrustHelper.GetLevels(CurrentTerritoryContent);
-                    TaskManager.DelayNext(50);
-                    TaskManager.Enqueue(() => TrustHelper.State != ActionState.Running, "Loop-RecheckingTrustLevels");
-                }
+                TrustLeveling();
 
                 TaskManager.Enqueue(() =>
                 {

@@ -31,7 +31,6 @@ namespace AutoDuty.Helpers
                 {
                     Svc.Log.Debug("DeathHelper - Player is Revived changing state to Revived");
                     _oldIndex = AutoDuty.Plugin.Indexer;
-                    BossMod_IPCSubscriber.Presets_ClearActive();
                     _findShortcutStartTime = Environment.TickCount;
                     FindShortcut();
                 }
