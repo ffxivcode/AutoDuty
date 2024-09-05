@@ -31,7 +31,7 @@ namespace AutoDuty.Data
             public int VVDIndex { get; set; } = -1;
             public bool GCArmyContent { get; set; } = false;
             public int GCArmyIndex { get; set; } = -1;
-            public List<TrustMember> TrustMembers { get; set; } = new();
+            public List<TrustMember> TrustMembers { get; set; } = [];
         }
 
         public class TrustMember

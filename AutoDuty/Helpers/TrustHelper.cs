@@ -78,9 +78,9 @@ namespace AutoDuty.Helpers
 
             try
             {
-                TrustMember[] membersPossible = content.TrustMembers
+                TrustMember[] membersPossible = [.. content.TrustMembers
                                                        .OrderBy(tm => tm.Level + (tm.Level < tm.LevelCap ? 0 : 100) + 
-                                                                      (playerRole == CombatRole.DPS ? playerJobRole == tm.Job.GetJobRole() ? 0.5f : 0 : 0)).ToArray();
+                                                                      (playerRole == CombatRole.DPS ? playerJobRole == tm.Job!.GetJobRole() ? 0.5f : 0 : 0))];
                 foreach (TrustMember member in membersPossible)
                 {
                     Svc.Log.Info("checking: " + member.Name);
@@ -196,18 +196,27 @@ namespace AutoDuty.Helpers
             _getLevelsContent = content;
 
             _getLevelsContent ??= AutoDuty.Plugin.CurrentTerritoryContent;
-            
-            if (_getLevelsContent == null) return;
 
-            if (_getLevelsContent.DawnIndex < 1)
+            if (_getLevelsContent == null)
+            {
+                Svc.Log.Debug($"Get Trust Levels: our content was null, returning");
                 return;
-
+            }
+            if (_getLevelsContent.DawnIndex < 0)
+            {
+                Svc.Log.Debug($"Get Trust Levels: our content was not dawn content, returning");
+                return;
+            }
             if (_getLevelsContent.TrustMembers.TrueForAll(tm => tm.LevelIsSet))
+            {
+                Svc.Log.Debug($"Get Trust Levels: we already have all our trust levels, returning");
                 return;
-
+            }
             if (!_getLevelsContent.CanTrustRun(false))
+            {
+                Svc.Log.Debug($"Get Trust Levels: this content CanTrustRun is false, returning");
                 return;
-
+            }
             Svc.Log.Info($"TrustHelper - Getting trust levels for expansion {_getLevelsContent.ExVersion}");
 
             State = ActionState.Running;

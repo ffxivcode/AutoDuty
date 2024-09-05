@@ -1,6 +1,5 @@
 ﻿using AutoDuty.Helpers;
 using AutoDuty.IPC;
-using AutoDuty.Managers;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
@@ -280,8 +279,8 @@ namespace AutoDuty.Windows
                                     foreach (TrustMember member in DutySelected.Content.TrustMembers)
                                     {
                                         bool enabled = Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName);
-                                        CombatRole playerRole     = Player.Job.GetRole();
-                                        int        numberSelected = Plugin.Configuration.SelectedTrustMembers.Count(x => x != null);
+                                        CombatRole playerRole = Player.Job.GetRole();
+                                        int numberSelected = Plugin.Configuration.SelectedTrustMembers.Count(x => x != null);
 
                                         TrustMember?[] members = Plugin.Configuration.SelectedTrustMembers.Select(tmn => tmn != null ? TrustHelper.Members[(TrustMemberName)tmn] : null).ToArray();
 
@@ -338,12 +337,18 @@ namespace AutoDuty.Windows
                                 if (DutySelected.Content.TrustMembers.Count == 7)
                                     ImGui.NextColumn();
 
-                                if(ImGui.Button("Refresh", new Vector2(ImGui.GetContentRegionAvail().X, 0)))
+                                if (ImGui.Button("Refresh", new Vector2(ImGui.GetContentRegionAvail().X, 0)))
+                                {
+                                    if (InventoryHelper.CurrentItemLevel < 370)
+                                        AutoDuty.Plugin.LevelingModeEnum = LevelingMode.None;
                                     TrustHelper.ClearCachedLevels();
+                                }
                                 ImGui.NextColumn();
                                 ImGui.Columns(1, null, true);
                             } else if (ImGui.Button("Refresh trust member levels"))
                             {
+                                if (InventoryHelper.CurrentItemLevel < 370)
+                                    AutoDuty.Plugin.LevelingModeEnum = LevelingMode.None;
                                 TrustHelper.ClearCachedLevels();
                             }
                         }
@@ -358,22 +363,29 @@ namespace AutoDuty.Windows
                                 Plugin.Configuration.Save();
                         }
                     }
-                    
+                    var ilvl = InventoryHelper.CurrentItemLevel;
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
                     if (Plugin.LevelingModeEnum != LevelingMode.None)
                     {
-                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), $"Leveling Mode: L{Player.Level} (i{PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false)})");
-                        foreach (var item in LevelingHelper.LevelingDuties.Select((Value, Index) => (Value, Index)))
+                        if (Player.Job.GetRole() == CombatRole.NonCombat || (Plugin.LevelingModeEnum == LevelingMode.Trust && ilvl < 370) || (Plugin.LevelingModeEnum == LevelingMode.Trust && Plugin.CurrentPlayerItemLevelandClassJob.Value != Player.Job))
+                            Plugin.LevelingModeEnum = LevelingMode.None;
+                        else if (ilvl != Plugin.CurrentPlayerItemLevelandClassJob.Key)
+                            Plugin.CurrentTerritoryContent = LevelingHelper.SelectHighestLevelingRelevantDuty(Plugin.LevelingModeEnum == LevelingMode.Trust);
+                        else
                         {
-                            if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.TrustContent)
-                                continue;
-                            var disabled = !item.Value.CanRun() || (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.CanTrustRun(true));
-                            if (!Plugin.Configuration.HideUnavailableDuties || !disabled)
+                            ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), $"Leveling Mode: L{Player.Level} (i{ilvl})");
+                            foreach (var item in LevelingHelper.LevelingDuties.Select((Value, Index) => (Value, Index)))
                             {
-                                using (ImRaii.Disabled(disabled))
+                                if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.TrustContent)
+                                    continue;
+                                var disabled = !item.Value.CanRun() || (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.CanTrustRun(true));
+                                if (!Plugin.Configuration.HideUnavailableDuties || !disabled)
                                 {
-                                    ImGuiEx.TextWrapped(item.Value == Plugin.CurrentTerritoryContent ? new Vector4(0, 1, 1, 1) : new Vector4(1, 1, 1, 1), $"L{item.Value.ClassJobLevelRequired} (i{item.Value.ItemLevelRequired}): {item.Value.EnglishName}");
+                                    using (ImRaii.Disabled(disabled))
+                                    {
+                                        ImGuiEx.TextWrapped(item.Value == Plugin.CurrentTerritoryContent ? new Vector4(0, 1, 1, 1) : new Vector4(1, 1, 1, 1), $"L{item.Value.ClassJobLevelRequired} (i{item.Value.ItemLevelRequired}): {item.Value.EnglishName}");
+                                    }
                                 }
                             }
                         }
@@ -406,8 +418,6 @@ namespace AutoDuty.Windows
                                 if (dictionary.Count > 0 && ObjectHelper.IsReady)
                                 {
                                     short level = PlayerHelper.GetCurrentLevelFromSheet();
-                                    short ilvl = PlayerHelper.GetCurrentItemLevelFromGearSet(updateGearsetBeforeCheck: false);
-
                                     foreach ((uint _, Content? content) in dictionary)
                                     {
                                         bool canRun = content.CanRun(level) && (Plugin.Configuration.DutyModeEnum != DutyMode.Trust || content.CanTrustRun());
