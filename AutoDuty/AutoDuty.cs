@@ -1469,7 +1469,8 @@ public sealed class AutoDuty : IDalamudPlugin
             ExitDutyHelper.Stop();
         if (AutoEquipHelper.State == ActionState.Running)
             AutoEquipHelper.Stop();
-
+        if (DeathHelper.DeathState == PlayerLifeState.Revived)
+            DeathHelper.Stop();
         Action = "";
     }
 

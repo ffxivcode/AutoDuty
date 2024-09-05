@@ -4,6 +4,7 @@ using Dalamud.Plugin.Services;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
 using System.Linq;
@@ -146,7 +147,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update += OnRevive;
         }
 
-        private static void Stop()
+        internal static void Stop()
         {
             Svc.Framework.Update -= OnRevive;
             AutoDuty.Plugin.Stage = Stage.Reading_Path;
@@ -156,7 +157,7 @@ namespace AutoDuty.Helpers
 
         private static unsafe void OnRevive(IFramework _)
         {
-            if (!EzThrottler.Throttle("OnRevive", 500) || !ObjectHelper.IsValid || ObjectHelper.PlayerIsCasting) return;
+            if (!EzThrottler.Throttle("OnRevive", 500) || (!ObjectHelper.IsReady && !Conditions.IsOccupiedInQuestEvent) || ObjectHelper.PlayerIsCasting) return;
 
             if (_gameObject == null || !_gameObject.IsTargetable)
             {
@@ -169,12 +170,17 @@ namespace AutoDuty.Helpers
             if (_oldIndex == AutoDuty.Plugin.Indexer)
                 AutoDuty.Plugin.Indexer = FindWaypoint();
 
-            if (!MovementHelper.Move(_gameObject, 0.25f, 2))
+            if (ObjectHelper.GetDistanceToPlayer(_gameObject) > 2)
+            {
+                MovementHelper.Move(_gameObject, 0.25f, 2);
                 Svc.Log.Debug($"OnRevive: Moving to {_gameObject.Name} at: {_gameObject.Position} which is {ObjectHelper.GetDistanceToPlayer(_gameObject)} away");
-            else if (ObjectHelper.InteractWithObjectUntilAddon(_gameObject, "SelectYesno") == null)
-                Svc.Log.Debug($"OnRevive: Interacting with {_gameObject.Name} until SelectYesno Addon appears");
-            else if (!AddonHelper.ClickSelectYesno())
-                Svc.Log.Debug($"OnRevive: Clicking Yes");
+            }
+            else
+            {
+                Svc.Log.Debug($"OnRevive: Interacting with {_gameObject.Name} until SelectYesno Addon appears, and ClickingYes");
+                ObjectHelper.InteractWithObjectUntilAddon(_gameObject, "SelectYesno");
+                AddonHelper.ClickSelectYesno();
+            }
         }
     }
 }

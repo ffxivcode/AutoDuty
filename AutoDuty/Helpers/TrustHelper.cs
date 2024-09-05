@@ -239,7 +239,7 @@ namespace AutoDuty.Helpers
             {
                 if (EzThrottler.Throttle("OpenDawn", 5000))
                 {
-                    Svc.Log.Debug("TrustHelper Helper - Opening Dawn");
+                    Svc.Log.Debug("TrustHelper - Opening Dawn");
                     AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Show();
                 }
                 return;
@@ -249,19 +249,19 @@ namespace AutoDuty.Helpers
 
             if (addonDawn->AtkValues[225].UInt < (_getLevelsContent!.ExVersion - 2))
             {
-                Svc.Log.Debug($"TrustHelper Helper - You do not have expansion: {_getLevelsContent.ExVersion} unlocked stopping");
+                Svc.Log.Debug($"TrustHelper - You do not have expansion: {_getLevelsContent.ExVersion} unlocked stopping");
                 Stop();
                 return;
             }
 
             if (addonDawn->AtkValues[226].UInt != (_getLevelsContent!.ExVersion - 3))
             {
-                Svc.Log.Debug($"TrustHelper Helper - Opening Expansion: {_getLevelsContent.ExVersion}");
+                Svc.Log.Debug($"TrustHelper - Opening Expansion: {_getLevelsContent.ExVersion}");
                 AddonHelper.FireCallBack(addonDawn, true, 20, (_getLevelsContent!.ExVersion - 3));
             }
             else if (addonDawn->AtkValues[151].UInt != _getLevelsContent.DawnIndex)
             {
-                Svc.Log.Debug($"TrustHelper Helper - Clicking: {_getLevelsContent.EnglishName} at index: {_getLevelsContent.DawnIndex}");
+                Svc.Log.Debug($"TrustHelper - Clicking: {_getLevelsContent.EnglishName} at index: {_getLevelsContent.DawnIndex}");
                 AddonHelper.FireCallBack(addonDawn, true, 15, _getLevelsContent.DawnIndex);
             }
             else
