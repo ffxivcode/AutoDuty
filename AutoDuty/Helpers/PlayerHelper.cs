@@ -1,7 +1,6 @@
 ﻿using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
-using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel.GeneratedSheets;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace AutoDuty.Helpers
             return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint) (job ?? (Player.Available ? Player.Object.GetJob() : AutoDuty.Plugin.JobLastKnown)))?.ExpArrayIndex ?? 0];
         }
 
-        internal static unsafe short GetCurrentItemLevelFromGearSet(int gearsetId = -1, bool updateGearsetBeforeCheck = true)
+        /*internal static unsafe short GetCurrentItemLevelFromGearSet(int gearsetId = -1, bool updateGearsetBeforeCheck = true)
         {
             RaptureGearsetModule* gearsetModule = RaptureGearsetModule.Instance();
             if (gearsetId < 0)
@@ -28,7 +27,7 @@ namespace AutoDuty.Helpers
             if (updateGearsetBeforeCheck)
                 gearsetModule->UpdateGearset(gearsetId);
             return gearsetModule->GetGearset(gearsetId)->ItemLevel;
-        }
+        }*/
 
         internal static CombatRole GetRole(this Job? job) => 
             job != null ? GetRole((Job)job) : CombatRole.NonCombat;

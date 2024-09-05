@@ -1,4 +1,6 @@
-﻿using ECommons.GameFunctions;
+﻿using ECommons;
+using ECommons.DalamudServices;
+using ECommons.GameFunctions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -46,47 +48,46 @@ namespace AutoDuty.Helpers
         internal static Content? SelectHighestLevelingRelevantDuty(bool trust = false)
         {
             Content? curContent = null;
-
             var lvl = PlayerHelper.GetCurrentLevelFromSheet();
+            Svc.Log.Debug($"Leveling Mode: Searching for highest relevant leveling duty, Player Level: {lvl}");
             CombatRole combatRole = Player.Object.GetRole();
             if (trust)
             {
-                if (TrustHelper.Members.All(tm => !tm.Value.LevelIsSet)) 
+                if (TrustHelper.Members.All(tm => !tm.Value.LevelIsSet))
+                {
+                    Svc.Log.Debug($"Leveling Mode: All trust members levels are not set, returning");
                     return null;
+                }
 
                 TrustMember?[] memberTest = new TrustMember?[3];
 
                 foreach ((TrustMemberName _, TrustMember member) in TrustHelper.Members)
+                {
+                    
                     if (member.Level < lvl && member.Level < member.LevelCap && member.LevelIsSet && memberTest.CanSelectMember(member, combatRole))
                         lvl = (short)member.Level;
-            }
-
-            if (lvl < 15 || combatRole == CombatRole.NonCombat || lvl >= 100)
-                return null;
-
-            if (lvl >= 15)
-                curContent = levelingDuties.LastOrDefault(x => x.CanRun(lvl) && (!trust || x.CanTrustRun()));
-
-            if (curContent == null)
-            {
-                foreach ((uint _, Content? content) in ContentHelper.DictionaryContent)
-                {
-                    if (content.DawnContent)
-                    {
-                        if (curContent == null || curContent.ClassJobLevelRequired < content.ClassJobLevelRequired)
-                        {
-                            if (content.CanRun(lvl) && (!trust || content.CanTrustRun()) && (content.ClassJobLevelRequired < 50 || content.ClassJobLevelRequired % 10 != 0))
-                            {
-                                curContent = content;
-                            }
-                        }
-                    }
+                    Svc.Log.Debug($"Leveling Mode: Checking {member.Name} level which is {member.Level}, lowest level is now {lvl}");
                 }
             }
 
+            if ((lvl < 15 && !trust) || (trust && lvl < 71) || combatRole == CombatRole.NonCombat || lvl >= 100)
+            {
+                Svc.Log.Debug($"Leveling Mode: Lowest level is out of range (support<15 and trust<71) at {lvl} or we are not on a combat role {combatRole} or we (support) or we and all trust members are capped, returning");
+                return null;
+            }
+            LevelingDuties.Each(x => Svc.Log.Debug($"Leveling Mode: Duties: {x.Name} CanRun: {x.CanRun(lvl)}{(trust ? $"CanTrustRun : {x.CanTrustRun()}" : "")}"));
+            curContent = LevelingDuties.LastOrDefault(x => x.CanRun(lvl) && (!trust || x.CanTrustRun()));
+
+            Svc.Log.Debug($"Leveling Mode: We found {curContent?.Name ?? "no duty"} to run");
+
             if (trust && curContent != null)
+            {
                 if (!TrustHelper.SetLevelingTrustMembers(curContent))
+                {
+                    Svc.Log.Debug($"Leveling Mode: We were unable to set our LevelingTrustMembers");
                     curContent = null;
+                }
+            }
 
             return curContent;
         }

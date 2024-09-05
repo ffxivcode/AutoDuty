@@ -52,7 +52,17 @@ public sealed class AutoDuty : IDalamudPlugin
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     internal List<string> ListBoxPOSText { get; set; } = [];
     internal int CurrentLoop = 0;
-    internal Content? CurrentTerritoryContent = null;
+    internal KeyValuePair<ushort, Job?> CurrentPlayerItemLevelandClassJob = new(0, null); 
+    private Content? currentTerritoryContent = null;
+    internal Content? CurrentTerritoryContent
+    {
+        get => currentTerritoryContent;
+        set
+        {
+            CurrentPlayerItemLevelandClassJob = new(InventoryHelper.CurrentItemLevel, Player.Job);
+            currentTerritoryContent = value;
+        }
+    }
     internal uint CurrentTerritoryType = 0;
     internal int CurrentPath = -1;
 
@@ -106,6 +116,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (value != LevelingMode.None)
             {
+                Svc.Log.Debug($"Setting Leveling mode to {value}");
                 Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(value == LevelingMode.Trust);
 
                 if (duty != null)
@@ -114,6 +125,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     MainTab.DutySelected = ContentPathsManager.DictionaryPaths[duty.TerritoryType];
                     CurrentTerritoryContent = duty;
                     MainTab.DutySelected.SelectPath(out CurrentPath);
+                    Svc.Log.Debug($"Leveling Mode: Setting duty to {duty.Name}");
                 }
                 else
                 {
@@ -121,6 +133,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     MainListClicked = false;
                     CurrentTerritoryContent = null;
                     levelingModeEnum = LevelingMode.None;
+                    Svc.Log.Debug($"Leveling Mode: No appropriate leveling duty found");
                 }
             }
             else
