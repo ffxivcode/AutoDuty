@@ -150,6 +150,8 @@ namespace AutoDuty.Helpers
         internal static void Stop()
         {
             Svc.Framework.Update -= OnRevive;
+            if (VNavmesh_IPCSubscriber.Path_IsRunning())
+                VNavmesh_IPCSubscriber.Path_Stop();
             AutoDuty.Plugin.Stage = Stage.Reading_Path;
             Svc.Log.Debug("DeathHelper - Player is Alive, and we are done with Revived Actions, changing state to Alive");
             _deathState = PlayerLifeState.Alive;
