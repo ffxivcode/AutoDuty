@@ -1085,9 +1085,6 @@ public sealed class AutoDuty : IDalamudPlugin
         if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
-        if (Stage != Stage.Dead && States.HasFlag(PluginState.Navigating) && DeathHelper.DeathState == PlayerLifeState.Dead)
-            Stage = Stage.Dead;
-
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && States.HasFlag(PluginState.Navigating))
             DoneNavigating();
 
