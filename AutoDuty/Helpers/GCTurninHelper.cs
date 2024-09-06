@@ -38,9 +38,9 @@ namespace AutoDuty.Helpers
             _deliverooStarted = false;
             GotoHelper.Stop();
             AutoDuty.Plugin.Action = "";
-            SchedulerHelper.DescheduleAction("GCTurninTimeOut");
             Svc.Framework.Update += GCTurninStopUpdate;
             Svc.Framework.Update -= GCTurninUpdate;
+            SchedulerHelper.DescheduleAction("GCTurninTimeOut");
         }
 
         internal static ActionState State = ActionState.None;

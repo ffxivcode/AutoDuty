@@ -58,6 +58,8 @@ namespace AutoDuty.Helpers
             }
         }
 
+        internal static bool IsItemAvailable(uint itemId, bool allowHq = true) => (allowHq && ItemCount(itemId + 1_000_000) >= 1) || ItemCount(itemId) >= 1;
+
         internal static void EquipGear(InventoryType type, int slotIndex, bool? ring = null)
         {
             InventoryItem* item = InventoryManager.Instance()->GetInventorySlot(type, slotIndex);

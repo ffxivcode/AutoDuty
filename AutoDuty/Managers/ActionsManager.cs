@@ -440,19 +440,19 @@ namespace AutoDuty.Managers
         {
             if (gameObjects == null || gameObjects.Count < 1)
             {
-                _taskManager.DelayNext("Boss-WaitASecToLootChest", 1000);
+                _taskManager.DelayNext("BossLoot-WaitASecToLootChest", 1000);
                 return;
             }
 
-            _taskManager.Enqueue(() => MovementHelper.Move(gameObjects[index], 0.25f, 1f));
+            _taskManager.Enqueue(() => MovementHelper.Move(gameObjects[index], 0.25f, 1f), "BossLoot-MoveToChest");
             _taskManager.Enqueue(() =>
             {
                 index++;
                 if (gameObjects.Count > index)
                     BossLoot(gameObjects, index);
                 else
-                    _taskManager.DelayNext("Boss-WaitASecToLootChest", 1000);
-            });
+                    _taskManager.DelayNext("BossLoot-WaitASecToLootChest", 1000);
+            }, "BossLoot-LoopOrDelay");
         }
 
         public void Boss(Vector3 bossV3)
