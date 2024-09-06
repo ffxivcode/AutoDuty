@@ -50,16 +50,9 @@ namespace AutoDuty.Helpers
         private static bool _autoRetainerStarted = false;
         private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum));
 
-        internal static unsafe void AutoRetainerStopUpdate(IFramework framework)
+        internal static unsafe void CloseRetainerWindows()
         {
-
-            if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
-            {
-                State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                Svc.Framework.Update -= AutoRetainerStopUpdate;
-            }
-            else if (Svc.Targets.Target != null)
+            if (Svc.Targets.Target != null)
                 Svc.Targets.Target = null;
             else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
@@ -69,6 +62,19 @@ namespace AutoDuty.Helpers
                 addonRetainerList->Close(true);
             else if (GenericHelpers.TryGetAddonByName("RetainerTaskAsk", out AtkUnitBase* addonRetainerSell))
                 addonRetainerSell->Close(true);
+        }
+
+        internal static unsafe void AutoRetainerStopUpdate(IFramework framework)
+        {
+
+            if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
+            {
+                State = ActionState.None;
+                AutoDuty.Plugin.States &= ~PluginState.Other;
+                Svc.Framework.Update -= AutoRetainerStopUpdate;
+            }
+            else
+                CloseRetainerWindows();
         }
 
         internal static unsafe void AutoRetainerUpdate(IFramework framework)

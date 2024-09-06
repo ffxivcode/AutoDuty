@@ -247,8 +247,8 @@ namespace AutoDuty.Windows
                             
                             bool equip = Plugin.Configuration.AutoEquipRecommendedGear;
 
-                            if (Plugin.Configuration.DutyModeEnum != DutyMode.Trust) ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL16-L23 (i0): TamTara \nL24-31 (i0): Totorak\nL32-40 (i0): Brayflox\nL41-52 (i0): Stone Vigil\nL53-60 (i105): Sohm Al\nL61-66 (i240): Sirensong Sea\nL67-70 (i255): Doma Castle\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
-                            else ImGuiComponents.HelpMarker("TRUST Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl, as well as the LOWEST LEVEL trust members you have, in an attempt to level them all equally.. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead:\nL71-74 (i370): Holminster\nL75-80 (i380): Qitana\nL81-86 (i500): Tower of Zot\nL87-90 (i515): Ktisis\nL91-100 (i630): Highest Level DT Dungeons");
+                            if (Plugin.Configuration.DutyModeEnum != DutyMode.Trust) ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead.");
+                            else ImGuiComponents.HelpMarker("TRUST Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl, as well as the LOWEST LEVEL trust members you have, in an attempt to level them all equally.\nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead.");
                         }
 
                         if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && Player.Available)
@@ -366,86 +366,92 @@ namespace AutoDuty.Windows
                     var ilvl = InventoryHelper.CurrentItemLevel;
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
-                    if (Plugin.LevelingModeEnum != LevelingMode.None)
-                    {
-                        if (Player.Job.GetRole() == CombatRole.NonCombat || (Plugin.LevelingModeEnum == LevelingMode.Trust && ilvl < 370) || (Plugin.LevelingModeEnum == LevelingMode.Trust && Plugin.CurrentPlayerItemLevelandClassJob.Value != Player.Job))
-                            Plugin.LevelingModeEnum = LevelingMode.None;
-                        else if (ilvl != Plugin.CurrentPlayerItemLevelandClassJob.Key)
-                            Plugin.CurrentTerritoryContent = LevelingHelper.SelectHighestLevelingRelevantDuty(Plugin.LevelingModeEnum == LevelingMode.Trust);
-                        else
-                        {
-                            ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), $"Leveling Mode: L{Player.Level} (i{ilvl})");
-                            foreach (var item in LevelingHelper.LevelingDuties.Select((Value, Index) => (Value, Index)))
-                            {
-                                if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.TrustContent)
-                                    continue;
-                                var disabled = !item.Value.CanRun() || (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.CanTrustRun(true));
-                                if (!Plugin.Configuration.HideUnavailableDuties || !disabled)
-                                {
-                                    using (ImRaii.Disabled(disabled))
-                                    {
-                                        ImGuiEx.TextWrapped(item.Value == Plugin.CurrentTerritoryContent ? new Vector4(0, 1, 1, 1) : new Vector4(1, 1, 1, 1), $"L{item.Value.ClassJobLevelRequired} (i{item.Value.ItemLevelRequired}): {item.Value.EnglishName}");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
+                    if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
                         if (ObjectHelper.IsReady)
                         {
-                            if (Player.Job.GetRole() == CombatRole.NonCombat)
-                                ImGuiEx.TextWrapped(new Vector4(255, 1, 0, 1), "Please switch to a combat job to use AutoDuty.");
-
-                            if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)))
+                            if (Plugin.LevelingModeEnum != LevelingMode.None)
                             {
-                                Dictionary<uint, Content> dictionary = [];
-                                if (Plugin.Configuration.DutyModeEnum == DutyMode.Support)
-                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
-                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
-                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.TrustContent).ToDictionary();
-                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Squadron)
-                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
-                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular)
-                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 2).ToDictionary();
-                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Trial)
-                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 4).ToDictionary();
-                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Raid)
-                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 5).ToDictionary();
-                                else if (Plugin.Configuration.DutyModeEnum == DutyMode.Variant)
-                                    dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.VariantContent).ToDictionary();
-
-                                if (dictionary.Count > 0 && ObjectHelper.IsReady)
+                                if (Player.Job.GetRole() == CombatRole.NonCombat || (Plugin.LevelingModeEnum == LevelingMode.Trust && ilvl < 370) || (Plugin.LevelingModeEnum == LevelingMode.Trust && Plugin.CurrentPlayerItemLevelandClassJob.Value != null && Plugin.CurrentPlayerItemLevelandClassJob.Value != Player.Job))
                                 {
-                                    short level = PlayerHelper.GetCurrentLevelFromSheet();
-                                    foreach ((uint _, Content? content) in dictionary)
+                                    Svc.Log.Debug($"You are on a non-compatible job: {Player.Job.GetRole()}, or your doing trust and your iLvl({ilvl}) is below 370, or your iLvl has changed, Disabling Leveling Mode");
+                                    Plugin.LevelingModeEnum = LevelingMode.None;
+                                }
+                                else if (ilvl > 0 && ilvl != Plugin.CurrentPlayerItemLevelandClassJob.Key)
+                                {
+                                    Svc.Log.Debug($"Your iLvl has changed, Selecting new Duty.");
+                                    Plugin.CurrentTerritoryContent = LevelingHelper.SelectHighestLevelingRelevantDuty(Plugin.LevelingModeEnum == LevelingMode.Trust);
+                                }
+                                else
+                                {
+                                    ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), $"Leveling Mode: L{Player.Level} (i{ilvl})");
+                                    foreach (var item in LevelingHelper.LevelingDuties.Select((Value, Index) => (Value, Index)))
                                     {
-                                        bool canRun = content.CanRun(level) && (Plugin.Configuration.DutyModeEnum != DutyMode.Trust || content.CanTrustRun());
-                                        using (ImRaii.Disabled(!canRun))
+                                        if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.TrustContent)
+                                            continue;
+                                        var disabled = !item.Value.CanRun() || (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.CanTrustRun(true));
+                                        if (!Plugin.Configuration.HideUnavailableDuties || !disabled)
                                         {
-                                            if (Plugin.Configuration.HideUnavailableDuties && !canRun)
-                                                continue;
-                                            if (ImGui.Selectable($"({content.TerritoryType}) {content.Name}", DutySelected?.id == content.TerritoryType))
+                                            using (ImRaii.Disabled(disabled))
                                             {
-                                                DutySelected = ContentPathsManager.DictionaryPaths[content.TerritoryType];
-                                                Plugin.CurrentTerritoryContent = content;
-                                                DutySelected.SelectPath(out Plugin.CurrentPath);
+                                                ImGuiEx.TextWrapped(item.Value == Plugin.CurrentTerritoryContent ? new Vector4(0, 1, 1, 1) : new Vector4(1, 1, 1, 1), $"L{item.Value.ClassJobLevelRequired} (i{item.Value.ItemLevelRequired}): {item.Value.EnglishName}");
                                             }
                                         }
                                     }
                                 }
-                                else
-                                {
-                                    if (ObjectHelper.IsReady)
-                                        ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
-                                }
                             }
                             else
                             {
-                                if (ObjectHelper.IsReady && Player.Job == Job.BLU)
-                                    ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), "Blue Mage cannot run Trust, Duty Support, Squadron or Variant dungeons. Please switch jobs or select a different category.");
+                                if (Player.Job.GetRole() == CombatRole.NonCombat)
+                                    ImGuiEx.TextWrapped(new Vector4(255, 1, 0, 1), "Please switch to a combat job to use AutoDuty.");
+
+                                if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)))
+                                {
+                                    Dictionary<uint, Content> dictionary = [];
+                                    if (Plugin.Configuration.DutyModeEnum == DutyMode.Support)
+                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
+                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
+                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.TrustContent).ToDictionary();
+                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Squadron)
+                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
+                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular)
+                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 2).ToDictionary();
+                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Trial)
+                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 4).ToDictionary();
+                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Raid)
+                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 5).ToDictionary();
+                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Variant)
+                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.VariantContent).ToDictionary();
+
+                                    if (dictionary.Count > 0 && ObjectHelper.IsReady)
+                                    {
+                                        short level = PlayerHelper.GetCurrentLevelFromSheet();
+                                        foreach ((uint _, Content? content) in dictionary)
+                                        {
+                                            bool canRun = content.CanRun(level) && (Plugin.Configuration.DutyModeEnum != DutyMode.Trust || content.CanTrustRun());
+                                            using (ImRaii.Disabled(!canRun))
+                                            {
+                                                if (Plugin.Configuration.HideUnavailableDuties && !canRun)
+                                                    continue;
+                                                if (ImGui.Selectable($"({content.TerritoryType}) {content.Name}", DutySelected?.id == content.TerritoryType))
+                                                {
+                                                    DutySelected = ContentPathsManager.DictionaryPaths[content.TerritoryType];
+                                                    Plugin.CurrentTerritoryContent = content;
+                                                    DutySelected.SelectPath(out Plugin.CurrentPath);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (ObjectHelper.IsReady)
+                                            ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
+                                    }
+                                }
                             }
                         }
+                        else if (Player.Job == Job.BLU)
+                            ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), "Blue Mage cannot run Trust, Duty Support, Squadron or Variant dungeons. Please switch jobs or select a different category.");
                         else
                             ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Busy...");
                     }

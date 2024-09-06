@@ -187,7 +187,7 @@ namespace AutoDuty.Helpers
 
         internal static void ClearCachedLevels() => Members.Each(x => x.Value.ResetLevel());
 
-        internal static void ClearCachedLevels(Content content) => content.TrustMembers.Each(x => x.ResetLevel());
+        internal static void ClearCachedLevels(Content content) => content?.TrustMembers.Each(x => x.ResetLevel());
 
         internal static void GetLevels(Content? content)
         {
@@ -220,8 +220,8 @@ namespace AutoDuty.Helpers
             Svc.Log.Info($"TrustHelper - Getting trust levels for expansion {_getLevelsContent.ExVersion}");
 
             State = ActionState.Running;
-            
             Svc.Framework.Update += GetLevelsUpdate;
+            SchedulerHelper.ScheduleAction("CheckTrustLevelTimeout", Stop, 2500);
         }
 
         private unsafe static void Stop()
@@ -232,6 +232,7 @@ namespace AutoDuty.Helpers
             State = ActionState.None; 
             Svc.Log.Info($"TrustHelper - Done getting trust levels for expansion {_getLevelsContent?.ExVersion}");
             _getLevelsContent = null;
+            SchedulerHelper.DescheduleAction("CheckTrustLevelTimeout");
         }
 
         internal static ActionState State = ActionState.None;

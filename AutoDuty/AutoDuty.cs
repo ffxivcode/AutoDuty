@@ -45,7 +45,6 @@ namespace AutoDuty;
 
 // WISHLIST for VBM:
 // Generic (Non Module) jousting respects navmesh out of bounds (or dynamically just adds forbiddenzones as Obstacles using Detour) (or at very least, vbm NavigationDecision can use ClosestPointonMesh in it's decision making) (or just spit balling here as no idea if even possible, add Everywhere non tiled as ForbiddenZones /shrug)
-// Generic Jousting (for non forbiddenzone AoE, where it just runs to edge of arena and keeps running (happens very often)) is toggleable (so i can turn it the fuck off)
 
 public sealed class AutoDuty : IDalamudPlugin
 {
@@ -59,10 +58,8 @@ public sealed class AutoDuty : IDalamudPlugin
         get => currentTerritoryContent;
         set
         {
-            this.CurrentPlayerItemLevelandClassJob = ObjectHelper.IsValid ? 
-                                                         new(InventoryHelper.CurrentItemLevel, Player.Job) : 
-                                                         new(0, Job.BLU);
-            currentTerritoryContent                = value;
+            CurrentPlayerItemLevelandClassJob = ObjectHelper.IsValid ? new(InventoryHelper.CurrentItemLevel, Player.Job) : new(0, null);
+            currentTerritoryContent = value;
         }
     }
     internal uint CurrentTerritoryType = 0;
@@ -514,18 +511,10 @@ public sealed class AutoDuty : IDalamudPlugin
                     Configuration.CustomCommandsPreLoop.Each(x => TaskManager.Enqueue(() => Chat.ExecuteCommand(x), "Run-ExecuteCommandsPreLoop"));
                 }
 
-                if (Configuration.AutoConsume)
-                {
-                    TaskManager.Enqueue(() => Svc.Log.Debug($"AutoConsume PreLoop Action"));
-                    Configuration.AutoConsumeItemsList.Each(x =>
-                    {
-                        if (Configuration.AutoConsumeIgnoreStatus)
-                            TaskManager.Enqueue(() => InventoryHelper.UseItemUntilAnimationLock(x.Value.ItemId, x.Value.CanBeHq), $"Run-AutoConsume({x.Value.Name})");
-                        else
-                            TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Run-AutoConsume({x.Value.Name})");
-                        TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Run-WaitPlayerIsReadyFull");
-                    });
-                }
+                AutoConsume();
+
+                if (LevelingModeEnum == LevelingMode.None)
+                    AutoEquipRecommendedGear();
 
                 if (Configuration.AutoRepair && InventoryHelper.CanRepair())
                 {
@@ -584,27 +573,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 }
             }
 
-            if (Configuration.AutoConsume)
-            {
-                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoConsume Between Loop Actions"));
-                Configuration.AutoConsumeItemsList.Each(x =>
-                {
-                    if (Configuration.AutoConsumeIgnoreStatus)
-                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilAnimationLock(x.Value.ItemId, x.Value.CanBeHq), $"Loop-AutoConsume({x.Value.Name})");
-                    else
-                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"Loop-AutoConsume({x.Value.Name})");
-                    TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitPlayerIsReadyFull");
-                });
-            }
+            AutoConsume();
 
-            if (Configuration.AutoEquipRecommendedGear)
-            {
-                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoEquipRecommendedGear Between Loop Action"));
-                TaskManager.Enqueue(() => AutoEquipHelper.Invoke(), "Loop-AutoEquip");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => AutoEquipHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoEquipComplete");
-                TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "Loop-WaitANotIsOccupied");
-            }
+            AutoEquipRecommendedGear();
 
             if (Configuration.AM)
             {
@@ -779,6 +750,43 @@ public sealed class AutoDuty : IDalamudPlugin
         SchedulerHelper.ScheduleAction("SetStageStopped", () => Stage = Stage.Stopped, 1);
     }
 
+    private void AutoEquipRecommendedGear()
+    {
+        if (Configuration.AutoEquipRecommendedGear)
+        {
+            TaskManager.Enqueue(() => Svc.Log.Debug($"AutoEquipRecommendedGear Between Loop Action"));
+            TaskManager.Enqueue(() => AutoEquipHelper.Invoke(), "AutoEquipRecommendedGear-Invoke");
+            TaskManager.DelayNext("AutoEquipRecommendedGear-Delay50", 50);
+            TaskManager.Enqueue(() => AutoEquipHelper.State != ActionState.Running, int.MaxValue, "AutoEquipRecommendedGear-WaitAutoEquipComplete");
+            TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "AutoEquipRecommendedGear-WaitANotIsOccupied");
+        }
+    }
+
+    private void AutoConsume()
+    {
+        if (Configuration.AutoConsume)
+        {
+            TaskManager.Enqueue(() => Svc.Log.Debug($"AutoConsume PreLoop Action"));
+            Configuration.AutoConsumeItemsList.Each(x =>
+            {
+                var isAvailable = InventoryHelper.IsItemAvailable(x.Value.ItemId, x.Value.CanBeHq);
+                if (Configuration.AutoConsumeIgnoreStatus)
+                    TaskManager.Enqueue(() => 
+                    { 
+                        if (isAvailable)
+                            InventoryHelper.UseItemUntilAnimationLock(x.Value.ItemId, x.Value.CanBeHq); 
+                    }, $"AutoConsume - {x.Value.Name} is available: {isAvailable}");
+                else
+                    TaskManager.Enqueue(() =>
+                    {
+                        if (isAvailable)
+                            InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq);
+                    }, $"AutoConsume - {x.Value.Name} is available: {isAvailable}");
+                TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "AutoConsume-WaitPlayerIsReadyFull");
+            });
+        }
+    }
+
     private void Queue(Content content)
     {
         if (Configuration.DutyModeEnum == DutyMode.Variant)
@@ -853,6 +861,125 @@ public sealed class AutoDuty : IDalamudPlugin
         Svc.Log.Info("Starting Navigation");
         if (startFromZero)
             Indexer = 0;
+    }
+
+    private void ReadingPath()
+    {
+        if (!ObjectHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
+            return;
+
+        Action = $"{(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
+        //Backwards Compatibility
+        if (ListBoxPOSText[Indexer].Contains('|') || ListBoxPOSText[Indexer].StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (ListBoxPOSText[Indexer].StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because it is a comment");
+                Indexer++;
+                return;
+            }
+
+            _actionPosition = [];
+            _actionParams = [.. ListBoxPOSText[Indexer].Split('|')];
+            _action = (string)_actionParams[0];
+            _actionTollerance = _action == "Interactable" ? 2f : 0.25f;
+
+            if (_action.StartsWith("Unsynced", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (!Configuration.Unsynced || !Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial))
+                {
+                    Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because we are not unsynced");
+                    Indexer++;
+                    return;
+                }
+                else
+                    _action = _action.Remove(0, 8);
+            }
+
+            if (_action.StartsWith("Synced", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (Configuration.Unsynced)
+                {
+                    Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because we are not synced");
+                    Indexer++;
+                    return;
+                }
+                else
+                    _action = _action.Remove(0, 6);
+            }
+
+            if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && _action.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Indexer++;
+                return;
+            }
+
+            if (!VNavmesh_IPCSubscriber.Path_GetMovementAllowed())
+                VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
+            if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
+                VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
+
+            //Backwards Compatibility
+            if (_actionParams.Count < 3)
+            {
+                if (_action.Equals("Boss"))
+                    _actionParams.Add("");
+                else
+                {
+                    _actionParams.RemoveAt(0);
+                    Stage = Stage.Action;
+                    return;
+                }
+            }
+
+            if (!((string)_actionParams[1]).All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
+            {
+                MainWindow.ShowPopup("Error", $"Error in line {Indexer} of path file\nFormat: Action|123, 0, 321|ActionParams(if needed)");
+                StopAndResetALL();
+                return;
+            }
+
+            var destinationVector = new Vector3(float.Parse(((string)_actionParams[1]).Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(((string)_actionParams[1]).Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(((string)_actionParams[1]).Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)); ;
+            _actionPosition.Add(destinationVector);
+            _actionParams.RemoveRange(0, 2);
+
+            if (destinationVector == Vector3.Zero)
+            {
+                Stage = Stage.Action;
+                return;
+            }
+
+            if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
+            {
+                if (_action == "MoveTo" && bool.TryParse((string)_actionParams[0], out bool useMesh) && !useMesh)
+                    VNavmesh_IPCSubscriber.Path_MoveTo([destinationVector], false);
+                else
+                    VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
+                Stage = Stage.Moving;
+            }
+        }
+        //also backwards compat
+        else
+        {
+            if (!ListBoxPOSText[Indexer].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
+            {
+                MainWindow.ShowPopup("Error", $"Error in line {Indexer} of path file\nFormat: Action|123, 0, 321|ActionParams(if needed)");
+                States &= ~PluginState.Looping;
+                States &= ~PluginState.Navigating;
+                CurrentLoop = 0;
+                MainListClicked = false;
+                Stage = 0;
+                return;
+            }
+
+            var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture));
+
+            if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+            {
+                VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
+                Stage = Stage.Moving;
+            }
+        }
     }
 
     private void DoneNavigating()
@@ -1073,27 +1200,35 @@ public sealed class AutoDuty : IDalamudPlugin
         JobLastKnown = curJob;
     }
 
+    private void CheckRetainerWindow()
+    {
+        if (AutoRetainerHelper.State == ActionState.Running || AMHelper.State == ActionState.Running || AutoRetainer_IPCSubscriber.IsBusy() || AM_IPCSubscriber.IsRunning() || Stage == Stage.Paused)
+            return;
+
+        if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
+            AutoRetainerHelper.CloseRetainerWindows();
+    }
+
     public void Framework_Update(IFramework framework)
     {
         if (Stage == Stage.Stopped)
             return;
 
+        CheckRetainerWindow();
+
         if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(PluginState.Navigating) && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
 
-        if (!Player.Available)
-            return;
+        if (!Player.Available) return;
 
-        if (!InDungeon && CurrentTerritoryContent != null)
+        if (!InDungeon && CurrentTerritoryContent != null) 
             GetJobAndLevelingCheck();
 
-        if (!ObjectHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled)
-            return;
+        if (!ObjectHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled) return;
 
-        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !BossMod_IPCSubscriber.IsEnabled && !Configuration.UsingAlternativeRotationPlugin)
-            return;
+        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !BossMod_IPCSubscriber.IsEnabled && !Configuration.UsingAlternativeRotationPlugin) return;
 
-        if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0 && InDungeon)
+        if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0 && InDungeon) 
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
         if (EzThrottler.Throttle("ClosestInteractableEventObject", 25) && MainWindow.CurrentTabName == "Build")
@@ -1114,123 +1249,7 @@ public sealed class AutoDuty : IDalamudPlugin
         switch (Stage)
         {
             case Stage.Reading_Path:
-                if (!ObjectHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                    return;
-
-                Action = $"{(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
-                //Backwards Compatibility
-                if (ListBoxPOSText[Indexer].Contains('|') || ListBoxPOSText[Indexer].StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    if (ListBoxPOSText[Indexer].StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because it is a comment");
-                        Indexer++;
-                        return;
-                    }
-
-                    _actionPosition = [];
-                    _actionParams = [.. ListBoxPOSText[Indexer].Split('|')];
-                    _action = (string)_actionParams[0];
-                    _actionTollerance = _action == "Interactable" ? 2f : 0.25f;
-
-                    if (_action.StartsWith("Unsynced", StringComparison.InvariantCultureIgnoreCase)) 
-                    {
-                        if (!Configuration.Unsynced && Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial))
-                        {
-                            Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because we are not unsynced");
-                            Indexer++;
-                            return;
-                        }
-                        else
-                            _action = _action.Remove(0, 8);
-                    }
-
-                    if (_action.StartsWith("Synced", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        if (Configuration.Unsynced)
-                        {
-                            Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because we are not synced");
-                            Indexer++;
-                            return;
-                        }
-                        else
-                            _action = _action.Remove(0, 6);
-                    }
-
-                    
-
-                    if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && _action.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        Indexer++;
-                        return;
-                    }
-
-                    if (!VNavmesh_IPCSubscriber.Path_GetMovementAllowed())
-                        VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
-                    if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
-                        VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
-
-                    //Backwards Compatibility
-                    if (_actionParams.Count < 3)
-                    {
-                        if (_action.Equals("Boss"))
-                            _actionParams.Add("");
-                        else
-                        {
-                            _actionParams.RemoveAt(0);
-                            Stage = Stage.Action;
-                            return;
-                        }
-                    }
-
-                    if (!((string)_actionParams[1]).All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
-                    {
-                        MainWindow.ShowPopup("Error", $"Error in line {Indexer} of path file\nFormat: Action|123, 0, 321|ActionParams(if needed)");
-                        StopAndResetALL();
-                        return;
-                    }
-
-                    var destinationVector = new Vector3(float.Parse(((string)_actionParams[1]).Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(((string)_actionParams[1]).Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(((string)_actionParams[1]).Split(',')[2], System.Globalization.CultureInfo.InvariantCulture));;
-                    _actionPosition.Add(destinationVector);
-                    _actionParams.RemoveRange(0, 2);
-
-                    if (destinationVector == Vector3.Zero)
-                    {
-                        Stage = Stage.Action;
-                        return;
-                    }
-
-                    if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
-                    {
-                        if (_action == "MoveTo" && bool.TryParse((string)_actionParams[0], out bool useMesh) && !useMesh)
-                            VNavmesh_IPCSubscriber.Path_MoveTo([destinationVector], false);
-                        else
-                            VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
-                        Stage = Stage.Moving;
-                    }
-                }
-                //also backwards compat
-                else
-                {
-                    if (!ListBoxPOSText[Indexer].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
-                    {
-                        MainWindow.ShowPopup("Error", $"Error in line {Indexer} of path file\nFormat: Action|123, 0, 321|ActionParams(if needed)");
-                        States &= ~PluginState.Looping;
-                        States &= ~PluginState.Navigating;
-                        CurrentLoop = 0;
-                        MainListClicked = false;
-                        Stage = 0;
-                        return;
-                    }
-
-                    var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture));
-
-                    if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
-                    {
-                        VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
-                        Stage = Stage.Moving;
-                    }
-                }
+                ReadingPath();
                 break;
             case Stage.Moving:
                 if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
