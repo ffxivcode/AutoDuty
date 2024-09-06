@@ -45,7 +45,7 @@
 	"ChatCommand|0, 0, 0|/rotation auto",
 	"Wait|712.88, 76.48, 37.61|7000",
 	"Interactable|0, 0, 0|2013345 (Woven Rope)",
-	"Wait|693.12, 76.48, 16.30|28000",
+	"Wait|693.12, 76.48, 16.30|32000",
 	"StopForCombat|0, 0, 0|False",
 	"CameraFacing|0, 0, 0|692.45, 76.49, -3.12",
 	"DutySpecificCode|0, 0, 0|12",
