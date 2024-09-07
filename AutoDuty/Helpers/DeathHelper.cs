@@ -74,13 +74,13 @@ namespace AutoDuty.Helpers
                 int closestWaypointIndex = -1;
                 float currentDistance = 0;
 
-                for (int i = 0; i < AutoDuty.Plugin.ListBoxPOSText.Count; i++)
+                for (int i = 0; i < AutoDuty.Plugin.Actions.Count; i++)
                 {
-                    string node = AutoDuty.Plugin.ListBoxPOSText[i];
-
-                    if (node.Contains("Boss|") && node.Replace("Boss|", "").All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
+                    var node = AutoDuty.Plugin.Actions[i].Name;
+                    var position = AutoDuty.Plugin.Actions[i].Position;
+                    if (node.Equals("Boss", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Replace("Boss|", "").Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Replace("Boss|", "").Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Replace("Boss|", "").Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
+                        currentDistance = ObjectHelper.GetDistanceToPlayer(position);
 
                         if (currentDistance < closestWaypointDistance)
                         {
@@ -88,13 +88,13 @@ namespace AutoDuty.Helpers
                             closestWaypointIndex = i;
                         }
                     }
-                    else if (node.All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
+                    else
                     {
-                        currentDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
+                        currentDistance = ObjectHelper.GetDistanceToPlayer(position);
                         //Svc.Log.Info($"cd: {currentDistance}");
                         if (currentDistance < closestWaypointDistance)
                         {
-                            closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(new Vector3(float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(AutoDuty.Plugin.ListBoxPOSText[AutoDuty.Plugin.Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)));
+                            closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(AutoDuty.Plugin.Actions[AutoDuty.Plugin.Indexer].Position);
                             closestWaypointIndex = i;
                         }
                     }
@@ -112,12 +112,12 @@ namespace AutoDuty.Helpers
                 {
                     if (revivalFound)
                     {
-                        if (AutoDuty.Plugin.ListBoxPOSText[i].Contains("Revival|") && i != AutoDuty.Plugin.Indexer)
+                        if (AutoDuty.Plugin.Actions[i].Name.Equals("Revival", StringComparison.InvariantCultureIgnoreCase) && i != AutoDuty.Plugin.Indexer)
                             return i;
                     }
                     else
                     {
-                        if (AutoDuty.Plugin.ListBoxPOSText[i].Contains("Boss|") && i != AutoDuty.Plugin.Indexer)
+                        if (AutoDuty.Plugin.Actions[i].Name.Equals("Boss", StringComparison.InvariantCultureIgnoreCase) && i != AutoDuty.Plugin.Indexer)
                             return i + 1;
                     }
                 }

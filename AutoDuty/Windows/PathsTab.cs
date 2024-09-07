@@ -140,8 +140,8 @@ namespace AutoDuty.Windows
                                 }
                             }
 
-                            if (ImGui.IsItemHovered() && path.PathFile.meta.notes.Count > 0)
-                                ImGui.SetTooltip(string.Join("\n", path.PathFile.meta.notes));
+                            if (ImGui.IsItemHovered() && path.PathFile.Meta.Notes.Count > 0)
+                                ImGui.SetTooltip(string.Join("\n", path.PathFile.Meta.Notes));
                             ImGui.SetItemAllowOverlap();
                             ImGui.SameLine(multiple ? 20 : 1);
 
@@ -154,7 +154,7 @@ namespace AutoDuty.Windows
                             }
 
 
-                            ImGui.TextColored(ImGuiHelper.VersionColor, $"(v{path.PathFile.meta.LastUpdatedVersion})");
+                            ImGui.TextColored(ImGuiHelper.VersionColor, $"(v{path.PathFile.Meta.LastUpdatedVersion})");
                             ImGui.SameLine(0, 2);
                             ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
 

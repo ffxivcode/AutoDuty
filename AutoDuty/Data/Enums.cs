@@ -91,7 +91,7 @@ namespace AutoDuty.Data
             Paused = 7,
             Dead = 8,
             Revived = 9,
-            Looting_Treasure = 10
+            Interactable = 10
         }
 
         public enum ActionState : int

@@ -49,7 +49,8 @@ namespace AutoDuty;
 public sealed class AutoDuty : IDalamudPlugin
 {
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
-    internal List<string> ListBoxPOSText { get; set; } = [];
+    internal List<PathAction> Actions { get; set; } = [];
+    internal List<uint> Interactables { get; set; } = [];
     internal int CurrentLoop = 0;
     internal KeyValuePair<ushort, Job?> CurrentPlayerItemLevelandClassJob = new(0, null); 
     private Content? currentTerritoryContent = null;
@@ -161,21 +162,18 @@ public sealed class AutoDuty : IDalamudPlugin
     internal Job JobLastKnown;
     internal DutyState DutyState = DutyState.None;
     internal Chat Chat;
+    internal PathAction? PathAction = null;
 
     private LevelingMode levelingModeEnum = LevelingMode.None;
     private Stage _stage = Stage.Stopped;
     private const string CommandName = "/autoduty";
     private readonly DirectoryInfo _configDirectory;
-    private readonly ActionsManager _actions;
+    private readonly ActionsManager PathActions;
     private readonly SquadronManager _squadronManager;
     private readonly VariantManager _variantManager;
     private readonly OverrideAFK _overrideAFK;
     private readonly IPCProvider _ipcProvider;
     private IGameObject? treasureCofferGameObject = null;
-    private string _action = "";
-    private float _actionTollerance = 0.25f;
-    private List<object> _actionParams = [];
-    private List<object> _actionPosition = [];
     private readonly TinyMessageBus _messageBusSend = new("AutoDutyBroadcaster");
     private readonly TinyMessageBus _messageBusReceive = new("AutoDutyBroadcaster");
     private bool _recentlyWatchedCutscene = false;
@@ -218,10 +216,10 @@ public sealed class AutoDuty : IDalamudPlugin
             _ipcProvider = new();
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager); 
-            _actions = new(Plugin, Chat, TaskManager);
+            PathActions = new(Plugin, Chat, TaskManager);
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
-            BuildTab.ActionsList = _actions.ActionsList;
+            BuildTab.ActionsList = PathActions.ActionsList;
             OverrideCamera = new();
             Overlay = new();
             MainWindow = new();
@@ -296,10 +294,10 @@ public sealed class AutoDuty : IDalamudPlugin
         if (message.Sender == Player.Name || message.Action.Count == 0 || !Svc.Party.Any(x => x.Name.ExtractText() == message.Sender))
             return;
 
-        message.Action.Each(x => _actions.InvokeAction(x.Item1, [x.Item2]));
+        message.Action.Each(x => PathActions.InvokeAction(x.Item1, [x.Item2]));
     }
 
-    internal void ExitDuty() => _actions.ExitDuty("");
+    internal void ExitDuty() => PathActions.ExitDuty("");
 
     internal void LoadPath()
     {
@@ -311,13 +309,13 @@ public sealed class AutoDuty : IDalamudPlugin
                     CurrentTerritoryContent = content;
                 else
                 {
-                    ListBoxPOSText.Clear();
+                    Actions.Clear();
                     PathFile = "";
                     return;
                 }
             }
             
-            ListBoxPOSText.Clear();
+            Actions.Clear();
             if (!ContentPathsManager.DictionaryPaths.TryGetValue(Svc.ClientState.TerritoryType, out ContentPathsManager.ContentPathContainer? container))
             {
                 PathFile = $"{PathsDirectory.FullName}{Path.DirectorySeparatorChar}({Svc.ClientState.TerritoryType}) {CurrentTerritoryContent?.EnglishName?.Replace(":", "")}.json";
@@ -329,8 +327,8 @@ public sealed class AutoDuty : IDalamudPlugin
                                                      container.Paths[CurrentPath > -1 ? CurrentPath : 0];
 
             PathFile       = path?.FilePath ?? "";
-            ListBoxPOSText = [.. path?.Actions];
-
+            Actions = [.. path?.Actions];
+            Interactables = [.. path?.Interactables];
             //Svc.Log.Info($"Loading Path: {CurrentPath} {ListBoxPOSText.Count}");
         }
         catch (Exception e)
@@ -499,6 +497,8 @@ public sealed class AutoDuty : IDalamudPlugin
         Stage = Stage.Looping;
         States |= PluginState.Looping;
         SetGeneralSettings(false);
+        if (!VNavmesh_IPCSubscriber.Path_GetMovementAllowed())
+            VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
         TaskManager.Abort();
         Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         if (!InDungeon)
@@ -863,122 +863,238 @@ public sealed class AutoDuty : IDalamudPlugin
             Indexer = 0;
     }
 
-    private void ReadingPath()
+    private void StageReadingPath()
     {
-        if (!ObjectHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
+        if (!ObjectHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= Actions.Count)
             return;
 
-        Action = $"{(ListBoxPOSText.Count >= Indexer ? Plugin.ListBoxPOSText[Indexer] : "")}";
-        //Backwards Compatibility
-        if (ListBoxPOSText[Indexer].Contains('|') || ListBoxPOSText[Indexer].StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
+        Action = $"{(Actions.Count >= Indexer ? Plugin.Actions[Indexer].Name : "")}";
+
+        PathAction = Actions[Indexer];
+
+        if (PathAction.Name.StartsWith("Unsynced", StringComparison.InvariantCultureIgnoreCase))
         {
-            if (ListBoxPOSText[Indexer].StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
+            if (!Configuration.Unsynced || !Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial))
             {
-                Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because it is a comment");
+                Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are not unsynced");
                 Indexer++;
                 return;
             }
+            else
+                PathAction.Name = PathAction.Name.Remove(0, 8);
+        }
 
-            _actionPosition = [];
-            _actionParams = [.. ListBoxPOSText[Indexer].Split('|')];
-            _action = (string)_actionParams[0];
-            _actionTollerance = _action == "Interactable" ? 2f : 0.25f;
-
-            if (_action.StartsWith("Unsynced", StringComparison.InvariantCultureIgnoreCase))
+        if (PathAction.Name.StartsWith("Synced", StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (Configuration.Unsynced)
             {
-                if (!Configuration.Unsynced || !Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial))
-                {
-                    Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because we are not unsynced");
-                    Indexer++;
-                    return;
-                }
-                else
-                    _action = _action.Remove(0, 8);
-            }
-
-            if (_action.StartsWith("Synced", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (Configuration.Unsynced)
-                {
-                    Svc.Log.Debug($"Skipping path entry {ListBoxPOSText[Indexer]} because we are not synced");
-                    Indexer++;
-                    return;
-                }
-                else
-                    _action = _action.Remove(0, 6);
-            }
-
-            if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && _action.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
-            {
+                Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are not synced");
                 Indexer++;
                 return;
             }
+            else
+                PathAction.Name = PathAction.Name.Remove(0, 6);
+        }
 
-            if (!VNavmesh_IPCSubscriber.Path_GetMovementAllowed())
-                VNavmesh_IPCSubscriber.Path_SetMovementAllowed(true);
-            if (VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
-                VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
+        if (Actions[Indexer].Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
+        {
+            Svc.Log.Debug($"Skipping path entry {Actions[Indexer].Name} because it is a comment");
+            Indexer++;
+            return;
+        }
 
-            //Backwards Compatibility
-            if (_actionParams.Count < 3)
+        if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && PathAction.Name.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
+        {
+            Indexer++;
+            return;
+        }
+
+        if (PathAction.Position == Vector3.Zero)
+        {
+            Stage = Stage.Action;
+            return;
+        }
+
+        VNavmesh_IPCSubscriber.Path_SetTolerance(PathAction.Name.Equals("Interactable", StringComparison.InvariantCultureIgnoreCase) ? 2f : 0.25f);
+
+        if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
+        {
+            if (PathAction.Name == "MoveTo" && bool.TryParse((string)PathAction.Argument, out bool useMesh) && !useMesh)
+                VNavmesh_IPCSubscriber.Path_MoveTo([PathAction.Position], false);
+            else
+                VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(PathAction.Position, false);
+            Stage = Stage.Moving;
+        }
+    }
+
+    private void StageMoving()
+    {
+        if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= Actions.Count)
+            return;
+
+        if (Configuration.DutyModeEnum == DutyMode.Regular && Svc.Party.PartyId > 0)
+        {
+            Message message = new()
             {
-                if (_action.Equals("Boss"))
-                    _actionParams.Add("");
-                else
-                {
-                    _actionParams.RemoveAt(0);
-                    Stage = Stage.Action;
-                    return;
-                }
+                Sender = Player.Name,
+                Action =
+                [
+                    ("Follow", $"{Player.Name}")
+                ]
+            };
+
+            var messageJson = System.Text.Json.JsonSerializer.Serialize(message);
+
+            _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
+        }
+
+        Action = $"{Plugin.Actions[Indexer]}";
+        if (Player.Object.InCombat() && Plugin.StopForCombat)
+        {
+            if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+                SetRotationPluginSettings(true);
+            VNavmesh_IPCSubscriber.Path_Stop();
+            Stage = Stage.Waiting_For_Combat;
+            return;
+        }
+
+        if (StuckHelper.IsStuck())
+        {
+            VNavmesh_IPCSubscriber.Path_Stop();
+            Stage = Stage.Reading_Path;
+            return;
+        }
+
+        if ((!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0) || (!PathAction.Name.IsNullOrEmpty() && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) <= (PathAction.Name.Equals("Interactable", StringComparison.InvariantCultureIgnoreCase) ? 2f : 0.25f)))
+        {
+            if (PathAction.Name.IsNullOrEmpty() || PathAction.Name.Equals("MoveTo") || PathAction.Name.Equals("TreasureCoffer") || PathAction.Name.Equals("Revival"))
+            {
+                Stage = Stage.Reading_Path;
+                Indexer++;
+            }
+            else
+            {
+                VNavmesh_IPCSubscriber.Path_Stop();
+                Stage = Stage.Action;
             }
 
-            if (!((string)_actionParams[1]).All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
-            {
-                MainWindow.ShowPopup("Error", $"Error in line {Indexer} of path file\nFormat: Action|123, 0, 321|ActionParams(if needed)");
-                StopAndResetALL();
-                return;
-            }
+            return;
+        }
 
-            var destinationVector = new Vector3(float.Parse(((string)_actionParams[1]).Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(((string)_actionParams[1]).Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(((string)_actionParams[1]).Split(',')[2], System.Globalization.CultureInfo.InvariantCulture)); ;
-            _actionPosition.Add(destinationVector);
-            _actionParams.RemoveRange(0, 2);
-
-            if (destinationVector == Vector3.Zero)
+        if (EzThrottler.Throttle("BossChecker", 25) && PathAction.Equals("Boss") && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) < 50)
+        {
+            BossObject = ObjectHelper.GetBossObject(25);
+            if (BossObject != null)
             {
+                VNavmesh_IPCSubscriber.Path_Stop();
                 Stage = Stage.Action;
                 return;
             }
-
-            if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
-            {
-                if (_action == "MoveTo" && bool.TryParse((string)_actionParams[0], out bool useMesh) && !useMesh)
-                    VNavmesh_IPCSubscriber.Path_MoveTo([destinationVector], false);
-                else
-                    VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
-                Stage = Stage.Moving;
-            }
         }
-        //also backwards compat
-        else
+        /*if (Configuration.LootTreasure && !Configuration.LootBossTreasureOnly && EzThrottler.Throttle("TreasureCofferCheck", 25))
         {
-            if (!ListBoxPOSText[Indexer].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.'))
+            treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) <= Plugin.Configuration.TreasureCofferScanDistance);
+            if (treasureCofferGameObject == null || !treasureCofferGameObject.IsTargetable)
+                return;
+            VNavmesh_IPCSubscriber.Path_Stop();
+            Stage = 8;
+            return;
+        }*/
+    }
+
+    private void StageAction()
+    {
+        if (Indexer == -1 || Indexer >= Actions.Count)
+            return;
+
+        if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin && !Svc.Condition[ConditionFlag.OccupiedInCutSceneEvent])
+            SetRotationPluginSettings(true);
+
+        if (!TaskManager.IsBusy)
+        {
+            Stage = Stage.Reading_Path;
+            Indexer++;
+            return;
+        }
+    }
+
+    private void StageWaitingForCombat()
+    {
+        if (!EzThrottler.Throttle("CombatCheck", 250) || !ObjectHelper.IsReady || Indexer == -1 || Indexer >= Actions.Count || PathAction == null)
+            return;
+
+        Action = $"Waiting For Combat";
+
+        if (ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
+            Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
+
+        if (PathAction.Name.Equals("Boss") && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) < 50)
+        {
+            BossObject = ObjectHelper.GetBossObject(25);
+            if (BossObject != null)
             {
-                MainWindow.ShowPopup("Error", $"Error in line {Indexer} of path file\nFormat: Action|123, 0, 321|ActionParams(if needed)");
-                States &= ~PluginState.Looping;
-                States &= ~PluginState.Navigating;
-                CurrentLoop = 0;
-                MainListClicked = false;
-                Stage = 0;
+                VNavmesh_IPCSubscriber.Path_Stop();
+                Stage = Stage.Action;
                 return;
             }
+        }
 
-            var destinationVector = new Vector3(float.Parse(ListBoxPOSText[Indexer].Split(',')[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(ListBoxPOSText[Indexer].Split(',')[2], System.Globalization.CultureInfo.InvariantCulture));
-
-            if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+        if (Player.Object.InCombat())
+        {
+            if (Svc.Targets.Target == null)
             {
-                VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(destinationVector, false);
-                Stage = Stage.Moving;
+                //find and target closest attackable npc, if we are not targeting
+                var gos = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateKind(o) is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
+
+                if (gos != null)
+                    Svc.Targets.Target = gos;
             }
+            if (Configuration.AutoManageBossModAISettings)
+            {
+                var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
+
+                if (!gotMDT)
+                    return;
+
+                if (Svc.Targets.Target != null)
+                {
+                    var enemyCount = ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15);
+
+                    if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_IsRunning())
+                        VNavmesh_IPCSubscriber.Path_Stop();
+
+                    if (enemyCount > 2 && floatMDT != Configuration.MaxDistanceToTargetAoEFloat)
+                    {
+                        Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetAoEFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
+                        BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoEFloat}"], false);
+                    }
+                    else if (enemyCount < 3 && floatMDT != Configuration.MaxDistanceToTargetFloat)
+                    {
+                        Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
+                        BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
+                        BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
+                    }
+                }
+            }
+            else if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_IsRunning())
+                VNavmesh_IPCSubscriber.Path_Stop();
+        }
+        else if (!Player.Object.InCombat() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+        {
+            if (Configuration.AutoManageBossModAISettings)
+            {
+                var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
+
+                if (gotMDT && floatMDT != Configuration.MaxDistanceToTargetFloat)
+                {
+                    Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM  MaxDistanceToTarget={floatMDT}");
+                    BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
+                    BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
+                }
+            }
+
+            VNavmesh_IPCSubscriber.Path_Stop();
+            Stage = Stage.Reading_Path;
         }
     }
 
@@ -1144,9 +1260,11 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private unsafe void ActionInvoke()
     {
-        if (!TaskManager.IsBusy && !_action.IsNullOrEmpty())
+        if (PathAction == null) return;
+
+        if (!TaskManager.IsBusy && !PathAction.Name.IsNullOrEmpty())
         {
-            if (_action.Equals("Boss"))
+            if (PathAction.Name.Equals("Boss"))
             {
                 if (Configuration.DutyModeEnum == DutyMode.Regular && Svc.Party.PartyId > 0)
                 {
@@ -1164,13 +1282,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
                     _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
                 }
-                _actionParams = _actionPosition;
             }
-            _actions.InvokeAction(_action, [.. _actionParams]);
-            _action = "";
-            _actionParams = [];
-            _actionPosition = [];
-            _actionTollerance = 0.25f;
+            PathActions.InvokeAction(PathAction.Name, [.. PathAction.Argument]);
+            PathAction = null;
         }
     }
 
@@ -1209,10 +1323,25 @@ public sealed class AutoDuty : IDalamudPlugin
             AutoRetainerHelper.CloseRetainerWindows();
     }
 
-    public void Framework_Update(IFramework framework)
+    private void InteractablesCheck()
+    {
+        if (Interactables.Count == 0) return;
+
+        var list = Svc.Objects.Select(x => x.DataId).Intersect(Interactables);
+        
+        if (list.Any())// && Actions.OrderBy(x => Vector3.Distance()).Where(x => x.Position != Vector3.Zero))
+        {
+            Stage = Stage.Interactable;
+        }
+    }
+
+    private void PreStageChecks()
     {
         if (Stage == Stage.Stopped)
             return;
+
+        if (EzThrottler.Throttle("InteractablesCheck", 250) && States.HasFlag(PluginState.Navigating) && ObjectHelper.IsValid)
+            InteractablesCheck();
 
         CheckRetainerWindow();
 
@@ -1221,14 +1350,14 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!Player.Available) return;
 
-        if (!InDungeon && CurrentTerritoryContent != null) 
+        if (!InDungeon && CurrentTerritoryContent != null)
             GetJobAndLevelingCheck();
 
         if (!ObjectHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled) return;
 
         if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !BossMod_IPCSubscriber.IsEnabled && !Configuration.UsingAlternativeRotationPlugin) return;
 
-        if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType !=0 && InDungeon) 
+        if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType != 0 && InDungeon)
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
         if (EzThrottler.Throttle("ClosestInteractableEventObject", 25) && MainWindow.CurrentTabName == "Build")
@@ -1237,219 +1366,33 @@ public sealed class AutoDuty : IDalamudPlugin
         if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25) && MainWindow.CurrentTabName == "Build")
             ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
 
-        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (PathAction?.Name == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
-        if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && States.HasFlag(PluginState.Navigating))
+        if (Indexer >= Actions.Count && Actions.Count > 0 && States.HasFlag(PluginState.Navigating))
             DoneNavigating();
 
         if (Stage > Stage.Condition && !States.HasFlag(PluginState.Other))
             Action = EnumString(Stage);
-        
+    }
+
+    public void Framework_Update(IFramework framework)
+    {
+        PreStageChecks();
+
         switch (Stage)
         {
             case Stage.Reading_Path:
-                ReadingPath();
+                StageReadingPath();
                 break;
             case Stage.Moving:
-                if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                    return;
-
-                if (Configuration.DutyModeEnum == DutyMode.Regular && Svc.Party.PartyId > 0)
-                {
-                    Message message = new()
-                    {
-                        Sender = Player.Name,
-                        Action =
-                        [
-                            ("Follow", $"{Player.Name}")
-                        ]
-                    };
-
-                    var messageJson = System.Text.Json.JsonSerializer.Serialize(message);
-
-                    _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
-                }
-                
-                Action = $"{Plugin.ListBoxPOSText[Indexer]}";
-                if (Player.Object.InCombat() && Plugin.StopForCombat)
-                {
-                    if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
-                        SetRotationPluginSettings(true);
-                    VNavmesh_IPCSubscriber.Path_Stop();
-                    Stage = Stage.Waiting_For_Combat;
-                    break;
-                }
-
-                if (StuckHelper.IsStuck())
-                {
-                    VNavmesh_IPCSubscriber.Path_Stop();
-                    Stage = Stage.Reading_Path;
-                    return;
-                }
-
-                if ((!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0) || (!_action.IsNullOrEmpty() && _actionPosition.Count > 0 && _actionTollerance > 0.25f && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) <= _actionTollerance))
-                {
-                    if (_action.IsNullOrEmpty() || _action.Equals("MoveTo") || _action.Equals("TreasureCoffer") || _action.Equals("Revival") )
-                    {
-                        Stage = Stage.Reading_Path;
-                        Indexer++;
-                    }
-                    else
-                    {
-                        VNavmesh_IPCSubscriber.Path_Stop();
-                        Stage = Stage.Action;
-                    }
-
-                    return;
-                }
-
-                if (EzThrottler.Throttle("BossChecker", 25) && _action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
-                {
-                    BossObject = ObjectHelper.GetBossObject(25);
-                    if (BossObject != null)
-                    {
-                        VNavmesh_IPCSubscriber.Path_Stop();
-                        _actionParams = _actionPosition;
-                        Stage = Stage.Action;
-                        return;
-                    }
-                }
-                /*if (Configuration.LootTreasure && !Configuration.LootBossTreasureOnly && EzThrottler.Throttle("TreasureCofferCheck", 25))
-                {
-                    treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) <= Plugin.Configuration.TreasureCofferScanDistance);
-                    if (treasureCofferGameObject == null || !treasureCofferGameObject.IsTargetable)
-                        return;
-                    VNavmesh_IPCSubscriber.Path_Stop();
-                    Stage = 8;
-                    return;
-                }*/
+                StageMoving();
                 break;
             case Stage.Action:
-                if (Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                    return;
-
-                if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin && !Svc.Condition[ConditionFlag.OccupiedInCutSceneEvent])
-                    SetRotationPluginSettings(true);
-
-                if (!TaskManager.IsBusy)
-                {
-                    Stage = Stage.Reading_Path;
-                    Indexer++;
-                    return;
-                }
+                StageAction();
                 break;
             case Stage.Waiting_For_Combat:
-                if (!EzThrottler.Throttle("CombatCheck", 250) || !ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                    return;
-
-                Action = $"Waiting For Combat";
-
-                if(ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
-                    Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
-
-                if (_action.Equals("Boss") && _actionPosition.Count > 0 && ObjectHelper.GetDistanceToPlayer((Vector3)_actionPosition[0]) < 50)
-                {
-                    BossObject = ObjectHelper.GetBossObject(25);
-                    if (BossObject != null)
-                    {
-                        VNavmesh_IPCSubscriber.Path_Stop();
-                        _actionParams = _actionPosition;
-                        Stage = Stage.Action;
-                        return;
-                    }
-                }
-
-                if (Player.Object.InCombat())
-                {
-                    if (Svc.Targets.Target == null)
-                    {
-                        //find and target closest attackable npc, if we are not targeting
-                        var gos = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateKind(o) is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
-
-                        if (gos != null)
-                            Svc.Targets.Target = gos;
-                    }
-                    if (Configuration.AutoManageBossModAISettings)
-                    {
-                        var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
-
-                        if (!gotMDT)
-                            return;
-
-                        if (Svc.Targets.Target != null)
-                        {
-                            var enemyCount = ObjectFunctions.GetAttackableEnemyCountAroundPoint(Svc.Targets.Target.Position, 15);
-                            
-                            if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_IsRunning())
-                                VNavmesh_IPCSubscriber.Path_Stop();
-
-                            if (enemyCount > 2 && floatMDT != Configuration.MaxDistanceToTargetAoEFloat)
-                            {
-                                Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetAoEFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoEFloat}"], false);
-                            }
-                            else if (enemyCount <3 && floatMDT != Configuration.MaxDistanceToTargetFloat)
-                            {
-                                Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
-                                BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
-                            }
-                        }
-                    }
-                    else if(!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_IsRunning())
-                        VNavmesh_IPCSubscriber.Path_Stop();
-                }
-                else if (!Player.Object.InCombat() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
-                {
-                    if (Configuration.AutoManageBossModAISettings)
-                    {
-                        var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
-
-                        if (gotMDT && floatMDT != Configuration.MaxDistanceToTargetFloat)
-                        {
-                            Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM  MaxDistanceToTarget={floatMDT}");
-                            BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
-                            BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
-                        }
-                    }
-
-                    VNavmesh_IPCSubscriber.Path_Stop();
-                    Stage = Stage.Reading_Path;
-                }
-                break;
-            case Stage.Looting_Treasure:
-                //if (!ObjectHelper.IsReady || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
-                    return;
-
-                if (Player.Object.InCombat())
-                {
-                    VNavmesh_IPCSubscriber.Path_Stop();
-                    Stage = Stage.Waiting_For_Combat;
-                    return;
-                }
-
-                if (treasureCofferGameObject == null || !treasureCofferGameObject.IsTargetable)
-                {
-                    Stage = Stage.Reading_Path;
-                    return;
-                }
-
-                if (ObjectHelper.GetDistanceToPlayer(treasureCofferGameObject) > 2 && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
-                {
-                    VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
-                    VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(treasureCofferGameObject.Position, false);
-                }
-
-                if (ObjectHelper.GetDistanceToPlayer(treasureCofferGameObject) <= 2)
-                {
-                    if (VNavmesh_IPCSubscriber.Path_IsRunning())
-                        VNavmesh_IPCSubscriber.Path_Stop();
-
-                    if (EzThrottler.Throttle("TreasureCofferInteract", 250))
-                        ObjectHelper.InteractWithObject(treasureCofferGameObject);
-                }
-                
+                StageWaitingForCombat();
                 break;
             default:
                 break;
@@ -1618,7 +1561,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 GotoHelper.Invoke(Convert.ToUInt32(argss[0]), [v3], argss.Length > 2 ? float.Parse(argss[2]) : 0.25f, argss.Length > 3 ? float.Parse(argss[3]) : 0.25f);
                 break;
             case "exitduty":
-                _actions.ExitDuty("");
+                PathActions.ExitDuty("");
                 break;
             case "queue":
                 QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null, Configuration.DutyModeEnum);

@@ -1,5 +1,8 @@
 ﻿
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Text.Json.Serialization;
 
 namespace AutoDuty.Data
 {
@@ -61,6 +64,62 @@ namespace AutoDuty.Data
                     Level = level;
                 }
             }
+        }
+
+        internal class PathFile
+        {
+            [JsonPropertyName("actions")]
+            public PathAction[] Actions { get; set; } = [];
+
+            //BackwardsCompat
+            [JsonPropertyName("actionsString")]
+            public string[] ActionsString { get; set; } = [];
+
+            [JsonPropertyName("interactables")]
+            public uint[] Interactables { get; set; } = [];
+
+            [JsonPropertyName("Meta")]
+            public PathFileMetaData Meta { get; set; } = new()
+            {
+                CreatedAt = AutoDuty.Plugin.Configuration.Version,
+                Changelog = [],
+                Notes = []
+            };
+        }
+
+        internal class PathAction
+        {
+            [JsonPropertyName("name")]
+            public string Name { get; set; } = string.Empty;
+
+            [JsonPropertyName("position")]
+            public Vector3 Position { get; set; } = Vector3.Zero;
+
+            [JsonPropertyName("argument")]
+            public string Argument { get; set; } = string.Empty;
+        }
+
+        internal class PathFileMetaData
+        {
+            [JsonPropertyName("createdAt")]
+            public int CreatedAt { get; set; }
+
+            [JsonPropertyName("changelog")]
+            public List<PathFileChangelogEntry> Changelog { get; set; } = [];
+
+            public int LastUpdatedVersion => Changelog.Count > 0 ? Changelog.Last().Version : CreatedAt;
+
+            [JsonPropertyName("notes")]
+            public List<string> Notes { get; set; } = [];
+        }
+
+        internal class PathFileChangelogEntry
+        {
+            [JsonPropertyName("version")]
+            public int Version { get; set; }
+
+            [JsonPropertyName("change")]
+            public string Change { get; set; } = string.Empty;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace AutoDuty.Windows
         private static bool _scrollBottom = false;
         private static string _changelog = string.Empty;
         private static string _input = "";
-        private static string _action = "";
+        private static PathAction _action = new();
         private static string _inputTextName = "";
         private static bool _dontMove = false;
         private static float _inputIW = 200 * ImGuiHelpers.GlobalScale;
@@ -38,25 +38,23 @@ namespace AutoDuty.Windows
 
         public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true};
 
-        private static string GetPlayerPosition => $"{Player.Position.X.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Player.Position.Y.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}, {Player.Position.Z.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}";
-
         private static void ClearAll()
         {
             _input = "";
-            _action = "";
+            _action = new();
             _dropdownSelected = ("", "", "");
             _buildListSelected = -1;
             _dontMove = false;
             _showAddActionUI = false;
         }
 
-        private static void AddAction(string action, int index = -1)
+        private static void AddAction(PathAction action, int index = -1)
         {
             _scrollBottom = true;
             if (index == -1)
-                Plugin.ListBoxPOSText.Add(action);
+                Plugin.Actions.Add(action);
             else
-                Plugin.ListBoxPOSText[index] = action;
+                Plugin.Actions[index] = action;
             ClearAll();
         }
         internal unsafe static void Draw()
@@ -86,7 +84,7 @@ namespace AutoDuty.Windows
             if (ImGui.Button("Add POS"))
             {
                 _scrollBottom = true;
-                Plugin.ListBoxPOSText.Add($"MoveTo|{GetPlayerPosition}|");
+                Plugin.Actions.Add(new PathAction { Name="MoveTo", Position= Player.Position, Argument = "" });
             }
             ImGui.SameLine(0, 5);
             ImGuiComponents.HelpMarker("Adds a MoveTo step to the path, AutoDuty will Move to the specified position");
@@ -110,7 +108,7 @@ namespace AutoDuty.Windows
                         switch (item.Item1)
                         {
                             case "ExitDuty":
-                                _action = $"ExitDuty|0, 0, 0|";
+                                _action = new PathAction { Name = "ExitDuty" };
                                 break;
                             case "SelectYesno":
                                 _input = "Yes";
@@ -126,7 +124,8 @@ namespace AutoDuty.Windows
                                 break;
                             default:
                                 _input = "";
-                                _action = $"{item.Item1}|{GetPlayerPosition}|";
+
+                                _action = new PathAction { Name = $"{item.Item1}", Position = Player.Position };
                                 break;
                         }
                         _inputIW = 200 * ImGuiHelpers.GlobalScale;
@@ -143,7 +142,7 @@ namespace AutoDuty.Windows
             ImGui.SameLine(0, 5);
             if (ImGuiEx.ButtonWrapped("Clear Path"))
             {
-                Plugin.ListBoxPOSText.Clear();
+                Plugin.Actions.Clear();
                 ClearAll();
             }
             ImGuiComponents.HelpMarker("Clears the entire path, NOTE: there is no confirmation");
@@ -162,21 +161,21 @@ namespace AutoDuty.Windows
                         if (dutyPath != null)
                         {
                             pathFile = dutyPath.PathFile;
-                            if(pathFile.meta.LastUpdatedVersion < Plugin.Configuration.Version || _changelog.Length > 0)
+                            if(pathFile.Meta.LastUpdatedVersion < Plugin.Configuration.Version || _changelog.Length > 0)
                             {
-                                pathFile.meta.changelog.Add(new PathFileChangelogEntry
+                                pathFile.Meta.Changelog.Add(new PathFileChangelogEntry
                                                             {
-                                                                version = Plugin.Configuration.Version,
-                                                                change  = _changelog
+                                                                Version = Plugin.Configuration.Version,
+                                                                Change  = _changelog
                                                             });
                                 _changelog = string.Empty;
                             }
                         }
                     }
 
-                    pathFile ??= PathFile.Default;
+                    pathFile ??= new();
 
-                    pathFile.actions = [.. Plugin.ListBoxPOSText];
+                    pathFile.Actions = [.. Plugin.Actions];
 
                     string json = JsonSerializer.Serialize(pathFile, jsonSerializerOptions);
                     File.WriteAllText(Plugin.PathFile, json);
@@ -218,19 +217,19 @@ namespace AutoDuty.Windows
                     }
                     if (_dropdownSelected.Item1.Equals("<-- Comment -->", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        AddAction($"<-- {_input} -->");
+                        AddAction(new PathAction { Name = $"<-- {_input} -->" });
                         return;
                     }
                     if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty() && !_input.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) && (_input.Count(c => c == '|') < 2 || !_input.Split('|')[1].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.')))
                         MainWindow.ShowPopup("Error", "Input is not in the correct format\nAction|Position|ActionParams(if needed)");
                     if (_dontMove && _dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty())
-                        AddAction($"{_input.Split('|')[0]}|0, 0, 0|{_input.Split('|')[2]}", _buildListSelected);
+                        AddAction(new PathAction { Name = _input.Split('|')[0], Argument = _input.Split('|')[2] }, _buildListSelected);
                     else if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty())
-                        AddAction($"{_input}", _buildListSelected);
+                        AddAction(new PathAction { Name = _input.Split('|')[0], Position = Player.Position, Argument = _input.Split('|')[2] }, _buildListSelected);
                     else if (_dontMove)
-                        AddAction($"{_dropdownSelected.Item1}|0, 0, 0|{_input}");
+                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Argument = _input });
                     else
-                        AddAction($"{_dropdownSelected.Item1}|{GetPlayerPosition}|{_input}");
+                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Position = Player.Position, Argument = _input });
                 }
                 ImGui.SameLine(0, 5);
                 ImGui.Checkbox("Dont Move", ref _dontMove);
@@ -243,12 +242,14 @@ namespace AutoDuty.Windows
             {
                 if (Plugin.InDungeon)
                 {
-                    foreach (var item in Plugin.ListBoxPOSText.Select((Value, Index) => (Value, Index)))
+                    foreach (var item in Plugin.Actions.Select((Value, Index) => (Value, Index)))
                     {
-                        var v4 = item.Value.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
+                        var v4 = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
+
+                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.Name}|{item.Value.Position:F2}|{item.Value.Argument}";
 
                         ImGui.PushStyleColor(ImGuiCol.Text, v4);
-                        if (ImGui.Selectable(item.Value, item.Index == _buildListSelected, ImGuiSelectableFlags.AllowDoubleClick))
+                        if (ImGui.Selectable(text, item.Index == _buildListSelected, ImGuiSelectableFlags.AllowDoubleClick))
                         {
                             if (_dragDrop)
                             {
@@ -267,7 +268,7 @@ namespace AutoDuty.Windows
                                 _dropdownSelected = ("", "", "");
                                 _addActionButton = "Modify";
                                 _inputTextName = "";
-                                _input = item.Value;
+                                _input = item.Value.Name;
                                 _inputIW = 400 * ImGuiHelpers.GlobalScale;
                             }
                         }
@@ -276,26 +277,20 @@ namespace AutoDuty.Windows
                         if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                         {
                             // Do stuff on Selectable() double click.
-                            if (item.Value.Any(c => c == '|') && !item.Value.Split('|')[1].Equals("0, 0, 0"))
+                            if (item.Value.Position != Vector3.Zero)
                             {
-                                ImGui.SetClipboardText(item.Value.Split('|')[1]);
+                                ImGui.SetClipboardText($"{item.Value.Position:F2}");
                                 //if (Player.Available)
-                                    //Player.GameObject->SetPosition(float.Parse(item.Value.Split('|')[1].Split(',')[0]), float.Parse(item.Value.Split('|')[1].Split(',')[1]), float.Parse(item.Value.Split('|')[1].Split(',')[2]));
-                            }
-                            else
-                            {
-                                ImGui.SetClipboardText(item.Value);
-                                //if (Player.Available)
-                                    //Player.GameObject->SetPosition(float.Parse(item.Value.Split(',')[0]), float.Parse(item.Value.Split(',')[1]), float.Parse(item.Value.Split(',')[2]));
+                                    //Player.GameObject->SetPosition(item.Value.Position);
                             }
                         }
                         if (ImGui.IsItemActive() && !ImGui.IsItemHovered() && !ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                         {
                             int n_next = item.Index + (ImGui.GetMouseDragDelta(0).Y < 0f ? -1 : 1);
-                            if (n_next >= 0 && n_next < Plugin.ListBoxPOSText.Count)
+                            if (n_next >= 0 && n_next < Plugin.Actions.Count)
                             {
-                                Plugin.ListBoxPOSText[item.Index] = Plugin.ListBoxPOSText[n_next];
-                                Plugin.ListBoxPOSText[n_next] = item.Value;
+                                Plugin.Actions[item.Index] = Plugin.Actions[n_next];
+                                Plugin.Actions[n_next] = item.Value;
                                 _buildListSelected = -1;
                                 ImGui.ResetMouseDragDelta();
                                 _dragDrop = true;
@@ -304,7 +299,7 @@ namespace AutoDuty.Windows
                         }
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                         {
-                            Plugin.ListBoxPOSText.Remove(item.Value);
+                            Plugin.Actions.Remove(item.Value);
                             _scrollBottom = true;
                         }
                     }
