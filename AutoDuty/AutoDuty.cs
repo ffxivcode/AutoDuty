@@ -21,7 +21,6 @@ using AutoDuty.Helpers;
 using ECommons.Throttlers;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Linq;
-using Dalamud.Game.ClientState.Objects.Enums;
 using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
@@ -163,7 +162,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal Job JobLastKnown;
     internal DutyState DutyState = DutyState.None;
     internal Chat Chat;
-    internal PathAction? PathAction = null;
+    internal PathAction PathAction = new();
 
     private LevelingMode levelingModeEnum = LevelingMode.None;
     private Stage _stage = Stage.Stopped;
@@ -1045,7 +1044,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Svc.Targets.Target == null)
             {
                 //find and target closest attackable npc, if we are not targeting
-                var gos = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateKind(o) is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
+                var gos = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateKind(o) is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
 
                 if (gos != null)
                     Svc.Targets.Target = gos;
@@ -1285,7 +1284,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 }
             }
             PathActions.InvokeAction(PathAction.Name, [.. PathAction.Argument]);
-            PathAction = null;
+            PathAction = new();
         }
     }
 
@@ -1367,7 +1366,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25) && MainWindow.CurrentTabName == "Build")
             ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
 
-        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (PathAction?.Name == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (PathAction?.Name == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
         if (Indexer >= Actions.Count && Actions.Count > 0 && States.HasFlag(PluginState.Navigating))
