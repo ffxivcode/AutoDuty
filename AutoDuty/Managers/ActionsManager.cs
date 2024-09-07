@@ -99,20 +99,25 @@ namespace AutoDuty.Managers
                     if (itemIdlt != 0 && InventoryHelper.ItemCount(itemIdlt) < itemqtylt)
                         invokeAction = true;
                     break;
-                case "ObjectNotTargetable":
-                    if (conditionArray.Length > 1)
+                case "ObjectData":
+                    if (conditionArray.Length > 3)
                     {
                         IGameObject? gameObject = null;
-                        if ((gameObject = ObjectHelper.GetObjectByDataId(uint.TryParse(conditionArray[1], out uint dataId) ? dataId : 0)) != null && !gameObject.IsTargetable)
-                            invokeAction = true;
-                    }
-                    break;
-                case "ObjectTargetable":
-                    if (conditionArray.Length > 1)
-                    {
-                        IGameObject? gameObject = null;
-                        if ((gameObject = ObjectHelper.GetObjectByDataId(uint.TryParse(conditionArray[1], out uint dataId) ? dataId : 0)) != null && gameObject.IsTargetable)
-                            invokeAction = true;
+                        if ((gameObject = ObjectHelper.GetObjectByDataId(uint.TryParse(conditionArray[1], out uint dataId) ? dataId : 0)) != null)
+                        {
+                            var csObj = *gameObject.Struct();
+                            switch (conditionArray[2])
+                            {
+                                case "EventState":
+                                    if (csObj.EventState == (int.TryParse(conditionArray[3], out int es) ? es : -1))
+                                        invokeAction = true;
+                                    break;
+                                case "IsTargetable":
+                                    if (csObj.GetIsTargetable() == (bool.TryParse(conditionArray[3], out bool it) && it))
+                                        invokeAction = true;
+                                    break;
+                            }
+                        }
                     }
                     break;
             }
