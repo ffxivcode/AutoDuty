@@ -404,8 +404,9 @@ namespace AutoDuty.Windows
                             {
                                 if (Player.Job.GetRole() == CombatRole.NonCombat)
                                     ImGuiEx.TextWrapped(new Vector4(255, 1, 0, 1), "Please switch to a combat job to use AutoDuty.");
-
-                                if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)))
+                                else if (Player.Job == Job.BLU)
+                                    ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), "Blue Mage cannot run Trust, Duty Support, Squadron or Variant dungeons. Please switch jobs or select a different category.");
+                                else if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)))
                                 {
                                     Dictionary<uint, Content> dictionary = [];
                                     if (Plugin.Configuration.DutyModeEnum == DutyMode.Support)
@@ -450,8 +451,6 @@ namespace AutoDuty.Windows
                                 }
                             }
                         }
-                        else if (Player.Job == Job.BLU)
-                            ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), "Blue Mage cannot run Trust, Duty Support, Squadron or Variant dungeons. Please switch jobs or select a different category.");
                         else
                             ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Busy...");
                     }
