@@ -1,6 +1,6 @@
 {
   "actions": [
-    "ConditionAction|0, 0, 0|ObjectNotTargetable;2001462,ModifyIndex;4",
+    "ConditionAction|0, 0, 0|ObjectData;2001462;IsTargetable;false,ModifyIndex;4",
     "Interactable|21.82, 7.10, 27.40|1004346 (Goblin Pathfinder)",
     "ConditionAction|0, 0, 0|ItemLessThan;2000521,ModifyIndex;0",
     "Interactable|105.56, -0.13, 12.14|2001462 (Runstop Headgate)",

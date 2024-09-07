@@ -35,6 +35,7 @@ using System.Diagnostics;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.Properties;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
 namespace AutoDuty;
 
@@ -1232,12 +1233,12 @@ public sealed class AutoDuty : IDalamudPlugin
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
         if (EzThrottler.Throttle("ClosestInteractableEventObject", 25) && MainWindow.CurrentTabName == "Build")
-            ClosestInteractableEventObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.EventObj)?.FirstOrDefault(o => o.IsTargetable);
+            ClosestInteractableEventObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)?.FirstOrDefault(o => o.IsTargetable);
 
         if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25) && MainWindow.CurrentTabName == "Build")
-            ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
+            ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
 
-        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (_action == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
 
         if (Indexer >= ListBoxPOSText.Count && ListBoxPOSText.Count > 0 && States.HasFlag(PluginState.Navigating))
@@ -1365,7 +1366,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     if (Svc.Targets.Target == null)
                     {
                         //find and target closest attackable npc, if we are not targeting
-                        var gos = ObjectHelper.GetObjectsByObjectKind(ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateKind(o) is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
+                        var gos = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateKind(o) is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
 
                         if (gos != null)
                             Svc.Targets.Target = gos;
@@ -1607,8 +1608,14 @@ public sealed class AutoDuty : IDalamudPlugin
                     Svc.Log.Info("Materia Extraction requires having completed quest: Forging the Spirit");
                 break;
             case "dataid":
-                Svc.Log.Info($"{ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "")?.DataId}");
-                ImGui.SetClipboardText($"{ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "")?.DataId}");
+                IGameObject? obj = null;
+                if (argsArray.Length == 2)
+                    obj = Svc.Objects[int.TryParse(argsArray[1], out int index) ? index : -1] ?? null;
+                else
+                    obj = ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "");
+                    
+                Svc.Log.Info($"{obj?.DataId}");
+                ImGui.SetClipboardText($"{obj?.DataId}");
                 break;
             case "moveto":
                 var argss = args.Replace("moveto ", "").Split("|");
@@ -1660,7 +1667,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 MapHelper.MoveToMapMarker();
                 break;
             case "run":
-                if (argsArray.Length <= 3 || !UInt32.TryParse(argsArray[1], out uint territoryType) || !Int32.TryParse(argsArray[2], out int loopTimes))
+                if (argsArray.Length <= 3 || !uint.TryParse(argsArray[1], out uint territoryType) || !int.TryParse(argsArray[2], out int loopTimes))
                 {
                     Svc.Log.Info($"Run Error: Incorrect Usage\ncorrect use /autoduty run TerritoryTypeInteger LoopTimesInteger (optional) BareModeBool\nexample: /autoduty run 1036 10 true\nYou can get the TerritoryTypeInteger from /autoduty tt name of territory (will be logged and copied to clipboard)");
                     return;
@@ -1674,9 +1681,61 @@ public sealed class AutoDuty : IDalamudPlugin
                 ImGui.SetClipboardText($"{tt?.RowId}");
                 break;
             case "spew":
-                var targetObject = ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "");
-                Svc.Log.Info($"DataId: {targetObject?.DataId} EntityId: {targetObject?.EntityId} GameObjectId: {targetObject?.GameObjectId}");
-                break;
+                IGameObject? spewObj = null;
+                if (argsArray.Length == 2)
+                    spewObj = ObjectHelper.GetObjectByDataId(uint.TryParse(argsArray[1], out uint dataId) ? dataId : 0);
+                else
+                    spewObj = ObjectHelper.GetObjectByName(Svc.Targets.Target?.Name.TextValue ?? "");
+
+                if (spewObj == null) return;
+
+                GameObject gObj = *spewObj.Struct();
+                try { Svc.Log.Info($"Spewing Object Information for: {gObj.NameString}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"Spewing Object Information for: {*gObj.GetName()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
+                //DrawObject: {gObj.DrawObject}\n
+                //LayoutInstance: { gObj.LayoutInstance}\n
+                //EventHandler: { gObj.EventHandler}\n
+                //LuaActor: {gObj.LuaActor}\n
+                try { Svc.Log.Info($"DefaultPosition: {gObj.DefaultPosition}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"DefaultRotation: {gObj.DefaultRotation}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"EventState: {gObj.EventState}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"EntityId {gObj.EntityId}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"LayoutId: {gObj.LayoutId}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"BaseId {gObj.BaseId}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"OwnerId: {gObj.OwnerId}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"ObjectIndex: {gObj.ObjectIndex}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"ObjectKind {gObj.ObjectKind}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"SubKind: {gObj.SubKind}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"Sex: {gObj.Sex}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"YalmDistanceFromPlayerX: {gObj.YalmDistanceFromPlayerX}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"TargetStatus: {gObj.TargetStatus}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"YalmDistanceFromPlayerZ: {gObj.YalmDistanceFromPlayerZ}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"TargetableStatus: {gObj.TargetableStatus}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"Position: {gObj.Position}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"Rotation: {gObj.Rotation}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"Scale: {gObj.Scale}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"Height: {gObj.Height}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"VfxScale: {gObj.VfxScale}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"HitboxRadius: {gObj.HitboxRadius}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"DrawOffset: {gObj.DrawOffset}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"EventId: {gObj.EventId}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"FateId: {gObj.FateId}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"NamePlateIconId: {gObj.NamePlateIconId}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"RenderFlags: {gObj.RenderFlags}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetGameObjectId().ObjectId: {gObj.GetGameObjectId().ObjectId}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetGameObjectId().Type: {gObj.GetGameObjectId().Type}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetObjectKind: {gObj.GetObjectKind()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetIsTargetable: {gObj.GetIsTargetable()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetName: {*gObj.GetName()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetRadius: {gObj.GetRadius()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetHeight: {gObj.GetHeight()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetDrawObject: {*gObj.GetDrawObject()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetNameId: {gObj.GetNameId()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"IsDead: {gObj.IsDead()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"IsNotMounted: {gObj.IsNotMounted()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"IsCharacter: {gObj.IsCharacter()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"IsReadyToDraw: {gObj.IsReadyToDraw()}"); } catch(Exception ex) { Svc.Log.Info($": {ex}"); };
+                    break;
             default:
                 OpenMainUI(); 
                 break;
