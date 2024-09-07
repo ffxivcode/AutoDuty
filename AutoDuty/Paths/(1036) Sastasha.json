@@ -8,8 +8,12 @@
     "Interactable|0, 0, 0|2000216 (Inconspicuous Switch)",
     "Boss|-27.17, 22.86, 56.34|",
     "Interactable|-91.82, 13.84, 145.88|2000250 (Captain\u0027s Quarters Key)",
+    "<-- Below line is a temporary bandaid until Issue #409 is implemented -->",
+    "ConditionAction|-95.10, 19.90, 171.10|ItemLessThan;2000512,ModifyIndex;7",
     "Interactable|-95.10, 19.90, 171.10|2000227 (Captain\u0027s Quarters)",
     "Interactable|-95.15, 20.01, 190.03|2000255 (Waverider Gate Key)",
+    "<-- Below line is a temporary bandaid until Issue #409 is implemented -->",
+    "ConditionAction|0, 0, 0|ItemLessThan;2000513,ModifyIndex;11",
     "Interactable|-129.54, 16.30, 156.32|2000231 (Waverider Gate)",
     "Boss|-183.12, 6.38, 244.52|",
     "Boss|-332.47, 5.57, 317.23|"
