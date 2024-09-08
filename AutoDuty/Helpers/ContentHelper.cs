@@ -28,7 +28,7 @@ namespace AutoDuty.Helpers
             return true;
         }
 
-        private unsafe static int DawnIndex(uint index, uint ex)
+        private static int DawnIndex(uint index, uint ex)
         {
             return ex switch
             {
@@ -50,7 +50,7 @@ namespace AutoDuty.Helpers
             return true;
         }
 
-        private unsafe static int TrustIndex(int index, uint ex)
+        private static int TrustIndex(int index, uint ex)
         {
             return ex switch
             {
@@ -91,7 +91,7 @@ namespace AutoDuty.Helpers
                     ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                     ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
                     ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
-                    DawnIndex = TryGetDawnIndex(listDawnContent.IndexOf(x => x.Content.Value == contentFinderCondition), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
+                    DawnIndex = TryGetDawnIndex((int)(listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId)?.RowId ?? 0), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
                     TrustIndex = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value == contentFinderCondition), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1,
                     VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                     VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
@@ -131,6 +131,7 @@ namespace AutoDuty.Helpers
                                                                       TrustMemberName.Ryne :
                                                                       TrustMemberName.Estinien
                                                                  ]);
+
                     content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Graha]);
                     if (content.TerritoryType is >= 1097 and <= 1164)
                         content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Zero]);
