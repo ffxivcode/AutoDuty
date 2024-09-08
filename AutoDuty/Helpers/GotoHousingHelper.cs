@@ -37,6 +37,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= GotoHousingUpdate;
             _whichHousing = Housing.Apartment;
             AutoDuty.Plugin.Action = "";
+            _index = 0;
         }
 
         internal static bool InPrivateHouse(Housing whichHousing) =>
@@ -75,7 +76,6 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void GotoHousingStopUpdate(IFramework framework)
         {
-            Svc.Log.Debug($"Stopping GotoHousing");
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
             else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
