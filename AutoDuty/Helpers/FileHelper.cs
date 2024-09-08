@@ -30,13 +30,9 @@ namespace AutoDuty.Helpers
 
         public static byte[] CalculateMD5(string filename)
         {
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(filename))
-                {
-                    return md5.ComputeHash(stream);
-                }
-            }
+            using var md5 = MD5.Create();
+            using var stream = File.OpenRead(filename);
+            return md5.ComputeHash(stream);
         }
 
         internal static void OnStart()

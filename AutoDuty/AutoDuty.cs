@@ -35,6 +35,7 @@ using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.Properties;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace AutoDuty;
 
@@ -179,6 +180,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private bool _recentlyWatchedCutscene = false;
     private bool _lootTreasure;
     private SettingsActive _settingsActive = SettingsActive.None;
+    private SettingsActive _bareModeSettingsActive = SettingsActive.None;
 
     public AutoDuty()
     {
@@ -459,7 +461,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    public void Run(uint territoryType = 0, int loops = 0, bool bareMode = false)
+    public void Run(uint territoryType = 0, int loops = 0, bool startFromZero = true, bool bareMode = false)
     {
         Svc.Log.Debug($"Run: territoryType={territoryType} loops={loops} bareMode={bareMode}");
         if (territoryType > 0)
@@ -481,6 +483,13 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (bareMode)
         {
+            _bareModeSettingsActive |= SettingsActive.BareMode_Active;
+            if (Configuration.EnablePreLoopActions)
+                _bareModeSettingsActive |= SettingsActive.PreLoop_Enabled;
+            if (Configuration.EnableBetweenLoopActions)
+                _bareModeSettingsActive |= SettingsActive.BetweenLoop_Enabled;
+            if (Configuration.EnableTerminationActions)
+                _bareModeSettingsActive |= SettingsActive.TerminationActions_Enabled;
             Configuration.EnablePreLoopActions = false;
             Configuration.EnableBetweenLoopActions = false;
             Configuration.EnableTerminationActions = false;
@@ -503,6 +512,7 @@ public sealed class AutoDuty : IDalamudPlugin
         Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
+            CurrentLoop = 0;
             if (Configuration.EnablePreLoopActions)
             {
                 if (Configuration.ExecuteCommandsPreLoop)
@@ -546,8 +556,9 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, "Run-WaitDutyStarted");
         TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run-WaitNavIsReady");
         TaskManager.Enqueue(() => Svc.Log.Debug($"Start Navigation"));
-        TaskManager.Enqueue(() => StartNavigation(true), "Run-StartNavigation");
-        CurrentLoop = 1;
+        TaskManager.Enqueue(() => StartNavigation(startFromZero), "Run-StartNavigation");
+        if (CurrentLoop == 0)
+            CurrentLoop = 1;
     }
 
     private unsafe void LoopTasks()
@@ -808,61 +819,6 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Queue-WaitValid");
     }
 
-    public void StartNavigation(bool startFromZero = true)
-    {
-        Svc.Log.Debug($"StartNavigation: startFromZero={startFromZero}");
-        if (ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content))
-        {
-            CurrentTerritoryContent = content;
-            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.EnglishName?.Replace(":", "")}.json";
-            LoadPath();
-        }
-        else
-        {
-            CurrentTerritoryContent = null;
-            PathFile = "";
-            MainWindow.ShowPopup("Error", "Unable to load content for Territory");
-            return;
-        }
-        //MainWindow.OpenTab("Mini");
-        if (Configuration.ShowOverlay)
-        {
-            //MainWindow.IsOpen = false;
-            Overlay.IsOpen = true;
-        }
-        MainListClicked = false;
-        Stage = Stage.Reading_Path;
-        States |= PluginState.Navigating;
-        StopForCombat = true;
-        if (Configuration.AutoManageVnavAlignCamera && !VNavmesh_IPCSubscriber.Path_GetAlignCamera())
-            VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
-        Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
-        if (IPCSubscriber_Common.IsReady("BossModReborn"))
-            Chat.ExecuteCommand($"/vbmai on");
-        if (Configuration.AutoManageBossModAISettings)
-            SetBMSettings();
-        if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
-            SetRotationPluginSettings(true);
-        if (Configuration.LootTreasure)
-        {
-            if (PandorasBox_IPCSubscriber.IsEnabled)
-                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", Configuration.LootMethodEnum == LootMethod.Pandora || Configuration.LootMethodEnum == LootMethod.All);
-            if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
-                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", $"{Configuration.LootMethodEnum == LootMethod.RotationSolver || Configuration.LootMethodEnum == LootMethod.All}");
-            _lootTreasure = Configuration.LootMethodEnum == LootMethod.AutoDuty || Configuration.LootMethodEnum == LootMethod.All;
-        }
-        else
-        {
-            if (PandorasBox_IPCSubscriber.IsEnabled)
-                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", false);
-                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", "false");
-            _lootTreasure = false;
-        }
-        Svc.Log.Info("Starting Navigation");
-        if (startFromZero)
-            Indexer = 0;
-    }
-
     private void StageReadingPath()
     {
         if (!ObjectHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= Actions.Count)
@@ -1096,6 +1052,61 @@ public sealed class AutoDuty : IDalamudPlugin
             VNavmesh_IPCSubscriber.Path_Stop();
             Stage = Stage.Reading_Path;
         }
+    }
+    
+    public void StartNavigation(bool startFromZero = true)
+    {
+        Svc.Log.Debug($"StartNavigation: startFromZero={startFromZero}");
+        if (ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content))
+        {
+            CurrentTerritoryContent = content;
+            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.EnglishName?.Replace(":", "")}.json";
+            LoadPath();
+        }
+        else
+        {
+            CurrentTerritoryContent = null;
+            PathFile = "";
+            MainWindow.ShowPopup("Error", "Unable to load content for Territory");
+            return;
+        }
+        //MainWindow.OpenTab("Mini");
+        if (Configuration.ShowOverlay)
+        {
+            //MainWindow.IsOpen = false;
+            Overlay.IsOpen = true;
+        }
+        MainListClicked = false;
+        Stage = Stage.Reading_Path;
+        States |= PluginState.Navigating;
+        StopForCombat = true;
+        if (Configuration.AutoManageVnavAlignCamera && !VNavmesh_IPCSubscriber.Path_GetAlignCamera())
+            VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
+        Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        if (IPCSubscriber_Common.IsReady("BossModReborn"))
+            Chat.ExecuteCommand($"/vbmai on");
+        if (Configuration.AutoManageBossModAISettings)
+            SetBMSettings();
+        if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+            SetRotationPluginSettings(true);
+        if (Configuration.LootTreasure)
+        {
+            if (PandorasBox_IPCSubscriber.IsEnabled)
+                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", Configuration.LootMethodEnum == LootMethod.Pandora || Configuration.LootMethodEnum == LootMethod.All);
+            if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", $"{Configuration.LootMethodEnum == LootMethod.RotationSolver || Configuration.LootMethodEnum == LootMethod.All}");
+            _lootTreasure = Configuration.LootMethodEnum == LootMethod.AutoDuty || Configuration.LootMethodEnum == LootMethod.All;
+        }
+        else
+        {
+            if (PandorasBox_IPCSubscriber.IsEnabled)
+                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", false);
+                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", "false");
+            _lootTreasure = false;
+        }
+        Svc.Log.Info("Starting Navigation");
+        if (startFromZero)
+            Indexer = 0;
     }
 
     private void DoneNavigating()
@@ -1401,11 +1412,19 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void StopAndResetALL()
     {
+        if (_bareModeSettingsActive != SettingsActive.None)
+        {
+            Configuration.EnablePreLoopActions = _bareModeSettingsActive.HasFlag(SettingsActive.PreLoop_Enabled);
+            Configuration.EnableBetweenLoopActions = _bareModeSettingsActive.HasFlag(SettingsActive.BetweenLoop_Enabled);
+            Configuration.EnableTerminationActions = _bareModeSettingsActive.HasFlag(SettingsActive.TerminationActions_Enabled);
+            _bareModeSettingsActive = SettingsActive.None;
+        }
         States = PluginState.None;
         TaskManager?.SetStepMode(false);
         TaskManager?.Abort();
         MainListClicked = false;
-        CurrentLoop = 0;
+        if (!InDungeon)
+            CurrentLoop = 0;
         Chat.ExecuteCommand($"/vbmai off");
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         SetGeneralSettings(true);
@@ -1609,13 +1628,48 @@ public sealed class AutoDuty : IDalamudPlugin
                 MapHelper.MoveToMapMarker();
                 break;
             case "run":
-                if (argsArray.Length <= 3 || !uint.TryParse(argsArray[1], out uint territoryType) || !int.TryParse(argsArray[2], out int loopTimes))
+                var failPreMessage = "Run Error: Incorrect usage: ";
+                var failPostMessage = "\nCorrect usage: /autoduty run DutyMode TerritoryTypeInteger LoopTimesInteger (optional)BareModeBool\nexample: /autoduty run Support 1036 10 true\nYou can get the TerritoryTypeInteger from /autoduty tt name of territory (will be logged and copied to clipboard)";
+                if (argsArray.Length < 4)
                 {
-                    Svc.Log.Info($"Run Error: Incorrect Usage\ncorrect use /autoduty run TerritoryTypeInteger LoopTimesInteger (optional) BareModeBool\nexample: /autoduty run 1036 10 true\nYou can get the TerritoryTypeInteger from /autoduty tt name of territory (will be logged and copied to clipboard)");
+                    Svc.Log.Info($"{failPreMessage}Argument count must be at least 3, you inputed {argsArray.Length - 1}{failPostMessage}"); 
+                    return;
+                }
+                if (!Enum.TryParse(argsArray[1], true, out DutyMode dutyMode))
+                {
+                    Svc.Log.Info($"{failPreMessage}Argument 1 must be a DutyMode enum Type, you inputed {argsArray[1]}{failPostMessage}");
+                    return;
+                }
+                if (!uint.TryParse(argsArray[2], out uint territoryType))
+                { 
+                    Svc.Log.Info($"{failPreMessage}Argument 2 must be an unsigned integer, you inputed {argsArray[2]}{failPostMessage}");
+                    return;
+                }
+                if (!int.TryParse(argsArray[3], out int loopTimes))
+                { 
+                    Svc.Log.Info($"{failPreMessage}Argument 3 must be an integer, you inputed {argsArray[3]}{failPostMessage}");
+                    return;
+                }
+                if (!ContentHelper.DictionaryContent.TryGetValue(territoryType, out var content))
+                { 
+                    Svc.Log.Info($"{failPreMessage}Argument 2 value was not in our ContentList or has no Path, you inputed {argsArray[2]}{failPostMessage}");
+                    return;
+                }
+                if (!content.DutyModes.HasFlag(dutyMode))
+                {
+                    Svc.Log.Info($"{failPreMessage}Argument 2 value was not of type {dutyMode}, which you inputed in Argument 1, Argument 2 value was {argsArray[2]}{failPostMessage}");
+                    return;
+                }
+                if (!content.CanRun(PlayerHelper.GetCurrentLevelFromSheet()) || (dutyMode == DutyMode.Trust && !content.CanTrustRun()))
+                {
+                    var failReason = !UIState.IsInstanceContentCompleted(content.Id) ? "You dont have it unlocked" : (!ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) ? "There is no path file" : (PlayerHelper.GetCurrentLevelFromSheet() < content.ClassJobLevelRequired ? $"Your Lvl({PlayerHelper.GetCurrentLevelFromSheet()}) is less than {content.ClassJobLevelRequired}" : (InventoryHelper.CurrentItemLevel < content.ItemLevelRequired ? $"Your iLvl({InventoryHelper.CurrentItemLevel}) is less than {content.ItemLevelRequired}" : "Your trust party is not of correct levels")));
+                    Svc.Log.Info($"Unable to run {content.Name}, {failReason} {TrustHelper.CanTrustRun(content)}");
                     return;
                 }
 
-                Run(territoryType, loopTimes, argsArray.Length > 3 && bool.TryParse(argsArray[3], out bool parsedBool) && parsedBool);
+                Configuration.DutyModeEnum = dutyMode;
+
+                Run(territoryType, loopTimes, bareMode: argsArray.Length > 4 && bool.TryParse(argsArray[4], out bool parsedBool) && parsedBool);
                 break;
             case "tt":
                 var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);

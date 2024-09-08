@@ -100,16 +100,17 @@ namespace AutoDuty.Data
             Running = 1
         }
 
+        [Flags]
         public enum DutyMode : int
         {
             None = 0,
             Support = 1,
             Trust = 2,
-            Squadron = 3,
-            Regular = 4,
-            Trial = 5,
-            Raid = 6,
-            Variant = 7
+            Squadron = 4,
+            Regular = 8,
+            Trial = 16,
+            Raid = 32,
+            Variant = 64
         }
 
         public enum LevelingMode : int
@@ -135,7 +136,11 @@ namespace AutoDuty.Data
             None = 0,
             Vnav_Align_Camera_Off = 1,
             Pandora_Interact_Objects = 2,
-            YesAlready = 4
+            YesAlready = 4,
+            PreLoop_Enabled = 8,
+            BetweenLoop_Enabled = 16,
+            TerminationActions_Enabled = 32,
+            BareMode_Active = 64
         }
 
         public enum Sounds : byte

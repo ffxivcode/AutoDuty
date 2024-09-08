@@ -17,6 +17,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using static Lumina.Data.Parsing.Layer.LayerCommon;
 
 namespace AutoDuty.Managers
 {
@@ -242,24 +243,38 @@ namespace AutoDuty.Managers
         public unsafe void WaitFor(string waitForWhat)
         {
             AutoDuty.Plugin.Action = $"WaitFor: {waitForWhat}";
-            var waitForWhats = waitForWhat.Split('|');
-
+            var waitForWhats = waitForWhat.Split(';');
             switch (waitForWhats[0])
             {
                 case "Combat":
                     _taskManager.Enqueue(() => Player.Character->InCombat, "WaitFor-Combat");
                     break;
+                case "OOC":
+                    _taskManager.Enqueue(() => Player.Character->InCombat, 500, "WaitFor-Combat-500");
+                    _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "WaitFor-OOC");
+                    break;
                 case "IsValid":
-                    _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500, "WaitFor-NotIsValid");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500, "WaitFor-NotIsValid-500");
                     _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "WaitFor-IsValid");
                     break;
                 case "IsOccupied":
-                    _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, 500, "WaitFor-NotIsOccupied");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, 500, "WaitFor-NotIsOccupied-500");
                     _taskManager.Enqueue(() => ObjectHelper.IsOccupied, int.MaxValue, "WaitFor-IsOccupied");
                     break;
                 case "IsReady":
-                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "WaitFor-NotIsReady");
+                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "WaitFor-NotIsReady-500");
                     _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "WaitFor-IsReady");
+                    break;
+                case "ConditionFlag":
+                    if (waitForWhats.Length < 3)
+                        return;
+                    ConditionFlag conditionFlag = Enum.TryParse(waitForWhats[1], out ConditionFlag condition) ? condition : ConditionFlag.None;
+                    bool active = bool.TryParse(waitForWhats[2], out active) && active;
+
+                    if (conditionFlag == ConditionFlag.None) return;
+
+                    _taskManager.Enqueue(() => Svc.Condition[conditionFlag] == !active, 500, $"WaitFor-{conditionFlag}=={!active}-500");
+                    _taskManager.Enqueue(() => Svc.Condition[conditionFlag] == active, int.MaxValue, $"WaitFor-{conditionFlag}=={!active}");
                     break;
                 case "BNpcInRadius":
                     if (waitForWhats.Length == 1)
@@ -478,7 +493,7 @@ namespace AutoDuty.Managers
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
                 _taskManager.DelayNext("Boss-TreasureDelay", 1000);
-                _taskManager.Enqueue(() => treasureCofferObjects = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => ObjectHelper.GetDistanceToPlayer(x) <= 30).ToList(), "Boss-GetTreasureChests");
+                _taskManager.Enqueue(() => treasureCofferObjects = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => ObjectHelper.GetDistanceToPlayer(x) <= 50).ToList(), "Boss-GetTreasureChests");
                 _taskManager.Enqueue(() => BossLoot(treasureCofferObjects, index), "Boss-LootCheck");
             }
         }

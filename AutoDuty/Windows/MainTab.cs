@@ -104,7 +104,7 @@ namespace AutoDuty.Windows
                                     Plugin.LoadPath();
                                     _currentStepIndex = -1;
                                     if (Plugin.MainListClicked)
-                                        Plugin.StartNavigation(!Plugin.MainListClicked);
+                                        Plugin.Run(Svc.ClientState.TerritoryType, 0, !Plugin.MainListClicked);
                                     else
                                         Plugin.Run(Svc.ClientState.TerritoryType);
                                 }
@@ -340,7 +340,7 @@ namespace AutoDuty.Windows
                                 if (ImGui.Button("Refresh", new Vector2(ImGui.GetContentRegionAvail().X, 0)))
                                 {
                                     if (InventoryHelper.CurrentItemLevel < 370)
-                                        AutoDuty.Plugin.LevelingModeEnum = LevelingMode.None;
+                                        Plugin.LevelingModeEnum = LevelingMode.None;
                                     TrustHelper.ClearCachedLevels();
                                 }
                                 ImGui.NextColumn();
@@ -387,7 +387,7 @@ namespace AutoDuty.Windows
                                     ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), $"Leveling Mode: L{Player.Level} (i{ilvl})");
                                     foreach (var item in LevelingHelper.LevelingDuties.Select((Value, Index) => (Value, Index)))
                                     {
-                                        if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.TrustContent)
+                                        if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.DutyModes.HasFlag(DutyMode.Trust))
                                             continue;
                                         var disabled = !item.Value.CanRun() || (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.CanTrustRun(true));
                                         if (!Plugin.Configuration.HideUnavailableDuties || !disabled)
@@ -408,21 +408,7 @@ namespace AutoDuty.Windows
                                     ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), "Blue Mage cannot run Trust, Duty Support, Squadron or Variant dungeons. Please switch jobs or select a different category.");
                                 else if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)))
                                 {
-                                    Dictionary<uint, Content> dictionary = [];
-                                    if (Plugin.Configuration.DutyModeEnum == DutyMode.Support)
-                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DawnContent).ToDictionary();
-                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
-                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.TrustContent).ToDictionary();
-                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Squadron)
-                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.GCArmyContent).ToDictionary();
-                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular)
-                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 2).ToDictionary();
-                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Trial)
-                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 4).ToDictionary();
-                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Raid)
-                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.ContentType == 5).ToDictionary();
-                                    else if (Plugin.Configuration.DutyModeEnum == DutyMode.Variant)
-                                        dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.VariantContent).ToDictionary();
+                                    Dictionary<uint, Content> dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DutyModes.HasFlag(Plugin.Configuration.DutyModeEnum)).ToDictionary();
 
                                     if (dictionary.Count > 0 && ObjectHelper.IsReady)
                                     {

@@ -1,6 +1,6 @@
 {
   "actions": [
-    "ChatCommand|0, 0, 0|/bmrai off",
+    "ChatCommand|0, 0, 0|/vbmai off",
     "Boss|-39.06, 114.71, -4.01|",
     "Wait|-39.97, 114.71, 1.96|2000",
     "Interactable|0, 0, 0|Cranial Hatch",

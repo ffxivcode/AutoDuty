@@ -30,7 +30,7 @@ namespace AutoDuty.Helpers
 
         internal static bool CanTrustRun(this Content content, bool checkTrustLevels = true)
         {
-            if (!content.TrustContent)
+            if (!content.DutyModes.HasFlag(DutyMode.Trust))
                 return false;
             
             if (!UIState.IsInstanceContentCompleted(content.Id))
