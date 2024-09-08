@@ -462,7 +462,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    public void Run(uint territoryType = 0, int loops = 0, bool bareMode = false)
+    public void Run(uint territoryType = 0, int loops = 0, bool startFromZero = true, bool bareMode = false)
     {
         Svc.Log.Debug($"Run: territoryType={territoryType} loops={loops} bareMode={bareMode}");
         if (territoryType > 0)
@@ -504,6 +504,7 @@ public sealed class AutoDuty : IDalamudPlugin
         Svc.Log.Info($"Running {CurrentTerritoryContent.Name} {Configuration.LoopTimes} Times");
         if (!InDungeon)
         {
+            CurrentLoop = 0;
             if (Configuration.EnablePreLoopActions)
             {
                 if (Configuration.ExecuteCommandsPreLoop)
@@ -547,8 +548,9 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, "Run-WaitDutyStarted");
         TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run-WaitNavIsReady");
         TaskManager.Enqueue(() => Svc.Log.Debug($"Start Navigation"));
-        TaskManager.Enqueue(() => StartNavigation(true), "Run-StartNavigation");
-        CurrentLoop = 1;
+        TaskManager.Enqueue(() => StartNavigation(startFromZero), "Run-StartNavigation");
+        if (CurrentLoop == 0)
+            CurrentLoop = 1;
     }
 
     private unsafe void LoopTasks()
@@ -809,61 +811,6 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "Queue-WaitValid");
     }
 
-    public void StartNavigation(bool startFromZero = true)
-    {
-        Svc.Log.Debug($"StartNavigation: startFromZero={startFromZero}");
-        if (ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content))
-        {
-            CurrentTerritoryContent = content;
-            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.EnglishName?.Replace(":", "")}.json";
-            LoadPath();
-        }
-        else
-        {
-            CurrentTerritoryContent = null;
-            PathFile = "";
-            MainWindow.ShowPopup("Error", "Unable to load content for Territory");
-            return;
-        }
-        //MainWindow.OpenTab("Mini");
-        if (Configuration.ShowOverlay)
-        {
-            //MainWindow.IsOpen = false;
-            Overlay.IsOpen = true;
-        }
-        MainListClicked = false;
-        Stage = Stage.Reading_Path;
-        States |= PluginState.Navigating;
-        StopForCombat = true;
-        if (Configuration.AutoManageVnavAlignCamera && !VNavmesh_IPCSubscriber.Path_GetAlignCamera())
-            VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
-        Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
-        if (IPCSubscriber_Common.IsReady("BossModReborn"))
-            Chat.ExecuteCommand($"/vbmai on");
-        if (Configuration.AutoManageBossModAISettings)
-            SetBMSettings();
-        if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
-            SetRotationPluginSettings(true);
-        if (Configuration.LootTreasure)
-        {
-            if (PandorasBox_IPCSubscriber.IsEnabled)
-                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", Configuration.LootMethodEnum == LootMethod.Pandora || Configuration.LootMethodEnum == LootMethod.All);
-            if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
-                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", $"{Configuration.LootMethodEnum == LootMethod.RotationSolver || Configuration.LootMethodEnum == LootMethod.All}");
-            _lootTreasure = Configuration.LootMethodEnum == LootMethod.AutoDuty || Configuration.LootMethodEnum == LootMethod.All;
-        }
-        else
-        {
-            if (PandorasBox_IPCSubscriber.IsEnabled)
-                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", false);
-                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", "false");
-            _lootTreasure = false;
-        }
-        Svc.Log.Info("Starting Navigation");
-        if (startFromZero)
-            Indexer = 0;
-    }
-
     private void ReadingPath()
     {
         if (!ObjectHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= ListBoxPOSText.Count)
@@ -981,6 +928,61 @@ public sealed class AutoDuty : IDalamudPlugin
                 Stage = Stage.Moving;
             }
         }
+    }
+    
+    public void StartNavigation(bool startFromZero = true)
+    {
+        Svc.Log.Debug($"StartNavigation: startFromZero={startFromZero}");
+        if (ContentHelper.DictionaryContent.TryGetValue(Svc.ClientState.TerritoryType, out var content))
+        {
+            CurrentTerritoryContent = content;
+            PathFile = $"{Plugin.PathsDirectory.FullName}/({Svc.ClientState.TerritoryType}) {content.EnglishName?.Replace(":", "")}.json";
+            LoadPath();
+        }
+        else
+        {
+            CurrentTerritoryContent = null;
+            PathFile = "";
+            MainWindow.ShowPopup("Error", "Unable to load content for Territory");
+            return;
+        }
+        //MainWindow.OpenTab("Mini");
+        if (Configuration.ShowOverlay)
+        {
+            //MainWindow.IsOpen = false;
+            Overlay.IsOpen = true;
+        }
+        MainListClicked = false;
+        Stage = Stage.Reading_Path;
+        States |= PluginState.Navigating;
+        StopForCombat = true;
+        if (Configuration.AutoManageVnavAlignCamera && !VNavmesh_IPCSubscriber.Path_GetAlignCamera())
+            VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
+        Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        if (IPCSubscriber_Common.IsReady("BossModReborn"))
+            Chat.ExecuteCommand($"/vbmai on");
+        if (Configuration.AutoManageBossModAISettings)
+            SetBMSettings();
+        if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+            SetRotationPluginSettings(true);
+        if (Configuration.LootTreasure)
+        {
+            if (PandorasBox_IPCSubscriber.IsEnabled)
+                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", Configuration.LootMethodEnum == LootMethod.Pandora || Configuration.LootMethodEnum == LootMethod.All);
+            if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", $"{Configuration.LootMethodEnum == LootMethod.RotationSolver || Configuration.LootMethodEnum == LootMethod.All}");
+            _lootTreasure = Configuration.LootMethodEnum == LootMethod.AutoDuty || Configuration.LootMethodEnum == LootMethod.All;
+        }
+        else
+        {
+            if (PandorasBox_IPCSubscriber.IsEnabled)
+                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", false);
+                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", "false");
+            _lootTreasure = false;
+        }
+        Svc.Log.Info("Starting Navigation");
+        if (startFromZero)
+            Indexer = 0;
     }
 
     private void DoneNavigating()
@@ -1463,7 +1465,8 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager?.SetStepMode(false);
         TaskManager?.Abort();
         MainListClicked = false;
-        CurrentLoop = 0;
+        if (!InDungeon)
+            CurrentLoop = 0;
         Chat.ExecuteCommand($"/vbmai off");
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         SetGeneralSettings(true);
