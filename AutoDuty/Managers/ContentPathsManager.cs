@@ -157,7 +157,7 @@ namespace AutoDuty.Managers
                         }
                         catch (Exception ex)
                         {
-                            Svc.Log.Info($"{FilePath} is not a valid duty path");
+                            Svc.Log.Info($"{FilePath} is not a valid duty path {ex}");
                             DictionaryPaths[id].Paths.Remove(this);
                         }
                     }

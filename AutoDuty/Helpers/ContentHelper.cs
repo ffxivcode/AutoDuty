@@ -20,11 +20,11 @@ namespace AutoDuty.Helpers
         
         private static List<uint> ListVVDContent { get; set; } = [1069, 1137, 1176]; //[1069, 1075, 1076, 1137, 1155, 1156, 1176, 1179, 1180]; *Criterions
 
-        private static bool TryGetDawnIndex(int indexIn, uint ex, out int indexOut)
+        private static bool TryGetDawnIndex(uint indexIn, uint ex, out int indexOut)
         {
-            indexOut = 0;
-            if (indexIn < 0) return false;
-            indexOut = DawnIndex((uint)indexIn, ex);
+            indexOut = -1;
+            if (indexIn < 1) return false;
+            indexOut = DawnIndex(indexIn, ex);
             return true;
         }
 
@@ -91,7 +91,7 @@ namespace AutoDuty.Helpers
                     ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                     ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
                     ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
-                    DawnIndex = TryGetDawnIndex((int)(listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId)?.RowId ?? 0), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
+                    DawnIndex = TryGetDawnIndex(listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId)?.RowId ?? 0, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
                     TrustIndex = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value == contentFinderCondition), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1,
                     VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                     VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
