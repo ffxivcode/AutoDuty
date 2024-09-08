@@ -104,7 +104,7 @@ namespace AutoDuty.Windows
                                     Plugin.LoadPath();
                                     _currentStepIndex = -1;
                                     if (Plugin.MainListClicked)
-                                        Plugin.StartNavigation(!Plugin.MainListClicked);
+                                        Plugin.Run(Svc.ClientState.TerritoryType, 0, !Plugin.MainListClicked);
                                     else
                                         Plugin.Run(Svc.ClientState.TerritoryType);
                                 }
