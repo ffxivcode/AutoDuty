@@ -182,6 +182,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private bool _recentlyWatchedCutscene = false;
     private bool _lootTreasure;
     private SettingsActive _settingsActive = SettingsActive.None;
+    private SettingsActive _bareModeSettingsActive = SettingsActive.None;
 
     public AutoDuty()
     {
@@ -484,6 +485,13 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (bareMode)
         {
+            _bareModeSettingsActive |= SettingsActive.BareMode_Active;
+            if (Configuration.EnablePreLoopActions)
+                _bareModeSettingsActive |= SettingsActive.PreLoop_Enabled;
+            if (Configuration.EnableBetweenLoopActions)
+                _bareModeSettingsActive |= SettingsActive.BetweenLoop_Enabled;
+            if (Configuration.EnableTerminationActions)
+                _bareModeSettingsActive |= SettingsActive.TerminationActions_Enabled;
             Configuration.EnablePreLoopActions = false;
             Configuration.EnableBetweenLoopActions = false;
             Configuration.EnableTerminationActions = false;
@@ -1461,6 +1469,13 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void StopAndResetALL()
     {
+        if (_bareModeSettingsActive != SettingsActive.None)
+        {
+            Configuration.EnablePreLoopActions = _bareModeSettingsActive.HasFlag(SettingsActive.PreLoop_Enabled);
+            Configuration.EnableBetweenLoopActions = _bareModeSettingsActive.HasFlag(SettingsActive.BetweenLoop_Enabled);
+            Configuration.EnableTerminationActions = _bareModeSettingsActive.HasFlag(SettingsActive.TerminationActions_Enabled);
+            _bareModeSettingsActive = SettingsActive.None;
+        }
         States = PluginState.None;
         TaskManager?.SetStepMode(false);
         TaskManager?.Abort();
@@ -1711,7 +1726,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 Configuration.DutyModeEnum = dutyMode;
 
-                Run(territoryType, loopTimes, argsArray.Length > 4 && bool.TryParse(argsArray[4], out bool parsedBool) && parsedBool);
+                Run(territoryType, loopTimes, bareMode: argsArray.Length > 4 && bool.TryParse(argsArray[4], out bool parsedBool) && parsedBool);
                 break;
             case "tt":
                 var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
