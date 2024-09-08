@@ -21,7 +21,6 @@ using AutoDuty.Helpers;
 using ECommons.Throttlers;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Linq;
-using Dalamud.Game.ClientState.Objects.Enums;
 using System.Text;
 using ECommons.GameFunctions;
 using TinyIpc.Messaging;
@@ -36,6 +35,7 @@ using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.Properties;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace AutoDuty;
 
@@ -1667,13 +1667,48 @@ public sealed class AutoDuty : IDalamudPlugin
                 MapHelper.MoveToMapMarker();
                 break;
             case "run":
-                if (argsArray.Length <= 3 || !uint.TryParse(argsArray[1], out uint territoryType) || !int.TryParse(argsArray[2], out int loopTimes))
+                var failPreMessage = "Run Error: Incorrect usage: ";
+                var failPostMessage = "\nCorrect usage: /autoduty run DutyMode TerritoryTypeInteger LoopTimesInteger (optional)BareModeBool\nexample: /autoduty run Support 1036 10 true\nYou can get the TerritoryTypeInteger from /autoduty tt name of territory (will be logged and copied to clipboard)";
+                if (argsArray.Length < 4)
                 {
-                    Svc.Log.Info($"Run Error: Incorrect Usage\ncorrect use /autoduty run TerritoryTypeInteger LoopTimesInteger (optional) BareModeBool\nexample: /autoduty run 1036 10 true\nYou can get the TerritoryTypeInteger from /autoduty tt name of territory (will be logged and copied to clipboard)");
+                    Svc.Log.Info($"{failPreMessage}Argument count must be at least 3, you inputed {argsArray.Length - 1}{failPostMessage}"); 
+                    return;
+                }
+                if (!Enum.TryParse(argsArray[1], true, out DutyMode dutyMode))
+                {
+                    Svc.Log.Info($"{failPreMessage}Argument 1 must be a DutyMode enum Type, you inputed {argsArray[1]}{failPostMessage}");
+                    return;
+                }
+                if (!uint.TryParse(argsArray[2], out uint territoryType))
+                { 
+                    Svc.Log.Info($"{failPreMessage}Argument 2 must be an unsigned integer, you inputed {argsArray[2]}{failPostMessage}");
+                    return;
+                }
+                if (!int.TryParse(argsArray[3], out int loopTimes))
+                { 
+                    Svc.Log.Info($"{failPreMessage}Argument 3 must be an integer, you inputed {argsArray[3]}{failPostMessage}");
+                    return;
+                }
+                if (!ContentHelper.DictionaryContent.TryGetValue(territoryType, out var content))
+                { 
+                    Svc.Log.Info($"{failPreMessage}Argument 2 value was not in our ContentList or has no Path, you inputed {argsArray[2]}{failPostMessage}");
+                    return;
+                }
+                if (!content.DutyModes.HasFlag(dutyMode))
+                {
+                    Svc.Log.Info($"{failPreMessage}Argument 2 value was not of type {dutyMode}, which you inputed in Argument 1, Argument 2 value was {argsArray[2]}{failPostMessage}");
+                    return;
+                }
+                if (!content.CanRun(PlayerHelper.GetCurrentLevelFromSheet()) || (dutyMode == DutyMode.Trust && !content.CanTrustRun()))
+                {
+                    var failReason = !UIState.IsInstanceContentCompleted(content.Id) ? "You dont have it unlocked" : (!ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) ? "There is no path file" : (PlayerHelper.GetCurrentLevelFromSheet() < content.ClassJobLevelRequired ? $"Your Lvl({PlayerHelper.GetCurrentLevelFromSheet()}) is less than {content.ClassJobLevelRequired}" : (InventoryHelper.CurrentItemLevel < content.ItemLevelRequired ? $"Your iLvl({InventoryHelper.CurrentItemLevel}) is less than {content.ItemLevelRequired}" : "Your trust party is not of correct levels")));
+                    Svc.Log.Info($"Unable to run {content.Name}, {failReason} {TrustHelper.CanTrustRun(content)}");
                     return;
                 }
 
-                Run(territoryType, loopTimes, argsArray.Length > 3 && bool.TryParse(argsArray[3], out bool parsedBool) && parsedBool);
+                Configuration.DutyModeEnum = dutyMode;
+
+                Run(territoryType, loopTimes, argsArray.Length > 4 && bool.TryParse(argsArray[4], out bool parsedBool) && parsedBool);
                 break;
             case "tt":
                 var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);

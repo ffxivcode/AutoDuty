@@ -20,6 +20,14 @@ namespace AutoDuty.Helpers
         
         private static List<uint> ListVVDContent { get; set; } = [1069, 1137, 1176]; //[1069, 1075, 1076, 1137, 1155, 1156, 1176, 1179, 1180]; *Criterions
 
+        private static bool TryGetDawnIndex(int indexIn, uint ex, out int indexOut)
+        {
+            indexOut = 0;
+            if (indexIn < 0) return false;
+            indexOut = DawnIndex((uint)indexIn, ex);
+            return true;
+        }
+
         private unsafe static int DawnIndex(uint index, uint ex)
         {
             return ex switch
@@ -32,6 +40,14 @@ namespace AutoDuty.Helpers
                 5 => (int)index - 24,
                 _ => -1
             };
+        }
+
+        private static bool TryGetTrustIndex(int indexIn, uint ex, out int indexOut)
+        {
+            indexOut = -1;
+            if (indexIn < 0) return false;
+            indexOut = TrustIndex(indexIn, ex);
+            return true;
         }
 
         private unsafe static int TrustIndex(int index, uint ex)
@@ -75,19 +91,36 @@ namespace AutoDuty.Helpers
                     ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                     ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
                     ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
-                    DawnContent = listDawnContent.Any(dawnContent => dawnContent.Content.Value == contentFinderCondition),
-                    TrustContent = listDawnContent.Any(dawnContent => dawnContent.Content.Value == contentFinderCondition && dawnContent.Unknown13),
-                    TrustIndex = TrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value == contentFinderCondition), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId),
+                    DawnIndex = TryGetDawnIndex(listDawnContent.IndexOf(x => x.Content.Value == contentFinderCondition), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
+                    TrustIndex = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value == contentFinderCondition), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1,
                     VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                     VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                     GCArmyContent = ListGCArmyContent.Any(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
                     GCArmyIndex = ListGCArmyContent.FindIndex(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId)
                 };
 
-                if (content.DawnContent && listDawnContent.Where(dawnContent => dawnContent.Content.Value == contentFinderCondition).Any())
-                    content.DawnIndex = DawnIndex(listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId)?.RowId ?? 999, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId);
+                if (contentFinderCondition.ContentType.Value.RowId == 2)
+                    content.DutyModes |= DutyMode.Regular;
 
-                if (content.TrustContent)
+                if (contentFinderCondition.ContentType.Value.RowId == 4)
+                    content.DutyModes |= DutyMode.Trial;
+
+                if (contentFinderCondition.ContentType.Value.RowId == 5)
+                    content.DutyModes |= DutyMode.Raid;
+
+                if (contentFinderCondition.ContentType.Value.RowId == 30 && contentFinderCondition.TerritoryType.Value.RowId.EqualsAny(ListVVDContent))
+                    content.DutyModes |= DutyMode.Variant;
+
+                if (contentFinderCondition.TerritoryType.Value.RowId.EqualsAny(ListGCArmyContent))
+                    content.DutyModes |= DutyMode.Squadron;
+
+                if (content.DawnIndex > -1)
+                    content.DutyModes |= DutyMode.Support;
+
+                if (content.TrustIndex > -1)
+                    content.DutyModes |= DutyMode.Trust;
+
+                if (content.DutyModes.HasFlag(DutyMode.Trust))
                 {
                     content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Alphinaud]);
                     content.TrustMembers.Add(TrustHelper.Members[TrustMemberName.Alisaie]);
