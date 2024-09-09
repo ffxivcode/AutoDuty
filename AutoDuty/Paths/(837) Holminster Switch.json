@@ -1,19 +1,105 @@
 {
   "actions": [
-    "Boss|-14.34, 0, 237.75|",
-    "MoveTo|-14.64, 0.00, 227.35|",
-    "MoveTo|-4.86, -1.26, 106.45|",
-    "MoveTo|65.00, -6.10, 0.78|",
-    "Boss|78.16, 0, -84.24|",
-    "MoveTo|77.96, 0.00, -94.41|",
-    "MoveTo|86.27, 0.52, -189.58|",
-    "MoveTo|71.25, 1.51, -326.27|",
-    "Boss|133.05, 23, -459.12|",
-    "MoveTo|133.94, 23.00, -477.00|"
+    {
+      "name": "Boss",
+      "position": {
+        "X": -14.34,
+        "Y": 0,
+        "Z": 237.75
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -14.64,
+        "Y": 0,
+        "Z": 227.35
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -4.86,
+        "Y": -1.26,
+        "Z": 106.45
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 65,
+        "Y": -6.1,
+        "Z": 0.78
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 78.16,
+        "Y": 0,
+        "Z": -84.24
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 77.96,
+        "Y": 0,
+        "Z": -94.41
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 86.27,
+        "Y": 0.52,
+        "Z": -189.58
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 71.25,
+        "Y": 1.51,
+        "Z": -326.27
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 133.05,
+        "Y": 23,
+        "Z": -459.12
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 133.94,
+        "Y": 23,
+        "Z": -477
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

@@ -1,47 +1,357 @@
 {
   "actions": [
-    "MoveTo|-1.55, -7.19, 101.37|",
-    "Wait|28.76, -8.83, 100.15|1000",
-    "Wait|4.09, -0.32, 56.25|4000",
-    "Interactable|0, 0, 0|2005172 (Cold Steel Lever)",
-    "MoveTo|-2.16, 0.96, 33.69|",
-    "Interactable|0, 0, 0|2005173 (Damaged Winch)",
-    "SelectYesno|-2.16, 0.96, 33.69|Yes",
-    "Boss|0.53, -0.03, -0.44|",
-    "MoveTo|157.08, -8.00, -24.07|",
-    "MoveTo|148.74, -8.08, -23.14|",
-    "Interactable|0, 0, 0|2005175 (Barracks Key)",
-    "MoveTo|158.12, -8.00, -23.54",
-    "Interactable|0, 0, 0|2005177 (Barracks Door)",
-    "SelectYesno|158.12, -8.00, -23.54|Yes",
-    "MoveTo|191.74, -8.05, -69.20|",
-    "Wait|192.09, -8.05, -56.09|4000",
-    "Wait|192.09, -8.05, -56.09|4000",
-    "Interactable|0, 0, 0|2005176 (Lord Commander's Key)",
-    "MoveTo|191.92, -8.05, -71.04|",
-    "Interactable|0, 0, 0|2005178 (Lord Commander's Seat)",
-    "SelectYesno|192.03, -8.05, -70.62|Yes",
-    "Boss|191.17, -8.05, -124.19|",
-    "AutoMoveFor|191.97, -7.93, -201.78|3000",
-    "MoveTo|73.94, 24.00, -270.47|",
-    "MoveTo|96.04, 24.00, -256.61|",
-    "MoveTo|95.58, 24.00, -206.47|",
-    "MoveTo|23.26, 28.00, -209.54|",
-    "MoveTo|22.40, 28.00, -218.02|",
-    "MoveTo|22.29, 28.00, -221.15|",
-    "MoveTo|22.16, 28.00, -286.85|",
-    "MoveTo|-25.60, 32.00, -285.88|",
-    "MoveTo|-35.43, 32.00, -286.09|",
-    "MoveTo|-39.27, 32.00, -286.02|",
-    "MoveTo|-43.82, 32.65, -280.45|",
-    "MoveTo|-69.07, 32.00, -291.78|",
-    "Interactable|0, 0, 0|2005357 (Chapel Door)",
-    "SelectYesno|-69.07, 32.00, -291.78|Yes",
-    "Boss|-69.70, 32.06, -389.30|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -1.55,
+        "Y": -7.19,
+        "Z": 101.37
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 28.76,
+        "Y": -8.83,
+        "Z": 100.15
+      },
+      "argument": "1000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 4.09,
+        "Y": -0.32,
+        "Z": 56.25
+      },
+      "argument": "4000"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005172 (Cold Steel Lever)"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -2.16,
+        "Y": 0.96,
+        "Z": 33.69
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005173 (Damaged Winch)"
+    },
+    {
+      "name": "SelectYesno",
+      "position": {
+        "X": -2.16,
+        "Y": 0.96,
+        "Z": 33.69
+      },
+      "argument": "Yes"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 0.53,
+        "Y": -0.03,
+        "Z": -0.44
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 157.08,
+        "Y": -8,
+        "Z": -24.07
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 148.74,
+        "Y": -8.08,
+        "Z": -23.14
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005175 (Barracks Key)"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 158.12,
+        "Y": -8,
+        "Z": -23.54
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005177 (Barracks Door)"
+    },
+    {
+      "name": "SelectYesno",
+      "position": {
+        "X": 158.12,
+        "Y": -8,
+        "Z": -23.54
+      },
+      "argument": "Yes"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 191.74,
+        "Y": -8.05,
+        "Z": -69.2
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 192.09,
+        "Y": -8.05,
+        "Z": -56.09
+      },
+      "argument": "4000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 192.09,
+        "Y": -8.05,
+        "Z": -56.09
+      },
+      "argument": "4000"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005176 (Lord Commander\u0027s Key)"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 191.92,
+        "Y": -8.05,
+        "Z": -71.04
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005178 (Lord Commander\u0027s Seat)"
+    },
+    {
+      "name": "SelectYesno",
+      "position": {
+        "X": 192.03,
+        "Y": -8.05,
+        "Z": -70.62
+      },
+      "argument": "Yes"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 191.17,
+        "Y": -8.05,
+        "Z": -124.19
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 191.97,
+        "Y": -7.93,
+        "Z": -201.78
+      },
+      "argument": "3000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 73.94,
+        "Y": 24,
+        "Z": -270.47
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 96.04,
+        "Y": 24,
+        "Z": -256.61
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 95.58,
+        "Y": 24,
+        "Z": -206.47
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 23.26,
+        "Y": 28,
+        "Z": -209.54
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 22.4,
+        "Y": 28,
+        "Z": -218.02
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 22.29,
+        "Y": 28,
+        "Z": -221.15
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 22.16,
+        "Y": 28,
+        "Z": -286.85
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -25.6,
+        "Y": 32,
+        "Z": -285.88
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -35.43,
+        "Y": 32,
+        "Z": -286.09
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -39.27,
+        "Y": 32,
+        "Z": -286.02
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -43.82,
+        "Y": 32.65,
+        "Z": -280.45
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -69.07,
+        "Y": 32,
+        "Z": -291.78
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005357 (Chapel Door)"
+    },
+    {
+      "name": "SelectYesno",
+      "position": {
+        "X": -69.07,
+        "Y": 32,
+        "Z": -291.78
+      },
+      "argument": "Yes"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -69.7,
+        "Y": 32.06,
+        "Z": -389.3
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

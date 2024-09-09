@@ -1,35 +1,186 @@
 {
   "actions": [
-    "StopForCombat|6.98, 16.35, -456.29|False",
-    "StopForCombat|2.27, 16.35, -421.01|True",
-
-    "Wait|0, 0, 0|10000",
-
-    "MoveTo|0.02, 23.85, -394.89|",
-    "Wait|0, 0, 0|8000",
-    "MoveTo|-1.67, 26.18, -379.35|",
-
-    "Boss|-2.68, 2.90, -217.87|",
-
-    "MoveTo|-0.72, 5.73, -111.16|",
-    "TreasureCoffer|3.15, 6.05, -97.73|",
-    "MoveTo|2.61, 5.84, -105.03|",
-    "MoveTo|-71.03, 14.45, -30.08|",
-    "MoveTo|-74.17, 12.74, -28.65|",
-    "TreasureCoffer|-84.92, 12.49, -29.23|",
-    "MoveTo|-58.48, 21.08, 9.83|",
-    "MoveTo|-56.64, 18.35, 14.17|",
-
-    "Boss|-7.61, 4.44, 83.50|",
-
-    "TreasureCoffer|23.32, -3.70, 226.70|",
-    "TreasureCoffer|-25.32, 9.76, 349.40|",
-
-    "Boss|-44.18, 7.75, 464.47|"
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": 6.98,
+        "Y": 16.35,
+        "Z": -456.29
+      },
+      "argument": "False"
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": 2.27,
+        "Y": 16.35,
+        "Z": -421.01
+      },
+      "argument": "True"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "10000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.02,
+        "Y": 23.85,
+        "Z": -394.89
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "8000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -1.67,
+        "Y": 26.18,
+        "Z": -379.35
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -2.68,
+        "Y": 2.9,
+        "Z": -217.87
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -0.72,
+        "Y": 5.73,
+        "Z": -111.16
+      },
+      "argument": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 3.15,
+        "Y": 6.05,
+        "Z": -97.73
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 2.61,
+        "Y": 5.84,
+        "Z": -105.03
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -71.03,
+        "Y": 14.45,
+        "Z": -30.08
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -74.17,
+        "Y": 12.74,
+        "Z": -28.65
+      },
+      "argument": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -84.92,
+        "Y": 12.49,
+        "Z": -29.23
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -58.48,
+        "Y": 21.08,
+        "Z": 9.83
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -56.64,
+        "Y": 18.35,
+        "Z": 14.17
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -7.61,
+        "Y": 4.44,
+        "Z": 83.5
+      },
+      "argument": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 23.32,
+        "Y": -3.7,
+        "Z": 226.7
+      },
+      "argument": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -25.32,
+        "Y": 9.76,
+        "Z": 349.4
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -44.18,
+        "Y": 7.75,
+        "Z": 464.47
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 145,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

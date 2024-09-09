@@ -1,57 +1,447 @@
 {
   "actions": [
-    "MoveTo|3.68, 8.50, 67.68|",
-    "Wait|0, 0, 0|1000",
-    "Interactable|0, 0, 0|2011290 (Earthy Portal)",
-    "Wait|0, 0, 0|2500",
-    "Wait|-211.94, -212.04, 37.45|1500",
-    "AutoMoveFor|-212.04, -211.99, 33.81|3000",
-    "Wait|-179.95, -219.97, -71.07|1500",
-    "AutoMoveFor|-180.02, -220.04, -74.94|3000",
-    "Boss|-179.55, -220.00, -150.35|",
-    "Wait|-179.55, -220.00, -150.17|2000",
-    "Interactable|0, 0, 0|2011293 (Interstice Portal)",
-    "Wait|0, 0, 0|3003",
-    "Revival|0, 0, 0|",
-    "MoveTo|6.68, 8.50, 67.84|",
-    "Wait|0, 0, 0|2000",
-    "Interactable|0, 0, 0|2011291 (Watery Portal)",
-    "Wait|0, 0, 0|3004",
-    "MoveTo|58.45, 233.80, -181.20|",
-    "MoveTo|51.05, 220.00, -147.67|",
-    "MoveTo|33.27, 202.00, -104.66|",
-    "MoveTo|-2.19, 198.00, -153.72|",
-    "MoveTo|-14.68, 198.00, -175.36|",
-    "AutoMoveFor|-17.48, 198.00, -180.21|3000",
-    "MoveTo|-33.08, 202.00, -199.49|",
-    "MoveTo|-53.81, 202.00, -149.06|",
-    "MoveTo|-43.14, 188.00, -122.22|",
-    "MoveTo|-11.13, 169.90, -100.91|",
-    "AutoMoveFor|-4.06, 169.90, -105.75|4000",
-    "Boss|0.03, 150.00, -158.73|",
-    "MoveTo|0.17, 150.00, -155.67|",
-    "Wait|0, 0, 0|2001",
-    "Interactable|0, 0, 0|2011354 (Interstice Portal)",
-    "Wait|0, 0, 0|3006",
-    "Revival|0, 0, 0|",
-    "MoveTo|10.30, 8.50, 69.25|",
-    "Wait|0, 0, 0|2002",
-    "Interactable|0, 0, 0|Fiery Portal",
-    "Wait|0, 0, 0|3007",
-    "MoveTo|179.21, -598.94, 107.31|",
-    "MoveTo|196.00, -598.34, 74.26|",
-    "MoveTo|173.73, -597.64, -8.57|",
-    "Wait|161.50, -592.55, -149.47|10000",
-    "Interactable|0, 0, 0|2011355 (Interstice Portal)",
-    "Wait|0, 0, 0|3008",
-    "Revival|0, 0, 0|",
-    "MoveTo|11.41, 8.50, 57.13|",
-    "Boss|0.16, 0.00, -10.22|",
-    "MoveTo|0.53, 0.00, -6.88|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 3.68,
+        "Y": 8.5,
+        "Z": 67.68
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "1000"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2011290 (Earthy Portal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2500"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -211.94,
+        "Y": -212.04,
+        "Z": 37.45
+      },
+      "argument": "1500"
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -212.04,
+        "Y": -211.99,
+        "Z": 33.81
+      },
+      "argument": "3000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -179.95,
+        "Y": -219.97,
+        "Z": -71.07
+      },
+      "argument": "1500"
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -180.02,
+        "Y": -220.04,
+        "Z": -74.94
+      },
+      "argument": "3000"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -179.55,
+        "Y": -220,
+        "Z": -150.35
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -179.55,
+        "Y": -220,
+        "Z": -150.17
+      },
+      "argument": "2000"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2011293 (Interstice Portal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3003"
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 6.68,
+        "Y": 8.5,
+        "Z": 67.84
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2011291 (Watery Portal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3004"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 58.45,
+        "Y": 233.8,
+        "Z": -181.2
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 51.05,
+        "Y": 220,
+        "Z": -147.67
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 33.27,
+        "Y": 202,
+        "Z": -104.66
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -2.19,
+        "Y": 198,
+        "Z": -153.72
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -14.68,
+        "Y": 198,
+        "Z": -175.36
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -17.48,
+        "Y": 198,
+        "Z": -180.21
+      },
+      "argument": "3000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -33.08,
+        "Y": 202,
+        "Z": -199.49
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -53.81,
+        "Y": 202,
+        "Z": -149.06
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -43.14,
+        "Y": 188,
+        "Z": -122.22
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -11.13,
+        "Y": 169.9,
+        "Z": -100.91
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -4.06,
+        "Y": 169.9,
+        "Z": -105.75
+      },
+      "argument": "4000"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 0.03,
+        "Y": 150,
+        "Z": -158.73
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.17,
+        "Y": 150,
+        "Z": -155.67
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2001"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2011354 (Interstice Portal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3006"
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 10.3,
+        "Y": 8.5,
+        "Z": 69.25
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2002"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Fiery Portal"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3007"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 179.21,
+        "Y": -598.94,
+        "Z": 107.31
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 196,
+        "Y": -598.34,
+        "Z": 74.26
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 173.73,
+        "Y": -597.64,
+        "Z": -8.57
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 161.5,
+        "Y": -592.55,
+        "Z": -149.47
+      },
+      "argument": "10000"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2011355 (Interstice Portal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3008"
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 11.41,
+        "Y": 8.5,
+        "Z": 57.13
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 0.16,
+        "Y": 0,
+        "Z": -10.22
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.53,
+        "Y": 0,
+        "Z": -6.88
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

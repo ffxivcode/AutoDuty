@@ -97,13 +97,13 @@ namespace AutoDuty.Windows
                 {
                     bool multiple = false;
 
-                    if(!headers.TryGetValue(container.id, out bool open))
+                    if (!headers.TryGetValue(container.id, out bool open))
                         headers[container.id] = open = true;
 
                     if (container.Paths.Count > 0)
                     {
                         multiple = true;
-                        if(ImGui.Selectable("##PathHeader_" + container.id, false))
+                        if (ImGui.Selectable("##PathHeader_" + container.id, false))
                             headers[container.id] = !open;
                         ImGui.SameLine();
                         ImGuiHelper.ColoredText(container.ColoredNameRegex, $"({container.id}) {container.Content.Name}");
@@ -135,7 +135,7 @@ namespace AutoDuty.Windows
                                 }
                                 else
                                 {
-                                    _checked          = Plugin.Configuration.DoNotUpdatePathFiles.Contains(path.FileName);
+                                    _checked = Plugin.Configuration.DoNotUpdatePathFiles.Contains(path.FileName);
                                     _selectedDutyPath = path;
                                 }
                             }
@@ -179,10 +179,7 @@ namespace AutoDuty.Windows
                     }
                 }
             }
-            catch (InvalidOperationException ex)
-            {
-                Svc.Log.Warning(ex.ToString());
-            }
+            catch (InvalidOperationException) { }
             finally
             {
                 ImGui.EndChild();

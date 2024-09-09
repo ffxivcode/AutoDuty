@@ -1,12 +1,42 @@
 {
   "actions": [
-  "Boss|5.18, 0.00, 5.88|",
-  "MoveTo|1.86, 0.00, -6.82|",
-  "MoveTo|-1.73, 0.00, -7.08|"
+    {
+      "name": "Boss",
+      "position": {
+        "X": 5.18,
+        "Y": 0,
+        "Z": 5.88
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 1.86,
+        "Y": 0,
+        "Z": -6.82
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -1.73,
+        "Y": 0,
+        "Z": -7.08
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 133,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

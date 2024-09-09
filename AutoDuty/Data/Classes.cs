@@ -69,10 +69,6 @@ namespace AutoDuty.Data
             [JsonPropertyName("actions")]
             public List<PathAction> Actions { get; set; } = [];
 
-            //BackwardsCompat
-            [JsonPropertyName("actionsString")]
-            public string[] ActionsString { get; set; } = [];
-
             [JsonPropertyName("interactables")]
             public uint[] Interactables { get; set; } = [];
 

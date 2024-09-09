@@ -1,16 +1,78 @@
 {
   "actions": [
-    "MoveTo|-1.20, -0.03, 36.51|",
-    "MoveTo|49.17, -21.06, 55.64|",
-    "MoveTo|40.16, -41.99, 94.19|",
-    "MoveTo|39.42, -41.99, 82.28|",
-    "MoveTo|0.49, -65.98, 79.72|",
-    "MoveTo|1.97, -65.98, 67.96|",
-    "MoveTo|-2.42, -65.98, 67.82|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -1.2,
+        "Y": -0.03,
+        "Z": 36.51
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 49.17,
+        "Y": -21.06,
+        "Z": 55.64
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 40.16,
+        "Y": -41.99,
+        "Z": 94.19
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 39.42,
+        "Y": -41.99,
+        "Z": 82.28
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.49,
+        "Y": -65.98,
+        "Z": 79.72
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 1.97,
+        "Y": -65.98,
+        "Z": 67.96
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -2.42,
+        "Y": -65.98,
+        "Z": 67.82
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

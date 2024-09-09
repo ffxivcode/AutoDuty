@@ -1,29 +1,195 @@
 {
   "actions": [
-    "MoveTo|-342.11, 24.00, 151.78|",
-    "Wait|0, 0, 0|3750",
-    "MoveTo|-259.76, 27.00, 96.80|",
-    "MoveTo|-250.95, 27.00, 94.46|",
-    "MoveTo|-245.31, 31.00, 70.83|",
-    "Boss|-187.03, 34.87, 71.86|",
-    "MoveTo|-178.53, 34.87, 71.80|",
-    "AutoMoveFor|-155.86, 34.87, 71.93|6500",
-    "MoveTo|255.71, 96.62, 66.22|",
-    "MoveTo|263.93, 106.40, -8.65|",
-    "MoveTo|281.94, 106.40, -24.08|",
-    "Boss|249.99, 106.45, -74.51|",
-    "MoveTo|250.00, 106.45, -85.17|",
-    "MoveTo|234.48, 110.00, -149.57|",
-    "MoveTo|134.20, 116.00, -212.37|",
-    "MoveTo|218.20, 120.00, -247.72|",
-    "MoveTo|282.11, 120.00, -264.05|",
-    "MoveTo|250.12, 122.00, -330.37|",
-    "Boss|250.02, 122.00, -357.45|",
-    "MoveTo|250.06, 122.00, -365.24|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -342.11,
+        "Y": 24,
+        "Z": 151.78
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3750"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -259.76,
+        "Y": 27,
+        "Z": 96.8
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -250.95,
+        "Y": 27,
+        "Z": 94.46
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -245.31,
+        "Y": 31,
+        "Z": 70.83
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -187.03,
+        "Y": 34.87,
+        "Z": 71.86
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -178.53,
+        "Y": 34.87,
+        "Z": 71.8
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -155.86,
+        "Y": 34.87,
+        "Z": 71.93
+      },
+      "argument": "6500"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 255.71,
+        "Y": 96.62,
+        "Z": 66.22
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 263.93,
+        "Y": 106.4,
+        "Z": -8.65
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 281.94,
+        "Y": 106.4,
+        "Z": -24.08
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 249.99,
+        "Y": 106.45,
+        "Z": -74.51
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 250,
+        "Y": 106.45,
+        "Z": -85.17
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 234.48,
+        "Y": 110,
+        "Z": -149.57
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 134.2,
+        "Y": 116,
+        "Z": -212.37
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 218.2,
+        "Y": 120,
+        "Z": -247.72
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 282.11,
+        "Y": 120,
+        "Z": -264.05
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 250.12,
+        "Y": 122,
+        "Z": -330.37
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 250.02,
+        "Y": 122,
+        "Z": -357.45
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 250.06,
+        "Y": 122,
+        "Z": -365.24
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

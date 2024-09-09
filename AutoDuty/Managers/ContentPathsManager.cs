@@ -150,20 +150,22 @@ namespace AutoDuty.Managers
                                     {
                                         Actions = [.. pathActions]
                                     };
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
                                 }
-
+                                
                                 string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
                                 File.WriteAllText(FilePath, jsonNew);
                             }
                             else if (!json.Contains("\"name\"") && !json.Contains("\"position\"") && !json.Contains("\"argument\""))
                             {
                                 json = json.Replace("actions", "actionsString");
-                                //Svc.Log.Info(json);
-                                pathFile = JsonSerializer.Deserialize<PathFile>(json);
+                                var doc = JsonDocument.Parse(json);
+                                var element = doc.RootElement.GetProperty("actionsString");
+                                var paths = element.Deserialize<List<string>>();
                                 List<PathAction> pathActions = [];
-                                if (pathFile != null && pathFile.ActionsString != null && pathFile.ActionsString.Length != 0)
+                                if (paths != null && paths.Count != 0)
                                 {
-                                    pathFile.ActionsString.Each(x =>
+                                    paths.Each(x =>
                                     {
                                         var action = x.Split('|');
                                         var pathAction = new PathAction { Name = action[0] };
@@ -179,11 +181,13 @@ namespace AutoDuty.Managers
                                         }
                                         pathActions.Add(pathAction);
                                     });
-                                    pathFile.ActionsString = [];
+                                    json = json.Replace("\"actionsString\": [],", string.Empty);
+                                    json = Regex.Replace(json, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline);
+                                    pathFile = JsonSerializer.Deserialize<PathFile>(json);
+                                    if (pathFile == null) return new();
                                     pathFile.Actions = [.. pathActions];
-                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = 161 });
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
                                     string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
-
                                     File.WriteAllText(FilePath, jsonNew);
                                 }
                             }

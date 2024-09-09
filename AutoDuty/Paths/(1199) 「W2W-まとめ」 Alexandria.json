@@ -1,44 +1,330 @@
 {
   "actions": [
-    "MoveTo|-29.66, 492.70, 114.56|",
-    "StopForCombat|-99.32, 501.32, 102.94|False",
-    "MoveTo|-115.65, 500.86, 74.89|",
-    "MoveTo|-115.67, 506.42, 27.67|",
-    "StopForCombat|-115.79, 506.42, 44.08|True",
-    "Revival|-116.43, 506.42, -10.70|",
-    "AutoMoveFor|-116.30, 506.42, -16.00|8000",
-    "Boss|852.22, 46.00, 808.35|",
-    "MoveTo|852.01, 46.00, 815.44|",
-    "Wait|0, 0, 0|2000",
-    "StopForCombat|815.35, 41.72, 763.55|False",
-    "MoveTo|807.99, 35.53, 724.31|",
-    "MoveTo|781.63, 33.55, 735.12|",
-    "StopForCombat|745.84, 33.56, 727.19|True",
-    "MoveTo|779.71, 53.19, 619.42|",
-    "Wait|0, 0, 0|10000",
-    "MoveTo|748.93, 64.79, 611.80|",
-    "MoveTo|745.31, 64.79, 617.26|",
-    "Revival|747.20, 64.79, 612.33|",
-    "AutoMoveFor|744.10, 64.79, 612.70|5000",
-    "Boss|-533.33, -466.00, -381.60|",
-    "MoveTo|-533.12, -466.00, -387.23|",
-    "StopForCombat|-565.53, -469.39, -429.93|False",
-    "MoveTo|-590.15, -472.88, -441.35|",
-    "MoveTo|-583.65, -467.69, -478.37|",
-    "StopForCombat|-577.19, -468.22, -466.93|True",
-    "MoveTo|-583.88, -463.99, -510.21|",
-    "StopForCombat|-609.67, -466.69, -504.35|False",
-    "MoveTo|-701.89, -470.96, -560.67|",
-    "MoveTo|-732.53, -474.35, -564.92|",
-    "MoveTo|-732.79, -478.52, -590.39|",
-    "StopForCombat|-727.15, -478.55, -583.48|True",
-    "Revival|-758.61, -476.86, -621.17|",
-    "Boss|-758.72, -474.00, -647.41|",
-    "MoveTo|-759.11, -474.00, -658.35|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -29.66,
+        "Y": 492.7,
+        "Z": 114.56
+      },
+      "argument": ""
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": -99.32,
+        "Y": 501.32,
+        "Z": 102.94
+      },
+      "argument": "False"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -115.65,
+        "Y": 500.86,
+        "Z": 74.89
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -115.67,
+        "Y": 506.42,
+        "Z": 27.67
+      },
+      "argument": ""
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": -115.79,
+        "Y": 506.42,
+        "Z": 44.08
+      },
+      "argument": "True"
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -116.43,
+        "Y": 506.42,
+        "Z": -10.7
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -116.3,
+        "Y": 506.42,
+        "Z": -16
+      },
+      "argument": "8000"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 852.22,
+        "Y": 46,
+        "Z": 808.35
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 852.01,
+        "Y": 46,
+        "Z": 815.44
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000"
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": 815.35,
+        "Y": 41.72,
+        "Z": 763.55
+      },
+      "argument": "False"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 807.99,
+        "Y": 35.53,
+        "Z": 724.31
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 781.63,
+        "Y": 33.55,
+        "Z": 735.12
+      },
+      "argument": ""
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": 745.84,
+        "Y": 33.56,
+        "Z": 727.19
+      },
+      "argument": "True"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 779.71,
+        "Y": 53.19,
+        "Z": 619.42
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "10000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 748.93,
+        "Y": 64.79,
+        "Z": 611.8
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 745.31,
+        "Y": 64.79,
+        "Z": 617.26
+      },
+      "argument": ""
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": 747.2,
+        "Y": 64.79,
+        "Z": 612.33
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 744.1,
+        "Y": 64.79,
+        "Z": 612.7
+      },
+      "argument": "5000"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -533.33,
+        "Y": -466,
+        "Z": -381.6
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -533.12,
+        "Y": -466,
+        "Z": -387.23
+      },
+      "argument": ""
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": -565.53,
+        "Y": -469.39,
+        "Z": -429.93
+      },
+      "argument": "False"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -590.15,
+        "Y": -472.88,
+        "Z": -441.35
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -583.65,
+        "Y": -467.69,
+        "Z": -478.37
+      },
+      "argument": ""
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": -577.19,
+        "Y": -468.22,
+        "Z": -466.93
+      },
+      "argument": "True"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -583.88,
+        "Y": -463.99,
+        "Z": -510.21
+      },
+      "argument": ""
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": -609.67,
+        "Y": -466.69,
+        "Z": -504.35
+      },
+      "argument": "False"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -701.89,
+        "Y": -470.96,
+        "Z": -560.67
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -732.53,
+        "Y": -474.35,
+        "Z": -564.92
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -732.79,
+        "Y": -478.52,
+        "Z": -590.39
+      },
+      "argument": ""
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": -727.15,
+        "Y": -478.55,
+        "Z": -583.48
+      },
+      "argument": "True"
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -758.61,
+        "Y": -476.86,
+        "Z": -621.17
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -758.72,
+        "Y": -474,
+        "Z": -647.41
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -759.11,
+        "Y": -474,
+        "Z": -658.35
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

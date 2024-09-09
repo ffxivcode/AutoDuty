@@ -1,24 +1,150 @@
 {
   "actions": [
-    "StopForCombat|0, 0, 0|False",
-    "MoveTo|-140.04, 8.48, -9.30|",
-    "StopForCombat|0, 0, 0|True",
-    "Wait|0, 0, 0|500",
-    "StopForCombat|0, 0, 0|False",
-    "MoveTo|-146.06, 5.02, 1.51|",
-    "MoveTo|-199.34, 2.16, 22.30|",
-    "StopForCombat|0, 0, 0|True",
-    "Wait|0, 0, 0|1000",
-    "MoveTo|-267.43, 10.42, 36.76|",
-    "Boss|0, 0, 0|",
-    "MoveTo|-291.18, 10.42, 38.10|",
-    "MoveTo|-291.30, 10.42, 41.41|",
-    "MoveTo|-313.28, 8.71, 43.68|",
-    "Interactable|0, 0, 0|Allagan Terminal"
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "False"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -140.04,
+        "Y": 8.48,
+        "Z": -9.3
+      },
+      "argument": ""
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "True"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "500"
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "False"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -146.06,
+        "Y": 5.02,
+        "Z": 1.51
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -199.34,
+        "Y": 2.16,
+        "Z": 22.3
+      },
+      "argument": ""
+    },
+    {
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "True"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "1000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -267.43,
+        "Y": 10.42,
+        "Z": 36.76
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -291.18,
+        "Y": 10.42,
+        "Z": 38.1
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -291.3,
+        "Y": 10.42,
+        "Z": 41.41
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -313.28,
+        "Y": 8.71,
+        "Z": 43.68
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Allagan Terminal"
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

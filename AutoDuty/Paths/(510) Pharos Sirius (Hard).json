@@ -1,31 +1,213 @@
 {
   "actions": [
-    "MoveTo|0.01, 139.86, -29.29|",
-    "MoveTo|-0.11, 93.54, -26.13|",
-    "Boss|0.63, 90.07, -1.65|",
-    "MoveTo|13.48, 90.12, -0.07|",
-    "MoveTo|-1.89, 40.00, -25.15|",
-    "MoveTo|0.22, 30.00, -53.00|",
-    "Interactable|0, 0, 0|Candlekeep Key",
-    "MoveTo|14.42, 30.00, -55.71|",
-    "Interactable|0, 0, 0|Locked Door",
-    "Boss|49.97, 30.00, -56.95|",
-    "MoveTo|51.48, 30.00, -56.03|",
-    "MoveTo|61.35, 30.00, -56.20|",
-    "AutoMoveFor|61.35, 30.00, -56.20|2000",
-    "MoveTo|-92.63, 2.96, -190.24|",
-    "MoveTo|-112.88, 2.49, -189.35|",
-    "MoveTo|-115.60, 2.65, -211.23|",
-    "ForceAttack|-130.90, 2.19, -194.51|",
-    "ForceAttack|-117.30, 2.05, -166.27|",
-    "MoveTo|-123.99, 2.13, -164.21|",
-    "MoveTo|-94.11, -0.70, -226.26|",
-    "Boss|-96.10, -5.50, -293.21|",
-    "MoveTo|-95.34, -5.55, -301.39|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.01,
+        "Y": 139.86,
+        "Z": -29.29
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -0.11,
+        "Y": 93.54,
+        "Z": -26.13
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 0.63,
+        "Y": 90.07,
+        "Z": -1.65
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 13.48,
+        "Y": 90.12,
+        "Z": -0.07
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -1.89,
+        "Y": 40,
+        "Z": -25.15
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.22,
+        "Y": 30,
+        "Z": -53
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Candlekeep Key"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 14.42,
+        "Y": 30,
+        "Z": -55.71
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Locked Door"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 49.97,
+        "Y": 30,
+        "Z": -56.95
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 51.48,
+        "Y": 30,
+        "Z": -56.03
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 61.35,
+        "Y": 30,
+        "Z": -56.2
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 61.35,
+        "Y": 30,
+        "Z": -56.2
+      },
+      "argument": "2000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -92.63,
+        "Y": 2.96,
+        "Z": -190.24
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -112.88,
+        "Y": 2.49,
+        "Z": -189.35
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -115.6,
+        "Y": 2.65,
+        "Z": -211.23
+      },
+      "argument": ""
+    },
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": -130.9,
+        "Y": 2.19,
+        "Z": -194.51
+      },
+      "argument": ""
+    },
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": -117.3,
+        "Y": 2.05,
+        "Z": -166.27
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -123.99,
+        "Y": 2.13,
+        "Z": -164.21
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -94.11,
+        "Y": -0.7,
+        "Z": -226.26
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -96.1,
+        "Y": -5.5,
+        "Z": -293.21
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -95.34,
+        "Y": -5.55,
+        "Z": -301.39
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

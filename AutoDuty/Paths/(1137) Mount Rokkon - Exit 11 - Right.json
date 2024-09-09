@@ -1,43 +1,321 @@
 {
   "actions": [
-	  "Wait|145.46, 134.00, 815.67|12000",
-	  "Wait|154.60, 134.00, 806.16|20000",
-	  "Interactable|0, 0, 0|2012810 (Perceptive Portal)",
-	  "Wait|0, 0, 0|3000",
-	  "Wait|34.67, 238.89, 352.14|1000",
-	  "Wait|-23.71, 271.64, 251.17|2000",
-	  "Wait|-8.50, 278.85, 193.35|4000",
-	  "Wait|61.22, 283.34, 164.68|15000",
-	  "MoveTo|62.40, 283.88, 159.03|",
-	  "Interactable|0, 0, 0|2013367 (Rokkon Sentinel)",
-	  "Revival|46.39, 309.03, 121.91|",
-	  "Boss|46.81, 309.00, 88.95|",
-	  "Wait|47.14, 309.00, 73.81|500",
-	  "Wait|52.30, 308.15, 46.97|500",
-	  "Wait|65.15, 321.47, -3.26|4000",
-	  "Wait|40.34, 341.30, -63.69|5000",
-	  "MoveTo|25.98, 342.19, -72.18|",
-	  "ChatCommand|0, 0, 0|/ebow",
-	  "Wait|0, 0, 0|20000",
-	  "Interactable|0, 0, 0|2013382 (Hokora)",
-	  "MoveTo|29.52, 342.05, -71.15|",
-	  "AutoMoveFor|28.95, 342.31, -74.88|8000",
-	  "MoveTo|15.39, 350.57, -123.85|",
-	  "Wait|10.95, 356.17, -185.78|1000",
-	  "Wait|-18.50, 360.83, -210.11|3000",
-	  "MoveTo|-22.42, 360.48, -210.51|",
-	  "Interactable|0, 0, 0|2013372 (Ancient Tree)",
-	  "Wait|0, 0, 0|2500",
-	  "AutoMoveFor|-24.31, 361.07, -213.29|4000",
-	  "Wait|-34.81, 360.19, -238.62|500",
-	  "Wait|-45.24, 359.99, -238.63|500",
-	  "Revival|-40.05, 360.00, -275.84|",
-	  "Boss|-40.27, 360.00, -301.85|",
-	  "Wait|-40.22, 360.00, -310.12|500"
+    {
+      "name": "Wait",
+      "position": {
+        "X": 145.46,
+        "Y": 134,
+        "Z": 815.67
+      },
+      "argument": "12000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 154.6,
+        "Y": 134,
+        "Z": 806.16
+      },
+      "argument": "20000"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2012810 (Perceptive Portal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 34.67,
+        "Y": 238.89,
+        "Z": 352.14
+      },
+      "argument": "1000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -23.71,
+        "Y": 271.64,
+        "Z": 251.17
+      },
+      "argument": "2000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -8.5,
+        "Y": 278.85,
+        "Z": 193.35
+      },
+      "argument": "4000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 61.22,
+        "Y": 283.34,
+        "Z": 164.68
+      },
+      "argument": "15000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 62.4,
+        "Y": 283.88,
+        "Z": 159.03
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2013367 (Rokkon Sentinel)"
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": 46.39,
+        "Y": 309.03,
+        "Z": 121.91
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 46.81,
+        "Y": 309,
+        "Z": 88.95
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 47.14,
+        "Y": 309,
+        "Z": 73.81
+      },
+      "argument": "500"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 52.3,
+        "Y": 308.15,
+        "Z": 46.97
+      },
+      "argument": "500"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 65.15,
+        "Y": 321.47,
+        "Z": -3.26
+      },
+      "argument": "4000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 40.34,
+        "Y": 341.3,
+        "Z": -63.69
+      },
+      "argument": "5000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 25.98,
+        "Y": 342.19,
+        "Z": -72.18
+      },
+      "argument": ""
+    },
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "/ebow"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "20000"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2013382 (Hokora)"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 29.52,
+        "Y": 342.05,
+        "Z": -71.15
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 28.95,
+        "Y": 342.31,
+        "Z": -74.88
+      },
+      "argument": "8000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 15.39,
+        "Y": 350.57,
+        "Z": -123.85
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 10.95,
+        "Y": 356.17,
+        "Z": -185.78
+      },
+      "argument": "1000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -18.5,
+        "Y": 360.83,
+        "Z": -210.11
+      },
+      "argument": "3000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -22.42,
+        "Y": 360.48,
+        "Z": -210.51
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2013372 (Ancient Tree)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2500"
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -24.31,
+        "Y": 361.07,
+        "Z": -213.29
+      },
+      "argument": "4000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -34.81,
+        "Y": 360.19,
+        "Z": -238.62
+      },
+      "argument": "500"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -45.24,
+        "Y": 359.99,
+        "Z": -238.63
+      },
+      "argument": "500"
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -40.05,
+        "Y": 360,
+        "Z": -275.84
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -40.27,
+        "Y": 360,
+        "Z": -301.85
+      },
+      "argument": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -40.22,
+        "Y": 360,
+        "Z": -310.12
+      },
+      "argument": "500"
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

@@ -1,23 +1,105 @@
 {
   "actions": [
-    "Boss|-3.70, 0.00, -0.48|",
-
-    "TreasureCoffer|101.74, -8.00, -25.04|",
-    "TreasureCoffer|50.09, -9.00, 75.75|",
-
-    "Boss|177.79, -7.43, 29.85|",
-
-    "TreasureCoffer|248.93, -24.00, -21.29|",
-    "MoveTo|229.41, -24.00, -38.48|",
-    "MoveTo|265.74, -40.00, -38.50|",
-    "MoveTo|263.34, -40.00, -55.13|",
-    "TreasureCoffer|224.35, -40.00, -50.98|",
-
-    "Boss|374.56, -39.00, -59.86|"
+    {
+      "name": "Boss",
+      "position": {
+        "X": -3.7,
+        "Y": 0,
+        "Z": -0.48
+      },
+      "argument": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 101.74,
+        "Y": -8,
+        "Z": -25.04
+      },
+      "argument": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 50.09,
+        "Y": -9,
+        "Z": 75.75
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 177.79,
+        "Y": -7.43,
+        "Z": 29.85
+      },
+      "argument": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 248.93,
+        "Y": -24,
+        "Z": -21.29
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 229.41,
+        "Y": -24,
+        "Z": -38.48
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 265.74,
+        "Y": -40,
+        "Z": -38.5
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 263.34,
+        "Y": -40,
+        "Z": -55.13
+      },
+      "argument": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 224.35,
+        "Y": -40,
+        "Z": -50.98
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 374.56,
+        "Y": -39,
+        "Z": -59.86
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 133,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

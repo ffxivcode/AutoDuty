@@ -1,44 +1,330 @@
 {
   "actions": [
-    "MoveTo|-263.93, 401.86, -297.87|",
-    "MoveTo|-176.08, 398.19, -372.48|",
-    "Boss|-109.84, 395.05, -295.64|",
-    "AutoMoveFor|-47.49, 389.76, -246.70|1000",
-    "Revival|0, 0, 0|Checkpoint1",
-    "MoveTo|29.79, 212.09, 218.02|",
-    "ForceAttack|29.86, 212.07, 218.06|",
-    "MoveTo|110.17, 222.05, 270.08|",
-    "ForceAttack|110.17, 222.05, 270.08|",
-    "Boss|247.25, 225.14, 271.92|",
-    "AutoMoveFor|324.80, 222.20, 271.98|4000",
-    "MoveTo|-352.83, -299.98, -249.99|",
-    "PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
-    "Interactable|0, 0, 0|2005307 (Lift Terminal)",
-    "Wait|-360.42, -299.98, -250.03|10000",
-    "Wait|-362.95, -299.98, -255.14|10000",
-    "MoveTo|-357.21, -299.98, -245.34|",
-    "AutoMoveFor|-363.74, -299.98, -256.40|1000",
-    "Wait|308.07, -27.92, 275.07|5000",
-    "MoveTo|266.00, -27.94, 236.83|",
-    "MoveTo|219.27, -27.97, 224.06|",
-    "MoveTo|194.08, -27.99, 206.22|",
-    "MoveTo|202.12, -28.16, 195.95|",
-    "PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
-    "Interactable|0, 0, 0|2005308 (Lift Terminal)",
-    "Wait|202.77, -58.16, 195.56|8000",
-    "MoveTo|201.85, -58.93, 124.45|",
-    "MoveTo|228.77, -59.27, 95.07|",
-    "PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
-    "Interactable|0, 0, 0|2005309 (Lift Terminal)",
-    "Wait|228.77, -59.27, 95.07|8000",
-    "AutoMoveFor|227.97, -90.16, 49.87|4000",
-    "Boss|230.03, -96.46, -182.83|",
-    "AutoMoveFor|0, 0, 0|5000",
-    "Boss|229.89, -456.46, 79.02|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -263.93,
+        "Y": 401.86,
+        "Z": -297.87
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -176.08,
+        "Y": 398.19,
+        "Z": -372.48
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -109.84,
+        "Y": 395.05,
+        "Z": -295.64
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -47.49,
+        "Y": 389.76,
+        "Z": -246.7
+      },
+      "argument": "1000"
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Checkpoint1"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 29.79,
+        "Y": 212.09,
+        "Z": 218.02
+      },
+      "argument": ""
+    },
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": 29.86,
+        "Y": 212.07,
+        "Z": 218.06
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 110.17,
+        "Y": 222.05,
+        "Z": 270.08
+      },
+      "argument": ""
+    },
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": 110.17,
+        "Y": 222.05,
+        "Z": 270.08
+      },
+      "argument": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 247.25,
+        "Y": 225.14,
+        "Z": 271.92
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 324.8,
+        "Y": 222.2,
+        "Z": 271.98
+      },
+      "argument": "4000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -352.83,
+        "Y": -299.98,
+        "Z": -249.99
+      },
+      "argument": ""
+    },
+    {
+      "name": "PausePandora",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005307 (Lift Terminal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -360.42,
+        "Y": -299.98,
+        "Z": -250.03
+      },
+      "argument": "10000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -362.95,
+        "Y": -299.98,
+        "Z": -255.14
+      },
+      "argument": "10000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -357.21,
+        "Y": -299.98,
+        "Z": -245.34
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -363.74,
+        "Y": -299.98,
+        "Z": -256.4
+      },
+      "argument": "1000"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 308.07,
+        "Y": -27.92,
+        "Z": 275.07
+      },
+      "argument": "5000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 266,
+        "Y": -27.94,
+        "Z": 236.83
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 219.27,
+        "Y": -27.97,
+        "Z": 224.06
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 194.08,
+        "Y": -27.99,
+        "Z": 206.22
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 202.12,
+        "Y": -28.16,
+        "Z": 195.95
+      },
+      "argument": ""
+    },
+    {
+      "name": "PausePandora",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005308 (Lift Terminal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 202.77,
+        "Y": -58.16,
+        "Z": 195.56
+      },
+      "argument": "8000"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 201.85,
+        "Y": -58.93,
+        "Z": 124.45
+      },
+      "argument": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 228.77,
+        "Y": -59.27,
+        "Z": 95.07
+      },
+      "argument": ""
+    },
+    {
+      "name": "PausePandora",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2005309 (Lift Terminal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 228.77,
+        "Y": -59.27,
+        "Z": 95.07
+      },
+      "argument": "8000"
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 227.97,
+        "Y": -90.16,
+        "Z": 49.87
+      },
+      "argument": "4000"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 230.03,
+        "Y": -96.46,
+        "Z": -182.83
+      },
+      "argument": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "5000"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 229.89,
+        "Y": -456.46,
+        "Z": 79.02
+      },
+      "argument": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }
