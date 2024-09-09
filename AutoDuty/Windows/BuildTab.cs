@@ -10,12 +10,12 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using AutoDuty.Helpers;
-using Dalamud.Interface.Utility;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using static AutoDuty.Managers.ContentPathsManager;
 using ECommons.ImGuiMethods;
 using Dalamud.Interface.Components;
+using AutoDuty.Data;
 
 namespace AutoDuty.Windows
 {
@@ -25,29 +25,38 @@ namespace AutoDuty.Windows
 
         private static bool _scrollBottom = false;
         private static string _changelog = string.Empty;
-        private static string _input = string.Empty;
+        private static PathAction? _action = null;
+        private static string _actionText = string.Empty;
         private static string _note = string.Empty;
-        private static PathAction _action = new();
-        private static string _inputTextName = string.Empty;
+        private static Vector3 _position = Vector3.Zero;
+        private static string _positionText = string.Empty;
+        private static string _argument = string.Empty;
+        private static string _argumentHint = string.Empty;
         private static bool _dontMove = false;
-        private static float _inputIW = 200 * ImGuiHelpers.GlobalScale;
         private static bool _showAddActionUI = false;
         private static (string, string, string) _dropdownSelected = (string.Empty, string.Empty, string.Empty);
         private static int _buildListSelected = -1;
         private static string _addActionButton = "Add"; 
         private static bool _dragDrop = false;
+        private static bool _noArgument = false;
 
         public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
 
         private static void ClearAll()
         {
-            _input = string.Empty;
+            _actionText = string.Empty;
             _note = string.Empty;
-            _action = new();
+            _position = Vector3.Zero;
+            _positionText = string.Empty;
+            _argument = string.Empty;
+            _argumentHint = string.Empty;
             _dropdownSelected = (string.Empty, string.Empty, string.Empty);
-            _buildListSelected = -1;
             _dontMove = false;
             _showAddActionUI = false;
+            _noArgument = false;
+            _addActionButton = "Add";
+            _buildListSelected = -1;
+            _action = null;
         }
 
         private static void AddAction(PathAction action, int index = -1)
@@ -79,6 +88,10 @@ namespace AutoDuty.Windows
 
             ImGui.SameLine();
             ImGui.Text($".json");
+            ImGui.Text("Changelog:");
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+            ImGui.InputText("##Changelog", ref _changelog, 200);
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
@@ -109,33 +122,29 @@ namespace AutoDuty.Windows
                         _dropdownSelected = item;
                         switch (item.Item1)
                         {
-                            case "ExitDuty":
-                                _action = new PathAction { Name = "ExitDuty" };
-                                break;
                             case "SelectYesno":
-                                _input = "Yes";
+                                _argument = "Yes";
                                 break;
                             case "MoveToObject":
                             case "Interactable":
                                 IGameObject? targetObject = Player.Object.TargetObject;
                                 IGameObject? gameObject   = (targetObject?.ObjectKind == ObjectKind.EventObj ? targetObject : null) ?? Plugin.ClosestInteractableEventObject;
-                                _input = gameObject != null ? $"{gameObject.DataId} ({gameObject.Name})" : string.Empty;
+                                _argument = gameObject != null ? $"{gameObject.DataId} ({gameObject.Name})" : string.Empty;
                                 break;
                             case "Target":
-                                _input = Plugin.ClosestTargetableBattleNpc?.Name.TextValue ?? "";
+                                _argument = Plugin.ClosestTargetableBattleNpc?.Name.TextValue ?? "";
                                 break;
                             default:
-                                _input = string.Empty;
-
-                                _action = new PathAction { Name = $"{item.Item1}", Position = Player.Position };
+                                _argument = string.Empty;
                                 break;
                         }
-                        _inputIW = 200 * ImGuiHelpers.GlobalScale;
-                        if (item.Item2.Equals("false"))
-                            AddAction(_action);
+                        _argumentHint = item.Item2.Equals("false",StringComparison.InvariantCultureIgnoreCase) ? string.Empty : item.Item2;
+                        _actionText = item.Item1;
+                        _noArgument = item.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase);
                         _addActionButton = "Add";
-                        _showAddActionUI = !item.Item2.Equals("false");
-                        _inputTextName = item.Item2;
+                        _position = Player.Available ? Player.Position : Vector3.Zero;
+                        _positionText = _position.ToCustomString();
+                        _showAddActionUI = true;
                     }
                     ImGuiComponents.HelpMarker(item.Item3);
                 }
@@ -197,32 +206,29 @@ namespace AutoDuty.Windows
                 ClearAll();
             }
             ImGuiComponents.HelpMarker("Loads the path");
-            ImGui.Text("Changelog:");
-            ImGui.SameLine();
-            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-            ImGui.InputText("##Changelog", ref _changelog, 200);
-            if (_showAddActionUI)
+            
+            using (ImRaii.Disabled(!_showAddActionUI))
             {
                 ImGui.Spacing();
                 ImGui.Separator();
                 ImGui.Spacing();
-                ImGui.PushItemWidth(_inputIW);
-                ImGui.InputText(_inputTextName, ref _input, 100);
-                if (!_dropdownSelected.Item1.IsNullOrEmpty() && !_dropdownSelected.Item2.IsNullOrEmpty())
-                    ImGui.SameLine(0, 5);
+                ImGui.Text($"Action: ");
+                ImGui.SameLine();
+                ImGui.TextColored(new(0, 1, 0, 1), $"{_actionText}");
+                ImGui.SameLine(0, 25);
                 if (ImGuiEx.ButtonWrapped(_addActionButton))
                 {
-                    if (_input.IsNullOrEmpty())
+                    if (_argument.IsNullOrEmpty())
                     {
-                        MainWindow.ShowPopup("Error", "You must enter an input");
+                        MainWindow.ShowPopup("Error", "You must enter an argument");
                         return;
                     }
                     if (_dropdownSelected.Item1.Equals("<-- Comment -->", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        AddAction(new PathAction { Name = $"<-- {_input} -->" });
+                        AddAction(new PathAction { Name = $"<-- {_argument} -->" });
                         return;
                     }
-                    if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty() && !_input.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) && (_input.Count(c => c == '|') < 2 || !_input.Split('|')[1].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.')))
+                    /*if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty() && !_input.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) && (_input.Count(c => c == '|') < 2 || !_input.Split('|')[1].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.')))
                         MainWindow.ShowPopup("Error", "Input is not in the correct format\nAction|Position|ActionParams(if needed)");
                     if (_dontMove && _dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty())
                         AddAction(new PathAction { Name = _input.Split('|')[0], Argument = _input.Split('|')[2], Note = _note }, _buildListSelected);
@@ -231,11 +237,45 @@ namespace AutoDuty.Windows
                     else if (_dontMove)
                         AddAction(new PathAction { Name = _dropdownSelected.Item1, Argument = _input, Note = _note });
                     else
-                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Position = Player.Position, Argument = _input, Note = _note });
+                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Position = Player.Position, Argument = _input, Note = _note });*/
                 }
-                ImGui.SameLine(0, 5);
-                ImGui.Checkbox("Dont Move", ref _dontMove);
-                ImGui.InputText("Note", ref _note, 100);
+                ImGui.SameLine();
+                ImGuiEx.CheckboxWrapped("Dont Move", ref _dontMove);
+                ImGui.SameLine();
+                if (ImGuiEx.ButtonWrapped("Delete"))
+                                {
+                    Plugin.Actions.RemoveAt(_buildListSelected);
+                    _scrollBottom = true;
+                    ClearAll();
+                }
+                ImGui.SameLine();
+                if (ImGuiEx.ButtonWrapped("Copy to Clipboard"))
+                    ImGui.SetClipboardText(_action?.ToCustomString());
+                ImGui.SameLine();
+                using (ImRaii.Disabled(!Player.Available || _action == null))
+                {
+                    if (ImGuiEx.ButtonWrapped("Teleport To"))
+                        Player.GameObject->SetPosition(_action!.Position.X, _action.Position.Y, _action.Position.Z);
+                }
+                
+                using (ImRaii.Disabled(_noArgument || _actionText.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    ImGui.Text("Argument:");
+                    ImGui.SameLine();
+                    ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+                    ImGui.InputTextWithHint("##Argument", _argumentHint, ref _argument, 200);
+                }
+                using (ImRaii.Disabled(_actionText.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    ImGui.Text("Position:");
+                    ImGui.SameLine();
+                    ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+                    ImGui.InputText("##Position", ref _positionText, 200);
+                }
+                ImGui.Text("Note:");
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+                ImGui.InputText("##Note", ref _note, 200);
                 ImGui.Spacing();
                 ImGui.Separator();
                 ImGui.Spacing();
@@ -249,45 +289,37 @@ namespace AutoDuty.Windows
                     {
                         var v4 = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
 
-                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.Name}|{item.Value.Position:F2}|{item.Value.Argument}|{item.Value.Note}";
+                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.ToCustomString()}";
 
                         ImGui.PushStyleColor(ImGuiCol.Text, v4);
-                        if (ImGui.Selectable(text, item.Index == _buildListSelected, ImGuiSelectableFlags.AllowDoubleClick))
+                        if (ImGui.Selectable($"{text}###Text{item.Index}", item.Index == _buildListSelected))
                         {
-                            if (_dragDrop)
+                            /*if (_dragDrop)
                             {
                                 _dragDrop = false;
                                 return;
-                            }
+                            }*/
                             if (_buildListSelected == item.Index)
-                            {
-                                _showAddActionUI = false;
-                                _buildListSelected = -1;
-                            }
+                                ClearAll();
                             else
                             {
+                                _noArgument = ActionsList?.Any(x => x.Item1.Equals($"{item.Value.Name}", StringComparison.InvariantCultureIgnoreCase) && x.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase)) ?? false;
+                                _dontMove = item.Value.Position == Vector3.Zero;
+                                _actionText = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? "<-- Comment -->" : item.Value.Name;
+                                _note = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : item.Value.Note;
+                                _argument = item.Value.Argument;
+                                _showAddActionUI = false;
+                                _position = item.Value.Position;
+                                _positionText = _position.ToCustomString();
                                 _buildListSelected = item.Index;
                                 _showAddActionUI = true;
                                 _dropdownSelected = ("", "", "");
                                 _addActionButton = "Modify";
-                                _inputTextName = "";
-                                _input = item.Value.Name;
-                                _inputIW = 400 * ImGuiHelpers.GlobalScale;
+                                _action = item.Value;
                             }
                         }
                         ImGui.PopStyleColor();
-                        
-                        if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
-                        {
-                            // Do stuff on Selectable() double click.
-                            if (item.Value.Position != Vector3.Zero)
-                            {
-                                ImGui.SetClipboardText($"{item.Value.Position:F2}");
-                                //if (Player.Available)
-                                    //Player.GameObject->SetPosition(item.Value.Position);
-                            }
-                        }
-                        if (ImGui.IsItemActive() && !ImGui.IsItemHovered() && !ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+                        /*if (ImGui.IsItemActive() && !ImGui.IsItemHovered() && !ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                         {
                             int n_next = item.Index + (ImGui.GetMouseDragDelta(0).Y < 0f ? -1 : 1);
                             if (n_next >= 0 && n_next < Plugin.Actions.Count)
@@ -299,12 +331,9 @@ namespace AutoDuty.Windows
                                 _dragDrop = true;
                                 ClearAll();
                             }
-                        }
-                        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                        {
-                            Plugin.Actions.Remove(item.Value);
-                            _scrollBottom = true;
-                        }
+                        }*/
+
+                        
                     }
                 }
                 else

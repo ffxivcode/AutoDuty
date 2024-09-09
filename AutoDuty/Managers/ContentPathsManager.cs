@@ -199,6 +199,11 @@ namespace AutoDuty.Managers
                                                 pathAction.Note = note;
                                             }
                                         }
+                                        else
+                                        {
+                                            pathAction.Name = "<-- Comment -->";
+                                            pathAction.Note = action[0];
+                                        }
                                         pathActions.Add(pathAction);
                                     });
                                     json = json.Replace("\"actionsString\": [],", string.Empty);

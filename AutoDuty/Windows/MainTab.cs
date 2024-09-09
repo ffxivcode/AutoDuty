@@ -124,10 +124,11 @@ namespace AutoDuty.Windows
                             foreach (var item in Plugin.Actions.Select((Value, Index) => (Value, Index)))
                             {
                                 var v4 = item.Index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
-                                ImGui.TextColored(v4, $"{item.Value.Name}|{item.Value.Position:F2}|{item.Value.Argument}");
+                                var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.ToCustomString()}";
+                                ImGui.TextColored(v4, text);
                                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
                                 {
-                                    if (item.Index == Plugin.Indexer)
+                                    if (item.Index == Plugin.Indexer || item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
                                     {
                                         Plugin.Indexer = -1;
                                         Plugin.MainListClicked = false;
@@ -348,7 +349,7 @@ namespace AutoDuty.Windows
                             } else if (ImGui.Button("Refresh trust member levels"))
                             {
                                 if (InventoryHelper.CurrentItemLevel < 370)
-                                    AutoDuty.Plugin.LevelingModeEnum = LevelingMode.None;
+                                    Plugin.LevelingModeEnum = LevelingMode.None;
                                 TrustHelper.ClearCachedLevels();
                             }
                         }
