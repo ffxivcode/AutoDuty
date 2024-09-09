@@ -91,6 +91,9 @@ namespace AutoDuty.Data
 
             [JsonPropertyName("argument")]
             public string Argument { get; set; } = string.Empty;
+
+            [JsonPropertyName("note")]
+            public string Note { get; set; } = string.Empty;
         }
 
         internal class PathFileMetaData

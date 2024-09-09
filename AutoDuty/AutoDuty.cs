@@ -1334,25 +1334,10 @@ public sealed class AutoDuty : IDalamudPlugin
             AutoRetainerHelper.CloseRetainerWindows();
     }
 
-    private void InteractablesCheck()
-    {
-        if (Interactables.Count == 0) return;
-
-        var list = Svc.Objects.Select(x => x.DataId).Intersect(Interactables);
-        
-        if (list.Any())// && Actions.OrderBy(x => Vector3.Distance()).Where(x => x.Position != Vector3.Zero))
-        {
-            Stage = Stage.Interactable;
-        }
-    }
-
     private void PreStageChecks()
     {
         if (Stage == Stage.Stopped)
             return;
-
-        if (EzThrottler.Throttle("InteractablesCheck", 250) && States.HasFlag(PluginState.Navigating) && ObjectHelper.IsValid)
-            InteractablesCheck();
 
         CheckRetainerWindow();
 

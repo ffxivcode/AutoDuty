@@ -175,9 +175,29 @@ namespace AutoDuty.Managers
                                             
                                             pathAction.Position = new(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
 
-                                            
+
                                             if (action.Length == 3)
-                                                pathAction.Argument = action[2];
+                                            {
+                                                var argument = string.Empty;
+                                                var note = string.Empty;
+                                                if (action[2].Contains(" (") && action[2].Contains(')'))
+                                                {
+                                                    var argumentArray = action[2].Split(' ');
+
+                                                    if (int.TryParse(argumentArray[0], out _))
+                                                    {
+                                                        argument = argumentArray[0];
+                                                        note = argumentArray[1].Replace("(", string.Empty).Replace(")", string.Empty);
+                                                    }
+                                                    else
+                                                        argument = action[2];
+                                                }
+                                                else
+                                                    argument = action[2];
+
+                                                pathAction.Argument = argument;
+                                                pathAction.Note = note;
+                                            }
                                         }
                                         pathActions.Add(pathAction);
                                     });
