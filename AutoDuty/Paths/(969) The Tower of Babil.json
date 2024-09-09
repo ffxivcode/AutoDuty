@@ -1,44 +1,365 @@
 {
   "actions": [
-    "MoveTo|-268.08, -180.36, 322.30|",
-    "Wait|0, 0, 0|8000",
-    "MoveTo|-266.94, -180.50, 277.99|",
-    "MoveTo|-258.99, -200.00, 238.95|",
-    "Boss|-300.52, -175.00, 76.47|",
-    "MoveTo|-300.20, -175.00, 35.33|",
-    "AutoMoveFor|-300.19, -175.00, 31.14|9000",
-    "MoveTo|400.17, 0.00, -174.92|",
-    "Interactable|0, 0, 0|2011745 (Control Terminal)",
-    "Wait|0, 0, 0|9000",
-    "Wait|0, 0, 0|10000",
-    "Wait|0, 0, 0|13000",
-    "Wait|0, 0, 0|8500",
-    "MoveTo|400.06, -0.00, -152.91|",
-    "Wait|0, 0, 0|5000",
-    "MoveTo|342.44, 0.00, 378.18|",
-    "MoveTo|210.60, -0.00, 372.85|",
-    "MoveTo|224.93, 1.00, 324.83|",
-    "MoveTo|240.33, 1.00, 325.36|",
-    "Boss|222.48, 1.00, 296.62|",
-    "MoveTo|221.14, 1.00, 292.53|",
-    "MoveTo|156.45, 0.01, 214.53|",
-    "AutoMoveFor|152.73, 0.00, 201.84|5500",
-    "MoveTo|0.44, 500.00, 1.13|",
-    "Interactable|0, 0, 0|2011746 (Control Terminal)",
-    "Wait|0, 0, 0|14000",
-    "MoveTo|0.04, 493.00, -53.90|",
-    "MoveTo|0.02, 493.00, -62.07|",
-    "MoveTo|21.70, 490.20, -54.08|",
-    "MoveTo|30.77, 487.51, -74.29|",
-    "MoveTo|-19.83, 487.00, -85.83|",
-    "MoveTo|-32.12, 484.51, -106.29|",
-    "MoveTo|-43.07, 484.00, -118.23|",
-    "Boss|0.00, 480.00, -180.31|",
-    "MoveTo|0.11, 480.00, -188.10|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -268.08,
+        "Y": -180.36,
+        "Z": 322.3
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "8000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -266.94,
+        "Y": -180.5,
+        "Z": 277.99
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -258.99,
+        "Y": -200,
+        "Z": 238.95
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -300.52,
+        "Y": -175,
+        "Z": 76.47
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -300.2,
+        "Y": -175,
+        "Z": 35.33
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -300.19,
+        "Y": -175,
+        "Z": 31.14
+      },
+      "argument": "9000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 400.17,
+        "Y": 0,
+        "Z": -174.92
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2011745",
+      "note": "(Control Terminal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "9000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "10000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "13000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "8500",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 400.06,
+        "Y": -0,
+        "Z": -152.91
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 342.44,
+        "Y": 0,
+        "Z": 378.18
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 210.6,
+        "Y": -0,
+        "Z": 372.85
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 224.93,
+        "Y": 1,
+        "Z": 324.83
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 240.33,
+        "Y": 1,
+        "Z": 325.36
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 222.48,
+        "Y": 1,
+        "Z": 296.62
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 221.14,
+        "Y": 1,
+        "Z": 292.53
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 156.45,
+        "Y": 0.01,
+        "Z": 214.53
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 152.73,
+        "Y": 0,
+        "Z": 201.84
+      },
+      "argument": "5500",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.44,
+        "Y": 500,
+        "Z": 1.13
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2011746",
+      "note": "(Control Terminal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "14000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.04,
+        "Y": 493,
+        "Z": -53.9
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.02,
+        "Y": 493,
+        "Z": -62.07
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 21.7,
+        "Y": 490.2,
+        "Z": -54.08
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 30.77,
+        "Y": 487.51,
+        "Z": -74.29
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -19.83,
+        "Y": 487,
+        "Z": -85.83
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -32.12,
+        "Y": 484.51,
+        "Z": -106.29
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -43.07,
+        "Y": 484,
+        "Z": -118.23
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 0,
+        "Y": 480,
+        "Z": -180.31
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.11,
+        "Y": 480,
+        "Z": -188.1
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

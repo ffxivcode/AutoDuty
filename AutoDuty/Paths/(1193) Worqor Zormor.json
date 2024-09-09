@@ -1,37 +1,295 @@
 {
   "actions": [
-    "MoveTo|89.16, -21.12, 195.76|",
-    "Revival|-107.79, 10.82, 148.36|",
-    "Boss|-108.06, 11.00, 118.30|",
-    "MoveTo|-108.11, 11.00, 102.61|",
-    "MoveTo|-145.12, 22.12, 75.04|",
-    "Wait|-72.13, 40.00, 54.97|1000",
-    "AutoMoveFor|-64.07, 40.31, 52.89|6000",
-    "Wait|-38.33, 55.08, 27.14|5000",
-    "MoveTo|-38, 55, 18|",
-    "AutoMoveFor|-46.577, 55.11, 16.8|400",
-    "Wait|0,0,0|10000",
-    "MoveTo|-80.91, 85.14, 13.47|",
-    "MoveTo|-95.30, 78.16, 24.56|",
-    "Wait|-94.81, 70.00, 48.49|500",
-    "MoveTo|-96.64, 70.00, 41.58|",
-    "AutoMoveFor|-103.14, 70.26, 42.74|6500",
-    "MoveTo|-160.96, 80.03, 34.28|",
-    "MoveTo|-63.50, 101.84, -15.99|",
-    "AutoMoveFor|-59.52, 103.69, -18.22|11000",
-    "Revival|-53.32, 321.29, -32.54|",
-    "Boss|-53.21, 323.00, -57.42|",
-    "MoveTo|-69.57, 323.00, -56.89|",
-    "Wait|-121.52, 328.08, -78.02|2000",
-    "MoveTo|-153.23, 334.71, 0.86|",
-    "MoveTo|-69.37, 358.07, -91.81|",
-    "Revival|-53.94, 376.01, -159.15|",
-    "Boss|-53.98, 378.00, -197.58|",
-    "MoveTo|-54.15, 378.00, -213.41|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 89.16,
+        "Y": -21.12,
+        "Z": 195.76
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -107.79,
+        "Y": 10.82,
+        "Z": 148.36
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -108.06,
+        "Y": 11,
+        "Z": 118.3
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -108.11,
+        "Y": 11,
+        "Z": 102.61
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -145.12,
+        "Y": 22.12,
+        "Z": 75.04
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -72.13,
+        "Y": 40,
+        "Z": 54.97
+      },
+      "argument": "1000",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -64.07,
+        "Y": 40.31,
+        "Z": 52.89
+      },
+      "argument": "6000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -38.33,
+        "Y": 55.08,
+        "Z": 27.14
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -38,
+        "Y": 55,
+        "Z": 18
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -46.577,
+        "Y": 55.11,
+        "Z": 16.8
+      },
+      "argument": "400",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "10000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -80.91,
+        "Y": 85.14,
+        "Z": 13.47
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -95.3,
+        "Y": 78.16,
+        "Z": 24.56
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -94.81,
+        "Y": 70,
+        "Z": 48.49
+      },
+      "argument": "500",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -96.64,
+        "Y": 70,
+        "Z": 41.58
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -103.14,
+        "Y": 70.26,
+        "Z": 42.74
+      },
+      "argument": "6500",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -160.96,
+        "Y": 80.03,
+        "Z": 34.28
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -63.5,
+        "Y": 101.84,
+        "Z": -15.99
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -59.52,
+        "Y": 103.69,
+        "Z": -18.22
+      },
+      "argument": "11000",
+      "note": ""
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -53.32,
+        "Y": 321.29,
+        "Z": -32.54
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -53.21,
+        "Y": 323,
+        "Z": -57.42
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -69.57,
+        "Y": 323,
+        "Z": -56.89
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -121.52,
+        "Y": 328.08,
+        "Z": -78.02
+      },
+      "argument": "2000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -153.23,
+        "Y": 334.71,
+        "Z": 0.86
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -69.37,
+        "Y": 358.07,
+        "Z": -91.81
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -53.94,
+        "Y": 376.01,
+        "Z": -159.15
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -53.98,
+        "Y": 378,
+        "Z": -197.58
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -54.15,
+        "Y": 378,
+        "Z": -213.41
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

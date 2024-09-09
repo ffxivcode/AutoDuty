@@ -1,49 +1,415 @@
 {
   "actions": [
-	  "Wait|145.46, 134.00, 815.67|12000",
-	  "Wait|134.96, 134.00, 806.27|20000",
-	  "Interactable|0, 0, 0|2012808 (Perceptive Portal)",
-	  "Wait|0, 0, 0|3000",
-	  "MoveTo|-700.95, 58.75, 206.09|",
-	  "MoveTo|-770.98, 49.11, 158.88|",
-	  "Wait|-771.33, 49.86, 155.12|4000",
-	  "Wait|-781.12, 45.32, 84.27|4000",
-	  "Revival|-775.46, 41.51, 47.68|",
-	  "Boss|-774.97, 41.00, 17.00|",
-	  "MoveTo|-774.96, 41.00, -1.30|",
-	  "AutoMoveFor|-775.15, 41.00, -27.35|6000",
-	  "MoveTo|-701.45, 42.00, 709.63|",
-	  "Wait|-730.69, 42.92, 707.21|4000",
-	  "MoveTo|-736.27, 54.10, 674.26|",
-	  "Wait|-692.34, 66.00, 675.70|1000",
-	  "Wait|-700.00, 66.00, 676.37|20000",
-	  "PausePandora|0, 0, 0|Auto-interact with Objects in Instances|500000",
-	  "MoveTo|-705.87, 66.00, 687.05|",
-	  "Interactable|0, 0, 0|2013317 (Seiryu Statue)",
-	  "MoveTo|-694.19, 66.00, 687.60|",
-	  "Interactable|0, 0, 0|2013316 (Suzaku Statue)",
-	  "Wait|0, 0, 0|4000",
-	  "Interactable|-694.19, 66.00, 687.60|2013316 (Suzaku Statue)",
-	  "MoveTo|-700.06, 66.00, 682.42|",
-	  "Interactable|0, 0, 0|2013318 (Auspice Glass)",
-	  "Wait|-698.24, 66.00, 683.96|9000",
-	  "MoveTo|-673.45, 66.00, 663.65|",
-	  "MoveTo|-645.95, 61.86, 663.81|",
-	  "Wait|-647.91, 62.18, 677.11|1000",
-	  "Wait|-648.16, 62.23, 697.31|7000",
-	  "ChatCommand|0, 0, 0|/vbmai off",
-	  "MoveTo|-665.89, 66.00, 707.73|",
-	  "AutoMoveFor|-670.35, 75.32, 731.19|4000",
-	  "ChatCommand|0, 0, 0|/vbmai on",
-	  "Wait|-698.93, -21.75, 578.88|500",
-	  "Wait|-701.42, -21.75, 578.95|500",
-	  "Revival|-700.45, -21.75, 572.91|",
-	  "Boss|-700.33, -20.00, 539.20|",
-	  "Wait|-699.96, -20.00, 524.25|500"
+    {
+      "name": "Wait",
+      "position": {
+        "X": 145.46,
+        "Y": 134,
+        "Z": 815.67
+      },
+      "argument": "12000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 134.96,
+        "Y": 134,
+        "Z": 806.27
+      },
+      "argument": "20000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2012808",
+      "note": "(Perceptive Portal)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -700.95,
+        "Y": 58.75,
+        "Z": 206.09
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -770.98,
+        "Y": 49.11,
+        "Z": 158.88
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -771.33,
+        "Y": 49.86,
+        "Z": 155.12
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -781.12,
+        "Y": 45.32,
+        "Z": 84.27
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -775.46,
+        "Y": 41.51,
+        "Z": 47.68
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -774.97,
+        "Y": 41,
+        "Z": 17
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -774.96,
+        "Y": 41,
+        "Z": -1.3
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -775.15,
+        "Y": 41,
+        "Z": -27.35
+      },
+      "argument": "6000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -701.45,
+        "Y": 42,
+        "Z": 709.63
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -730.69,
+        "Y": 42.92,
+        "Z": 707.21
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -736.27,
+        "Y": 54.1,
+        "Z": 674.26
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -692.34,
+        "Y": 66,
+        "Z": 675.7
+      },
+      "argument": "1000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -700,
+        "Y": 66,
+        "Z": 676.37
+      },
+      "argument": "20000",
+      "note": ""
+    },
+    {
+      "name": "PausePandora",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -705.87,
+        "Y": 66,
+        "Z": 687.05
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2013317",
+      "note": "(Seiryu Statue)"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -694.19,
+        "Y": 66,
+        "Z": 687.6
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2013316",
+      "note": "(Suzaku Statue)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -694.19,
+        "Y": 66,
+        "Z": 687.6
+      },
+      "argument": "2013316",
+      "note": "(Suzaku Statue)"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -700.06,
+        "Y": 66,
+        "Z": 682.42
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2013318",
+      "note": "(Auspice Glass)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -698.24,
+        "Y": 66,
+        "Z": 683.96
+      },
+      "argument": "9000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -673.45,
+        "Y": 66,
+        "Z": 663.65
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -645.95,
+        "Y": 61.86,
+        "Z": 663.81
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -647.91,
+        "Y": 62.18,
+        "Z": 677.11
+      },
+      "argument": "1000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -648.16,
+        "Y": 62.23,
+        "Z": 697.31
+      },
+      "argument": "7000",
+      "note": ""
+    },
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "/vbmai off",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -665.89,
+        "Y": 66,
+        "Z": 707.73
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -670.35,
+        "Y": 75.32,
+        "Z": 731.19
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "/vbmai on",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -698.93,
+        "Y": -21.75,
+        "Z": 578.88
+      },
+      "argument": "500",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -701.42,
+        "Y": -21.75,
+        "Z": 578.95
+      },
+      "argument": "500",
+      "note": ""
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -700.45,
+        "Y": -21.75,
+        "Z": 572.91
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -700.33,
+        "Y": -20,
+        "Z": 539.2
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -699.96,
+        "Y": -20,
+        "Z": 524.25
+      },
+      "argument": "500",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

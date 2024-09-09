@@ -1,31 +1,235 @@
 {
   "actions": [
-    "ChatCommand|0, 0, 0|/bmrai follow Thancred",
-    "ChatCommand|-5.86, 164.00, 501.72|/bmrai follow Alisaie",
-    "Boss|-5.89, 164.00, 471.86|",
-    "PausePandora|0, 0, 0|Auto-interact with Objects in Instance|10000",
-    "MoveTo|4.53, 164.00, 479.93|",
-    "MoveTo|4.41, 164.00, 465.57|",
-    "MoveTo|-6.11, 164.00, 466.25|",
-    "Interactable|-5.86, 164.00, 471.21|2011758 (Aether Current)",
-    "Wait|0, 0, 0|10000",
-    "ChatCommand|0, 0, 0|/bmrai follow Thancred",
-    "MoveTo|9.19, -182.78, 441.20|",
-    "MoveTo|18.15, -200.49, 353.41|",
-    "Wait|-0.70, -202.18, 321.55|5000",
-    "MoveTo|-5.65, -212.02, 222.98|",
-    "Boss|10.36, -211.41, 143.21|",
-    "MoveTo|11.00, -211.41, 128.27|",
-    "MoveTo|12.82, -211.11, 106.87|",
-    "AutoMoveFor|12.65, -211.24, 94.30|7000",
-    "MoveTo|-15.07, -235.91, -219.22|",
-    "MoveTo|-17.90, -238.44, -432.25|",
-    "Boss|10.85, -236.00, -494.57|",
-    "MoveTo|11.01, -236.00, -501.22|"
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "/bmrai follow Thancred",
+      "note": ""
+    },
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": -5.86,
+        "Y": 164,
+        "Z": 501.72
+      },
+      "argument": "/bmrai follow Alisaie",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -5.89,
+        "Y": 164,
+        "Z": 471.86
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "PausePandora",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 4.53,
+        "Y": 164,
+        "Z": 479.93
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 4.41,
+        "Y": 164,
+        "Z": 465.57
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -6.11,
+        "Y": 164,
+        "Z": 466.25
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -5.86,
+        "Y": 164,
+        "Z": 471.21
+      },
+      "argument": "2011758",
+      "note": "(Aether Current)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "10000",
+      "note": ""
+    },
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "/bmrai follow Thancred",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 9.19,
+        "Y": -182.78,
+        "Z": 441.2
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 18.15,
+        "Y": -200.49,
+        "Z": 353.41
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -0.7,
+        "Y": -202.18,
+        "Z": 321.55
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -5.65,
+        "Y": -212.02,
+        "Z": 222.98
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 10.36,
+        "Y": -211.41,
+        "Z": 143.21
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 11,
+        "Y": -211.41,
+        "Z": 128.27
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 12.82,
+        "Y": -211.11,
+        "Z": 106.87
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 12.65,
+        "Y": -211.24,
+        "Z": 94.3
+      },
+      "argument": "7000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -15.07,
+        "Y": -235.91,
+        "Z": -219.22
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -17.9,
+        "Y": -238.44,
+        "Z": -432.25
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 10.85,
+        "Y": -236,
+        "Z": -494.57
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 11.01,
+        "Y": -236,
+        "Z": -501.22
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

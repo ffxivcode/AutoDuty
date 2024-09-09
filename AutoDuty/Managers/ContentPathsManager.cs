@@ -187,7 +187,7 @@ namespace AutoDuty.Managers
                                                     if (int.TryParse(argumentArray[0], out _))
                                                     {
                                                         argument = argumentArray[0];
-                                                        note = action[2].Replace(argument, string.Empty);
+                                                        note = action[2].Replace($"{argument} ", string.Empty);
                                                     }
                                                     else
                                                         argument = action[2];
@@ -206,7 +206,7 @@ namespace AutoDuty.Managers
                                     pathFile = JsonSerializer.Deserialize<PathFile>(json);
                                     if (pathFile == null) return new();
                                     pathFile.Actions = [.. pathActions];
-                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = 161 });
                                     string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
                                     File.WriteAllText(FilePath, jsonNew);
                                 }

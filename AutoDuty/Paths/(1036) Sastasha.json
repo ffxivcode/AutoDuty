@@ -1,29 +1,187 @@
 {
   "actions": [
-    "DutySpecificCode|347.75, 44.14, -223.21|1",
-    "TreasureCoffer|132.58, 27.83, -100.06|",
-    "DutySpecificCode|90.26, 27.20, -56.04|2",
-    "DutySpecificCode|0, 0, 0|3",
-    "Boss|71.80, 30.37, -44.91|",
-    "Interactable|0, 0, 0|2000216 (Inconspicuous Switch)",
-    "Boss|-27.17, 22.86, 56.34|",
-    "Interactable|-91.82, 13.84, 145.88|2000250 (Captain\u0027s Quarters Key)",
-    "<-- Below line is a temporary bandaid until Issue #409 is implemented -->",
-    "ConditionAction|-95.10, 19.90, 171.10|ItemLessThan;2000512,ModifyIndex;7",
-    "Interactable|-95.10, 19.90, 171.10|2000227 (Captain\u0027s Quarters)",
-    "Interactable|-95.15, 20.01, 190.03|2000255 (Waverider Gate Key)",
-    "<-- Below line is a temporary bandaid until Issue #409 is implemented -->",
-    "ConditionAction|0, 0, 0|ItemLessThan;2000513,ModifyIndex;11",
-    "Interactable|-129.54, 16.30, 156.32|2000231 (Waverider Gate)",
-    "Boss|-183.12, 6.38, 244.52|",
-    "Boss|-332.47, 5.57, 317.23|"
+    {
+      "name": "DutySpecificCode",
+      "position": {
+        "X": 347.75,
+        "Y": 44.14,
+        "Z": -223.21
+      },
+      "argument": "1",
+      "note": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 132.58,
+        "Y": 27.83,
+        "Z": -100.06
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "DutySpecificCode",
+      "position": {
+        "X": 90.26,
+        "Y": 27.2,
+        "Z": -56.04
+      },
+      "argument": "2",
+      "note": ""
+    },
+    {
+      "name": "DutySpecificCode",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 71.8,
+        "Y": 30.37,
+        "Z": -44.91
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000216",
+      "note": "(Inconspicuous Switch)"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -27.17,
+        "Y": 22.86,
+        "Z": 56.34
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -91.82,
+        "Y": 13.84,
+        "Z": 145.88
+      },
+      "argument": "2000250",
+      "note": "(Captain\u0027s Quarters Key)"
+    },
+    {
+      "name": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "ConditionAction",
+      "position": {
+        "X": -95.1,
+        "Y": 19.9,
+        "Z": 171.1
+      },
+      "argument": "ItemLessThan;2000512,ModifyIndex;7",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -95.1,
+        "Y": 19.9,
+        "Z": 171.1
+      },
+      "argument": "2000227",
+      "note": "(Captain\u0027s Quarters)"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -95.15,
+        "Y": 20.01,
+        "Z": 190.03
+      },
+      "argument": "2000255",
+      "note": "(Waverider Gate Key)"
+    },
+    {
+      "name": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "ConditionAction",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "ItemLessThan;2000513,ModifyIndex;11",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -129.54,
+        "Y": 16.3,
+        "Z": 156.32
+      },
+      "argument": "2000231",
+      "note": "(Waverider Gate)"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -183.12,
+        "Y": 6.38,
+        "Z": 244.52
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -332.47,
+        "Y": 5.57,
+        "Z": 317.23
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 122,
     "changelog": [
       {
         "version": 132,
         "change": ""
+      },
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
       }
     ],
     "notes": []

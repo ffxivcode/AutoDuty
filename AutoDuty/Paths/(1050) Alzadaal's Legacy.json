@@ -1,25 +1,175 @@
 {
   "actions": [
-    "Boss|124.01, 303.00, -90.50|",
-    "MoveTo|123.91, 303.40, -126.47|",
-    "MoveTo|123.78, 305.60, -146.80|",
-    "Interactable|0, 0, 0|2012779 (Salt-encrusted Teleporter)",
-    "Wait|0, 0, 0|5000",
-    "MoveTo|59.25, 0.00, 111.07|",
-    "MoveTo|-13.01, 0.00, -22.66|",
-    "MoveTo|0.06, -5.43, -123.27|",
-    "AutoMoveFor|0.02, -8.00, -132.09|3000",
-    "Boss|-0.11, -16.00, -182.38|",
-    "MoveTo|0.03, -16.00, -195.45|",
-    "AutoMoveFor|-0.10, -18.74, -243.90|9000",
-    "MoveTo|-27.00, -350.10, -25.41|",
-    "MoveTo|116.09, -350.10, 6.24|",
-    "Boss|109.94, -350.00, -67.31|",
-    "MoveTo|109.81, -350.00, -79.08|"
+    {
+      "name": "Boss",
+      "position": {
+        "X": 124.01,
+        "Y": 303,
+        "Z": -90.5
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 123.91,
+        "Y": 303.4,
+        "Z": -126.47
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 123.78,
+        "Y": 305.6,
+        "Z": -146.8
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2012779",
+      "note": "(Salt-encrusted Teleporter)"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 59.25,
+        "Y": 0,
+        "Z": 111.07
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -13.01,
+        "Y": 0,
+        "Z": -22.66
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.06,
+        "Y": -5.43,
+        "Z": -123.27
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 0.02,
+        "Y": -8,
+        "Z": -132.09
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -0.11,
+        "Y": -16,
+        "Z": -182.38
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 0.03,
+        "Y": -16,
+        "Z": -195.45
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -0.1,
+        "Y": -18.74,
+        "Z": -243.9
+      },
+      "argument": "9000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -27,
+        "Y": -350.1,
+        "Z": -25.41
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 116.09,
+        "Y": -350.1,
+        "Z": 6.24
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 109.94,
+        "Y": -350,
+        "Z": -67.31
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 109.81,
+        "Y": -350,
+        "Z": -79.08
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }
