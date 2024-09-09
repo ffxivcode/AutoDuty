@@ -1,24 +1,24 @@
 {
   "actions": [
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 1 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 1 --\u003E"
     },
     {
-      "name": "\u003C-- Not double-pulling here cuz too dangerous --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Not double-pulling here cuz too dangerous --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -81,14 +81,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 2 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 2 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -111,14 +111,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 3 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 3 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -181,14 +181,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 4 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 4 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -211,14 +211,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E"
     },
     {
       "name": "Boss",
@@ -231,14 +231,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Movement / \u52D5\u304D --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -271,14 +271,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Trash Packs / \u96D1\u9B5A 5, 6 \u0026 7 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Packs / \u96D1\u9B5A 5, 6 \u0026 7 --\u003E"
     },
     {
       "name": "MoveTo",
@@ -351,24 +351,24 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 8 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 8 --\u003E"
     },
     {
-      "name": "\u003C-- Not double-pulling here cuz too dangerous --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Not double-pulling here cuz too dangerous --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -431,14 +431,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 9 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 9 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -511,14 +511,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E"
     },
     {
       "name": "Boss",
@@ -531,14 +531,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 10 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 10 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -601,14 +601,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Trash Packs / \u96D1\u9B5A 11 \u0026 12 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Packs / \u96D1\u9B5A 11 \u0026 12 --\u003E"
     },
     {
       "name": "MoveTo",
@@ -651,14 +651,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Movement / \u52D5\u304D --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
     },
     {
       "name": "TreasureCoffer",
@@ -701,14 +701,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 13 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 13 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -771,14 +771,14 @@
       "note": ""
     },
     {
-      "name": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E"
     },
     {
       "name": "Boss",

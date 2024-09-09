@@ -39,6 +39,7 @@ namespace AutoDuty.Windows
         private static string _addActionButton = "Add"; 
         private static bool _dragDrop = false;
         private static bool _noArgument = false;
+        private static bool _comment = false;
 
         public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
 
@@ -57,6 +58,7 @@ namespace AutoDuty.Windows
             _addActionButton = "Add";
             _buildListSelected = -1;
             _action = null;
+            _comment = false;
         }
 
         private static void AddAction(PathAction action, int index = -1)
@@ -120,6 +122,14 @@ namespace AutoDuty.Windows
                     if (ImGui.Selectable(item.Item1))
                     {
                         _dropdownSelected = item;
+                        _argumentHint = item.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase) ? string.Empty : item.Item2;
+                        _actionText = item.Item1;
+                        _noArgument = item.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase);
+                        _addActionButton = "Add";
+                        _showAddActionUI = true;
+                        _comment = item.Item1.Equals("<-- Comment -->", StringComparison.InvariantCultureIgnoreCase);
+                        _position = Player.Available && !_comment ? Player.Position : Vector3.Zero;
+                        _positionText = _position.ToCustomString();
                         switch (item.Item1)
                         {
                             case "SelectYesno":
@@ -129,7 +139,8 @@ namespace AutoDuty.Windows
                             case "Interactable":
                                 IGameObject? targetObject = Player.Object.TargetObject;
                                 IGameObject? gameObject   = (targetObject?.ObjectKind == ObjectKind.EventObj ? targetObject : null) ?? Plugin.ClosestInteractableEventObject;
-                                _argument = gameObject != null ? $"{gameObject.DataId} ({gameObject.Name})" : string.Empty;
+                                _argument = gameObject != null ? $"{gameObject.DataId}" : string.Empty;
+                                _note = gameObject != null ? gameObject.Name.ExtractText() : string.Empty;
                                 break;
                             case "Target":
                                 _argument = Plugin.ClosestTargetableBattleNpc?.Name.TextValue ?? "";
@@ -138,13 +149,7 @@ namespace AutoDuty.Windows
                                 _argument = string.Empty;
                                 break;
                         }
-                        _argumentHint = item.Item2.Equals("false",StringComparison.InvariantCultureIgnoreCase) ? string.Empty : item.Item2;
-                        _actionText = item.Item1;
-                        _noArgument = item.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase);
-                        _addActionButton = "Add";
-                        _position = Player.Available ? Player.Position : Vector3.Zero;
-                        _positionText = _position.ToCustomString();
-                        _showAddActionUI = true;
+                        _action = new() { Name = _actionText, Position = _position, Argument = _argument, Note = _note };
                     }
                     ImGuiComponents.HelpMarker(item.Item3);
                 }
@@ -216,28 +221,25 @@ namespace AutoDuty.Windows
                 ImGui.SameLine();
                 ImGui.TextColored(new(0, 1, 0, 1), $"{_actionText}");
                 ImGui.SameLine(0, 25);
+
                 if (ImGuiEx.ButtonWrapped(_addActionButton))
                 {
-                    if (_argument.IsNullOrEmpty())
+                    if (_action == null) return;
+
+                    if (_argument.IsNullOrEmpty() && !_noArgument && !_comment)
                     {
                         MainWindow.ShowPopup("Error", "You must enter an argument");
                         return;
                     }
-                    if (_dropdownSelected.Item1.Equals("<-- Comment -->", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        AddAction(new PathAction { Name = $"<-- {_argument} -->" });
-                        return;
-                    }
-                    /*if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty() && !_input.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) && (_input.Count(c => c == '|') < 2 || !_input.Split('|')[1].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.')))
-                        MainWindow.ShowPopup("Error", "Input is not in the correct format\nAction|Position|ActionParams(if needed)");
-                    if (_dontMove && _dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty())
-                        AddAction(new PathAction { Name = _input.Split('|')[0], Argument = _input.Split('|')[2], Note = _note }, _buildListSelected);
-                    else if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty())
-                        AddAction(new PathAction { Name = _input.Split('|')[0], Position = Player.Position, Argument = _input.Split('|')[2], Note = _note }, _buildListSelected);
-                    else if (_dontMove)
-                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Argument = _input, Note = _note });
+                    _action.Name = _actionText;
+                    _action.Argument = _argument;
+                    var position = _positionText.Replace(" ", string.Empty).Split(",");
+                    if (!_comment && position.Length == 3 && float.TryParse(position[0], out var p1) && float.TryParse(position[1], out var p2) && float.TryParse(position[2], out var p3))
+                        _action.Position = new(p1, p2, p3);
                     else
-                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Position = Player.Position, Argument = _input, Note = _note });*/
+                        _action.Position = Vector3.Zero;
+                    _action.Note = _comment && !_note.StartsWith("<--") && !_note.EndsWith("-->") ? $"<-- {_note} -->" : _note;
+                    AddAction(_action, _buildListSelected);
                 }
                 ImGui.SameLine();
                 ImGuiEx.CheckboxWrapped("Dont Move", ref _dontMove);
@@ -258,14 +260,14 @@ namespace AutoDuty.Windows
                         Player.GameObject->SetPosition(_action!.Position.X, _action.Position.Y, _action.Position.Z);
                 }
                 
-                using (ImRaii.Disabled(_noArgument || _actionText.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase)))
+                using (ImRaii.Disabled(_noArgument || _comment))
                 {
                     ImGui.Text("Argument:");
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                     ImGui.InputTextWithHint("##Argument", _argumentHint, ref _argument, 200);
                 }
-                using (ImRaii.Disabled(_actionText.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase)))
+                using (ImRaii.Disabled(_comment))
                 {
                     ImGui.Text("Position:");
                     ImGui.SameLine();
@@ -289,7 +291,7 @@ namespace AutoDuty.Windows
                     {
                         var v4 = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
 
-                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.ToCustomString()}";
+                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Note : $"{item.Value.ToCustomString()}";
 
                         ImGui.PushStyleColor(ImGuiCol.Text, v4);
                         if (ImGui.Selectable($"{text}###Text{item.Index}", item.Index == _buildListSelected))
@@ -303,10 +305,11 @@ namespace AutoDuty.Windows
                                 ClearAll();
                             else
                             {
+                                _comment = item.Value.Name.Equals($"<-- Comment -->", StringComparison.InvariantCultureIgnoreCase);
                                 _noArgument = ActionsList?.Any(x => x.Item1.Equals($"{item.Value.Name}", StringComparison.InvariantCultureIgnoreCase) && x.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase)) ?? false;
                                 _dontMove = item.Value.Position == Vector3.Zero;
-                                _actionText = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? "<-- Comment -->" : item.Value.Name;
-                                _note = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : item.Value.Note;
+                                _actionText = item.Value.Name;
+                                _note = item.Value.Note;
                                 _argument = item.Value.Argument;
                                 _showAddActionUI = false;
                                 _position = item.Value.Position;

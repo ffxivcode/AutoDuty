@@ -124,7 +124,7 @@ namespace AutoDuty.Windows
                             foreach (var item in Plugin.Actions.Select((Value, Index) => (Value, Index)))
                             {
                                 var v4 = item.Index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
-                                var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.ToCustomString()}";
+                                var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Note : $"{item.Value.ToCustomString()}";
                                 ImGui.TextColored(v4, text);
                                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
                                 {

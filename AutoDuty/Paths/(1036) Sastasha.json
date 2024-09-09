@@ -81,14 +81,14 @@
       "note": "Captain\u0027s Quarters Key"
     },
     {
-      "name": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
     },
     {
       "name": "ConditionAction",
@@ -121,14 +121,14 @@
       "note": "Waverider Gate Key"
     },
     {
-      "name": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "argument": "",
-      "note": ""
+      "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
     },
     {
       "name": "ConditionAction",
