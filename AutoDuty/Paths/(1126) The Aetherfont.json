@@ -1,235 +1,31 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -321.74,
-        "Y": 19.52,
-        "Z": 237.92
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -314.79,
-        "Y": 19.75,
-        "Z": 234.13
-      },
-      "argument": "10000",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -323.64,
-        "Y": -0,
-        "Z": 120.8
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -322.02,
-        "Y": -0,
-        "Z": 103.88
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -322.08,
-        "Y": 2.02,
-        "Z": 84.88
-      },
-      "argument": "15000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 233.08,
-        "Y": 2.25,
-        "Z": -5.26
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 249.84,
-        "Y": 4.95,
-        "Z": 9.75
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 263.18,
-        "Y": 5.51,
-        "Z": -3.24
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 268.24,
-        "Y": 6.46,
-        "Z": -7.02
-      },
-      "argument": "8000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 386.53,
-        "Y": 41.34,
-        "Z": -89.11
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 395.16,
-        "Y": 45.57,
-        "Z": -136.6
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 396.6,
-        "Y": 46.02,
-        "Z": -142.09
-      },
-      "argument": "17000",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 425.12,
-        "Y": 20,
-        "Z": -439.8
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 424.92,
-        "Y": 20,
-        "Z": -452.34
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 424.92,
-        "Y": 20.51,
-        "Z": -476.71
-      },
-      "argument": "20000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -384.17,
-        "Y": -801.78,
-        "Z": -46.29
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -389.1,
-        "Y": -814.33,
-        "Z": -174.08
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -395.6,
-        "Y": -814.66,
-        "Z": -174.72
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -395.32,
-        "Y": -815.01,
-        "Z": -181.16
-      },
-      "argument": "10000",
-      "note": ""
-    },
-    {
-      "name": "ForceAttack",
-      "position": {
-        "X": -369.88,
-        "Y": -873,
-        "Z": -348.5
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -370.18,
-        "Y": -873,
-        "Z": -350.49
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -370.25,
-        "Y": -873,
-        "Z": -344.97
-      },
-      "argument": "",
-      "note": ""
-    }
+    "MoveTo|-321.74, 19.52, 237.92|",
+    "AutoMoveFor|-314.79, 19.75, 234.13|10000",
+    "Boss|-323.64, -0.00, 120.80|",
+    "MoveTo|-322.02, -0.00, 103.88|",
+    "AutoMoveFor|-322.08, 2.02, 84.88|15000",
+    "MoveTo|233.08, 2.25, -5.26|",
+    "MoveTo|249.84, 4.95, 9.75|",
+    "MoveTo|263.18, 5.51, -3.24|",
+    "AutoMoveFor|268.24, 6.46, -7.02|8000",
+    "MoveTo|386.53, 41.34, -89.11|",
+    "MoveTo|395.16, 45.57, -136.60|",
+    "AutoMoveFor|396.60, 46.02, -142.09|17000",
+    "Boss|425.12, 20.00, -439.80|",
+    "MoveTo|424.92, 20.00, -452.34|",
+    "AutoMoveFor|424.92, 20.51, -476.71|20000",
+    "MoveTo|-384.17, -801.78, -46.29|",
+    "MoveTo|-389.10, -814.33, -174.08|",
+    "MoveTo|-395.60, -814.66, -174.72|",
+    "AutoMoveFor|-395.32, -815.01, -181.16|10000",
+    "ForceAttack|-369.88, -873.00, -348.50|",
+    "Boss|-370.18, -873.00, -350.49|",
+    "MoveTo|-370.25, -873.00, -344.97|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

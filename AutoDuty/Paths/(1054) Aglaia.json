@@ -1,175 +1,25 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -0.32,
-        "Y": 30,
-        "Z": 769.43
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 1.38,
-        "Y": 20,
-        "Z": 717.05
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -0.35,
-        "Y": 20,
-        "Z": 681.23
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 76.33,
-        "Y": 22,
-        "Z": 539.96
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 76.33,
-        "Y": 22,
-        "Z": 539.96
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 160.8,
-        "Y": 30,
-        "Z": 388.78
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -16.01,
-        "Y": 475.57,
-        "Z": 283.56
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -16.09,
-        "Y": 475.35,
-        "Z": 257.42
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": -16.09,
-        "Y": 475.35,
-        "Z": 257.42
-      },
-      "argument": "2012826",
-      "note": "(Flame-wreathed Portal)"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -675.8,
-        "Y": -950,
-        "Z": -583.88
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -674.9,
-        "Y": -950,
-        "Z": -583.49
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -750.21,
-        "Y": -932,
-        "Z": -722.57
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -750.21,
-        "Y": -932,
-        "Z": -722.57
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -750.19,
-        "Y": -938,
-        "Z": -898.74
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -750.1,
-        "Y": -938,
-        "Z": -902.85
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 749.7,
-        "Y": -932,
-        "Z": -729.71
-      },
-      "argument": "",
-      "note": ""
-    }
+    "MoveTo|-0.32, 30.00, 769.43|",
+    "Boss|1.38, 20.00, 717.05|",
+    "MoveTo|-0.35, 20.00, 681.23|",
+    "MoveTo|76.33, 22.00, 539.96|",
+    "Boss|76.33, 22.00, 539.96|",
+    "MoveTo|160.80, 30.00, 388.78|",
+    "Boss|-16.01, 475.57, 283.56|",
+    "MoveTo|-16.09, 475.35, 257.42|",
+    "Interactable|-16.09, 475.35, 257.42|2012826 (Flame-wreathed Portal)",
+    "MoveTo|-675.80, -950.00, -583.88|",
+    "Boss|-674.90, -950.00, -583.49|",
+    "MoveTo|-750.21, -932.00, -722.57|",
+    "Boss|-750.21, -932.00, -722.57|",
+    "MoveTo|-750.19, -938.00, -898.74|",
+    "MoveTo|-750.10, -938.00, -902.85|",
+    "Boss|749.70, -932.00, -729.71|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 115,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

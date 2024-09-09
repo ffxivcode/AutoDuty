@@ -1,215 +1,35 @@
 {
   "actions": [
-    {
-      "name": "Boss",
-      "position": {
-        "X": -125.32,
-        "Y": 12,
-        "Z": 166.79
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -100.47,
-        "Y": 17.46,
-        "Z": 124.89
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -93.48,
-        "Y": 18.73,
-        "Z": 124.91
-      },
-      "argument": "3000",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000",
-      "note": ""
-    },
-    {
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "TreasureCoffer",
-      "position": {
-        "X": 270.59,
-        "Y": 120.9,
-        "Z": -101.4
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 266.05,
-        "Y": 122.77,
-        "Z": -77.11
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 268.54,
-        "Y": 126.54,
-        "Z": -39.95
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "UnsyncedWait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "30000",
-      "note": ""
-    },
-    {
-      "name": "TreasureCoffer",
-      "position": {
-        "X": 163.49,
-        "Y": 136.26,
-        "Z": -34.86
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 158.88,
-        "Y": 137.61,
-        "Z": -91.59
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 191.51,
-        "Y": 140.25,
-        "Z": -135.18
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 195.42,
-        "Y": 140.28,
-        "Z": -140.36
-      },
-      "argument": "3000",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000",
-      "note": ""
-    },
-    {
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "TreasureCoffer",
-      "position": {
-        "X": -90.57,
-        "Y": 344.15,
-        "Z": -360.92
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "1000",
-      "note": ""
-    },
-    {
-      "name": "TreasureCoffer",
-      "position": {
-        "X": -88.32,
-        "Y": 344.15,
-        "Z": -358.08
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -114.96,
-        "Y": 344.22,
-        "Z": -353.46
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -101.56,
-        "Y": 348.15,
-        "Z": -401.44
-      },
-      "argument": "",
-      "note": ""
-    }
+    "Boss|-125.32, 12.00, 166.79|",
+
+    "MoveTo|-100.47, 17.46, 124.89|",
+    "AutoMoveFor|-93.48, 18.73, 124.91|3000",
+    "Wait|0, 0, 0|2000",
+    "Revival|0, 0, 0|",
+
+    "TreasureCoffer|270.59, 120.90, -101.40|",
+    "MoveTo|266.05, 122.77, -77.11|",
+    "MoveTo|268.54, 126.54, -39.95|",
+    "UnsyncedWait|0, 0, 0|30000",
+    "TreasureCoffer|163.49, 136.26, -34.86|",
+
+    "Boss|158.88, 137.61, -91.59|",
+
+    "MoveTo|191.51, 140.25, -135.18|",
+    "AutoMoveFor|195.42, 140.28, -140.36|3000",
+    "Wait|0, 0, 0|2000",
+    "Revival|0, 0, 0|",
+
+    "TreasureCoffer|-90.57, 344.15, -360.92|",
+    "Wait|0, 0, 0|1000",
+    "TreasureCoffer|-88.32, 344.15, -358.08|",
+    "MoveTo|-114.96, 344.22, -353.46|",
+
+    "Boss|-101.56, 348.15, -401.44|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 136,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

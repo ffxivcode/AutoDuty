@@ -1,195 +1,27 @@
 {
   "actions": [
-    {
-      "name": "Boss",
-      "position": {
-        "X": 168.15,
-        "Y": -700,
-        "Z": 84.49
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 183.97,
-        "Y": -700,
-        "Z": 90.12
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 256.4,
-        "Y": -707.99,
-        "Z": 90.03
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 264.92,
-        "Y": -707.99,
-        "Z": 89.88
-      },
-      "argument": "5000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -165.85,
-        "Y": -700.01,
-        "Z": 5.29
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 12.46,
-        "Y": -698,
-        "Z": -83.12
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 0.14,
-        "Y": -698.01,
-        "Z": -149.65
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "4500",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -0.13,
-        "Y": -698.01,
-        "Z": -164.87
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -4.63,
-        "Y": -695.98,
-        "Z": -191.5
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -0.41,
-        "Y": -686.01,
-        "Z": -255.18
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -10,
-        "Y": -683.26,
-        "Z": -250.17
-      },
-      "argument": "7000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 0.02,
-        "Y": 359.2,
-        "Z": -108.36
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -27.45,
-        "Y": 385.2,
-        "Z": -221.51
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -35.59,
-        "Y": 385.3,
-        "Z": -225.04
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -35.85,
-        "Y": 386.45,
-        "Z": -240.16
-      },
-      "argument": "3000",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -34.92,
-        "Y": 385,
-        "Z": -297.19
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -35.24,
-        "Y": 385,
-        "Z": -307.21
-      },
-      "argument": "",
-      "note": ""
-    }
+    "Boss|168.15, -700.00, 84.49|",
+    "MoveTo|183.97, -700.00, 90.12|",
+    "MoveTo|256.40, -707.99, 90.03|",
+    "AutoMoveFor|264.92, -707.99, 89.88|5000",
+    "MoveTo|-165.85, -700.01, 5.29|",
+    "MoveTo|12.46, -698.00, -83.12|",
+    "Boss|0.14, -698.01, -149.65|",
+    "Wait|0, 0, 0|4500",
+    "MoveTo|-0.13, -698.01, -164.87|",
+    "MoveTo|-4.63, -695.98, -191.50|",
+    "MoveTo|-0.41, -686.01, -255.18|",
+    "AutoMoveFor|-10.00, -683.26, -250.17|7000",
+    "MoveTo|0.02, 359.20, -108.36|",
+    "MoveTo|-27.45, 385.20, -221.51|",
+    "MoveTo|-35.59, 385.30, -225.04|",
+    "AutoMoveFor|-35.85, 386.45, -240.16|3000",
+    "Boss|-34.92, 385.00, -297.19|",
+    "MoveTo|-35.24, 385.00, -307.21|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }
