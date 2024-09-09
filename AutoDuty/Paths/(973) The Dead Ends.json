@@ -1,29 +1,215 @@
 {
   "actions": [
-    "MoveTo|401.82, 500.36, 134.83|",
-    "MoveTo|403.71, 500.72, 100.84|",
-    "Boss|266.62, 501.01, -176.87|",
-    "MoveTo|266.45, 501.01, -195.36|",
-    "Wait|266.20, 500.40, -214.31|3000",
-    "Interactable|0, 0, 0|2011767 (Spatial Distortion)",
-    "Wait|0, 0, 0|6000",
-    "MoveTo|-18.08, 0.00, 11.92|",
-    "MoveTo|-83.29, 0.00, -163.32|",
-    "Boss|-104.99, 0.20, -205.90|",
-    "MoveTo|-104.95, 0.20, -225.21|",
-    "Wait|-107.66, -8.00, -284.57|10000",
-    "Interactable|0, 0, 0|2011768 (Spatial Distortion)",
-    "Wait|0, 0, 0|6300",
-    "Wait|-296.68, -610.15, 109.96|5000",
-    "MoveTo|-301.73, -610.15, 91.89|",
-    "MoveTo|-397.07, -587.49, -34.17|",
-    "Boss|-380.39, -577.00, -132.68|",
-    "Wait|0, 0, 0|3000",
-    "MoveTo|-380.26, -577.00, -146.48|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 401.82,
+        "Y": 500.36,
+        "Z": 134.83
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 403.71,
+        "Y": 500.72,
+        "Z": 100.84
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 266.62,
+        "Y": 501.01,
+        "Z": -176.87
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 266.45,
+        "Y": 501.01,
+        "Z": -195.36
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 266.2,
+        "Y": 500.4,
+        "Z": -214.31
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2011767",
+      "note": "Spatial Distortion"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "6000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -18.08,
+        "Y": 0,
+        "Z": 11.92
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -83.29,
+        "Y": 0,
+        "Z": -163.32
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -104.99,
+        "Y": 0.2,
+        "Z": -205.9
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -104.95,
+        "Y": 0.2,
+        "Z": -225.21
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -107.66,
+        "Y": -8,
+        "Z": -284.57
+      },
+      "argument": "10000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2011768",
+      "note": "Spatial Distortion"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "6300",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -296.68,
+        "Y": -610.15,
+        "Z": 109.96
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -301.73,
+        "Y": -610.15,
+        "Z": 91.89
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -397.07,
+        "Y": -587.49,
+        "Z": -34.17
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -380.39,
+        "Y": -577,
+        "Z": -132.68
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -380.26,
+        "Y": -577,
+        "Z": -146.48
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

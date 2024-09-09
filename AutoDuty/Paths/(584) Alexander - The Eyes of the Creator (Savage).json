@@ -1,20 +1,125 @@
 {
   "actions": [
-    "ChatCommand|0, 0, 0|/vbmai off",
-    "Boss|-39.06, 114.71, -4.01|",
-    "Wait|-39.97, 114.71, 1.96|2000",
-    "Interactable|0, 0, 0|Cranial Hatch",
-    "Wait|0, 0, 0|1000",
-    "Wait|-40.09, 114.71, 2.81|500",
-    "Interactable|0, 0, 0|Ingress",
-    "Wait|0, 0, 0|9000",
-    "Wait|0.75, -250.29, -241.15|2000",
-    "ForceAttack|0, 0, 0|",
-    "Boss|-0.24, -250.29, -238.17|"
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "/vbmai off",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -39.06,
+        "Y": 114.71,
+        "Z": -4.01
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -39.97,
+        "Y": 114.71,
+        "Z": 1.96
+      },
+      "argument": "2000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Cranial Hatch",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "1000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -40.09,
+        "Y": 114.71,
+        "Z": 2.81
+      },
+      "argument": "500",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Ingress",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "9000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0.75,
+        "Y": -250.29,
+        "Z": -241.15
+      },
+      "argument": "2000",
+      "note": ""
+    },
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -0.24,
+        "Y": -250.29,
+        "Z": -238.17
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

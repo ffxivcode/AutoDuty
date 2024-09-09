@@ -1,19 +1,115 @@
 {
   "actions": [
-    "MoveTo|-199.14, 329.15, 49.87|",
-    "Wait|-99.18, 317.70, 122.02|3000",
-    "AutoMoveFor|-91.39, 317.03, 142.24|5000",
-    "Boss|160.16, 137.75, 253.03|",
-    "MoveTo|266.48, 126.56, 316.11|",
-    "MoveTo|278.88, 118.00, 202.62|",
-    "Boss|292.34, 112.00, 126.52|",
-    "MoveTo|284.57, 112.00, 91.44|",
-    "AutoMoveFor|281.19, 111.98, 83.02|5000",
-    "Boss|127.32, 107.33, -305.86|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -199.14,
+        "Y": 329.15,
+        "Z": 49.87
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -99.18,
+        "Y": 317.7,
+        "Z": 122.02
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -91.39,
+        "Y": 317.03,
+        "Z": 142.24
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 160.16,
+        "Y": 137.75,
+        "Z": 253.03
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 266.48,
+        "Y": 126.56,
+        "Z": 316.11
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 278.88,
+        "Y": 118,
+        "Z": 202.62
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 292.34,
+        "Y": 112,
+        "Z": 126.52
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 284.57,
+        "Y": 112,
+        "Z": 91.44
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 281.19,
+        "Y": 111.98,
+        "Z": 83.02
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 127.32,
+        "Y": 107.33,
+        "Z": -305.86
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

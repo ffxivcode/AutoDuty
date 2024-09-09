@@ -235,7 +235,6 @@ namespace AutoDuty.Windows
                 }
                 ImGui.SameLine(0, 5);
                 ImGui.Checkbox("Dont Move", ref _dontMove);
-                ImGui.SameLine(8, 5);
                 ImGui.InputText("Note", ref _note, 100);
                 ImGui.Spacing();
                 ImGui.Separator();
@@ -250,7 +249,7 @@ namespace AutoDuty.Windows
                     {
                         var v4 = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
 
-                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.Name}|{item.Value.Position:F2}|{item.Value.Argument} ({item.Value.Note})";
+                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.Name}|{item.Value.Position:F2}|{item.Value.Argument}|{item.Value.Note}";
 
                         ImGui.PushStyleColor(ImGuiCol.Text, v4);
                         if (ImGui.Selectable(text, item.Index == _buildListSelected, ImGuiSelectableFlags.AllowDoubleClick))

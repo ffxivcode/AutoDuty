@@ -1,26 +1,185 @@
 {
   "actions": [
-    "MoveTo|120.76, -9.31, 37.99|",
-    "MoveTo|110.63, -8.75, 39.70|",
-    "Wait|0, 0, 0|2000",
-    "MoveTo|86.21, -8.64, 34.64|",
-    "MoveTo|81.39, -7.51, 20.98|",
-    "MoveTo|62.93, -9.14, 6.80|",
-    "Boss|35.25, -9.34, 2.70|",
-    "MoveTo|15.31, -10.07, -43.92|",
-    "Interactable|0, 0, 0|Morbol Fruit",
-    "Boss|-158.74, -30.50, -141.24|",
-    "MoveTo|-210.27, -26.01, -177.75|",
-    "MoveTo|-221.18, -25.74, -176.30|",
-    "MoveTo|-230.55, -26.72, -178.32|",
-    "MoveTo|-240.34, -26.37, -177.88|",
-    "MoveTo|-337.09, -32.16, -143.79|",
-    "MoveTo|-337.54, -33.03, -127.61|",
-    "Boss|-405.21, -33.46, -125.36|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 120.76,
+        "Y": -9.31,
+        "Z": 37.99
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 110.63,
+        "Y": -8.75,
+        "Z": 39.7
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 86.21,
+        "Y": -8.64,
+        "Z": 34.64
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 81.39,
+        "Y": -7.51,
+        "Z": 20.98
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 62.93,
+        "Y": -9.14,
+        "Z": 6.8
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 35.25,
+        "Y": -9.34,
+        "Z": 2.7
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 15.31,
+        "Y": -10.07,
+        "Z": -43.92
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Morbol Fruit",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -158.74,
+        "Y": -30.5,
+        "Z": -141.24
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -210.27,
+        "Y": -26.01,
+        "Z": -177.75
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -221.18,
+        "Y": -25.74,
+        "Z": -176.3
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -230.55,
+        "Y": -26.72,
+        "Z": -178.32
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -240.34,
+        "Y": -26.37,
+        "Z": -177.88
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -337.09,
+        "Y": -32.16,
+        "Z": -143.79
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -337.54,
+        "Y": -33.03,
+        "Z": -127.61
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -405.21,
+        "Y": -33.46,
+        "Z": -125.36
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }
