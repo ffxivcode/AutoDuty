@@ -187,7 +187,7 @@ namespace AutoDuty.Managers
                                                     if (int.TryParse(argumentArray[0], out _))
                                                     {
                                                         argument = argumentArray[0];
-                                                        note = action[2].Replace(argument, string.Empty);
+                                                        note = action[2].Replace($"{argument} (", string.Empty).Replace(")", string.Empty);
                                                     }
                                                     else
                                                         argument = action[2];

@@ -1,24 +1,165 @@
 {
   "actions": [
-    "MoveTo|-374.00, -270.66, -0.86|",
-    "Interactable|0, 0, 0|Inner Bulkhead",
-    "AutoMoveFor|-417.04, -270.66, -0.79|5000",
-    "MoveTo|-451.22, 800.03, 1.08|",
-    "Wait|0, 0, 0|30000",
-    "MoveTo|-462.81, 800.03, 0.05|",
-    "Wait|0, 0, 0|5000",
-    "MoveTo|-437.30, 800.03, -0.23|",
-    "Wait|0, 0, 0|1000",
-    "MoveTo|-450.23, 800.00, 45.02|",
-    "Boss|-449.98, 800.00, 82.17|",
-    "MoveTo|-451.66, 800.00, 88.20|",
-    "MoveTo|-448.51, 800.00, 88.18|",
-    "MoveTo|-450.82, 799.78, 142.28|",
-    "Interactable|0, 0, 0|Allagan Terminal"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -374,
+        "Y": -270.66,
+        "Z": -0.86
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Inner Bulkhead",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -417.04,
+        "Y": -270.66,
+        "Z": -0.79
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -451.22,
+        "Y": 800.03,
+        "Z": 1.08
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "30000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -462.81,
+        "Y": 800.03,
+        "Z": 0.05
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -437.3,
+        "Y": 800.03,
+        "Z": -0.23
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "1000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -450.23,
+        "Y": 800,
+        "Z": 45.02
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -449.98,
+        "Y": 800,
+        "Z": 82.17
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -451.66,
+        "Y": 800,
+        "Z": 88.2
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -448.51,
+        "Y": 800,
+        "Z": 88.18
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -450.82,
+        "Y": 799.78,
+        "Z": 142.28
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Allagan Terminal",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

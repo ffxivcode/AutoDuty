@@ -1,30 +1,175 @@
 {
   "actions": [
-    "MoveTo|-378.74, -10.00, 244.05|",
-    "MoveTo|-297.94, -6.00, 125.10|",
-    "MoveTo|-223.72, -6.42, 60.01|",
-    "Wait|0, 0, 0|2000",
-
-    "Boss|-213.02, -1.99, 189.93|",
-
-    "MoveTo|-167.76, 2.00, 275.88|",
-    "MoveTo|-101.64, 6.00, 311.02|",
-    "TreasureCoffer|-101.56, 5.96, 282.46|",
-    "TreasureCoffer|-3.48, 9.96, 297.11|",
-    "MoveTo|-25.87, 10.00, 265.96|",
-
-    "Boss|10.71, 14.07, 184.71|",
-
-    "MoveTo|154.34, 20.05, 101.33|",
-    "MoveTo|177.60, 20.10, 86.58|",
-    "MoveTo|205.05, 20.05, 50.14|",
-    "TreasureCoffer|272.13, 20.00, 55.66|",
-
-    "Boss|283.93, 20.04, -31.54|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -378.74,
+        "Y": -10,
+        "Z": 244.05
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -297.94,
+        "Y": -6,
+        "Z": 125.1
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -223.72,
+        "Y": -6.42,
+        "Z": 60.01
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -213.02,
+        "Y": -1.99,
+        "Z": 189.93
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -167.76,
+        "Y": 2,
+        "Z": 275.88
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -101.64,
+        "Y": 6,
+        "Z": 311.02
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -101.56,
+        "Y": 5.96,
+        "Z": 282.46
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -3.48,
+        "Y": 9.96,
+        "Z": 297.11
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -25.87,
+        "Y": 10,
+        "Z": 265.96
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 10.71,
+        "Y": 14.07,
+        "Z": 184.71
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 154.34,
+        "Y": 20.05,
+        "Z": 101.33
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 177.6,
+        "Y": 20.1,
+        "Z": 86.58
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 205.05,
+        "Y": 20.05,
+        "Z": 50.14
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 272.13,
+        "Y": 20,
+        "Z": 55.66
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 283.93,
+        "Y": 20.04,
+        "Z": -31.54
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 144,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

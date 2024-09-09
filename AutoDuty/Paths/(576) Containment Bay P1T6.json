@@ -1,14 +1,65 @@
 {
   "actions": [
-    "ChatCommand|0, 0, 0|/vbmai off",
-    "MoveTo|-0.03, -0.00, 14.34|",
-    "MoveTo|18.64, -0.00, 14.35|",
-    "MoveTo|15.18, 0.00, -14.32|",
-    "Boss|3.28, 0.00, -14.35|"
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "/vbmai off",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -0.03,
+        "Y": -0,
+        "Z": 14.34
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 18.64,
+        "Y": -0,
+        "Z": 14.35
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 15.18,
+        "Y": 0,
+        "Z": -14.32
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 3.28,
+        "Y": 0,
+        "Z": -14.35
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

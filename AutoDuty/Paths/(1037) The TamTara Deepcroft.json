@@ -1,28 +1,205 @@
 {
   "actions": [
-    "MoveTo|4.35, 41.04, -77.92|",
-    "Boss|2.82, 29.55, -17.25|",
-    "MoveTo|-8.22, 30.83, -16.46|",
-    "Interactable|0, 0, 0|2000061 (Cultist Orb)",
-    "Boss|-18.43, 23.41, 26.77|",
-    "MoveTo|-23.07, 24.71, 20.42|",
-    "Interactable|0, 0, 0|2000062 (Cultist Orb)",
-    "MoveTo|-177.97, 13.49, -5.13|",
-    "Interactable|0, 0, 0|2000057 (Cultist Rosary)",
-    "MoveTo|-104.14, 13.92, 15.52|",
-    "Interactable|0, 0, 0|2000060 (Sealed Barrier)",
-    "Boss|-93.34, 13.86, 9.51|",
-    "MoveTo|-94.66, 14.91, 3.94|",
-    "Interactable|0, 0, 0|2000067 (Cultist Orb)",
-    "MoveTo|-89.51, 14.90, 13.71|",
-    "Interactable|0, 0, 0|2000063 (Cultist Orb)",
-    "Wait|0, 0, 0|4000",
-    "Boss|-51.88, 14.05, -12.76|",
-    "MoveTo|-46.75, 14.05, -15.12|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 4.35,
+        "Y": 41.04,
+        "Z": -77.92
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 2.82,
+        "Y": 29.55,
+        "Z": -17.25
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -8.22,
+        "Y": 30.83,
+        "Z": -16.46
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000061",
+      "note": "Cultist Orb"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -18.43,
+        "Y": 23.41,
+        "Z": 26.77
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -23.07,
+        "Y": 24.71,
+        "Z": 20.42
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000062",
+      "note": "Cultist Orb"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -177.97,
+        "Y": 13.49,
+        "Z": -5.13
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000057",
+      "note": "Cultist Rosary"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -104.14,
+        "Y": 13.92,
+        "Z": 15.52
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000060",
+      "note": "Sealed Barrier"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -93.34,
+        "Y": 13.86,
+        "Z": 9.51
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -94.66,
+        "Y": 14.91,
+        "Z": 3.94
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000067",
+      "note": "Cultist Orb"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -89.51,
+        "Y": 14.9,
+        "Z": 13.71
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000063",
+      "note": "Cultist Orb"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -51.88,
+        "Y": 14.05,
+        "Z": -12.76
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -46.75,
+        "Y": 14.05,
+        "Z": -15.12
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

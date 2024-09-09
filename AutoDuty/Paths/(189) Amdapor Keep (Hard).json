@@ -1,28 +1,205 @@
 {
   "actions": [
-    "MoveTo|-196.31, -4.44, -40.47|",
-    "MoveTo|-43.66, -0.00, -69.76|",
-    "Boss|-124.56, -2.80, 5.33|",
-    "MoveTo|-124.56, -2.80, 5.33|",
-    "MoveTo|-107.61, -2.00, 52.87|",
-    "AutoMoveFor|-98.07, 0.36, 42.84|6000",
-    "MoveTo|119.01, 44.00, -0.29|",
-    "MoveTo|198.65, 44.00, -100.27|",
-    "Boss|200.17, 44.00, -152.28|",
-    "MoveTo|197.42, 44.00, -164.49|",
-    "Interactable|0, 0, 0|Aetherial Flow",
-    "MoveTo|199.73, -0.00, -1.16|",
-    "Interactable|0, 0, 0|Fell Orb",
-    "Wait|199.73, -0.00, -1.16|20000",
-    "Wait|0, 0, 0|20000",
-    "Interactable|0, 0, 0|Aetherial Flow",
-    "Wait|0, 0, 0|4000",
-    "Boss|200.08, -0.00, 232.89|",
-    "MoveTo|200.13, -0.00, 235.34|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -196.31,
+        "Y": -4.44,
+        "Z": -40.47
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -43.66,
+        "Y": -0,
+        "Z": -69.76
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -124.56,
+        "Y": -2.8,
+        "Z": 5.33
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -124.56,
+        "Y": -2.8,
+        "Z": 5.33
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -107.61,
+        "Y": -2,
+        "Z": 52.87
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -98.07,
+        "Y": 0.36,
+        "Z": 42.84
+      },
+      "argument": "6000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 119.01,
+        "Y": 44,
+        "Z": -0.29
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 198.65,
+        "Y": 44,
+        "Z": -100.27
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 200.17,
+        "Y": 44,
+        "Z": -152.28
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 197.42,
+        "Y": 44,
+        "Z": -164.49
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Aetherial Flow",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 199.73,
+        "Y": -0,
+        "Z": -1.16
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Fell Orb",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 199.73,
+        "Y": -0,
+        "Z": -1.16
+      },
+      "argument": "20000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "20000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Aetherial Flow",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 200.08,
+        "Y": -0,
+        "Z": 232.89
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 200.13,
+        "Y": -0,
+        "Z": 235.34
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

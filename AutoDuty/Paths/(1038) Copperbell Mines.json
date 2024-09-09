@@ -1,47 +1,395 @@
 {
   "actions": [
-    "ForceAttack|-222.18, 23.85, -208.19|",
-    "Wait|0, 0, 0|3000",
-    "Interactable|-222.18, 23.85, -208.19|2000159 (Tiny Key)",
-    "Interactable|-206.30, 23.47, -208.46|2000160 (Sealed Blasting Door)",
-    "MoveTo|-184.08, 24.00, -206.39|",
-    "Interactable|0, 0, 0|2000163 (Lift Lever)",
-    "Wait|0, 0, 0|10000",
-    "MoveTo|-178.09, -6.52, -208.07|",
-    "Interactable|51.89, -8.75, -136.52|2000169 (Firesand)",
-    "Interactable|52.93, -3.92, -153.77|2000172 (Firesand)",
-    "Interactable|43.98, -9.75, -128.93|2001536 (Powder Chamber)",
-    "Interactable|42.08, -9.98, -135.22|2000170 (Blasting Device)",
-    "Wait|0, 0, 0|2000",
-    "Boss|42.98, -9.92, -89.63|",
-    "Interactable|42.97, -9.92, -69.18|2000178 (Tiny Key)",
-    "Interactable|43.18, -9.92, -58.98|2000173 (Sealed Blasting Door)",
-    "TreasureCoffer|63.44, -9.92, -37.99|",
-    "MoveTo|56.69, -8.25, 5.91|",
-    "Interactable|56.69, -8.25, 5.91|2000175 (Lift Lever)",
-    "Wait|0, 0, 0|10000",
-    "MoveTo|58.27, -38.69, 11.74|",
-    "Wait|92.73, -42.09, 39.41|2000",
-    "Interactable|91.78, -42.19, 41.22|2001531 (Firesand)",
-    "TreasureCoffer|97.55, -41.64, 70.42|",
-    "Wait|19.62, -42.42, 40.48|3000",
-    "Interactable|21.70, -42.69, 42.35|2000179 (Firesand)",
-    "Interactable|58.89, -38.75, 54.16|2001537 (Powder Chamber)",
-    "Interactable|57.48, -38.74, 47.62|2000180 (Blasting Device)",
-    "Interactable|38.07, -38.69, 60.38|2001532 (Firesand)",
-    "Boss|27.61, -38.00, 113.91|",
-    "Interactable|8.15, -38.00, 113.01|2001533 (Firesand)",
-    "Interactable|1.84, -37.98, 113.05|2001538 (Powder Chamber)",
-    "Interactable|4.85, -38.02, 110.96|2001534 (Blasting Device)",
-    "Wait|0, 0, 0|4000",
-    "ChatCommand|0, 0, 0|/vbm cfg AIConfig ForbidMovement true",
-    "TreasureCoffer|-65.28, -42.00, 167.21|",
-    "ChatCommand|-72.26, -38.17, 107.74|/vbm cfg AIConfig ForbidMovement false",
-    "Boss|-98.82, -57.88, 6.80|"
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": -222.18,
+        "Y": 23.85,
+        "Z": -208.19
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -222.18,
+        "Y": 23.85,
+        "Z": -208.19
+      },
+      "argument": "2000159",
+      "note": "Tiny Key"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -206.3,
+        "Y": 23.47,
+        "Z": -208.46
+      },
+      "argument": "2000160",
+      "note": "Sealed Blasting Door"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -184.08,
+        "Y": 24,
+        "Z": -206.39
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000163",
+      "note": "Lift Lever"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "10000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -178.09,
+        "Y": -6.52,
+        "Z": -208.07
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 51.89,
+        "Y": -8.75,
+        "Z": -136.52
+      },
+      "argument": "2000169",
+      "note": "Firesand"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 52.93,
+        "Y": -3.92,
+        "Z": -153.77
+      },
+      "argument": "2000172",
+      "note": "Firesand"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 43.98,
+        "Y": -9.75,
+        "Z": -128.93
+      },
+      "argument": "2001536",
+      "note": "Powder Chamber"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 42.08,
+        "Y": -9.98,
+        "Z": -135.22
+      },
+      "argument": "2000170",
+      "note": "Blasting Device"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 42.98,
+        "Y": -9.92,
+        "Z": -89.63
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 42.97,
+        "Y": -9.92,
+        "Z": -69.18
+      },
+      "argument": "2000178",
+      "note": "Tiny Key"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 43.18,
+        "Y": -9.92,
+        "Z": -58.98
+      },
+      "argument": "2000173",
+      "note": "Sealed Blasting Door"
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 63.44,
+        "Y": -9.92,
+        "Z": -37.99
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 56.69,
+        "Y": -8.25,
+        "Z": 5.91
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 56.69,
+        "Y": -8.25,
+        "Z": 5.91
+      },
+      "argument": "2000175",
+      "note": "Lift Lever"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "10000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 58.27,
+        "Y": -38.69,
+        "Z": 11.74
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 92.73,
+        "Y": -42.09,
+        "Z": 39.41
+      },
+      "argument": "2000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 91.78,
+        "Y": -42.19,
+        "Z": 41.22
+      },
+      "argument": "2001531",
+      "note": "Firesand"
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 97.55,
+        "Y": -41.64,
+        "Z": 70.42
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 19.62,
+        "Y": -42.42,
+        "Z": 40.48
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 21.7,
+        "Y": -42.69,
+        "Z": 42.35
+      },
+      "argument": "2000179",
+      "note": "Firesand"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 58.89,
+        "Y": -38.75,
+        "Z": 54.16
+      },
+      "argument": "2001537",
+      "note": "Powder Chamber"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 57.48,
+        "Y": -38.74,
+        "Z": 47.62
+      },
+      "argument": "2000180",
+      "note": "Blasting Device"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 38.07,
+        "Y": -38.69,
+        "Z": 60.38
+      },
+      "argument": "2001532",
+      "note": "Firesand"
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 27.61,
+        "Y": -38,
+        "Z": 113.91
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 8.15,
+        "Y": -38,
+        "Z": 113.01
+      },
+      "argument": "2001533",
+      "note": "Firesand"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 1.84,
+        "Y": -37.98,
+        "Z": 113.05
+      },
+      "argument": "2001538",
+      "note": "Powder Chamber"
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 4.85,
+        "Y": -38.02,
+        "Z": 110.96
+      },
+      "argument": "2001534",
+      "note": "Blasting Device"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "/vbm cfg AIConfig ForbidMovement true",
+      "note": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -65.28,
+        "Y": -42,
+        "Z": 167.21
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "ChatCommand",
+      "position": {
+        "X": -72.26,
+        "Y": -38.17,
+        "Z": 107.74
+      },
+      "argument": "/vbm cfg AIConfig ForbidMovement false",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -98.82,
+        "Y": -57.88,
+        "Z": 6.8
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 130,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

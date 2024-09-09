@@ -1,22 +1,145 @@
 {
   "actions": [
-    "Boss|178.84, -48.00, -170.04|",
-    "MoveTo|169.88, -48.00, -169.95|",
-    "MoveTo|-29.36, -26.82, -194.44|",
-    "AutoMoveFor|-35.45, -24.46, -197.53|3000",
-    "MoveTo|-83.05, 172.60, -251.43|",
-    "MoveTo|-239.83, 202.00, -99.12|",
-    "Boss|-239.96, 210.00, -44.36|",
-    "MoveTo|-240.02, 210.00, -39.71|",
-    "MoveTo|-288.12, 194.00, 87.71|",
-    "MoveTo|-254.90, 202.00, 140.15|",
-    "MoveTo|-239.89, 204.37, 188.91|",
-    "Boss|-239.76, 210, 242.16|",
-    "MoveTo|-239.63, 210.00, 246.75|"
+    {
+      "name": "Boss",
+      "position": {
+        "X": 178.84,
+        "Y": -48,
+        "Z": -170.04
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 169.88,
+        "Y": -48,
+        "Z": -169.95
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -29.36,
+        "Y": -26.82,
+        "Z": -194.44
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -35.45,
+        "Y": -24.46,
+        "Z": -197.53
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -83.05,
+        "Y": 172.6,
+        "Z": -251.43
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -239.83,
+        "Y": 202,
+        "Z": -99.12
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -239.96,
+        "Y": 210,
+        "Z": -44.36
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -240.02,
+        "Y": 210,
+        "Z": -39.71
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -288.12,
+        "Y": 194,
+        "Z": 87.71
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -254.9,
+        "Y": 202,
+        "Z": 140.15
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -239.89,
+        "Y": 204.37,
+        "Z": 188.91
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -239.76,
+        "Y": 210,
+        "Z": 242.16
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -239.63,
+        "Y": 210,
+        "Z": 246.75
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }
