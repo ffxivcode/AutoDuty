@@ -1,775 +1,99 @@
 {
   "actions": [
-    {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 1 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- No double-pulls here cuz Pollen Clusters make NPC AI wonky --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": -286.86,
-        "Y": -15.96,
-        "Z": 264.65
-      },
-      "argument": "False",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": -310.81,
-        "Y": -9.14,
-        "Z": 238.06
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 2 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": -298.4,
-        "Y": -7.57,
-        "Z": 224.7
-      },
-      "argument": "False",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": -274.49,
-        "Y": -3.76,
-        "Z": 188.28
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 3 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": -249.21,
-        "Y": -1.44,
-        "Z": 189.05
-      },
-      "argument": "False",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -197.44,
-        "Y": 3.38,
-        "Z": 185.33
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "SyncedWait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "5000",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 4 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": -197.67,
-        "Y": 3.31,
-        "Z": 189.87
-      },
-      "argument": "False",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -170.19,
-        "Y": 2.85,
-        "Z": 208.35
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "SyncedWait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "5000",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -124.36,
-        "Y": 12,
-        "Z": 163.65
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Movement / \u52D5\u304D --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -100.47,
-        "Y": 17.46,
-        "Z": 124.89
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -93.48,
-        "Y": 18.73,
-        "Z": 124.91
-      },
-      "argument": "3000",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000",
-      "note": ""
-    },
-    {
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Trash Packs / \u96D1\u9B5A 5 \u0026 6 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": 326.32,
-        "Y": 97.32,
-        "Z": 46.38
-      },
-      "argument": "False",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 355.59,
-        "Y": 107.54,
-        "Z": -11.64
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "SyncedWait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2200",
-      "note": ""
-    },
-    {
-      "name": "SyncedRotation",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Off",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 359.39,
-        "Y": 107.54,
-        "Z": -18.41
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 349.62,
-        "Y": 112.52,
-        "Z": -56.82
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "SyncedRotation",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "On",
-      "note": ""
-    },
-    {
-      "name": "SyncedStopForCombat",
-      "position": {
-        "X": 356.79,
-        "Y": 108.06,
-        "Z": -28.79
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "UnsyncedStopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "UnsyncedWait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "25000",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Trash Packs / \u96D1\u9B5A 7 \u0026 8 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": 318.29,
-        "Y": 116.16,
-        "Z": -95.5
-      },
-      "argument": "False",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 283.74,
-        "Y": 120.43,
-        "Z": -94.19
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "SyncedWait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2200",
-      "note": ""
-    },
-    {
-      "name": "TreasureCoffer",
-      "position": {
-        "X": 270.59,
-        "Y": 120.9,
-        "Z": -101.4
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "SyncedRotation",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Off",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 267.11,
-        "Y": 126.6,
-        "Z": -52.91
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "SyncedRotation",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "On",
-      "note": ""
-    },
-    {
-      "name": "SyncedStopForCombat",
-      "position": {
-        "X": 273.42,
-        "Y": 120.72,
-        "Z": -90.17
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "UnsyncedStopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "UnsyncedWait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "30000",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 9 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": 236.07,
-        "Y": 127.76,
-        "Z": -29.95
-      },
-      "argument": "False",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": 206.42,
-        "Y": 131.34,
-        "Z": -31.8
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "TreasureCoffer",
-      "position": {
-        "X": 163.49,
-        "Y": 136.26,
-        "Z": -34.86
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 159.69,
-        "Y": 137.61,
-        "Z": -95.48
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Movement / \u52D5\u304D --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 191.51,
-        "Y": 140.25,
-        "Z": -135.18
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 195.42,
-        "Y": 140.28,
-        "Z": -140.36
-      },
-      "argument": "3000",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000",
-      "note": ""
-    },
-    {
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Trash Packs / \u96D1\u9B5A 10 \u0026 11 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": -96.26,
-        "Y": 318.04,
-        "Z": -216.4
-      },
-      "argument": "False",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -121.16,
-        "Y": 319.4,
-        "Z": -246.53
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "SyncedWait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2200",
-      "note": ""
-    },
-    {
-      "name": "SyncedRotation",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Off",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -153.11,
-        "Y": 324.4,
-        "Z": -259.53
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "SyncedRotation",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "On",
-      "note": ""
-    },
-    {
-      "name": "SyncedStopForCombat",
-      "position": {
-        "X": -122.28,
-        "Y": 319.44,
-        "Z": -247.86
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "UnsyncedStopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "True",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 12 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -195.04,
-        "Y": 329.15,
-        "Z": -298.69
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "UnsyncedWait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "30000",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Movement / \u52D5\u304D --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "TreasureCoffer",
-      "position": {
-        "X": -90.35,
-        "Y": 344.15,
-        "Z": -360.37
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "500",
-      "note": ""
-    },
-    {
-      "name": "TreasureCoffer",
-      "position": {
-        "X": -89.04,
-        "Y": 344.15,
-        "Z": -358.48
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -116.25,
-        "Y": 344.19,
-        "Z": -354.06
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -101.98,
-        "Y": 348.15,
-        "Z": -400.84
-      },
-      "argument": "",
-      "note": ""
-    }
+    "<-- Trash Pack / 雑魚 1 -->",
+    "<-- No double-pulls here cuz Pollen Clusters make NPC AI wonky -->",
+    "StopForCombat|-286.86, -15.96, 264.65|False",
+    "StopForCombat|-310.81, -9.14, 238.06|True",
+
+    "<-- Trash Pack / 雑魚 2 -->",
+    "StopForCombat|-298.40, -7.57, 224.70|False",
+    "StopForCombat|-274.49, -3.76, 188.28|True",
+
+    "<-- Trash Pack / 雑魚 3 -->",
+    "StopForCombat|-249.21, -1.44, 189.05|False",
+    "MoveTo|-197.44, 3.38, 185.33|",
+    "SyncedWait|0, 0, 0|5000",
+    "StopForCombat|0, 0, 0|True",
+
+    "<-- Trash Pack / 雑魚 4 -->",
+    "StopForCombat|-197.67, 3.31, 189.87|False",
+    "MoveTo|-170.19, 2.85, 208.35|",
+    "SyncedWait|0, 0, 0|5000",
+    "StopForCombat|0, 0, 0|True",
+
+    "<-- Boss / ボス 1 -->",
+    "Boss|-124.36, 12.00, 163.65|",
+
+    "<-- Movement / 動き -->",
+    "MoveTo|-100.47, 17.46, 124.89|",
+    "AutoMoveFor|-93.48, 18.73, 124.91|3000",
+    "Wait|0, 0, 0|2000",
+    "Revival|0, 0, 0|",
+
+    "<-- Trash Packs / 雑魚 5 & 6 -->",
+    "StopForCombat|326.32, 97.32, 46.38|False",
+    "MoveTo|355.59, 107.54, -11.64|",
+    "SyncedWait|0, 0, 0|2200",
+    "SyncedRotation|0, 0, 0|Off",
+    "MoveTo|359.39, 107.54, -18.41|",
+    "MoveTo|349.62, 112.52, -56.82|",
+    "SyncedRotation|0, 0, 0|On",
+    "SyncedStopForCombat|356.79, 108.06, -28.79|True",
+    "UnsyncedStopForCombat|0, 0, 0|True",
+    "UnsyncedWait|0, 0, 0|25000",
+
+    "<-- Trash Packs / 雑魚 7 & 8 -->",
+    "StopForCombat|318.29, 116.16, -95.50|False",
+    "MoveTo|283.74, 120.43, -94.19|",
+    "SyncedWait|0, 0, 0|2200",
+    "TreasureCoffer|270.59, 120.90, -101.40|",
+    "SyncedRotation|0, 0, 0|Off",
+    "MoveTo|267.11, 126.60, -52.91|",
+    "SyncedRotation|0, 0, 0|On",
+    "SyncedStopForCombat|273.42, 120.72, -90.17|True",
+    "UnsyncedStopForCombat|0, 0, 0|True",
+    "UnsyncedWait|0, 0, 0|30000",
+
+    "<-- Trash Pack / 雑魚 9 -->",
+    "StopForCombat|236.07, 127.76, -29.95|False",
+    "StopForCombat|206.42, 131.34, -31.80|True",
+    "TreasureCoffer|163.49, 136.26, -34.86|",
+
+    "<-- Boss / ボス 2 -->",
+    "Boss|159.69, 137.61, -95.48|",
+
+    "<-- Movement / 動き -->",
+    "MoveTo|191.51, 140.25, -135.18|",
+    "AutoMoveFor|195.42, 140.28, -140.36|3000",
+    "Wait|0, 0, 0|2000",
+    "Revival|0, 0, 0|",
+
+    "<-- Trash Packs / 雑魚 10 & 11 -->",
+    "StopForCombat|-96.26, 318.04, -216.40|False",
+    "MoveTo|-121.16, 319.40, -246.53|",
+    "SyncedWait|0, 0, 0|2200",
+    "SyncedRotation|0, 0, 0|Off",
+    "MoveTo|-153.11, 324.40, -259.53|",
+    "SyncedRotation|0, 0, 0|On",
+    "SyncedStopForCombat|-122.28, 319.44, -247.86|True",
+    "UnsyncedStopForCombat|0, 0, 0|True",
+
+    "<-- Trash Pack / 雑魚 12 -->",
+    "MoveTo|-195.04, 329.15, -298.69|",
+    "UnsyncedWait|0, 0, 0|30000",
+
+    "<-- Movement / 動き -->",
+    "TreasureCoffer|-90.35, 344.15, -360.37|",
+    "Wait|0, 0, 0|500",
+    "TreasureCoffer|-89.04, 344.15, -358.48|",
+    "MoveTo|-116.25, 344.19, -354.06|",
+
+    "<-- Boss / ボス 3 -->",
+    "Boss|-101.98, 348.15, -400.84|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 155,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

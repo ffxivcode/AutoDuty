@@ -1,235 +1,31 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -0.11,
-        "Y": 750,
-        "Z": 342.57
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -60.32,
-        "Y": 744.96,
-        "Z": 151.43
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -80.35,
-        "Y": 748.23,
-        "Z": 81.87
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -79.62,
-        "Y": 748.23,
-        "Z": 67.5
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -76.5,
-        "Y": 729,
-        "Z": -98.63
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 27.76,
-        "Y": 728.47,
-        "Z": -122.06
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 72.4,
-        "Y": 729.66,
-        "Z": -156.97
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 58.35,
-        "Y": 729.27,
-        "Z": -205.24
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 60.01,
-        "Y": 728,
-        "Z": -360.71
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 60.03,
-        "Y": 728,
-        "Z": -366.85
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 59.98,
-        "Y": 728,
-        "Z": -367.82
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2009984",
-      "note": "Aetherial Flow"
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 0.16,
-        "Y": -740,
-        "Z": 330.98
-      },
-      "argument": "4000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 5.88,
-        "Y": -730,
-        "Z": 182.32
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 0.5,
-        "Y": -730,
-        "Z": 186.45
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 0.14,
-        "Y": -730,
-        "Z": 181.03
-      },
-      "argument": "4000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 5.62,
-        "Y": -732,
-        "Z": 48.54
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -0.14,
-        "Y": -732,
-        "Z": 51.35
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -0.12,
-        "Y": -732,
-        "Z": 46.38
-      },
-      "argument": "4000",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 0.09,
-        "Y": -720,
-        "Z": -64.39
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -0.09,
-        "Y": -720,
-        "Z": -56.01
-      },
-      "argument": "",
-      "note": ""
-    }
+    "MoveTo|-0.11, 750.00, 342.57|",
+    "MoveTo|-60.32, 744.96, 151.43|",
+    "Boss|-80.35, 748.23, 81.87|",
+    "MoveTo|-79.62, 748.23, 67.50|",
+    "MoveTo|-76.50, 729.00, -98.63|",
+    "MoveTo|27.76, 728.47, -122.06|",
+    "MoveTo|72.40, 729.66, -156.97|",
+    "MoveTo|58.35, 729.27, -205.24|",
+    "Boss|60.01, 728.00, -360.71|",
+    "MoveTo|60.03, 728.00, -366.85|",
+    "MoveTo|59.98, 728.00, -367.82|",
+    "Interactable|0, 0, 0|2009984 (Aetherial Flow)",
+    "Wait|0, 0, 0|2000",
+    "AutoMoveFor|0.16, -740.00, 330.98|4000",
+    "MoveTo|5.88, -730.00, 182.32|",
+    "MoveTo|0.50, -730.00, 186.45|",
+    "AutoMoveFor|0.14, -730.00, 181.03|4000",
+    "MoveTo|5.62, -732.00, 48.54|",
+    "MoveTo|-0.14, -732.00, 51.35|",
+    "AutoMoveFor|-0.12, -732.00, 46.38|4000",
+    "Boss|0.09, -720.00, -64.39|",
+    "MoveTo|-0.09, -720.00, -56.01|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

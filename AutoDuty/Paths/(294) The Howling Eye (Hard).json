@@ -1,25 +1,10 @@
 {
   "actions": [
-    {
-      "name": "Boss",
-      "position": {
-        "X": 0.43,
-        "Y": -1.95,
-        "Z": -14.56
-      },
-      "argument": "",
-      "note": ""
-    }
+    "Boss|0.43, -1.95, -14.56|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

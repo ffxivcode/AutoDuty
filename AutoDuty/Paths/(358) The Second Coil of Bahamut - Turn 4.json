@@ -1,75 +1,15 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 0.99,
-        "Y": -0,
-        "Z": 13.16
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -0.64,
-        "Y": 0,
-        "Z": -3.09
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 2.22,
-        "Y": 0,
-        "Z": -19.73
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -2.5,
-        "Y": -0,
-        "Z": -18.61
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -8.6,
-        "Y": -0,
-        "Z": -18.39
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Allagan Terminal",
-      "note": ""
-    }
+    "MoveTo|0.99, -0.00, 13.16|",
+    "Boss|-0.64, 0.00, -3.09|",
+    "MoveTo|2.22, 0.00, -19.73|",
+    "MoveTo|-2.50, -0.00, -18.61|",
+    "MoveTo|-8.60, -0.00, -18.39|",
+    "Interactable|0, 0, 0|Allagan Terminal"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

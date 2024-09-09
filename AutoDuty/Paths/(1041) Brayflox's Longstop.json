@@ -1,105 +1,18 @@
 {
   "actions": [
-    {
-      "name": "ConditionAction",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "ObjectData;2001462;IsTargetable;false,ModifyIndex;4",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 21.82,
-        "Y": 7.1,
-        "Z": 27.4
-      },
-      "argument": "1004346",
-      "note": "Goblin Pathfinder"
-    },
-    {
-      "name": "ConditionAction",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "ItemLessThan;2000521,ModifyIndex;0",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 105.56,
-        "Y": -0.13,
-        "Z": 12.14
-      },
-      "argument": "2001462",
-      "note": "Runstop Headgate"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 112.59,
-        "Y": -2.44,
-        "Z": -12.91
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -5.17,
-        "Y": 5.74,
-        "Z": -83.51
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -107.99,
-        "Y": -2.38,
-        "Z": -26.81
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": -90.04,
-        "Y": 10.93,
-        "Z": -95.78
-      },
-      "argument": "2001466",
-      "note": "Longstop Gutgate"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -27.24,
-        "Y": 35.5,
-        "Z": -236.09
-      },
-      "argument": "",
-      "note": ""
-    }
+    "ConditionAction|0, 0, 0|ObjectData;2001462;IsTargetable;false,ModifyIndex;4",
+    "Interactable|21.82, 7.10, 27.40|1004346 (Goblin Pathfinder)",
+    "ConditionAction|0, 0, 0|ItemLessThan;2000521,ModifyIndex;0",
+    "Interactable|105.56, -0.13, 12.14|2001462 (Runstop Headgate)",
+    "Boss|112.59, -2.44, -12.91|",
+    "Boss|-5.17, 5.74, -83.51|",
+    "Boss|-107.99, -2.38, -26.81|",
+    "Interactable|-90.04, 10.93, -95.78|2001466 (Longstop Gutgate)",
+    "Boss|-27.24, 35.5, -236.09|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 130,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

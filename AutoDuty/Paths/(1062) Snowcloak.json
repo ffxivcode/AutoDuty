@@ -1,155 +1,23 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 71.93,
-        "Y": 5.68,
-        "Z": -44.44
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2004225",
-      "note": "Tiny Key"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 56.94,
-        "Y": 4.48,
-        "Z": -46.18
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 56.94,
-        "Y": 4.48,
-        "Z": -46.18
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2004203",
-      "note": "Door to Silence"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 56.21,
-        "Y": -2.5,
-        "Z": -88.61
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -25.2,
-        "Y": -9.54,
-        "Z": -173.8
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -99.25,
-        "Y": 10.5,
-        "Z": -117.27
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -57.98,
-        "Y": 28.4,
-        "Z": -8.94
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -71.1,
-        "Y": 40.74,
-        "Z": 65.24
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2004226",
-      "note": "Finger of the Apostate"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -51,
-        "Y": 40.45,
-        "Z": 64.94
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2004224",
-      "note": "Door to Oblivion"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 1.61,
-        "Y": 40.07,
-        "Z": 66.47
-      },
-      "argument": "",
-      "note": ""
-    }
+    "MoveTo|71.93, 5.68, -44.44|",
+    "Interactable|0, 0, 0|2004225 (Tiny Key)",
+    "MoveTo|56.94, 4.48, -46.18|",
+    "MoveTo|56.94, 4.48, -46.18|",
+    "Interactable|0, 0, 0|2004203 (Door to Silence)",
+    "Boss|56.21, -2.50, -88.61|",
+    "MoveTo|-25.20, -9.54, -173.80|",
+    "Boss|-99.25, 10.50, -117.27|",
+    "Boss|-57.98, 28.40, -8.94|",
+    "MoveTo|-71.10, 40.74, 65.24|",
+    "Interactable|0, 0, 0|2004226 (Finger of the Apostate)",
+    "MoveTo|-51.00, 40.45, 64.94|",
+    "Interactable|0, 0, 0|2004224 (Door to Oblivion)",
+    "Boss|1.61, 40.07, 66.47|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

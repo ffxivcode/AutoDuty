@@ -1,35 +1,11 @@
 {
   "actions": [
-    {
-      "name": "ChatCommand",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "/vbmai off",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -6.79,
-        "Y": 0.02,
-        "Z": -1.58
-      },
-      "argument": "",
-      "note": ""
-    }
-  ],
-  "interactables": [],
+    "ChatCommand|0, 0, 0|/vbmai off",
+    "MoveTo|-6.79, 0.02, -1.58|"
+	  ],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

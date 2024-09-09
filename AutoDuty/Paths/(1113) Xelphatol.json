@@ -1,437 +1,54 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -119.59,
-        "Y": -9.7,
-        "Z": 160.73
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -70.55,
-        "Y": 28,
-        "Z": -76.76
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -62.64,
-        "Y": 28,
-        "Z": -79.66
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 76.87,
-        "Y": 25.13,
-        "Z": -49.66
-      },
-      "argument": "3000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 92.6,
-        "Y": 25.31,
-        "Z": -34.14
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 154.57,
-        "Y": 55.75,
-        "Z": -46.78
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2007397",
-      "note": "Bone Key"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 137.21,
-        "Y": 55.69,
-        "Z": -48.71
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 167.19,
-        "Y": 55.75,
-        "Z": -59.66
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2007373",
-      "note": "Imposing Gate"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 184.73,
-        "Y": 55.69,
-        "Z": -62.5
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 171.2,
-        "Y": 55.63,
-        "Z": -71.61
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 174.18,
-        "Y": 56.75,
-        "Z": -74.82
-      },
-      "argument": "500",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 179.32,
-        "Y": 56.75,
-        "Z": -77.04
-      },
-      "argument": "1000",
-      "note": ""
-    },
-    {
-      "name": "PausePandora",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2007388",
-      "note": "Lift Lever"
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 178.97,
-        "Y": 86.75,
-        "Z": -80.75
-      },
-      "argument": "10000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 184.23,
-        "Y": 85.62,
-        "Z": -85.11
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 178.17,
-        "Y": 99.5,
-        "Z": -8.57
-      },
-      "argument": "3000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 178.1,
-        "Y": 99.51,
-        "Z": 8.86
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 178.46,
-        "Y": 99.5,
-        "Z": 38.33
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 243.85,
-        "Y": 113.43,
-        "Z": 14.81
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 257.16,
-        "Y": 113.43,
-        "Z": 1.37
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 307.38,
-        "Y": 142.97,
-        "Z": -134.8
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 299.63,
-        "Y": 143.87,
-        "Z": -157.77
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2007398",
-      "note": "Airstone"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 336.07,
-        "Y": 144,
-        "Z": -151.25
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 341.02,
-        "Y": 143.93,
-        "Z": -160.71
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2007400",
-      "note": "Tailwind Relic"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 336.09,
-        "Y": 144,
-        "Z": -159.8
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 341.2,
-        "Y": 144.67,
-        "Z": -163.86
-      },
-      "argument": "5600",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 419.71,
-        "Y": 149.91,
-        "Z": -257.38
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 437.42,
-        "Y": 151.32,
-        "Z": -270.5
-      },
-      "argument": "3000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2007399",
-      "note": "Airstone"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 402.52,
-        "Y": 151.2,
-        "Z": -253.6
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 415.48,
-        "Y": 151.22,
-        "Z": -296.45
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2007401",
-      "note": "Tailwind Relic"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 414.39,
-        "Y": 151.38,
-        "Z": -291.19
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 412.9,
-        "Y": 151.93,
-        "Z": -297.61
-      },
-      "argument": "6500",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 366.83,
-        "Y": 163.75,
-        "Z": -399.06
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 318.84,
-        "Y": 166.66,
-        "Z": -415.47
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 310.12,
-        "Y": 166.65,
-        "Z": -418.63
-      },
-      "argument": "",
-      "note": ""
-    }
+    "MoveTo|-119.59, -9.70, 160.73|",
+    "Boss|-70.55, 28.00, -76.76|",
+    "MoveTo|-62.64, 28.00, -79.66|",
+    "Wait|76.87, 25.13, -49.66|3000",
+    "MoveTo|92.60, 25.31, -34.14|",
+    "MoveTo|154.57, 55.75, -46.78|",
+    "Interactable|0, 0, 0|2007397 (Bone Key)",
+    "MoveTo|137.21, 55.69, -48.71|",
+    "MoveTo|167.19, 55.75, -59.66|",
+    "Interactable|0, 0, 0|2007373 (Imposing Gate)",
+    "MoveTo|184.73, 55.69, -62.50|",
+    "MoveTo|171.20, 55.63, -71.61|",
+    "AutoMoveFor|174.18, 56.75, -74.82|500",
+    "Wait|179.32, 56.75, -77.04|1000",
+    "PausePandora|0, 0, 0|Auto-interact with Objects in Instances|5000",
+    "Interactable|0, 0, 0|2007388 (Lift Lever)",
+    "Wait|178.97, 86.75, -80.75|10000",
+    "MoveTo|184.23, 85.62, -85.11|",
+    "Wait|178.17, 99.50, -8.57|3000",
+    "MoveTo|178.10, 99.51, 8.86|",
+    "MoveTo|178.46, 99.50, 38.33|",
+    "Boss|243.85, 113.43, 14.81|",
+    "MoveTo|257.16, 113.43, 1.37|",
+    "MoveTo|307.38, 142.97, -134.80|",
+    "MoveTo|299.63, 143.87, -157.77|",
+    "Interactable|0, 0, 0|2007398 (Airstone)",
+    "MoveTo|336.07, 144.00, -151.25|",
+    "MoveTo|341.02, 143.93, -160.71|",
+    "Interactable|0, 0, 0|2007400 (Tailwind Relic)",
+    "MoveTo|336.09, 144.00, -159.80|",
+    "AutoMoveFor|341.20, 144.67, -163.86|5600",
+    "MoveTo|419.71, 149.91, -257.38|",
+    "Wait|437.42, 151.32, -270.50|3000",
+    "MoveTo|0, 0, 0|2007399 (Airstone)",
+    "MoveTo|402.52, 151.20, -253.60|",
+    "MoveTo|415.48, 151.22, -296.45|",
+    "Interactable|0, 0, 0|2007401 (Tailwind Relic)",
+    "MoveTo|414.39, 151.38, -291.19|",
+    "AutoMoveFor|412.90, 151.93, -297.61|6500",
+    "MoveTo|366.83, 163.75, -399.06|",
+    "Boss|318.84, 166.66, -415.47|",
+    "MoveTo|310.12, 166.65, -418.63|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
       {
         "version": 114,
         "change": "Fixed Missing Interaction with Lift Lever"
-      },
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
       }
     ],
     "notes": []

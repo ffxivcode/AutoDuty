@@ -1,45 +1,12 @@
 {
   "actions": [
-    {
-      "name": "Boss",
-      "position": {
-        "X": -772.27,
-        "Y": -400.06,
-        "Z": -600.18
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": -689.56,
-        "Y": -185.73,
-        "Z": 480.35
-      },
-      "argument": "5000",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -704.09,
-        "Y": -185.66,
-        "Z": 479.97
-      },
-      "argument": "",
-      "note": ""
-    }
+    "Boss|-772.27, -400.06, -600.18|",
+    "Wait|-689.56, -185.73, 480.35|5000",
+    "Boss|-704.09, -185.66, 479.97|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

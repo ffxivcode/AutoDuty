@@ -1,277 +1,33 @@
 {
   "actions": [
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 196.44,
-        "Y": 186,
-        "Z": -5.37
-      },
-      "argument": "2012811",
-      "note": "Magitek Terminal"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 226.77,
-        "Y": 156,
-        "Z": 1.32
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 172.81,
-        "Y": 156,
-        "Z": -25.49
-      },
-      "argument": "2012813",
-      "note": "Magitek Transporter"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 191.97,
-        "Y": 76,
-        "Z": 0.02
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 174.78,
-        "Y": 76,
-        "Z": 3.76
-      },
-      "argument": "2012815",
-      "note": "Magitek Terminal"
-    },
-    {
-      "name": "DutySpecificCode",
-      "position": {
-        "X": 174.68,
-        "Y": 102,
-        "Z": -66.46
-      },
-      "argument": "1",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 241.73,
-        "Y": 66.38,
-        "Z": 86.07
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 237.91,
-        "Y": 68.03,
-        "Z": 79.14
-      },
-      "argument": "10000",
-      "note": ""
-    },
-    {
-      "name": "WaitFor",
-      "position": {
-        "X": 83.61,
-        "Y": -107.99,
-        "Z": -31.14
-      },
-      "argument": "Combat",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 84.45,
-        "Y": -107.89,
-        "Z": -72.12
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "WaitFor",
-      "position": {
-        "X": 51,
-        "Y": -107.99,
-        "Z": -72.18
-      },
-      "argument": "Combat",
-      "note": ""
-    },
-    {
-      "name": "WaitFor",
-      "position": {
-        "X": -24.32,
-        "Y": -104,
-        "Z": 0.08
-      },
-      "argument": "Combat",
-      "note": ""
-    },
-    {
-      "name": "WaitFor",
-      "position": {
-        "X": -24.32,
-        "Y": -104,
-        "Z": 0.08
-      },
-      "argument": "Combat",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": -24.32,
-        "Y": -104,
-        "Z": 0.08
-      },
-      "argument": "false",
-      "note": ""
-    },
-    {
-      "name": "WaitFor",
-      "position": {
-        "X": -60.12,
-        "Y": -103.94,
-        "Z": 0.06
-      },
-      "argument": "Combat",
-      "note": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "true",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "1",
-      "note": ""
-    },
-    {
-      "name": "WaitFor",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "IsReady",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -83.86,
-        "Y": -103.94,
-        "Z": -0.08
-      },
-      "argument": "false",
-      "note": ""
-    },
-    {
-      "name": "DutySpecificCode",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -164.13,
-        "Y": -104.4,
-        "Z": -0.09
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -202.18,
-        "Y": -103.91,
-        "Z": -0.61
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -210.61,
-        "Y": -103.99,
-        "Z": -0.63
-      },
-      "argument": "false",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": -238.41,
-        "Y": -104,
-        "Z": -19.2
-      },
-      "argument": "2012817",
-      "note": "Magitek Terminal"
-    },
-    {
-      "name": "WaitFor",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "IsReady",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -566.27,
-        "Y": -268,
-        "Z": 219.83
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "WaitFor",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "IsReady",
-      "note": ""
-    }
+    "Interactable|196.44, 186.00, -5.37|2012811 (Magitek Terminal)",
+    "MoveTo|226.77, 156.00, 1.32|",
+    "Interactable|172.81, 156.00, -25.49|2012813 (Magitek Transporter)",
+    "Boss|191.97, 76.00, 0.02|",
+    "Interactable|174.78, 76.00, 3.76|2012815 (Magitek Terminal)",
+    "DutySpecificCode|174.68, 102.00, -66.46|1",
+    "MoveTo|241.73, 66.38, 86.07|",
+    "AutoMoveFor|237.91, 68.03, 79.14|10000",
+    "WaitFor|83.61, -107.99, -31.14|Combat",
+    "MoveTo|84.45, -107.89, -72.12|",
+    "WaitFor|51.00, -107.99, -72.18|Combat",
+    "WaitFor|-24.32, -104.00, 0.08|Combat",
+    "WaitFor|-24.32, -104.00, 0.08|Combat",
+    "StopForCombat|-24.32, -104.00, 0.08|false",
+    "WaitFor|-60.12, -103.94, 0.06|Combat",
+    "StopForCombat|0, 0, 0|true",
+    "Wait|0, 0, 0|1",
+    "WaitFor|0, 0, 0|IsReady",
+    "MoveTo|-83.86, -103.94, -0.08|false",
+    "DutySpecificCode|0, 0, 0|2",
+    "Boss|-164.13, -104.40, -0.09|",
+    "MoveTo|-202.18, -103.91, -0.61|",
+    "MoveTo|-210.61, -103.99, -0.63|false",
+    "Interactable|-238.41, -104.00, -19.20|2012817 (Magitek Terminal)",
+    "WaitFor|0, 0, 0|IsReady",
+    "Boss|-566.27, -268.00, 219.83|",
+    "WaitFor|0, 0, 0|IsReady"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -282,10 +38,6 @@
       {
         "version": 135,
         "change": "Added Duty Specific Code for Magitek stage"
-      },
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
       }
     ],
     "notes": []

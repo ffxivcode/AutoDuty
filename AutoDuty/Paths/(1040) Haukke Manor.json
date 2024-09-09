@@ -1,345 +1,42 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 70.33,
-        "Y": 0,
-        "Z": 29.12
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 64.87,
-        "Y": 0,
-        "Z": 30.58
-      },
-      "argument": "500",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000302",
-      "note": "Tiny Key"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 0.58,
-        "Y": -0,
-        "Z": 57.2
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000329",
-      "note": "Locked Door"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -26.22,
-        "Y": 0,
-        "Z": 50.81
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000303",
-      "note": "Tiny Key"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -35.94,
-        "Y": 0,
-        "Z": 75.39
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -36.03,
-        "Y": 0,
-        "Z": 0.43
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 7.83,
-        "Y": 0,
-        "Z": 0.06
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 11.04,
-        "Y": 0,
-        "Z": 0.02
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000324",
-      "note": "Green Key"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -47.79,
-        "Y": -0,
-        "Z": 0.06
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000355",
-      "note": "Ivy Door"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -51.84,
-        "Y": -0,
-        "Z": 12.88
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -60.04,
-        "Y": -0,
-        "Z": 12.65
-      },
-      "argument": "1500",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -0.19,
-        "Y": -18.8,
-        "Z": 33.91
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000343",
-      "note": "Locked Door"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -12.14,
-        "Y": -18.79,
-        "Z": 51.88
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000325",
-      "note": "Yellow Key"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -1.74,
-        "Y": -18.8,
-        "Z": 24.97
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -11.65,
-        "Y": -18.8,
-        "Z": 24.69
-      },
-      "argument": "2000",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -26.07,
-        "Y": -18.8,
-        "Z": 1.81
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000356",
-      "note": "Carnation Door"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 14.58,
-        "Y": -18.67,
-        "Z": 0.05
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "4000",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2001235",
-      "note": "Bloody Parchment"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 14.57,
-        "Y": -18.68,
-        "Z": -0.02
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2012969",
-      "note": "Aetherial Flow"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 46.69,
-        "Y": 9.87,
-        "Z": -0.08
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2001233",
-      "note": "Sealed Barrier"
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 22.76,
-        "Y": 17,
-        "Z": -0.24
-      },
-      "argument": "5000",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -10.65,
-        "Y": 17,
-        "Z": -0.01
-      },
-      "argument": "",
-      "note": ""
-    }
+    "MoveTo|70.33, 0, 29.12|",
+    "Wait|64.87, 0.00, 30.58|500",
+    "Interactable|0, 0, 0|2000302 (Tiny Key)",
+    "MoveTo|0.58, -0.00, 57.20|",
+    "Interactable|0, 0, 0|2000329 (Locked Door)",
+    "MoveTo|-26.22, 0, 50.81|",
+    "Interactable|0, 0, 0|2000303 (Tiny Key)",
+    "MoveTo|-35.94, 0.00, 75.39|",
+    "MoveTo|-36.03, 0.00, 0.43|",
+    "Boss|7.83, 0, 0.06|",
+    "MoveTo|11.04, 0.00, 0.02|",
+    "Interactable|0, 0, 0|2000324 (Green Key)",
+    "MoveTo|-47.79, -0.00, 0.06|",
+    "Interactable|0, 0, 0|2000355 (Ivy Door)",
+    "MoveTo|-51.84, -0.00, 12.88|",
+    "AutoMoveFor|-60.04, -0.00, 12.65|1500",
+    "MoveTo|-0.19, -18.80, 33.91|",
+    "Interactable|0, 0, 0|2000343 (Locked Door)",
+    "MoveTo|-12.14, -18.79, 51.88|",
+    "Interactable|0, 0, 0|2000325 (Yellow Key)",
+    "MoveTo|-1.74, -18.80, 24.97|",
+    "AutoMoveFor|-11.65, -18.80, 24.69|2000",
+    "MoveTo|-26.07, -18.80, 1.81|",
+    "Interactable|0, 0, 0|2000356 (Carnation Door)",
+    "Boss|14.58, -18.67, 0.05|",
+    "Wait|0, 0, 0|4000",
+    "Interactable|0, 0, 0|2001235 (Bloody Parchment)",
+    "MoveTo|14.57, -18.68, -0.02|",
+    "Interactable|0, 0, 0|2012969 (Aetherial Flow)",
+    "MoveTo|46.69, 9.87, -0.08|",
+    "Interactable|0, 0, 0|2001233 (Sealed Barrier)",
+    "Wait|22.76, 17, -0.24|5000",
+    "Boss|-10.65, 17, -0.01|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }
