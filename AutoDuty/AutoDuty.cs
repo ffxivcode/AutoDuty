@@ -1338,11 +1338,16 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (Interactables.Count == 0) return;
 
-        var list = Svc.Objects.Select(x => x.DataId).Intersect(Interactables);
-        
-        if (list.Any())// && Actions.OrderBy(x => Vector3.Distance()).Where(x => x.Position != Vector3.Zero))
+        var list = Svc.Objects.Where(x => Interactables.Contains(x.DataId));
+
+        if (!list.Any()) return;
+
+        var index = Actions.Select((Value, Index) => (Value, Index)).Where(x => Interactables.Contains(x.Value.Argument.Any(y => y == ' ') ? uint.Parse(x.Value.Argument.Split(" ")[0]) : uint.Parse(x.Value.Argument))).First().Index;
+
+        if (index > Indexer)
         {
-            Stage = Stage.Interactable;
+            Indexer = index;
+            Stage = Stage.Reading_Path;
         }
     }
 
