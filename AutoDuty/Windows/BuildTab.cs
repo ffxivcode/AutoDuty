@@ -36,7 +36,7 @@ namespace AutoDuty.Windows
         private static string _addActionButton = "Add"; 
         private static bool _dragDrop = false;
 
-        public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true};
+        public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
 
         private static void ClearAll()
         {

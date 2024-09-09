@@ -11,7 +11,6 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace AutoDuty.Managers
@@ -159,6 +158,7 @@ namespace AutoDuty.Managers
                             else if (!json.Contains("\"name\"") && !json.Contains("\"position\"") && !json.Contains("\"argument\""))
                             {
                                 json = json.Replace("actions", "actionsString");
+                                //Svc.Log.Info(json);
                                 pathFile = JsonSerializer.Deserialize<PathFile>(json);
                                 List<PathAction> pathActions = [];
                                 if (pathFile != null && pathFile.ActionsString != null && pathFile.ActionsString.Length != 0)
@@ -169,23 +169,27 @@ namespace AutoDuty.Managers
                                         var pathAction = new PathAction { Name = action[0] };
                                         if (action.Length > 1)
                                         {
-                                            var position = action[1].Split(", ");
+                                            var position = action[1].Replace(" ", string.Empty).Split(",");
+                                            
                                             pathAction.Position = new(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
+
+                                            
                                             if (action.Length == 3)
                                                 pathAction.Argument = action[2];
                                         }
-
                                         pathActions.Add(pathAction);
                                     });
+                                    pathFile.ActionsString = [];
                                     pathFile.Actions = [.. pathActions];
-
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = 161 });
                                     string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
+
                                     File.WriteAllText(FilePath, jsonNew);
                                 }
                             }
                             else
                             {
-                                pathFile = JsonSerializer.Deserialize<PathFile>(json);
+                                pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
                             }
 
                             RevivalFound = PathFile.Actions.Any(x => x.Name.Equals("Revival", StringComparison.CurrentCultureIgnoreCase));
@@ -201,7 +205,7 @@ namespace AutoDuty.Managers
                 }
             }
 
-            public PathAction[] Actions => PathFile.Actions;
+            public List<PathAction> Actions => PathFile.Actions;
             public uint[] Interactables => PathFile.Interactables;
             public bool RevivalFound { get; private set; }
         }

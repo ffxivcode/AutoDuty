@@ -289,7 +289,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (!Player.Available || messageJson.IsNullOrEmpty())
             return;
 
-        var message = System.Text.Json.JsonSerializer.Deserialize<Message>(messageJson);
+        var message = System.Text.Json.JsonSerializer.Deserialize<Message>(messageJson, BuildTab.jsonSerializerOptions);
 
         if (message == null) return;
 
@@ -899,7 +899,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 ]
             };
 
-            var messageJson = System.Text.Json.JsonSerializer.Serialize(message);
+            var messageJson = System.Text.Json.JsonSerializer.Serialize(message, BuildTab.jsonSerializerOptions);
 
             _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
         }
@@ -1289,12 +1289,12 @@ public sealed class AutoDuty : IDalamudPlugin
                         ]
                     };
 
-                    var messageJson = System.Text.Json.JsonSerializer.Serialize(message);
+                    var messageJson = System.Text.Json.JsonSerializer.Serialize(message, BuildTab.jsonSerializerOptions);
 
                     _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
                 }
             }
-            PathActions.InvokeAction(PathAction.Name, [.. PathAction.Argument]);
+            PathActions.InvokeAction(PathAction.Name, [(object)PathAction.Argument]);
             PathAction = new();
         }
     }

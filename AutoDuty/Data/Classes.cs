@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
@@ -68,7 +67,7 @@ namespace AutoDuty.Data
         internal class PathFile
         {
             [JsonPropertyName("actions")]
-            public PathAction[] Actions { get; set; } = [];
+            public List<PathAction> Actions { get; set; } = [];
 
             //BackwardsCompat
             [JsonPropertyName("actionsString")]
@@ -77,7 +76,7 @@ namespace AutoDuty.Data
             [JsonPropertyName("interactables")]
             public uint[] Interactables { get; set; } = [];
 
-            [JsonPropertyName("Meta")]
+            [JsonPropertyName("meta")]
             public PathFileMetaData Meta { get; set; } = new()
             {
                 CreatedAt = AutoDuty.Plugin.Configuration.Version,
