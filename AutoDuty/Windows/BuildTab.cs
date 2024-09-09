@@ -25,13 +25,14 @@ namespace AutoDuty.Windows
 
         private static bool _scrollBottom = false;
         private static string _changelog = string.Empty;
-        private static string _input = "";
+        private static string _input = string.Empty;
+        private static string _note = string.Empty;
         private static PathAction _action = new();
-        private static string _inputTextName = "";
+        private static string _inputTextName = string.Empty;
         private static bool _dontMove = false;
         private static float _inputIW = 200 * ImGuiHelpers.GlobalScale;
         private static bool _showAddActionUI = false;
-        private static (string, string, string) _dropdownSelected = ("", "", "");
+        private static (string, string, string) _dropdownSelected = (string.Empty, string.Empty, string.Empty);
         private static int _buildListSelected = -1;
         private static string _addActionButton = "Add"; 
         private static bool _dragDrop = false;
@@ -40,9 +41,10 @@ namespace AutoDuty.Windows
 
         private static void ClearAll()
         {
-            _input = "";
+            _input = string.Empty;
+            _note = string.Empty;
             _action = new();
-            _dropdownSelected = ("", "", "");
+            _dropdownSelected = (string.Empty, string.Empty, string.Empty);
             _buildListSelected = -1;
             _dontMove = false;
             _showAddActionUI = false;
@@ -123,7 +125,7 @@ namespace AutoDuty.Windows
                                 _input = Plugin.ClosestTargetableBattleNpc?.Name.TextValue ?? "";
                                 break;
                             default:
-                                _input = "";
+                                _input = string.Empty;
 
                                 _action = new PathAction { Name = $"{item.Item1}", Position = Player.Position };
                                 break;
@@ -223,16 +225,18 @@ namespace AutoDuty.Windows
                     if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty() && !_input.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) && (_input.Count(c => c == '|') < 2 || !_input.Split('|')[1].All(c => char.IsDigit(c) || c == ',' || c == ' ' || c == '-' || c == '.')))
                         MainWindow.ShowPopup("Error", "Input is not in the correct format\nAction|Position|ActionParams(if needed)");
                     if (_dontMove && _dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty())
-                        AddAction(new PathAction { Name = _input.Split('|')[0], Argument = _input.Split('|')[2] }, _buildListSelected);
+                        AddAction(new PathAction { Name = _input.Split('|')[0], Argument = _input.Split('|')[2], Note = _note }, _buildListSelected);
                     else if (_dropdownSelected.Item1.IsNullOrEmpty() && _dropdownSelected.Item2.IsNullOrEmpty())
-                        AddAction(new PathAction { Name = _input.Split('|')[0], Position = Player.Position, Argument = _input.Split('|')[2] }, _buildListSelected);
+                        AddAction(new PathAction { Name = _input.Split('|')[0], Position = Player.Position, Argument = _input.Split('|')[2], Note = _note }, _buildListSelected);
                     else if (_dontMove)
-                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Argument = _input });
+                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Argument = _input, Note = _note });
                     else
-                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Position = Player.Position, Argument = _input });
+                        AddAction(new PathAction { Name = _dropdownSelected.Item1, Position = Player.Position, Argument = _input, Note = _note });
                 }
                 ImGui.SameLine(0, 5);
                 ImGui.Checkbox("Dont Move", ref _dontMove);
+                ImGui.SameLine(8, 5);
+                ImGui.InputText("Note", ref _note, 100);
                 ImGui.Spacing();
                 ImGui.Separator();
                 ImGui.Spacing();
@@ -246,7 +250,7 @@ namespace AutoDuty.Windows
                     {
                         var v4 = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
 
-                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.Name}|{item.Value.Position:F2}|{item.Value.Argument}";
+                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Name : $"{item.Value.Name}|{item.Value.Position:F2}|{item.Value.Argument} ({item.Value.Note})";
 
                         ImGui.PushStyleColor(ImGuiCol.Text, v4);
                         if (ImGui.Selectable(text, item.Index == _buildListSelected, ImGuiSelectableFlags.AllowDoubleClick))

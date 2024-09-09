@@ -182,12 +182,12 @@ namespace AutoDuty.Managers
                                                 var note = string.Empty;
                                                 if (action[2].Contains(" (") && action[2].Contains(')'))
                                                 {
-                                                    var argumentArray = action[2].Split(' ');
+                                                    var argumentArray = action[2].Split(" (");
 
                                                     if (int.TryParse(argumentArray[0], out _))
                                                     {
                                                         argument = argumentArray[0];
-                                                        note = argumentArray[1].Replace("(", string.Empty).Replace(")", string.Empty);
+                                                        note = action[2].Replace(argument, string.Empty);
                                                     }
                                                     else
                                                         argument = action[2];
