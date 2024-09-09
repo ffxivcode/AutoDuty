@@ -1,42 +1,12 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 0.02,
-        "Y": 10.54,
-        "Z": -8.32
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 1.86,
-        "Y": 10.62,
-        "Z": -6.24
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -2.34,
-        "Y": 10.57,
-        "Z": -6.41
-      },
-      "argument": ""
-    }
+    "MoveTo|0.02, 10.54, -8.32|",
+    "MoveTo|1.86, 10.62, -6.24|",
+    "MoveTo|-2.34, 10.57, -6.41|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

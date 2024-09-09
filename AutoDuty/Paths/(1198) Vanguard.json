@@ -1,177 +1,27 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -100.27,
-        "Y": 0,
-        "Z": 263.57
-      },
-      "argument": ""
-    },
-    {
-      "name": "Revival",
-      "position": {
-        "X": -100.3,
-        "Y": 7,
-        "Z": 238.13
-      },
-      "argument": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -100.24,
-        "Y": 7,
-        "Z": 201.67
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -99.98,
-        "Y": 7,
-        "Z": 190.82
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -71.78,
-        "Y": 7.01,
-        "Z": 102.07
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -56.91,
-        "Y": 7,
-        "Z": 102.18
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -41.32,
-        "Y": 7.05,
-        "Z": 94.14
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -46.36,
-        "Y": 7.05,
-        "Z": -37.68
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 0.06,
-        "Y": 7.03,
-        "Z": -38.12
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 5.71,
-        "Y": 7,
-        "Z": -46.47
-      },
-      "argument": ""
-    },
-    {
-      "name": "Revival",
-      "position": {
-        "X": -0.06,
-        "Y": 7.03,
-        "Z": -72.58
-      },
-      "argument": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 0.06,
-        "Y": 7,
-        "Z": -103.67
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 19.05,
-        "Y": 7,
-        "Z": -327.04
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 21.55,
-        "Y": 7.03,
-        "Z": -320.29
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 99.11,
-        "Y": 7.05,
-        "Z": -347.91
-      },
-      "argument": ""
-    },
-    {
-      "name": "Revival",
-      "position": {
-        "X": 90.25,
-        "Y": 11.97,
-        "Z": -405.15
-      },
-      "argument": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 90.05,
-        "Y": 12,
-        "Z": -437.4
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 90.08,
-        "Y": 12,
-        "Z": -438.87
-      },
-      "argument": ""
-    }
+    "MoveTo|-100.27, 0.00, 263.57|",
+    "Revival|-100.30, 7.00, 238.13|",
+    "Boss|-100.24, 7.00, 201.67|",
+    "MoveTo|-99.98, 7.00, 190.82|",
+    "MoveTo|-71.78, 7.01, 102.07|",
+    "MoveTo|-56.91, 7.00, 102.18|",
+    "MoveTo|-41.32, 7.05, 94.14|",
+    "MoveTo|-46.36, 7.05, -37.68|",
+    "MoveTo|0.06, 7.03, -38.12|",
+    "MoveTo|5.71, 7.00, -46.47|",
+    "Revival|-0.06, 7.03, -72.58|",
+    "Boss|0.06, 7.00, -103.67|",
+    "MoveTo|19.05, 7.00, -327.04|",
+    "MoveTo|21.55, 7.03, -320.29|",
+    "MoveTo|99.11, 7.05, -347.91|",
+    "Revival|90.25, 11.97, -405.15|",
+    "Boss|90.05, 12.00, -437.40|",
+    "MoveTo|90.08, 12.00, -438.87|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

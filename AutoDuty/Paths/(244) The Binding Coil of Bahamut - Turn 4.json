@@ -1,69 +1,15 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -15.94,
-        "Y": 0.06,
-        "Z": 15.74
-      },
-      "argument": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Silent Terminal"
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "10000"
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 7.42,
-        "Y": 0.06,
-        "Z": 7.13
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 11.74,
-        "Y": 0.06,
-        "Z": 12.12
-      },
-      "argument": ""
-    }
+    "MoveTo|-15.94, 0.06, 15.74|",
+    "Interactable|0, 0, 0|Silent Terminal",
+    "Wait|0, 0, 0|10000",
+    "Wait|0, 0, 0|2000",
+    "MoveTo|7.42, 0.06, 7.13|",
+    "MoveTo|11.74, 0.06, 12.12|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

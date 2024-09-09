@@ -1,123 +1,21 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -312.43,
-        "Y": 87.2,
-        "Z": 192.42
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -192.01,
-        "Y": 67.4,
-        "Z": 141.59
-      },
-      "argument": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -180.65,
-        "Y": 60,
-        "Z": 68.23
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 22.16,
-        "Y": 60.69,
-        "Z": 41.61
-      },
-      "argument": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 25.87,
-        "Y": 61.22,
-        "Z": 39.43
-      },
-      "argument": "1000"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 133.02,
-        "Y": 35.15,
-        "Z": 38.38
-      },
-      "argument": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 133.63,
-        "Y": 30,
-        "Z": -28.93
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 293.74,
-        "Y": 14.83,
-        "Z": -110.51
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 370.05,
-        "Y": 5,
-        "Z": -139.35
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 371.03,
-        "Y": 13.76,
-        "Z": -234.19
-      },
-      "argument": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 370.38,
-        "Y": 13.9,
-        "Z": -236.95
-      },
-      "argument": "1000"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 371.18,
-        "Y": -15,
-        "Z": -264.49
-      },
-      "argument": ""
-    }
+    "MoveTo|-312.43, 87.20, 192.42|",
+    "MoveTo|-192.01, 67.40, 141.59|",
+    "Boss|-180.65, 60.00, 68.23|",
+    "MoveTo|22.16, 60.69, 41.61|",
+    "AutoMoveFor|25.87, 61.22, 39.43|1000",
+    "MoveTo|133.02, 35.15, 38.38|",
+    "Boss|133.63, 30.00, -28.93|",
+    "MoveTo|293.74, 14.83, -110.51|",
+    "MoveTo|370.05, 5.00, -139.35|",
+    "MoveTo|371.03, 13.76, -234.19|",
+    "AutoMoveFor|370.38, 13.90, -236.95|1000",
+    "Boss|371.18, -15.00, -264.49|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 130,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

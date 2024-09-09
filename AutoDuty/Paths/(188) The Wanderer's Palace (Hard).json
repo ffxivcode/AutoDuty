@@ -1,231 +1,33 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 125.51,
-        "Y": -14.05,
-        "Z": 245.51
-      },
-      "argument": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 124.93,
-        "Y": -12,
-        "Z": 102.9
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 125.11,
-        "Y": -12.05,
-        "Z": 92.02
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 77.39,
-        "Y": -10.16,
-        "Z": 28.32
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 43.84,
-        "Y": -0.16,
-        "Z": -16.95
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -24.84,
-        "Y": -0.3,
-        "Z": -38.27
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -26.67,
-        "Y": -0.16,
-        "Z": -144.68
-      },
-      "argument": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 43.41,
-        "Y": -0.01,
-        "Z": -237.47
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 37.87,
-        "Y": 0,
-        "Z": -248.99
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 76.67,
-        "Y": -12,
-        "Z": -317.85
-      },
-      "argument": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Asylum Key"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 70.92,
-        "Y": -12,
-        "Z": -312.26
-      },
-      "argument": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Asylum Cell"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 71.16,
-        "Y": -12,
-        "Z": -324.09
-      },
-      "argument": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Asylum Cell"
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": 93.03,
-        "Y": -11.88,
-        "Z": -311.96
-      },
-      "argument": "6000"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 123.89,
-        "Y": -11.98,
-        "Z": -340.46
-      },
-      "argument": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Drainage Valve"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 156.95,
-        "Y": -7.88,
-        "Z": -351.16
-      },
-      "argument": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "Nymian Device"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 72.07,
-        "Y": 9.98,
-        "Z": -395.48
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 90.68,
-        "Y": 6,
-        "Z": -407.25
-      },
-      "argument": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 73.46,
-        "Y": 6,
-        "Z": -442.36
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 72.86,
-        "Y": 6,
-        "Z": -461.79
-      },
-      "argument": ""
-    }
+    "MoveTo|125.51, -14.05, 245.51|",
+    "Boss|124.93, -12.00, 102.90|",
+    "MoveTo|125.11, -12.05, 92.02|",
+    "MoveTo|77.39, -10.16, 28.32|",
+    "MoveTo|43.84, -0.16, -16.95|",
+    "MoveTo|-24.84, -0.30, -38.27|",
+    "MoveTo|-26.67, -0.16, -144.68|",
+    "Boss|43.41, -0.01, -237.47|",
+    "MoveTo|37.87, 0.00, -248.99|",
+    "MoveTo|76.67, -12.00, -317.85|",
+    "Interactable|0, 0, 0|Asylum Key",
+    "MoveTo|70.92, -12.00, -312.26|",
+    "Interactable|0, 0, 0|Asylum Cell",
+    "MoveTo|71.16, -12.00, -324.09|",
+    "Interactable|0, 0, 0|Asylum Cell",
+    "Wait|93.03, -11.88, -311.96|6000",
+    "MoveTo|123.89, -11.98, -340.46|",
+    "Interactable|0, 0, 0|Drainage Valve",
+    "MoveTo|156.95, -7.88, -351.16|",
+    "Interactable|0, 0, 0|Nymian Device",
+    "MoveTo|72.07, 9.98, -395.48|",
+    "MoveTo|90.68, 6.00, -407.25|",
+    "Boss|73.46, 6.00, -442.36|",
+    "MoveTo|72.86, 6.00, -461.79|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

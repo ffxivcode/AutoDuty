@@ -1,33 +1,11 @@
 {
   "actions": [
-    {
-      "name": "ChatCommand",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "/bmrai off"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 0.08,
-        "Y": 0,
-        "Z": -1.43
-      },
-      "argument": ""
-    }
+    "ChatCommand|0, 0, 0|/bmrai off",
+    "Boss|0.08, 0.00, -1.43|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

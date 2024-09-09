@@ -1,222 +1,32 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -0.38,
-        "Y": 0,
-        "Z": 34.09
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -17.41,
-        "Y": 7.15,
-        "Z": 26.78
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -27.43,
-        "Y": 15.42,
-        "Z": 16.57
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -28.9,
-        "Y": 18,
-        "Z": 4.89
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -21.72,
-        "Y": 26.52,
-        "Z": -24.69
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -5.55,
-        "Y": 36,
-        "Z": -31.13
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -2.17,
-        "Y": 36,
-        "Z": -24.01
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -16.67,
-        "Y": 36,
-        "Z": -14.97
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -19.22,
-        "Y": 42,
-        "Z": 9.84
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 3.86,
-        "Y": 42,
-        "Z": 19.85
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 20.34,
-        "Y": 42,
-        "Z": 9.41
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 19.93,
-        "Y": 36,
-        "Z": -14.36
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 25.01,
-        "Y": 22.83,
-        "Z": -18.96
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 28.01,
-        "Y": 18,
-        "Z": -7.26
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 14.2,
-        "Y": 18,
-        "Z": -16.78
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 16.27,
-        "Y": 17.43,
-        "Z": -19.14
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 19.59,
-        "Y": 9.21,
-        "Z": -24.06
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 30.98,
-        "Y": 0,
-        "Z": -11.39
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 36.96,
-        "Y": 0,
-        "Z": -0.27
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 56.76,
-        "Y": 0,
-        "Z": -0.05
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 57.67,
-        "Y": -0,
-        "Z": -18.78
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 58,
-        "Y": -9,
-        "Z": -41.79
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 57.84,
-        "Y": -9,
-        "Z": -55.32
-      },
-      "argument": ""
-    }
+    "MoveTo|-0.38, 0.00, 34.09|",
+    "MoveTo|-17.41, 7.15, 26.78|",
+    "MoveTo|-27.43, 15.42, 16.57|",
+    "MoveTo|-28.90, 18.00, 4.89|",
+    "MoveTo|-21.72, 26.52, -24.69|",
+    "MoveTo|-5.55, 36.00, -31.13|",
+    "MoveTo|-2.17, 36.00, -24.01|",
+    "MoveTo|-16.67, 36.00, -14.97|",
+    "MoveTo|-19.22, 42.00, 9.84|",
+    "MoveTo|3.86, 42.00, 19.85|",
+    "MoveTo|20.34, 42.00, 9.41|",
+    "MoveTo|19.93, 36.00, -14.36|",
+    "MoveTo|25.01, 22.83, -18.96|",
+    "MoveTo|28.01, 18.00, -7.26|",
+    "MoveTo|14.20, 18.00, -16.78|",
+    "MoveTo|16.27, 17.43, -19.14|",
+    "MoveTo|19.59, 9.21, -24.06|",
+    "MoveTo|30.98, 0.00, -11.39|",
+    "MoveTo|36.96, 0.00, -0.27|",
+    "MoveTo|56.76, 0.00, -0.05|",
+    "MoveTo|57.67, -0.00, -18.78|",
+    "MoveTo|58.00, -9.00, -41.79|",
+    "MoveTo|57.84, -9.00, -55.32|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 157,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

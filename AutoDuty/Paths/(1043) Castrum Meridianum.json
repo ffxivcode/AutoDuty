@@ -1,98 +1,21 @@
 {
   "actions": [
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 194.67,
-        "Y": 91.74,
-        "Z": -93.41
-      },
-      "argument": ""
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "False"
-    },
-    {
-      "name": "StopForCombat",
-      "position": {
-        "X": 125.65,
-        "Y": 89.67,
-        "Z": -66.37
-      },
-      "argument": "True"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 17.66,
-        "Y": 70.17,
-        "Z": -40.17
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 41.65,
-        "Y": 71.25,
-        "Z": -11.35
-      },
-      "argument": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "2000597 (Disposal Chute)"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -12.56,
-        "Y": 70.09,
-        "Z": 34.26
-      },
-      "argument": ""
-    },
-    {
-      "name": "Wait",
-      "position": {
-        "X": -83.88,
-        "Y": 72,
-        "Z": -35.23
-      },
-      "argument": "30000"
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": -100.38,
-        "Y": 72,
-        "Z": -32.47
-      },
-      "argument": ""
-    }
+    "MoveTo|194.67, 91.74, -93.41|",
+    "StopForCombat|0, 0, 0|False",
+    "StopForCombat|125.65, 89.67, -66.37|True",
+    "Boss|17.66, 70.17, -40.17|",
+    "MoveTo|41.65, 71.25, -11.35|",
+    "Interactable|0, 0, 0|2000597 (Disposal Chute)",
+    "Boss|-12.56, 70.09, 34.26|",
+    "Wait|-83.88, 72.00, -35.23|30000",
+    "Boss|-100.38, 72.00, -32.47|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
       {
         "version": 114,
         "change": "Added StopForCombat to avoid potentially getting stuck on Fence, and a Wait step for before the boss to avoid leaving duty early"
-      },
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
       }
     ],
     "notes": []

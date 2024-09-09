@@ -1,51 +1,13 @@
 {
   "actions": [
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -33.68,
-        "Y": 97.71,
-        "Z": -108.68
-      },
-      "argument": "5000"
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": -8.33,
-        "Y": 50.86,
-        "Z": -21.2
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 12.35,
-        "Y": 53.64,
-        "Z": 34.25
-      },
-      "argument": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 18.88,
-        "Y": 53.19,
-        "Z": 28.86
-      },
-      "argument": ""
-    }
+    "AutoMoveFor|-33.68, 97.71, -108.68|5000",
+    "MoveTo|-8.33, 50.86, -21.20|",
+    "MoveTo|12.35, 53.64, 34.25|",
+    "MoveTo|18.88, 53.19, 28.86|"
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }
