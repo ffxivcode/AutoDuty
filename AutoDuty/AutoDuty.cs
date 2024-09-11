@@ -1008,7 +1008,11 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             if (Configuration.AutoManageBossModAISettings)
             {
-                var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
+                var mdt = BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0];
+
+                if (mdt.IsNullOrEmpty()) return;
+
+                var gotMDT = float.TryParse(mdt, out float floatMDT);
 
                 if (!gotMDT)
                     return;
@@ -1040,7 +1044,11 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (Configuration.AutoManageBossModAISettings)
             {
-                var gotMDT = float.TryParse(BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0], out float floatMDT);
+                var mdt = BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget"], false)[0];
+
+                if (mdt.IsNullOrEmpty()) return;
+
+                var gotMDT = float.TryParse(mdt, out float floatMDT);
 
                 if (gotMDT && floatMDT != Configuration.MaxDistanceToTargetFloat)
                 {
