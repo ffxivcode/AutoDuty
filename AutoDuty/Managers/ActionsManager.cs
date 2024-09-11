@@ -170,11 +170,11 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
         }
 
-        public unsafe void ForceAttack(string timeoutTime)
+        public unsafe void ForceAttack(PathAction action)
         {
-            var tot = timeoutTime.IsNullOrEmpty() ? 10000 : int.TryParse(timeoutTime, out int time) ? time : 0;
-            if (timeoutTime.IsNullOrEmpty())
-                timeoutTime = "10000";
+            var tot = action.Argument.IsNullOrEmpty() ? 10000 : int.TryParse(action.Argument, out int time) ? time : 0;
+            if (action.Argument.IsNullOrEmpty())
+                action.Argument = "10000";
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack-GA16");
             _taskManager.Enqueue(() => Svc.Targets.Target != null, 500, "ForceAttack-GA1");
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1), "ForceAttack-GA1");
