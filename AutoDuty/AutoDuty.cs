@@ -948,15 +948,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 return;
             }
         }
-        /*if (Configuration.LootTreasure && !Configuration.LootBossTreasureOnly && EzThrottler.Throttle("TreasureCofferCheck", 25))
-        {
-            treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(ObjectKind.Treasure)?.FirstOrDefault(o => ObjectHelper.GetDistanceToPlayer(o) <= Plugin.Configuration.TreasureCofferScanDistance);
-            if (treasureCofferGameObject == null || !treasureCofferGameObject.IsTargetable)
-                return;
-            VNavmesh_IPCSubscriber.Path_Stop();
-            Stage = 8;
-            return;
-        }*/
     }
 
     private void StageAction()
