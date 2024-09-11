@@ -67,9 +67,10 @@ namespace AutoDuty.Helpers
             //Empyreum
             (Svc.ClientState.TerritoryType == 979 &&
             ((whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 164) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 165) || (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 165)));
+
         internal static ActionState State = ActionState.None;
 
-        private static IGameObject? _entranceGameObject => ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)?.FirstOrDefault(x => x.DataId == 2002737 || x.DataId == 2007402);
+        private static IGameObject? _entranceGameObject => _whichHousing == Housing.FC_Estate ? TeleportHelper.FCEstateEntranceGameObject : (_whichHousing == Housing.Personal_Home ? TeleportHelper.PersonalHomeEntranceGameObject : TeleportHelper.ApartmentEntranceGameObject);
         private static Housing _whichHousing = Housing.Apartment;
         private static List<Vector3> _entrancePath => _whichHousing == Housing.Personal_Home ? AutoDuty.Plugin.Configuration.PersonalHomeEntrancePath : AutoDuty.Plugin.Configuration.FCEstateEntrancePath;
         private static int _index = 0;
@@ -104,7 +105,7 @@ namespace AutoDuty.Helpers
 
             EzThrottler.Throttle("GotoHousing", 50);
 
-            if (Svc.ClientState.LocalPlayer == null)
+            if (!Player.Available)
             {
                 Svc.Log.Debug($"Our player is null");
                 return;
@@ -157,6 +158,8 @@ namespace AutoDuty.Helpers
                         _index++;
                     }
                 }
+                else if (_entranceGameObject == null)
+                    Svc.Log.Debug($"unable to find entrance door {TeleportHelper.FCEstateWardCenterVector3} {TeleportHelper.FCEstateEntranceGameObject}");
                 else if (MovementHelper.Move(_entranceGameObject, 0.25f, 3f, false, false))
                 {
                     Svc.Log.Debug($"We are in range of the entrance door, entering");
