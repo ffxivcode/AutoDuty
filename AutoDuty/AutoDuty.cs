@@ -876,7 +876,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
         {
-            if (PathAction.Name == "MoveTo" && bool.TryParse((string)PathAction.Argument, out bool useMesh) && !useMesh)
+            if (PathAction.Name == "MoveTo" && bool.TryParse(PathAction.Argument, out bool useMesh) && !useMesh)
                 VNavmesh_IPCSubscriber.Path_MoveTo([PathAction.Position], false);
             else
                 VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(PathAction.Position, false);
