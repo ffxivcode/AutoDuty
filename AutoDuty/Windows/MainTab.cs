@@ -192,6 +192,7 @@ namespace AutoDuty.Windows
                             else
                                 MainWindow.ShowPopup("Error", "No path was found");
                         }
+                        //MainWindow.DrawPopup();
                     }
                     else
                         MainWindow.StopResumePause();
