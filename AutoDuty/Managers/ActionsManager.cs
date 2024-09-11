@@ -16,8 +16,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using static Lumina.Data.Parsing.Layer.LayerCommon;
 
 namespace AutoDuty.Managers
 {
@@ -306,12 +304,15 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
-        public void MoveToObject(string objectName)
+        public unsafe void MoveToObject(string objectDataId)
         {
+            if (!TryGetObjectIdRegex(objectDataId, out objectDataId)) return;
+
             IGameObject? gameObject = null;
-            AutoDuty.Plugin.Action = $"MoveToObject: {objectName}";
-            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByName(objectName)) != null, "MoveToObject");
-            _taskManager.Enqueue(() => MovementHelper.Move(gameObject), int.MaxValue, "MoveToObject");
+            AutoDuty.Plugin.Action = $"MoveToObject: {objectDataId}";
+
+            _taskManager.Enqueue(() => ObjectHelper.TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject), "MoveToObject-GetGameObject");
+            _taskManager.Enqueue(() => MovementHelper.Move(gameObject), int.MaxValue, "MoveToObject-Move");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
@@ -333,12 +334,15 @@ namespace AutoDuty.Managers
             return false;
         }
 
-        public void Target(string objectName)
+        public unsafe void Target(string objectDataId)
         {
+            if (!TryGetObjectIdRegex(objectDataId, out objectDataId)) return;
+
             IGameObject? gameObject = null;
-            AutoDuty.Plugin.Action = $"Target: {objectName}";
-            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByPartialName(objectName)) != null, "Target");
-            _taskManager.Enqueue(() => TargetCheck(gameObject), "Target");
+            AutoDuty.Plugin.Action = $"Target: {objectDataId}";
+
+            _taskManager.Enqueue(() => ObjectHelper.TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject), "Target-GetGameObject");
+            _taskManager.Enqueue(() => TargetCheck(gameObject), "Target-Check");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
@@ -412,28 +416,30 @@ namespace AutoDuty.Managers
                 }
             }, "Interactable-LoopCheck");
         }
-        public unsafe void Interactable(string objectName)
+
+        public unsafe void Interactable(string objectDataId)
         {
+            if (!TryGetObjectIdRegex(objectDataId, out objectDataId)) return;
             IGameObject? gameObject = null;
+            AutoDuty.Plugin.Action = $"Interactable: {objectDataId}";
 
-            AutoDuty.Plugin.Action = $"Interactable: {objectName}";
-
-            Match match = RegexHelper.InteractionObjectIdRegex().Match(objectName);
-            string id = match.Success ? match.Captures.First().Value : string.Empty;
-
-            _taskManager.Enqueue(() => (gameObject = (match.Success ? ObjectHelper.GetObjectByDataId(Convert.ToUInt32(id)) : null) ?? ObjectHelper.GetObjectByName(objectName)) != null || Player.Character->InCombat, "Interactable-GetGameObjectUnlessInCombat");
+            _taskManager.Enqueue(() => ObjectHelper.TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject) || Player.Character->InCombat, "Interactable-GetGameObjectUnlessInCombat");
             _taskManager.Enqueue(() =>
             {
                 if (Player.Character->InCombat)
                 {
                     _taskManager.Abort();
                     _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Interactable-InCombatWait");
-                    Interactable(objectName);
+                    Interactable(objectDataId);
                 }
-            }, "Interactable-InCombatCheck");
+                else if (gameObject == null)
+                    _taskManager.Abort();
+                }, "Interactable-InCombatCheck");
             _taskManager.Enqueue(() => gameObject?.IsTargetable ?? true, "Interactable-WaitGameObjectTargetable");
             _taskManager.Enqueue(() => Interactable(gameObject), "Interactable-InteractableLoop");
         }
+
+        private bool TryGetObjectIdRegex(string input, out string output) => (RegexHelper.ObjectIdRegex().Match(input).Success ? output = RegexHelper.ObjectIdRegex().Match(input).Captures.First().Value : output = string.Empty) != string.Empty;
 
         private bool BossCheck()
         {

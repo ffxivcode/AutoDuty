@@ -1,33 +1,255 @@
 {
   "actions": [
-    "Wait|-46.57, 58.06, -312.58|3000",
-    "ForceAttack|-46.57, 58.06, -312.58|",
-    "MoveTo|-144.47, 35.49, -330.17|",
-    "MoveTo|-142.14, 24.97, -304.90|",
-    "MoveTo|-173.92, 5.03, -339.37|",
-    "Wait|-174.49, 6.07, -303.28|3000",
-    "ForceAttack|-174.49, 6.07, -303.28|",
-    "Wait|-174.24, 6.56, -301.67|3000",
-    "ForceAttack|-174.24, 6.56, -301.67|",
-    "Boss|-220.94, 11.93, -280.28|",
-    "AutoMoveFor|-268.99, 9.77, -280.11|3000",
-    "Wait|-183.86, -252.50, -412.03|5000",
-    "Wait|-216.49, -280.90, -288.60|5000",
-    "Boss|-269.13, -278.67, -229.48|",
-    "MoveTo|-294.85, -273.40, -185.39|",
-    "Interactable|0, 0, 0|Stone of Transference",
-    "Wait|0, 0, 0|6000",
-    "Wait|155.31, -844.91, 269.02|5000",
-    "Wait|216.86, -856.44, 252.45|5000",
-    "Wait|261.75, -867.96, 297.96|5000",
-    "Boss|230.71, -854.50, 413.33|",
-    "Wait|0, 0, 0|5000",
-    "Boss|230.71, -854.50, 414.33|",
-    "Wait|0, 0, 0|4000"
+    {
+      "name": "Wait",
+      "position": {
+        "X": -46.57,
+        "Y": 58.06,
+        "Z": -312.58
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": -46.57,
+        "Y": 58.06,
+        "Z": -312.58
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -144.47,
+        "Y": 35.49,
+        "Z": -330.17
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -142.14,
+        "Y": 24.97,
+        "Z": -304.9
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -173.92,
+        "Y": 5.03,
+        "Z": -339.37
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -174.49,
+        "Y": 6.07,
+        "Z": -303.28
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": -174.49,
+        "Y": 6.07,
+        "Z": -303.28
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -174.24,
+        "Y": 6.56,
+        "Z": -301.67
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": -174.24,
+        "Y": 6.56,
+        "Z": -301.67
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -220.94,
+        "Y": 11.93,
+        "Z": -280.28
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -268.99,
+        "Y": 9.77,
+        "Z": -280.11
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -183.86,
+        "Y": -252.5,
+        "Z": -412.03
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -216.49,
+        "Y": -280.9,
+        "Z": -288.6
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -269.13,
+        "Y": -278.67,
+        "Z": -229.48
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -294.85,
+        "Y": -273.4,
+        "Z": -185.39
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Stone of Transference",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "6000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 155.31,
+        "Y": -844.91,
+        "Z": 269.02
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 216.86,
+        "Y": -856.44,
+        "Z": 252.45
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 261.75,
+        "Y": -867.96,
+        "Z": 297.96
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 230.71,
+        "Y": -854.5,
+        "Z": 413.33
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 230.71,
+        "Y": -854.5,
+        "Z": 414.33
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "4000",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

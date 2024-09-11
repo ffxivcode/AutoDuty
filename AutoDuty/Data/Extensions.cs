@@ -1,7 +1,13 @@
-﻿namespace AutoDuty.Data
+﻿using System.Numerics;
+
+namespace AutoDuty.Data
 {
     public static class Extensions
     {
+        public static string ToCustomString(this PathAction pathAction) => $"{pathAction.Name}|{pathAction.Position.ToCustomString()}|{pathAction.Argument}|{pathAction.Note}";
+
+        public static string ToCustomString(this Vector3 vector3) => $"{vector3.X:F2}, {vector3.Y:F2}, {vector3.Z:F2}";
+
         public static string ToName(this Sounds value)
         {
             return value switch

@@ -1,40 +1,325 @@
 {
   "actions": [
-    "Wait|145.46, 134.00, 815.67|12000",
-    "Wait|134.96, 134.00, 806.27|20000",
-    "Interactable|0, 0, 0|2012808 (Perceptive Portal)",
-    "Wait|0, 0, 0|3000",
-    "MoveTo|-700.95, 58.75, 206.09|",
-    "MoveTo|-770.98, 49.11, 158.88|",
-    "Wait|-771.33, 49.86, 155.12|4000",
-    "Wait|-781.12, 45.32, 84.27|4000",
-    "Revival|-775.46, 41.51, 47.68|",
-    "Boss|-774.97, 41.00, 17.00|",
-    "MoveTo|-774.96, 41.00, -1.30|",
-    "AutoMoveFor|-775.15, 41.00, -27.35|6000",
-    "MoveTo|-701.45, 42.00, 709.63|",
-    "Wait|-730.69, 42.92, 707.21|4000",
-    "MoveTo|-736.27, 54.10, 674.26|",
-    "Wait|-692.34, 66.00, 675.70|1000",
-    "Wait|-700.00, 66.00, 676.37|20000",
-    "PausePandora|0, 0, 0|Auto-interact with Objects in Instances|100000",
-    "MoveTo|-700.06, 66.00, 682.42|",
-    "Interactable|0, 0, 0|2013318 (Auspice Glass)",
-    "MoveTo|-701.44, 66.00, 681.77|",
-    "MoveTo|-702.22, 66.00, 725.67|",
-    "Wait|-722.78, 66.00, 716.37|8000",
-    "Wait|-727.76, 66.00, 700.72|7000",
-    "MoveTo|-736.54, 66.00, 709.66|",
-    "AutoMoveFor|-717.56, 85.34, 736.89|4000",
-    "Wait|-702.40, -21.75, 579.02|500",
-    "Wait|-699.33, -21.75, 578.84|500",
-    "Revival|-699.99, -21.75, 575.51|",
-    "Boss|-699.99, -20.00, 535.85|",
-    "MoveTo|-700.09, -20.00, 524.21|"
+    {
+      "name": "Wait",
+      "position": {
+        "X": 145.46,
+        "Y": 134,
+        "Z": 815.67
+      },
+      "argument": "12000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 134.96,
+        "Y": 134,
+        "Z": 806.27
+      },
+      "argument": "20000",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2012808",
+      "note": "Perceptive Portal"
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "3000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -700.95,
+        "Y": 58.75,
+        "Z": 206.09
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -770.98,
+        "Y": 49.11,
+        "Z": 158.88
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -771.33,
+        "Y": 49.86,
+        "Z": 155.12
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -781.12,
+        "Y": 45.32,
+        "Z": 84.27
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -775.46,
+        "Y": 41.51,
+        "Z": 47.68
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -774.97,
+        "Y": 41,
+        "Z": 17
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -774.96,
+        "Y": 41,
+        "Z": -1.3
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -775.15,
+        "Y": 41,
+        "Z": -27.35
+      },
+      "argument": "6000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -701.45,
+        "Y": 42,
+        "Z": 709.63
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -730.69,
+        "Y": 42.92,
+        "Z": 707.21
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -736.27,
+        "Y": 54.1,
+        "Z": 674.26
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -692.34,
+        "Y": 66,
+        "Z": 675.7
+      },
+      "argument": "1000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -700,
+        "Y": 66,
+        "Z": 676.37
+      },
+      "argument": "20000",
+      "note": ""
+    },
+    {
+      "name": "PausePandora",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -700.06,
+        "Y": 66,
+        "Z": 682.42
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "2013318",
+      "note": "Auspice Glass"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -701.44,
+        "Y": 66,
+        "Z": 681.77
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -702.22,
+        "Y": 66,
+        "Z": 725.67
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -722.78,
+        "Y": 66,
+        "Z": 716.37
+      },
+      "argument": "8000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -727.76,
+        "Y": 66,
+        "Z": 700.72
+      },
+      "argument": "7000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -736.54,
+        "Y": 66,
+        "Z": 709.66
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -717.56,
+        "Y": 85.34,
+        "Z": 736.89
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -702.4,
+        "Y": -21.75,
+        "Z": 579.02
+      },
+      "argument": "500",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": -699.33,
+        "Y": -21.75,
+        "Z": 578.84
+      },
+      "argument": "500",
+      "note": ""
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": -699.99,
+        "Y": -21.75,
+        "Z": 575.51
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -699.99,
+        "Y": -20,
+        "Z": 535.85
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -700.09,
+        "Y": -20,
+        "Z": 524.21
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

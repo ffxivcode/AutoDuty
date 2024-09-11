@@ -1,27 +1,195 @@
 {
   "actions": [
-    "MoveTo|46.94, 366.00, -576.15|",
-    "Wait|0, 0, 0|5000",
-    "MoveTo|45.84, 365.97, -585.71|",
-    "MoveTo|27.93, 386.02, -685.85|",
-    "Boss|23.83, 386.06, -742.13|",
-    "MoveTo|-19.50, 398.27, -811.98|",
-    "AutoMoveFor|-20.10, 398.27, -820.59|4000",
-    "MoveTo|302.21, 67.10, -173.43|",
-    "MoveTo|344.66, 42.36, -291.88|",
-    "MoveTo|340.62, 34.31, -336.62|",
-    "Boss|349.88, 34.00, -393.96|",
-    "MoveTo|349.94, 34.00, -418.55|",
-    "MoveTo|350.92, 33.47, -438.31|",
-    "AutoMoveFor|345.45, 31.13, -453.02|15000",
-    "MoveTo|-341.59, -142.71, 254.80|",
-    "MoveTo|-257.97, -165.61, 207.82|",
-    "Boss|-249.97, -173.00, 127.27|",
-    "MoveTo|-250.10, -173.00, 116.80|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 46.94,
+        "Y": 366,
+        "Z": -576.15
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "5000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 45.84,
+        "Y": 365.97,
+        "Z": -585.71
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 27.93,
+        "Y": 386.02,
+        "Z": -685.85
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 23.83,
+        "Y": 386.06,
+        "Z": -742.13
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -19.5,
+        "Y": 398.27,
+        "Z": -811.98
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -20.1,
+        "Y": 398.27,
+        "Z": -820.59
+      },
+      "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 302.21,
+        "Y": 67.1,
+        "Z": -173.43
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 344.66,
+        "Y": 42.36,
+        "Z": -291.88
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 340.62,
+        "Y": 34.31,
+        "Z": -336.62
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 349.88,
+        "Y": 34,
+        "Z": -393.96
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 349.94,
+        "Y": 34,
+        "Z": -418.55
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 350.92,
+        "Y": 33.47,
+        "Z": -438.31
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 345.45,
+        "Y": 31.13,
+        "Z": -453.02
+      },
+      "argument": "15000",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -341.59,
+        "Y": -142.71,
+        "Z": 254.8
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -257.97,
+        "Y": -165.61,
+        "Z": 207.82
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -249.97,
+        "Y": -173,
+        "Z": 127.27
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -250.1,
+        "Y": -173,
+        "Z": 116.8
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

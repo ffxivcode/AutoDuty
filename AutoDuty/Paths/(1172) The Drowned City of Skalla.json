@@ -1,21 +1,135 @@
 {
   "actions": [
-    "Boss|-222.53, -1.90, 4.18|",
-    "MoveTo|-208.39, -1.90, 4.04|",
-    "MoveTo|-82.55, 3.93, -68.32|",
-    "MoveTo|-13.14, 4.00, 20.39|",
-    "Boss|112.08, 9.00, 3.67|",
-    "MoveTo|128.60, 9.00, 3.94|",
-    "MoveTo|252.57, -7.93, 7.59|",
-    "MoveTo|275.07, -12.00, 43.58|",
-    "MoveTo|276.04, -12.00, -24.83|",
-    "MoveTo|362.93, -12.00, -37.77|",
-    "Boss|475.12, -13.93, 4.43|",
-    "MoveTo|485.59, -13.95, 4.03|"
+    {
+      "name": "Boss",
+      "position": {
+        "X": -222.53,
+        "Y": -1.9,
+        "Z": 4.18
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -208.39,
+        "Y": -1.9,
+        "Z": 4.04
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -82.55,
+        "Y": 3.93,
+        "Z": -68.32
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -13.14,
+        "Y": 4,
+        "Z": 20.39
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 112.08,
+        "Y": 9,
+        "Z": 3.67
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 128.6,
+        "Y": 9,
+        "Z": 3.94
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 252.57,
+        "Y": -7.93,
+        "Z": 7.59
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 275.07,
+        "Y": -12,
+        "Z": 43.58
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 276.04,
+        "Y": -12,
+        "Z": -24.83
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 362.93,
+        "Y": -12,
+        "Z": -37.77
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 475.12,
+        "Y": -13.93,
+        "Z": 4.43
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 485.59,
+        "Y": -13.95,
+        "Z": 4.03
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 106,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

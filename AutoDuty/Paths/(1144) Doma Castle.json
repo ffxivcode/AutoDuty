@@ -1,24 +1,115 @@
 {
   "actions": [
-    "MoveTo|297.27, 24.75, 57.15|",
-    "MoveTo|301.85, 24.75, -6.34|",
-
-    "Boss|126.05, 40.57, 17.44|",
-
-    "MoveTo|32.07, 40.00, 87.72|",
-    "TreasureCoffer|12.69, 40.00, 133.63|",
-    "TreasureCoffer|-103.47, 42.00, 146.87|",
-
-    "Boss|-233.89, 45.49, 130.58|",
-
-    "TreasureCoffer|-202.68, 56.00, -43.78|",
-    "TreasureCoffer|-246.84, 66.00, -124.34|",
-
-    "Boss|-239.86, 67, -196.72|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 297.27,
+        "Y": 24.75,
+        "Z": 57.15
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 301.85,
+        "Y": 24.75,
+        "Z": -6.34
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 126.05,
+        "Y": 40.57,
+        "Z": 17.44
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 32.07,
+        "Y": 40,
+        "Z": 87.72
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 12.69,
+        "Y": 40,
+        "Z": 133.63
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -103.47,
+        "Y": 42,
+        "Z": 146.87
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -233.89,
+        "Y": 45.49,
+        "Z": 130.58
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -202.68,
+        "Y": 56,
+        "Z": -43.78
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -246.84,
+        "Y": 66,
+        "Z": -124.34
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -239.86,
+        "Y": 67,
+        "Z": -196.72
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 143,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

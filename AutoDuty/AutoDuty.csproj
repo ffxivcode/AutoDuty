@@ -81,4 +81,3 @@
     <Exec Command="cp &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
 </Project>
-

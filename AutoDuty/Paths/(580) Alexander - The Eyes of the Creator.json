@@ -1,20 +1,125 @@
 {
   "actions": [
-    "MoveTo|-123.69, -28.86, -60.44|",
-    "WaitFor|0, 0, 0|Combat",
-    "WaitFor|0, 0, 0|OOC",
-    "WaitFor|0, 0, 0|ConditionFlag;Jumping61;false",
-    "Boss|-38.54, 114.71, -10.52|",
-    "Interactable|-40.22, 114.71, 1.89|2007455 (Cranial Hatch)",
-    "WaitFor|-40.22, 114.71, 1.89|IsReady",
-    "Interactable|-40.22, 114.71, 1.89|2007456 (Ingress)",
-    "WaitFor|0, 0, 0|ConditionFlag;Jumping61;false",
-    "ForceAttack|1.32, -250.29, -236.48|",
-    "Boss|1.32, -250.29, -236.48|"
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": -123.69,
+        "Y": -28.86,
+        "Z": -60.44
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "Combat",
+      "note": ""
+    },
+    {
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "OOC",
+      "note": ""
+    },
+    {
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "ConditionFlag;Jumping61;false",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": -38.54,
+        "Y": 114.71,
+        "Z": -10.52
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -40.22,
+        "Y": 114.71,
+        "Z": 1.89
+      },
+      "argument": "2007455",
+      "note": "Cranial Hatch"
+    },
+    {
+      "name": "WaitFor",
+      "position": {
+        "X": -40.22,
+        "Y": 114.71,
+        "Z": 1.89
+      },
+      "argument": "IsReady",
+      "note": ""
+    },
+    {
+      "name": "Interactable",
+      "position": {
+        "X": -40.22,
+        "Y": 114.71,
+        "Z": 1.89
+      },
+      "argument": "2007456",
+      "note": "Ingress"
+    },
+    {
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "ConditionFlag;Jumping61;false",
+      "note": ""
+    },
+    {
+      "name": "ForceAttack",
+      "position": {
+        "X": 1.32,
+        "Y": -250.29,
+        "Z": -236.48
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 1.32,
+        "Y": -250.29,
+        "Z": -236.48
+      },
+      "argument": "",
+      "note": ""
+    }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 156,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      }
+    ],
     "notes": []
   }
 }

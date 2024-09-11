@@ -121,20 +121,21 @@ namespace AutoDuty.Windows
 
                         if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || BossMod_IPCSubscriber.IsEnabled  || Plugin.Configuration.UsingAlternativeRotationPlugin))
                         {
-                            foreach (var item in Plugin.ListBoxPOSText.Select((name, index) => (name, index)))
+                            foreach (var item in Plugin.Actions.Select((Value, Index) => (Value, Index)))
                             {
-                                var v4 = item.index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (item.name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
-                                ImGui.TextColored(v4, item.name);
+                                var v4 = item.Index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
+                                var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Note : $"{item.Value.ToCustomString()}";
+                                ImGui.TextColored(v4, text);
                                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
                                 {
-                                    if (item.index == Plugin.Indexer)
+                                    if (item.Index == Plugin.Indexer || item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
                                     {
                                         Plugin.Indexer = -1;
                                         Plugin.MainListClicked = false;
                                     }
                                     else
                                     {
-                                        Plugin.Indexer = item.index;
+                                        Plugin.Indexer = item.Index;
                                         Plugin.MainListClicked = true;
                                     }
                                 }
@@ -151,7 +152,7 @@ namespace AutoDuty.Windows
                                 _currentStepIndex = 0;
                                 ImGui.SetScrollY(_currentStepIndex);
                             }
-                            if (Plugin.InDungeon && Plugin.ListBoxPOSText.Count < 1 && !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
+                            if (Plugin.InDungeon && Plugin.Actions.Count < 1 && !ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType))
                                 ImGui.TextColored(new Vector4(0, 255, 0, 1), $"No Path file was found for:\n{TerritoryName.GetTerritoryName(Plugin.CurrentTerritoryContent.TerritoryType).Split('|')[1].Trim()}\n({Plugin.CurrentTerritoryContent.TerritoryType}.json)\nin the Paths Folder:\n{Plugin.PathsDirectory.FullName.Replace('\\', '/')}\nPlease download from:\n{_pathsURL}\nor Create in the Build Tab");
                         }
                         else
@@ -191,6 +192,7 @@ namespace AutoDuty.Windows
                             else
                                 MainWindow.ShowPopup("Error", "No path was found");
                         }
+                        //MainWindow.DrawPopup();
                     }
                     else
                         MainWindow.StopResumePause();
@@ -348,7 +350,7 @@ namespace AutoDuty.Windows
                             } else if (ImGui.Button("Refresh trust member levels"))
                             {
                                 if (InventoryHelper.CurrentItemLevel < 370)
-                                    AutoDuty.Plugin.LevelingModeEnum = LevelingMode.None;
+                                    Plugin.LevelingModeEnum = LevelingMode.None;
                                 TrustHelper.ClearCachedLevels();
                             }
                         }

@@ -1,19 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Text.RegularExpressions;
+﻿using AutoDuty.Helpers;
+using AutoDuty.Windows;
+using ECommons;
+using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
-using AutoDuty.Helpers;
-using AutoDuty.Windows;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace AutoDuty.Managers
 {
-    using System;
-    using ECommons.DalamudServices;
-
     internal static class ContentPathsManager
     {
         internal static Dictionary<uint, ContentPathContainer> DictionaryPaths = [];
@@ -25,8 +26,8 @@ namespace AutoDuty.Managers
                 Content = content;
                 id      = content.TerritoryType;
 
-                this.ColoredNameString = $"({ImGuiHelper.idColor}{this.id}</>) {ImGuiHelper.dutyColor}{this.Content!.Name}</>";
-                this.ColoredNameRegex  = RegexHelper.ColoredTextRegex().Match(this.ColoredNameString);
+                ColoredNameString = $"({ImGuiHelper.idColor}{this.id}</>) {ImGuiHelper.dutyColor}{this.Content!.Name}</>";
+                ColoredNameRegex  = RegexHelper.ColoredTextRegex().Match(this.ColoredNameString);
             }
 
             public uint id { get; }
@@ -136,28 +137,95 @@ namespace AutoDuty.Managers
                                 List<string>? paths;
                                 if ((paths = JsonSerializer.Deserialize<List<string>>(json)) != null)
                                 {
-                                    pathFile         = PathFile.Default;
-                                    pathFile.actions = paths.ToArray();
-                                }
+                                    List<PathAction> pathActions = [];
+                                    paths.Each(x => 
+                                    {
+                                        var action = x.Split('|');
+                                        var position = action[1].Split(", ");
+                                        Vector3 v3Position = new(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
 
+                                        pathActions.Add(new PathAction { Name = action[0], Position = v3Position, Argument = action[2] });
+                                    });
+                                    pathFile = new()
+                                    {
+                                        Actions = [.. pathActions]
+                                    };
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
+                                }
+                                
                                 string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
                                 File.WriteAllText(FilePath, jsonNew);
                             }
+                            else if (!json.Contains("\"name\"") && !json.Contains("\"position\"") && !json.Contains("\"argument\""))
+                            {
+                                json = json.Replace("actions", "actionsString");
+                                var doc = JsonDocument.Parse(json);
+                                var element = doc.RootElement.GetProperty("actionsString");
+                                var paths = element.Deserialize<List<string>>();
+                                List<PathAction> pathActions = [];
+                                if (paths != null && paths.Count != 0)
+                                {
+                                    paths.Each(x =>
+                                    {
+                                        var action = x.Split('|');
+                                        var pathAction = new PathAction { Name = action[0] };
+                                        if (action.Length > 1)
+                                        {
+                                            var position = action[1].Replace(" ", string.Empty).Split(",");
+                                            
+                                            pathAction.Position = new(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
+
+
+                                            if (action.Length == 3)
+                                            {
+                                                var argument = string.Empty;
+                                                var note = string.Empty;
+                                                if (action[2].Contains(" (") && action[2].Contains(')'))
+                                                {
+                                                    var argumentArray = action[2].Split(" (");
+
+                                                    if (int.TryParse(argumentArray[0], out _))
+                                                    {
+                                                        argument = argumentArray[0];
+                                                        note = action[2].Replace($"{argument} (", string.Empty).Replace(")", string.Empty);
+                                                    }
+                                                    else
+                                                        argument = action[2];
+                                                }
+                                                else
+                                                    argument = action[2];
+
+                                                pathAction.Argument = argument;
+                                                pathAction.Note = note;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            pathAction.Name = "<-- Comment -->";
+                                            pathAction.Note = action[0];
+                                        }
+                                        pathActions.Add(pathAction);
+                                    });
+                                    json = json.Replace("\"actionsString\": [],", string.Empty);
+                                    json = Regex.Replace(json, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline);
+                                    pathFile = JsonSerializer.Deserialize<PathFile>(json);
+                                    if (pathFile == null) return new();
+                                    pathFile.Actions = [.. pathActions];
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
+                                    string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
+                                    File.WriteAllText(FilePath, jsonNew);
+                                }
+                            }
                             else
                             {
-                                pathFile = JsonSerializer.Deserialize<PathFile>(json);
+                                pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
                             }
 
-                            foreach (string action in PathFile.actions)
-                                if (action.Split('|')[0].Trim() == "Revival")
-                                {
-                                    RevivalFound = true;
-                                    break;
-                                }
+                            RevivalFound = PathFile.Actions.Any(x => x.Name.Equals("Revival", StringComparison.CurrentCultureIgnoreCase));
                         }
                         catch (Exception ex)
                         {
-                            Svc.Log.Info($"{FilePath} is not a valid duty path {ex}");
+                            Svc.Log.Info($"{FilePath} is not a valid duty path: {ex}");
                             DictionaryPaths[id].Paths.Remove(this);
                         }
                     }
@@ -166,41 +234,9 @@ namespace AutoDuty.Managers
                 }
             }
 
-            public string[] Actions => PathFile.actions;
-            public         bool                  RevivalFound { get; private set; }
-        }
-
-        internal class PathFile
-        {
-            public string[]         actions { get; set; }
-            public PathFileMetaData meta    { get; set; }
-
-            public static PathFile Default => new()
-                                              {
-                                                  actions = [],
-                                                  meta = new PathFileMetaData
-                                                         {
-                                                             createdAt = AutoDuty.Plugin.Configuration.Version,
-                                                             changelog = [],
-                                                             notes     = []
-                                                         }
-                                              };
-        }
-
-        internal class PathFileMetaData
-        {
-            public int                          createdAt { get; set; }
-            public List<PathFileChangelogEntry> changelog { get; set; }
-
-            public int LastUpdatedVersion => changelog.Count > 0 ? changelog.Last().version : createdAt;
-
-            public List<string> notes { get; set; }
-        }
-
-        internal class PathFileChangelogEntry
-        {
-            public int    version { get; set; }
-            public string change  { get; set; } = string.Empty;
+            public List<PathAction> Actions => PathFile.Actions;
+            public uint[] Interactables => PathFile.Interactables;
+            public bool RevivalFound { get; private set; }
         }
     }
 }

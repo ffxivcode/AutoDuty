@@ -97,13 +97,13 @@ namespace AutoDuty.Windows
                 {
                     bool multiple = false;
 
-                    if(!headers.TryGetValue(container.id, out bool open))
+                    if (!headers.TryGetValue(container.id, out bool open))
                         headers[container.id] = open = true;
 
                     if (container.Paths.Count > 0)
                     {
                         multiple = true;
-                        if(ImGui.Selectable("##PathHeader_" + container.id, false))
+                        if (ImGui.Selectable("##PathHeader_" + container.id, false))
                             headers[container.id] = !open;
                         ImGui.SameLine();
                         ImGuiHelper.ColoredText(container.ColoredNameRegex, $"({container.id}) {container.Content.Name}");
@@ -135,13 +135,13 @@ namespace AutoDuty.Windows
                                 }
                                 else
                                 {
-                                    _checked          = Plugin.Configuration.DoNotUpdatePathFiles.Contains(path.FileName);
+                                    _checked = Plugin.Configuration.DoNotUpdatePathFiles.Contains(path.FileName);
                                     _selectedDutyPath = path;
                                 }
                             }
 
-                            if (ImGui.IsItemHovered() && path.PathFile.meta.notes.Count > 0)
-                                ImGui.SetTooltip(string.Join("\n", path.PathFile.meta.notes));
+                            if (ImGui.IsItemHovered() && path.PathFile.Meta.Notes.Count > 0)
+                                ImGui.SetTooltip(string.Join("\n", path.PathFile.Meta.Notes));
                             ImGui.SetItemAllowOverlap();
                             ImGui.SameLine(multiple ? 20 : 1);
 
@@ -154,7 +154,7 @@ namespace AutoDuty.Windows
                             }
 
 
-                            ImGui.TextColored(ImGuiHelper.VersionColor, $"(v{path.PathFile.meta.LastUpdatedVersion})");
+                            ImGui.TextColored(ImGuiHelper.VersionColor, $"(v{path.PathFile.Meta.LastUpdatedVersion})");
                             ImGui.SameLine(0, 2);
                             ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
 
@@ -179,10 +179,7 @@ namespace AutoDuty.Windows
                     }
                 }
             }
-            catch (InvalidOperationException ex)
-            {
-                Svc.Log.Warning(ex.ToString());
-            }
+            catch (InvalidOperationException) { }
             finally
             {
                 ImGui.EndChild();
