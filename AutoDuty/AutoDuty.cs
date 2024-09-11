@@ -168,7 +168,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private Stage _stage = Stage.Stopped;
     private const string CommandName = "/autoduty";
     private readonly DirectoryInfo _configDirectory;
-    private readonly ActionsManager PathActions;
+    private readonly ActionsManager _actions;
     private readonly SquadronManager _squadronManager;
     private readonly VariantManager _variantManager;
     private readonly OverrideAFK _overrideAFK;
@@ -217,10 +217,10 @@ public sealed class AutoDuty : IDalamudPlugin
             _ipcProvider = new();
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager);
-            PathActions = new(Plugin, Chat, TaskManager);
+            _actions = new(Plugin, Chat, TaskManager);
             _messageBusReceive.MessageReceived +=
                 (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
-            BuildTab.ActionsList = PathActions.ActionsList;
+            BuildTab.ActionsList = _actions.ActionsList;
             OverrideCamera = new();
             Overlay = new();
             MainWindow = new();
@@ -297,10 +297,10 @@ public sealed class AutoDuty : IDalamudPlugin
         if (message.Sender == Player.Name || message.Action.Count == 0 || !Svc.Party.Any(x => x.Name.ExtractText() == message.Sender))
             return;
 
-        message.Action.Each(x => PathActions.InvokeAction(x.Item1, [x.Item2]));
+        message.Action.Each(x => _actions.InvokeAction(x.Item1, [x.Item2]));
     }
 
-    internal void ExitDuty() => PathActions.ExitDuty("");
+    internal void ExitDuty() => _actions.ExitDuty("");
 
     internal void LoadPath()
     {
@@ -1295,7 +1295,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
                 }
             }
-            PathActions.InvokeAction(PathAction.Name, [(object)PathAction.Argument]);
+            _actions.InvokeAction(PathAction.Name, [(object)PathAction.Argument]);
             PathAction = new();
         }
     }
@@ -1566,7 +1566,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 GotoHelper.Invoke(Convert.ToUInt32(argss[0]), [v3], argss.Length > 2 ? float.Parse(argss[2]) : 0.25f, argss.Length > 3 ? float.Parse(argss[3]) : 0.25f);
                 break;
             case "exitduty":
-                PathActions.ExitDuty("");
+                _actions.ExitDuty("");
                 break;
             case "queue":
                 QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null, Configuration.DutyModeEnum);

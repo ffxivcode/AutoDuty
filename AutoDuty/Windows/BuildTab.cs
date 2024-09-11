@@ -234,6 +234,13 @@ namespace AutoDuty.Windows
                 {
                     if (_action.Name == "Interactable" && !_addActionButton.Equals("Modify", StringComparison.InvariantCultureIgnoreCase))
                         ImGui.OpenPopup("InteractableAdd");
+                    else if (_action.Name == "MoveToObject" || _action.Name == "Target")
+                    {
+                        if (uint.TryParse(_argument, out var dataId))
+                            AddAction();
+                        else
+                            ShowPopup("Error", $"{_action.Name}'s must be uint's corresponding to the objects DataId", true);
+                    }
                     else
                         AddAction();
                 }
@@ -245,7 +252,7 @@ namespace AutoDuty.Windows
                     if (uint.TryParse(_argument, out var dataId))
                         AddAction();
                     else
-                        ShowPopup("Error", "Interactables must be uint's corresponding to the objects DataId", true);
+                        ShowPopup("Error", "Interactable's must be uint's corresponding to the objects DataId", true);
                     
                 }
                 if (ImGui.Selectable("Add to Special"))
@@ -253,7 +260,7 @@ namespace AutoDuty.Windows
                     if (uint.TryParse(_argument, out var dataId))
                         _interactables.Add(dataId);
                     else
-                        ShowPopup("Error", "Special interactables must be uint's corresponding to the objects DataId", true);
+                        ShowPopup("Error", "Special interactable's must be uint's corresponding to the objects DataId", true);
                 }
                 ImGui.EndPopup();
             }
@@ -357,7 +364,7 @@ namespace AutoDuty.Windows
                             else
                             {
                                 _comment = item.Value.Name.Equals($"<-- Comment -->", StringComparison.InvariantCultureIgnoreCase);
-                                _noArgument = ActionsList?.Any(x => x.Item1.Equals($"{item.Value.Name}", StringComparison.InvariantCultureIgnoreCase) && x.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase)) ?? false;
+                                _noArgument = (ActionsList?.Any(x => x.Item1.Equals($"{item.Value.Name}", StringComparison.InvariantCultureIgnoreCase) && x.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase)) ?? false) || item.Value.Name.Equals("MoveTo", StringComparison.InvariantCultureIgnoreCase);
                                 _dontMove = item.Value.Position == Vector3.Zero;
                                 _actionText = item.Value.Name;
                                 _note = item.Value.Note;
@@ -458,9 +465,12 @@ namespace AutoDuty.Windows
             else
                 _action.Position = Vector3.Zero;
             _action.Note = _comment && !_note.StartsWith("<--") && !_note.EndsWith("-->") ? $"<-- {_note} -->" : _note;
-            _scrollBottom = true;
+
             if (_buildListSelected == -1)
+            {
                 Plugin.Actions.Add(_action);
+                _scrollBottom = true;
+            }
             else
                 Plugin.Actions[_buildListSelected] = _action;
             ImGui.CloseCurrentPopup();

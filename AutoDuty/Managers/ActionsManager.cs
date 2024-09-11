@@ -16,8 +16,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using static Lumina.Data.Parsing.Layer.LayerCommon;
 
 namespace AutoDuty.Managers
 {
