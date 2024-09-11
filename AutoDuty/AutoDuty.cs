@@ -1334,12 +1334,31 @@ public sealed class AutoDuty : IDalamudPlugin
             AutoRetainerHelper.CloseRetainerWindows();
     }
 
+    private void InteractablesCheck()
+    {
+        if (Interactables.Count == 0) return;
+
+        var list = Svc.Objects.Where(x => Interactables.Contains(x.DataId));
+
+        if (!list.Any()) return;
+
+        var index = Actions.Select((Value, Index) => (Value, Index)).Where(x => Interactables.Contains(x.Value.Argument.Any(y => y == ' ') ? uint.Parse(x.Value.Argument.Split(" ")[0]) : uint.Parse(x.Value.Argument))).First().Index;
+
+        if (index > Indexer)
+        {
+            Indexer = index;
+            Stage = Stage.Reading_Path;
+        }
+    }
+
     private void PreStageChecks()
     {
         if (Stage == Stage.Stopped)
             return;
 
         CheckRetainerWindow();
+
+        InteractablesCheck();
 
         if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(PluginState.Navigating) && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
