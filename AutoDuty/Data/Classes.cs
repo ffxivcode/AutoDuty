@@ -13,7 +13,7 @@ namespace AutoDuty.Data
         public class Message
         {
             public string Sender { get; set; } = string.Empty;
-            public List<(string,string)> Action { get; set; } = [];
+            public List<PathAction> Action { get; set; } = [];
         }
 
         public class Content

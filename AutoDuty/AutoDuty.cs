@@ -297,10 +297,10 @@ public sealed class AutoDuty : IDalamudPlugin
         if (message.Sender == Player.Name || message.Action.Count == 0 || !Svc.Party.Any(x => x.Name.ExtractText() == message.Sender))
             return;
 
-        message.Action.Each(x => _actions.InvokeAction(x.Item1, [x.Item2]));
+        message.Action.Each(_actions.InvokeAction);
     }
 
-    internal void ExitDuty() => _actions.ExitDuty("");
+    internal void ExitDuty() => _actions.ExitDuty(new());
 
     internal void LoadPath()
     {
@@ -896,7 +896,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 Sender = Player.Name,
                 Action =
                 [
-                    ("Follow", $"{Player.Name}")
+                    new PathAction(){ Name = "Follow",Argument = $"{Player.Name}" }
                 ]
             };
 
@@ -1284,8 +1284,8 @@ public sealed class AutoDuty : IDalamudPlugin
                         Sender = Player.Name,
                         Action =
                         [
-                            ("Follow", "null"),
-                            ("SetBMSettings", "true")
+                            new PathAction(){ Name = "Follow", Argument = $"null" },
+                            new PathAction(){ Name = "SetBMSettings", Argument = $"true" }
                         ]
                     };
 
@@ -1294,7 +1294,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
                 }
             }
-            _actions.InvokeAction(PathAction.Name, [(object)PathAction.Argument]);
+            _actions.InvokeAction(PathAction);
             PathAction = new();
         }
     }
@@ -1584,7 +1584,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 GotoHelper.Invoke(Convert.ToUInt32(argss[0]), [v3], argss.Length > 2 ? float.Parse(argss[2]) : 0.25f, argss.Length > 3 ? float.Parse(argss[3]) : 0.25f);
                 break;
             case "exitduty":
-                _actions.ExitDuty("");
+                _actions.ExitDuty(new());
                 break;
             case "queue":
                 QueueHelper.Invoke(ContentHelper.DictionaryContent.FirstOrDefault(x => x.Value.Name!.Equals(args.ToLower().Replace("queue ", ""), StringComparison.InvariantCultureIgnoreCase)).Value ?? null, Configuration.DutyModeEnum);
