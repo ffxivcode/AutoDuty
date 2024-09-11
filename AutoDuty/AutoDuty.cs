@@ -150,8 +150,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal int Indexer = -1;
     internal bool MainListClicked = false;
     internal IBattleChara? BossObject;
-    internal IGameObject? ClosestInteractableEventObject = null;
-    internal IGameObject? ClosestTargetableBattleNpc = null;
+    internal IGameObject? ClosestObject => Svc.Objects.Where(o => o.IsTargetable && o.ObjectKind.EqualsAny(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj, Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)).OrderBy(ObjectHelper.GetDistanceToPlayer).TryGetFirst(out var gameObject) ? gameObject : null;
     internal OverrideCamera OverrideCamera;
     internal MainWindow MainWindow { get; init; }
     internal Overlay Overlay { get; init; }
@@ -1355,12 +1354,6 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType != 0 && InDungeon)
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
-
-        if (EzThrottler.Throttle("ClosestInteractableEventObject", 25) && MainWindow.CurrentTabName == "Build")
-            ClosestInteractableEventObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)?.FirstOrDefault(o => o.IsTargetable);
-
-        if (EzThrottler.Throttle("ClosestTargetableBattleNpc", 25) && MainWindow.CurrentTabName == "Build")
-            ClosestTargetableBattleNpc = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)?.FirstOrDefault(o => o.IsTargetable);
 
         if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (PathAction?.Name == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
             ObjectHelper.InteractWithObject(treasureCofferGameObject, false);

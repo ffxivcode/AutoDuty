@@ -10,7 +10,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using AutoDuty.Helpers;
-using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using static AutoDuty.Managers.ContentPathsManager;
 using ECommons.ImGuiMethods;
@@ -45,6 +44,8 @@ namespace AutoDuty.Windows
         private static int _interactableInput = 0;
         private static int _interactableModify = -1;
         private static Vector4 _argumentTextColor = new(1,1,1,1);
+        private static bool _deleteItem = false;
+        private static int _deleteItemIndex = -1;
         public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
 
         internal unsafe static void Draw()
@@ -122,7 +123,6 @@ namespace AutoDuty.Windows
                         _actionText = item.Item1;
                         _noArgument = item.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase);
                         _addActionButton = "Add";
-                        _showAddActionUI = true;
                         _comment = item.Item1.Equals("<-- Comment -->", StringComparison.InvariantCultureIgnoreCase);
                         _position = Player.Available && !_comment ? Player.Position : Vector3.Zero;
                         _positionText = _position.ToCustomString();
@@ -133,23 +133,20 @@ namespace AutoDuty.Windows
                                 break;
                             case "MoveToObject":
                             case "Interactable":
+                            case "Target":
                                 IGameObject? targetObject = Player.Object.TargetObject;
-                                IGameObject? gameObject = (targetObject?.ObjectKind == ObjectKind.EventObj ? targetObject : null) ?? Plugin.ClosestInteractableEventObject;
+                                IGameObject? gameObject = (targetObject ?? null) ?? Plugin.ClosestObject;
                                 _argument = gameObject != null ? $"{gameObject.DataId}" : string.Empty;
                                 _note = gameObject != null ? gameObject.Name.ExtractText() : string.Empty;
-                                break;
-                            case "Target":
-                                _argument = Plugin.ClosestTargetableBattleNpc?.Name.TextValue ?? "";
                                 break;
                             default:
                                 _argument = string.Empty;
                                 break;
                         }
                         _action = new() { Name = _actionText, Position = _position, Argument = _argument, Note = _note };
-                        
+                        _showAddActionUI = true;
                     }
                     ImGuiComponents.HelpMarker(item.Item3);
-                    
                 }
                 ImGui.EndPopup();
             }
@@ -246,9 +243,9 @@ namespace AutoDuty.Windows
                 if (ImGui.Selectable("Add to Path"))
                 {
                     if (uint.TryParse(_argument, out var dataId))
-                        _interactables.Add(dataId);
+                        AddAction();
                     else
-                        ShowPopup("Error", "Special interactables must be uint's corresponding to the objects DataId", true);
+                        ShowPopup("Error", "Interactables must be uint's corresponding to the objects DataId", true);
                     
                 }
                 if (ImGui.Selectable("Add to Special"))
@@ -268,8 +265,8 @@ namespace AutoDuty.Windows
             {
                 if (ImGuiEx.ButtonWrapped("Delete"))
                 {
-                    Plugin.Actions.RemoveAt(_buildListSelected);
-                    _scrollBottom = true;
+                    _deleteItem = true;
+                    _deleteItemIndex = _buildListSelected;
                     ClearAll();
                 }
 
@@ -375,6 +372,11 @@ namespace AutoDuty.Windows
                             }
                         }
                         ImGui.PopStyleColor();
+                        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                        {
+                            _deleteItem = true;
+                            _deleteItemIndex = item.Index;
+                        }
                         /*if (ImGui.IsItemActive() && !ImGui.IsItemHovered() && !ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                         {
                             int n_next = item.Index + (ImGui.GetMouseDragDelta(0).Y < 0f ? -1 : 1);
@@ -388,6 +390,12 @@ namespace AutoDuty.Windows
                                 ClearAll();
                             }
                         }*/
+                    }
+                    if (_deleteItem)
+                    {
+                        Plugin.Actions.RemoveAt(_deleteItemIndex);
+                        _deleteItemIndex = -1;
+                        _deleteItem = false;
                     }
                 }
                 else
