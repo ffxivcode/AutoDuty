@@ -1358,6 +1358,8 @@ public sealed class AutoDuty : IDalamudPlugin
 
         CheckRetainerWindow();
 
+        InteractablesCheck();
+
         if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(PluginState.Navigating) && ObjectHelper.IsValid)
             _overrideAFK.ResetTimers();
 
