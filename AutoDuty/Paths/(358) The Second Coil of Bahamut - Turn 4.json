@@ -7,7 +7,8 @@
         "Y": -0,
         "Z": 13.16
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -16,7 +17,8 @@
         "Y": 0,
         "Z": -3.09
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": -19.73
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": -0,
         "Z": -18.61
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": -0,
         "Z": -18.39
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -52,7 +57,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Allagan Terminal"
+      "argument": "Allagan Terminal",
+      "note": ""
     }
   ],
   "interactables": [],

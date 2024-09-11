@@ -7,7 +7,8 @@
         "Y": 3,
         "Z": -80.96
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 3,
         "Z": -82.3
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": -12.35,
         "Z": -50.72
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "ForceAttack",
@@ -34,7 +37,8 @@
         "Y": -13.36,
         "Z": -188.61
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": -28.37,
         "Z": -199.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -52,7 +57,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "ForceAttack",
@@ -61,7 +67,8 @@
         "Y": -30.68,
         "Z": -184.03
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": -33.84,
         "Z": -171.38
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -79,7 +87,8 @@
         "Y": -36.51,
         "Z": -165.69
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -88,7 +97,8 @@
         "Y": -46,
         "Z": -131.11
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": -46,
         "Z": -116.35
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": -43.37,
         "Z": -95.4
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -115,7 +127,8 @@
         "Y": -44.71,
         "Z": -84.64
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -124,7 +137,8 @@
         "Y": -342.25,
         "Z": 1.98
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": -349.07,
         "Z": 57.51
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": -356.57,
         "Z": 33.29
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": -356.79,
         "Z": 3.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -160,7 +177,8 @@
         "Y": -356.36,
         "Z": 7.74
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": -359.79,
         "Z": -44.84
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": -360.14,
         "Z": -68.34
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": -359.65,
         "Z": -33.3
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -196,7 +217,8 @@
         "Y": -349.94,
         "Z": 0.72
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -205,7 +227,8 @@
         "Y": -349.97,
         "Z": 5.69
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

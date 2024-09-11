@@ -7,7 +7,8 @@
         "Y": 139.86,
         "Z": -29.29
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 93.54,
         "Z": -26.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -25,7 +27,8 @@
         "Y": 90.07,
         "Z": -1.65
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": 90.12,
         "Z": -0.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 40,
         "Z": -25.15
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 30,
         "Z": -53
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -61,7 +67,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Candlekeep Key"
+      "argument": "Candlekeep Key",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 30,
         "Z": -55.71
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Locked Door"
+      "argument": "Locked Door",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -88,7 +97,8 @@
         "Y": 30,
         "Z": -56.95
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": 30,
         "Z": -56.03
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": 30,
         "Z": -56.2
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -115,7 +127,8 @@
         "Y": 30,
         "Z": -56.2
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -124,7 +137,8 @@
         "Y": 2.96,
         "Z": -190.24
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": 2.49,
         "Z": -189.35
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": 2.65,
         "Z": -211.23
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "ForceAttack",
@@ -151,7 +167,8 @@
         "Y": 2.19,
         "Z": -194.51
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "ForceAttack",
@@ -160,7 +177,8 @@
         "Y": 2.05,
         "Z": -166.27
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": 2.13,
         "Z": -164.21
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": -0.7,
         "Z": -226.26
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -187,7 +207,8 @@
         "Y": -5.5,
         "Z": -293.21
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -196,7 +217,8 @@
         "Y": -5.55,
         "Z": -301.39
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

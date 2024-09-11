@@ -7,7 +7,8 @@
         "Y": 0,
         "Z": 34.09
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 7.15,
         "Z": 26.78
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": 15.42,
         "Z": 16.57
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": 18,
         "Z": 4.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 26.52,
         "Z": -24.69
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 36,
         "Z": -31.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": 36,
         "Z": -24.01
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 36,
         "Z": -14.97
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -79,7 +87,8 @@
         "Y": 42,
         "Z": 9.84
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 42,
         "Z": 19.85
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": 42,
         "Z": 9.41
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": 36,
         "Z": -14.36
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": 22.83,
         "Z": -18.96
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -124,7 +137,8 @@
         "Y": 18,
         "Z": -7.26
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": 18,
         "Z": -16.78
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": 17.43,
         "Z": -19.14
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": 9.21,
         "Z": -24.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -160,7 +177,8 @@
         "Y": 0,
         "Z": -11.39
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": 0,
         "Z": -0.27
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": 0,
         "Z": -0.05
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": -0,
         "Z": -18.78
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -196,7 +217,8 @@
         "Y": -9,
         "Z": -41.79
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -205,7 +227,8 @@
         "Y": -9,
         "Z": -55.32
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

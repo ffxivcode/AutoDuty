@@ -7,7 +7,8 @@
         "Y": 0,
         "Z": 516.31
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -16,7 +17,8 @@
         "Y": 5.35,
         "Z": 314.78
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -25,7 +27,8 @@
         "Y": -8.7,
         "Z": 187.63
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -34,7 +37,8 @@
         "Y": -11,
         "Z": 78.8
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -43,7 +47,8 @@
         "Y": -21,
         "Z": -40.68
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": -70.15,
         "Z": -223.83
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -61,7 +67,8 @@
         "Y": -60,
         "Z": -302.41
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -70,7 +77,8 @@
         "Y": -57,
         "Z": -424.79
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -79,7 +87,8 @@
         "Y": -56.39,
         "Z": -420.77
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": -77,
         "Z": -520.23
       },
-      "argument": "false"
+      "argument": "false",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -97,7 +107,8 @@
         "Y": -77,
         "Z": -537.73
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

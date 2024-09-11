@@ -7,7 +7,8 @@
         "Y": 2.02,
         "Z": -11.38
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": -0.53,
         "Z": 6.03
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": -3.71,
         "Z": 55.32
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": 9.16,
         "Z": 103.44
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 0.93,
         "Z": 103.27
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -52,7 +57,8 @@
         "Y": 0.93,
         "Z": 131.9
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": 0.93,
         "Z": 117.51
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 0.93,
         "Z": 124.05
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Jump",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "200"
+      "argument": "200",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -88,7 +97,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "200"
+      "argument": "200",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": 2,
         "Z": 130.58
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -106,7 +117,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Aetherial Flow"
+      "argument": "Aetherial Flow",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -115,7 +127,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -124,7 +137,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Checkpoint1"
+      "argument": "Checkpoint1",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": -11.17,
         "Z": -105.85
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -142,7 +157,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2001624 (Chain Winch)"
+      "argument": "2001624",
+      "note": "Chain Winch"
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": -11.04,
         "Z": -86.24
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -160,7 +177,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2001625 (Chain Winch)"
+      "argument": "2001625",
+      "note": "Chain Winch"
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": 0.07,
         "Z": -129.47
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": -11.02,
         "Z": -173.82
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": -10.97,
         "Z": -189.87
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -196,7 +217,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2001626 (Chain Winch)"
+      "argument": "2001626",
+      "note": "Chain Winch"
     },
     {
       "name": "MoveTo",
@@ -205,7 +227,8 @@
         "Y": -11.07,
         "Z": -128.49
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -214,7 +237,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2001627 (Chain Winch)"
+      "argument": "2001627",
+      "note": "Chain Winch"
     },
     {
       "name": "MoveTo",
@@ -223,7 +247,8 @@
         "Y": -11.09,
         "Z": -111.16
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -232,7 +257,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2001628 (Chain Winch)"
+      "argument": "2001628",
+      "note": "Chain Winch"
     },
     {
       "name": "MoveTo",
@@ -241,7 +267,8 @@
         "Y": -4.57,
         "Z": -107.25
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -250,7 +277,8 @@
         "Y": -14.38,
         "Z": -111.97
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -259,7 +287,8 @@
         "Y": -15.31,
         "Z": -134.21
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -268,7 +297,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1100"
+      "argument": "1100",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -277,7 +307,8 @@
         "Y": -15.31,
         "Z": -133.67
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -286,7 +317,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Aetherial Flow"
+      "argument": "Aetherial Flow",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -295,7 +327,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -304,7 +337,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Checkpoint2"
+      "argument": "Checkpoint2",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -313,7 +347,8 @@
         "Y": 8.95,
         "Z": -14.25
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -322,7 +357,8 @@
         "Y": 12.66,
         "Z": 12.61
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -331,7 +367,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2001623 (Ludus Door)"
+      "argument": "2001623",
+      "note": "Ludus Door"
     },
     {
       "name": "Wait",
@@ -340,7 +377,8 @@
         "Y": 17.33,
         "Z": 16.7
       },
-      "argument": "2200"
+      "argument": "2200",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -349,7 +387,8 @@
         "Y": 17.23,
         "Z": 19.4
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -358,7 +397,8 @@
         "Y": 17.23,
         "Z": 19.75
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

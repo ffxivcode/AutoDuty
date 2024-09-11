@@ -7,7 +7,8 @@
         "Y": -4.44,
         "Z": -40.47
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": -0,
         "Z": -69.76
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -25,7 +27,8 @@
         "Y": -2.8,
         "Z": 5.33
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": -2.8,
         "Z": 5.33
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": -2,
         "Z": 52.87
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -52,7 +57,8 @@
         "Y": 0.36,
         "Z": 42.84
       },
-      "argument": "6000"
+      "argument": "6000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": 44,
         "Z": -0.29
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 44,
         "Z": -100.27
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -79,7 +87,8 @@
         "Y": 44,
         "Z": -152.28
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 44,
         "Z": -164.49
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Aetherial Flow"
+      "argument": "Aetherial Flow",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": -0,
         "Z": -1.16
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -115,7 +127,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Fell Orb"
+      "argument": "Fell Orb",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -124,7 +137,8 @@
         "Y": -0,
         "Z": -1.16
       },
-      "argument": "20000"
+      "argument": "20000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -133,7 +147,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "20000"
+      "argument": "20000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -142,7 +157,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Aetherial Flow"
+      "argument": "Aetherial Flow",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -151,7 +167,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -160,7 +177,8 @@
         "Y": -0,
         "Z": 232.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": -0,
         "Z": 235.34
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

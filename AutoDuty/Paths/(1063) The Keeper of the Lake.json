@@ -7,7 +7,8 @@
         "Y": 26.66,
         "Z": -17.03
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 25.83,
         "Z": -6.77
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -25,7 +27,8 @@
         "Y": 21.93,
         "Z": -2.75
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": 329.47,
         "Z": -117.35
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -43,7 +47,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004844 (Imperial Identification Key)"
+      "argument": "2004844",
+      "note": "Imperial Identification Key"
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 329.1,
         "Z": -133.7
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -61,7 +67,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004829 (Magitek Terminal)"
+      "argument": "2004829",
+      "note": "Magitek Terminal"
     },
     {
       "name": "StopForCombat",
@@ -70,7 +77,8 @@
         "Y": 333.85,
         "Z": -147.9
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -79,7 +87,8 @@
         "Y": 338.62,
         "Z": -189.96
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 338.74,
         "Z": -192.95
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -97,7 +107,8 @@
         "Y": 339.38,
         "Z": -186
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -106,7 +117,8 @@
         "Y": 338.45,
         "Z": -233.92
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": 338.34,
         "Z": -231.4
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -124,7 +137,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004975 (Imperial Identification Key)"
+      "argument": "2004975",
+      "note": "Imperial Identification Key"
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": 338.45,
         "Z": -201.27
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -142,7 +157,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004834 (Magitek Terminal)"
+      "argument": "2004834",
+      "note": "Magitek Terminal"
     },
     {
       "name": "Boss",
@@ -151,7 +167,8 @@
         "Y": 346.02,
         "Z": -150.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -160,7 +177,8 @@
         "Y": 346.08,
         "Z": -123.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -169,7 +187,8 @@
         "Y": 345.42,
         "Z": -118.36
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -178,7 +197,8 @@
         "Y": 608.26,
         "Z": -66.92
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -187,7 +207,8 @@
         "Y": 638.24,
         "Z": -13.08
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -196,7 +217,8 @@
         "Y": 641.04,
         "Z": -78.19
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

@@ -7,7 +7,8 @@
         "Y": 5.68,
         "Z": -44.44
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -16,7 +17,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004225 (Tiny Key)"
+      "argument": "2004225",
+      "note": "Tiny Key"
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": 4.48,
         "Z": -46.18
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": 4.48,
         "Z": -46.18
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -43,7 +47,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004203 (Door to Silence)"
+      "argument": "2004203",
+      "note": "Door to Silence"
     },
     {
       "name": "Boss",
@@ -52,7 +57,8 @@
         "Y": -2.5,
         "Z": -88.61
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": -9.54,
         "Z": -173.8
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -70,7 +77,8 @@
         "Y": 10.5,
         "Z": -117.27
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -79,7 +87,8 @@
         "Y": 28.4,
         "Z": -8.94
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 40.74,
         "Z": 65.24
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004226 (Finger of the Apostate)"
+      "argument": "2004226",
+      "note": "Finger of the Apostate"
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": 40.45,
         "Z": 64.94
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -115,7 +127,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004224 (Door to Oblivion)"
+      "argument": "2004224",
+      "note": "Door to Oblivion"
     },
     {
       "name": "Boss",
@@ -124,7 +137,8 @@
         "Y": 40.07,
         "Z": 66.47
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

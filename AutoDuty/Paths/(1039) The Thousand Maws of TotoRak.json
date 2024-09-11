@@ -7,7 +7,8 @@
         "Y": -4.13,
         "Z": 111.97
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -16,7 +17,8 @@
         "Y": -8.13,
         "Z": -48.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -25,7 +27,8 @@
         "Y": -39.29,
         "Z": -144.12
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

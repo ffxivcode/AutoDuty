@@ -7,7 +7,8 @@
         "Y": 302,
         "Z": 126.74
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -16,7 +17,8 @@
         "Y": 302,
         "Z": 135.95
       },
-      "argument": "8000"
+      "argument": "8000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -34,7 +37,8 @@
         "Y": -504,
         "Z": 11.23
       },
-      "argument": "2013731 (Elevator Console)"
+      "argument": "2013731",
+      "note": "Elevator Console"
     },
     {
       "name": "Wait",
@@ -43,7 +47,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "8000"
+      "argument": "8000",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -52,7 +57,8 @@
         "Y": -500,
         "Z": 156.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": -500,
         "Z": 156.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -70,7 +77,8 @@
         "Y": -500,
         "Z": 152.33
       },
-      "argument": "6000"
+      "argument": "6000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -79,7 +87,8 @@
         "Y": -120,
         "Z": -186.23
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": -120,
         "Z": -179.96
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": -120,
         "Z": -180.33
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": -120,
         "Z": -129.21
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": -120,
         "Z": -125.36
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -124,7 +137,8 @@
         "Y": -120,
         "Z": -116.1
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "PausePandora",
@@ -133,7 +147,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": -93.9,
         "Z": -60.94
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": -94,
         "Z": -86.08
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -160,7 +177,8 @@
         "Y": -94,
         "Z": -107.9
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -169,7 +187,8 @@
         "Y": -94,
         "Z": -146.5
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": -94,
         "Z": -160.17
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": -94,
         "Z": -215.2
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -196,7 +217,8 @@
         "Y": -90.61,
         "Z": -227.5
       },
-      "argument": "7000"
+      "argument": "7000",
+      "note": ""
     },
     {
       "name": "PausePandora",
@@ -205,7 +227,8 @@
         "Y": 0,
         "Z": 227.16
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -214,7 +237,8 @@
         "Y": 0,
         "Z": 220.83
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -223,7 +247,8 @@
         "Y": 0,
         "Z": 213.82
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -232,7 +257,8 @@
         "Y": 0,
         "Z": 196.3
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -241,7 +267,8 @@
         "Y": 0,
         "Z": 179.8
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -250,7 +277,8 @@
         "Y": 0,
         "Z": 64.66
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -259,7 +287,8 @@
         "Y": 0,
         "Z": 33.64
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -268,7 +297,8 @@
         "Y": 0,
         "Z": -3.01
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -277,7 +307,8 @@
         "Y": 0,
         "Z": -12.38
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

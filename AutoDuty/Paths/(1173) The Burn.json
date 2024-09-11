@@ -7,7 +7,8 @@
         "Y": 65.85,
         "Z": 334.46
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 65.69,
         "Z": 301.3
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -25,7 +27,8 @@
         "Y": 65.14,
         "Z": 298.51
       },
-      "argument": "9000"
+      "argument": "9000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -34,7 +37,8 @@
         "Y": 13,
         "Z": 178.37
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 13,
         "Z": 163.04
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 20,
         "Z": 98.31
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": 36,
         "Z": -21.79
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 34.2,
         "Z": -61.29
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -79,7 +87,8 @@
         "Y": 34.2,
         "Z": -69.57
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 34.2,
         "Z": -76.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": 26.63,
         "Z": -196.15
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": 15.09,
         "Z": -295.98
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": 15.76,
         "Z": -306.03
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -124,7 +137,8 @@
         "Y": 18.98,
         "Z": -349.19
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -133,7 +147,8 @@
         "Y": 10,
         "Z": -392.38
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": 10,
         "Z": -409.2
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

@@ -7,7 +7,8 @@
         "Y": -21.12,
         "Z": 195.76
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -16,7 +17,8 @@
         "Y": 10.82,
         "Z": 148.36
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -25,7 +27,8 @@
         "Y": 11,
         "Z": 118.3
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": 11,
         "Z": 102.61
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 22.12,
         "Z": 75.04
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -52,7 +57,8 @@
         "Y": 40,
         "Z": 54.97
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -61,7 +67,8 @@
         "Y": 40.31,
         "Z": 52.89
       },
-      "argument": "6000"
+      "argument": "6000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -70,7 +77,8 @@
         "Y": 55.08,
         "Z": 27.14
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -79,7 +87,8 @@
         "Y": 55,
         "Z": 18
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -88,7 +97,8 @@
         "Y": 55.11,
         "Z": 16.8
       },
-      "argument": "400"
+      "argument": "400",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": 85.14,
         "Z": 13.47
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": 78.16,
         "Z": 24.56
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -124,7 +137,8 @@
         "Y": 70,
         "Z": 48.49
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": 70,
         "Z": 41.58
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -142,7 +157,8 @@
         "Y": 70.26,
         "Z": 42.74
       },
-      "argument": "6500"
+      "argument": "6500",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": 80.03,
         "Z": 34.28
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -160,7 +177,8 @@
         "Y": 101.84,
         "Z": -15.99
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -169,7 +187,8 @@
         "Y": 103.69,
         "Z": -18.22
       },
-      "argument": "11000"
+      "argument": "11000",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -178,7 +197,8 @@
         "Y": 321.29,
         "Z": -32.54
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -187,7 +207,8 @@
         "Y": 323,
         "Z": -57.42
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -196,7 +217,8 @@
         "Y": 323,
         "Z": -56.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -205,7 +227,8 @@
         "Y": 328.08,
         "Z": -78.02
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -214,7 +237,8 @@
         "Y": 334.71,
         "Z": 0.86
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -223,7 +247,8 @@
         "Y": 358.07,
         "Z": -91.81
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -232,7 +257,8 @@
         "Y": 376.01,
         "Z": -159.15
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -241,7 +267,8 @@
         "Y": 378,
         "Z": -197.58
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -250,7 +277,8 @@
         "Y": 378,
         "Z": -213.41
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

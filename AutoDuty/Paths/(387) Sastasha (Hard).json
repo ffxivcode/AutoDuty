@@ -7,7 +7,8 @@
         "Y": 40.06,
         "Z": -166.83
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 31.07,
         "Z": -25.83
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": 32.95,
         "Z": -25
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Drainage Pump"
+      "argument": "Drainage Pump",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -43,7 +47,8 @@
         "Y": 13.92,
         "Z": -78.76
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 13.62,
         "Z": -59.18
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": 14.19,
         "Z": -81.11
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 12.19,
         "Z": -26.42
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -79,7 +87,8 @@
         "Y": 7.38,
         "Z": 10.05
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 15.45,
         "Z": 88.79
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Door to Dead Man\u0027s Drink"
+      "argument": "Door to Dead Man\u0027s Drink",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -106,7 +117,8 @@
         "Y": 15.6,
         "Z": 122.99
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": 15.63,
         "Z": 137.6
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -124,7 +137,8 @@
         "Y": 7.79,
         "Z": 183.02
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": 6.44,
         "Z": 248.98
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": 5.58,
         "Z": 267.48
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -151,7 +167,8 @@
         "Y": 4.81,
         "Z": 313.09
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

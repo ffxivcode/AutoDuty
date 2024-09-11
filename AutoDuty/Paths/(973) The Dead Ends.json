@@ -7,7 +7,8 @@
         "Y": 500.36,
         "Z": 134.83
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 500.72,
         "Z": 100.84
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -25,7 +27,8 @@
         "Y": 501.01,
         "Z": -176.87
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": 501.01,
         "Z": -195.36
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -43,7 +47,8 @@
         "Y": 500.4,
         "Z": -214.31
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -52,7 +57,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2011767 (Spatial Distortion)"
+      "argument": "2011767",
+      "note": "Spatial Distortion"
     },
     {
       "name": "Wait",
@@ -61,7 +67,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "6000"
+      "argument": "6000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 0,
         "Z": 11.92
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": -163.32
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -88,7 +97,8 @@
         "Y": 0.2,
         "Z": -205.9
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": 0.2,
         "Z": -225.21
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -106,7 +117,8 @@
         "Y": -8,
         "Z": -284.57
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -115,7 +127,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2011768 (Spatial Distortion)"
+      "argument": "2011768",
+      "note": "Spatial Distortion"
     },
     {
       "name": "Wait",
@@ -124,7 +137,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "6300"
+      "argument": "6300",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -133,7 +147,8 @@
         "Y": -610.15,
         "Z": 109.96
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": -610.15,
         "Z": 91.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": -587.49,
         "Z": -34.17
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -160,7 +177,8 @@
         "Y": -577,
         "Z": -132.68
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -169,7 +187,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": -577,
         "Z": -146.48
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

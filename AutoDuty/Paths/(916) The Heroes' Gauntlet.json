@@ -7,7 +7,8 @@
         "Y": -24,
         "Z": 443.89
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -16,7 +17,8 @@
         "Y": -24,
         "Z": 443.25
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2011119 (Fae Portal)"
+      "argument": "2011119",
+      "note": "Fae Portal"
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": 8.72,
         "Z": -703.1
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 2.06,
         "Z": -527.7
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -52,7 +57,8 @@
         "Y": 0,
         "Z": -531.56
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": 0,
         "Z": -528.7
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 0.89,
         "Z": -523.88
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -79,7 +87,8 @@
         "Y": 6.4,
         "Z": 498.98
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 5.72,
         "Z": 505.85
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": 6.59,
         "Z": 532.05
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -106,7 +117,8 @@
         "Y": 8,
         "Z": 477.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": 8,
         "Z": 470.35
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

@@ -7,7 +7,8 @@
         "Y": 0.06,
         "Z": 15.74
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -16,7 +17,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Silent Terminal"
+      "argument": "Silent Terminal",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 0.06,
         "Z": 7.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 0.06,
         "Z": 12.12
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

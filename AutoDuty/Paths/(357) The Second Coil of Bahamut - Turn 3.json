@@ -7,7 +7,8 @@
         "Y": -516.68,
         "Z": -128.56
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": -531.71,
         "Z": -49.98
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": -531.55,
         "Z": -50.47
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -43,7 +47,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": -505.05,
         "Z": 25.96
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -61,7 +67,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Frontal Bulkhead"
+      "argument": "Frontal Bulkhead",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": -506.67,
         "Z": 49.66
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": -506.54,
         "Z": 47.61
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -106,7 +117,8 @@
         "Y": -506.98,
         "Z": 91.81
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": -506.98,
         "Z": 101.34
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -124,7 +137,8 @@
         "Y": -506.98,
         "Z": 124.76
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": -506.98,
         "Z": 125.09
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": -506.8,
         "Z": 148.35
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -151,7 +167,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Allagan Terminal"
+      "argument": "Allagan Terminal",
+      "note": ""
     }
   ],
   "interactables": [],

@@ -7,7 +7,8 @@
         "Y": 94,
         "Z": -202.75
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 10.59,
         "Z": -158.95
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": 1.09,
         "Z": -64.48
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -34,7 +37,8 @@
         "Y": 1.17,
         "Z": -79.02
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -43,7 +47,8 @@
         "Y": 37.62,
         "Z": 10.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 56.08,
         "Z": 63.46
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -61,7 +67,8 @@
         "Y": 60,
         "Z": 66.94
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 93.08,
         "Z": -13.69
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -79,7 +87,8 @@
         "Y": 108.28,
         "Z": -42.15
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -88,7 +97,8 @@
         "Y": 108.25,
         "Z": -29.69
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": 107.7,
         "Z": -46.28
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -106,7 +117,8 @@
         "Y": 123.27,
         "Z": -106.94
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -115,7 +127,8 @@
         "Y": 148.4,
         "Z": -262.59
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

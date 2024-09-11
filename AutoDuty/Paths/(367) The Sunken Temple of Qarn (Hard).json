@@ -7,7 +7,8 @@
         "Y": -12,
         "Z": -57.2
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -16,7 +17,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Sun Sphere"
+      "argument": "Sun Sphere",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": -18,
         "Z": -0.01
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": -18,
         "Z": 0.17
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -43,7 +47,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Locked Door"
+      "argument": "Locked Door",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": -18,
         "Z": -0.01
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -61,7 +67,8 @@
         "Y": -18,
         "Z": -0.02
       },
-      "argument": "3500"
+      "argument": "3500",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": -51,
         "Z": -0.8
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -79,7 +87,8 @@
         "Y": -51,
         "Z": 1.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": -51,
         "Z": -13.04
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": -41.19,
         "Z": -53.8
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": -35.02,
         "Z": 64.32
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -115,7 +127,8 @@
         "Y": -35.02,
         "Z": 64.32
       },
-      "argument": "200"
+      "argument": "200",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -124,7 +137,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Moon Sphere"
+      "argument": "Moon Sphere",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -133,7 +147,8 @@
         "Y": -33.21,
         "Z": 64.53
       },
-      "argument": "200"
+      "argument": "200",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -142,7 +157,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Moon Sphere"
+      "argument": "Moon Sphere",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": -45,
         "Z": 0.12
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -160,7 +177,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Locked Door"
+      "argument": "Locked Door",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": -45.09,
         "Z": -0.62
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -178,7 +197,8 @@
         "Y": -41.58,
         "Z": -0.56
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": -3.78,
         "Z": 0.43
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -196,7 +217,8 @@
         "Y": -4,
         "Z": 0.34
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -205,7 +227,8 @@
         "Y": -4,
         "Z": 2.39
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -214,7 +237,8 @@
         "Y": -4,
         "Z": -2.6
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -223,7 +247,8 @@
         "Y": -4,
         "Z": -73.62
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -232,7 +257,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Star Sphere"
+      "argument": "Star Sphere",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -241,7 +267,8 @@
         "Y": -4,
         "Z": -73.7
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -250,7 +277,8 @@
         "Y": -4,
         "Z": -73.72
       },
-      "argument": "3001"
+      "argument": "3001",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -259,7 +287,8 @@
         "Y": -19,
         "Z": -57.37
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -268,7 +297,8 @@
         "Y": -19,
         "Z": -30.8
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -277,7 +307,8 @@
         "Y": -18,
         "Z": -36.32
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -286,7 +317,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Magicked Pedestal"
+      "argument": "Magicked Pedestal",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -295,7 +327,8 @@
         "Y": -18,
         "Z": 36.28
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -304,7 +337,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Magicked Pedestal"
+      "argument": "Magicked Pedestal",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -313,7 +347,8 @@
         "Y": -18,
         "Z": 0.02
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -322,7 +357,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Magicked Pedestal"
+      "argument": "Magicked Pedestal",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -331,7 +367,8 @@
         "Y": -11,
         "Z": -0.04
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -340,7 +377,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1500"
+      "argument": "1500",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -349,7 +387,8 @@
         "Y": -4,
         "Z": -17.05
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -358,7 +397,8 @@
         "Y": -4,
         "Z": 2.71
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -367,7 +407,8 @@
         "Y": -4,
         "Z": -0.22
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

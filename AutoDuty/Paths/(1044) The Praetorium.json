@@ -7,7 +7,8 @@
         "Y": 186,
         "Z": -5.37
       },
-      "argument": "2012811 (Magitek Terminal)"
+      "argument": "2012811",
+      "note": "Magitek Terminal"
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 156,
         "Z": 1.32
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -25,7 +27,8 @@
         "Y": 156,
         "Z": -25.49
       },
-      "argument": "2012813 (Magitek Transporter)"
+      "argument": "2012813",
+      "note": "Magitek Transporter"
     },
     {
       "name": "Boss",
@@ -34,7 +37,8 @@
         "Y": 76,
         "Z": 0.02
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -43,7 +47,8 @@
         "Y": 76,
         "Z": 3.76
       },
-      "argument": "2012815 (Magitek Terminal)"
+      "argument": "2012815",
+      "note": "Magitek Terminal"
     },
     {
       "name": "DutySpecificCode",
@@ -52,7 +57,8 @@
         "Y": 102,
         "Z": -66.46
       },
-      "argument": "1"
+      "argument": "1",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": 66.38,
         "Z": 86.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -70,7 +77,8 @@
         "Y": 68.03,
         "Z": 79.14
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "WaitFor",
@@ -79,7 +87,8 @@
         "Y": -107.99,
         "Z": -31.14
       },
-      "argument": "Combat"
+      "argument": "Combat",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": -107.89,
         "Z": -72.12
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "WaitFor",
@@ -97,7 +107,8 @@
         "Y": -107.99,
         "Z": -72.18
       },
-      "argument": "Combat"
+      "argument": "Combat",
+      "note": ""
     },
     {
       "name": "WaitFor",
@@ -106,7 +117,8 @@
         "Y": -104,
         "Z": 0.08
       },
-      "argument": "Combat"
+      "argument": "Combat",
+      "note": ""
     },
     {
       "name": "WaitFor",
@@ -115,7 +127,8 @@
         "Y": -104,
         "Z": 0.08
       },
-      "argument": "Combat"
+      "argument": "Combat",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -124,7 +137,8 @@
         "Y": -104,
         "Z": 0.08
       },
-      "argument": "false"
+      "argument": "false",
+      "note": ""
     },
     {
       "name": "WaitFor",
@@ -133,7 +147,8 @@
         "Y": -103.94,
         "Z": 0.06
       },
-      "argument": "Combat"
+      "argument": "Combat",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -142,7 +157,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "true"
+      "argument": "true",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -151,7 +167,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1"
+      "argument": "1",
+      "note": ""
     },
     {
       "name": "WaitFor",
@@ -160,7 +177,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "IsReady"
+      "argument": "IsReady",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": -103.94,
         "Z": -0.08
       },
-      "argument": "false"
+      "argument": "false",
+      "note": ""
     },
     {
       "name": "DutySpecificCode",
@@ -178,7 +197,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2"
+      "argument": "2",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -187,7 +207,8 @@
         "Y": -104.4,
         "Z": -0.09
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -196,7 +217,8 @@
         "Y": -103.91,
         "Z": -0.61
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -205,7 +227,8 @@
         "Y": -103.99,
         "Z": -0.63
       },
-      "argument": "false"
+      "argument": "false",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -214,7 +237,8 @@
         "Y": -104,
         "Z": -19.2
       },
-      "argument": "2012817 (Magitek Terminal)"
+      "argument": "2012817",
+      "note": "Magitek Terminal"
     },
     {
       "name": "WaitFor",
@@ -223,7 +247,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "IsReady"
+      "argument": "IsReady",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -232,7 +257,8 @@
         "Y": -268,
         "Z": 219.83
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "WaitFor",
@@ -241,7 +267,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "IsReady"
+      "argument": "IsReady",
+      "note": ""
     }
   ],
   "interactables": [],

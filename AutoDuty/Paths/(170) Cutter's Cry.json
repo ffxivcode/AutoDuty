@@ -7,7 +7,8 @@
         "Y": -2.4,
         "Z": 86.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -16,7 +17,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": -3.53,
         "Z": 98.03
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": -2.4,
         "Z": 86.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -52,7 +57,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -61,7 +67,8 @@
         "Y": -3.56,
         "Z": 89.48
       },
-      "argument": "2000460 (Shifting Sands)"
+      "argument": "2000460",
+      "note": "Shifting Sands"
     },
     {
       "name": "AutoMoveFor",
@@ -70,7 +77,8 @@
         "Y": -0.19,
         "Z": 185.03
       },
-      "argument": "6000"
+      "argument": "6000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "8000"
+      "argument": "8000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -88,7 +97,8 @@
         "Y": -0.41,
         "Z": 153.73
       },
-      "argument": "2000461 (Shifting Sands)"
+      "argument": "2000461",
+      "note": "Shifting Sands"
     },
     {
       "name": "AutoMoveFor",
@@ -97,7 +107,8 @@
         "Y": 1.61,
         "Z": 114.16
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -106,7 +117,8 @@
         "Y": -11.68,
         "Z": 198.3
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -115,7 +127,8 @@
         "Y": -9.41,
         "Z": 208.49
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -124,7 +137,8 @@
         "Y": -6.34,
         "Z": 215.08
       },
-      "argument": "2000464 (Shifting Sands)"
+      "argument": "2000464",
+      "note": "Shifting Sands"
     },
     {
       "name": "Interactable",
@@ -133,7 +147,8 @@
         "Y": -0.7,
         "Z": -112.54
       },
-      "argument": "2000465 (Shifting Sands)"
+      "argument": "2000465",
+      "note": "Shifting Sands"
     },
     {
       "name": "Interactable",
@@ -142,7 +157,8 @@
         "Y": 0.37,
         "Z": -232.49
       },
-      "argument": "2000466 (Shifting Sands)"
+      "argument": "2000466",
+      "note": "Shifting Sands"
     },
     {
       "name": "Boss",
@@ -151,7 +167,8 @@
         "Y": -4.86,
         "Z": 163.05
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -160,7 +177,8 @@
         "Y": -4.36,
         "Z": 140.8
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -169,7 +187,8 @@
         "Y": -3.92,
         "Z": 136.91
       },
-      "argument": "2000469 (Shifting Sands)"
+      "argument": "2000469",
+      "note": "Shifting Sands"
     },
     {
       "name": "Boss",
@@ -178,7 +197,8 @@
         "Y": -4.9,
         "Z": -204.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

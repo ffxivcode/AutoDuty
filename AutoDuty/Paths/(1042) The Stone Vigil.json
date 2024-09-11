@@ -7,7 +7,8 @@
         "Y": 0.01,
         "Z": 116.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -16,7 +17,8 @@
         "Y": 5,
         "Z": 53.1
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": -20.11
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -34,7 +37,8 @@
         "Y": 4,
         "Z": -80.16
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "ConditionAction",
@@ -43,7 +47,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "ObjectData;2001879;EventState;0,ModifyIndex;3"
+      "argument": "ObjectData;2001879;EventState;0,ModifyIndex;3",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -52,7 +57,8 @@
         "Y": 0.05,
         "Z": -142.12
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -61,7 +67,8 @@
         "Y": 4,
         "Z": -214.98
       },
-      "argument": "2001880 (Strongroom Gate)"
+      "argument": "2001880",
+      "note": "Strongroom Gate"
     },
     {
       "name": "Boss",
@@ -70,7 +77,8 @@
         "Y": 0.04,
         "Z": -247.95
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

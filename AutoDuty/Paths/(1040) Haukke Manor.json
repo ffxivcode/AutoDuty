@@ -7,7 +7,8 @@
         "Y": 0,
         "Z": 29.12
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -16,7 +17,8 @@
         "Y": 0,
         "Z": 30.58
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000302 (Tiny Key)"
+      "argument": "2000302",
+      "note": "Tiny Key"
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": -0,
         "Z": 57.2
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -43,7 +47,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000329 (Locked Door)"
+      "argument": "2000329",
+      "note": "Locked Door"
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 0,
         "Z": 50.81
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -61,7 +67,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000303 (Tiny Key)"
+      "argument": "2000303",
+      "note": "Tiny Key"
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 0,
         "Z": 75.39
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": 0.43
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -88,7 +97,8 @@
         "Y": 0,
         "Z": 0.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0.02
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -106,7 +117,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000324 (Green Key)"
+      "argument": "2000324",
+      "note": "Green Key"
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": -0,
         "Z": 0.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -124,7 +137,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000355 (Ivy Door)"
+      "argument": "2000355",
+      "note": "Ivy Door"
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": -0,
         "Z": 12.88
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -142,7 +157,8 @@
         "Y": -0,
         "Z": 12.65
       },
-      "argument": "1500"
+      "argument": "1500",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": -18.8,
         "Z": 33.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -160,7 +177,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000343 (Locked Door)"
+      "argument": "2000343",
+      "note": "Locked Door"
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": -18.79,
         "Z": 51.88
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -178,7 +197,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000325 (Yellow Key)"
+      "argument": "2000325",
+      "note": "Yellow Key"
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": -18.8,
         "Z": 24.97
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -196,7 +217,8 @@
         "Y": -18.8,
         "Z": 24.69
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -205,7 +227,8 @@
         "Y": -18.8,
         "Z": 1.81
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -214,7 +237,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000356 (Carnation Door)"
+      "argument": "2000356",
+      "note": "Carnation Door"
     },
     {
       "name": "Boss",
@@ -223,7 +247,8 @@
         "Y": -18.67,
         "Z": 0.05
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -232,7 +257,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -241,7 +267,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2001235 (Bloody Parchment)"
+      "argument": "2001235",
+      "note": "Bloody Parchment"
     },
     {
       "name": "MoveTo",
@@ -250,7 +277,8 @@
         "Y": -18.68,
         "Z": -0.02
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -259,7 +287,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2012969 (Aetherial Flow)"
+      "argument": "2012969",
+      "note": "Aetherial Flow"
     },
     {
       "name": "MoveTo",
@@ -268,7 +297,8 @@
         "Y": 9.87,
         "Z": -0.08
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -277,7 +307,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2001233 (Sealed Barrier)"
+      "argument": "2001233",
+      "note": "Sealed Barrier"
     },
     {
       "name": "Wait",
@@ -286,7 +317,8 @@
         "Y": 17,
         "Z": -0.24
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -295,7 +327,8 @@
         "Y": 17,
         "Z": -0.01
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

@@ -7,7 +7,8 @@
         "Y": 134,
         "Z": 815.67
       },
-      "argument": "12000"
+      "argument": "12000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -16,7 +17,8 @@
         "Y": 134,
         "Z": 806.27
       },
-      "argument": "20000"
+      "argument": "20000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2012808 (Perceptive Portal)"
+      "argument": "2012808",
+      "note": "Perceptive Portal"
     },
     {
       "name": "Wait",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 58.75,
         "Z": 206.09
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 49.11,
         "Z": 158.88
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -61,7 +67,8 @@
         "Y": 49.86,
         "Z": 155.12
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -70,7 +77,8 @@
         "Y": 45.32,
         "Z": 84.27
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -79,7 +87,8 @@
         "Y": 41.51,
         "Z": 47.68
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -88,7 +97,8 @@
         "Y": 41,
         "Z": 17
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": 41,
         "Z": -1.3
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -106,7 +117,8 @@
         "Y": 41,
         "Z": -27.35
       },
-      "argument": "6000"
+      "argument": "6000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": 42,
         "Z": 709.63
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -124,7 +137,8 @@
         "Y": 42.92,
         "Z": 707.21
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": 54.1,
         "Z": 674.26
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -142,7 +157,8 @@
         "Y": 66,
         "Z": 675.7
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -151,7 +167,8 @@
         "Y": 66,
         "Z": 676.37
       },
-      "argument": "20000"
+      "argument": "20000",
+      "note": ""
     },
     {
       "name": "PausePandora",
@@ -160,7 +177,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": 66,
         "Z": 687.05
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -178,7 +197,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013317 (Seiryu Statue)"
+      "argument": "2013317",
+      "note": "Seiryu Statue"
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": 66,
         "Z": 687.6
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -196,7 +217,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013316 (Suzaku Statue)"
+      "argument": "2013316",
+      "note": "Suzaku Statue"
     },
     {
       "name": "Wait",
@@ -205,7 +227,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -214,7 +237,8 @@
         "Y": 66,
         "Z": 687.6
       },
-      "argument": "2013316 (Suzaku Statue)"
+      "argument": "2013316",
+      "note": "Suzaku Statue"
     },
     {
       "name": "MoveTo",
@@ -223,7 +247,8 @@
         "Y": 66,
         "Z": 682.42
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -232,7 +257,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013318 (Auspice Glass)"
+      "argument": "2013318",
+      "note": "Auspice Glass"
     },
     {
       "name": "Wait",
@@ -241,7 +267,8 @@
         "Y": 66,
         "Z": 683.96
       },
-      "argument": "9000"
+      "argument": "9000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -250,7 +277,8 @@
         "Y": 66,
         "Z": 663.65
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -259,7 +287,8 @@
         "Y": 61.86,
         "Z": 663.81
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -268,7 +297,8 @@
         "Y": 62.18,
         "Z": 677.11
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -277,7 +307,8 @@
         "Y": 62.23,
         "Z": 697.31
       },
-      "argument": "7000"
+      "argument": "7000",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -286,7 +317,8 @@
         "Y": 62.4,
         "Z": 699.21
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -295,7 +327,8 @@
         "Y": 61.85,
         "Z": 683.78
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -304,7 +337,8 @@
         "Y": 66,
         "Z": 707.73
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -313,7 +347,8 @@
         "Y": 75.32,
         "Z": 731.19
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -322,7 +357,8 @@
         "Y": -21.75,
         "Z": 578.88
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -331,7 +367,8 @@
         "Y": -21.75,
         "Z": 578.95
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -340,7 +377,8 @@
         "Y": -21.75,
         "Z": 572.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -349,7 +387,8 @@
         "Y": -20,
         "Z": 539.2
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -358,7 +397,8 @@
         "Y": -20,
         "Z": 524.25
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     }
   ],
   "interactables": [],

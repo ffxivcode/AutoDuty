@@ -7,7 +7,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/vbmai off"
+      "argument": "/vbmai off",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 0.02,
         "Z": -1.58
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

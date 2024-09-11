@@ -7,7 +7,8 @@
         "Y": 134,
         "Z": 815.67
       },
-      "argument": "12000"
+      "argument": "12000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -16,7 +17,8 @@
         "Y": 134,
         "Z": 806.16
       },
-      "argument": "20000"
+      "argument": "20000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2012810 (Perceptive Portal)"
+      "argument": "2012810",
+      "note": "Perceptive Portal"
     },
     {
       "name": "Wait",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -43,7 +47,8 @@
         "Y": 238.89,
         "Z": 352.14
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -52,7 +57,8 @@
         "Y": 271.64,
         "Z": 251.17
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -61,7 +67,8 @@
         "Y": 278.85,
         "Z": 193.35
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -70,7 +77,8 @@
         "Y": 309.03,
         "Z": 121.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -79,7 +87,8 @@
         "Y": 309,
         "Z": 88.95
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -88,7 +97,8 @@
         "Y": 309,
         "Z": 73.81
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -97,7 +107,8 @@
         "Y": 308.15,
         "Z": 46.97
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -106,7 +117,8 @@
         "Y": 316.81,
         "Z": -4.75
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": 320.38,
         "Z": -36.77
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -124,7 +137,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013368 (Stone of Protection)"
+      "argument": "2013368",
+      "note": "Stone of Protection"
     },
     {
       "name": "Wait",
@@ -133,7 +147,8 @@
         "Y": 331.37,
         "Z": -90.18
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": 334.49,
         "Z": -105.43
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -151,7 +167,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013369 (Stone of Protection)"
+      "argument": "2013369",
+      "note": "Stone of Protection"
     },
     {
       "name": "MoveTo",
@@ -160,7 +177,8 @@
         "Y": 337.11,
         "Z": -124.23
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -169,7 +187,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013370 (Stone of Protection)"
+      "argument": "2013370",
+      "note": "Stone of Protection"
     },
     {
       "name": "Wait",
@@ -178,7 +197,8 @@
         "Y": 339.9,
         "Z": -160.78
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": 351.6,
         "Z": -220.87
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -196,7 +217,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013371 (Stone of Protection)"
+      "argument": "2013371",
+      "note": "Stone of Protection"
     },
     {
       "name": "Wait",
@@ -205,7 +227,8 @@
         "Y": 359.99,
         "Z": -238.67
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -214,7 +237,8 @@
         "Y": 360.17,
         "Z": -238.63
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -223,7 +247,8 @@
         "Y": 360,
         "Z": -269.37
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -232,7 +257,8 @@
         "Y": 360,
         "Z": -301.57
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -241,7 +267,8 @@
         "Y": 360,
         "Z": -310.08
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     }
   ],
   "interactables": [],

@@ -4,11 +4,9 @@ using System.Numerics;
 using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using Dalamud.Interface;
-using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons;
-using ECommons.DalamudServices;
 using ECommons.EzSharedDataManager;
 using ECommons.Funding;
 using ECommons.ImGuiMethods;
@@ -25,6 +23,7 @@ public class MainWindow : Window, IDisposable
     internal static string CurrentTabName = "";
 
     private static bool _showPopup = false;
+    private static bool _nestedPopup = false;
     private static string _popupText = "";
     private static string _popupTitle = "";
     private static string openTabName = "";
@@ -40,6 +39,12 @@ public class MainWindow : Window, IDisposable
         
         TitleBarButtons.Add(new() { Icon = FontAwesomeIcon.Cog, IconOffset = new(1, 1), Click = _ => OpenTab("Config") });
         TitleBarButtons.Add(new() { ShowTooltip = () => ImGui.SetTooltip("Support Herculezz on Ko-fi"), Icon = FontAwesomeIcon.Heart, IconOffset = new(1, 1), Click = _ => GenericHelpers.ShellStart("https://ko-fi.com/Herculezz") });
+    }
+
+    internal static void SetCurrentTabName(string tabName)
+    {
+        if (CurrentTabName != tabName)
+            CurrentTabName = tabName;
     }
 
     internal static void OpenTab(string tabName)
@@ -191,6 +196,7 @@ public class MainWindow : Window, IDisposable
                     }
                 }
             }
+            
             ImGui.SameLine(0, 5);
             using (ImRaii.Disabled(!Plugin.Configuration.AutoRepair && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.RepairButton))
             {
@@ -296,15 +302,6 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    internal static void CenteredText(string text)
-    {
-        float windowWidth = ImGui.GetWindowSize().X;
-        float textWidth = ImGui.CalcTextSize(text).X;
-
-        ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f);
-        ImGui.TextWrapped(text);
-    }
-
     internal static bool CenteredButton(string label, float percentWidth, float xIndent = 0)
     {
         var buttonWidth = ImGui.GetContentRegionAvail().X * percentWidth;
@@ -312,24 +309,26 @@ public class MainWindow : Window, IDisposable
         return ImGui.Button(label, new(buttonWidth, 35f));
     }
 
-    internal static void ShowPopup(string popupTitle, string popupText)
+    internal static void ShowPopup(string popupTitle, string popupText, bool nested = false)
     {
         _popupTitle = popupTitle;
         _popupText = popupText;
         _showPopup = true;
+        _nestedPopup = nested;
     }
 
-    private void DrawPopup()
+    internal static void DrawPopup(bool nested = false)
     {
-        if (_showPopup)
-        {
-            ImGui.OpenPopup(_popupTitle);
-        }
+        if (!_showPopup || (_nestedPopup && !nested) || (!_nestedPopup && nested)) return;
+
+        if (!ImGui.IsPopupOpen($"{_popupTitle}###Popup"))
+            ImGui.OpenPopup($"{_popupTitle}###Popup");
+
         Vector2 textSize = ImGui.CalcTextSize(_popupText);
         ImGui.SetNextWindowSize(new(textSize.X + 25, textSize.Y + 100));
-        if (ImGui.BeginPopupModal(_popupTitle, ref _showPopup, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoMove))
+        if (ImGui.BeginPopupModal($"{_popupTitle}###Popup", ref _showPopup, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoMove))
         {
-            CenteredText(_popupText);
+            ImGuiEx.TextCentered(_popupText);
             ImGui.Spacing();
             if (CenteredButton("OK", .5f, 15))
             {

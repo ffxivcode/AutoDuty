@@ -7,7 +7,8 @@
         "Y": 134,
         "Z": 815.67
       },
-      "argument": "12000"
+      "argument": "12000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -16,7 +17,8 @@
         "Y": 134,
         "Z": 802.19
       },
-      "argument": "20000"
+      "argument": "20000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2012809 (Perceptive Portal)"
+      "argument": "2012809",
+      "note": "Perceptive Portal"
     },
     {
       "name": "Wait",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -43,7 +47,8 @@
         "Y": 36.51,
         "Z": 486.31
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -52,7 +57,8 @@
         "Y": 31.78,
         "Z": 421.24
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -61,7 +67,8 @@
         "Y": 43.41,
         "Z": 360.63
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -70,7 +77,8 @@
         "Y": 42,
         "Z": 277.2
       },
-      "argument": "9000"
+      "argument": "9000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -79,7 +87,8 @@
         "Y": 45.26,
         "Z": 259.85
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -88,7 +97,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013344 (Woven Rope)"
+      "argument": "2013344",
+      "note": "Woven Rope"
     },
     {
       "name": "Wait",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": 45.26,
         "Z": 257.56
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -115,7 +127,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013343 (Shojo Temple Entrance)"
+      "argument": "2013343",
+      "note": "Shojo Temple Entrance"
     },
     {
       "name": "Revival",
@@ -124,7 +137,8 @@
         "Y": 45.45,
         "Z": 244.3
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -133,7 +147,8 @@
         "Y": 46,
         "Z": 216.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": 46,
         "Z": 203.53
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -151,7 +167,8 @@
         "Y": 57.23,
         "Z": 103.14
       },
-      "argument": "7000"
+      "argument": "7000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -160,7 +177,8 @@
         "Y": 57.24,
         "Z": 51.41
       },
-      "argument": "30000"
+      "argument": "30000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": 57.24,
         "Z": 47.99
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": 57.24,
         "Z": 6.48
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": 57.24,
         "Z": 11.51
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -196,7 +217,8 @@
         "Y": 76.47,
         "Z": -26.36
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "PausePandora",
@@ -205,7 +227,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "20000"
+      "argument": "20000",
+      "note": ""
     },
     {
       "name": "DutySpecificCode",
@@ -214,7 +237,8 @@
         "Y": 76.47,
         "Z": -22.37
       },
-      "argument": "6"
+      "argument": "6",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -223,7 +247,8 @@
         "Y": 76.47,
         "Z": -27.01
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -232,7 +257,8 @@
         "Y": 89.73,
         "Z": -151.26
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -241,7 +267,8 @@
         "Y": 89.73,
         "Z": -151.2
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -250,7 +277,8 @@
         "Y": 89.73,
         "Z": -160.56
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -259,7 +287,8 @@
         "Y": 91,
         "Z": -192.5
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -268,7 +297,8 @@
         "Y": 91,
         "Z": -203.3
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     }
   ],
   "interactables": [],

@@ -1,22 +1,24 @@
 {
   "actions": [
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 1 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 1 --\u003E"
     },
     {
-      "name": "\u003C-- Not double-pulling here cuz too far away --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Not double-pulling here cuz too far away --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -25,7 +27,8 @@
         "Y": -16,
         "Z": 294.63
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -34,16 +37,18 @@
         "Y": -10,
         "Z": 246.99
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
-      "name": "\u003C-- Trash Packs / \u96D1\u9B5A 2 - 5 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Trash Packs / \u96D1\u9B5A 2 - 5 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -52,7 +57,8 @@
         "Y": -6.25,
         "Z": 95.07
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -61,16 +67,18 @@
         "Y": -6.42,
         "Z": 53.56
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
-      "name": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E"
     },
     {
       "name": "Boss",
@@ -79,16 +87,18 @@
         "Y": -2,
         "Z": 204.36
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 6 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 6 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -97,7 +107,8 @@
         "Y": -0.02,
         "Z": 244.56
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "ForceAttack",
@@ -106,7 +117,8 @@
         "Y": 2,
         "Z": 273.54
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -115,16 +127,18 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 7 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 7 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -133,7 +147,8 @@
         "Y": 3.99,
         "Z": 308.07
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -142,7 +157,8 @@
         "Y": 6,
         "Z": 311.01
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -151,16 +167,18 @@
         "Y": 5.96,
         "Z": 282.57
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 8 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 8 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -169,7 +187,8 @@
         "Y": 7.98,
         "Z": 308.75
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "ForceAttack",
@@ -178,7 +197,8 @@
         "Y": 10,
         "Z": 266.08
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -187,7 +207,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -196,16 +217,18 @@
         "Y": 9.96,
         "Z": 297.43
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
-      "name": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E"
     },
     {
       "name": "Boss",
@@ -214,16 +237,18 @@
         "Y": 14,
         "Z": 173.43
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
-      "name": "\u003C-- Trash Packs / \u96D1\u9B5A 9 \u0026 10 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Trash Packs / \u96D1\u9B5A 9 \u0026 10 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -232,7 +257,8 @@
         "Y": 15.97,
         "Z": 183.85
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -241,7 +267,8 @@
         "Y": 20.05,
         "Z": 111.11
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "SyncedWait",
@@ -250,7 +277,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200"
+      "argument": "4200",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -259,7 +287,8 @@
         "Y": 20.1,
         "Z": 86.55
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "SyncedStopForCombat",
@@ -268,7 +297,8 @@
         "Y": 20.1,
         "Z": 103.32
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
       "name": "UnsyncedStopForCombat",
@@ -277,16 +307,18 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 11 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 11 --\u003E"
     },
     {
       "name": "MoveTo",
@@ -295,16 +327,18 @@
         "Y": 20.05,
         "Z": 47.24
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
-      "name": "\u003C-- Trash Pack / \u96D1\u9B5A 12 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 12 --\u003E"
     },
     {
       "name": "StopForCombat",
@@ -313,7 +347,8 @@
         "Y": 20,
         "Z": 33.54
       },
-      "argument": "False"
+      "argument": "False",
+      "note": ""
     },
     {
       "name": "StopForCombat",
@@ -322,7 +357,8 @@
         "Y": 20.11,
         "Z": 40.38
       },
-      "argument": "True"
+      "argument": "True",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -331,16 +367,18 @@
         "Y": 20,
         "Z": 55.76
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
-      "name": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E"
     },
     {
       "name": "Boss",
@@ -349,7 +387,8 @@
         "Y": 19.99,
         "Z": -44.32
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

@@ -7,7 +7,8 @@
         "Y": -4.94,
         "Z": -63.16
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": -4.52,
         "Z": -64.14
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -34,7 +37,8 @@
         "Y": -4.52,
         "Z": -64.14
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -43,7 +47,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2007567 (Imperial Identification Key)"
+      "argument": "2007567",
+      "note": "Imperial Identification Key"
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 1.77,
         "Z": -50.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -61,7 +67,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2007571 (Security Terminal)"
+      "argument": "2007571",
+      "note": "Security Terminal"
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 1.95,
         "Z": -22.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 1.95,
         "Z": -22.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2007568 (Imperial Identification Key)"
+      "argument": "2007568",
+      "note": "Imperial Identification Key"
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": 2,
         "Z": 18.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -115,7 +127,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2007572 (Security Terminal)"
+      "argument": "2007572",
+      "note": "Security Terminal"
     },
     {
       "name": "Boss",
@@ -124,7 +137,8 @@
         "Y": 2.93,
         "Z": 73.77
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": 2.92,
         "Z": 73.19
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": 2.75,
         "Z": 73.05
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -151,7 +167,8 @@
         "Y": 2.72,
         "Z": 72.98
       },
-      "argument": "7000"
+      "argument": "7000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -160,7 +177,8 @@
         "Y": -300,
         "Z": 0.03
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -169,7 +187,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2007580 (Control Panel)"
+      "argument": "2007580",
+      "note": "Control Panel"
     },
     {
       "name": "Wait",
@@ -178,7 +197,8 @@
         "Y": -300.06,
         "Z": -12.86
       },
-      "argument": "12000"
+      "argument": "12000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -187,7 +207,8 @@
         "Y": -300.06,
         "Z": -12.86
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -196,7 +217,8 @@
         "Y": -300.19,
         "Z": -0.32
       },
-      "argument": "6000"
+      "argument": "6000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -205,7 +227,8 @@
         "Y": -300.06,
         "Z": 13.22
       },
-      "argument": "12000"
+      "argument": "12000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -214,7 +237,8 @@
         "Y": -300.06,
         "Z": 13.22
       },
-      "argument": "11000"
+      "argument": "11000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -223,7 +247,8 @@
         "Y": -300.06,
         "Z": 13.22
       },
-      "argument": "8000"
+      "argument": "8000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -232,7 +257,8 @@
         "Y": -300,
         "Z": 13.18
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -241,7 +267,8 @@
         "Y": -300.06,
         "Z": 1.99
       },
-      "argument": "5500"
+      "argument": "5500",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -250,7 +277,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "5500"
+      "argument": "5500",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -259,7 +287,8 @@
         "Y": -299.97,
         "Z": -0.11
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -268,7 +297,8 @@
         "Y": -299.96,
         "Z": -0.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -277,7 +307,8 @@
         "Y": -299.48,
         "Z": -0.02
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -286,7 +317,8 @@
         "Y": 168.84,
         "Z": 230.45
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -295,7 +327,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2007569 (Imperial Identification Key)"
+      "argument": "2007569",
+      "note": "Imperial Identification Key"
     },
     {
       "name": "MoveTo",
@@ -304,7 +337,8 @@
         "Y": 168.98,
         "Z": 216.46
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -313,7 +347,8 @@
         "Y": 168.98,
         "Z": 242.94
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -322,7 +357,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2007573 (Security Terminal)"
+      "argument": "2007573",
+      "note": "Security Terminal"
     },
     {
       "name": "MoveTo",
@@ -331,7 +367,8 @@
         "Y": 185.97,
         "Z": 333.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -340,7 +377,8 @@
         "Y": 185.97,
         "Z": 333.11
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -349,7 +387,8 @@
         "Y": 203.07,
         "Z": 258.49
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -358,7 +397,8 @@
         "Y": 203.03,
         "Z": 262.72
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -367,7 +407,8 @@
         "Y": 203.79,
         "Z": 299.52
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -376,7 +417,8 @@
         "Y": 203.02,
         "Z": 338.48
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -385,7 +427,8 @@
         "Y": 203,
         "Z": 332.25
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -394,7 +437,8 @@
         "Y": 212,
         "Z": 392.18
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -403,7 +447,8 @@
         "Y": 212,
         "Z": 392.03
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

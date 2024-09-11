@@ -7,7 +7,8 @@
         "Y": 41.04,
         "Z": -77.92
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -16,7 +17,8 @@
         "Y": 29.55,
         "Z": -17.25
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -25,7 +27,8 @@
         "Y": 30.83,
         "Z": -16.46
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000061 (Cultist Orb)"
+      "argument": "2000061",
+      "note": "Cultist Orb"
     },
     {
       "name": "Boss",
@@ -43,7 +47,8 @@
         "Y": 23.41,
         "Z": 26.77
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 24.71,
         "Z": 20.42
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -61,7 +67,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000062 (Cultist Orb)"
+      "argument": "2000062",
+      "note": "Cultist Orb"
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 13.49,
         "Z": -5.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000057 (Cultist Rosary)"
+      "argument": "2000057",
+      "note": "Cultist Rosary"
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 13.92,
         "Z": 15.52
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000060 (Sealed Barrier)"
+      "argument": "2000060",
+      "note": "Sealed Barrier"
     },
     {
       "name": "Boss",
@@ -106,7 +117,8 @@
         "Y": 13.86,
         "Z": 9.51
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -115,7 +127,8 @@
         "Y": 14.91,
         "Z": 3.94
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -124,7 +137,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000067 (Cultist Orb)"
+      "argument": "2000067",
+      "note": "Cultist Orb"
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": 14.9,
         "Z": 13.71
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -142,7 +157,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000063 (Cultist Orb)"
+      "argument": "2000063",
+      "note": "Cultist Orb"
     },
     {
       "name": "Wait",
@@ -151,7 +167,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -160,7 +177,8 @@
         "Y": 14.05,
         "Z": -12.76
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": 14.05,
         "Z": -15.12
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

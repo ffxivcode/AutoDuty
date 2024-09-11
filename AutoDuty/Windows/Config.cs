@@ -659,17 +659,6 @@ public static class ConfigTab
                 Configuration.Save();
             ImGuiComponents.HelpMarker("AutoDuty will ignore your party makeup when queueing for duties\nThis is for Multi-Boxing Only\n*AutoDuty is not recommended to be used with other players*");
 
-            /*/
-        disabled for now
-            using (var d0 = ImRaii.Disabled(true))
-            {
-                if (ImGui.SliderInt("Scan Distance", ref treasureCofferScanDistance, 1, 100))
-                {
-                    Configuration.TreasureCofferScanDistance = treasureCofferScanDistance;
-                    Configuration.TreasureCofferScanDistance = Math.Clamp(Configuration.TreasureCofferScanDistance, 1, 100);
-                    Configuration.Save();
-                }
-            }*/
             ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
             var advModeHeader = ImGui.Selectable("Advanced Config Options", advModeHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
             ImGui.PopStyleVar();
@@ -1140,6 +1129,7 @@ public static class ConfigTab
                         Configuration.Save();
                     }
                     ImGuiComponents.HelpMarker("By enabling the usage of this option, you are agreeing to NEVER discuss this option within the Puni.sh Discord or to anyone in Puni.sh! You have been warned!!!");
+                    MainWindow.DrawPopup();
                 }
                 if (Configuration.EnableAutoRetainer || Configuration.AM)
                 {

@@ -7,7 +7,8 @@
         "Y": 8.5,
         "Z": 67.68
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -16,7 +17,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2011290 (Earthy Portal)"
+      "argument": "2011290",
+      "note": "Earthy Portal"
     },
     {
       "name": "Wait",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2500"
+      "argument": "2500",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -43,7 +47,8 @@
         "Y": -212.04,
         "Z": 37.45
       },
-      "argument": "1500"
+      "argument": "1500",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -52,7 +57,8 @@
         "Y": -211.99,
         "Z": 33.81
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -61,7 +67,8 @@
         "Y": -219.97,
         "Z": -71.07
       },
-      "argument": "1500"
+      "argument": "1500",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -70,7 +77,8 @@
         "Y": -220.04,
         "Z": -74.94
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -79,7 +87,8 @@
         "Y": -220,
         "Z": -150.35
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -88,7 +97,8 @@
         "Y": -220,
         "Z": -150.17
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2011293 (Interstice Portal)"
+      "argument": "2011293",
+      "note": "Interstice Portal"
     },
     {
       "name": "Wait",
@@ -106,7 +117,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3003"
+      "argument": "3003",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -115,7 +127,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -124,7 +137,8 @@
         "Y": 8.5,
         "Z": 67.84
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -133,7 +147,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -142,7 +157,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2011291 (Watery Portal)"
+      "argument": "2011291",
+      "note": "Watery Portal"
     },
     {
       "name": "Wait",
@@ -151,7 +167,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3004"
+      "argument": "3004",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -160,7 +177,8 @@
         "Y": 233.8,
         "Z": -181.2
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": 220,
         "Z": -147.67
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": 202,
         "Z": -104.66
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": 198,
         "Z": -153.72
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -196,7 +217,8 @@
         "Y": 198,
         "Z": -175.36
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -205,7 +227,8 @@
         "Y": 198,
         "Z": -180.21
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -214,7 +237,8 @@
         "Y": 202,
         "Z": -199.49
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -223,7 +247,8 @@
         "Y": 202,
         "Z": -149.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -232,7 +257,8 @@
         "Y": 188,
         "Z": -122.22
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -241,7 +267,8 @@
         "Y": 169.9,
         "Z": -100.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -250,7 +277,8 @@
         "Y": 169.9,
         "Z": -105.75
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -259,7 +287,8 @@
         "Y": 150,
         "Z": -158.73
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -268,7 +297,8 @@
         "Y": 150,
         "Z": -155.67
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -277,7 +307,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2001"
+      "argument": "2001",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -286,7 +317,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2011354 (Interstice Portal)"
+      "argument": "2011354",
+      "note": "Interstice Portal"
     },
     {
       "name": "Wait",
@@ -295,7 +327,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3006"
+      "argument": "3006",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -304,7 +337,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -313,7 +347,8 @@
         "Y": 8.5,
         "Z": 69.25
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -322,7 +357,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2002"
+      "argument": "2002",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -331,7 +367,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Fiery Portal"
+      "argument": "Fiery Portal",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -340,7 +377,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3007"
+      "argument": "3007",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -349,7 +387,8 @@
         "Y": -598.94,
         "Z": 107.31
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -358,7 +397,8 @@
         "Y": -598.34,
         "Z": 74.26
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -367,7 +407,8 @@
         "Y": -597.64,
         "Z": -8.57
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -376,7 +417,8 @@
         "Y": -592.55,
         "Z": -149.47
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -385,7 +427,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2011355 (Interstice Portal)"
+      "argument": "2011355",
+      "note": "Interstice Portal"
     },
     {
       "name": "Wait",
@@ -394,7 +437,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3008"
+      "argument": "3008",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -403,7 +447,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -412,7 +457,8 @@
         "Y": 8.5,
         "Z": 57.13
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -421,7 +467,8 @@
         "Y": 0,
         "Z": -10.22
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -430,7 +477,8 @@
         "Y": 0,
         "Z": -6.88
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

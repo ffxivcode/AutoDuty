@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Dalamud.Game.ClientState.Objects.Types;
+using ECommons.DalamudServices;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
@@ -64,7 +67,7 @@ namespace AutoDuty.Data
             }
         }
 
-        internal class PathFile
+        public class PathFile
         {
             [JsonPropertyName("actions")]
             public List<PathAction> Actions { get; set; } = [];
@@ -81,7 +84,7 @@ namespace AutoDuty.Data
             };
         }
 
-        internal class PathAction
+        public class PathAction
         {
             [JsonPropertyName("name")]
             public string Name { get; set; } = string.Empty;
@@ -91,9 +94,14 @@ namespace AutoDuty.Data
 
             [JsonPropertyName("argument")]
             public string Argument { get; set; } = string.Empty;
+
+            [JsonPropertyName("note")]
+            public string Note { get; set; } = string.Empty;
+
+            
         }
 
-        internal class PathFileMetaData
+        public class PathFileMetaData
         {
             [JsonPropertyName("createdAt")]
             public int CreatedAt { get; set; }
@@ -107,7 +115,7 @@ namespace AutoDuty.Data
             public List<string> Notes { get; set; } = [];
         }
 
-        internal class PathFileChangelogEntry
+        public class PathFileChangelogEntry
         {
             [JsonPropertyName("version")]
             public int Version { get; set; }

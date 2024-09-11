@@ -11,7 +11,7 @@ namespace AutoDuty.Helpers
         public static partial Regex PathFileRegex();
 
         [GeneratedRegex(@"([0-9]{3,})", RegexOptions.CultureInvariant)]
-        public static partial Regex InteractionObjectIdRegex();
+        public static partial Regex ObjectIdRegex();
     }
 
     public static class PathIdentifiers

@@ -193,5 +193,34 @@ namespace AutoDuty.Data
             Dead = 1,
             Revived = 2
         }
+
+        //AutoRetainer
+        public enum FCHousingMarker : uint
+        {
+            SmallYellow = 60761,
+            MediumYellow = 60762,
+            LargeYellow = 60763,
+            SmallBlue = 60764,
+            MediumBlue = 60765,
+            LargeBlue = 60766,
+        }
+
+        //AutoRetainer
+        public enum ApartmentHousingMarker : uint
+        {
+            PartiallyFilled = 60790,
+            Full = 60792,
+        }
+
+        //AutoRetainer
+        public enum PrivateHousingMarker : uint
+        {
+            SmallYellow = 60776,
+            MediumYellow = 60777,
+            LargeYellow = 60778,
+            SmallBlue = 60779,
+            MediumBlue = 60780,
+            LargeBlue = 60781,
+        }
     }
 }

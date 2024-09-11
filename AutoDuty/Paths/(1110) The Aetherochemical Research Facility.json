@@ -7,7 +7,8 @@
         "Y": 401.86,
         "Z": -297.87
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -16,7 +17,8 @@
         "Y": 398.19,
         "Z": -372.48
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -25,7 +27,8 @@
         "Y": 395.05,
         "Z": -295.64
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -34,7 +37,8 @@
         "Y": 389.76,
         "Z": -246.7
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -43,7 +47,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Checkpoint1"
+      "argument": "Checkpoint1",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 212.09,
         "Z": 218.02
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "ForceAttack",
@@ -61,7 +67,8 @@
         "Y": 212.07,
         "Z": 218.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": 222.05,
         "Z": 270.08
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "ForceAttack",
@@ -79,7 +87,8 @@
         "Y": 222.05,
         "Z": 270.08
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -88,7 +97,8 @@
         "Y": 225.14,
         "Z": 271.92
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -97,7 +107,8 @@
         "Y": 222.2,
         "Z": 271.98
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": -299.98,
         "Z": -249.99
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "PausePandora",
@@ -115,7 +127,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -124,7 +137,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2005307 (Lift Terminal)"
+      "argument": "2005307",
+      "note": "Lift Terminal"
     },
     {
       "name": "Wait",
@@ -133,7 +147,8 @@
         "Y": -299.98,
         "Z": -250.03
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -142,7 +157,8 @@
         "Y": -299.98,
         "Z": -255.14
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": -299.98,
         "Z": -245.34
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -160,7 +177,8 @@
         "Y": -299.98,
         "Z": -256.4
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -169,7 +187,8 @@
         "Y": -27.92,
         "Z": 275.07
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": -27.94,
         "Z": 236.83
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": -27.97,
         "Z": 224.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -196,7 +217,8 @@
         "Y": -27.99,
         "Z": 206.22
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -205,7 +227,8 @@
         "Y": -28.16,
         "Z": 195.95
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "PausePandora",
@@ -214,7 +237,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -223,7 +247,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2005308 (Lift Terminal)"
+      "argument": "2005308",
+      "note": "Lift Terminal"
     },
     {
       "name": "Wait",
@@ -232,7 +257,8 @@
         "Y": -58.16,
         "Z": 195.56
       },
-      "argument": "8000"
+      "argument": "8000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -241,7 +267,8 @@
         "Y": -58.93,
         "Z": 124.45
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -250,7 +277,8 @@
         "Y": -59.27,
         "Z": 95.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "PausePandora",
@@ -259,7 +287,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -268,7 +297,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2005309 (Lift Terminal)"
+      "argument": "2005309",
+      "note": "Lift Terminal"
     },
     {
       "name": "Wait",
@@ -277,7 +307,8 @@
         "Y": -59.27,
         "Z": 95.07
       },
-      "argument": "8000"
+      "argument": "8000",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -286,7 +317,8 @@
         "Y": -90.16,
         "Z": 49.87
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -295,7 +327,8 @@
         "Y": -96.46,
         "Z": -182.83
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -304,7 +337,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -313,7 +347,8 @@
         "Y": -456.46,
         "Z": 79.02
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

@@ -7,7 +7,8 @@
         "Y": 23.85,
         "Z": -208.19
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -16,7 +17,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -25,7 +27,8 @@
         "Y": 23.85,
         "Z": -208.19
       },
-      "argument": "2000159 (Tiny Key)"
+      "argument": "2000159",
+      "note": "Tiny Key"
     },
     {
       "name": "Interactable",
@@ -34,7 +37,8 @@
         "Y": 23.47,
         "Z": -208.46
       },
-      "argument": "2000160 (Sealed Blasting Door)"
+      "argument": "2000160",
+      "note": "Sealed Blasting Door"
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 24,
         "Z": -206.39
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -52,7 +57,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000163 (Lift Lever)"
+      "argument": "2000163",
+      "note": "Lift Lever"
     },
     {
       "name": "Wait",
@@ -61,7 +67,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -70,7 +77,8 @@
         "Y": -6.52,
         "Z": -208.07
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -79,7 +87,8 @@
         "Y": -8.75,
         "Z": -136.52
       },
-      "argument": "2000169 (Firesand)"
+      "argument": "2000169",
+      "note": "Firesand"
     },
     {
       "name": "Interactable",
@@ -88,7 +97,8 @@
         "Y": -3.92,
         "Z": -153.77
       },
-      "argument": "2000172 (Firesand)"
+      "argument": "2000172",
+      "note": "Firesand"
     },
     {
       "name": "Interactable",
@@ -97,7 +107,8 @@
         "Y": -9.75,
         "Z": -128.93
       },
-      "argument": "2001536 (Powder Chamber)"
+      "argument": "2001536",
+      "note": "Powder Chamber"
     },
     {
       "name": "Interactable",
@@ -106,7 +117,8 @@
         "Y": -9.98,
         "Z": -135.22
       },
-      "argument": "2000170 (Blasting Device)"
+      "argument": "2000170",
+      "note": "Blasting Device"
     },
     {
       "name": "Wait",
@@ -115,7 +127,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -124,7 +137,8 @@
         "Y": -9.92,
         "Z": -89.63
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -133,7 +147,8 @@
         "Y": -9.92,
         "Z": -69.18
       },
-      "argument": "2000178 (Tiny Key)"
+      "argument": "2000178",
+      "note": "Tiny Key"
     },
     {
       "name": "Interactable",
@@ -142,7 +157,8 @@
         "Y": -9.92,
         "Z": -58.98
       },
-      "argument": "2000173 (Sealed Blasting Door)"
+      "argument": "2000173",
+      "note": "Sealed Blasting Door"
     },
     {
       "name": "TreasureCoffer",
@@ -151,7 +167,8 @@
         "Y": -9.92,
         "Z": -37.99
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -160,7 +177,8 @@
         "Y": -8.25,
         "Z": 5.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -169,7 +187,8 @@
         "Y": -8.25,
         "Z": 5.91
       },
-      "argument": "2000175 (Lift Lever)"
+      "argument": "2000175",
+      "note": "Lift Lever"
     },
     {
       "name": "Wait",
@@ -178,7 +197,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -187,7 +207,8 @@
         "Y": -38.69,
         "Z": 11.74
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -196,7 +217,8 @@
         "Y": -42.09,
         "Z": 39.41
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -205,7 +227,8 @@
         "Y": -42.19,
         "Z": 41.22
       },
-      "argument": "2001531 (Firesand)"
+      "argument": "2001531",
+      "note": "Firesand"
     },
     {
       "name": "TreasureCoffer",
@@ -214,7 +237,8 @@
         "Y": -41.64,
         "Z": 70.42
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -223,7 +247,8 @@
         "Y": -42.42,
         "Z": 40.48
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -232,7 +257,8 @@
         "Y": -42.69,
         "Z": 42.35
       },
-      "argument": "2000179 (Firesand)"
+      "argument": "2000179",
+      "note": "Firesand"
     },
     {
       "name": "Interactable",
@@ -241,7 +267,8 @@
         "Y": -38.75,
         "Z": 54.16
       },
-      "argument": "2001537 (Powder Chamber)"
+      "argument": "2001537",
+      "note": "Powder Chamber"
     },
     {
       "name": "Interactable",
@@ -250,7 +277,8 @@
         "Y": -38.74,
         "Z": 47.62
       },
-      "argument": "2000180 (Blasting Device)"
+      "argument": "2000180",
+      "note": "Blasting Device"
     },
     {
       "name": "Interactable",
@@ -259,7 +287,8 @@
         "Y": -38.69,
         "Z": 60.38
       },
-      "argument": "2001532 (Firesand)"
+      "argument": "2001532",
+      "note": "Firesand"
     },
     {
       "name": "Boss",
@@ -268,7 +297,8 @@
         "Y": -38,
         "Z": 113.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -277,7 +307,8 @@
         "Y": -38,
         "Z": 113.01
       },
-      "argument": "2001533 (Firesand)"
+      "argument": "2001533",
+      "note": "Firesand"
     },
     {
       "name": "Interactable",
@@ -286,7 +317,8 @@
         "Y": -37.98,
         "Z": 113.05
       },
-      "argument": "2001538 (Powder Chamber)"
+      "argument": "2001538",
+      "note": "Powder Chamber"
     },
     {
       "name": "Interactable",
@@ -295,7 +327,8 @@
         "Y": -38.02,
         "Z": 110.96
       },
-      "argument": "2001534 (Blasting Device)"
+      "argument": "2001534",
+      "note": "Blasting Device"
     },
     {
       "name": "Wait",
@@ -304,7 +337,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4000"
+      "argument": "4000",
+      "note": ""
     },
     {
       "name": "ChatCommand",
@@ -313,7 +347,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/vbm cfg AIConfig ForbidMovement true"
+      "argument": "/vbm cfg AIConfig ForbidMovement true",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -322,7 +357,8 @@
         "Y": -42,
         "Z": 167.21
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "ChatCommand",
@@ -331,7 +367,8 @@
         "Y": -38.17,
         "Z": 107.74
       },
-      "argument": "/vbm cfg AIConfig ForbidMovement false"
+      "argument": "/vbm cfg AIConfig ForbidMovement false",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -340,7 +377,8 @@
         "Y": -57.88,
         "Z": 6.8
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

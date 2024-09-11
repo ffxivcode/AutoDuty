@@ -7,7 +7,8 @@
         "Y": 44.14,
         "Z": -223.21
       },
-      "argument": "1"
+      "argument": "1",
+      "note": ""
     },
     {
       "name": "TreasureCoffer",
@@ -16,7 +17,8 @@
         "Y": 27.83,
         "Z": -100.06
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "DutySpecificCode",
@@ -25,7 +27,8 @@
         "Y": 27.2,
         "Z": -56.04
       },
-      "argument": "2"
+      "argument": "2",
+      "note": ""
     },
     {
       "name": "DutySpecificCode",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3"
+      "argument": "3",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -43,7 +47,8 @@
         "Y": 30.37,
         "Z": -44.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -52,7 +57,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000216 (Inconspicuous Switch)"
+      "argument": "2000216",
+      "note": "Inconspicuous Switch"
     },
     {
       "name": "Boss",
@@ -61,7 +67,8 @@
         "Y": 22.86,
         "Z": 56.34
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -70,16 +77,18 @@
         "Y": 13.84,
         "Z": 145.88
       },
-      "argument": "2000250 (Captain\u0027s Quarters Key)"
+      "argument": "2000250",
+      "note": "Captain\u0027s Quarters Key"
     },
     {
-      "name": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
     },
     {
       "name": "ConditionAction",
@@ -88,7 +97,8 @@
         "Y": 19.9,
         "Z": 171.1
       },
-      "argument": "ItemLessThan;2000512,ModifyIndex;7"
+      "argument": "ItemLessThan;2000512,ModifyIndex;7",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -97,7 +107,8 @@
         "Y": 19.9,
         "Z": 171.1
       },
-      "argument": "2000227 (Captain\u0027s Quarters)"
+      "argument": "2000227",
+      "note": "Captain\u0027s Quarters"
     },
     {
       "name": "Interactable",
@@ -106,16 +117,18 @@
         "Y": 20.01,
         "Z": 190.03
       },
-      "argument": "2000255 (Waverider Gate Key)"
+      "argument": "2000255",
+      "note": "Waverider Gate Key"
     },
     {
-      "name": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E",
+      "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
     },
     {
       "name": "ConditionAction",
@@ -124,7 +137,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "ItemLessThan;2000513,ModifyIndex;11"
+      "argument": "ItemLessThan;2000513,ModifyIndex;11",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -133,7 +147,8 @@
         "Y": 16.3,
         "Z": 156.32
       },
-      "argument": "2000231 (Waverider Gate)"
+      "argument": "2000231",
+      "note": "Waverider Gate"
     },
     {
       "name": "Boss",
@@ -142,7 +157,8 @@
         "Y": 6.38,
         "Z": 244.52
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -151,7 +167,8 @@
         "Y": 5.57,
         "Z": 317.23
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],

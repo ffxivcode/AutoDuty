@@ -7,7 +7,8 @@
         "Y": 134,
         "Z": 815.67
       },
-      "argument": "12000"
+      "argument": "12000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -16,7 +17,8 @@
         "Y": 134,
         "Z": 802.19
       },
-      "argument": "20000"
+      "argument": "20000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -25,7 +27,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2012809 (Perceptive Portal)"
+      "argument": "2012809",
+      "note": "Perceptive Portal"
     },
     {
       "name": "Wait",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000"
+      "argument": "3000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -43,7 +47,8 @@
         "Y": 36.51,
         "Z": 486.31
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -52,7 +57,8 @@
         "Y": 31.78,
         "Z": 421.24
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -61,7 +67,8 @@
         "Y": 43.41,
         "Z": 360.63
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -70,7 +77,8 @@
         "Y": 42,
         "Z": 277.2
       },
-      "argument": "9000"
+      "argument": "9000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -88,7 +97,8 @@
         "Y": 45.26,
         "Z": 257.56
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -97,7 +107,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013343 (Shojo Temple Entrance)"
+      "argument": "2013343",
+      "note": "Shojo Temple Entrance"
     },
     {
       "name": "Revival",
@@ -106,7 +117,8 @@
         "Y": 45.45,
         "Z": 244.3
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -115,7 +127,8 @@
         "Y": 46,
         "Z": 216.91
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -124,7 +137,8 @@
         "Y": 46,
         "Z": 203.53
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -133,7 +147,8 @@
         "Y": 45.26,
         "Z": 169.52
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": 57.23,
         "Z": 106.96
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": 54.32,
         "Z": 90.78
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -160,7 +177,8 @@
         "Y": 57.24,
         "Z": 49.02
       },
-      "argument": "30000"
+      "argument": "30000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": 57.24,
         "Z": 47.99
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "ChatCommand",
@@ -178,7 +197,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/autoduty config AutoManageRotationPluginState False"
+      "argument": "/autoduty config AutoManageRotationPluginState False",
+      "note": ""
     },
     {
       "name": "ChatCommand",
@@ -187,7 +207,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/rotation off"
+      "argument": "/rotation off",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -196,7 +217,8 @@
         "Y": 57.24,
         "Z": 6.45
       },
-      "argument": "25000"
+      "argument": "25000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -205,7 +227,8 @@
         "Y": 57.24,
         "Z": 7
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "CameraFacing",
@@ -214,7 +237,8 @@
         "Y": 57.24,
         "Z": 9.18
       },
-      "argument": "722.05, 62.47, 15.55"
+      "argument": "722.05, 62.47, 15.55",
+      "note": ""
     },
     {
       "name": "Jump",
@@ -223,7 +247,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "200"
+      "argument": "200",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -232,7 +257,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "800"
+      "argument": "800",
+      "note": ""
     },
     {
       "name": "Jump",
@@ -241,7 +267,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "201"
+      "argument": "201",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -250,7 +277,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "801"
+      "argument": "801",
+      "note": ""
     },
     {
       "name": "Jump",
@@ -259,7 +287,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "202"
+      "argument": "202",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -268,7 +297,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "802"
+      "argument": "802",
+      "note": ""
     },
     {
       "name": "CameraFacing",
@@ -277,7 +307,8 @@
         "Y": 62.47,
         "Z": 16.24
       },
-      "argument": "721.62, 65.26, 21.53"
+      "argument": "721.62, 65.26, 21.53",
+      "note": ""
     },
     {
       "name": "Jump",
@@ -286,7 +317,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "203"
+      "argument": "203",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -295,7 +327,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "803"
+      "argument": "803",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -304,7 +337,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1000"
+      "argument": "1000",
+      "note": ""
     },
     {
       "name": "CameraFacing",
@@ -313,7 +347,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "719.73, 66.02, 21.87"
+      "argument": "719.73, 66.02, 21.87",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -322,7 +357,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "CameraFacing",
@@ -331,7 +367,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "716.51, 76.48, 36.53"
+      "argument": "716.51, 76.48, 36.53",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -340,7 +377,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "6000"
+      "argument": "6000",
+      "note": ""
     },
     {
       "name": "CameraFacing",
@@ -349,7 +387,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "717.31, 76.48, 37.69"
+      "argument": "717.31, 76.48, 37.69",
+      "note": ""
     },
     {
       "name": "Jump",
@@ -358,7 +397,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "204"
+      "argument": "204",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -367,7 +407,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "804"
+      "argument": "804",
+      "note": ""
     },
     {
       "name": "ChatCommand",
@@ -376,7 +417,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/autoduty config AutoManageRotationPluginState True"
+      "argument": "/autoduty config AutoManageRotationPluginState True",
+      "note": ""
     },
     {
       "name": "ChatCommand",
@@ -385,7 +427,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/rotation auto"
+      "argument": "/rotation auto",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -394,7 +437,8 @@
         "Y": 76.48,
         "Z": 37.61
       },
-      "argument": "7000"
+      "argument": "7000",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -403,7 +447,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013345 (Woven Rope)"
+      "argument": "2013345",
+      "note": "Woven Rope"
     },
     {
       "name": "Wait",
@@ -412,7 +457,8 @@
         "Y": 76.48,
         "Z": 16.3
       },
-      "argument": "28000"
+      "argument": "28000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -421,7 +467,8 @@
         "Y": 76.49,
         "Z": -3.12
       },
-      "argument": "2000"
+      "argument": "2000",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -430,7 +477,8 @@
         "Y": 89.73,
         "Z": -151.15
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -439,7 +487,8 @@
         "Y": 89.73,
         "Z": -151.29
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     },
     {
       "name": "Revival",
@@ -448,7 +497,8 @@
         "Y": 89.76,
         "Z": -161.78
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -457,7 +507,8 @@
         "Y": 91,
         "Z": -192.5
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -466,7 +517,8 @@
         "Y": 91,
         "Z": -203.51
       },
-      "argument": "500"
+      "argument": "500",
+      "note": ""
     }
   ],
   "interactables": [],

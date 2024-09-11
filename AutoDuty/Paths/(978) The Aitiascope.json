@@ -7,7 +7,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/bmrai follow Thancred"
+      "argument": "/bmrai follow Thancred",
+      "note": ""
     },
     {
       "name": "ChatCommand",
@@ -16,7 +17,8 @@
         "Y": 164,
         "Z": 501.72
       },
-      "argument": "/bmrai follow Alisaie"
+      "argument": "/bmrai follow Alisaie",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -25,7 +27,8 @@
         "Y": 164,
         "Z": 471.86
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "PausePandora",
@@ -34,7 +37,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -43,7 +47,8 @@
         "Y": 164,
         "Z": 479.93
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -52,7 +57,8 @@
         "Y": 164,
         "Z": 465.57
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -61,7 +67,8 @@
         "Y": 164,
         "Z": 466.25
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Interactable",
@@ -70,7 +77,8 @@
         "Y": 164,
         "Z": 471.21
       },
-      "argument": "2011758 (Aether Current)"
+      "argument": "2011758",
+      "note": "Aether Current"
     },
     {
       "name": "Wait",
@@ -79,7 +87,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "10000"
+      "argument": "10000",
+      "note": ""
     },
     {
       "name": "ChatCommand",
@@ -88,7 +97,8 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/bmrai follow Thancred"
+      "argument": "/bmrai follow Thancred",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -97,7 +107,8 @@
         "Y": -182.78,
         "Z": 441.2
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -106,7 +117,8 @@
         "Y": -200.49,
         "Z": 353.41
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Wait",
@@ -115,7 +127,8 @@
         "Y": -202.18,
         "Z": 321.55
       },
-      "argument": "5000"
+      "argument": "5000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -124,7 +137,8 @@
         "Y": -212.02,
         "Z": 222.98
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -133,7 +147,8 @@
         "Y": -211.41,
         "Z": 143.21
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -142,7 +157,8 @@
         "Y": -211.41,
         "Z": 128.27
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -151,7 +167,8 @@
         "Y": -211.11,
         "Z": 106.87
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "AutoMoveFor",
@@ -160,7 +177,8 @@
         "Y": -211.24,
         "Z": 94.3
       },
-      "argument": "7000"
+      "argument": "7000",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -169,7 +187,8 @@
         "Y": -235.91,
         "Z": -219.22
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -178,7 +197,8 @@
         "Y": -238.44,
         "Z": -432.25
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "Boss",
@@ -187,7 +207,8 @@
         "Y": -236,
         "Z": -494.57
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     },
     {
       "name": "MoveTo",
@@ -196,7 +217,8 @@
         "Y": -236,
         "Z": -501.22
       },
-      "argument": ""
+      "argument": "",
+      "note": ""
     }
   ],
   "interactables": [],
