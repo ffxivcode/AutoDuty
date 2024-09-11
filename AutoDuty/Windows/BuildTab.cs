@@ -124,10 +124,14 @@ namespace AutoDuty.Windows
                         _noArgument = item.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase);
                         _addActionButton = "Add";
                         _comment = item.Item1.Equals("<-- Comment -->", StringComparison.InvariantCultureIgnoreCase);
-                        _position = Player.Available && !_comment ? Player.Position : Vector3.Zero;
-                        _positionText = _position.ToCustomString();
+                        _position = Player.Available ? Player.Position : Vector3.Zero;
                         switch (item.Item1)
                         {
+                            case "<-- Comment -->":
+                            case "Revival":
+                            case "ExitDuty":
+                                _position = Vector3.Zero;
+                                break;
                             case "SelectYesno":
                                 _argument = "Yes";
                                 break;
@@ -143,6 +147,7 @@ namespace AutoDuty.Windows
                                 _argument = string.Empty;
                                 break;
                         }
+                        _positionText = _position.ToCustomString();
                         _action = new() { Name = _actionText, Position = _position, Argument = _argument, Note = _note };
                         _showAddActionUI = true;
                     }
@@ -296,7 +301,9 @@ namespace AutoDuty.Windows
             }
             using (ImRaii.Disabled(_comment))
             {
-                ImGui.Text("Position:");
+                if (ImGui.Button("Position:"))
+                    _positionText = Player.Position.ToCustomString() == _positionText ? Vector3.Zero.ToCustomString() : Player.Position.ToCustomString();
+  
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                 ImGui.InputText("##Position", ref _positionText, 200);

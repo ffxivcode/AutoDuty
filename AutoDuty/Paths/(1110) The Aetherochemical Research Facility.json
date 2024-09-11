@@ -311,6 +311,16 @@
       "note": ""
     },
     {
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "",
+      "note": "CheckPoint2"
+    },
+    {
       "name": "AutoMoveFor",
       "position": {
         "X": 227.97,
@@ -323,29 +333,9 @@
     {
       "name": "Boss",
       "position": {
-        "X": 230.03,
-        "Y": -96.46,
-        "Z": -182.83
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "5000",
-      "note": ""
-    },
-    {
-      "name": "Boss",
-      "position": {
-        "X": 229.89,
-        "Y": -456.46,
-        "Z": 79.02
+        "X": 231.46,
+        "Y": -456.45,
+        "Z": 75.70
       },
       "argument": "",
       "note": ""
