@@ -10,6 +10,9 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using ECommons.Throttlers;
 using ECommons.DalamudServices;
 using System.Linq;
+using System.Numerics;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using System;
 
 namespace AutoDuty.Helpers
 {
@@ -35,11 +38,29 @@ namespace AutoDuty.Helpers
             }
         }
 
+        internal static MapMarkerData FCEstateMapMarkerData => AgentHUD.Instance()->MapMarkers.ToList().FirstOrDefault(x => x.IconId.EqualsAny((uint[])Enum.GetValuesAsUnderlyingType<FCHousingMarker>()));
+
+        internal static Vector3 FCEstateWardCenterVector3 => new(FCEstateMapMarkerData.X, FCEstateMapMarkerData.Y, FCEstateMapMarkerData.Z);
+
+        internal static uint FCEstateTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: false, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(56, 57, 58, 96, 164))?.AetheryteId ?? 0;
+
+        internal static IGameObject? FCEstateEntranceGameObject => FCEstateWardCenterVector3 != Vector3.Zero ? ObjectHelper.GetObjectsByObjectKind(ObjectKind.EventObj)?.OrderBy(x => Vector3.Distance(x.Position, FCEstateWardCenterVector3)).FirstOrDefault(x => x.DataId == 2002737) : null;
+
+        internal static MapMarkerData PersonalHomeMapMarkerData => AgentHUD.Instance()->MapMarkers.ToList().FirstOrDefault(x => x.IconId.EqualsAny((uint[])Enum.GetValuesAsUnderlyingType<PrivateHousingMarker>()));
+
+        internal static Vector3 PersonalHomeWardCenterVector3 => new(PersonalHomeMapMarkerData.X, PersonalHomeMapMarkerData.Y, PersonalHomeMapMarkerData.Z);
+
         internal static uint PersonalHomeTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: false, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(59, 60, 61, 97, 165))?.AetheryteId ?? 0;
+
+        internal static IGameObject? PersonalHomeEntranceGameObject => PersonalHomeWardCenterVector3 != Vector3.Zero ? ObjectHelper.GetObjectsByObjectKind(ObjectKind.EventObj)?.OrderBy(x => Vector3.Distance(x.Position, PersonalHomeWardCenterVector3)).FirstOrDefault(x => x.DataId == 2002737) : null;
+
+        internal static MapMarkerData ApartmentMapMarkerData => AgentHUD.Instance()->MapMarkers.ToList().FirstOrDefault(x => x.IconId.EqualsAny((uint[])Enum.GetValuesAsUnderlyingType<ApartmentHousingMarker>()));
+
+        internal static Vector3 ApartmentWardCenterVector3 => new(ApartmentMapMarkerData.X, ApartmentMapMarkerData.Y, ApartmentMapMarkerData.Z);
 
         internal static uint ApartmentTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: true, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(59, 60, 61, 97, 165))?.AetheryteId ?? 0;
 
-        internal static uint FCEstateTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: false, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(56, 57, 58, 96, 164))?.AetheryteId ?? 0;
+        internal static IGameObject? ApartmentEntranceGameObject => ApartmentWardCenterVector3 != Vector3.Zero ? ObjectHelper.GetObjectsByObjectKind(ObjectKind.EventObj)?.OrderBy(x => Vector3.Distance(x.Position, ApartmentWardCenterVector3)).FirstOrDefault(x => x.DataId == 2007402) : null;
 
         internal static bool TeleportGCCity()
         {
