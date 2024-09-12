@@ -257,7 +257,7 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "GetDistanceToPlayer(225.69,-89.45,66.97)>10&ModifyIndex;27",
+      "argument": "GetDistanceToPlayer;225.69,-89.45,66.97;>;10&ModifyIndex;27",
       "note": ""
     },
     {
