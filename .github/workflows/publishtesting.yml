@@ -36,7 +36,7 @@ jobs:
 
       - name: Print Release Body
         run: |
-          echo "${{ github.event.release.body }}"
+          echo "${{ github.event.release.body }} AssemblyVersion=${{ github.ref_name }}"
           
       - name: Publish Version
         uses: PunishXIV/dynamis-action@v1
