@@ -9,7 +9,6 @@ using ECommons.Automation;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
-using ECommons.StringHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -392,13 +391,13 @@ namespace AutoDuty.Managers
 
             if (EzThrottler.Throttle("Interactable", 250))
             {
-                if (ObjectHelper.GetBattleDistanceToPlayer(gameObject) > 2f)
+                if (GetBattleDistanceToPlayer(gameObject) > 2f)
                     MovementHelper.Move(gameObject, 0.25f, 2f, false);
                 else
                 {
                     if (VNavmesh_IPCSubscriber.Path_IsRunning())
                         VNavmesh_IPCSubscriber.Path_Stop();
-                    ObjectHelper.InteractWithObject(gameObject);
+                    InteractWithObject(gameObject);
                 };
             }
 
@@ -447,7 +446,7 @@ namespace AutoDuty.Managers
             IGameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"Interactable: {objectDataId}";
 
-            _taskManager.Enqueue(() => ObjectHelper.TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject) || Player.Character->InCombat, "Interactable-GetGameObjectUnlessInCombat");
+            _taskManager.Enqueue(() => TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject) || Player.Character->InCombat, "Interactable-GetGameObjectUnlessInCombat");
             _taskManager.Enqueue(() =>
             {
                 if (Player.Character->InCombat)
@@ -513,7 +512,7 @@ namespace AutoDuty.Managers
             AutoDuty.Plugin.SkipTreasureCoffer = false;
             _taskManager.Enqueue(() => BossMoveCheck(action.Position), "Boss-MoveCheck");
             if (AutoDuty.Plugin.BossObject == null)
-                _taskManager.Enqueue(() => (AutoDuty.Plugin.BossObject = ObjectHelper.GetBossObject()) != null, "Boss-GetBossObject");
+                _taskManager.Enqueue(() => (AutoDuty.Plugin.BossObject = GetBossObject()) != null, "Boss-GetBossObject");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? ""}", "Boss-SetActionVar");
             _taskManager.Enqueue(() => Svc.Condition[ConditionFlag.InCombat], "Boss-WaitInCombat");
             _taskManager.Enqueue(() => BossCheck(), int.MaxValue, "Boss-BossCheck");
