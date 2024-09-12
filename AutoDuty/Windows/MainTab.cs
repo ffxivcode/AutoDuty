@@ -35,11 +35,19 @@ namespace AutoDuty.Windows
             var dutyMode = Plugin.Configuration.DutyModeEnum;
             var levelingMode = Plugin.LevelingModeEnum;
 
-            DrawSearchBar();
-
             static void DrawSearchBar()
             {
-                ImGui.InputTextWithHint("##search", "Search duties...", ref _searchText, 255);
+                // Set the maximum search to 10 characters
+                uint inputMaxLength = 10;
+                
+                // Calculate the X width of the maximum amount of search characters
+                Vector2 _characterWidth = ImGui.CalcTextSize("W");
+                float inputMaxWidth = ImGui.CalcTextSize("W").X * inputMaxLength;
+                
+                // Set the width of the search box to the calculated width
+                ImGui.SetNextItemWidth(inputMaxWidth);
+                
+                ImGui.InputTextWithHint("##search", "Search duties...", ref _searchText, inputMaxLength);
 
                 // Apply filtering based on the search text
                 if (_searchText.Length > 0)
@@ -374,6 +382,9 @@ namespace AutoDuty.Windows
 
                         DrawPathSelection();
                         ImGui.Separator();
+
+                        DrawSearchBar();
+                        ImGui.SameLine();
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref Plugin.Configuration.HideUnavailableDuties))
                             Plugin.Configuration.Save();
                         if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)
