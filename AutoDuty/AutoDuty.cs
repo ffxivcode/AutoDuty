@@ -905,7 +905,7 @@ public sealed class AutoDuty : IDalamudPlugin
             _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
         }
 
-        Action = $"{Plugin.Actions[Indexer]}";
+        Action = $"{Plugin.Actions[Indexer].Name}";
         if (Player.Object.InCombat() && Plugin.StopForCombat)
         {
             if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
