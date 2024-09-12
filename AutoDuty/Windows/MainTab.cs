@@ -25,12 +25,29 @@ namespace AutoDuty.Windows
         private static int _currentStepIndex = -1;
         private static readonly string _pathsURL = "https://github.com/ffxivcode/AutoDuty/tree/master/AutoDuty/Paths";
 
+        // New search text field for filtering duties
+        private static string _searchText = string.Empty;
+
         internal static void Draw()
         {
             if (MainWindow.CurrentTabName != "Main")
                 MainWindow.CurrentTabName = "Main";
             var dutyMode = Plugin.Configuration.DutyModeEnum;
             var levelingMode = Plugin.LevelingModeEnum;
+
+            DrawSearchBar();
+
+            static void DrawSearchBar()
+            {
+                ImGui.InputTextWithHint("##search", "Search duties...", ref _searchText, 255);
+
+                // Apply filtering based on the search text
+                if (_searchText.Length > 0)
+                {
+                    // Trim and convert to lowercase for case-insensitive search
+                    _searchText = _searchText.Trim().ToLower();
+                }
+            }
 
             static void DrawPathSelection()
             {
@@ -57,10 +74,10 @@ namespace AutoDuty.Windows
                         }
                         ImGui.SameLine();
                         ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                        if (ImGui.Combo("##SelectedPath", ref curPath, [.. curPaths.Select(dp => dp.Name)], curPaths.Count))
+                        if (ImGui.Combo("##SelectedPath", ref curPath, curPaths.Select(dp => dp.Name).ToArray(), curPaths.Count))
                         {
                             if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent!.TerritoryType))
-                                Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryContent.TerritoryType, []);
+                                Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryContent.TerritoryType, new Dictionary<Job, int>());
 
                             Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPath;
                             Plugin.Configuration.Save();
@@ -82,7 +99,7 @@ namespace AutoDuty.Windows
                     if (progress >= 0)
                     {
                         ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loading: ");
-                        ImGui.ProgressBar(progress, new(200, 0));
+                        ImGui.ProgressBar(progress, new Vector2(200, 0));
                     }
                     else
                         ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loaded Path: {(ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) ? "Loaded" : "None")}");
@@ -119,7 +136,7 @@ namespace AutoDuty.Windows
 
                         if (!ImGui.BeginListBox("##MainList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
-                        if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || BossMod_IPCSubscriber.IsEnabled  || Plugin.Configuration.UsingAlternativeRotationPlugin))
+                        if ((VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) && (BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeBossPlugin) && (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled || BossMod_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeRotationPlugin))
                         {
                             foreach (var item in Plugin.Actions.Select((Value, Index) => (Value, Index)))
                             {
@@ -192,7 +209,6 @@ namespace AutoDuty.Windows
                             else
                                 MainWindow.ShowPopup("Error", "No path was found");
                         }
-                        //MainWindow.DrawPopup();
                     }
                     else
                         MainWindow.StopResumePause();
@@ -246,7 +262,7 @@ namespace AutoDuty.Windows
                                 ImGui.EndCombo();
                             }
                             ImGui.PopItemWidth();
-                            
+
                             bool equip = Plugin.Configuration.AutoEquipRecommendedGear;
 
                             if (Plugin.Configuration.DutyModeEnum != DutyMode.Trust) ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead.");
@@ -347,7 +363,8 @@ namespace AutoDuty.Windows
                                 }
                                 ImGui.NextColumn();
                                 ImGui.Columns(1, null, true);
-                            } else if (ImGui.Button("Refresh trust member levels"))
+                            }
+                            else if (ImGui.Button("Refresh trust member levels"))
                             {
                                 if (InventoryHelper.CurrentItemLevel < 370)
                                     Plugin.LevelingModeEnum = LevelingMode.None;
@@ -417,6 +434,10 @@ namespace AutoDuty.Windows
                                         short level = PlayerHelper.GetCurrentLevelFromSheet();
                                         foreach ((uint _, Content? content) in dictionary)
                                         {
+                                            // Apply search filter
+                                            if (!string.IsNullOrWhiteSpace(_searchText) && !content.Name.ToLower().Contains(_searchText))
+                                                continue;  // Skip duties that do not match the search text
+
                                             bool canRun = content.CanRun(level) && (Plugin.Configuration.DutyModeEnum != DutyMode.Trust || content.CanTrustRun());
                                             using (ImRaii.Disabled(!canRun))
                                             {
