@@ -872,8 +872,6 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
 
-        VNavmesh_IPCSubscriber.Path_SetTolerance(PathAction.Name.Equals("Interactable", StringComparison.InvariantCultureIgnoreCase) ? 2f : 0.25f);
-
         if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
         {
             if (PathAction.Name == "MoveTo" && bool.TryParse(PathAction.Argument, out bool useMesh) && !useMesh)

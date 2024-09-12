@@ -51,31 +51,11 @@
       "note": ""
     },
     {
-      "name": "MoveTo",
-      "position": {
-        "X": 29.79,
-        "Y": 212.09,
-        "Z": 218.02
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
       "name": "ForceAttack",
       "position": {
         "X": 29.86,
         "Y": 212.07,
         "Z": 218.06
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 110.17,
-        "Y": 222.05,
-        "Z": 270.08
       },
       "argument": "",
       "note": ""
@@ -121,21 +101,11 @@
       "note": ""
     },
     {
-      "name": "MoveTo",
+      "name": "Interactable",
       "position": {
         "X": -352.83,
         "Y": -299.98,
         "Z": -249.99
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
       },
       "argument": "2005307",
       "note": "Lift Terminal"
@@ -201,41 +171,11 @@
       "note": ""
     },
     {
-      "name": "MoveTo",
-      "position": {
-        "X": 219.27,
-        "Y": -27.97,
-        "Z": 224.06
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
-      "position": {
-        "X": 194.08,
-        "Y": -27.99,
-        "Z": 206.22
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "MoveTo",
+      "name": "Interactable",
       "position": {
         "X": 202.12,
         "Y": -28.16,
         "Z": 195.95
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
       },
       "argument": "2005308",
       "note": "Lift Terminal"
@@ -261,21 +201,11 @@
       "note": ""
     },
     {
-      "name": "MoveTo",
+      "name": "Interactable",
       "position": {
         "X": 228.77,
         "Y": -59.27,
         "Z": 95.07
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
       },
       "argument": "2005309",
       "note": "Lift Terminal"
@@ -319,6 +249,16 @@
       },
       "argument": "",
       "note": "CheckPoint3"
+    },
+    {
+      "name": "ConditionAction",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "GetDistanceToPlayer(225.69,-89.45,66.97)>10&ModifyIndex;27",
+      "note": ""
     },
     {
       "name": "MoveTo",

@@ -1,4 +1,5 @@
-﻿using AutoDuty.Helpers;
+﻿using AutoDuty.Data;
+using AutoDuty.Helpers;
 using AutoDuty.IPC;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Types;
@@ -8,6 +9,7 @@ using ECommons.Automation;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
+using ECommons.StringHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -15,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Reflection;
+using static AutoDuty.Helpers.ObjectHelper;
 
 namespace AutoDuty.Managers
 {
@@ -73,36 +75,58 @@ namespace AutoDuty.Managers
 
         public unsafe void ConditionAction(PathAction action)
         {
-            if (!action.Argument.Any(x => x.Equals(','))) return;
+            if (!action.Argument.Any(x => x.Equals('&'))) return;
 
             AutoDuty.Plugin.Action = $"ConditionAction: {action.Argument}";
-            var condition = action.Argument.Split(",")[0];
-            var conditionArray = condition.Split(";");
-            var actions = action.Argument.Split(',')[1];
-            var actionArray = actions.Split(";");
+            var conditionActionArray = action.Argument.Split("&");
+            var condition = conditionActionArray[0];
+            string[] conditionArray = [];
+            if (condition.Any(x => x.EqualsAny(';')))
+                conditionArray = condition.Split(";");
+            var actions = conditionActionArray[1];
+            string[] actionArray = [];
+            if (actions.Any(x => x.EqualsAny(';')))
+                actionArray = actions.Split(";");
             var invokeAction = false;
-            Svc.Log.Debug($"{condition} {conditionArray.Length} {action} {actionArray.Length}");
+            var operation = new Dictionary<string, Func<object, object, bool>>
+            {
+              { ">", (x, y) => (float)x > (float)y },
+              { ">=", (x, y) => (float)x >= (float)y },
+              { "<", (x, y) => (float)x < (float)y },
+              { "<=", (x, y) => (float)x <= (float)y },
+              { "==", (x, y) => x == y },
+              { "!=", (x, y) => x != y }
+            };
+            var operatorValue = string.Empty;
+            var operationResult = false;
+           
             switch (conditionArray[0])
             {
-                case "ItemGreaterThan":
-                    uint itemIdgt = conditionArray.Length > 1 && uint.TryParse(conditionArray[1], out var idgt) ? idgt : 0;
-                    uint itemqtygt = conditionArray.Length > 2 && uint.TryParse(conditionArray[2], out var qtygt) ? qtygt : 1;
-                    Svc.Log.Debug($"ConditionAction: Checking Item: {itemIdgt} Qty: {InventoryHelper.ItemCount(itemIdgt)} >= {itemqtygt}");
-                    if (itemIdgt != 0 && InventoryHelper.ItemCount(itemIdgt) >= itemqtygt)
-                            invokeAction = true;
-                    break;
-                case "ItemLessThan":
-                    uint itemIdlt = conditionArray.Length > 1 && uint.TryParse(conditionArray[1], out var idlt) ? idlt : 0;
-                    uint itemqtylt = conditionArray.Length > 2 && uint.TryParse(conditionArray[2], out var qtylt) ? qtylt : 1;
-                    Svc.Log.Debug($"ConditionAction: Checking Item: {itemIdlt} Qty: {InventoryHelper.ItemCount(itemIdlt)} < {itemqtylt}");
-                    if (itemIdlt != 0 && InventoryHelper.ItemCount(itemIdlt) < itemqtylt)
+                case "GetDistanceToPlayer":
+                    if (conditionArray.Length < 4) return;
+                    if (!conditionArray[1].TryToGetVector3(out var vector3)) return;
+                    if (!float.TryParse(conditionArray[3], out var distance)) return;
+                    if (!(operatorValue = conditionArray[2]).EqualsAny(operation.Keys)) return;
+                    var getDistance = GetDistanceToPlayer(vector3);
+                    if (operationResult = operation[operatorValue](getDistance, distance))
                         invokeAction = true;
+                    Svc.Log.Info($"Condition: {getDistance}{operatorValue}{distance} = {operationResult}");
+                    break;
+                case "ItemCount":
+                    if (conditionArray.Length < 4) return;
+                    if (!uint.TryParse(conditionArray[1], out var itemId)) return;
+                    if (!uint.TryParse(conditionArray[2], out var quantity)) return;
+                    if (!(operatorValue = conditionArray[2]).EqualsAny(operation.Keys)) return;
+                    var itemCount = InventoryHelper.ItemCount(itemId);
+                    if (operationResult = operation[operatorValue](itemCount, quantity))
+                        invokeAction = true;
+                    Svc.Log.Info($"Condition: {itemCount}{operatorValue}{quantity} = {operationResult}");
                     break;
                 case "ObjectData":
                     if (conditionArray.Length > 3)
                     {
                         IGameObject? gameObject = null;
-                        if ((gameObject = ObjectHelper.GetObjectByDataId(uint.TryParse(conditionArray[1], out uint dataId) ? dataId : 0)) != null)
+                        if ((gameObject = GetObjectByDataId(uint.TryParse(conditionArray[1], out uint dataId) ? dataId : 0)) != null)
                         {
                             var csObj = *gameObject.Struct();
                             switch (conditionArray[2])

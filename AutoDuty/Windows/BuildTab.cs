@@ -51,15 +51,18 @@ namespace AutoDuty.Windows
         internal unsafe static void Draw()
         {
             SetCurrentTabName("BuildTab");
-            if (Plugin.InDungeon)
+            using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Navigating) || Plugin.States.HasFlag(PluginState.Looping)))
             {
-                DrawPathElements();
-                DrawSeperator();
-                DrawButtons();
-                DrawSeperator();
-                DrawInteractablesSet();
+                if (Plugin.InDungeon)
+                {
+                    DrawPathElements();
+                    DrawSeperator();
+                    DrawButtons();
+                    DrawSeperator();
+                    DrawInteractablesSet();
+                }
+                DrawBuildList();
             }
-            DrawBuildList();
         }
 
         private static void DrawSeperator()
@@ -360,7 +363,7 @@ namespace AutoDuty.Windows
                         var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Note : $"{item.Value.ToCustomString()}";
 
                         ImGui.PushStyleColor(ImGuiCol.Text, v4);
-                        if (ImGui.Selectable($"{text}###Text{item.Index}", item.Index == _buildListSelected))
+                        if (ImGui.Selectable($"{item.Index}: {text}###Text{item.Index}", item.Index == _buildListSelected))
                         {
                             /*if (_dragDrop)
                             {

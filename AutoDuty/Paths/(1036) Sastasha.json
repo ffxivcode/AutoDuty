@@ -97,7 +97,7 @@
         "Y": 19.9,
         "Z": 171.1
       },
-      "argument": "ItemLessThan;2000512,ModifyIndex;7",
+      "argument": "ItemCount;2000512;<;1&ModifyIndex;7",
       "note": ""
     },
     {
@@ -137,7 +137,7 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "ItemLessThan;2000513,ModifyIndex;11",
+      "argument": "ItemCount;2000513;<;1&ModifyIndex;11",
       "note": ""
     },
     {

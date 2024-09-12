@@ -7,7 +7,7 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "ObjectData;2001462;IsTargetable;false,ModifyIndex;4",
+      "argument": "ObjectData;2001462;IsTargetable;false&ModifyIndex;4",
       "note": ""
     },
     {
@@ -27,7 +27,7 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "ItemLessThan;2000521,ModifyIndex;0",
+      "argument": "ItemCount;2000521;<;1&ModifyIndex;0",
       "note": ""
     },
     {

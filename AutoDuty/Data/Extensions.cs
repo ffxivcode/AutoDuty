@@ -1,4 +1,8 @@
-﻿using System.Numerics;
+﻿using ECommons;
+using ECommons.DalamudServices;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Numerics;
 
 namespace AutoDuty.Data
 {
@@ -7,6 +11,44 @@ namespace AutoDuty.Data
         public static string ToCustomString(this PathAction pathAction) => $"{pathAction.Name}|{pathAction.Position.ToCustomString()}|{pathAction.Argument}|{pathAction.Note}";
 
         public static string ToCustomString(this Vector3 vector3) => $"{vector3.X:F2}, {vector3.Y:F2}, {vector3.Z:F2}";
+
+        public static List<string> ToConditional(this string conditionalString)
+        {
+            var list = new List<string>();
+            var firstParse = conditionalString.Replace(" ", string.Empty).Split('(');
+            if (firstParse.Length < 2) return list;
+            var secondparse = firstParse[1].Split(")");
+            if (secondparse.Length < 2) return list;
+            var method = firstParse[0];
+            var argument = secondparse[0];
+            string? operatorValue;
+            string? rightSideValue;
+            if (secondparse[1][1] == '=')
+            {
+                operatorValue = $"{secondparse[1][0]}{secondparse[1][1]}";
+                rightSideValue = secondparse[1].Replace(operatorValue, string.Empty);
+            }
+            else
+            {
+                operatorValue = $"{secondparse[1][0]}";
+                rightSideValue = secondparse[1].Replace(operatorValue, string.Empty);
+            }
+            list.Add(method, argument, operatorValue, rightSideValue);
+            return list;
+        }
+
+
+        public static bool TryToGetVector3(this string vector3String, out Vector3 vector3)
+        {
+            vector3 = Vector3.Zero;
+            var splitString = vector3String.Replace(" ", string.Empty).Replace("<", string.Empty).Replace(">", string.Empty).Split(',');
+
+            if (splitString.Length < 3) return false;
+            
+            vector3 = new(float.Parse(splitString[0], CultureInfo.InvariantCulture), float.Parse(splitString[1], CultureInfo.InvariantCulture), float.Parse(splitString[2], CultureInfo.InvariantCulture));
+            
+            return true;
+        }
 
         public static string ToName(this Sounds value)
         {
