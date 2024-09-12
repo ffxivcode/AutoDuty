@@ -119,6 +119,7 @@ namespace AutoDuty.Windows
                     if (ImGui.Selectable(item.Item1))
                     {
                         _dropdownSelected = item;
+                        _buildListSelected = -1;
                         _argumentHint = item.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase) ? string.Empty : item.Item2;
                         _actionText = item.Item1;
                         _noArgument = item.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase);

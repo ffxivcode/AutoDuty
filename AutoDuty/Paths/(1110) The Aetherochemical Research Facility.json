@@ -101,6 +101,16 @@
       "note": ""
     },
     {
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "",
+      "note": "CheckPoint2"
+    },
+    {
       "name": "AutoMoveFor",
       "position": {
         "X": 324.8,
@@ -116,16 +126,6 @@
         "X": -352.83,
         "Y": -299.98,
         "Z": -249.99
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
-      "name": "PausePandora",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
       },
       "argument": "",
       "note": ""
@@ -231,16 +231,6 @@
       "note": ""
     },
     {
-      "name": "PausePandora",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -281,16 +271,6 @@
       "note": ""
     },
     {
-      "name": "PausePandora",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": ""
-    },
-    {
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -311,16 +291,6 @@
       "note": ""
     },
     {
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "argument": "",
-      "note": "CheckPoint2"
-    },
-    {
       "name": "AutoMoveFor",
       "position": {
         "X": 227.97,
@@ -328,6 +298,46 @@
         "Z": 49.87
       },
       "argument": "4000",
+      "note": ""
+    },
+    {
+      "name": "Boss",
+      "position": {
+        "X": 230.03,
+        "Y": -96.46,
+        "Z": -180.82
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "argument": "",
+      "note": "CheckPoint3"
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 228.7548,
+        "Y": -96.45582,
+        "Z": -163.05598
+      },
+      "argument": "",
+      "note": ""
+    },
+    {
+      "name": "MoveTo",
+      "position": {
+        "X": 228.7548,
+        "Y": -96.45582,
+        "Z": -163.05598
+      },
+      "argument": "",
       "note": ""
     },
     {

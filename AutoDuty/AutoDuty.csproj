@@ -78,6 +78,6 @@
   </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="cp &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
+    <Exec Command="copy &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
   </Target>
 </Project>
