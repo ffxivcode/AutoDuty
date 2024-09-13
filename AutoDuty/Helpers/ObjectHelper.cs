@@ -14,7 +14,6 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons.Throttlers;
 using AutoDuty.IPC;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Helpers
 {
@@ -52,10 +51,10 @@ namespace AutoDuty.Helpers
 
         internal unsafe static IGameObject? GetPartyMemberFromRole(string role)
         {
-            if (Player.Object != null && GetJobRole(Player.Object.ClassJob.GameData!).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
+            if (Player.Object != null && PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
                 return Player.Object;
             else if (Svc.Party.PartyId != 0)
-                return Svc.Party.Where(x => GetJobRole(x.ClassJob.GameData!).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault()?.GameObject;
+                return Svc.Party.Where(x => PlayerHelper.GetJobRole(x.ClassJob.GameData!).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault()?.GameObject;
             else
             {
                 var buddies = UIState.Instance()->Buddy.BattleBuddies.ToArray().Where(x => x.DataId != 0);
@@ -69,7 +68,7 @@ namespace AutoDuty.Helpers
 
                     if (classJob == null) continue;
 
-                    if (GetJobRole(classJob).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
+                    if (PlayerHelper.GetJobRole(classJob).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
                         return gameObject;
                 }
             }
@@ -96,151 +95,6 @@ namespace AutoDuty.Helpers
 
         //From RotationSolver
         internal static bool IsBossFromIcon(IGameObject gameObject) => GetObjectNPC(gameObject)?.Rank is 1 or 2 or 6;
-
-        internal unsafe static uint GrandCompanyTerritoryType(uint grandCompany) => grandCompany == 1 ? 128u : (grandCompany == 2 ? 132u : 130u);
-
-        internal unsafe static uint GrandCompany => UIState.Instance()->PlayerState.GrandCompany;
-
-        internal unsafe static uint GrandCompanyRank => UIState.Instance()->PlayerState.GetGrandCompanyRank();
-
-        internal static float JobRange
-        {
-            get
-            {
-                float radius = 25;
-                if (!Player.Available) return radius;
-                switch (Svc.Data.GetExcelSheet<ClassJob>()?.GetRow(
-                    Player.Object.ClassJob.Id)?.GetJobRole() ?? JobRole.None)
-                {
-                    case JobRole.Tank:
-                    case JobRole.Melee:
-                        radius = 2.6f;
-                        break;
-                }
-                return radius;
-            }
-        }
-
-        internal static float AoEJobRange
-        {
-            get
-            {
-                float radius = 10;
-                if (!Player.Available) return radius;
-                switch (Svc.Data.GetExcelSheet<ClassJob>()?.GetRow(
-                    Player.Object.ClassJob.Id)?.GetJobRole() ?? JobRole.None)
-                {
-                    case JobRole.Tank:
-                    case JobRole.Melee:
-                        radius = 2.6f;
-                        break;
-                }
-                if (Player.Object.ClassJob.Id == 38)
-                    radius = 3;
-                return radius;
-            }
-        }
-
-        internal static JobRole GetJobRole(this ClassJob job)
-        {
-            var role = (JobRole)job.Role;
-
-            if (role is JobRole.Ranged or JobRole.None)
-            {
-                role = job.ClassJobCategory.Row switch
-                {
-                    30 => JobRole.RangedPhysical,
-                    31 => JobRole.RangedMagical,
-                    32 => JobRole.DiscipleOfTheLand,
-                    33 => JobRole.DiscipleOfTheHand,
-                    _ => JobRole.None,
-                };
-            }
-            return role;
-        }
-
-        /// <summary>
-        /// The role of jobs.
-        /// </summary>
-        internal enum JobRole : byte
-        {
-            None = 0,
-            Tank = 1,
-            Melee = 2,
-            Ranged = 3,
-            Healer = 4,
-            RangedPhysical = 5,
-            RangedMagical = 6,
-            DiscipleOfTheLand = 7,
-            DiscipleOfTheHand = 8,
-        }
-        internal enum ClassJobType : uint
-        {
-            Adventurer = 0,
-            Gladiator = 1,
-            Pugilist = 2,
-            Marauder = 3,
-            Lancer = 4,
-            Archer = 5,
-            Conjurer = 6,
-            Thaumaturge = 7,
-            Carpenter = 8,
-            Blacksmith = 9,
-            Armorer = 10,
-            Goldsmith = 11,
-            Leatherworker = 12,
-            Weaver = 13,
-            Alchemist = 14,
-            Culinarian = 15,
-            Miner = 16,
-            Botanist = 17,
-            Fisher = 18,
-            Paladin = 19,
-            Monk = 20,
-            Warrior = 21,
-            Dragoon = 22,
-            Bard = 23,
-            WhiteMage = 24,
-            BlackMage = 25,
-            Arcanist = 26,
-            Summoner = 27,
-            Scholar = 28,
-            Rogue = 29,
-            Ninja = 30,
-            Machinist = 31,
-            DarkKnight = 32,
-            Astrologian = 33,
-            Samurai = 34,
-            RedMage = 35,
-            BlueMage = 36,
-            Gunbreaker = 37,
-            Dancer = 38,
-            Reaper = 39,
-            Sage = 40,
-            Pictomancer = 42
-        }
-
-        internal static unsafe bool IsValid => Svc.Condition.Any()
-        && !Svc.Condition[ConditionFlag.BetweenAreas]
-        && !Svc.Condition[ConditionFlag.BetweenAreas51]
-        && Player.Available
-        && Player.Interactable;
-
-        internal static bool IsJumping => Svc.Condition.Any()
-        && (Svc.Condition[ConditionFlag.Jumping]
-        || Svc.Condition[ConditionFlag.Jumping61]);
-
-        internal static unsafe bool IsAnimationLocked => ActionManager.Instance()->AnimationLock > 0;
-
-        internal static unsafe bool IsReady => IsValid && !IsOccupied;
-
-        internal static unsafe bool IsOccupied => GenericHelpers.IsOccupied();
-
-        internal static unsafe bool IsReadyFull    => IsValid && !IsOccupiedFull;
-
-        internal static unsafe bool IsOccupiedFull => IsOccupied || IsAnimationLocked;
-
-        internal static unsafe bool InCombat(this IBattleChara battleChara) => battleChara.Struct()->Character.InCombat;
 
         internal static unsafe void InteractWithObject(IGameObject? gameObject, bool face = true)
         {
@@ -271,7 +125,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe bool InteractWithObjectUntilNotValid(IGameObject? gameObject)
         {
-            if (gameObject == null || !IsValid)
+            if (gameObject == null || !PlayerHelper.IsValid)
                 return true;
 
             if (EzThrottler.Throttle("InteractWithObjectUntilNotValid"))
@@ -290,8 +144,6 @@ namespace AutoDuty.Helpers
 
             return false;
         }
-
-        internal static unsafe bool PlayerIsCasting => Player.Character->IsCasting;
 
         internal static bool PartyValidation()
         {

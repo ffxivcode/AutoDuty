@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using static AutoDuty.Helpers.ObjectHelper;
+using static AutoDuty.Helpers.PlayerHelper;
 
 namespace AutoDuty.Managers
 {
@@ -201,7 +202,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack-GA16");
             _taskManager.Enqueue(() => Svc.Targets.Target != null, 500, "ForceAttack-GA1");
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1), "ForceAttack-GA1");
-            _taskManager.Enqueue(() => Player.Object.InCombat(), tot, "ForceAttack-WaitForCombat");
+            _taskManager.Enqueue(() => InCombat, tot, "ForceAttack-WaitForCombat");
         }
 
         public unsafe void Jump(PathAction action)
@@ -323,7 +324,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"SelectYesno: {action.Arguments[0]}", "SelectYesno");
             _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(action.Arguments[0].ToUpper().Equals("YES")), "SelectYesno");
             _taskManager.DelayNext("SelectYesno", 500);
-            _taskManager.Enqueue(() => !PlayerIsCasting, "SelectYesno");
+            _taskManager.Enqueue(() => !IsCasting, "SelectYesno");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
@@ -376,7 +377,7 @@ namespace AutoDuty.Managers
             if (Conditions.IsMounted || Conditions.IsMounted2)
                 return true;
 
-            if (Player.Available && PlayerIsCasting)
+            if (Player.Available && IsCasting)
                 return false;
 
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno) && !AddonHelper.ClickSelectYesno(true))
@@ -412,8 +413,8 @@ namespace AutoDuty.Managers
         private unsafe void Interactable(IGameObject? gameObject)
         {
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable-InteractableCheck");
-            _taskManager.Enqueue(() => PlayerIsCasting, 500, "Interactable-WaitPlayerIsCasting");
-            _taskManager.Enqueue(() => !PlayerIsCasting, "Interactable-WaitNotPlayerIsCasting");
+            _taskManager.Enqueue(() => IsCasting, 500, "Interactable-WaitIsCasting");
+            _taskManager.Enqueue(() => !IsCasting, "Interactable-WaitNotIsCasting");
             _taskManager.DelayNext("Interactable-DelayNext100", 100);
             _taskManager.Enqueue(() =>
             {
@@ -493,9 +494,9 @@ namespace AutoDuty.Managers
             return false;
         }
 
-        private bool BossMoveCheck(Vector3 bossV3)
+        private unsafe bool BossMoveCheck(Vector3 bossV3)
         {
-            if (AutoDuty.Plugin.BossObject != null && AutoDuty.Plugin.BossObject.InCombat())
+            if (AutoDuty.Plugin.BossObject != null && AutoDuty.Plugin.BossObject.Struct()->InCombat)
             {
                 VNavmesh_IPCSubscriber.Path_Stop();
                 return true;

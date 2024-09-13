@@ -101,7 +101,7 @@ namespace AutoDuty.Helpers
             if (Svc.ClientState.LocalPlayer == null)
                 return;
 
-            if (!ObjectHelper.IsValid || ObjectHelper.PlayerIsCasting || ObjectHelper.IsJumping || !VNavmesh_IPCSubscriber.Nav_IsReady())
+            if (!PlayerHelper.IsValid || PlayerHelper.IsCasting || PlayerHelper.IsJumping || !VNavmesh_IPCSubscriber.Nav_IsReady())
                 return;
 
             if (AutoDuty.Plugin.InDungeon)
@@ -169,8 +169,8 @@ namespace AutoDuty.Helpers
                     return;
                 }
             }
-            //Svc.Log.Info($"{_locationIndex < _moveLocations.Count} || ({_gameObject} != null && {ObjectHelper.GetDistanceToPlayer(_gameObject!)} > {_lastPointTollerance}) && {ObjectHelper.IsReady}");
-            if (_locationIndex < _moveLocations.Count || (_gameObject != null && ObjectHelper.GetDistanceToPlayer(_gameObject) > _lastPointTollerance) && ObjectHelper.IsReady)
+            //Svc.Log.Info($"{_locationIndex < _moveLocations.Count} || ({_gameObject} != null && {ObjectHelper.GetDistanceToPlayer(_gameObject!)} > {_lastPointTollerance}) && {PlayerHelper.IsReady}");
+            if (_locationIndex < _moveLocations.Count || (_gameObject != null && ObjectHelper.GetDistanceToPlayer(_gameObject) > _lastPointTollerance) && PlayerHelper.IsReady)
             {
                 Vector3 moveLoc;
                 float lastPointTollerance = _lastPointTollerance;

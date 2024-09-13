@@ -91,7 +91,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (ObjectHelper.IsOccupied)
+            if (PlayerHelper.IsOccupied)
                 return;
 
             if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog) && GenericHelpers.IsAddonReady(addonMaterializeDialog))

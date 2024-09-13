@@ -27,10 +27,10 @@ namespace AutoDuty.Managers
             AtkUnitBase* addon = null;
 
             //Check if player is valid
-            if (!ObjectHelper.IsValid)
+            if (!PlayerHelper.IsValid)
             {
                 Svc.Log.Info("player was invalid, waiting for it to be valid.");
-                _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterSquadron");
+                _taskManager.Enqueue(() => PlayerHelper.IsValid, int.MaxValue, "RegisterSquadron");
                 Svc.Log.Info("Delaying next Enqueue by 2s");
                 _taskManager.DelayNext("RegisterSquadron", 2000);
             }

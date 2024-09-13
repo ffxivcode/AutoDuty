@@ -269,7 +269,7 @@ public class Configuration : IPluginConfiguration
             {
                 FollowSelf = false;
                 FollowSlot = false;
-                SchedulerHelper.ScheduleAction("FollowRoleBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => ObjectHelper.IsReady);
+                SchedulerHelper.ScheduleAction("FollowRoleBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
             }
         }
     }
@@ -282,7 +282,7 @@ public class Configuration : IPluginConfiguration
         {
             maxDistanceToTargetRoleBased = value;
             if (value)
-                SchedulerHelper.ScheduleAction("MaxDistanceToTargetRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => ObjectHelper.IsReady);
+                SchedulerHelper.ScheduleAction("MaxDistanceToTargetRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
         }
     }
     public float MaxDistanceToTargetFloat = 2.6f;
@@ -296,7 +296,7 @@ public class Configuration : IPluginConfiguration
         {
             positionalRoleBased = value;
             if (value)
-                SchedulerHelper.ScheduleAction("PositionalRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => ObjectHelper.IsReady);
+                SchedulerHelper.ScheduleAction("PositionalRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
         }
     }
 

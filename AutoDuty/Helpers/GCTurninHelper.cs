@@ -44,11 +44,11 @@ namespace AutoDuty.Helpers
         }
 
         internal static ActionState State = ActionState.None;
-        internal static Vector3 GCSupplyLocation => ObjectHelper.GrandCompany == 1 ? new Vector3(94.02183f, 40.27537f, 74.475525f) : (ObjectHelper.GrandCompany == 2 ? new Vector3(-68.678566f, -0.5015295f, -8.470145f) : new Vector3(-142.82619f, 4.0999994f, -106.31349f));
+        internal static Vector3 GCSupplyLocation => PlayerHelper.GetGrandCompany() == 1 ? new Vector3(94.02183f, 40.27537f, 74.475525f) : (PlayerHelper.GetGrandCompany() == 2 ? new Vector3(-68.678566f, -0.5015295f, -8.470145f) : new Vector3(-142.82619f, 4.0999994f, -106.31349f));
 
         private static IGameObject? _personnelOfficerGameObject => ObjectHelper.GetObjectByDataId(_personnelOfficerDataId);
-        private static uint _personnelOfficerDataId => ObjectHelper.GrandCompany == 1 ? 1002388u : (ObjectHelper.GrandCompany == 2 ? 1002394u : 1002391u);
-        private static uint _aetheryteTicketId = ObjectHelper.GrandCompany == 1 ? 21069u : (ObjectHelper.GrandCompany == 2 ? 21070u : 21071u);
+        private static uint _personnelOfficerDataId => PlayerHelper.GetGrandCompany() == 1 ? 1002388u : (PlayerHelper.GetGrandCompany() == 2 ? 1002394u : 1002391u);
+        private static uint _aetheryteTicketId = PlayerHelper.GetGrandCompany() == 1 ? 21069u : (PlayerHelper.GetGrandCompany() == 2 ? 21070u : 21071u);
         private static bool _deliverooStarted = false;
         private static Chat _chat = new();
 
@@ -105,20 +105,20 @@ namespace AutoDuty.Helpers
             }
             AutoDuty.Plugin.Action = "GC Turning In";
 
-            if (GotoHelper.State != ActionState.Running && Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany))
+            if (GotoHelper.State != ActionState.Running && Svc.ClientState.TerritoryType != PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany()))
             {
                 Svc.Log.Debug("Moving to GC Supply");
                 if (AutoDuty.Plugin.Configuration.AutoGCTurninUseTicket && InventoryHelper.ItemCount(_aetheryteTicketId) > 0)
                 {
-                    if (!ObjectHelper.PlayerIsCasting)
+                    if (!PlayerHelper.IsCasting)
                         InventoryHelper.UseItem(_aetheryteTicketId);
                 }
                 else
-                    GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCSupplyLocation], 0.25f, 2f, false);
+                    GotoHelper.Invoke(PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany()), [GCSupplyLocation], 0.25f, 2f, false);
                 return;
             }
 
-            if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) > 4 && ObjectHelper.IsReady && VNavmesh_IPCSubscriber.Nav_IsReady() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
+            if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) > 4 && PlayerHelper.IsReady && VNavmesh_IPCSubscriber.Nav_IsReady() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
             {
                 Svc.Log.Debug("Setting Move to Personnel Officer");
                 MovementHelper.Move(GCSupplyLocation, 0.25f, 4f);

@@ -262,7 +262,7 @@ public class MainWindow : Window, IDisposable
                 }
                 if (ImGui.Selectable("GCSupply"))
                 {
-                    GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
+                    GotoHelper.Invoke(PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany()), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
                 }
                 if (ImGui.Selectable("Flag Marker"))
                 {

@@ -76,10 +76,10 @@ namespace AutoDuty.Helpers
 
         internal static bool TeleportAetheryte(uint aetheryteId, byte subindex)
         {
-            if (ObjectHelper.PlayerIsCasting || aetheryteId == 0)
+            if (PlayerHelper.IsCasting || aetheryteId == 0)
                 return true;
 
-            if (!ObjectHelper.PlayerIsCasting && EzThrottler.Throttle("TeleportAetheryte", 250))
+            if (!PlayerHelper.IsCasting && EzThrottler.Throttle("TeleportAetheryte", 250))
                 TeleportAction(aetheryteId, subindex);
 
             return false;
@@ -96,7 +96,7 @@ namespace AutoDuty.Helpers
 
         internal static bool TeleportAethernet(string aethernetName, uint toTerritoryType)
         {
-            if (aethernetName.IsNullOrEmpty() || !ObjectHelper.IsValid)
+            if (aethernetName.IsNullOrEmpty() || !PlayerHelper.IsValid)
                 return true;
 
             if (!GenericHelpers.TryGetAddonByName("TelepotTown", out AtkUnitBase* addon) || !GenericHelpers.IsAddonReady(addon))

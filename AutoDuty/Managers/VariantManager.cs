@@ -19,9 +19,9 @@ namespace AutoDuty.Managers
             AtkUnitBase* addon = null;
             AtkUnitBase* yesno = null;
 
-            if (!ObjectHelper.IsValid)
+            if (!PlayerHelper.IsValid)
             {
-                _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "RegisterVariantDuty");
+                _taskManager.Enqueue(() => PlayerHelper.IsValid, int.MaxValue, "RegisterVariantDuty");
                 _taskManager.DelayNext("RegisterVariantDuty", 2000);
             }
             _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("VVDFinder"), "RegisterVariantDuty");

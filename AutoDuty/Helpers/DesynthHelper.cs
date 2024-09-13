@@ -24,7 +24,7 @@ namespace AutoDuty.Helpers
                 SchedulerHelper.ScheduleAction("DesynthTimeOut", Stop, 300000);
                 AutoDuty.Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
-                _maxDesynthLevel = PlayerHelper.GetMaxDesynthLevel;
+                _maxDesynthLevel = PlayerHelper.GetMaxDesynthLevel();
             }
         }
 
@@ -83,7 +83,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (ObjectHelper.IsOccupied)
+            if (PlayerHelper.IsOccupied)
                 return;
 
             if (GenericHelpers.TryGetAddonByName("SalvageResult", out AtkUnitBase* addonSalvageResult) && GenericHelpers.IsAddonReady(addonSalvageResult))

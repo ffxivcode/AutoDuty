@@ -81,7 +81,7 @@ namespace AutoDuty.Helpers
                 addonSelectYesno->Close(true);
             else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
                 addonSelectString->Close(true);
-            else if (ObjectHelper.IsReady)
+            else if (PlayerHelper.IsReady)
             {
                 State = ActionState.None;
                 AutoDuty.Plugin.States &= ~PluginState.Other;
@@ -125,7 +125,7 @@ namespace AutoDuty.Helpers
 
             if (!InHousingArea(_whichHousing))
             {
-                if (!ObjectHelper.PlayerIsCasting)
+                if (!PlayerHelper.IsCasting)
                 {
                     Svc.Log.Debug($"We are not in the correct housing area, teleporting there");
                     if (_whichHousing == Housing.Apartment && !TeleportHelper.TeleportApartment() && TeleportHelper.ApartmentTeleportId == 0)
@@ -147,7 +147,7 @@ namespace AutoDuty.Helpers
                 }
                 return;
             }
-            else if (ObjectHelper.IsValid)
+            else if (PlayerHelper.IsValid)
             {
                 if (_index < _entrancePath.Count)
                 {

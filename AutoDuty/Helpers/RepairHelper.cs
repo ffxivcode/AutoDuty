@@ -44,10 +44,10 @@ namespace AutoDuty.Helpers
 
         internal static ActionState State = ActionState.None;
 
-        private static Vector3 _repairVendorLocation => _preferredRepairNpc != null ? _preferredRepairNpc.Position : (ObjectHelper.GrandCompany == 1 ? new Vector3(17.715698f, 40.200005f, 3.9520264f) : (ObjectHelper.GrandCompany == 2 ? new Vector3(24.826416f, -8, 93.18677f) : new Vector3(32.85266f, 6.999999f, -81.31531f)));
-        private static uint _repairVendorDataId => _preferredRepairNpc != null ? _preferredRepairNpc.DataId : (ObjectHelper.GrandCompany == 1 ? 1003251u : (ObjectHelper.GrandCompany == 2 ? 1000394u : 1004416u));
+        private static Vector3 _repairVendorLocation => _preferredRepairNpc != null ? _preferredRepairNpc.Position : (PlayerHelper.GetGrandCompany() == 1 ? new Vector3(17.715698f, 40.200005f, 3.9520264f) : (PlayerHelper.GetGrandCompany() == 2 ? new Vector3(24.826416f, -8, 93.18677f) : new Vector3(32.85266f, 6.999999f, -81.31531f)));
+        private static uint _repairVendorDataId => _preferredRepairNpc != null ? _preferredRepairNpc.DataId : (PlayerHelper.GetGrandCompany() == 1 ? 1003251u : (PlayerHelper.GetGrandCompany() == 2 ? 1000394u : 1004416u));
         private static IGameObject? _repairVendorGameObject => ObjectHelper.GetObjectByDataId(_repairVendorDataId);
-        private static uint _repairVendorTerritoryType => _preferredRepairNpc != null ? _preferredRepairNpc.TerritoryType : ObjectHelper.GrandCompanyTerritoryType(ObjectHelper.GrandCompany);
+        private static uint _repairVendorTerritoryType => _preferredRepairNpc != null ? _preferredRepairNpc.TerritoryType : PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany());
         private static bool _seenAddon = false;
         private unsafe static AtkUnitBase* addonRepair = null;
         private unsafe static AtkUnitBase* addonSelectYesno = null;
@@ -102,7 +102,7 @@ namespace AutoDuty.Helpers
 
             if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
             {
-                if (!ObjectHelper.IsOccupied || (EzThrottler.Throttle("GearCheck") && InventoryHelper.CanRepair()))
+                if (!PlayerHelper.IsOccupied || (EzThrottler.Throttle("GearCheck") && InventoryHelper.CanRepair()))
                 {
                     if (Svc.Condition[ConditionFlag.Occupied39])
                     {
@@ -146,7 +146,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug("Going to RepairVendor");
                 GotoHelper.Invoke(_repairVendorTerritoryType, [_repairVendorLocation], 0.25f, 3f);
             }
-            else if (ObjectHelper.IsValid)
+            else if (PlayerHelper.IsValid)
             {
                 if (GenericHelpers.TryGetAddonByName("SelectIconString", out addonSelectIconString) && GenericHelpers.IsAddonReady(addonSelectIconString))
                 {
