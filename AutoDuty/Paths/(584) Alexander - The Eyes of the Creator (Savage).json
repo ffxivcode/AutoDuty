@@ -7,7 +7,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/vbmai off",
+      "arguments": [
+        "/vbmai off"
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 114.71,
         "Z": -4.01
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 114.71,
         "Z": 1.96
       },
-      "argument": "2000",
+      "arguments": [
+        "2000"
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Cranial Hatch",
+      "arguments": [
+        "Cranial Hatch"
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1000",
+      "arguments": [
+        "1000"
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 114.71,
         "Z": 2.81
       },
-      "argument": "500",
+      "arguments": [
+        "500"
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Ingress",
+      "arguments": [
+        "Ingress"
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "9000",
+      "arguments": [
+        "9000"
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": -250.29,
         "Z": -241.15
       },
-      "argument": "2000",
+      "arguments": [
+        "2000"
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": -250.29,
         "Z": -238.17
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -118,6 +140,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

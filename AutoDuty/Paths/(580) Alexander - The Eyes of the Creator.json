@@ -7,7 +7,9 @@
         "Y": -28.86,
         "Z": -60.44
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Combat",
+      "arguments": [
+        "Combat"
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "OOC",
+      "arguments": [
+        "OOC"
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "ConditionFlag;Jumping61;false",
+      "arguments": [
+        "ConditionFlag;Jumping61;false"
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 114.71,
         "Z": -10.52
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 114.71,
         "Z": 1.89
       },
-      "argument": "2007455",
+      "arguments": [
+        "2007455"
+      ],
       "note": "Cranial Hatch"
     },
     {
@@ -67,7 +79,9 @@
         "Y": 114.71,
         "Z": 1.89
       },
-      "argument": "IsReady",
+      "arguments": [
+        "IsReady"
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 114.71,
         "Z": 1.89
       },
-      "argument": "2007456",
+      "arguments": [
+        "2007456"
+      ],
       "note": "Ingress"
     },
     {
@@ -87,7 +103,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "ConditionFlag;Jumping61;false",
+      "arguments": [
+        "ConditionFlag;Jumping61;false"
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": -250.29,
         "Z": -236.48
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": -250.29,
         "Z": -236.48
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -118,6 +140,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

@@ -11,7 +11,6 @@ using Lumina.Excel.GeneratedSheets;
 using ECommons;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Components;
-using AutoDuty.Managers;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Common.Math;
 using AutoDuty.Helpers;

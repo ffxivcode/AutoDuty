@@ -7,7 +7,9 @@
         "Y": -2.38,
         "Z": -5.96
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Tiny Key",
+      "arguments": [
+        "Tiny Key"
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 7.1,
         "Z": 27.4
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 3.41,
         "Z": -9.9
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": -0.08,
         "Z": 12.5
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Runstop Headgate",
+      "arguments": [
+        "Runstop Headgate"
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": -2.55,
         "Z": -36.46
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 4.72,
         "Z": -100.15
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": 5.9,
         "Z": -92.07
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": 7.05,
         "Z": -125.09
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": 7.02,
         "Z": -129.71
       },
-      "argument": "10000",
+      "arguments": [
+        "10000"
+      ],
       "note": ""
     },
     {
@@ -117,7 +139,9 @@
         "Y": 7.02,
         "Z": -131.59
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -127,7 +151,9 @@
         "Y": 18.65,
         "Z": -119.77
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -137,7 +163,9 @@
         "Y": 13.67,
         "Z": -125.75
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -147,7 +175,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Tiny Key",
+      "arguments": [
+        "Tiny Key"
+      ],
       "note": ""
     },
     {
@@ -157,7 +187,9 @@
         "Y": 13.02,
         "Z": -123.64
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -167,7 +199,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Swiftmake Checkgate",
+      "arguments": [
+        "Swiftmake Checkgate"
+      ],
       "note": ""
     },
     {
@@ -177,7 +211,9 @@
         "Y": 20.74,
         "Z": -180.6
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -187,7 +223,9 @@
         "Y": 20.74,
         "Z": -178.08
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -197,7 +235,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Tiny Key",
+      "arguments": [
+        "Tiny Key"
+      ],
       "note": ""
     },
     {
@@ -207,7 +247,9 @@
         "Y": 21.31,
         "Z": -188.72
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -217,7 +259,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "Swiftmake Checkgate",
+      "arguments": [
+        "Swiftmake Checkgate"
+      ],
       "note": ""
     },
     {
@@ -227,7 +271,9 @@
         "Y": 35.5,
         "Z": -236.09
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -238,6 +284,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

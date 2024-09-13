@@ -2,6 +2,7 @@
 using ECommons.Automation;
 using ECommons.Automation.UIInput;
 using ECommons.DalamudServices;
+using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
@@ -54,6 +55,8 @@ namespace AutoDuty.Helpers
 
         internal static bool ClickSelectYesno(bool yes = true)
         {
+            if (!EzThrottler.Throttle("ClickSelectYesno", 500)) return false;
+
             var addonChecker = AddonChecker("SelectYesno", out AtkUnitBase* addon, out bool seenAddon);
 
             if (!addonChecker && seenAddon)
@@ -86,6 +89,8 @@ namespace AutoDuty.Helpers
 
         internal static bool ClickTalk()
         {
+            if (!EzThrottler.Throttle("ClickTalk", 500)) return false;
+
             var addonChecker = AddonChecker("Talk", out AtkUnitBase* addon, out bool seenAddon);
 
             if (!addonChecker && seenAddon)
@@ -111,7 +116,7 @@ namespace AutoDuty.Helpers
                 return false;
             }
 
-            if (SeenAddon && (!gotAddon || !addonReady))
+            if (!Player.Character->IsCasting && SeenAddon && (!gotAddon || !addonReady))
             {
                 outSeenAddon = true;
                 SeenAddon = false;

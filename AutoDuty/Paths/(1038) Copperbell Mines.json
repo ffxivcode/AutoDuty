@@ -7,7 +7,9 @@
         "Y": 23.85,
         "Z": -208.19
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000",
+      "arguments": [
+        "3000"
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 23.85,
         "Z": -208.19
       },
-      "argument": "2000159",
+      "arguments": [
+        "2000159"
+      ],
       "note": "Tiny Key"
     },
     {
@@ -37,7 +43,9 @@
         "Y": 23.47,
         "Z": -208.46
       },
-      "argument": "2000160",
+      "arguments": [
+        "2000160"
+      ],
       "note": "Sealed Blasting Door"
     },
     {
@@ -47,7 +55,9 @@
         "Y": 24,
         "Z": -206.39
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000163",
+      "arguments": [
+        "2000163"
+      ],
       "note": "Lift Lever"
     },
     {
@@ -67,7 +79,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "10000",
+      "arguments": [
+        "10000"
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": -6.52,
         "Z": -208.07
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": -8.75,
         "Z": -136.52
       },
-      "argument": "2000169",
+      "arguments": [
+        "2000169"
+      ],
       "note": "Firesand"
     },
     {
@@ -97,7 +115,9 @@
         "Y": -3.92,
         "Z": -153.77
       },
-      "argument": "2000172",
+      "arguments": [
+        "2000172"
+      ],
       "note": "Firesand"
     },
     {
@@ -107,7 +127,9 @@
         "Y": -9.75,
         "Z": -128.93
       },
-      "argument": "2001536",
+      "arguments": [
+        "2001536"
+      ],
       "note": "Powder Chamber"
     },
     {
@@ -117,7 +139,9 @@
         "Y": -9.98,
         "Z": -135.22
       },
-      "argument": "2000170",
+      "arguments": [
+        "2000170"
+      ],
       "note": "Blasting Device"
     },
     {
@@ -127,7 +151,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000",
+      "arguments": [
+        "2000"
+      ],
       "note": ""
     },
     {
@@ -137,7 +163,9 @@
         "Y": -9.92,
         "Z": -89.63
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -147,7 +175,9 @@
         "Y": -9.92,
         "Z": -69.18
       },
-      "argument": "2000178",
+      "arguments": [
+        "2000178"
+      ],
       "note": "Tiny Key"
     },
     {
@@ -157,7 +187,9 @@
         "Y": -9.92,
         "Z": -58.98
       },
-      "argument": "2000173",
+      "arguments": [
+        "2000173"
+      ],
       "note": "Sealed Blasting Door"
     },
     {
@@ -167,7 +199,9 @@
         "Y": -9.92,
         "Z": -37.99
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -177,7 +211,9 @@
         "Y": -8.25,
         "Z": 5.91
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -187,7 +223,9 @@
         "Y": -8.25,
         "Z": 5.91
       },
-      "argument": "2000175",
+      "arguments": [
+        "2000175"
+      ],
       "note": "Lift Lever"
     },
     {
@@ -197,7 +235,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "10000",
+      "arguments": [
+        "10000"
+      ],
       "note": ""
     },
     {
@@ -207,7 +247,9 @@
         "Y": -38.69,
         "Z": 11.74
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -217,7 +259,9 @@
         "Y": -42.09,
         "Z": 39.41
       },
-      "argument": "2000",
+      "arguments": [
+        "2000"
+      ],
       "note": ""
     },
     {
@@ -227,7 +271,9 @@
         "Y": -42.19,
         "Z": 41.22
       },
-      "argument": "2001531",
+      "arguments": [
+        "2001531"
+      ],
       "note": "Firesand"
     },
     {
@@ -237,7 +283,9 @@
         "Y": -41.64,
         "Z": 70.42
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -247,7 +295,9 @@
         "Y": -42.42,
         "Z": 40.48
       },
-      "argument": "3000",
+      "arguments": [
+        "3000"
+      ],
       "note": ""
     },
     {
@@ -257,7 +307,9 @@
         "Y": -42.69,
         "Z": 42.35
       },
-      "argument": "2000179",
+      "arguments": [
+        "2000179"
+      ],
       "note": "Firesand"
     },
     {
@@ -267,7 +319,9 @@
         "Y": -38.75,
         "Z": 54.16
       },
-      "argument": "2001537",
+      "arguments": [
+        "2001537"
+      ],
       "note": "Powder Chamber"
     },
     {
@@ -277,7 +331,9 @@
         "Y": -38.74,
         "Z": 47.62
       },
-      "argument": "2000180",
+      "arguments": [
+        "2000180"
+      ],
       "note": "Blasting Device"
     },
     {
@@ -287,7 +343,9 @@
         "Y": -38.69,
         "Z": 60.38
       },
-      "argument": "2001532",
+      "arguments": [
+        "2001532"
+      ],
       "note": "Firesand"
     },
     {
@@ -297,7 +355,9 @@
         "Y": -38,
         "Z": 113.91
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -307,7 +367,9 @@
         "Y": -38,
         "Z": 113.01
       },
-      "argument": "2001533",
+      "arguments": [
+        "2001533"
+      ],
       "note": "Firesand"
     },
     {
@@ -317,7 +379,9 @@
         "Y": -37.98,
         "Z": 113.05
       },
-      "argument": "2001538",
+      "arguments": [
+        "2001538"
+      ],
       "note": "Powder Chamber"
     },
     {
@@ -327,7 +391,9 @@
         "Y": -38.02,
         "Z": 110.96
       },
-      "argument": "2001534",
+      "arguments": [
+        "2001534"
+      ],
       "note": "Blasting Device"
     },
     {
@@ -337,7 +403,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4000",
+      "arguments": [
+        "4000"
+      ],
       "note": ""
     },
     {
@@ -347,7 +415,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/vbm cfg AIConfig ForbidMovement true",
+      "arguments": [
+        "/vbm cfg AIConfig ForbidMovement true"
+      ],
       "note": ""
     },
     {
@@ -357,7 +427,9 @@
         "Y": -42,
         "Z": 167.21
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -367,7 +439,9 @@
         "Y": -38.17,
         "Z": 107.74
       },
-      "argument": "/vbm cfg AIConfig ForbidMovement false",
+      "arguments": [
+        "/vbm cfg AIConfig ForbidMovement false"
+      ],
       "note": ""
     },
     {
@@ -377,7 +451,9 @@
         "Y": -57.88,
         "Z": 6.8
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -388,6 +464,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

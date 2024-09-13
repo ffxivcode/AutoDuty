@@ -7,7 +7,9 @@
         "Y": 44.14,
         "Z": -223.21
       },
-      "argument": "1",
+      "arguments": [
+        "1"
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 27.83,
         "Z": -100.06
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 27.2,
         "Z": -56.04
       },
-      "argument": "2",
+      "arguments": [
+        "2"
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3",
+      "arguments": [
+        "3"
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 30.37,
         "Z": -44.91
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000216",
+      "arguments": [
+        "2000216"
+      ],
       "note": "Inconspicuous Switch"
     },
     {
@@ -67,7 +79,9 @@
         "Y": 22.86,
         "Z": 56.34
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 13.84,
         "Z": 145.88
       },
-      "argument": "2000250",
+      "arguments": [
+        "2000250"
+      ],
       "note": "Captain\u0027s Quarters Key"
     },
     {
@@ -87,7 +103,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
     },
     {
@@ -97,7 +115,9 @@
         "Y": 19.9,
         "Z": 171.1
       },
-      "argument": "ItemCount;2000512;<;1&ModifyIndex;7",
+      "arguments": [
+        "ItemCount;2000512;\u003C;1\u0026ModifyIndex;7"
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": 19.9,
         "Z": 171.1
       },
-      "argument": "2000227",
+      "arguments": [
+        "2000227"
+      ],
       "note": "Captain\u0027s Quarters"
     },
     {
@@ -117,7 +139,9 @@
         "Y": 20.01,
         "Z": 190.03
       },
-      "argument": "2000255",
+      "arguments": [
+        "2000255"
+      ],
       "note": "Waverider Gate Key"
     },
     {
@@ -127,7 +151,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
     },
     {
@@ -137,7 +163,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "ItemCount;2000513;<;1&ModifyIndex;11",
+      "arguments": [
+        "ItemCount;2000513;\u003C;1\u0026ModifyIndex;11"
+      ],
       "note": ""
     },
     {
@@ -147,7 +175,9 @@
         "Y": 16.3,
         "Z": 156.32
       },
-      "argument": "2000231",
+      "arguments": [
+        "2000231"
+      ],
       "note": "Waverider Gate"
     },
     {
@@ -157,7 +187,9 @@
         "Y": 6.38,
         "Z": 244.52
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -167,7 +199,9 @@
         "Y": 5.57,
         "Z": 317.23
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -182,6 +216,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

@@ -144,7 +144,7 @@ namespace AutoDuty.Managers
                                         var position = action[1].Split(", ");
                                         Vector3 v3Position = new(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
 
-                                        pathActions.Add(new PathAction { Name = action[0], Position = v3Position, Argument = action[2] });
+                                        pathActions.Add(new PathAction { Name = action[0], Position = v3Position, Arguments = [action[2]] });
                                     });
                                     pathFile = new()
                                     {
@@ -154,6 +154,21 @@ namespace AutoDuty.Managers
                                 }
                                 
                                 string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
+                                File.WriteAllText(FilePath, jsonNew);
+                            }
+                            else if (json.Contains("\"argument\"") && !json.Contains("\"arguments\""))
+                            {
+                                var doc = JsonDocument.Parse(json);
+                                var element = doc.RootElement.GetProperty("actions");
+                                List<string> arguments = [];
+                                element.EnumerateArray().Each(x => arguments.Add(x.GetProperty("argument").Deserialize<string>() ?? string.Empty));
+                                
+                                pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
+                                pathFile?.Actions.Select((Value, Index) => (Value, Index)).Each(x => x.Value.Arguments = [arguments[x.Index]]);
+                                pathFile?.Meta.Changelog.Add(new() { Change = "Converted to newer JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
+                                //pathFile?.Actions.Each(x => Svc.Log.Info($"{x.Position}"));
+                                string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
+                                Svc.Log.Info($"{jsonNew}");
                                 File.WriteAllText(FilePath, jsonNew);
                             }
                             else if (!json.Contains("\"name\"") && !json.Contains("\"position\"") && !json.Contains("\"argument\""))
@@ -195,7 +210,7 @@ namespace AutoDuty.Managers
                                                 else
                                                     argument = action[2];
 
-                                                pathAction.Argument = argument;
+                                                pathAction.Arguments = [argument];
                                                 pathAction.Note = note;
                                             }
                                         }

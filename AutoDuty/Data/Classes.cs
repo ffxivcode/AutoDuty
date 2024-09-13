@@ -1,7 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
-using ECommons.DalamudServices;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
@@ -92,13 +89,11 @@ namespace AutoDuty.Data
             [JsonPropertyName("position")]
             public Vector3 Position { get; set; } = Vector3.Zero;
 
-            [JsonPropertyName("argument")]
-            public string Argument { get; set; } = string.Empty;
+            [JsonPropertyName("arguments")]
+            public List<string> Arguments { get; set; } = [];
 
             [JsonPropertyName("note")]
             public string Note { get; set; } = string.Empty;
-
-            
         }
 
         public class PathFileMetaData

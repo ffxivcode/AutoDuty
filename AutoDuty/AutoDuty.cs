@@ -782,19 +782,16 @@ public sealed class AutoDuty : IDalamudPlugin
             Configuration.AutoConsumeItemsList.Each(x =>
             {
                 var isAvailable = InventoryHelper.IsItemAvailable(x.Value.ItemId, x.Value.CanBeHq);
-                if (Configuration.AutoConsumeIgnoreStatus)
-                    TaskManager.Enqueue(() =>
-                    {
-                        if (isAvailable)
-                            InventoryHelper.UseItemUntilAnimationLock(x.Value.ItemId, x.Value.CanBeHq);
-                    }, $"AutoConsume - {x.Value.Name} is available: {isAvailable}");
-                else
-                    TaskManager.Enqueue(() =>
-                    {
-                        if (isAvailable)
-                            InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq);
-                    }, $"AutoConsume - {x.Value.Name} is available: {isAvailable}");
+                if (isAvailable)
+                {
+                    if (Configuration.AutoConsumeIgnoreStatus)
+                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilAnimationLock(x.Value.ItemId, x.Value.CanBeHq), $"AutoConsume - {x.Value.Name} is available: {isAvailable}");
+                    else
+                        TaskManager.Enqueue(() => InventoryHelper.UseItemUntilStatus(x.Value.ItemId, x.Key, x.Value.CanBeHq), $"AutoConsume - {x.Value.Name} is available: {isAvailable}");
+                }
+                TaskManager.DelayNext("AutoConsume-DelayNext50", 50);
                 TaskManager.Enqueue(() => ObjectHelper.IsReadyFull, "AutoConsume-WaitPlayerIsReadyFull");
+                TaskManager.DelayNext("AutoConsume-DelayNext250", 250);
             });
         }
     }
@@ -874,7 +871,8 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
         {
-            if (PathAction.Name == "MoveTo" && bool.TryParse(PathAction.Argument, out bool useMesh) && !useMesh)
+            VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
+            if (PathAction.Name == "MoveTo" && bool.TryParse(PathAction.Arguments[0], out bool useMesh) && !useMesh)
                 VNavmesh_IPCSubscriber.Path_MoveTo([PathAction.Position], false);
             else
                 VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(PathAction.Position, false);
@@ -894,7 +892,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 Sender = Player.Name,
                 Action =
                 [
-                    new PathAction(){ Name = "Follow",Argument = $"{Player.Name}" }
+                    new PathAction(){ Name = "Follow", Arguments = [$"{Player.Name}"] }
                 ]
             };
 
@@ -920,7 +918,7 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
 
-        if ((!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0) || (!PathAction.Name.IsNullOrEmpty() && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) <= (PathAction.Name.Equals("Interactable", StringComparison.InvariantCultureIgnoreCase) ? 2f : 0.25f)))
+        if ((!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0) || (!PathAction.Name.IsNullOrEmpty() && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) <= (PathAction.Name.EqualsIgnoreCase("Interactable") ? 2f : 0.25f)))
         {
             if (PathAction.Name.IsNullOrEmpty() || PathAction.Name.Equals("MoveTo") || PathAction.Name.Equals("TreasureCoffer") || PathAction.Name.Equals("Revival"))
             {
@@ -1282,8 +1280,8 @@ public sealed class AutoDuty : IDalamudPlugin
                         Sender = Player.Name,
                         Action =
                         [
-                            new PathAction(){ Name = "Follow", Argument = $"null" },
-                            new PathAction(){ Name = "SetBMSettings", Argument = $"true" }
+                            new PathAction(){ Name = "Follow", Arguments = [$"null"] },
+                            new PathAction(){ Name = "SetBMSettings", Arguments = [$"true"] }
                         ]
                     };
 
@@ -1340,7 +1338,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!list.Any()) return;
 
-        var index = Actions.Select((Value, Index) => (Value, Index)).Where(x => Interactables.Contains(x.Value.Argument.Any(y => y == ' ') ? uint.Parse(x.Value.Argument.Split(" ")[0]) : uint.Parse(x.Value.Argument))).First().Index;
+        var index = Actions.Select((Value, Index) => (Value, Index)).Where(x => Interactables.Contains(x.Value.Arguments.Any(y => y.Any(z => z == ' ')) ? uint.Parse(x.Value.Arguments[0].Split(" ")[0]) : uint.Parse(x.Value.Arguments[0]))).First().Index;
 
         if (index > Indexer)
         {

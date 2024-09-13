@@ -7,7 +7,9 @@
         "Y": -400.06,
         "Z": -600.18
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": -185.73,
         "Z": 480.35
       },
-      "argument": "5000",
+      "arguments": [
+        "5000"
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": -185.66,
         "Z": 479.97
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -38,6 +44,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

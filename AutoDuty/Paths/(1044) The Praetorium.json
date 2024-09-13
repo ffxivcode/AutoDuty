@@ -7,7 +7,9 @@
         "Y": 186,
         "Z": -5.37
       },
-      "argument": "2012811",
+      "arguments": [
+        "2012811"
+      ],
       "note": "Magitek Terminal"
     },
     {
@@ -17,7 +19,9 @@
         "Y": 156,
         "Z": 1.32
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 156,
         "Z": -25.49
       },
-      "argument": "2012813",
+      "arguments": [
+        "2012813"
+      ],
       "note": "Magitek Transporter"
     },
     {
@@ -37,7 +43,9 @@
         "Y": 76,
         "Z": 0.02
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 76,
         "Z": 3.76
       },
-      "argument": "2012815",
+      "arguments": [
+        "2012815"
+      ],
       "note": "Magitek Terminal"
     },
     {
@@ -57,7 +67,9 @@
         "Y": 102,
         "Z": -66.46
       },
-      "argument": "1",
+      "arguments": [
+        "1"
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": 66.38,
         "Z": 86.07
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 68.03,
         "Z": 79.14
       },
-      "argument": "10000",
+      "arguments": [
+        "10000"
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": -107.99,
         "Z": -31.14
       },
-      "argument": "Combat",
+      "arguments": [
+        "Combat"
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": -107.89,
         "Z": -72.12
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": -107.99,
         "Z": -72.18
       },
-      "argument": "Combat",
+      "arguments": [
+        "Combat"
+      ],
       "note": ""
     },
     {
@@ -117,7 +139,9 @@
         "Y": -104,
         "Z": 0.08
       },
-      "argument": "Combat",
+      "arguments": [
+        "Combat"
+      ],
       "note": ""
     },
     {
@@ -127,7 +151,9 @@
         "Y": -104,
         "Z": 0.08
       },
-      "argument": "Combat",
+      "arguments": [
+        "Combat"
+      ],
       "note": ""
     },
     {
@@ -137,7 +163,9 @@
         "Y": -104,
         "Z": 0.08
       },
-      "argument": "false",
+      "arguments": [
+        "false"
+      ],
       "note": ""
     },
     {
@@ -147,7 +175,9 @@
         "Y": -103.94,
         "Z": 0.06
       },
-      "argument": "Combat",
+      "arguments": [
+        "Combat"
+      ],
       "note": ""
     },
     {
@@ -157,7 +187,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "true",
+      "arguments": [
+        "true"
+      ],
       "note": ""
     },
     {
@@ -167,7 +199,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1",
+      "arguments": [
+        "1"
+      ],
       "note": ""
     },
     {
@@ -177,7 +211,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "IsReady",
+      "arguments": [
+        "IsReady"
+      ],
       "note": ""
     },
     {
@@ -187,7 +223,9 @@
         "Y": -103.94,
         "Z": -0.08
       },
-      "argument": "false",
+      "arguments": [
+        "false"
+      ],
       "note": ""
     },
     {
@@ -197,7 +235,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2",
+      "arguments": [
+        "2"
+      ],
       "note": ""
     },
     {
@@ -207,7 +247,9 @@
         "Y": -104.4,
         "Z": -0.09
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -217,7 +259,9 @@
         "Y": -103.91,
         "Z": -0.61
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -227,7 +271,9 @@
         "Y": -103.99,
         "Z": -0.63
       },
-      "argument": "false",
+      "arguments": [
+        "false"
+      ],
       "note": ""
     },
     {
@@ -237,7 +283,9 @@
         "Y": -104,
         "Z": -19.2
       },
-      "argument": "2012817",
+      "arguments": [
+        "2012817"
+      ],
       "note": "Magitek Terminal"
     },
     {
@@ -247,7 +295,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "IsReady",
+      "arguments": [
+        "IsReady"
+      ],
       "note": ""
     },
     {
@@ -257,7 +307,9 @@
         "Y": -268,
         "Z": 219.83
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -267,7 +319,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "IsReady",
+      "arguments": [
+        "IsReady"
+      ],
       "note": ""
     }
   ],
@@ -286,6 +340,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

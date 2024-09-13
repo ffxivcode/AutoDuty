@@ -68,16 +68,16 @@ namespace AutoDuty.Managers
             }
         }
         
-        public void Follow(PathAction action) => FollowHelper.SetFollow(ObjectHelper.GetObjectByName(action.Argument));
+        public void Follow(PathAction action) => FollowHelper.SetFollow(GetObjectByName(action.Arguments[0]));
 
-        public void SetBMSettings(PathAction action) => AutoDuty.Plugin.SetBMSettings(bool.TryParse(action.Argument, out bool defaultsettings) && defaultsettings);
+        public void SetBMSettings(PathAction action) => AutoDuty.Plugin.SetBMSettings(bool.TryParse(action.Arguments[0], out bool defaultsettings) && defaultsettings);
 
         public unsafe void ConditionAction(PathAction action)
         {
-            if (!action.Argument.Any(x => x.Equals('&'))) return;
+            if (!action.Arguments[0].Any(x => x.Equals('&'))) return;
 
-            AutoDuty.Plugin.Action = $"ConditionAction: {action.Argument}";
-            var conditionActionArray = action.Argument.Split("&");
+            AutoDuty.Plugin.Action = $"ConditionAction: {action.Arguments[0]}";
+            var conditionActionArray = action.Arguments[0].Split("&");
             var condition = conditionActionArray[0];
             string[] conditionArray = [];
             if (condition.Any(x => x.EqualsAny(';')))
@@ -148,15 +148,15 @@ namespace AutoDuty.Managers
                 var actionActual = actionArray[0];
                 string actionArguments = actionArray.Length > 1 ? actionArray[1] : "";
                 Svc.Log.Debug($"ConditionAction: Invoking Action: {actionActual} with Arguments: {actionArguments}");
-                InvokeAction(new PathAction() { Name = actionActual, Argument = actionArguments });
+                InvokeAction(new PathAction() { Name = actionActual, Arguments = [actionArguments] });
             }
         }
 
-        public void BossMod(PathAction action) => _chat.ExecuteCommand($"/vbmai {action.Argument}");
+        public void BossMod(PathAction action) => _chat.ExecuteCommand($"/vbmai {action.Arguments[0]}");
 
         public void ModifyIndex(PathAction action)
         {
-            if (!int.TryParse(action.Argument, out int _index)) return;
+            if (!int.TryParse(action.Arguments[0], out int _index)) return;
             AutoDuty.Plugin.Indexer = _index;
             AutoDuty.Plugin.Stage = Stage.Reading_Path;
         }
@@ -164,7 +164,7 @@ namespace AutoDuty.Managers
         private bool _autoManageRotationPluginState = false;
         public void Rotation(PathAction action)
         {
-            if (action.Argument.Equals("off", StringComparison.InvariantCultureIgnoreCase))
+            if (action.Arguments[0].Equals("off", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (AutoDuty.Plugin.Configuration.AutoManageRotationPluginState)
                 {
@@ -173,7 +173,7 @@ namespace AutoDuty.Managers
                 }
                 AutoDuty.Plugin.SetRotationPluginSettings(false, true);
             }
-            else if (action.Argument.Equals("on", StringComparison.InvariantCultureIgnoreCase))
+            else if (action.Arguments[0].Equals("on", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (_autoManageRotationPluginState)
                     AutoDuty.Plugin.Configuration.AutoManageRotationPluginState = true;
@@ -187,17 +187,17 @@ namespace AutoDuty.Managers
             if (!Player.Available)
                 return;
 
-            var boolTrueFalse = action.Argument.Equals("true", StringComparison.InvariantCultureIgnoreCase);
-            AutoDuty.Plugin.Action = $"StopForCombat: {action.Argument}";
+            var boolTrueFalse = action.Arguments[0].Equals("true", StringComparison.InvariantCultureIgnoreCase);
+            AutoDuty.Plugin.Action = $"StopForCombat: {action.Arguments[0]}";
             AutoDuty.Plugin.StopForCombat = boolTrueFalse;
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
         }
 
         public unsafe void ForceAttack(PathAction action)
         {
-            var tot = action.Argument.IsNullOrEmpty() ? 10000 : int.TryParse(action.Argument, out int time) ? time : 0;
-            if (action.Argument.IsNullOrEmpty())
-                action.Argument = "10000";
+            var tot = action.Arguments[0].IsNullOrEmpty() ? 10000 : int.TryParse(action.Arguments[0], out int time) ? time : 0;
+            if (action.Arguments[0].IsNullOrEmpty())
+                action.Arguments[0] = "10000";
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "ForceAttack-GA16");
             _taskManager.Enqueue(() => Svc.Targets.Target != null, 500, "ForceAttack-GA1");
             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 1), "ForceAttack-GA1");
@@ -208,7 +208,7 @@ namespace AutoDuty.Managers
         {
             AutoDuty.Plugin.Action = $"Jumping";
 
-            if (int.TryParse(action.Argument, out int wait) && wait > 0)
+            if (int.TryParse(action.Arguments[0], out int wait) && wait > 0)
             {
                 _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "Jump");
                 _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "Jump");
@@ -229,8 +229,8 @@ namespace AutoDuty.Managers
         {
             if (!Player.Available)
                 return;
-            AutoDuty.Plugin.Action = $"ChatCommand: {action.Argument}";
-            _taskManager.Enqueue(() => _chat.ExecuteCommand(action.Argument), "ChatCommand");
+            AutoDuty.Plugin.Action = $"ChatCommand: {action.Arguments[0]}";
+            _taskManager.Enqueue(() => _chat.ExecuteCommand(action.Arguments[0]), "ChatCommand");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
@@ -238,24 +238,24 @@ namespace AutoDuty.Managers
         {
             if (!Player.Available)
                 return;
-            AutoDuty.Plugin.Action = $"AutoMove For {action.Argument}";
+            AutoDuty.Plugin.Action = $"AutoMove For {action.Arguments[0]}";
             var movementMode = Svc.GameConfig.UiControl.TryGetUInt("MoveMode", out var mode) ? mode : 0;
             _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 0); }, "AutoMove-MoveMode");
             _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "AutoMove-On");
-            _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(action.Argument)), "AutoMove-Throttle");
-            _taskManager.Enqueue(() => EzThrottler.Check("AutoMove") || !ObjectHelper.IsReady, Convert.ToInt32(action.Argument), "AutoMove-CheckThrottleOrNotReady");
+            _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(action.Arguments[0])), "AutoMove-Throttle");
+            _taskManager.Enqueue(() => EzThrottler.Check("AutoMove") || !IsReady, Convert.ToInt32(action.Arguments[0]), "AutoMove-CheckThrottleOrNotReady");
             _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 1); }, "AutoMove-MoveMode2");
-            _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "AutoMove-WaitIsReady");
+            _taskManager.Enqueue(() => IsReady, int.MaxValue, "AutoMove-WaitIsReady");
             _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "AutoMove-Off");
         }
 
         public unsafe void Wait(PathAction action)
         {
-            AutoDuty.Plugin.Action = $"Wait: {action.Argument}";
+            AutoDuty.Plugin.Action = $"Wait: {action.Arguments[0]}";
             if (AutoDuty.Plugin.StopForCombat)
                 _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
-            _taskManager.Enqueue(() => EzThrottler.Throttle("Wait", Convert.ToInt32(action.Argument)), "Wait");
-            _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(action.Argument), "Wait");
+            _taskManager.Enqueue(() => EzThrottler.Throttle("Wait", Convert.ToInt32(action.Arguments[0])), "Wait");
+            _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(action.Arguments[0]), "Wait");
             if (AutoDuty.Plugin.StopForCombat)
                 _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
@@ -263,8 +263,8 @@ namespace AutoDuty.Managers
 
         public unsafe void WaitFor(PathAction action)
         {
-            AutoDuty.Plugin.Action = $"WaitFor: {action.Argument}";
-            var waitForWhats = action.Argument.Split(';');
+            AutoDuty.Plugin.Action = $"WaitFor: {action.Arguments[0]}";
+            var waitForWhats = action.Arguments[0].Split(';');
             switch (waitForWhats[0])
             {
                 case "Combat":
@@ -275,16 +275,16 @@ namespace AutoDuty.Managers
                     _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "WaitFor-OOC");
                     break;
                 case "IsValid":
-                    _taskManager.Enqueue(() => !ObjectHelper.IsValid, 500, "WaitFor-NotIsValid-500");
-                    _taskManager.Enqueue(() => ObjectHelper.IsValid, int.MaxValue, "WaitFor-IsValid");
+                    _taskManager.Enqueue(() => !IsValid, 500, "WaitFor-NotIsValid-500");
+                    _taskManager.Enqueue(() => IsValid, int.MaxValue, "WaitFor-IsValid");
                     break;
                 case "IsOccupied":
-                    _taskManager.Enqueue(() => !ObjectHelper.IsOccupied, 500, "WaitFor-NotIsOccupied-500");
-                    _taskManager.Enqueue(() => ObjectHelper.IsOccupied, int.MaxValue, "WaitFor-IsOccupied");
+                    _taskManager.Enqueue(() => !IsOccupied, 500, "WaitFor-NotIsOccupied-500");
+                    _taskManager.Enqueue(() => IsOccupied, int.MaxValue, "WaitFor-IsOccupied");
                     break;
                 case "IsReady":
-                    _taskManager.Enqueue(() => !ObjectHelper.IsReady, 500, "WaitFor-NotIsReady-500");
-                    _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "WaitFor-IsReady");
+                    _taskManager.Enqueue(() => !IsReady, 500, "WaitFor-NotIsReady-500");
+                    _taskManager.Enqueue(() => IsReady, int.MaxValue, "WaitFor-IsReady");
                     break;
                 case "ConditionFlag":
                     if (waitForWhats.Length < 3)
@@ -300,8 +300,8 @@ namespace AutoDuty.Managers
                 case "BNpcInRadius":
                     if (waitForWhats.Length == 1)
                         return;
-                    _taskManager.Enqueue(() => !(ObjectHelper.GetObjectsByRadius(int.TryParse(waitForWhats[1], out var radius) ? radius : 0)?.Count > 0), $"WaitFor-BNpcInRadius{waitForWhats[1]}");
-                    _taskManager.Enqueue(() => ObjectHelper.IsReady, int.MaxValue, "WaitFor");
+                    _taskManager.Enqueue(() => !(GetObjectsByRadius(int.TryParse(waitForWhats[1], out var radius) ? radius : 0)?.Count > 0), $"WaitFor-BNpcInRadius{waitForWhats[1]}");
+                    _taskManager.Enqueue(() => IsReady, int.MaxValue, "WaitFor");
                     break;
             }
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
@@ -320,21 +320,21 @@ namespace AutoDuty.Managers
 
         public void SelectYesno(PathAction action)
         {
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"SelectYesno: {action.Argument}", "SelectYesno");
-            _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(action.Argument.ToUpper().Equals("YES")), "SelectYesno");
+            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"SelectYesno: {action.Arguments[0]}", "SelectYesno");
+            _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(action.Arguments[0].ToUpper().Equals("YES")), "SelectYesno");
             _taskManager.DelayNext("SelectYesno", 500);
-            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "SelectYesno");
+            _taskManager.Enqueue(() => !PlayerIsCasting, "SelectYesno");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
 
         public unsafe void MoveToObject(PathAction action)
         {
-            if (!TryGetObjectIdRegex(action.Argument, out var objectDataId)) return;
+            if (!TryGetObjectIdRegex(action.Arguments[0], out var objectDataId)) return;
 
             IGameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"MoveToObject: {objectDataId}";
 
-            _taskManager.Enqueue(() => ObjectHelper.TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject), "MoveToObject-GetGameObject");
+            _taskManager.Enqueue(() => TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject), "MoveToObject-GetGameObject");
             _taskManager.Enqueue(() => MovementHelper.Move(gameObject), int.MaxValue, "MoveToObject-Move");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
@@ -359,12 +359,12 @@ namespace AutoDuty.Managers
 
         public unsafe void Target(PathAction action)
         {
-            if (!TryGetObjectIdRegex(action.Argument, out var objectDataId)) return;
+            if (!TryGetObjectIdRegex(action.Arguments[0], out var objectDataId)) return;
 
             IGameObject? gameObject = null;
             AutoDuty.Plugin.Action = $"Target: {objectDataId}";
 
-            _taskManager.Enqueue(() => ObjectHelper.TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject), "Target-GetGameObject");
+            _taskManager.Enqueue(() => TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject), "Target-GetGameObject");
             _taskManager.Enqueue(() => TargetCheck(gameObject), "Target-Check");
             _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
         }
@@ -376,6 +376,9 @@ namespace AutoDuty.Managers
             if (Conditions.IsMounted || Conditions.IsMounted2)
                 return true;
 
+            if (Player.Available && PlayerIsCasting)
+                return false;
+
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno) && !AddonHelper.ClickSelectYesno(true))
                 return false;
             else if (AddonHelper.ClickSelectYesno(true))
@@ -386,15 +389,18 @@ namespace AutoDuty.Managers
             else if (AddonHelper.ClickTalk())
                 return true;
 
-            if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid() || !ObjectHelper.IsValid)
+            if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid() || !IsValid)
                 return true;
 
             if (EzThrottler.Throttle("Interactable", 250))
             {
-                if (GetBattleDistanceToPlayer(gameObject) > 2f)
+                if (!TryGetObjectByDataId(gameObject?.DataId ?? 0, out gameObject)) return true;
+
+                if (GetBattleDistanceToPlayer(gameObject!) > 2f)
                     MovementHelper.Move(gameObject, 0.25f, 2f, false);
                 else
                 {
+                    Svc.Log.Debug($"InteractableCheck: Interacting with {gameObject!.Name} at {gameObject.Position} which is {GetDistanceToPlayer(gameObject)} away, because game object is not null: {gameObject != null} and IsTargetable: {gameObject!.IsTargetable} and IsValid: {gameObject.IsValid()}");
                     if (VNavmesh_IPCSubscriber.Path_IsRunning())
                         VNavmesh_IPCSubscriber.Path_Stop();
                     InteractWithObject(gameObject);
@@ -406,8 +412,8 @@ namespace AutoDuty.Managers
         private unsafe void Interactable(IGameObject? gameObject)
         {
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable-InteractableCheck");
-            _taskManager.Enqueue(() => ObjectHelper.PlayerIsCasting, 500, "Interactable-WaitPlayerIsCasting");
-            _taskManager.Enqueue(() => !ObjectHelper.PlayerIsCasting, "Interactable-WaitNotPlayerIsCasting");
+            _taskManager.Enqueue(() => PlayerIsCasting, 500, "Interactable-WaitPlayerIsCasting");
+            _taskManager.Enqueue(() => !PlayerIsCasting, "Interactable-WaitNotPlayerIsCasting");
             _taskManager.DelayNext("Interactable-DelayNext100", 100);
             _taskManager.Enqueue(() =>
             {
@@ -435,18 +441,30 @@ namespace AutoDuty.Managers
                 }
                 else
                 {
-                    Interactable(gameObject);
+                    if (TryGetObjectByDataId(gameObject?.DataId ?? 0, out gameObject))
+                    {
+                        Svc.Log.Debug($"Interactable - Looping because {gameObject?.Name} is still Targetable: {gameObject?.IsTargetable} and we did not change conditions,  Position: {gameObject?.Position} Distance: {GetDistanceToPlayer(gameObject!.Position)}");
+                        Interactable(gameObject);
+                    }
                 }
             }, "Interactable-LoopCheck");
         }
 
         public unsafe void Interactable(PathAction action)
         {
-            if (!TryGetObjectIdRegex(action.Argument, out var objectDataId)) return;
-            IGameObject? gameObject = null;
-            AutoDuty.Plugin.Action = $"Interactable: {objectDataId}";
+            List<uint> dataIds = [];
+            string objectDataId = string.Empty;
+            if (action.Arguments.Count > 1)
+                action.Arguments.Each(x => dataIds.Add(TryGetObjectIdRegex(x, out objectDataId) ? (uint.TryParse(objectDataId, out var dataId) ? dataId : 0) : 0));
+            else
+                dataIds.Add(TryGetObjectIdRegex(action.Arguments[0], out objectDataId) ? (uint.TryParse(objectDataId, out var dataId) ? dataId : 0) : 0);
 
-            _taskManager.Enqueue(() => TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject) || Player.Character->InCombat, "Interactable-GetGameObjectUnlessInCombat");
+            if (dataIds.All(x => x.Equals("0"))) return;
+            
+            IGameObject? gameObject = null;
+            AutoDuty.Plugin.Action = $"Interactable";
+            _taskManager.Enqueue(() => Player.Character->InCombat || (gameObject = Svc.Objects.Where(x => x.DataId.EqualsAny(dataIds) && x.IsTargetable).OrderBy(GetDistanceToPlayer).FirstOrDefault()) != null, "Interactable-GetGameObjectUnlessInCombat");
+            _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = $"Interactable: {gameObject?.DataId}"; }, "Interactable-SetActionVar");
             _taskManager.Enqueue(() =>
             {
                 if (Player.Character->InCombat)
@@ -522,7 +540,7 @@ namespace AutoDuty.Managers
             if (AutoDuty.Plugin.Configuration.LootTreasure)
             {
                 _taskManager.DelayNext("Boss-TreasureDelay", 1000);
-                _taskManager.Enqueue(() => treasureCofferObjects = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => ObjectHelper.GetDistanceToPlayer(x) <= 50).ToList(), "Boss-GetTreasureChests");
+                _taskManager.Enqueue(() => treasureCofferObjects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => GetDistanceToPlayer(x) <= 50).ToList(), "Boss-GetTreasureChests");
                 _taskManager.Enqueue(() => BossLoot(treasureCofferObjects, index), "Boss-LootCheck");
             }
         }
@@ -544,7 +562,7 @@ namespace AutoDuty.Managers
         {
             if (action != null)
             {
-                string[] v = action.Argument.Split(", ");
+                string[] v = action.Arguments[0].Split(", ");
                 if (v.Length == 3)
                 {
                     Vector3 facingPos = new(float.Parse(v[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[2], System.Globalization.CultureInfo.InvariantCulture));
@@ -567,11 +585,11 @@ namespace AutoDuty.Managers
             if (!EzThrottler.Throttle("PraeUpdate", 50))
                 return;
 
-            var objects = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc);
+            var objects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc);
 
             if (objects != null)
             {
-                var protoArmOrDoor = objects.FirstOrDefault(x => x.IsTargetable && x.DataId is 14566 or 14616 && ObjectHelper.GetDistanceToPlayer(x) <= 25);
+                var protoArmOrDoor = objects.FirstOrDefault(x => x.IsTargetable && x.DataId is 14566 or 14616 && GetDistanceToPlayer(x) <= 25);
                 if (protoArmOrDoor != null)
                     Svc.Targets.Target = protoArmOrDoor;
             }
@@ -595,12 +613,12 @@ namespace AutoDuty.Managers
             {
                 //Prae
                 case 1044:
-                    switch (action.Argument)
+                    switch (action.Arguments[0])
                     {
                         case "1":
                             AutoDuty.Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
                             Svc.Framework.Update += PraeUpdate;
-                            Interactable(new PathAction() { Argument= "2012819" });
+                            Interactable(new PathAction() { Arguments = ["2012819"] });
                             break;
                         case "2":
                             AutoDuty.Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
@@ -613,10 +631,10 @@ namespace AutoDuty.Managers
                 //Red -  2000214
                 //Green - 2000215
                 case 1036:
-                    switch (action.Argument)
+                    switch (action.Arguments[0])
                     {
                         case "1":
-                            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)?.FirstOrDefault(a => a.IsTargetable && (OID)a.DataId is OID.Blue or OID.Red or OID.Green)) != null, "DutySpecificCode");
+                            _taskManager.Enqueue(() => (gameObject = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)?.FirstOrDefault(a => a.IsTargetable && (OID)a.DataId is OID.Blue or OID.Red or OID.Green)) != null, "DutySpecificCode");
                             _taskManager.Enqueue(() =>
                             {
                                 if (gameObject != null)
@@ -637,39 +655,39 @@ namespace AutoDuty.Managers
                             }, "DutySpecificCode");
                             break;
                         case "2":
-                            _taskManager.Enqueue(() => Interactable(new PathAction() { Argument = GlobalStringStore ?? "" }), "DutySpecificCode");
+                            _taskManager.Enqueue(() => Interactable(new PathAction() { Arguments = [GlobalStringStore ?? ""] }), "DutySpecificCode");
                             break;
                         case "3":
-                            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByDataId(2000216)) != null, "DutySpecificCode");
+                            _taskManager.Enqueue(() => (gameObject = GetObjectByDataId(2000216)) != null, "DutySpecificCode");
                             _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
                             _taskManager.DelayNext("DutySpecificCode", 1000);
-                            _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
+                            _taskManager.Enqueue(() => InteractWithObject(gameObject), "DutySpecificCode");
                             break;
                         default: break;
                     }
                     break;
                 //Mount Rokkon
                 case 1137:
-                    switch (action.Argument)
+                    switch (action.Arguments[0])
                     {
                         case "5":
-                            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByDataId(16140)) != null, "DutySpecificCode");
+                            _taskManager.Enqueue(() => (gameObject = GetObjectByDataId(16140)) != null, "DutySpecificCode");
                             _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
                             _taskManager.DelayNext("DutySpecificCode", 1000);
-                            _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
-                            if (ObjectHelper.IsValid)
+                            _taskManager.Enqueue(() => InteractWithObject(gameObject), "DutySpecificCode");
+                            if (IsValid)
                             {
-                                _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
+                                _taskManager.Enqueue(() => InteractWithObject(gameObject), "DutySpecificCode");
                                 _taskManager.Enqueue(() => AddonHelper.ClickSelectString(0));
                             }
                             break;
                         case "6":
-                            _taskManager.Enqueue(() => (gameObject = ObjectHelper.GetObjectByDataId(16140)) != null, "DutySpecificCode");
+                            _taskManager.Enqueue(() => (gameObject = GetObjectByDataId(16140)) != null, "DutySpecificCode");
                             _taskManager.Enqueue(() => MovementHelper.Move(gameObject, 0.25f, 2.5f), "DutySpecificCode");
                             _taskManager.DelayNext("DutySpecificCode", 1000);
-                            if (ObjectHelper.IsValid)
+                            if (IsValid)
                             {
-                                _taskManager.Enqueue(() => ObjectHelper.InteractWithObject(gameObject), "DutySpecificCode");
+                                _taskManager.Enqueue(() => InteractWithObject(gameObject), "DutySpecificCode");
                                 _taskManager.Enqueue(() => AddonHelper.ClickSelectString(1));
                             }
                             break;
@@ -702,6 +720,62 @@ namespace AutoDuty.Managers
                             break;
 
                         default: break;
+                    }
+                    break;
+                //Xelphatol
+                case 1113:
+                    switch (action.Arguments[0])
+                    {
+                        case "1":
+                            _taskManager.Enqueue(() => TryGetObjectByDataId(2007400, out gameObject), "DutySpecificCode");
+                            _taskManager.Enqueue(() =>
+                                {
+                                    if (!EzThrottler.Throttle("DSC", 500) || Player.Character->IsCasting) return false;
+
+                                    if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno) && !AddonHelper.ClickSelectYesno(true))
+                                        return false;
+                                    else if (AddonHelper.ClickSelectYesno(true))
+                                        return true;
+
+                                    if (gameObject == null) return true;
+
+                                    if (GetBattleDistanceToPlayer(gameObject) > 2.5f)
+                                        MovementHelper.Move(gameObject, 0.25f, 2.5f);
+                                    else
+                                    {
+                                        MovementHelper.Stop();
+                                        InteractWithObject(gameObject);
+                                    }
+
+                                    return false;
+                                }, int.MaxValue, "DSC-Xelphatol-ClickTailWind");
+                            break;
+                        case "2":
+                            _taskManager.Enqueue(() => TryGetObjectByDataId(2007401, out gameObject), "DutySpecificCode");
+                            _taskManager.Enqueue(() =>
+                            {
+                                if (!EzThrottler.Throttle("DSC", 500) || Player.Character->IsCasting) return false;
+
+                                if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno) && !AddonHelper.ClickSelectYesno(true))
+                                    return false;
+                                else if (AddonHelper.ClickSelectYesno(true))
+                                    return true;
+
+                                if (gameObject == null) return true;
+
+                                if (GetBattleDistanceToPlayer(gameObject) > 2.5f)
+                                    MovementHelper.Move(gameObject, 0.25f, 2.5f);
+                                else
+                                {
+                                    MovementHelper.Stop();
+                                    InteractWithObject(gameObject);
+                                }
+
+                                return false;
+                            }, int.MaxValue, "DSC-Xelphatol-ClickTailWind");
+                            break;
+                        default:
+                            break;
                     }
                     break;
                 default: break;
