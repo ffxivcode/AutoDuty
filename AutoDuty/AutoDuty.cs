@@ -871,6 +871,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
         {
+            VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
             if (PathAction.Name == "MoveTo" && bool.TryParse(PathAction.Arguments[0], out bool useMesh) && !useMesh)
                 VNavmesh_IPCSubscriber.Path_MoveTo([PathAction.Position], false);
             else
@@ -917,7 +918,7 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
 
-        if ((!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0) || (!PathAction.Name.IsNullOrEmpty() && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) <= (PathAction.Name.Equals("Interactable", StringComparison.InvariantCultureIgnoreCase) ? 2f : 0.25f)))
+        if ((!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0) || (!PathAction.Name.IsNullOrEmpty() && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) <= (PathAction.Name.EqualsIgnoreCase("Interactable") ? 2f : 0.25f)))
         {
             if (PathAction.Name.IsNullOrEmpty() || PathAction.Name.Equals("MoveTo") || PathAction.Name.Equals("TreasureCoffer") || PathAction.Name.Equals("Revival"))
             {
