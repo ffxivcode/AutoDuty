@@ -1,5 +1,4 @@
-﻿using AutoDuty.Data;
-using AutoDuty.Helpers;
+﻿using AutoDuty.Helpers;
 using AutoDuty.Windows;
 using ECommons;
 using ECommons.DalamudServices;
@@ -166,7 +165,7 @@ namespace AutoDuty.Managers
                                 
                                 pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
                                 pathFile?.Actions.Select((Value, Index) => (Value, Index)).Each(x => x.Value.Arguments = [arguments[x.Index]]);
-                                pathFile?.Meta.Changelog.Add(new() { Change = "Converted to newer JSON Structure", Version = 163 });
+                                pathFile?.Meta.Changelog.Add(new() { Change = "Converted to newer JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
                                 //pathFile?.Actions.Each(x => Svc.Log.Info($"{x.Position}"));
                                 string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
                                 Svc.Log.Info($"{jsonNew}");
