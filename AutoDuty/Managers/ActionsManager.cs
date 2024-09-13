@@ -748,7 +748,7 @@ namespace AutoDuty.Managers
                                     }
 
                                     return false;
-                                }, int.MaxValue, "DSC-Xelphatol-ClickTailWind");
+                                }, "DSC-Xelphatol-ClickTailWind");
                             break;
                         case "2":
                             _taskManager.Enqueue(() => TryGetObjectByDataId(2007401, out gameObject), "DutySpecificCode");
@@ -772,7 +772,7 @@ namespace AutoDuty.Managers
                                 }
 
                                 return false;
-                            }, int.MaxValue, "DSC-Xelphatol-ClickTailWind");
+                            }, "DSC-Xelphatol-ClickTailWind");
                             break;
                         default:
                             break;
