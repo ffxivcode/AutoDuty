@@ -22,7 +22,7 @@ namespace AutoDuty.Helpers
 
         internal static bool UseItemUntilStatus(uint itemId, uint statusId, bool allowHq = true)
         {
-            if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !ObjectHelper.IsReady || Player.Character->IsCasting)
+            if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !PlayerHelper.IsReady || Player.Character->IsCasting)
                 return false;
 
             if (PlayerHelper.HasStatus(statusId))
@@ -34,10 +34,10 @@ namespace AutoDuty.Helpers
 
         internal static bool UseItemUntilAnimationLock(uint itemId, bool allowHq = true)
         {
-            if (ObjectHelper.IsAnimationLocked)
+            if (PlayerHelper.IsAnimationLocked)
                 return true;
 
-            if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !ObjectHelper.IsReady || Player.Character->IsCasting)
+            if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !PlayerHelper.IsReady || PlayerHelper.IsCasting)
                 return false;
 
             UseItemIfAvailable(itemId, allowHq);

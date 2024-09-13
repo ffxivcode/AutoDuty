@@ -14,7 +14,7 @@ namespace AutoDuty.Helpers
         internal static void Invoke(uint whichGrandCompany = 0)
         {
             if (whichGrandCompany == 0 || whichGrandCompany > 3)
-                _whichGrandCompany = ObjectHelper.GrandCompany;
+                _whichGrandCompany = PlayerHelper.GetGrandCompany();
             else
                 _whichGrandCompany = whichGrandCompany;
 
@@ -104,13 +104,13 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (Svc.ClientState.TerritoryType != ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany) || _innKeepGameObject == null || Vector3.Distance(Svc.ClientState.LocalPlayer.Position, _innKeepGameObject.Position) > 7f)
+            if (Svc.ClientState.TerritoryType != PlayerHelper.GetGrandCompanyTerritoryType(_whichGrandCompany) || _innKeepGameObject == null || Vector3.Distance(Svc.ClientState.LocalPlayer.Position, _innKeepGameObject.Position) > 7f)
             {
                 Svc.Log.Debug($"We are not in the correct TT or our innkeepGO is null or out innkeepPosition is > 7f, moving there");
-                GotoHelper.Invoke(ObjectHelper.GrandCompanyTerritoryType(_whichGrandCompany), _innKeepLocation, 0.25f, 5f, false);
+                GotoHelper.Invoke(PlayerHelper.GetGrandCompanyTerritoryType(_whichGrandCompany), _innKeepLocation, 0.25f, 5f, false);
                 return;
             }
-            else if (ObjectHelper.IsValid)
+            else if (PlayerHelper.IsValid)
             {
                 Svc.Log.Debug($"Interacting with GO and Addons");
                 ObjectHelper.InteractWithObject(_innKeepGameObject);

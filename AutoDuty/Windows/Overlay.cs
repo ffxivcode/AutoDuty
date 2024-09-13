@@ -23,10 +23,10 @@ public unsafe class Overlay : Window
 
     public override void Draw()
     {
-        if (!ObjectHelper.IsValid)
+        if (!PlayerHelper.IsValid)
         {
             if (!SchedulerHelper.Schedules.ContainsKey("OpenOverlay"))
-                SchedulerHelper.ScheduleAction("OpenOverlay", () => IsOpen = true, () => ObjectHelper.IsReady);
+                SchedulerHelper.ScheduleAction("OpenOverlay", () => IsOpen = true, () => PlayerHelper.IsReady);
             IsOpen = false;
         }
 

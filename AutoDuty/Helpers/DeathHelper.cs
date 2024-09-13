@@ -158,7 +158,7 @@ namespace AutoDuty.Helpers
 
         private static unsafe void OnRevive(IFramework _)
         {
-            if (!EzThrottler.Throttle("OnRevive", 500) || (!ObjectHelper.IsReady && !Conditions.IsOccupiedInQuestEvent) || ObjectHelper.PlayerIsCasting) return;
+            if (!EzThrottler.Throttle("OnRevive", 500) || (!PlayerHelper.IsReady && !Conditions.IsOccupiedInQuestEvent) || PlayerHelper.IsCasting) return;
 
             if (_gameObject == null || !_gameObject.IsTargetable)
             {

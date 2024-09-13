@@ -67,9 +67,9 @@ namespace AutoDuty.Helpers
             TrustMember?[] trustMembers = new TrustMember?[3];
 
             Job        playerJob  = Player.Available ? Player.Object.GetJob() : AutoDuty.Plugin.JobLastKnown;
-            CombatRole playerRole = playerJob.GetRole();
+            CombatRole playerRole = playerJob.GetCombatRole();
 
-            ObjectHelper.JobRole playerJobRole = Player.Available ? Player.Object.ClassJob.GameData?.GetJobRole() ?? ObjectHelper.JobRole.None : ObjectHelper.JobRole.None;
+            JobRole playerJobRole = Player.Available ? Player.Object.ClassJob.GameData?.GetJobRole() ?? JobRole.None : JobRole.None;
 
             Svc.Log.Info("Leveling Trust Members set");
             Svc.Log.Info(content.TrustMembers.Count.ToString());
@@ -131,7 +131,7 @@ namespace AutoDuty.Helpers
 
             if (dawnSheet == null || jobSheet == null) return;
 
-            void AddMember(TrustMemberName name, uint index, TrustRole role, ObjectHelper.ClassJobType classJob, uint levelInit = 71, uint levelCap = 100) => Members.Add(name, new TrustMember
+            void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100) => Members.Add(name, new TrustMember
             {
                 Index = index,
                 Name = dawnSheet.GetRow((uint)name)!.Unknown0.RawString,
@@ -143,25 +143,25 @@ namespace AutoDuty.Helpers
                 LevelCap = levelCap
             });
 
-            AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer, ObjectHelper.ClassJobType.Sage);
-            AddMember(TrustMemberName.Alisaie, 1, TrustRole.DPS, ObjectHelper.ClassJobType.RedMage);
-            AddMember(TrustMemberName.Thancred, 2, TrustRole.Tank, ObjectHelper.ClassJobType.Gunbreaker);
-            AddMember(TrustMemberName.Urianger, 3, TrustRole.Healer, ObjectHelper.ClassJobType.Astrologian);
-            AddMember(TrustMemberName.Yshtola, 4, TrustRole.DPS, ObjectHelper.ClassJobType.BlackMage);
-            AddMember(TrustMemberName.Ryne, 5, TrustRole.DPS, ObjectHelper.ClassJobType.Rogue, 71, 80);
-            AddMember(TrustMemberName.Estinien, 5, TrustRole.DPS, ObjectHelper.ClassJobType.Dragoon, 81);
-            AddMember(TrustMemberName.Graha, 6, TrustRole.AllRounder, ObjectHelper.ClassJobType.BlackMage, 81);
-            AddMember(TrustMemberName.Zero, 7, TrustRole.DPS, ObjectHelper.ClassJobType.Reaper, 90, 90);
-            AddMember(TrustMemberName.Krile, 7, TrustRole.DPS, ObjectHelper.ClassJobType.Pictomancer, 91);
+            AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer, ClassJobType.Sage);
+            AddMember(TrustMemberName.Alisaie, 1, TrustRole.DPS, ClassJobType.RedMage);
+            AddMember(TrustMemberName.Thancred, 2, TrustRole.Tank, ClassJobType.Gunbreaker);
+            AddMember(TrustMemberName.Urianger, 3, TrustRole.Healer, ClassJobType.Astrologian);
+            AddMember(TrustMemberName.Yshtola, 4, TrustRole.DPS, ClassJobType.Black_Mage);
+            AddMember(TrustMemberName.Ryne, 5, TrustRole.DPS, ClassJobType.Rogue, 71, 80);
+            AddMember(TrustMemberName.Estinien, 5, TrustRole.DPS, ClassJobType.Dragoon, 81);
+            AddMember(TrustMemberName.Graha, 6, TrustRole.AllRounder, ClassJobType.Black_Mage, 81);
+            AddMember(TrustMemberName.Zero, 7, TrustRole.DPS, ClassJobType.Reaper, 90, 90);
+            AddMember(TrustMemberName.Krile, 7, TrustRole.DPS, ClassJobType.Pictomancer, 91);
         }
 
         public static void ResetTrustIfInvalid()
         {
-            if (!ObjectHelper.IsValid) return;
+            if (!PlayerHelper.IsValid) return;
 
             if (AutoDuty.Plugin.Configuration.SelectedTrustMembers.Count(x => x is not null) == 3)
             {
-                CombatRole playerRole = Player.Job.GetRole();
+                CombatRole playerRole = Player.Job.GetCombatRole();
 
                 TrustMember[] trustMembers = AutoDuty.Plugin.Configuration.SelectedTrustMembers.Select(name => Members[(TrustMemberName)name!]).ToArray();
 
@@ -243,7 +243,7 @@ namespace AutoDuty.Helpers
             if (_getLevelsContent == null || AutoDuty.Plugin.InDungeon)
                 Stop();
 
-            if (!EzThrottler.Throttle("GetLevelsUpdate", 5) || !ObjectHelper.IsValid) return;
+            if (!EzThrottler.Throttle("GetLevelsUpdate", 5) || !PlayerHelper.IsValid) return;
 
             if (!GenericHelpers.TryGetAddonByName("Dawn", out AtkUnitBase* addonDawn) || !GenericHelpers.IsAddonReady(addonDawn))
             {

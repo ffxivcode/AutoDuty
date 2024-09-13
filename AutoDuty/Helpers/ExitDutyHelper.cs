@@ -58,7 +58,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void ExitDutyUpdate(IFramework framework)
         {
-            if (!ObjectHelper.IsReady || Player.Object.InCombat())
+            if (!PlayerHelper.IsReady || PlayerHelper.InCombat)
                 return;
 
             if (Svc.ClientState.TerritoryType != _currentTerritoryType || !AutoDuty.Plugin.InDungeon || Svc.ClientState.TerritoryType == 0)

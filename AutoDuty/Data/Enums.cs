@@ -6,6 +6,65 @@ namespace AutoDuty.Data
     {
         public static string EnumString(System.Enum T) => T?.ToString()?.Replace("_", " ") ?? "";
 
+        internal enum ClassJobType
+        {
+            Adventurer = 0,
+            Gladiator = 1,
+            Pugilist = 2,
+            Marauder = 3,
+            Lancer = 4,
+            Archer = 5,
+            Conjurer = 6,
+            Thaumaturge = 7,
+            Carpenter = 8,
+            Blacksmith = 9,
+            Armorer = 10,
+            Goldsmith = 11,
+            Leatherworker = 12,
+            Weaver = 13,
+            Alchemist = 14,
+            Culinarian = 15,
+            Miner = 16,
+            Botanist = 17,
+            Fisher = 18,
+            Paladin = 19,
+            Monk = 20,
+            Warrior = 21,
+            Dragoon = 22,
+            Bard = 23,
+            White_Mage = 24,
+            Black_Mage = 25,
+            Arcanist = 26,
+            Summoner = 27,
+            Scholar = 28,
+            Rogue = 29,
+            Ninja = 30,
+            Machinist = 31,
+            Dark_Knight = 32,
+            Astrologian = 33,
+            Samurai = 34,
+            RedMage = 35,
+            BlueMage = 36,
+            Gunbreaker = 37,
+            Dancer = 38,
+            Reaper = 39,
+            Sage = 40,
+            Pictomancer = 42
+        }
+
+        internal enum JobRole
+        {
+            None = 0,
+            Tank = 1,
+            Melee = 2,
+            Ranged = 3,
+            Healer = 4,
+            Ranged_Physical = 5,
+            Ranged_Magical = 6,
+            Disciple_Of_The_Land = 7,
+            Disciple_Of_The_Hand = 8,
+        }
+
         public enum LootMethod : int
         {
             AutoDuty = 0,

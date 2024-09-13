@@ -105,7 +105,7 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("AM", 250))
                 return;
 
-            if (!ObjectHelper.IsValid) return;
+            if (!PlayerHelper.IsValid) return;
 
             if (GotoHelper.State == ActionState.Running)
             {

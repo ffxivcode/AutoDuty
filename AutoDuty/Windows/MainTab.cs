@@ -59,7 +59,7 @@ namespace AutoDuty.Windows
 
             static void DrawPathSelection()
             {
-                if (Plugin.CurrentTerritoryContent == null || !ObjectHelper.IsReady)
+                if (Plugin.CurrentTerritoryContent == null || !PlayerHelper.IsReady)
                     return;
 
                 using var d = ImRaii.Disabled(Plugin is { InDungeon: true, Stage: > 0 });
@@ -305,7 +305,7 @@ namespace AutoDuty.Windows
                                     foreach (TrustMember member in DutySelected.Content.TrustMembers)
                                     {
                                         bool enabled = Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName);
-                                        CombatRole playerRole = Player.Job.GetRole();
+                                        CombatRole playerRole = Player.Job.GetCombatRole();
                                         int numberSelected = Plugin.Configuration.SelectedTrustMembers.Count(x => x != null);
 
                                         TrustMember?[] members = Plugin.Configuration.SelectedTrustMembers.Select(tmn => tmn != null ? TrustHelper.Members[(TrustMemberName)tmn] : null).ToArray();
@@ -398,13 +398,13 @@ namespace AutoDuty.Windows
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
                     {
-                        if (ObjectHelper.IsReady)
+                        if (PlayerHelper.IsReady)
                         {
                             if (Plugin.LevelingModeEnum != LevelingMode.None)
                             {
-                                if (Player.Job.GetRole() == CombatRole.NonCombat || (Plugin.LevelingModeEnum == LevelingMode.Trust && ilvl < 370) || (Plugin.LevelingModeEnum == LevelingMode.Trust && Plugin.CurrentPlayerItemLevelandClassJob.Value != null && Plugin.CurrentPlayerItemLevelandClassJob.Value != Player.Job))
+                                if (Player.Job.GetCombatRole() == CombatRole.NonCombat || (Plugin.LevelingModeEnum == LevelingMode.Trust && ilvl < 370) || (Plugin.LevelingModeEnum == LevelingMode.Trust && Plugin.CurrentPlayerItemLevelandClassJob.Value != null && Plugin.CurrentPlayerItemLevelandClassJob.Value != Player.Job))
                                 {
-                                    Svc.Log.Debug($"You are on a non-compatible job: {Player.Job.GetRole()}, or your doing trust and your iLvl({ilvl}) is below 370, or your iLvl has changed, Disabling Leveling Mode");
+                                    Svc.Log.Debug($"You are on a non-compatible job: {Player.Job.GetCombatRole()}, or your doing trust and your iLvl({ilvl}) is below 370, or your iLvl has changed, Disabling Leveling Mode");
                                     Plugin.LevelingModeEnum = LevelingMode.None;
                                 }
                                 else if (ilvl > 0 && ilvl != Plugin.CurrentPlayerItemLevelandClassJob.Key)
@@ -432,15 +432,15 @@ namespace AutoDuty.Windows
                             }
                             else
                             {
-                                if (Player.Job.GetRole() == CombatRole.NonCombat)
+                                if (Player.Job.GetCombatRole() == CombatRole.NonCombat)
                                     ImGuiEx.TextWrapped(new Vector4(255, 1, 0, 1), "Please switch to a combat job to use AutoDuty.");
                                 else if (Player.Job == Job.BLU)
                                     ImGuiEx.TextWrapped(new Vector4(0, 1, 1, 1), "Blue Mage cannot run Trust, Duty Support, Squadron or Variant dungeons. Please switch jobs or select a different category.");
-                                else if ((Player.Job.GetRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)))
+                                else if ((Player.Job.GetCombatRole() != CombatRole.NonCombat && Player.Job != Job.BLU) || (Player.Job == Job.BLU && (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)))
                                 {
                                     Dictionary<uint, Content> dictionary = ContentHelper.DictionaryContent.Where(x => x.Value.DutyModes.HasFlag(Plugin.Configuration.DutyModeEnum)).ToDictionary();
 
-                                    if (dictionary.Count > 0 && ObjectHelper.IsReady)
+                                    if (dictionary.Count > 0 && PlayerHelper.IsReady)
                                     {
                                         short level = PlayerHelper.GetCurrentLevelFromSheet();
                                         foreach ((uint _, Content? content) in dictionary)
@@ -465,7 +465,7 @@ namespace AutoDuty.Windows
                                     }
                                     else
                                     {
-                                        if (ObjectHelper.IsReady)
+                                        if (PlayerHelper.IsReady)
                                             ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "Please select one of Support, Trust, Squadron or Regular\nto Populate the Duty List");
                                     }
                                 }

@@ -118,7 +118,7 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("MoveToMapMarker"))
                 return;
 
-            if (!ObjectHelper.IsReady)
+            if (!PlayerHelper.IsReady)
                 return;
 
             if (flagMapMarker != null && Svc.ClientState.TerritoryType == flagMapMarker.Value.TerritoryId && ObjectHelper.GetDistanceToPlayer(flagMapMarkerVector3!.Value) < 2)

@@ -120,7 +120,7 @@ namespace AutoDuty.Windows
 
                             if (Plugin.Configuration.PathSelections.TryGetValue(container.id, out Dictionary<Job, int>? pathSelections))
                                 foreach ((Job job, int index) in pathSelections)
-                                    pathJobs[index].Add(new Tuple<CombatRole, Job>(job.GetRole(), job));
+                                    pathJobs[index].Add(new Tuple<CombatRole, Job>(job.GetCombatRole(), job));
                         }
 
                         for (int pathIndex = 0; pathIndex < container.Paths.Count; pathIndex++)

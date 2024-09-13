@@ -7,6 +7,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using ECommons.GameFunctions;
 
 namespace AutoDuty.Helpers
 {
@@ -26,7 +27,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static bool Move(Vector3 position, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false, bool useMesh = true)
         {
-            if (!ObjectHelper.IsValid)
+            if (!PlayerHelper.IsValid)
                 return false;
 
             if (fly && !IsFlyingSupported)
@@ -34,14 +35,14 @@ namespace AutoDuty.Helpers
 
             if (!Conditions.IsMounted && IsFlyingSupported)
             {
-                if (!ObjectHelper.PlayerIsCasting)
+                if (!PlayerHelper.IsCasting)
                     ActionManager.Instance()->UseAction(ActionType.GeneralAction, 9);
                 return false;
             }
 
             if (fly && !Conditions.IsInFlight)
             {
-                if (!ObjectHelper.PlayerIsCasting)
+                if (!PlayerHelper.IsCasting)
                     ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2);
                 return false;
             }
@@ -54,14 +55,14 @@ namespace AutoDuty.Helpers
                 return true;
             }
 
-            if (AgentMap.Instance()->IsPlayerMoving == 1 && !Player.Object.InCombat() && Vector3.Distance(Player.Object.Position, position) >= 10)
+            if (PlayerHelper.IsMoving && !Player.Object.Struct()->Character.InCombat && Vector3.Distance(Player.Object.Position, position) >= 10)
             {
                 //sprint
-                if (ActionManager.Instance()->GetActionStatus(ActionType.GeneralAction, 4) == 0 && ActionManager.Instance()->QueuedActionId != 4 && !ObjectHelper.PlayerIsCasting)
+                if (ActionManager.Instance()->GetActionStatus(ActionType.GeneralAction, 4) == 0 && ActionManager.Instance()->QueuedActionId != 4 && !PlayerHelper.IsCasting)
                     ActionManager.Instance()->UseAction(ActionType.GeneralAction, 4);
 
                 //peloton
-                if (ActionManager.Instance()->GetActionStatus(ActionType.Action, 7557) == 0 && ActionManager.Instance()->QueuedActionId != 7557 && !ObjectHelper.PlayerIsCasting && !Player.Object.StatusList.Any(x => x.StatusId == 1199))
+                if (ActionManager.Instance()->GetActionStatus(ActionType.Action, 7557) == 0 && ActionManager.Instance()->QueuedActionId != 7557 && !PlayerHelper.IsCasting && !Player.Object.StatusList.Any(x => x.StatusId == 1199))
                     ActionManager.Instance()->UseAction(ActionType.Action, 7557);
             }
 
@@ -75,7 +76,7 @@ namespace AutoDuty.Helpers
                 return false;
             }
 
-            if (!ObjectHelper.IsReady || !VNavmesh_IPCSubscriber.Nav_IsReady() || VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() || VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
+            if (!PlayerHelper.IsReady || !VNavmesh_IPCSubscriber.Nav_IsReady() || VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() || VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
                 return false;
 
             if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() || VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)

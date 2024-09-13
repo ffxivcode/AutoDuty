@@ -64,7 +64,7 @@ namespace AutoDuty.Managers
                         }
                     }
 
-                    if (job.GetRole() == CombatRole.Tank)
+                    if (job.GetCombatRole() == CombatRole.Tank)
                     {
                         for (int index = 0; index < Paths.Count; index++)
                         {

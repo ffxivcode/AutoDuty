@@ -139,7 +139,6 @@ namespace AutoDuty.Helpers
                     avariceReady = true;
                     return;
 
-
                     Assembly assembly = Assembly.GetAssembly(pl.GetType());
                     /* not used anymore, but might as well keep it here as an example
                     Positionals = StaticFieldRefAccess<SortedList<uint, byte>>(assembly.GetType("Avarice.StaticData.Data").GetField("ActionPositional", BindingFlags.Static | BindingFlags.Public));

@@ -226,7 +226,7 @@ namespace AutoDuty.Helpers
             if (_content == null || AutoDuty.Plugin.InDungeon || Svc.ClientState.TerritoryType == _content?.TerritoryType)
                 Stop();
 
-            if (!EzThrottler.Throttle("QueueHelper", 250)|| !ObjectHelper.IsReadyFull || ContentsFinderConfirm() || Conditions.IsInDutyQueue) return;
+            if (!EzThrottler.Throttle("QueueHelper", 250)|| !PlayerHelper.IsReadyFull || ContentsFinderConfirm() || Conditions.IsInDutyQueue) return;
 
             switch (_dutyMode)
             {
