@@ -7,7 +7,9 @@
         "Y": 87.2,
         "Z": 192.42
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 67.4,
         "Z": 141.59
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 60,
         "Z": 68.23
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 60.69,
         "Z": 41.61
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 61.22,
         "Z": 39.43
       },
-      "argument": "1000",
+      "arguments": [
+        "1000"
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 35.15,
         "Z": 38.38
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": 30,
         "Z": -28.93
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 14.83,
         "Z": -110.51
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": 5,
         "Z": -139.35
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": 13.76,
         "Z": -234.19
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": 13.9,
         "Z": -236.95
       },
-      "argument": "1000",
+      "arguments": [
+        "1000"
+      ],
       "note": ""
     },
     {
@@ -117,7 +139,9 @@
         "Y": -15,
         "Z": -264.49
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -128,6 +152,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

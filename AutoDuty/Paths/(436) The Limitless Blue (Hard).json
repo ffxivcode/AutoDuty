@@ -7,7 +7,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/vbmai off",
+      "arguments": [
+        "/vbmai off"
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 0.02,
         "Z": -1.58
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -28,6 +32,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

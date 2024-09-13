@@ -7,7 +7,9 @@
         "Y": 0,
         "Z": 516.31
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 5.35,
         "Z": 314.78
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": -8.7,
         "Z": 187.63
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": -11,
         "Z": 78.8
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": -21,
         "Z": -40.68
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": -70.15,
         "Z": -223.83
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": -60,
         "Z": -302.41
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": -57,
         "Z": -424.79
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": -56.39,
         "Z": -420.77
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": -77,
         "Z": -520.23
       },
-      "argument": "false",
+      "arguments": [
+        "false"
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": -77,
         "Z": -537.73
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -126,6 +148,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

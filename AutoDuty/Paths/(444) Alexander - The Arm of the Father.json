@@ -7,7 +7,9 @@
         "Y": 0,
         "Z": 34.09
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 7.15,
         "Z": 26.78
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 15.42,
         "Z": 16.57
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 18,
         "Z": 4.89
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 26.52,
         "Z": -24.69
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 36,
         "Z": -31.13
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": 36,
         "Z": -24.01
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 36,
         "Z": -14.97
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": 42,
         "Z": 9.84
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": 42,
         "Z": 19.85
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": 42,
         "Z": 9.41
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -117,7 +139,9 @@
         "Y": 36,
         "Z": -14.36
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -127,7 +151,9 @@
         "Y": 22.83,
         "Z": -18.96
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -137,7 +163,9 @@
         "Y": 18,
         "Z": -7.26
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -147,7 +175,9 @@
         "Y": 18,
         "Z": -16.78
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -157,7 +187,9 @@
         "Y": 17.43,
         "Z": -19.14
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -167,7 +199,9 @@
         "Y": 9.21,
         "Z": -24.06
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -177,7 +211,9 @@
         "Y": 0,
         "Z": -11.39
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -187,7 +223,9 @@
         "Y": 0,
         "Z": -0.27
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -197,7 +235,9 @@
         "Y": 0,
         "Z": -0.05
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -207,7 +247,9 @@
         "Y": -0,
         "Z": -18.78
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -217,7 +259,9 @@
         "Y": -9,
         "Z": -41.79
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -227,7 +271,9 @@
         "Y": -9,
         "Z": -55.32
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -238,6 +284,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

@@ -7,7 +7,9 @@
         "Y": -0.03,
         "Z": 36.51
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": -21.06,
         "Z": 55.64
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": -41.99,
         "Z": 94.19
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": -41.99,
         "Z": 82.28
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": -65.98,
         "Z": 79.72
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": -65.98,
         "Z": 67.96
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": -65.98,
         "Z": 67.82
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -78,6 +92,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

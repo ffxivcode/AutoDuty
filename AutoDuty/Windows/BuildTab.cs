@@ -31,7 +31,7 @@ namespace AutoDuty.Windows
         private static string _note = string.Empty;
         private static Vector3 _position = Vector3.Zero;
         private static string _positionText = string.Empty;
-        private static string _argument = string.Empty;
+        private static List<string> _arguments = [];
         private static string _argumentHint = string.Empty;
         private static bool _dontMove = false;
         private static bool _showAddActionUI = false;
@@ -101,7 +101,7 @@ namespace AutoDuty.Windows
             if (ImGui.Button("Add POS"))
             {
                 _scrollBottom = true;
-                Plugin.Actions.Add(new PathAction { Name = "MoveTo", Position = Player.Position, Argument = "" });
+                Plugin.Actions.Add(new PathAction { Name = "MoveTo", Position = Player.Position });
             }
             ImGui.SameLine(0, 5);
             ImGuiComponents.HelpMarker("Adds a MoveTo step to the path, AutoDuty will Move to the specified position");
@@ -137,22 +137,21 @@ namespace AutoDuty.Windows
                                 _position = Vector3.Zero;
                                 break;
                             case "SelectYesno":
-                                _argument = "Yes";
+                                _arguments = ["Yes"];
                                 break;
                             case "MoveToObject":
                             case "Interactable":
                             case "Target":
                                 IGameObject? targetObject = Player.Object.TargetObject;
                                 IGameObject? gameObject = (targetObject ?? null) ?? Plugin.ClosestObject;
-                                _argument = gameObject != null ? $"{gameObject.DataId}" : string.Empty;
+                                _arguments = [gameObject != null ? $"{gameObject.DataId}" : string.Empty];
                                 _note = gameObject != null ? gameObject.Name.ExtractText() : string.Empty;
                                 break;
                             default:
-                                _argument = string.Empty;
                                 break;
                         }
                         _positionText = _position.ToCustomString();
-                        _action = new() { Name = _actionText, Position = _position, Argument = _argument, Note = _note };
+                        _action = new() { Name = _actionText, Position = _position, Arguments = _arguments, Note = _note };
                         _showAddActionUI = true;
                     }
                     ImGuiComponents.HelpMarker(item.Item3);
@@ -237,7 +236,7 @@ namespace AutoDuty.Windows
                 return;
             }
 
-            using (ImRaii.Disabled(_argument.IsNullOrEmpty() && !_noArgument && !_comment))
+            using (ImRaii.Disabled(_arguments.Count == 0 && !_noArgument && !_comment))
             {
                 if (ImGuiEx.ButtonWrapped(_addActionButton))
                 {
@@ -245,7 +244,7 @@ namespace AutoDuty.Windows
                         ImGui.OpenPopup("InteractableAdd");
                     else if (_action.Name == "MoveToObject" || _action.Name == "Target")
                     {
-                        if (uint.TryParse(_argument, out var dataId))
+                        if (uint.TryParse(_arguments[0], out var dataId))
                             AddAction();
                         else
                             ShowPopup("Error", $"{_action.Name}'s must be uint's corresponding to the objects DataId", true);
@@ -258,7 +257,7 @@ namespace AutoDuty.Windows
             {
                 if (ImGui.Selectable("Add to Path"))
                 {
-                    if (uint.TryParse(_argument, out var dataId))
+                    if (uint.TryParse(_arguments[0], out var dataId))
                         AddAction();
                     else
                         ShowPopup("Error", "Interactable's must be uint's corresponding to the objects DataId", true);
@@ -266,7 +265,7 @@ namespace AutoDuty.Windows
                 }
                 if (ImGui.Selectable("Add to Special"))
                 {
-                    if (uint.TryParse(_argument, out var dataId))
+                    if (uint.TryParse(_arguments[0], out var dataId))
                         _interactables.Add(dataId);
                     else
                         ShowPopup("Error", "Special interactable's must be uint's corresponding to the objects DataId", true);
@@ -301,7 +300,7 @@ namespace AutoDuty.Windows
                 ImGui.TextColored(_argumentTextColor, "Argument:");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-                ImGui.InputTextWithHint("##Argument", _argumentHint, ref _argument, 200);
+                //ImGui.InputTextWithHint("##Argument", _argumentHint, ref _arguments[0], 200);
             }
             using (ImRaii.Disabled(_comment))
             {
@@ -379,7 +378,7 @@ namespace AutoDuty.Windows
                                 _dontMove = item.Value.Position == Vector3.Zero;
                                 _actionText = item.Value.Name;
                                 _note = item.Value.Note;
-                                _argument = item.Value.Argument;
+                                _arguments = item.Value.Arguments;
                                 _position = item.Value.Position;
                                 _positionText = _position.ToCustomString();
                                 _buildListSelected = item.Index;
@@ -452,7 +451,7 @@ namespace AutoDuty.Windows
             _note = string.Empty;
             _position = Vector3.Zero;
             _positionText = string.Empty;
-            _argument = string.Empty;
+            _arguments = [];
             _argumentHint = string.Empty;
             _dropdownSelected = (string.Empty, string.Empty, string.Empty);
             _dontMove = false;
@@ -469,7 +468,7 @@ namespace AutoDuty.Windows
             if (_action == null) return;
 
             _action.Name = _actionText;
-            _action.Argument = _argument;
+            _action.Arguments = _arguments;
             var position = _positionText.Replace(" ", string.Empty).Split(",");
             if (!_comment && position.Length == 3 && float.TryParse(position[0], out var p1) && float.TryParse(position[1], out var p2) && float.TryParse(position[2], out var p3))
                 _action.Position = new(p1, p2, p3);

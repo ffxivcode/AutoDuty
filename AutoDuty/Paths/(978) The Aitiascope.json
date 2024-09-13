@@ -7,7 +7,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/bmrai follow Thancred",
+      "arguments": [
+        "/bmrai follow Thancred"
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 164,
         "Z": 501.72
       },
-      "argument": "/bmrai follow Alisaie",
+      "arguments": [
+        "/bmrai follow Alisaie"
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 164,
         "Z": 471.86
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 164,
         "Z": 479.93
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 164,
         "Z": 465.57
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": 164,
         "Z": 466.25
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 164,
         "Z": 471.21
       },
-      "argument": "2011758",
+      "arguments": [
+        "2011758"
+      ],
       "note": "Aether Current"
     },
     {
@@ -87,7 +103,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "10000",
+      "arguments": [
+        "10000"
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "/bmrai follow Thancred",
+      "arguments": [
+        "/bmrai follow Thancred"
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": -182.78,
         "Z": 441.2
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -117,7 +139,9 @@
         "Y": -200.49,
         "Z": 353.41
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -127,7 +151,9 @@
         "Y": -202.18,
         "Z": 321.55
       },
-      "argument": "5000",
+      "arguments": [
+        "5000"
+      ],
       "note": ""
     },
     {
@@ -137,7 +163,9 @@
         "Y": -212.02,
         "Z": 222.98
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -147,7 +175,9 @@
         "Y": -211.41,
         "Z": 143.21
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -157,7 +187,9 @@
         "Y": -211.41,
         "Z": 128.27
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -167,7 +199,9 @@
         "Y": -211.11,
         "Z": 106.87
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -177,7 +211,9 @@
         "Y": -211.24,
         "Z": 94.3
       },
-      "argument": "7000",
+      "arguments": [
+        "7000"
+      ],
       "note": ""
     },
     {
@@ -187,7 +223,9 @@
         "Y": -235.91,
         "Z": -219.22
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -197,7 +235,9 @@
         "Y": -238.44,
         "Z": -432.25
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -207,7 +247,9 @@
         "Y": -236,
         "Z": -494.57
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -217,7 +259,9 @@
         "Y": -236,
         "Z": -501.22
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -228,6 +272,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

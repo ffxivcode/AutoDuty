@@ -7,7 +7,9 @@
         "Y": 300.2,
         "Z": 54.79
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 302,
         "Z": 109.17
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 302,
         "Z": 43.72
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 302,
         "Z": 126.74
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 302,
         "Z": 135.95
       },
-      "argument": "8000",
+      "arguments": [
+        "8000"
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1000",
+      "arguments": [
+        "1000"
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": -504,
         "Z": 11.23
       },
-      "argument": "2013731",
+      "arguments": [
+        "2013731"
+      ],
       "note": "Elevator Console"
     },
     {
@@ -77,7 +91,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "8000",
+      "arguments": [
+        "8000"
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": -500,
         "Z": 156.89
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": -500,
         "Z": 156.89
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": -500,
         "Z": 152.33
       },
-      "argument": "6000",
+      "arguments": [
+        "6000"
+      ],
       "note": ""
     },
     {
@@ -117,7 +139,9 @@
         "Y": -120,
         "Z": -186.23
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -127,7 +151,9 @@
         "Y": -120,
         "Z": -179.96
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -137,7 +163,9 @@
         "Y": -120,
         "Z": -180.33
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -147,7 +175,9 @@
         "Y": -120,
         "Z": -139.47
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -157,7 +187,9 @@
         "Y": -120,
         "Z": -135.39
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -167,7 +199,9 @@
         "Y": -120,
         "Z": -129.21
       },
-      "argument": "300",
+      "arguments": [
+        "300"
+      ],
       "note": ""
     },
     {
@@ -177,7 +211,9 @@
         "Y": -120,
         "Z": -125.36
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -187,7 +223,9 @@
         "Y": -120,
         "Z": -116.1
       },
-      "argument": "4000",
+      "arguments": [
+        "4000"
+      ],
       "note": ""
     },
     {
@@ -197,7 +235,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -207,7 +247,9 @@
         "Y": -93.9,
         "Z": -60.94
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -217,7 +259,9 @@
         "Y": -94,
         "Z": -80.09
       },
-      "argument": "2000",
+      "arguments": [
+        "2000"
+      ],
       "note": ""
     },
     {
@@ -227,7 +271,9 @@
         "Y": -94,
         "Z": -81.52
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -237,7 +283,9 @@
         "Y": -94,
         "Z": -86.08
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -247,7 +295,9 @@
         "Y": -94,
         "Z": -107.9
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -257,7 +307,9 @@
         "Y": -94,
         "Z": -146.5
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -267,7 +319,9 @@
         "Y": -94,
         "Z": -160.17
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -277,7 +331,9 @@
         "Y": -94,
         "Z": -215.2
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -287,7 +343,9 @@
         "Y": -90.61,
         "Z": -227.5
       },
-      "argument": "7000",
+      "arguments": [
+        "7000"
+      ],
       "note": ""
     },
     {
@@ -297,7 +355,9 @@
         "Y": 0,
         "Z": 227.16
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -307,7 +367,9 @@
         "Y": 0,
         "Z": 220.83
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -317,7 +379,9 @@
         "Y": 0,
         "Z": 213.82
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -327,7 +391,9 @@
         "Y": 0,
         "Z": 196.3
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -337,7 +403,9 @@
         "Y": 0,
         "Z": 179.8
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -347,7 +415,9 @@
         "Y": 0,
         "Z": 67.93
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -357,7 +427,9 @@
         "Y": 0,
         "Z": 95.03
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -367,7 +439,9 @@
         "Y": 0,
         "Z": 33.64
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -377,7 +451,9 @@
         "Y": 0,
         "Z": -3.01
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -387,7 +463,9 @@
         "Y": 0,
         "Z": -12.38
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -402,6 +480,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

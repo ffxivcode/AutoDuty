@@ -1,14 +1,22 @@
 ﻿using ECommons;
-using ECommons.DalamudServices;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Numerics;
 
 namespace AutoDuty.Data
 {
     public static class Extensions
     {
-        public static string ToCustomString(this PathAction pathAction) => $"{pathAction.Name}|{pathAction.Position.ToCustomString()}|{pathAction.Argument}|{pathAction.Note}";
+        public static string ToCustomString(this PathAction pathAction) 
+        {
+            string argumentString = string.Empty;
+
+            foreach (var argument in pathAction.Arguments.Select((Value, Index) => (Value, Index)))
+                argumentString += (argument.Index + 1) < pathAction.Arguments.Count ? $"{argument.Value}," : $"{argument.Value}";
+
+            return $"{pathAction.Name}|{pathAction.Position.ToCustomString()}|{argumentString}|{pathAction.Note}"; 
+        }
 
         public static string ToCustomString(this Vector3 vector3) => $"{vector3.X:F2}, {vector3.Y:F2}, {vector3.Z:F2}";
 

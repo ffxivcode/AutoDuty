@@ -7,7 +7,9 @@
         "Y": 134,
         "Z": 815.67
       },
-      "argument": "12000",
+      "arguments": [
+        "12000"
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 134,
         "Z": 806.16
       },
-      "argument": "20000",
+      "arguments": [
+        "20000"
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2012810",
+      "arguments": [
+        "2012810"
+      ],
       "note": "Perceptive Portal"
     },
     {
@@ -37,7 +43,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "3000",
+      "arguments": [
+        "3000"
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 238.89,
         "Z": 352.14
       },
-      "argument": "1000",
+      "arguments": [
+        "1000"
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 271.64,
         "Z": 251.17
       },
-      "argument": "2000",
+      "arguments": [
+        "2000"
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": 278.85,
         "Z": 193.35
       },
-      "argument": "4000",
+      "arguments": [
+        "4000"
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 309.03,
         "Z": 121.91
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": 309,
         "Z": 88.95
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": 309,
         "Z": 73.81
       },
-      "argument": "500",
+      "arguments": [
+        "500"
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": 308.15,
         "Z": 46.97
       },
-      "argument": "500",
+      "arguments": [
+        "500"
+      ],
       "note": ""
     },
     {
@@ -117,7 +139,9 @@
         "Y": 316.81,
         "Z": -4.75
       },
-      "argument": "1000",
+      "arguments": [
+        "1000"
+      ],
       "note": ""
     },
     {
@@ -127,7 +151,9 @@
         "Y": 320.38,
         "Z": -36.77
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -137,7 +163,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013368",
+      "arguments": [
+        "2013368"
+      ],
       "note": "Stone of Protection"
     },
     {
@@ -147,7 +175,9 @@
         "Y": 331.37,
         "Z": -90.18
       },
-      "argument": "1000",
+      "arguments": [
+        "1000"
+      ],
       "note": ""
     },
     {
@@ -157,7 +187,9 @@
         "Y": 334.49,
         "Z": -105.43
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -167,7 +199,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013369",
+      "arguments": [
+        "2013369"
+      ],
       "note": "Stone of Protection"
     },
     {
@@ -177,7 +211,9 @@
         "Y": 337.11,
         "Z": -124.23
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -187,7 +223,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013370",
+      "arguments": [
+        "2013370"
+      ],
       "note": "Stone of Protection"
     },
     {
@@ -197,7 +235,9 @@
         "Y": 339.9,
         "Z": -160.78
       },
-      "argument": "1000",
+      "arguments": [
+        "1000"
+      ],
       "note": ""
     },
     {
@@ -207,7 +247,9 @@
         "Y": 351.6,
         "Z": -220.87
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -217,7 +259,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2013371",
+      "arguments": [
+        "2013371"
+      ],
       "note": "Stone of Protection"
     },
     {
@@ -227,7 +271,9 @@
         "Y": 359.99,
         "Z": -238.67
       },
-      "argument": "500",
+      "arguments": [
+        "500"
+      ],
       "note": ""
     },
     {
@@ -237,7 +283,9 @@
         "Y": 360.17,
         "Z": -238.63
       },
-      "argument": "500",
+      "arguments": [
+        "500"
+      ],
       "note": ""
     },
     {
@@ -247,7 +295,9 @@
         "Y": 360,
         "Z": -269.37
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -257,7 +307,9 @@
         "Y": 360,
         "Z": -301.57
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -267,7 +319,9 @@
         "Y": 360,
         "Z": -310.08
       },
-      "argument": "500",
+      "arguments": [
+        "500"
+      ],
       "note": ""
     }
   ],
@@ -278,6 +332,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

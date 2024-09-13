@@ -7,7 +7,9 @@
         "Y": 26.66,
         "Z": -17.03
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 25.83,
         "Z": -6.77
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 21.93,
         "Z": -2.75
       },
-      "argument": "2000",
+      "arguments": [
+        "2000"
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 329.47,
         "Z": -117.35
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004844",
+      "arguments": [
+        "2004844"
+      ],
       "note": "Imperial Identification Key"
     },
     {
@@ -57,7 +67,9 @@
         "Y": 329.1,
         "Z": -133.7
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004829",
+      "arguments": [
+        "2004829"
+      ],
       "note": "Magitek Terminal"
     },
     {
@@ -77,7 +91,9 @@
         "Y": 333.85,
         "Z": -147.9
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": 338.62,
         "Z": -189.96
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": 338.74,
         "Z": -192.95
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -107,7 +127,9 @@
         "Y": 339.38,
         "Z": -186
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -117,7 +139,9 @@
         "Y": 338.45,
         "Z": -233.92
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -127,7 +151,9 @@
         "Y": 338.34,
         "Z": -231.4
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -137,7 +163,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004975",
+      "arguments": [
+        "2004975"
+      ],
       "note": "Imperial Identification Key"
     },
     {
@@ -147,7 +175,9 @@
         "Y": 338.45,
         "Z": -201.27
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -157,7 +187,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2004834",
+      "arguments": [
+        "2004834"
+      ],
       "note": "Magitek Terminal"
     },
     {
@@ -167,7 +199,9 @@
         "Y": 346.02,
         "Z": -150.13
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -177,7 +211,9 @@
         "Y": 346.08,
         "Z": -123.89
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -187,7 +223,9 @@
         "Y": 345.42,
         "Z": -118.36
       },
-      "argument": "2000",
+      "arguments": [
+        "2000"
+      ],
       "note": ""
     },
     {
@@ -197,7 +235,9 @@
         "Y": 608.26,
         "Z": -66.92
       },
-      "argument": "5000",
+      "arguments": [
+        "5000"
+      ],
       "note": ""
     },
     {
@@ -207,7 +247,9 @@
         "Y": 638.24,
         "Z": -13.08
       },
-      "argument": "5000",
+      "arguments": [
+        "5000"
+      ],
       "note": ""
     },
     {
@@ -217,7 +259,9 @@
         "Y": 641.04,
         "Z": -78.19
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -228,6 +272,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

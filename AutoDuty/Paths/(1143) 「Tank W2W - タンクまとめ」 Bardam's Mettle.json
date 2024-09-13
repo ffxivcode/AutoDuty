@@ -7,7 +7,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Packs / \u96D1\u9B5A 1 \u0026 2 --\u003E"
     },
     {
@@ -17,7 +19,9 @@
         "Y": 6.78,
         "Z": 487.03
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 3.53,
         "Z": 487.57
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 5.59,
         "Z": 469.23
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -67,7 +79,9 @@
         "Y": 6.53,
         "Z": 462.18
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -97,7 +115,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 3 --\u003E"
     },
     {
@@ -107,7 +127,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Not double-pulling here cuz too far away --\u003E"
     },
     {
@@ -117,7 +139,9 @@
         "Y": 6.72,
         "Z": 422.47
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -127,7 +151,9 @@
         "Y": 2.95,
         "Z": 407.1
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -137,7 +163,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -147,7 +175,9 @@
         "Y": 3.28,
         "Z": 400.37
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -157,7 +187,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -167,7 +199,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -177,7 +211,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 4 --\u003E"
     },
     {
@@ -187,7 +223,9 @@
         "Y": 4.58,
         "Z": 402.2
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -197,7 +235,9 @@
         "Y": 2.81,
         "Z": 385.18
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -207,7 +247,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -217,7 +259,9 @@
         "Y": 3.31,
         "Z": 375.68
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -227,7 +271,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -237,7 +283,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -247,7 +295,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 5 --\u003E"
     },
     {
@@ -257,7 +307,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Not double-pulling here cuz too far away --\u003E"
     },
     {
@@ -267,7 +319,9 @@
         "Y": 3.34,
         "Z": 371.29
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -277,7 +331,9 @@
         "Y": 1.48,
         "Z": 298.71
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -287,7 +343,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -297,7 +355,9 @@
         "Y": 1.66,
         "Z": 298.77
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -307,7 +367,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -317,7 +379,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -327,7 +391,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E"
     },
     {
@@ -337,7 +403,9 @@
         "Y": -0.5,
         "Z": 245.94
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -347,7 +415,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
     },
     {
@@ -357,7 +427,9 @@
         "Y": -0.51,
         "Z": 224.34
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -367,7 +439,9 @@
         "Y": -0.32,
         "Z": 215.7
       },
-      "argument": "4000",
+      "arguments": [
+        "4000"
+      ],
       "note": ""
     },
     {
@@ -377,7 +451,9 @@
         "Y": -32.12,
         "Z": 185.93
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -387,7 +463,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 6 --\u003E"
     },
     {
@@ -397,7 +475,9 @@
         "Y": -43.47,
         "Z": 153.23
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -407,7 +487,9 @@
         "Y": -45.1,
         "Z": 130.37
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -417,7 +499,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2200",
+      "arguments": [
+        "2200"
+      ],
       "note": ""
     },
     {
@@ -427,7 +511,9 @@
         "Y": -45.1,
         "Z": 126.35
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -437,7 +523,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -447,7 +535,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -457,7 +547,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 7 --\u003E"
     },
     {
@@ -467,7 +559,9 @@
         "Y": -45.11,
         "Z": 112.6
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -477,7 +571,9 @@
         "Y": -44.2,
         "Z": 85.8
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -487,7 +583,9 @@
         "Y": -43.75,
         "Z": 87.64
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -497,7 +595,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2200",
+      "arguments": [
+        "2200"
+      ],
       "note": ""
     },
     {
@@ -507,7 +607,9 @@
         "Y": -43.56,
         "Z": 82.76
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -517,7 +619,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -527,7 +631,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -537,7 +643,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 8 --\u003E"
     },
     {
@@ -547,7 +655,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Not double-pulling here cuz too dangerous --\u003E"
     },
     {
@@ -557,7 +667,9 @@
         "Y": -42.51,
         "Z": 73.94
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -567,7 +679,9 @@
         "Y": -42,
         "Z": 58.52
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -577,7 +691,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2200",
+      "arguments": [
+        "2200"
+      ],
       "note": ""
     },
     {
@@ -587,7 +703,9 @@
         "Y": -42.1,
         "Z": 51.35
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -597,7 +715,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -607,7 +727,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -617,7 +739,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E"
     },
     {
@@ -627,7 +751,9 @@
         "Y": -45,
         "Z": -19.33
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -637,7 +763,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
     },
     {
@@ -647,7 +775,9 @@
         "Y": -45,
         "Z": -33.61
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -657,7 +787,9 @@
         "Y": -45.4,
         "Z": -39.69
       },
-      "argument": "5000",
+      "arguments": [
+        "5000"
+      ],
       "note": ""
     },
     {
@@ -667,7 +799,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "8000",
+      "arguments": [
+        "8000"
+      ],
       "note": ""
     },
     {
@@ -677,7 +811,9 @@
         "Y": -163.02,
         "Z": -159.63
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -687,7 +823,9 @@
         "Y": -162.77,
         "Z": -170.65
       },
-      "argument": "4000",
+      "arguments": [
+        "4000"
+      ],
       "note": ""
     },
     {
@@ -697,7 +835,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 9 --\u003E"
     },
     {
@@ -707,7 +847,9 @@
         "Y": -192.31,
         "Z": -196.82
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -717,7 +859,9 @@
         "Y": -191.42,
         "Z": -218.43
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -727,7 +871,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -737,7 +883,9 @@
         "Y": -190.72,
         "Z": -226.4
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -747,7 +895,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -757,7 +907,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -767,7 +919,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Packs / \u96D1\u9B5A 10 \u0026 11 --\u003E"
     },
     {
@@ -777,7 +931,9 @@
         "Y": -187.75,
         "Z": -241.78
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -787,7 +943,9 @@
         "Y": -185.73,
         "Z": -267.58
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -797,7 +955,9 @@
         "Y": -185.57,
         "Z": -265.63
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -807,7 +967,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "6200",
+      "arguments": [
+        "6200"
+      ],
       "note": ""
     },
     {
@@ -817,7 +979,9 @@
         "Y": -180.16,
         "Z": -326.29
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -827,7 +991,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "1200",
+      "arguments": [
+        "1200"
+      ],
       "note": ""
     },
     {
@@ -837,7 +1003,9 @@
         "Y": -181.76,
         "Z": -308.31
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -847,7 +1015,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -857,7 +1027,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -867,7 +1039,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 12 --\u003E"
     },
     {
@@ -877,7 +1051,9 @@
         "Y": -172.71,
         "Z": -360.06
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -887,7 +1063,9 @@
         "Y": -172.95,
         "Z": -389.2
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -897,7 +1075,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -907,7 +1087,9 @@
         "Y": -172.78,
         "Z": -390
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -917,7 +1099,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "4200",
+      "arguments": [
+        "4200"
+      ],
       "note": ""
     },
     {
@@ -927,7 +1111,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -937,7 +1123,9 @@
         "Y": -172.68,
         "Z": -397.22
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -947,7 +1135,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E"
     },
     {
@@ -957,7 +1147,9 @@
         "Y": -167.5,
         "Z": -489.67
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -968,6 +1160,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []

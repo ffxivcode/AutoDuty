@@ -7,7 +7,9 @@
         "Y": 91.74,
         "Z": -93.41
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -17,7 +19,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "False",
+      "arguments": [
+        "False"
+      ],
       "note": ""
     },
     {
@@ -27,7 +31,9 @@
         "Y": 89.67,
         "Z": -66.37
       },
-      "argument": "True",
+      "arguments": [
+        "True"
+      ],
       "note": ""
     },
     {
@@ -37,7 +43,9 @@
         "Y": 70.17,
         "Z": -40.17
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -47,7 +55,9 @@
         "Y": 71.25,
         "Z": -11.35
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -57,7 +67,9 @@
         "Y": 0,
         "Z": 0
       },
-      "argument": "2000597",
+      "arguments": [
+        "2000597"
+      ],
       "note": "Disposal Chute"
     },
     {
@@ -67,7 +79,9 @@
         "Y": 70.09,
         "Z": 34.26
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -77,7 +91,9 @@
         "Y": 72,
         "Z": -35.23
       },
-      "argument": "30000",
+      "arguments": [
+        "30000"
+      ],
       "note": ""
     },
     {
@@ -87,7 +103,9 @@
         "Y": 72,
         "Z": -32.47
       },
-      "argument": "",
+      "arguments": [
+        ""
+      ],
       "note": ""
     }
   ],
@@ -102,6 +120,10 @@
       {
         "version": 161,
         "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
       }
     ],
     "notes": []
