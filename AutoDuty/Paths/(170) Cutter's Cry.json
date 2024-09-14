@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 267.51,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 247.43,
@@ -37,6 +40,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -49,6 +53,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 267.51,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -73,6 +79,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 261.46,
@@ -85,6 +92,7 @@
       "note": "Shifting Sands"
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 114.54,
@@ -97,6 +105,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -109,6 +118,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 80.75,
@@ -121,6 +131,7 @@
       "note": "Shifting Sands"
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -18.21,
@@ -133,6 +144,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -25.34,
@@ -145,6 +157,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -15.76,
@@ -157,6 +170,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -9.57,
@@ -169,6 +183,7 @@
       "note": "Shifting Sands"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 302.96,
@@ -181,6 +196,7 @@
       "note": "Shifting Sands"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 321.23,
@@ -193,6 +209,7 @@
       "note": "Shifting Sands"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -145.29,
@@ -205,6 +222,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -144.05,
@@ -217,6 +235,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -143.8,
@@ -229,6 +248,7 @@
       "note": "Shifting Sands"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -181.99,
@@ -252,6 +272,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

@@ -826,39 +826,37 @@ public sealed class AutoDuty : IDalamudPlugin
 
         PathAction = Actions[Indexer];
 
-        if (PathAction.Name.StartsWith("Unsynced", StringComparison.InvariantCultureIgnoreCase))
+        if (PathAction.Tag == ActionTag.Unsynced && (!Configuration.Unsynced || !Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial)))
         {
-            if (!Configuration.Unsynced || !Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial))
-            {
-                Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are not unsynced");
-                Indexer++;
-                return;
-            }
-            else
-                PathAction.Name = PathAction.Name.Remove(0, 8);
+            Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are synced");
+            Indexer++;
+            return;
         }
 
-        if (PathAction.Name.StartsWith("Synced", StringComparison.InvariantCultureIgnoreCase))
+        if (PathAction.Tag == ActionTag.Synced && Configuration.Unsynced)
         {
-            if (Configuration.Unsynced)
-            {
-                Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are not synced");
-                Indexer++;
-                return;
-            }
-            else
-                PathAction.Name = PathAction.Name.Remove(0, 6);
+            Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are unsynced");
+            Indexer++;
+            return;
         }
 
-        if (Actions[Indexer].Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
+        if (PathAction.Tag == ActionTag.Comment)
         {
             Svc.Log.Debug($"Skipping path entry {Actions[Indexer].Name} because it is a comment");
             Indexer++;
             return;
         }
 
-        if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && PathAction.Name.Equals("TreasureCoffer", StringComparison.InvariantCultureIgnoreCase))
+        if (PathAction.Tag == ActionTag.Revival)
         {
+            Svc.Log.Debug($"Skipping path entry {Actions[Indexer].Name} because it is a Revival Tag");
+            Indexer++;
+            return;
+        }
+
+        if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && PathAction.Tag == ActionTag.Treasure)
+        {
+            Svc.Log.Debug($"Skipping path entry {Actions[Indexer].Name} because we are either in revival mode, LootTreasure is off or BossOnly");
             Indexer++;
             return;
         }

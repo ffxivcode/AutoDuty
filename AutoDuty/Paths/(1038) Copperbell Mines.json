@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "ForceAttack",
       "position": {
         "X": -222.18,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -222.18,
@@ -37,6 +40,7 @@
       "note": "Tiny Key"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -206.3,
@@ -49,6 +53,7 @@
       "note": "Sealed Blasting Door"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -184.08,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -73,6 +79,7 @@
       "note": "Lift Lever"
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -85,6 +92,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -178.09,
@@ -97,6 +105,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 51.89,
@@ -109,6 +118,7 @@
       "note": "Firesand"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 52.93,
@@ -121,6 +131,7 @@
       "note": "Firesand"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 43.98,
@@ -133,6 +144,7 @@
       "note": "Powder Chamber"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 42.08,
@@ -145,6 +157,7 @@
       "note": "Blasting Device"
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -157,6 +170,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 42.98,
@@ -169,6 +183,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 42.97,
@@ -181,6 +196,7 @@
       "note": "Tiny Key"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 43.18,
@@ -193,6 +209,7 @@
       "note": "Sealed Blasting Door"
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 63.44,
@@ -205,6 +222,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 56.69,
@@ -217,6 +235,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 56.69,
@@ -229,6 +248,7 @@
       "note": "Lift Lever"
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -241,6 +261,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 58.27,
@@ -253,6 +274,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 92.73,
@@ -265,6 +287,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 91.78,
@@ -277,6 +300,7 @@
       "note": "Firesand"
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 97.55,
@@ -289,6 +313,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 19.62,
@@ -301,6 +326,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 21.7,
@@ -313,6 +339,7 @@
       "note": "Firesand"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 58.89,
@@ -325,6 +352,7 @@
       "note": "Powder Chamber"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 57.48,
@@ -337,6 +365,7 @@
       "note": "Blasting Device"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 38.07,
@@ -349,6 +378,7 @@
       "note": "Firesand"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 27.61,
@@ -361,6 +391,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 8.15,
@@ -373,6 +404,7 @@
       "note": "Firesand"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 1.84,
@@ -385,6 +417,7 @@
       "note": "Powder Chamber"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 4.85,
@@ -397,6 +430,7 @@
       "note": "Blasting Device"
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -409,6 +443,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "ChatCommand",
       "position": {
         "X": 0,
@@ -421,6 +456,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -65.28,
@@ -433,6 +469,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "ChatCommand",
       "position": {
         "X": -72.26,
@@ -445,6 +482,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -98.82,
@@ -468,6 +506,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

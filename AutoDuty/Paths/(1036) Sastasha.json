@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "DutySpecificCode",
       "position": {
         "X": 347.75,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 132.58,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "DutySpecificCode",
       "position": {
         "X": 90.26,
@@ -37,6 +40,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "DutySpecificCode",
       "position": {
         "X": 0,
@@ -49,6 +53,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 71.8,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -73,6 +79,7 @@
       "note": "Inconspicuous Switch"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -27.17,
@@ -85,6 +92,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -91.82,
@@ -97,6 +105,7 @@
       "note": "Captain\u0027s Quarters Key"
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -109,6 +118,7 @@
       "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
     },
     {
+      "tag": 0,
       "name": "ConditionAction",
       "position": {
         "X": -95.1,
@@ -121,6 +131,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -95.1,
@@ -133,6 +144,7 @@
       "note": "Captain\u0027s Quarters"
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -95.15,
@@ -145,6 +157,7 @@
       "note": "Waverider Gate Key"
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -157,6 +170,7 @@
       "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
     },
     {
+      "tag": 0,
       "name": "ConditionAction",
       "position": {
         "X": 0,
@@ -169,6 +183,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -129.54,
@@ -181,6 +196,7 @@
       "note": "Waverider Gate"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -183.12,
@@ -193,6 +209,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -332.47,
@@ -220,6 +237,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

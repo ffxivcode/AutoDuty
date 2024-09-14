@@ -138,37 +138,41 @@ namespace AutoDuty.Managers
                                 if ((paths = JsonSerializer.Deserialize<List<string>>(json)) != null)
                                 {
                                     List<PathAction> pathActions = [];
-                                    paths.Each(x => 
+                                    paths.Each(x =>
                                     {
                                         var action = x.Split('|');
-                                        var position = action[1].Split(", ");
-                                        Vector3 v3Position = new(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
+                                        var name = action[0];
+                                        action[1].TryToGetVector3(out var v3);
+                                        var argument = action[2];
+                                        var tag = ActionTag.None;
 
-                                        pathActions.Add(new PathAction { Name = action[0], Position = v3Position, Arguments = [action[2]] });
+                                        if (name.StartsWithIgnoreCase("Synced"))
+                                        {
+                                            tag = ActionTag.Synced;
+                                            name = name.Remove(0, 6);
+                                        }
+                                        if (name.StartsWithIgnoreCase("Unsynced"))
+                                        {
+                                            tag = ActionTag.Unsynced;
+                                            name = name.Remove(0, 8);
+                                        }
+                                        if (name.EqualsIgnoreCase("<-- Comment -->"))
+                                            tag = ActionTag.Comment;
+                                        if (name.EqualsIgnoreCase("Revival"))
+                                            tag = ActionTag.Revival;
+                                        if (name.EqualsIgnoreCase("TreasureCoffer"))
+                                            tag = ActionTag.Treasure;
+                                        pathActions.Add(new PathAction { Tag = tag, Name = name, Position = v3, Arguments = [argument] });
                                     });
+
                                     pathFile = new()
                                     {
                                         Actions = [.. pathActions]
                                     };
-                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = AutoDuty.Plugin.Configuration.Version });
                                 }
-                                
+
                                 string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
-                                File.WriteAllText(FilePath, jsonNew);
-                            }
-                            else if (json.Contains("\"argument\"") && !json.Contains("\"arguments\""))
-                            {
-                                var doc = JsonDocument.Parse(json);
-                                var element = doc.RootElement.GetProperty("actions");
-                                List<string> arguments = [];
-                                element.EnumerateArray().Each(x => arguments.Add(x.GetProperty("argument").Deserialize<string>() ?? string.Empty));
-                                
-                                pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
-                                pathFile?.Actions.Select((Value, Index) => (Value, Index)).Each(x => x.Value.Arguments = [arguments[x.Index]]);
-                                pathFile?.Meta.Changelog.Add(new() { Change = "Converted to newer JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
-                                //pathFile?.Actions.Each(x => Svc.Log.Info($"{x.Position}"));
-                                string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
-                                Svc.Log.Info($"{jsonNew}");
                                 File.WriteAllText(FilePath, jsonNew);
                             }
                             else if (!json.Contains("\"name\"") && !json.Contains("\"position\"") && !json.Contains("\"argument\""))
@@ -182,12 +186,30 @@ namespace AutoDuty.Managers
                                 {
                                     paths.Each(x =>
                                     {
+                                        var tag = ActionTag.None;
+
+                                        if (x.StartsWithIgnoreCase("Synced"))
+                                        {
+                                            tag = ActionTag.Synced;
+                                            x = x.Remove(0, 6);
+                                        }
+                                        if (x.StartsWithIgnoreCase("Unsynced"))
+                                        {
+                                            tag = ActionTag.Unsynced;
+                                            x = x.Remove(0, 8);
+                                        }
+                                        if (x.EqualsIgnoreCase("<-- Comment -->"))
+                                            tag = ActionTag.Comment;
+                                        if (x.EqualsIgnoreCase("Revival"))
+                                            tag = ActionTag.Revival;
+                                        if (x.EqualsIgnoreCase("TreasureCoffer"))
+                                            tag = ActionTag.Treasure;
                                         var action = x.Split('|');
-                                        var pathAction = new PathAction { Name = action[0] };
+                                        var pathAction = new PathAction { Tag = tag, Name = action[0] };
                                         if (action.Length > 1)
                                         {
                                             var position = action[1].Replace(" ", string.Empty).Split(",");
-                                            
+
                                             pathAction.Position = new(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
 
 
@@ -226,17 +248,80 @@ namespace AutoDuty.Managers
                                     pathFile = JsonSerializer.Deserialize<PathFile>(json);
                                     if (pathFile == null) return new();
                                     pathFile.Actions = [.. pathActions];
-                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to new JSON Structure", Version = AutoDuty.Plugin.Configuration.Version });
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = AutoDuty.Plugin.Configuration.Version });
                                     string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
                                     File.WriteAllText(FilePath, jsonNew);
                                 }
+                            }
+                            else if (json.Contains("\"argument\"") && !json.Contains("\"arguments\""))
+                            {
+                                var doc = JsonDocument.Parse(json);
+                                var element = doc.RootElement.GetProperty("actions");
+                                List<string> arguments = [];
+                                element.EnumerateArray().Each(x => arguments.Add(x.GetProperty("argument").Deserialize<string>() ?? string.Empty));
+
+                                pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
+                                pathFile?.Actions.Select((Value, Index) => (Value, Index)).Each(x => x.Value.Arguments = [arguments[x.Index]]);
+                                pathFile.Actions.Each(x =>
+                                {
+                                    var tag = ActionTag.None;
+
+                                    if (x.Name.StartsWithIgnoreCase("Synced"))
+                                    {
+                                        tag = ActionTag.Synced;
+                                        x.Name = x.Name.Remove(0, 6);
+                                    }
+                                    if (x.Name.StartsWithIgnoreCase("Unsynced"))
+                                    {
+                                        tag = ActionTag.Unsynced;
+                                        x.Name = x.Name.Remove(0, 8);
+                                    }
+                                    if (x.Name.EqualsIgnoreCase("<-- Comment -->"))
+                                        tag = ActionTag.Comment;
+                                    if (x.Name.EqualsIgnoreCase("Revival"))
+                                        tag = ActionTag.Revival;
+                                    if (x.Name.EqualsIgnoreCase("TreasureCoffer"))
+                                        tag = ActionTag.Treasure;
+                                    x.Tag = tag;
+                                });
+                                pathFile?.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = AutoDuty.Plugin.Configuration.Version });
+                                string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
+                                File.WriteAllText(FilePath, jsonNew);
+                            }
+                            else if (!json.Contains("\"tag\""))
+                            {
+
+                                pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
+                                pathFile?.Actions.Each(x =>
+                                {
+                                    if (x.Name.StartsWithIgnoreCase("Synced"))
+                                    {
+                                        x.Tag = ActionTag.Synced;
+                                        x.Name = x.Name.Remove(0, 6);
+                                    }
+                                    if (x.Name.StartsWithIgnoreCase("Unsynced"))
+                                    {
+                                        x.Tag = ActionTag.Unsynced;
+                                        x.Name = x.Name.Remove(0, 8);
+                                    }
+                                    if (x.Name.EqualsIgnoreCase("<-- Comment -->"))
+                                        x.Tag = ActionTag.Comment;
+                                    if (x.Name.EqualsIgnoreCase("Revival"))
+                                        x.Tag = ActionTag.Revival;
+                                    if (x.Name.EqualsIgnoreCase("TreasureCoffer"))
+                                        x.Tag = ActionTag.Treasure;
+                                });
+                                pathFile?.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = 164 });
+                                string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
+                                File.WriteAllText(FilePath, jsonNew);
+                                Svc.Log.Info($"{FilePath}");
                             }
                             else
                             {
                                 pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
                             }
 
-                            RevivalFound = PathFile.Actions.Any(x => x.Name.Equals("Revival", StringComparison.CurrentCultureIgnoreCase));
+                            RevivalFound = PathFile.Actions.Any(x => x.Tag == ActionTag.Revival);
                         }
                         catch (Exception ex)
                         {
