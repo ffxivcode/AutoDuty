@@ -32,6 +32,7 @@ namespace AutoDuty.Windows
         private static Vector3 _position = Vector3.Zero;
         private static string _positionText = string.Empty;
         private static List<string> _arguments = [];
+        private static string _argumentsString = string.Empty;
         private static string _argumentHint = string.Empty;
         private static bool _dontMove = false;
         private static bool _showAddActionUI = false;
@@ -46,6 +47,8 @@ namespace AutoDuty.Windows
         private static Vector4 _argumentTextColor = new(1,1,1,1);
         private static bool _deleteItem = false;
         private static int _deleteItemIndex = -1;
+        private static ActionTag _actionTag;
+        private static List<ActionTag> _actionTags = [ActionTag.None, ActionTag.Synced, ActionTag.Unsynced];
         public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
 
         internal unsafe static void Draw()
@@ -129,10 +132,20 @@ namespace AutoDuty.Windows
                         _addActionButton = "Add";
                         _comment = item.Item1.Equals("<-- Comment -->", StringComparison.InvariantCultureIgnoreCase);
                         _position = Player.Available ? Player.Position : Vector3.Zero;
+                        _actionTag = ActionTag.None;
                         switch (item.Item1)
                         {
                             case "<-- Comment -->":
+                                _actionTag = ActionTag.Comment;
+                                _position = Vector3.Zero;
+                                break;
                             case "Revival":
+                                _actionTag = ActionTag.Revival;
+                                _position = Vector3.Zero;
+                                break;
+                            case "TreasureCoffer":
+                                _actionTag = ActionTag.Treasure;
+                                break;
                             case "ExitDuty":
                                 _position = Vector3.Zero;
                                 break;
@@ -151,7 +164,8 @@ namespace AutoDuty.Windows
                                 break;
                         }
                         _positionText = _position.ToCustomString();
-                        _action = new() { Name = _actionText, Position = _position, Arguments = _arguments, Note = _note };
+                        _argumentsString = _arguments.ToCustomString();
+                        _action = new() { Name = _actionText, Position = _position, Arguments = _arguments, Note = _note, Tag = _actionTag };
                         _showAddActionUI = true;
                     }
                     ImGuiComponents.HelpMarker(item.Item3);
@@ -297,10 +311,10 @@ namespace AutoDuty.Windows
             }
             using (ImRaii.Disabled(_noArgument || _comment))
             {
-                ImGui.TextColored(_argumentTextColor, "Argument:");
+                ImGui.TextColored(_argumentTextColor, "Argument: (arg1,arg2)");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-                //ImGui.InputTextWithHint("##Argument", _argumentHint, ref _arguments[0], 200);
+                ImGui.InputTextWithHint("##Argument", _argumentHint, ref _argumentsString, 200);
             }
             using (ImRaii.Disabled(_comment))
             {
@@ -315,6 +329,21 @@ namespace AutoDuty.Windows
             ImGui.SameLine();
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
             ImGui.InputText("##Note", ref _note, 200);
+            using (ImRaii.Disabled(_action?.Tag.EqualsAny(ActionTag.Comment, ActionTag.Revival, ActionTag.Treasure) ?? true))
+            {
+                ImGui.Text("Tag:");
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+                if (ImGui.BeginCombo("##RetireLocation", _actionTag.EqualsAny(ActionTag.None, ActionTag.Synced, ActionTag.Unsynced) ? _actionTag.ToCustomString() : ActionTag.None.ToCustomString()))
+                {
+                    foreach (var actionTag in _actionTags)
+                    {
+                        if (ImGui.Selectable(actionTag.ToCustomString()))
+                            _actionTag = actionTag;
+                    }
+                    ImGui.EndCombo();
+                }
+            }
         }
 
         private static void DrawInteractablesSet()
@@ -379,6 +408,7 @@ namespace AutoDuty.Windows
                                 _actionText = item.Value.Name;
                                 _note = item.Value.Note;
                                 _arguments = item.Value.Arguments;
+                                _argumentsString = item.Value.Arguments.ToCustomString();
                                 _position = item.Value.Position;
                                 _positionText = _position.ToCustomString();
                                 _buildListSelected = item.Index;
@@ -386,6 +416,7 @@ namespace AutoDuty.Windows
                                 _dropdownSelected = ("", "", "");
                                 _addActionButton = "Modify";
                                 _action = item.Value;
+                                _actionTag = item.Value.Tag;
                             }
                         }
                         ImGui.PopStyleColor();
@@ -461,6 +492,7 @@ namespace AutoDuty.Windows
             _buildListSelected = -1;
             _action = null;
             _comment = false;
+            _actionTag = ActionTag.None;
         }
 
         private static void AddAction()
@@ -468,14 +500,14 @@ namespace AutoDuty.Windows
             if (_action == null) return;
 
             _action.Name = _actionText;
-            _action.Arguments = _arguments;
+            _action.Arguments = [.. _argumentsString.Split(",", StringSplitOptions.TrimEntries)];
+            _action.Tag = _actionTag;
             var position = _positionText.Replace(" ", string.Empty).Split(",");
             if (!_comment && position.Length == 3 && float.TryParse(position[0], out var p1) && float.TryParse(position[1], out var p2) && float.TryParse(position[2], out var p3))
                 _action.Position = new(p1, p2, p3);
             else
                 _action.Position = Vector3.Zero;
             _action.Note = _comment && !_note.StartsWith("<--") && !_note.EndsWith("-->") ? $"<-- {_note} -->" : _note;
-
             if (_buildListSelected == -1)
             {
                 Plugin.Actions.Add(_action);

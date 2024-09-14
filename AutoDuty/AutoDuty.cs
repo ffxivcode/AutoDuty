@@ -822,7 +822,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (!PlayerHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= Actions.Count)
             return;
 
-        Action = $"{(Actions.Count >= Indexer ? Plugin.Actions[Indexer].Name : "")}";
+        Action = $"{(Actions.Count >= Indexer ? Plugin.Actions[Indexer].ToCustomString() : "")}";
 
         PathAction = Actions[Indexer];
 
@@ -899,7 +899,7 @@ public sealed class AutoDuty : IDalamudPlugin
             _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
         }
 
-        Action = $"{Plugin.Actions[Indexer].Name}";
+        Action = $"{Plugin.Actions[Indexer].ToCustomString()}";
         if (PlayerHelper.InCombat && Plugin.StopForCombat)
         {
             if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
