@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -679.6,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": -679.83,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -37,6 +40,7 @@
       "note": "Fae Portal"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -690.37,
@@ -49,6 +53,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -529.98,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -442.71,
@@ -73,6 +79,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -432.9,
@@ -85,6 +92,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -396.31,
@@ -97,6 +105,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 524.47,
@@ -109,6 +118,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 551.04,
@@ -121,6 +131,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 672.6,
@@ -133,6 +144,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 749.86,
@@ -145,6 +157,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 750.02,
@@ -168,6 +181,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

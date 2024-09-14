@@ -83,6 +83,9 @@ namespace AutoDuty.Data
 
         public class PathAction
         {
+            [JsonPropertyName("tag")]
+            public ActionTag Tag { get; set; } = ActionTag.None;
+
             [JsonPropertyName("name")]
             public string Name { get; set; } = string.Empty;
 

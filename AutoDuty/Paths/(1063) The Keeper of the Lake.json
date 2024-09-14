@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 18.66,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -0.95,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -7.78,
@@ -37,6 +40,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -99.18,
@@ -49,6 +53,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -61,6 +66,7 @@
       "note": "Imperial Identification Key"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -104.25,
@@ -73,6 +79,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -85,6 +92,7 @@
       "note": "Magitek Terminal"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -99.54,
@@ -97,6 +105,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -92.14,
@@ -109,6 +118,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -84.22,
@@ -121,6 +131,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -71.79,
@@ -133,6 +144,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -70.07,
@@ -145,6 +157,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -58.42,
@@ -157,6 +170,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -169,6 +183,7 @@
       "note": "Imperial Identification Key"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -33.79,
@@ -181,6 +196,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -193,6 +209,7 @@
       "note": "Magitek Terminal"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 8.46,
@@ -205,6 +222,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 6.69,
@@ -217,6 +235,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 6.72,
@@ -229,6 +248,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 64.47,
@@ -241,6 +261,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": -33.2,
@@ -253,6 +274,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -40.71,
@@ -276,6 +298,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

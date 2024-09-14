@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "ConditionAction",
       "position": {
         "X": 0,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 21.82,
@@ -25,6 +27,7 @@
       "note": "Goblin Pathfinder"
     },
     {
+      "tag": 0,
       "name": "ConditionAction",
       "position": {
         "X": 0,
@@ -37,6 +40,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 105.56,
@@ -49,6 +53,7 @@
       "note": "Runstop Headgate"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 112.59,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -5.17,
@@ -73,6 +79,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -107.99,
@@ -85,6 +92,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -90.04,
@@ -97,6 +105,7 @@
       "note": "Longstop Gutgate"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -27.24,
@@ -120,6 +129,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 70.33,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 64.87,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -37,6 +40,7 @@
       "note": "Tiny Key"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 0.58,
@@ -49,6 +53,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -61,6 +66,7 @@
       "note": "Locked Door"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -26.22,
@@ -73,6 +79,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -85,6 +92,7 @@
       "note": "Tiny Key"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -35.94,
@@ -97,6 +105,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -36.03,
@@ -109,6 +118,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 7.83,
@@ -121,6 +131,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 11.04,
@@ -133,6 +144,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -145,6 +157,7 @@
       "note": "Green Key"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -47.79,
@@ -157,6 +170,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -169,6 +183,7 @@
       "note": "Ivy Door"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -51.84,
@@ -181,6 +196,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -60.04,
@@ -193,6 +209,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -0.19,
@@ -205,6 +222,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -217,6 +235,7 @@
       "note": "Locked Door"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -12.14,
@@ -229,6 +248,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -241,6 +261,7 @@
       "note": "Yellow Key"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -1.74,
@@ -253,6 +274,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -11.65,
@@ -265,6 +287,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -26.07,
@@ -277,6 +300,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -289,6 +313,7 @@
       "note": "Carnation Door"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 14.58,
@@ -301,6 +326,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -313,6 +339,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -325,6 +352,7 @@
       "note": "Bloody Parchment"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 14.57,
@@ -337,6 +365,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -349,6 +378,7 @@
       "note": "Aetherial Flow"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 46.69,
@@ -361,6 +391,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -373,6 +404,7 @@
       "note": "Sealed Barrier"
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 22.76,
@@ -385,6 +417,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -10.65,
@@ -408,6 +441,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

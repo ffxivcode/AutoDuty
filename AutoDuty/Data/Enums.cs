@@ -6,7 +6,17 @@ namespace AutoDuty.Data
     {
         public static string EnumString(System.Enum T) => T?.ToString()?.Replace("_", " ") ?? "";
 
-        internal enum ClassJobType
+        public enum ActionTag
+        {
+            None = 0,
+            Synced = 1,
+            Unsynced = 2,
+            Comment = 3,
+            Revival = 4,
+            Treasure = 5,
+        }
+
+        public enum ClassJobType
         {
             Adventurer = 0,
             Gladiator = 1,
@@ -52,7 +62,7 @@ namespace AutoDuty.Data
             Pictomancer = 42
         }
 
-        internal enum JobRole
+        public enum JobRole
         {
             None = 0,
             Tank = 1,

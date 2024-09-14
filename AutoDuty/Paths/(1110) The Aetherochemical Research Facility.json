@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -263.93,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -176.08,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -109.84,
@@ -37,6 +40,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -47.49,
@@ -49,6 +53,7 @@
       "note": ""
     },
     {
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 0,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "ForceAttack",
       "position": {
         "X": 29.86,
@@ -73,6 +79,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "ForceAttack",
       "position": {
         "X": 110.17,
@@ -85,6 +92,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 247.25,
@@ -97,6 +105,7 @@
       "note": ""
     },
     {
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 0,
@@ -109,6 +118,7 @@
       "note": "CheckPoint2"
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 324.8,
@@ -121,6 +131,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -352.83,
@@ -133,6 +144,7 @@
       "note": "Lift Terminal"
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": -360.42,
@@ -145,6 +157,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": -362.95,
@@ -157,6 +170,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -357.21,
@@ -169,6 +183,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -363.74,
@@ -181,6 +196,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 308.07,
@@ -193,6 +209,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 266,
@@ -205,6 +222,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 202.12,
@@ -217,6 +235,7 @@
       "note": "Lift Terminal"
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 202.77,
@@ -229,6 +248,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 201.85,
@@ -241,6 +261,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 228.77,
@@ -253,6 +274,7 @@
       "note": "Lift Terminal"
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 228.77,
@@ -265,6 +287,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 227.97,
@@ -277,6 +300,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 230.03,
@@ -289,6 +313,7 @@
       "note": ""
     },
     {
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 0,
@@ -301,6 +326,7 @@
       "note": "CheckPoint3"
     },
     {
+      "tag": 0,
       "name": "ConditionAction",
       "position": {
         "X": 0,
@@ -313,6 +339,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 228.7548,
@@ -325,6 +352,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 230.13,
@@ -348,6 +376,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

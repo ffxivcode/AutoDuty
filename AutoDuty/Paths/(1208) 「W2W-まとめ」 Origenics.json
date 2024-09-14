@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -40.61,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 30.56,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 25.8,
@@ -37,6 +40,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 29.84,
@@ -49,6 +53,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 29.83,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -73,6 +79,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -172.13,
@@ -85,6 +92,7 @@
       "note": "Elevator Console"
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -97,6 +105,7 @@
       "note": ""
     },
     {
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -98.76,
@@ -109,6 +118,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -98.76,
@@ -121,6 +131,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -98.8,
@@ -133,6 +144,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -87.34,
@@ -145,6 +157,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -75.8,
@@ -157,6 +170,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -36.42,
@@ -169,6 +183,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 79.19,
@@ -181,6 +196,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 62.84,
@@ -193,6 +209,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 44.58,
@@ -205,6 +222,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 84.94,
@@ -217,6 +235,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 85.12,
@@ -229,6 +248,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "PausePandora",
       "position": {
         "X": 0,
@@ -241,6 +261,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 49.36,
@@ -253,6 +274,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": -95.53,
@@ -265,6 +287,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -139.71,
@@ -277,6 +300,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -187.33,
@@ -289,6 +313,7 @@
       "note": ""
     },
     {
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -171.57,
@@ -301,6 +326,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -172.06,
@@ -313,6 +339,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -172.06,
@@ -325,6 +352,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -171.92,
@@ -337,6 +365,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -172.11,
@@ -349,6 +378,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "PausePandora",
       "position": {
         "X": 89.88,
@@ -361,6 +391,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 102.84,
@@ -373,6 +404,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 96.41,
@@ -385,6 +417,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 118.7,
@@ -397,6 +430,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 157.48,
@@ -409,6 +443,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 190.02,
@@ -421,6 +456,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 192.54,
@@ -433,6 +469,7 @@
       "note": ""
     },
     {
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 189.73,
@@ -445,6 +482,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 189.8,
@@ -457,6 +495,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 189.92,
@@ -484,6 +523,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

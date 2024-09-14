@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 145.52,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 44.74,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 117.3,
@@ -37,6 +40,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 13.61,
@@ -49,6 +53,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -70.55,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -42.82,
@@ -73,6 +79,7 @@
       "note": ""
     },
     {
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -107.79,
@@ -85,6 +92,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -108.06,
@@ -97,6 +105,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -108.11,
@@ -109,6 +118,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -112.38,
@@ -121,6 +131,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -72.64,
@@ -133,6 +144,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -113.57,
@@ -145,6 +157,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -72.13,
@@ -157,6 +170,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -64.07,
@@ -169,6 +183,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": -38.33,
@@ -181,6 +196,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -38,
@@ -193,6 +209,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -46.577,
@@ -205,6 +222,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -217,6 +235,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -80.91,
@@ -229,6 +248,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -95.3,
@@ -241,6 +261,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": -94.81,
@@ -253,6 +274,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -96.64,
@@ -265,6 +287,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -103.14,
@@ -277,6 +300,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -160.96,
@@ -289,6 +313,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -157.41,
@@ -301,6 +326,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -77.98,
@@ -313,6 +339,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -100.3,
@@ -325,6 +352,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -63.5,
@@ -337,6 +365,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -59.52,
@@ -349,6 +378,7 @@
       "note": ""
     },
     {
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -53.32,
@@ -361,6 +391,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -53.21,
@@ -373,6 +404,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -69.57,
@@ -385,6 +417,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -96.72,
@@ -397,6 +430,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -128.15,
@@ -409,6 +443,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -153.88,
@@ -421,6 +456,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -135.83,
@@ -433,6 +469,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -153.28,
@@ -445,6 +482,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -128.86,
@@ -457,6 +495,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -84.03,
@@ -469,6 +508,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -105.67,
@@ -481,6 +521,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -69.49,
@@ -493,6 +534,7 @@
       "note": ""
     },
     {
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -53.94,
@@ -505,6 +547,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -53.98,
@@ -517,6 +560,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -54.15,
@@ -540,6 +584,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

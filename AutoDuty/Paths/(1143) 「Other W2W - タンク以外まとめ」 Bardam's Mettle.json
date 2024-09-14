@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -13,6 +14,7 @@
       "note": "\u003C-- Trash Packs / \u96D1\u9B5A 1 \u0026 2 --\u003E"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -12.11,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 7.46,
@@ -37,7 +40,8 @@
       "note": ""
     },
     {
-      "name": "SyncedWait",
+      "tag": 1,
+      "name": "Wait",
       "position": {
         "X": 0,
         "Y": 0,
@@ -49,7 +53,8 @@
       "note": ""
     },
     {
-      "name": "SyncedRotation",
+      "tag": 1,
+      "name": "Rotation",
       "position": {
         "X": 0,
         "Y": 0,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 37.91,
@@ -73,7 +79,8 @@
       "note": ""
     },
     {
-      "name": "SyncedRotation",
+      "tag": 1,
+      "name": "Rotation",
       "position": {
         "X": 0,
         "Y": 0,
@@ -85,7 +92,8 @@
       "note": ""
     },
     {
-      "name": "SyncedStopForCombat",
+      "tag": 1,
+      "name": "StopForCombat",
       "position": {
         "X": 7.85,
         "Y": 3.54,
@@ -97,7 +105,8 @@
       "note": ""
     },
     {
-      "name": "UnsyncedStopForCombat",
+      "tag": 2,
+      "name": "StopForCombat",
       "position": {
         "X": 0,
         "Y": 0,
@@ -109,6 +118,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -121,6 +131,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 3 --\u003E"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 12.97,
@@ -133,6 +144,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -21.28,
@@ -145,6 +157,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -157,6 +170,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 4 --\u003E"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -37.73,
@@ -169,6 +183,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -57.7,
@@ -181,6 +196,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -193,6 +209,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 5 --\u003E"
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -205,6 +222,7 @@
       "note": "\u003C-- Not double-pulling here cuz too far away --\u003E"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 4.41,
@@ -217,6 +235,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 4.76,
@@ -229,6 +248,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -241,6 +261,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 3.83,
@@ -253,6 +274,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -265,6 +287,7 @@
       "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 4.14,
@@ -277,6 +300,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 4.07,
@@ -289,6 +313,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -25.05,
@@ -301,6 +326,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -313,6 +339,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 6 --\u003E"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -34.92,
@@ -325,6 +352,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -58.83,
@@ -337,6 +365,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -349,6 +378,7 @@
       "note": "\u003C-- Trash Packs / \u96D1\u9B5A 7 \u0026 8 --\u003E"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -46.29,
@@ -361,6 +391,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -30.2,
@@ -373,6 +404,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -20.71,
@@ -385,7 +417,8 @@
       "note": ""
     },
     {
-      "name": "SyncedWait",
+      "tag": 1,
+      "name": "Wait",
       "position": {
         "X": 0,
         "Y": 0,
@@ -397,6 +430,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -8.51,
@@ -409,7 +443,8 @@
       "note": ""
     },
     {
-      "name": "SyncedStopForCombat",
+      "tag": 1,
+      "name": "StopForCombat",
       "position": {
         "X": -17.91,
         "Y": -43.61,
@@ -421,7 +456,8 @@
       "note": ""
     },
     {
-      "name": "UnsyncedStopForCombat",
+      "tag": 2,
+      "name": "StopForCombat",
       "position": {
         "X": 0,
         "Y": 0,
@@ -433,6 +469,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -445,6 +482,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -28.54,
@@ -457,6 +495,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -469,6 +508,7 @@
       "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -28.01,
@@ -481,6 +521,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -28,
@@ -493,6 +534,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -505,6 +547,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -48.59,
@@ -517,6 +560,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -48.68,
@@ -529,6 +573,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -541,6 +586,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 9 --\u003E"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -49.86,
@@ -553,6 +599,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -38.96,
@@ -565,6 +612,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -577,6 +625,7 @@
       "note": "\u003C-- Trash Packs / \u96D1\u9B5A 10 \u0026 11 --\u003E"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -19.63,
@@ -589,6 +638,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -5.37,
@@ -601,6 +651,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -0.4,
@@ -613,7 +664,8 @@
       "note": ""
     },
     {
-      "name": "SyncedWait",
+      "tag": 1,
+      "name": "Wait",
       "position": {
         "X": 0,
         "Y": 0,
@@ -625,7 +677,8 @@
       "note": ""
     },
     {
-      "name": "SyncedRotation",
+      "tag": 1,
+      "name": "Rotation",
       "position": {
         "X": 0,
         "Y": 0,
@@ -637,6 +690,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 23.05,
@@ -649,7 +703,8 @@
       "note": ""
     },
     {
-      "name": "SyncedRotation",
+      "tag": 1,
+      "name": "Rotation",
       "position": {
         "X": 0,
         "Y": 0,
@@ -661,7 +716,8 @@
       "note": ""
     },
     {
-      "name": "SyncedStopForCombat",
+      "tag": 1,
+      "name": "StopForCombat",
       "position": {
         "X": 19.58,
         "Y": -183.59,
@@ -673,7 +729,8 @@
       "note": ""
     },
     {
-      "name": "UnsyncedStopForCombat",
+      "tag": 2,
+      "name": "StopForCombat",
       "position": {
         "X": 0,
         "Y": 0,
@@ -685,6 +742,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -697,6 +755,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 12 --\u003E"
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 24.92,
@@ -709,6 +768,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 24.43,
@@ -721,6 +781,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 36.69,
@@ -733,6 +794,7 @@
       "note": ""
     },
     {
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -745,6 +807,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E"
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 23.89,
@@ -768,6 +831,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

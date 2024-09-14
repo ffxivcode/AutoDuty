@@ -1,6 +1,7 @@
 {
   "actions": [
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 297.27,
@@ -13,6 +14,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 301.85,
@@ -25,6 +27,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 126.05,
@@ -37,6 +40,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 32.07,
@@ -49,6 +53,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 12.69,
@@ -61,6 +66,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -103.47,
@@ -73,6 +79,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -233.89,
@@ -85,6 +92,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -202.68,
@@ -97,6 +105,7 @@
       "note": ""
     },
     {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -246.84,
@@ -109,6 +118,7 @@
       "note": ""
     },
     {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -239.86,
@@ -132,6 +142,10 @@
       {
         "version": 163,
         "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
       }
     ],
     "notes": []

@@ -1,5 +1,6 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace AutoDuty.Data
 {
     public static class Extensions
     {
+        public static bool StartsWithIgnoreCase(this string str, string strsw) => str.StartsWith(strsw, StringComparison.OrdinalIgnoreCase);
+
         public static string ToCustomString(this PathAction pathAction) 
         {
             string argumentString = string.Empty;
