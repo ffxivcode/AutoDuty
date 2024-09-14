@@ -1,5 +1,6 @@
 ﻿using AutoDuty.Helpers;
 using AutoDuty.IPC;
+using Dalamud.Game.Gui.ContextMenu;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using ECommons;
@@ -10,10 +11,10 @@ using ECommons.ImGuiMethods;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 using static AutoDuty.AutoDuty;
+using static AutoDuty.Data.Classes;
 
 namespace AutoDuty.Windows
 {
@@ -160,22 +161,9 @@ namespace AutoDuty.Windows
                         {
                             foreach (var item in Plugin.Actions.Select((Value, Index) => (Value, Index)))
                             {
-                                var v4 = item.Index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
-                                var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Note : $"{item.Value.ToCustomString()}";
-                                ImGui.TextColored(v4, text);
-                                if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
-                                {
-                                    if (item.Index == Plugin.Indexer || item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
-                                    {
-                                        Plugin.Indexer = -1;
-                                        Plugin.MainListClicked = false;
-                                    }
-                                    else
-                                    {
-                                        Plugin.Indexer = item.Index;
-                                        Plugin.MainListClicked = true;
-                                    }
-                                }
+                                item.Value.DrawCustomText(item.Index, () => ItemClicked(item));
+                                //var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Note : $"{item.Value.ToCustomString()}";
+                                ////////////////////////////////////////////////////////////////
                             }
                             if (_currentStepIndex != Plugin.Indexer && _currentStepIndex > -1 && Plugin.Stage > 0)
                             {
@@ -495,6 +483,20 @@ namespace AutoDuty.Windows
                     }
                     ImGui.EndListBox();
                 }
+            }
+        }
+
+        private static void ItemClicked((PathAction, int) item)
+        {
+            if (item.Item2 == Plugin.Indexer || item.Item1.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Plugin.Indexer = -1;
+                Plugin.MainListClicked = false;
+            }
+            else
+            {
+                Plugin.Indexer = item.Item2;
+                Plugin.MainListClicked = true;
             }
         }
 

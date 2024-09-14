@@ -1,5 +1,5 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
-using ECommons;
+﻿using ECommons;
+using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,19 +10,58 @@ namespace AutoDuty.Data
 {
     public static class Extensions
     {
+        public static void DrawCustomText(this PathAction pathAction, int index, Action clickedAction)
+        {
+            var v4 = index == AutoDuty.Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (pathAction.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
+            ImGui.NewLine();
+            if (pathAction.Tag == ActionTag.Comment)
+            {
+                TextClicked(new(0, 1, 0, 1), pathAction.Note, () => { });
+                return;
+            }
+            if (!pathAction.Tag.EqualsAny(ActionTag.None, ActionTag.Treasure, ActionTag.Revival))
+            {
+                TextClicked(index == AutoDuty.Plugin.Indexer ? v4 : new(1, 165 / 255f, 0, 1), $"{pathAction.Tag}", clickedAction);
+                TextClicked(v4, "|", clickedAction);
+            }
+            TextClicked(v4, $"{pathAction.Name}", clickedAction);
+            TextClicked(v4, "|", clickedAction);
+            TextClicked(v4, $"{pathAction.Position.ToCustomString()}", clickedAction);
+            if (!pathAction.Arguments.All(x => x.IsNullOrEmpty()))
+            {
+                TextClicked(v4, "|", clickedAction);
+                TextClicked(v4, $"{pathAction.Arguments.ToCustomString()}", clickedAction);
+            }
+            if (!pathAction.Note.IsNullOrEmpty())
+            {
+                TextClicked(v4, "|", clickedAction);
+                TextClicked(index == AutoDuty.Plugin.Indexer ? v4 : new(0, 1, 0, 1), $"{pathAction.Note}", clickedAction);
+            }
+        }
+
+        private static void TextClicked(Vector4 col, string text, Action clicked)
+        {
+            ImGui.SameLine(0, 0);
+            ImGui.TextColored(col, text);
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && AutoDuty.Plugin.Stage == 0)
+                clicked();
+        }
+
         public static string ToCustomString(this Enum T) => T.ToString().Replace("_", " ") ?? "";
 
         public static bool StartsWithIgnoreCase(this string str, string strsw) => str.StartsWith(strsw, StringComparison.OrdinalIgnoreCase);
 
-        public static string ToCustomString(this PathAction pathAction) 
+        public static string ToCustomString(this List<string> strings)
         {
-            string argumentString = string.Empty;
+            string outString = string.Empty;
 
-            foreach (var argument in pathAction.Arguments.Select((Value, Index) => (Value, Index)))
-                argumentString += (argument.Index + 1) < pathAction.Arguments.Count ? $"{argument.Value}," : $"{argument.Value}";
+            foreach (var stringIter in strings.Select((Value, Index) => (Value, Index)))
+                outString += (stringIter.Index + 1) < strings.Count ? $"{stringIter.Value}," : $"{stringIter.Value}";
 
-            return $"{pathAction.Name}|{pathAction.Position.ToCustomString()}|{argumentString}|{pathAction.Note}"; 
+            return outString;
         }
+
+        public static string ToCustomString(this PathAction pathAction) =>$"{(pathAction.Tag.EqualsAny(ActionTag.None, ActionTag.Treasure, ActionTag.Revival) ? "" : $"{pathAction.Tag.ToCustomString()}|")}{pathAction.Name}|{pathAction.Position.ToCustomString()}{(pathAction.Arguments.All(x => x.IsNullOrEmpty()) ? "" : $"|{pathAction.Arguments.ToCustomString()}")}{(pathAction.Note.IsNullOrEmpty() ? "" : $"|{pathAction.Note}")}"; 
 
         public static string ToCustomString(this Vector3 vector3) => $"{vector3.X:F2}, {vector3.Y:F2}, {vector3.Z:F2}";
 
