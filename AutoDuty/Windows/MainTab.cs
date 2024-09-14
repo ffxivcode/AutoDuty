@@ -2,7 +2,6 @@
 using AutoDuty.IPC;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
-using Dalamud.Utility;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
@@ -11,6 +10,7 @@ using ECommons.ImGuiMethods;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using static AutoDuty.AutoDuty;
@@ -82,17 +82,29 @@ namespace AutoDuty.Windows
                         }
                         ImGui.SameLine();
                         ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                        if (ImGui.Combo("##SelectedPath", ref curPath, curPaths.Select(dp => dp.Name).ToArray(), curPaths.Count))
+                        if (ImGui.BeginCombo("##SelectedPath", curPaths[curPath].Name))
                         {
-                            if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent!.TerritoryType))
-                                Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryContent.TerritoryType, new Dictionary<Job, int>());
+                            foreach (var path in curPaths.Select((Value, Index) => (Value, Index)))
+                            {
+                                if (ImGui.Selectable(path.Value.Name))
+                                {
+                                    curPath = path.Index;
+                                    if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent!.TerritoryType))
+                                        Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryContent.TerritoryType, []);
 
-                            Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPath;
-                            Plugin.Configuration.Save();
-                            Plugin.CurrentPath = curPath;
-                            Plugin.LoadPath();
+                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPath;
+                                    Plugin.Configuration.Save();
+                                    Plugin.CurrentPath = curPath;
+                                    Plugin.LoadPath();
+                                }
+                                if (ImGui.IsItemHovered() && !path.Value.PathFile.Meta.Notes.All(x => x.IsNullOrEmpty()))
+                                    ImGui.SetTooltip(string.Join("\n", path.Value.PathFile.Meta.Notes));
+                            }
+                            ImGui.EndCombo();
                         }
                         ImGui.PopItemWidth();
+                        if (ImGui.IsItemHovered() && !curPaths[curPath].PathFile.Meta.Notes.All(x => x.IsNullOrEmpty()))
+                            ImGui.SetTooltip(string.Join("\n", curPaths[curPath].PathFile.Meta.Notes));
                     }
                 }
             }
