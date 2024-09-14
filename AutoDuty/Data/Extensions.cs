@@ -10,6 +10,8 @@ namespace AutoDuty.Data
 {
     public static class Extensions
     {
+        public static string ToCustomString(this Enum T) => T.ToString().Replace("_", " ") ?? "";
+
         public static bool StartsWithIgnoreCase(this string str, string strsw) => str.StartsWith(strsw, StringComparison.OrdinalIgnoreCase);
 
         public static string ToCustomString(this PathAction pathAction) 
