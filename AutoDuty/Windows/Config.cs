@@ -528,7 +528,7 @@ public static class ConfigTab
                     using (ImRaii.Disabled(!followRole))
                     {
                         ImGui.SameLine(0, 10);
-                        if (ImGui.Button(EnumString(Configuration.FollowRoleEnum)))
+                        if (ImGui.Button(Configuration.FollowRoleEnum.ToCustomString()))
                         {
                             ImGui.OpenPopup("RolePopup");
                         }
@@ -536,7 +536,7 @@ public static class ConfigTab
                         {
                             foreach (Role role in Enum.GetValues(typeof(Role)))
                             {
-                                if (ImGui.Selectable(EnumString(role)))
+                                if (ImGui.Selectable(role.ToCustomString()))
                                 {
                                     Configuration.FollowRoleEnum = role;
                                     Configuration.Save();
@@ -582,14 +582,14 @@ public static class ConfigTab
                     using (ImRaii.Disabled(Configuration.positionalRoleBased))
                     {
                         ImGui.SameLine(0, 10);
-                        if (ImGui.Button(EnumString(Configuration.PositionalEnum)))
+                        if (ImGui.Button(Configuration.PositionalEnum.ToCustomString()))
                             ImGui.OpenPopup("PositionalPopup");
             
                         if (ImGui.BeginPopup("PositionalPopup"))
                         {
                             foreach (Positional positional in Enum.GetValues(typeof(Positional)))
                             {
-                                if (ImGui.Selectable(EnumString(positional)))
+                                if (ImGui.Selectable(positional.ToCustomString()))
                                 {
                                     Configuration.PositionalEnum = positional;
                                     Configuration.Save();
@@ -628,13 +628,13 @@ public static class ConfigTab
                 ImGui.Text("Select Method: ");
                 ImGui.SameLine(0, 5);
                 ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                if (ImGui.BeginCombo("##ConfigLootMethod", EnumString(Configuration.LootMethodEnum)))
+                if (ImGui.BeginCombo("##ConfigLootMethod", Configuration.LootMethodEnum.ToCustomString()))
                 {
                     foreach (LootMethod lootMethod in Enum.GetValues(typeof(LootMethod)))
                     {
                         using (ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled) || (lootMethod == LootMethod.RotationSolver && !ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)))
                         {
-                            if (ImGui.Selectable(EnumString(lootMethod)))
+                            if (ImGui.Selectable(lootMethod.ToCustomString()))
                             {
                                 Configuration.LootMethodEnum = lootMethod;
                                 Configuration.Save();
@@ -760,11 +760,11 @@ public static class ConfigTab
                 {
                     ImGui.SameLine(0, 5);
                     ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                    if (ImGui.BeginCombo("##RetireLocation", EnumString(Configuration.RetireLocationEnum)))
+                    if (ImGui.BeginCombo("##RetireLocation", Configuration.RetireLocationEnum.ToCustomString()))
                     {
                         foreach (RetireLocation retireLocation in Enum.GetValues(typeof(RetireLocation)))
                         {
-                            if (ImGui.Selectable(EnumString(retireLocation)))
+                            if (ImGui.Selectable(retireLocation.ToCustomString()))
                             {
                                 Configuration.RetireLocationEnum = retireLocation;
                                 Configuration.Save();
@@ -1134,11 +1134,11 @@ public static class ConfigTab
                 {
                     ImGui.Text("Preferred Summoning Bell Location: ");
                     ImGuiComponents.HelpMarker("No matter what location is chosen, if there is a summoning bell in the location you are in when this is invoked it will go there instead");
-                    if (ImGui.BeginCombo("##PreferredBell", EnumString(Configuration.PreferredSummoningBellEnum)))
+                    if (ImGui.BeginCombo("##PreferredBell", Configuration.PreferredSummoningBellEnum.ToCustomString()))
                     {
                         foreach (SummoningBellLocations summoningBells in Enum.GetValues(typeof(SummoningBellLocations)))
                         {
-                            if (ImGui.Selectable(EnumString(summoningBells)))
+                            if (ImGui.Selectable(summoningBells.ToCustomString()))
                             {
                                 Configuration.PreferredSummoningBellEnum = summoningBells;
                                 Configuration.Save();
@@ -1342,12 +1342,12 @@ public static class ConfigTab
                 ImGui.Text("On Completion of All Loops: ");
                 ImGui.SameLine(0, 10);
                 ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                if (ImGui.BeginCombo("##ConfigTerminationMethod", EnumString(Configuration.TerminationMethodEnum)))
+                if (ImGui.BeginCombo("##ConfigTerminationMethod", Configuration.TerminationMethodEnum.ToCustomString()))
                 {
                     foreach (TerminationMode terminationMode in Enum.GetValues(typeof(TerminationMode)))
                     {
                         if (terminationMode != TerminationMode.Kill_PC || OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
-                            if (ImGui.Selectable(EnumString(terminationMode)))
+                            if (ImGui.Selectable(terminationMode.ToCustomString()))
                             {
                                 Configuration.TerminationMethodEnum = terminationMode;
                                 Configuration.Save();

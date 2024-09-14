@@ -107,7 +107,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     break;
             }
             _stage = value;
-            Svc.Log.Debug($"Stage={EnumString(_stage)}");
+            Svc.Log.Debug($"Stage={_stage.ToCustomString()}");
         }
     }
     internal LevelingMode LevelingModeEnum
@@ -1376,7 +1376,7 @@ public sealed class AutoDuty : IDalamudPlugin
             DoneNavigating();
 
         if (Stage > Stage.Condition && !States.HasFlag(PluginState.Other))
-            Action = EnumString(Stage);
+            Action = Stage.ToCustomString();
     }
 
     public void Framework_Update(IFramework framework)

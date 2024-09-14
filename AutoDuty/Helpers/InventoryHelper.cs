@@ -7,6 +7,7 @@ using Lumina.Excel.GeneratedSheets;
 using System;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons.Throttlers;
+using System.Net.NetworkInformation;
 
 namespace AutoDuty.Helpers
 {
@@ -60,64 +61,40 @@ namespace AutoDuty.Helpers
 
         internal static bool IsItemAvailable(uint itemId, bool allowHq = true) => (allowHq && ItemCount(itemId + 1_000_000) >= 1) || ItemCount(itemId) >= 1;
 
-        internal static void EquipGear(InventoryType type, int slotIndex, bool? ring = null)
-        {
-            InventoryItem* item = InventoryManager.Instance()->GetInventorySlot(type, slotIndex);
+        internal static Item? GetExcelItem(uint itemId) => Svc.Data.GetExcelSheet<Item>()?.GetRow(itemId);
 
-            ExcelSheet<Item>? items    = Svc.Data.GetExcelSheet<Item>();
-            Item?             itemData = items?.GetRow(item->ItemId);
+        internal static EquippedSlotIndex GetRingSlot()
+        {
+            InventoryContainer* equipped = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
+
+            uint ring1SlotiLvl = GetExcelItem(equipped->Items[(int)EquippedSlotIndex.Ring1].ItemId)?.LevelItem.Value?.RowId ?? 0u;
+            uint ring2SlotiLvl = GetExcelItem(equipped->Items[(int)EquippedSlotIndex.Ring2].ItemId)?.LevelItem.Value?.RowId ?? 0u;
+            return ring1SlotiLvl < ring2SlotiLvl ? EquippedSlotIndex.Ring1 : EquippedSlotIndex.Ring2;
+        }
+
+        internal static EquippedSlotIndex GetEquippedSlot(Item itemData)
+        {
             EquippedSlotIndex targetSlot = itemData!.EquipSlotCategory.Value switch
             {
                 { MainHand: > 0 } => EquippedSlotIndex.MainHand,
-                { OffHand : > 0 } => EquippedSlotIndex.Offhand,
-                { Head    : > 0 } => EquippedSlotIndex.Helm,
-                { Body    : > 0 } => EquippedSlotIndex.Body,
-                { Gloves  : > 0 } => EquippedSlotIndex.Hands,
-                { Legs    : > 0 } => EquippedSlotIndex.Legs,
-                { Feet    : > 0 } => EquippedSlotIndex.Feet,
-                { Ears    : > 0 } => EquippedSlotIndex.Earring,
-                { Neck    : > 0 } => EquippedSlotIndex.Neck,
-                { Wrists  : > 0 } => EquippedSlotIndex.Wrist,
-                { FingerL : > 0 } => EquippedSlotIndex.Ring1,
-                { FingerR : > 0 } => EquippedSlotIndex.Ring1,
-                _ => throw new ArgumentOutOfRangeException("the heck is " + item->ItemId)
+                { OffHand: > 0 } => EquippedSlotIndex.Offhand,
+                { Head: > 0 } => EquippedSlotIndex.Helm,
+                { Body: > 0 } => EquippedSlotIndex.Body,
+                { Gloves: > 0 } => EquippedSlotIndex.Hands,
+                { Legs: > 0 } => EquippedSlotIndex.Legs,
+                { Feet: > 0 } => EquippedSlotIndex.Feet,
+                { Ears: > 0 } => EquippedSlotIndex.Earring,
+                { Neck: > 0 } => EquippedSlotIndex.Neck,
+                { Wrists: > 0 } => EquippedSlotIndex.Wrist,
+                { FingerL: > 0 } => EquippedSlotIndex.Ring1,
+                { FingerR: > 0 } => EquippedSlotIndex.Ring1,
+                _ => throw new ArgumentOutOfRangeException("the heck is " + itemData.RowId)
             };
 
-            if (targetSlot == EquippedSlotIndex.Ring1)
-                if (ring.HasValue)
-                {
-                    targetSlot = ring.Value ? EquippedSlotIndex.Ring1 : EquippedSlotIndex.Ring2;
-                }
-                else
-                {
-                    InventoryContainer* equipped = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
-
-                    InventoryItem ring1Slot = equipped->Items[(int)EquippedSlotIndex.Ring1];
-                    InventoryItem ring2Slot = equipped->Items[(int)EquippedSlotIndex.Ring2];
-                    targetSlot = items?.GetRow(ring1Slot.ItemId)?.LevelItem.Value?.RowId < items?.GetRow(ring2Slot.ItemId)?.LevelItem.Value?.RowId ?
-                                     EquippedSlotIndex.Ring1 :
-                                     EquippedSlotIndex.Ring2;
-
-                }
-
-            InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot, 1);
+            return targetSlot;
         }
 
-        public enum EquippedSlotIndex : ushort
-        {
-            MainHand = 0,
-            Offhand = 1,
-            Helm = 2,
-            Body = 3,
-            Hands = 4,
-            Legs = 6,
-            Feet = 7,
-            Earring = 8,
-            Neck = 9,
-            Wrist = 10,
-            Ring1 = 11,
-            Ring2 = 12
-        }
+        internal static void EquipGear(Item item, InventoryType type, int slotIndex, EquippedSlotIndex targetSlot) => InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot, 1);
 
         internal static ushort CurrentItemLevel => *(ushort*)((nint)(AgentStatus.Instance()) + 48);
 
