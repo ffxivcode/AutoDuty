@@ -250,7 +250,7 @@ namespace AutoDuty.Windows
                 return;
             }
 
-            using (ImRaii.Disabled(_arguments.Count == 0 && !_noArgument && !_comment))
+            using (ImRaii.Disabled(_argumentsString.IsNullOrEmpty() && !_noArgument && !_comment))
             {
                 if (ImGuiEx.ButtonWrapped(_addActionButton))
                 {
