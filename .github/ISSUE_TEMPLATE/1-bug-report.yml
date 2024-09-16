@@ -39,3 +39,8 @@ body:
     attributes:
       label: Other relevant plugins installed
       description: List all of the other plugins you have installed that might be relevant to this issue and their version numbers.
+  - type: textarea
+    id: plugin-config
+    attributes:
+      label: Plugin config file
+      description: Paste your AutoDuty.json file from your pluginConfigs folder.
