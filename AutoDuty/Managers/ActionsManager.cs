@@ -71,13 +71,13 @@ namespace AutoDuty.Managers
         
         public void Follow(PathAction action) => FollowHelper.SetFollow(GetObjectByName(action.Arguments[0]));
 
-        public void SetBMSettings(PathAction action) => AutoDuty.Plugin.SetBMSettings(bool.TryParse(action.Arguments[0], out bool defaultsettings) && defaultsettings);
+        public void SetBMSettings(PathAction action) => Plugin.SetBMSettings(bool.TryParse(action.Arguments[0], out bool defaultsettings) && defaultsettings);
 
         public unsafe void ConditionAction(PathAction action)
         {
             if (!action.Arguments[0].Any(x => x.Equals('&'))) return;
 
-            AutoDuty.Plugin.Action = $"ConditionAction: {action.Arguments[0]}";
+            Plugin.Action = $"ConditionAction: {action.Arguments[0]}";
             var conditionActionArray = action.Arguments[0].Split("&");
             var condition = conditionActionArray[0];
             string[] conditionArray = [];
@@ -158,8 +158,8 @@ namespace AutoDuty.Managers
         public void ModifyIndex(PathAction action)
         {
             if (!int.TryParse(action.Arguments[0], out int _index)) return;
-            AutoDuty.Plugin.Indexer = _index;
-            AutoDuty.Plugin.Stage = Stage.Reading_Path;
+            Plugin.Indexer = _index;
+            Plugin.Stage = Stage.Reading_Path;
         }
 
         private bool _autoManageRotationPluginState = false;
@@ -167,19 +167,19 @@ namespace AutoDuty.Managers
         {
             if (action.Arguments[0].Equals("off", StringComparison.InvariantCultureIgnoreCase))
             {
-                if (AutoDuty.Plugin.Configuration.AutoManageRotationPluginState)
+                if (Plugin.Configuration.AutoManageRotationPluginState)
                 {
                     _autoManageRotationPluginState = true;
-                    AutoDuty.Plugin.Configuration.AutoManageRotationPluginState = false;
+                    Plugin.Configuration.AutoManageRotationPluginState = false;
                 }
-                AutoDuty.Plugin.SetRotationPluginSettings(false, true);
+                Plugin.SetRotationPluginSettings(false, true);
             }
             else if (action.Arguments[0].Equals("on", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (_autoManageRotationPluginState)
-                    AutoDuty.Plugin.Configuration.AutoManageRotationPluginState = true;
+                    Plugin.Configuration.AutoManageRotationPluginState = true;
 
-                AutoDuty.Plugin.SetRotationPluginSettings(true, true);
+                Plugin.SetRotationPluginSettings(true, true);
             }
         }
 
@@ -189,8 +189,8 @@ namespace AutoDuty.Managers
                 return;
 
             var boolTrueFalse = action.Arguments[0].Equals("true", StringComparison.InvariantCultureIgnoreCase);
-            AutoDuty.Plugin.Action = $"StopForCombat: {action.Arguments[0]}";
-            AutoDuty.Plugin.StopForCombat = boolTrueFalse;
+            Plugin.Action = $"StopForCombat: {action.Arguments[0]}";
+            Plugin.StopForCombat = boolTrueFalse;
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
         }
 
@@ -207,7 +207,7 @@ namespace AutoDuty.Managers
 
         public unsafe void Jump(PathAction action)
         {
-            AutoDuty.Plugin.Action = $"Jumping";
+            Plugin.Action = $"Jumping";
 
             if (int.TryParse(action.Arguments[0], out int wait) && wait > 0)
             {
@@ -230,16 +230,16 @@ namespace AutoDuty.Managers
         {
             if (!Player.Available)
                 return;
-            AutoDuty.Plugin.Action = $"ChatCommand: {action.Arguments[0]}";
+            Plugin.Action = $"ChatCommand: {action.Arguments[0]}";
             _taskManager.Enqueue(() => _chat.ExecuteCommand(action.Arguments[0]), "ChatCommand");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+            _taskManager.Enqueue(() => Plugin.Action = "");
         }
 
         public void AutoMoveFor(PathAction action)
         {
             if (!Player.Available)
                 return;
-            AutoDuty.Plugin.Action = $"AutoMove For {action.Arguments[0]}";
+            Plugin.Action = $"AutoMove For {action.Arguments[0]}";
             var movementMode = Svc.GameConfig.UiControl.TryGetUInt("MoveMode", out var mode) ? mode : 0;
             _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 0); }, "AutoMove-MoveMode");
             _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "AutoMove-On");
@@ -252,19 +252,19 @@ namespace AutoDuty.Managers
 
         public unsafe void Wait(PathAction action)
         {
-            AutoDuty.Plugin.Action = $"Wait: {action.Arguments[0]}";
-            if (AutoDuty.Plugin.StopForCombat)
+            Plugin.Action = $"Wait: {action.Arguments[0]}";
+            if (Plugin.StopForCombat)
                 _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
             _taskManager.Enqueue(() => EzThrottler.Throttle("Wait", Convert.ToInt32(action.Arguments[0])), "Wait");
             _taskManager.Enqueue(() => EzThrottler.Check("Wait"), Convert.ToInt32(action.Arguments[0]), "Wait");
-            if (AutoDuty.Plugin.StopForCombat)
+            if (Plugin.StopForCombat)
                 _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Wait");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+            _taskManager.Enqueue(() => Plugin.Action = "");
         }
 
         public unsafe void WaitFor(PathAction action)
         {
-            AutoDuty.Plugin.Action = $"WaitFor: {action.Arguments[0]}";
+            Plugin.Action = $"WaitFor: {action.Arguments[0]}";
             var waitForWhats = action.Arguments[0].Split(';');
             switch (waitForWhats[0])
             {
@@ -305,7 +305,7 @@ namespace AutoDuty.Managers
                     _taskManager.Enqueue(() => IsReady, int.MaxValue, "WaitFor");
                     break;
             }
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+            _taskManager.Enqueue(() => Plugin.Action = "");
 
         }
 
@@ -321,11 +321,11 @@ namespace AutoDuty.Managers
 
         public void SelectYesno(PathAction action)
         {
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"SelectYesno: {action.Arguments[0]}", "SelectYesno");
+            _taskManager.Enqueue(() => Plugin.Action = $"SelectYesno: {action.Arguments[0]}", "SelectYesno");
             _taskManager.Enqueue(() => AddonHelper.ClickSelectYesno(action.Arguments[0].ToUpper().Equals("YES")), "SelectYesno");
             _taskManager.DelayNext("SelectYesno", 500);
             _taskManager.Enqueue(() => !IsCasting, "SelectYesno");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+            _taskManager.Enqueue(() => Plugin.Action = "");
         }
 
         public unsafe void MoveToObject(PathAction action)
@@ -333,11 +333,11 @@ namespace AutoDuty.Managers
             if (!TryGetObjectIdRegex(action.Arguments[0], out var objectDataId)) return;
 
             IGameObject? gameObject = null;
-            AutoDuty.Plugin.Action = $"MoveToObject: {objectDataId}";
+            Plugin.Action = $"MoveToObject: {objectDataId}";
 
             _taskManager.Enqueue(() => TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject), "MoveToObject-GetGameObject");
             _taskManager.Enqueue(() => MovementHelper.Move(gameObject), int.MaxValue, "MoveToObject-Move");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+            _taskManager.Enqueue(() => Plugin.Action = "");
         }
 
         public void TreasureCoffer(PathAction _)
@@ -363,11 +363,11 @@ namespace AutoDuty.Managers
             if (!TryGetObjectIdRegex(action.Arguments[0], out var objectDataId)) return;
 
             IGameObject? gameObject = null;
-            AutoDuty.Plugin.Action = $"Target: {objectDataId}";
+            Plugin.Action = $"Target: {objectDataId}";
 
             _taskManager.Enqueue(() => TryGetObjectByDataId(uint.Parse(objectDataId), out gameObject), "Target-GetGameObject");
             _taskManager.Enqueue(() => TargetCheck(gameObject), "Target-Check");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+            _taskManager.Enqueue(() => Plugin.Action = "");
         }
 
         public void ClickTalk(PathAction action) => _taskManager.Enqueue(() => AddonHelper.ClickTalk(), "ClickTalk");
@@ -438,7 +438,7 @@ namespace AutoDuty.Managers
                 Svc.Condition[ConditionFlag.Occupied39] ||
                 gameObject?.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj))
                 {
-                    AutoDuty.Plugin.Action = "";
+                    Plugin.Action = "";
                 }
                 else
                 {
@@ -463,9 +463,9 @@ namespace AutoDuty.Managers
             if (dataIds.All(x => x.Equals("0"))) return;
             
             IGameObject? gameObject = null;
-            AutoDuty.Plugin.Action = $"Interactable";
+            Plugin.Action = $"Interactable";
             _taskManager.Enqueue(() => Player.Character->InCombat || (gameObject = Svc.Objects.Where(x => x.DataId.EqualsAny(dataIds) && x.IsTargetable).OrderBy(GetDistanceToPlayer).FirstOrDefault()) != null, "Interactable-GetGameObjectUnlessInCombat");
-            _taskManager.Enqueue(() => { AutoDuty.Plugin.Action = $"Interactable: {gameObject?.DataId}"; }, "Interactable-SetActionVar");
+            _taskManager.Enqueue(() => { Plugin.Action = $"Interactable: {gameObject?.DataId}"; }, "Interactable-SetActionVar");
             _taskManager.Enqueue(() =>
             {
                 if (Player.Character->InCombat)
@@ -485,18 +485,18 @@ namespace AutoDuty.Managers
 
         private bool BossCheck()
         {
-            if (((AutoDuty.Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
+            if (((Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
                 return true;
 
             if (EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
-                AutoDuty.Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
+                Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
 
             return false;
         }
 
         private unsafe bool BossMoveCheck(Vector3 bossV3)
         {
-            if (AutoDuty.Plugin.BossObject != null && AutoDuty.Plugin.BossObject.Struct()->InCombat)
+            if (Plugin.BossObject != null && Plugin.BossObject.Struct()->InCombat)
             {
                 VNavmesh_IPCSubscriber.Path_Stop();
                 return true;
@@ -525,20 +525,20 @@ namespace AutoDuty.Managers
 
         public void Boss(PathAction action)
         {
-            Svc.Log.Info($"Starting Action Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? "null"}");
+            Svc.Log.Info($"Starting Action Boss: {Plugin.BossObject?.Name.TextValue ?? "null"}");
             int index = 0;
             List<IGameObject>? treasureCofferObjects = null;
-            AutoDuty.Plugin.SkipTreasureCoffer = false;
+            Plugin.SkipTreasureCoffer = false;
             _taskManager.Enqueue(() => BossMoveCheck(action.Position), "Boss-MoveCheck");
-            if (AutoDuty.Plugin.BossObject == null)
-                _taskManager.Enqueue(() => (AutoDuty.Plugin.BossObject = GetBossObject()) != null, "Boss-GetBossObject");
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = $"Boss: {AutoDuty.Plugin.BossObject?.Name.TextValue ?? ""}", "Boss-SetActionVar");
+            if (Plugin.BossObject == null)
+                _taskManager.Enqueue(() => (Plugin.BossObject = GetBossObject()) != null, "Boss-GetBossObject");
+            _taskManager.Enqueue(() => Plugin.Action = $"Boss: {Plugin.BossObject?.Name.TextValue ?? ""}", "Boss-SetActionVar");
             _taskManager.Enqueue(() => Svc.Condition[ConditionFlag.InCombat], "Boss-WaitInCombat");
             _taskManager.Enqueue(() => BossCheck(), int.MaxValue, "Boss-BossCheck");
-            _taskManager.Enqueue(() => { AutoDuty.Plugin.StopForCombat = true; }, "Boss-SetStopForCombatTrue");
-            _taskManager.Enqueue(() => { AutoDuty.Plugin.BossObject = null; }, "Boss-ClearBossObject");
+            _taskManager.Enqueue(() => { Plugin.StopForCombat = true; }, "Boss-SetStopForCombatTrue");
+            _taskManager.Enqueue(() => { Plugin.BossObject = null; }, "Boss-ClearBossObject");
             
-            if (AutoDuty.Plugin.Configuration.LootTreasure)
+            if (Plugin.Configuration.LootTreasure)
             {
                 _taskManager.DelayNext("Boss-TreasureDelay", 1000);
                 _taskManager.Enqueue(() => treasureCofferObjects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => GetDistanceToPlayer(x) <= 50).ToList(), "Boss-GetTreasureChests");
@@ -556,7 +556,7 @@ namespace AutoDuty.Managers
 
         public void Revival(PathAction _)
         {
-            _taskManager.Enqueue(() => AutoDuty.Plugin.Action = "");
+            _taskManager.Enqueue(() => Plugin.Action = "");
         }
 
         public void CameraFacing(PathAction action)
@@ -567,7 +567,7 @@ namespace AutoDuty.Managers
                 if (v.Length == 3)
                 {
                     Vector3 facingPos = new(float.Parse(v[0], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[1], System.Globalization.CultureInfo.InvariantCulture), float.Parse(v[2], System.Globalization.CultureInfo.InvariantCulture));
-                    AutoDuty.Plugin.OverrideCamera.Face(facingPos);
+                    Plugin.OverrideCamera.Face(facingPos);
                 }
             }
         }
@@ -617,12 +617,12 @@ namespace AutoDuty.Managers
                     switch (action.Arguments[0])
                     {
                         case "1":
-                            AutoDuty.Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
+                            Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
                             Svc.Framework.Update += PraeUpdate;
                             Interactable(new PathAction() { Arguments = ["2012819"] });
                             break;
                         case "2":
-                            AutoDuty.Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
+                            Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
                             Svc.Framework.Update -= PraeUpdate;
                             break;
                     }

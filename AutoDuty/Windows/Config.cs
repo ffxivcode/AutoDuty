@@ -20,6 +20,7 @@ using static AutoDuty.Helpers.RepairNPCHelper;
 using ECommons.MathHelpers;
 using System.Globalization;
 using static AutoDuty.Windows.ConfigTab;
+using Serilog.Events;
 
 namespace AutoDuty.Windows;
 
@@ -31,6 +32,11 @@ public class Configuration : IPluginConfiguration
     public HashSet<string> DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
 
+
+    //LogOptions
+    public bool AutoScroll = true;
+    public LogEventLevel LogEventLevel = LogEventLevel.Debug;
+
     //General Options
     public int LoopTimes = 1;
     internal DutyMode dutyModeEnum = DutyMode.None;
@@ -40,9 +46,9 @@ public class Configuration : IPluginConfiguration
         set
         {
             dutyModeEnum = value;
-            AutoDuty.Plugin.CurrentTerritoryContent = null;
+            Plugin.CurrentTerritoryContent = null;
             MainTab.DutySelected = null;
-            AutoDuty.Plugin.LevelingModeEnum = LevelingMode.None;
+            Plugin.LevelingModeEnum = LevelingMode.None;
         }
     }
     
@@ -58,8 +64,8 @@ public class Configuration : IPluginConfiguration
         set
         {
             showOverlay = value;
-            if (AutoDuty.Plugin.Overlay != null)
-                AutoDuty.Plugin.Overlay.IsOpen = value;
+            if (Plugin.Overlay != null)
+                Plugin.Overlay.IsOpen = value;
         }
     }
     internal bool hideOverlayWhenStopped = false;
@@ -69,9 +75,9 @@ public class Configuration : IPluginConfiguration
         set 
         {
             hideOverlayWhenStopped = value;
-            if (AutoDuty.Plugin.Overlay != null)
+            if (Plugin.Overlay != null)
             {
-                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => AutoDuty.Plugin.Overlay.IsOpen = !value || AutoDuty.Plugin.States.HasFlag(PluginState.Looping) || AutoDuty.Plugin.States.HasFlag(PluginState.Navigating), () => AutoDuty.Plugin.Overlay != null);
+                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => Plugin.Overlay.IsOpen = !value || Plugin.States.HasFlag(PluginState.Looping) || Plugin.States.HasFlag(PluginState.Navigating), () => Plugin.Overlay != null);
             }
         }
     }
@@ -83,9 +89,9 @@ public class Configuration : IPluginConfiguration
         {
             lockOverlay = value;
             if (value)
-                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => { if (!AutoDuty.Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoMove)) AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoMove; }, () => AutoDuty.Plugin.Overlay != null);
+                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => { if (!Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoMove)) Plugin.Overlay.Flags |= ImGuiWindowFlags.NoMove; }, () => Plugin.Overlay != null);
             else
-                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => { if (AutoDuty.Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoMove)) AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoMove; }, () => AutoDuty.Plugin.Overlay != null);
+                SchedulerHelper.ScheduleAction("LockOverlaySetter", () => { if (Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoMove)) Plugin.Overlay.Flags -= ImGuiWindowFlags.NoMove; }, () => Plugin.Overlay != null);
         }
     }
     internal bool overlayNoBG = false;
@@ -96,9 +102,9 @@ public class Configuration : IPluginConfiguration
         {
             overlayNoBG = value;
             if (value)
-                SchedulerHelper.ScheduleAction("OverlayNoBGSetter", () => { if (!AutoDuty.Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoBackground)) AutoDuty.Plugin.Overlay.Flags |= ImGuiWindowFlags.NoBackground; }, () => AutoDuty.Plugin.Overlay != null);
+                SchedulerHelper.ScheduleAction("OverlayNoBGSetter", () => { if (!Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoBackground)) Plugin.Overlay.Flags |= ImGuiWindowFlags.NoBackground; }, () => Plugin.Overlay != null);
             else
-                SchedulerHelper.ScheduleAction("OverlayNoBGSetter", () => { if (AutoDuty.Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoBackground)) AutoDuty.Plugin.Overlay.Flags -= ImGuiWindowFlags.NoBackground; }, () => AutoDuty.Plugin.Overlay != null);
+                SchedulerHelper.ScheduleAction("OverlayNoBGSetter", () => { if (Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoBackground)) Plugin.Overlay.Flags -= ImGuiWindowFlags.NoBackground; }, () => Plugin.Overlay != null);
         }
     }
     public bool ShowDutyLoopText = true;
@@ -269,7 +275,7 @@ public class Configuration : IPluginConfiguration
             {
                 FollowSelf = false;
                 FollowSlot = false;
-                SchedulerHelper.ScheduleAction("FollowRoleBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
+                SchedulerHelper.ScheduleAction("FollowRoleBMRoleChecks", () => Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
             }
         }
     }
@@ -282,7 +288,7 @@ public class Configuration : IPluginConfiguration
         {
             maxDistanceToTargetRoleBased = value;
             if (value)
-                SchedulerHelper.ScheduleAction("MaxDistanceToTargetRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
+                SchedulerHelper.ScheduleAction("MaxDistanceToTargetRoleBasedBMRoleChecks", () => Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
         }
     }
     public float MaxDistanceToTargetFloat = 2.6f;
@@ -296,7 +302,7 @@ public class Configuration : IPluginConfiguration
         {
             positionalRoleBased = value;
             if (value)
-                SchedulerHelper.ScheduleAction("PositionalRoleBasedBMRoleChecks", () => AutoDuty.Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
+                SchedulerHelper.ScheduleAction("PositionalRoleBasedBMRoleChecks", () => Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
         }
     }
 
@@ -305,7 +311,7 @@ public class Configuration : IPluginConfiguration
 
     public void Save()
     {
-        AutoDuty.PluginInterface.SavePluginConfig(this);
+        PluginInterface.SavePluginConfig(this);
     }
 
     public TrustMemberName?[] SelectedTrustMembers = new TrustMemberName?[3];
@@ -315,7 +321,7 @@ public static class ConfigTab
 {
     internal static string FollowName = "";
 
-    private static Configuration Configuration = AutoDuty.Plugin.Configuration;
+    private static Configuration Configuration = Plugin.Configuration;
     private static string preLoopCommand = string.Empty; 
     private static string terminationCommand = string.Empty;
     private static Dictionary<uint, string> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x.Name.RawString) ?? [];
@@ -576,7 +582,7 @@ public static class ConfigTab
                     if (ImGui.Checkbox("Set Positional Based on Player Role", ref Configuration.positionalRoleBased))
                     {
                         Configuration.PositionalRoleBased = Configuration.positionalRoleBased;
-                        AutoDuty.Plugin.BMRoleChecks();
+                        Plugin.BMRoleChecks();
                         Configuration.Save();
                     }
                     using (ImRaii.Disabled(Configuration.positionalRoleBased))

@@ -20,7 +20,7 @@ namespace AutoDuty.Helpers
             else if (field.FieldType.ToString().Contains("System.Collections", StringComparison.InvariantCultureIgnoreCase) || field.FieldType.ToString().Contains("Dalamud.Plugin", StringComparison.InvariantCultureIgnoreCase))
                 return string.Empty;
             else
-                return field.GetValue(AutoDuty.Plugin.Configuration)?.ToString() ?? string.Empty;
+                return field.GetValue(Plugin.Configuration)?.ToString() ?? string.Empty;
         }
 
         internal static bool ModifyConfig(string configName, string configValue)
@@ -37,17 +37,17 @@ namespace AutoDuty.Helpers
             {
                 var configType = ConfigType(field);
                 if (configType == "System.Boolean" && (configValue.ToLower().Equals("true") || configValue.ToLower().Equals("false")))
-                    field.SetValue(AutoDuty.Plugin.Configuration, bool.Parse(configValue));
+                    field.SetValue(Plugin.Configuration, bool.Parse(configValue));
                 else if (configType == "System.Int32" && int.TryParse(configValue, out var i))
-                    field.SetValue(AutoDuty.Plugin.Configuration, i);
+                    field.SetValue(Plugin.Configuration, i);
                 else if (configType == "System.String")
-                    field.SetValue(AutoDuty.Plugin.Configuration, configValue);
+                    field.SetValue(Plugin.Configuration, configValue);
                 else
                 {
                     Svc.Log.Error($"Unable to set config setting: {field.Name.Replace(">k__BackingField", "").Replace("<", "")}, value must be of type: {field.FieldType.ToString().Replace("System.", "")}");
                     return false;
                 }
-                AutoDuty.Plugin.Configuration.Save();
+                Plugin.Configuration.Save();
             }
             return false;
         }
@@ -59,7 +59,7 @@ namespace AutoDuty.Helpers
             foreach (var field in i)
             {
                 if (!field.FieldType.ToString().Contains("System.Collections",StringComparison.InvariantCultureIgnoreCase) && !field.FieldType.ToString().Contains("Dalamud.Plugin", StringComparison.InvariantCultureIgnoreCase) && !field.Name.Replace(">k__BackingField", "").Replace("<", "").Equals("Version",StringComparison.InvariantCultureIgnoreCase))
-                    Svc.Log.Info($"{field.Name.Replace(">k__BackingField", "").Replace("<", "")} = {field.GetValue(AutoDuty.Plugin.Configuration)} ({field.FieldType.ToString().Replace("System.", "")})");
+                    Svc.Log.Info($"{field.Name.Replace(">k__BackingField", "").Replace("<", "")} = {field.GetValue(Plugin.Configuration)} ({field.FieldType.ToString().Replace("System.", "")})");
             }
         }
 

@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using static AutoDuty.AutoDuty;
 
 namespace AutoDuty.Helpers
 {
     using Windows;
     using Managers;
+    using ECommons;
+    using Serilog.Events;
 
     internal static class FileHelper
     {
@@ -27,6 +28,8 @@ namespace AutoDuty.Helpers
                                                                            Filter                = "*.json",
                                                                            IncludeSubdirectories = true
                                                                        };
+
+        internal static readonly FileSystemWatcher FileWatcher = new();
 
         public static byte[] CalculateMD5(string filename)
         {
@@ -65,6 +68,51 @@ namespace AutoDuty.Helpers
             }
         }
 
+        internal static void LogInit()
+        {
+            var path = $"{Plugin.DalamudDirectory}/dalamud.log";
+            var file = new FileInfo(path);
+            if (file == null) return;
+            var directory = file.DirectoryName;
+            var filename = file.Name;
+            if (directory.IsNullOrEmpty() || filename.IsNullOrEmpty()) return;
+            var lastMaxOffset = file.Length;
+            
+            FileWatcher.Path = directory!;
+            FileWatcher.Filter = filename;
+            FileWatcher.NotifyFilter = NotifyFilters.LastWrite;
+
+            FileWatcher.Changed += (sender, e) =>
+            {
+                using FileStream fs = new(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                fs.Seek(lastMaxOffset, SeekOrigin.Begin);
+                using StreamReader sr = new(fs);
+                var x = string.Empty;
+                while ((x = sr.ReadLine()) != null)
+                {
+                    if (!x.Contains("[AutoDuty]")) continue;
+
+                    var logEntry = new LogMessage() { Message = x };
+                    
+                    if (x.Contains("[FTL]"))
+                        logEntry.LogEventLevel = LogEventLevel.Fatal;
+                    else if (x.Contains("[ERR]"))
+                        logEntry.LogEventLevel = LogEventLevel.Error;
+                    else if (x.Contains("[WRN]"))
+                        logEntry.LogEventLevel = LogEventLevel.Warning;
+                    else if (x.Contains("[INF]"))
+                        logEntry.LogEventLevel = LogEventLevel.Information;
+                    else if (x.Contains("[DBG]"))
+                        logEntry.LogEventLevel = LogEventLevel.Debug;
+                    else if (x.Contains("[VRB]"))
+                        logEntry.LogEventLevel = LogEventLevel.Verbose;
+                    LogTab.Add(logEntry);
+                }
+                lastMaxOffset = fs.Position;
+            };
+            FileWatcher.EnableRaisingEvents = true;
+        }
+
         internal static void Init()
         {
             FileSystemWatcher.Changed += OnChanged;
@@ -72,8 +120,8 @@ namespace AutoDuty.Helpers
             FileSystemWatcher.Deleted += OnDeleted;
             FileSystemWatcher.Renamed += OnRenamed;
             FileSystemWatcher.EnableRaisingEvents = true;
-
             Update();
+            LogInit();
         }
 
         private static void Update()

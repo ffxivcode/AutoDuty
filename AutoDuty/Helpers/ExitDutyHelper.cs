@@ -14,11 +14,11 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("ExitDuty Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("ExitDutyTimeOut", Stop, 60000);
-                AutoDuty.Plugin.Action = "Exiting Duty";
+                Plugin.Action = "Exiting Duty";
                 _currentTerritoryType = Svc.ClientState.TerritoryType;
                 Svc.Framework.Update += ExitDutyUpdate;
             }
@@ -26,7 +26,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void Stop()
         {
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
             SchedulerHelper.DescheduleAction("ExitDutyTimeOut");
             Svc.Framework.Update += ExitDutyStopUpdate;
             Svc.Framework.Update -= ExitDutyUpdate;
@@ -47,9 +47,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("ExitDuty Finished");
                 State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Plugin.States &= ~PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(true);
                 _currentTerritoryType = 0;
                 Svc.Framework.Update -= ExitDutyStopUpdate;
             }
@@ -61,7 +61,7 @@ namespace AutoDuty.Helpers
             if (!PlayerHelper.IsReady || PlayerHelper.InCombat)
                 return;
 
-            if (Svc.ClientState.TerritoryType != _currentTerritoryType || !AutoDuty.Plugin.InDungeon || Svc.ClientState.TerritoryType == 0)
+            if (Svc.ClientState.TerritoryType != _currentTerritoryType || !Plugin.InDungeon || Svc.ClientState.TerritoryType == 0)
             {
                 Stop();
                 return;

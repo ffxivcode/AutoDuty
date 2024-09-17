@@ -14,7 +14,6 @@ using ECommons.Schedulers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
-using static AutoDuty.AutoDuty;
 
 namespace AutoDuty.Windows;
 
@@ -403,7 +402,7 @@ public class MainWindow : Window, IDisposable
     }
 
     private static readonly List<(string, Action, Vector4?, bool)> tabList =
-        [("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Info", InfoTab.Draw, null, false), ("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)
+        [("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Info", InfoTab.Draw, null, false), ("Logs", LogTab.Draw, null, false),("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)
         ];
 
     public override void Draw()

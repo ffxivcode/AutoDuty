@@ -10,7 +10,7 @@ namespace AutoDuty.Windows
         static string gitIssueUrl = "https://github.com/ffxivcode/AutoDuty/issues";
         static string punishDiscordUrl = "https://discord.com/channels/1001823907193552978/1236757595738476725";
         static string ffxivcodeDiscordUrl = "https://discord.com/channels/1241050921732014090/1273374407653462017";
-        private static Configuration Configuration = AutoDuty.Plugin.Configuration;
+        private static Configuration Configuration = Plugin.Configuration;
 
         public static void Draw()
         {

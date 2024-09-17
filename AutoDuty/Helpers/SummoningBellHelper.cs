@@ -53,7 +53,7 @@ namespace AutoDuty.Helpers
 
         internal static void Invoke(SummoningBellLocations summoningBellLocation) 
         {
-            switch (AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum)
+            switch (Plugin.Configuration.PreferredSummoningBellEnum)
             {
                 case SummoningBellLocations.Inn:
                     GotoInnHelper.Invoke();
@@ -68,7 +68,7 @@ namespace AutoDuty.Helpers
                     GotoHousingHelper.Invoke((Housing)SummoningBellLocations.FC_Estate);
                     break;
                 default:
-                    GotoHelper.Invoke((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum, SummoningBellVector3s((uint)summoningBellLocation), 0.25f, 4);
+                    GotoHelper.Invoke((uint)Plugin.Configuration.PreferredSummoningBellEnum, SummoningBellVector3s((uint)summoningBellLocation), 0.25f, 4);
                     break;
             }
         }

@@ -19,10 +19,10 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Repair Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
-                if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
+                if (Plugin.Configuration.AutoRepairSelf)
                     SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 300000);
                 else
                     SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 600000);
@@ -38,7 +38,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update += RepairStopUpdate;
             Svc.Framework.Update -= RepairUpdate;
             _seenAddon = false;
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
             AgentModule.Instance()->GetAgentByInternalId(AgentId.Repair)->Hide();
         }
 
@@ -52,16 +52,16 @@ namespace AutoDuty.Helpers
         private unsafe static AtkUnitBase* addonRepair = null;
         private unsafe static AtkUnitBase* addonSelectYesno = null;
         private unsafe static AtkUnitBase* addonSelectIconString = null;
-        private static RepairNPCHelper.RepairNpcData? _preferredRepairNpc => AutoDuty.Plugin.Configuration.PreferredRepairNPC;
+        private static RepairNPCHelper.RepairNpcData? _preferredRepairNpc => Plugin.Configuration.PreferredRepairNPC;
 
         internal static unsafe void RepairStopUpdate(IFramework framework)
         {
             if (!Svc.Condition[ConditionFlag.OccupiedInQuestEvent])
             {
                 State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Plugin.States &= ~PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(true);
                 Svc.Framework.Update -= RepairStopUpdate;
             }
             else if (Svc.Targets.Target != null)
@@ -77,7 +77,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void RepairUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
+            if (Plugin.States.HasFlag(PluginState.Navigating))
                 Stop();
 
             if (Conditions.IsMounted && GotoHelper.State != ActionState.Running)
@@ -98,45 +98,48 @@ namespace AutoDuty.Helpers
             if (GotoHelper.State == ActionState.Running)
                 return;
 
-            AutoDuty.Plugin.Action = "Repairing";
+            Plugin.Action = "Repairing";
 
-            if (AutoDuty.Plugin.Configuration.AutoRepairSelf)
+            if (Plugin.Configuration.AutoRepairSelf)
             {
-                if (!PlayerHelper.IsOccupied || (EzThrottler.Throttle("GearCheck") && InventoryHelper.CanRepair()))
+                if (EzThrottler.Throttle("GearCheck"))
                 {
-                    if (Svc.Condition[ConditionFlag.Occupied39])
+                    if (!PlayerHelper.IsOccupied && InventoryHelper.CanRepair())
                     {
-                        Svc.Log.Debug("Done Repairing");
-                        Stop();
+                        if (Svc.Condition[ConditionFlag.Occupied39])
+                        {
+                            Svc.Log.Debug("Done Repairing");
+                            Stop();
+                        }
+                        if (!GenericHelpers.TryGetAddonByName("Repair", out addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno))
+                        {
+                            Svc.Log.Debug("Using Repair Action");
+                            ActionManager.Instance()->UseAction(ActionType.GeneralAction, 6);
+                            return;
+                        }
+                        else if (!_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
+                        {
+                            Svc.Log.Debug("Clicking Repair");
+                            AddonHelper.ClickRepair();
+                            return;
+                        }
+                        else if (GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
+                        {
+                            Svc.Log.Debug("Clicking SelectYesno");
+                            AddonHelper.ClickSelectYesno();
+                            _seenAddon = true;
+                        }
+                        else if (_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
+                        {
+                            Svc.Log.Debug("Stopping-SelfRepair");
+                            Stop();
+                        }
                     }
-                    if (!GenericHelpers.TryGetAddonByName("Repair", out addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno))
-                    {
-                        Svc.Log.Debug("Using Repair Action");
-                        ActionManager.Instance()->UseAction(ActionType.GeneralAction, 6);
-                        return;
-                    }
-                    else if (!_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
-                    {
-                        Svc.Log.Debug("Clicking Repair");
-                        AddonHelper.ClickRepair();
-                        return;
-                    }
-                    else if (GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
-                    {
-                        Svc.Log.Debug("Clicking SelectYesno");
-                        AddonHelper.ClickSelectYesno();
-                        _seenAddon = true;
-                    }
-                    else if (_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
+                    else
                     {
                         Svc.Log.Debug("Stopping-SelfRepair");
                         Stop();
                     }
-                }
-                else
-                {
-                    Svc.Log.Debug("Stopping-SelfRepair");
-                    Stop();
                 }
                 return;
             }

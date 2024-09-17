@@ -24,9 +24,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("AM Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("AMTimeOut", Stop, 600000);
                 Svc.Framework.Update += AMUpdate;
             }
@@ -38,7 +38,7 @@ namespace AutoDuty.Helpers
             if (State == ActionState.Running)
                 Svc.Log.Info("AM Finished");
             GotoInnHelper.Stop();
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
             SchedulerHelper.DescheduleAction("AMTimeOut");
             _aMStarted = false;
             if (AM_IPCSubscriber.IsRunning())
@@ -50,16 +50,16 @@ namespace AutoDuty.Helpers
         internal static ActionState State = ActionState.None;
 
         private static bool _aMStarted = false;
-        private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum));
+        private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)Plugin.Configuration.PreferredSummoningBellEnum));
 
         internal static unsafe void AMStopUpdate(IFramework framework)
         {
             if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
             {
                 State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Plugin.States &= ~PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(true);
                 Svc.Framework.Update -= AMStopUpdate;
             }
             else if (Svc.Targets.Target != null)
@@ -81,10 +81,10 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void AMUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Paused))
+            if (Plugin.States.HasFlag(PluginState.Paused))
                 return;
 
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
+            if (Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping AMHelper");
                 Stop();
@@ -112,7 +112,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug("Goto Running");
                 return;
             }
-            AutoDuty.Plugin.Action = "AM Running";
+            Plugin.Action = "AM Running";
 
             if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) > 4)
             {
@@ -122,7 +122,7 @@ namespace AutoDuty.Helpers
             else if (SummoningBellGameObject == null && GotoHelper.State != ActionState.Running)
             {
                 Svc.Log.Debug("Moving to Summoning Bell Location");
-                SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
+                SummoningBellHelper.Invoke(Plugin.Configuration.PreferredSummoningBellEnum);
             }
             else if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) <= 4 && !_aMStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList) && (ObjectHelper.InteractWithObjectUntilAddon(SummoningBellGameObject, "RetainerList") == null))
             {

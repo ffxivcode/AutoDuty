@@ -33,9 +33,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Started, Going to {territoryType}{(moveLocations.Count>0 ? $" and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations" : "")}");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
                 _territoryType = territoryType;
                 _gameObjectDataId = gameObjectDataId;
                 _moveLocations = moveLocations;
@@ -54,9 +54,9 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Goto Finished");
             Svc.Framework.Update -= GotoUpdate;
             State = ActionState.None;
-            AutoDuty.Plugin.States &= ~PluginState.Other;
-            if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                AutoDuty.Plugin.SetGeneralSettings(true);
+            Plugin.States &= ~PluginState.Other;
+            if (!Plugin.States.HasFlag(PluginState.Looping))
+                Plugin.SetGeneralSettings(true);
             _territoryType = 0;
             _gameObjectDataId = 0;
             _moveLocations = [];
@@ -66,7 +66,7 @@ namespace AutoDuty.Helpers
             _useAethernetTravel = false;
             _useFlight = false;
             _useMesh = true;
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
             if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
@@ -88,7 +88,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void GotoUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
+            if (Plugin.States.HasFlag(PluginState.Navigating))
                 Stop();
 
             if (!EzThrottler.Check("Goto"))
@@ -96,7 +96,7 @@ namespace AutoDuty.Helpers
 
             EzThrottler.Throttle("Goto", 50);
 
-            AutoDuty.Plugin.Action = $"Going to {TerritoryName.GetTerritoryName(_territoryType)}{(_moveLocations.Count > 0 ? $" at {_moveLocations[^1]}" : "")}";
+            Plugin.Action = $"Going to {TerritoryName.GetTerritoryName(_territoryType)}{(_moveLocations.Count > 0 ? $" at {_moveLocations[^1]}" : "")}";
 
             if (Svc.ClientState.LocalPlayer == null)
                 return;
@@ -104,7 +104,7 @@ namespace AutoDuty.Helpers
             if (!PlayerHelper.IsValid || PlayerHelper.IsCasting || PlayerHelper.IsJumping || !VNavmesh_IPCSubscriber.Nav_IsReady())
                 return;
 
-            if (AutoDuty.Plugin.InDungeon)
+            if (Plugin.InDungeon)
             {
                 ExitDutyHelper.Invoke();
                 return;

@@ -26,7 +26,7 @@ namespace AutoDuty.Helpers
         internal static unsafe short GetCurrentLevelFromSheet(Job? job = null)
         {
             PlayerState* playerState = PlayerState.Instance();
-            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint) (job ?? (Player.Available ? Player.Object.GetJob() : AutoDuty.Plugin.JobLastKnown)))?.ExpArrayIndex ?? 0];
+            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint) (job ?? (Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown)))?.ExpArrayIndex ?? 0];
         }
 
         internal static float JobRange

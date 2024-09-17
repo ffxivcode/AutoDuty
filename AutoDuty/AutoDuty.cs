@@ -1,6 +1,7 @@
 global using static AutoDuty.Data.Enums;
 global using static AutoDuty.Data.Extensions;
 global using static AutoDuty.Data.Classes;
+global using static AutoDuty.AutoDuty;
 global using AutoDuty.Managers;
 global using ECommons.GameHelpers;
 using System;
@@ -36,6 +37,7 @@ using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.Properties;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using Serilog.Events;
 
 namespace AutoDuty;
 
@@ -76,6 +78,8 @@ public sealed class AutoDuty : IDalamudPlugin
     internal bool StopForCombat = true;
     internal DirectoryInfo PathsDirectory;
     internal FileInfo AssemblyFileInfo;
+    internal FileInfo ConfigFile;
+    internal DirectoryInfo? DalamudDirectory;
     internal DirectoryInfo? AssemblyDirectoryInfo;
     internal Configuration Configuration { get; init; }
     internal WindowSystem WindowSystem = new("AutoDuty");
@@ -163,6 +167,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal DutyState DutyState = DutyState.None;
     internal Chat Chat;
     internal PathAction PathAction = new();
+    internal List<Data.Classes.LogMessage> DalamudLogEntries = [];
 
     private LevelingMode levelingModeEnum = LevelingMode.None;
     private Stage _stage = Stage.Stopped;
@@ -191,6 +196,8 @@ public sealed class AutoDuty : IDalamudPlugin
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             ConfigTab.BuildManuals();
             _configDirectory = PluginInterface.ConfigDirectory;
+            ConfigFile = PluginInterface.ConfigFile;
+            DalamudDirectory = ConfigFile.Directory?.Parent;
             PathsDirectory = new(_configDirectory.FullName + "/paths");
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
@@ -212,6 +219,7 @@ public sealed class AutoDuty : IDalamudPlugin
             RepairNPCHelper.PopulateRepairNPCs();
             FileHelper.OnStart();
             FileHelper.Init();
+            
             Chat = new();
             _overrideAFK = new();
             _ipcProvider = new();
@@ -273,6 +281,7 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.DutyState.DutyWiped += DutyState_DutyWiped;
             Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
             Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
+            Svc.Log.MinimumLogLevel = LogEventLevel.Debug;
         }
         catch (Exception e)
         {
@@ -1470,6 +1479,7 @@ public sealed class AutoDuty : IDalamudPlugin
         Svc.Framework.Update -= Framework_Update;
         Svc.Framework.Update -= SchedulerHelper.ScheduleInvoker;
         FileHelper.FileSystemWatcher.Dispose();
+        FileHelper.FileWatcher.Dispose();
         WindowSystem.RemoveAllWindows();
         ECommonsMain.Dispose();
         MainWindow.Dispose();

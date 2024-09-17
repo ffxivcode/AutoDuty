@@ -22,9 +22,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany}");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoInnUpdate;
             }
@@ -39,7 +39,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update += GotoInnStopUpdate;
             Svc.Framework.Update -= GotoInnUpdate;
             _whichGrandCompany = 0;
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
         }
 
         internal static ActionState State = ActionState.None;
@@ -57,9 +57,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Debug("Stopping GotoInn");
                 State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Plugin.States &= ~PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(true);
                 Svc.Framework.Update -= GotoInnStopUpdate;
             }
             else if (Svc.Targets.Target != null)
@@ -75,7 +75,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void GotoInnUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
+            if (Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug($"AutoDuty has Started, Stopping GotoInn");
                 Stop();
@@ -95,7 +95,7 @@ namespace AutoDuty.Helpers
             if (GotoHelper.State == ActionState.Running)
                 return;
 
-            AutoDuty.Plugin.Action = "Retiring to Inn";
+            Plugin.Action = "Retiring to Inn";
 
             if (Svc.ClientState.TerritoryType == InnTerritoryType(_whichGrandCompany))
             {

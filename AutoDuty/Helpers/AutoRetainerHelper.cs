@@ -25,7 +25,7 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("AutoRetainer Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
+                Plugin.States |= PluginState.Other;
                 SchedulerHelper.ScheduleAction("AutoRetainerTimeOut", Stop, 600000);
                 Svc.Framework.Update += AutoRetainerUpdate;
             }
@@ -37,7 +37,7 @@ namespace AutoDuty.Helpers
             if (State == ActionState.Running)
                 Svc.Log.Info("AutoRetainer Finished");
             GotoInnHelper.Stop();
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
             SchedulerHelper.DescheduleAction("AutoRetainerTimeOut");
             _autoRetainerStarted = false;
             Svc.Framework.Update -= AutoRetainerUpdate;
@@ -48,7 +48,7 @@ namespace AutoDuty.Helpers
 
         internal static ActionState State = ActionState.None;
         private static bool _autoRetainerStarted = false;
-        private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum));
+        private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)Plugin.Configuration.PreferredSummoningBellEnum));
 
         internal static unsafe void CloseRetainerWindows()
         {
@@ -70,7 +70,7 @@ namespace AutoDuty.Helpers
             if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
             {
                 State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
+                Plugin.States &= ~PluginState.Other;
                 Svc.Framework.Update -= AutoRetainerStopUpdate;
             }
             else
@@ -79,7 +79,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void AutoRetainerUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
+            if (Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping AutoRetainerHelper");
                 Stop();
@@ -108,7 +108,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug("Goto Running");
                 return;
             }
-            AutoDuty.Plugin.Action = "AutoRetainer Running";
+            Plugin.Action = "AutoRetainer Running";
 
             if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) > 4)
             {
@@ -118,7 +118,7 @@ namespace AutoDuty.Helpers
             else if (SummoningBellGameObject == null && GotoHelper.State != ActionState.Running)
             {
                 Svc.Log.Debug("Moving to Summoning Bell Location");
-                SummoningBellHelper.Invoke(AutoDuty.Plugin.Configuration.PreferredSummoningBellEnum);
+                SummoningBellHelper.Invoke(Plugin.Configuration.PreferredSummoningBellEnum);
             }
             else if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) <= 4 && !_autoRetainerStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList) && (ObjectHelper.InteractWithObjectUntilAddon(SummoningBellGameObject, "RetainerList") == null))
             {

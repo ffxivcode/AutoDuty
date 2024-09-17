@@ -12,7 +12,7 @@ namespace AutoDuty.Data
     {
         public static void DrawCustomText(this PathAction pathAction, int index, Action clickedAction)
         {
-            var v4 = index == AutoDuty.Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (pathAction.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
+            var v4 = index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (pathAction.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
             ImGui.NewLine();
             if (pathAction.Tag == ActionTag.Comment)
             {
@@ -21,7 +21,7 @@ namespace AutoDuty.Data
             }
             if (!pathAction.Tag.EqualsAny(ActionTag.None, ActionTag.Treasure, ActionTag.Revival))
             {
-                TextClicked(index == AutoDuty.Plugin.Indexer ? v4 : new(1, 165 / 255f, 0, 1), $"{pathAction.Tag}", clickedAction);
+                TextClicked(index == Plugin.Indexer ? v4 : new(1, 165 / 255f, 0, 1), $"{pathAction.Tag}", clickedAction);
                 TextClicked(v4, "|", clickedAction);
             }
             TextClicked(v4, $"{pathAction.Name}", clickedAction);
@@ -35,7 +35,7 @@ namespace AutoDuty.Data
             if (!pathAction.Note.IsNullOrEmpty())
             {
                 TextClicked(v4, "|", clickedAction);
-                TextClicked(index == AutoDuty.Plugin.Indexer ? v4 : new(0, 1, 0, 1), $"{pathAction.Note}", clickedAction);
+                TextClicked(index == Plugin.Indexer ? v4 : new(0, 1, 0, 1), $"{pathAction.Note}", clickedAction);
             }
         }
 
@@ -43,7 +43,7 @@ namespace AutoDuty.Data
         {
             ImGui.SameLine(0, 0);
             ImGui.TextColored(col, text);
-            if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && AutoDuty.Plugin.Stage == 0)
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
                 clicked();
         }
 
@@ -51,12 +51,12 @@ namespace AutoDuty.Data
 
         public static bool StartsWithIgnoreCase(this string str, string strsw) => str.StartsWith(strsw, StringComparison.OrdinalIgnoreCase);
 
-        public static string ToCustomString(this List<string> strings)
+        public static string ToCustomString(this List<string> strings, string delimiter = ",")
         {
             string outString = string.Empty;
 
             foreach (var stringIter in strings.Select((Value, Index) => (Value, Index)))
-                outString += (stringIter.Index + 1) < strings.Count ? $"{stringIter.Value}," : $"{stringIter.Value}";
+                outString += (stringIter.Index + 1) < strings.Count ? $"{stringIter.Value}{delimiter}" : $"{stringIter.Value}";
 
             return outString;
         }
