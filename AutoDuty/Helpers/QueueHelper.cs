@@ -21,9 +21,9 @@ namespace AutoDuty.Helpers
                 _dutyMode = dutyMode;
                 _content = content;
                 Svc.Log.Info($"Queueing: {dutyMode}: {content.Name}");
-                AutoDuty.Plugin.Action = $"Queueing {_dutyMode}: {content.Name}";
+                Plugin.Action = $"Queueing {_dutyMode}: {content.Name}";
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
+                Plugin.States |= PluginState.Other;
                 Svc.Framework.Update += QueueUpdate;
             }
         }
@@ -35,7 +35,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info($"Done Queueing: {_dutyMode}: {_content?.Name}");
             _content = null;
             State = ActionState.None;
-            AutoDuty.Plugin.States &= ~PluginState.Other;
+            Plugin.States &= ~PluginState.Other;
             _allConditionsMetToJoin = false;
             _turnedOffTrustMembers = false;
             _turnedOnConfigMembers = false;
@@ -111,7 +111,7 @@ namespace AutoDuty.Helpers
             {
                 if (EzThrottler.Throttle("_turnedOnConfigMembers", 500))
                 {
-                    var members = AutoDuty.Plugin.Configuration.SelectedTrustMembers;
+                    var members = Plugin.Configuration.SelectedTrustMembers;
                     if (members.Count(x => x is not null) == 3)
                         members.OrderBy(x => TrustHelper.Members[(TrustMemberName)x!].Role).Each(member =>
                         {
@@ -166,10 +166,10 @@ namespace AutoDuty.Helpers
 
         private static void QueueRegular()
         {
-            if (ContentsFinder.Instance()->IsUnrestrictedParty != AutoDuty.Plugin.Configuration.Unsynced)
+            if (ContentsFinder.Instance()->IsUnrestrictedParty != Plugin.Configuration.Unsynced)
             {
                 Svc.Log.Debug("Queue Helper - Setting UnrestrictedParty");
-                ContentsFinder.Instance()->IsUnrestrictedParty = AutoDuty.Plugin.Configuration.Unsynced;
+                ContentsFinder.Instance()->IsUnrestrictedParty = Plugin.Configuration.Unsynced;
                 return;
             }
 
@@ -223,7 +223,7 @@ namespace AutoDuty.Helpers
 
         internal static void QueueUpdate(IFramework _)
         {
-            if (_content == null || AutoDuty.Plugin.InDungeon || Svc.ClientState.TerritoryType == _content?.TerritoryType)
+            if (_content == null || Plugin.InDungeon || Svc.ClientState.TerritoryType == _content?.TerritoryType)
                 Stop();
 
             if (!EzThrottler.Throttle("QueueHelper", 250)|| !PlayerHelper.IsReadyFull || ContentsFinderConfirm() || Conditions.IsInDutyQueue) return;

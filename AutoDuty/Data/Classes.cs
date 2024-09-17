@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Serilog.Events;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
@@ -7,6 +8,12 @@ namespace AutoDuty.Data
 {
     public class Classes
     {
+        public class LogMessage
+        {
+            public string Message { get; set; } = string.Empty;
+            public LogEventLevel LogEventLevel { get; set; }
+        }
+
         public class Message
         {
             public string Sender { get; set; } = string.Empty;
@@ -75,7 +82,7 @@ namespace AutoDuty.Data
             [JsonPropertyName("meta")]
             public PathFileMetaData Meta { get; set; } = new()
             {
-                CreatedAt = AutoDuty.Plugin.Configuration.Version,
+                CreatedAt = Plugin.Configuration.Version,
                 Changelog = [],
                 Notes = []
             };

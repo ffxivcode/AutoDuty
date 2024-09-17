@@ -20,7 +20,7 @@ namespace AutoDuty.Helpers
             get => _deathState;
             set
             {
-                if (AutoDuty.Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) && !AutoDuty.Plugin.Configuration.Unsynced)
+                if (Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) && !Plugin.Configuration.Unsynced)
                     return;
                 else if (value == PlayerLifeState.Dead)
                 {
@@ -30,7 +30,7 @@ namespace AutoDuty.Helpers
                 else if (value == PlayerLifeState.Revived)
                 {
                     Svc.Log.Debug("DeathHelper - Player is Revived changing state to Revived");
-                    _oldIndex = AutoDuty.Plugin.Indexer;
+                    _oldIndex = Plugin.Indexer;
                     _findShortcutStartTime = Environment.TickCount;
                     FindShortcut();
                 }
@@ -40,19 +40,19 @@ namespace AutoDuty.Helpers
 
         private static unsafe void OnDeath()
         {
-            if (AutoDuty.Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) && !AutoDuty.Plugin.Configuration.Unsynced)
+            if (Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) && !Plugin.Configuration.Unsynced)
                 return;
 
-            AutoDuty.Plugin.StopForCombat = true;
-            AutoDuty.Plugin.SkipTreasureCoffer = true;
+            Plugin.StopForCombat = true;
+            Plugin.SkipTreasureCoffer = true;
 
             if (VNavmesh_IPCSubscriber.Path_IsRunning())
                 VNavmesh_IPCSubscriber.Path_Stop();
 
-            if (AutoDuty.Plugin.TaskManager.IsBusy)
-                AutoDuty.Plugin.TaskManager.Abort();
+            if (Plugin.TaskManager.IsBusy)
+                Plugin.TaskManager.Abort();
            
-            if (AutoDuty.Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid))
+            if (Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid))
             {
                 if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
                     AddonHelper.ClickSelectYesno();
@@ -67,17 +67,17 @@ namespace AutoDuty.Helpers
 
         private static int FindWaypoint()
         {
-            if (AutoDuty.Plugin.Indexer == 0)
+            if (Plugin.Indexer == 0)
             {
                 //Svc.Log.Info($"Finding Closest Waypoint {ListBoxPOSText.Count}");
                 float closestWaypointDistance = float.MaxValue;
                 int closestWaypointIndex = -1;
                 float currentDistance = 0;
 
-                for (int i = 0; i < AutoDuty.Plugin.Actions.Count; i++)
+                for (int i = 0; i < Plugin.Actions.Count; i++)
                 {
-                    var node = AutoDuty.Plugin.Actions[i].Name;
-                    var position = AutoDuty.Plugin.Actions[i].Position;
+                    var node = Plugin.Actions[i].Name;
+                    var position = Plugin.Actions[i].Position;
                     if (node.Equals("Boss", StringComparison.InvariantCultureIgnoreCase))
                     {
                         currentDistance = ObjectHelper.GetDistanceToPlayer(position);
@@ -94,7 +94,7 @@ namespace AutoDuty.Helpers
                         //Svc.Log.Info($"cd: {currentDistance}");
                         if (currentDistance < closestWaypointDistance)
                         {
-                            closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(AutoDuty.Plugin.Actions[AutoDuty.Plugin.Indexer].Position);
+                            closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(Plugin.Actions[Plugin.Indexer].Position);
                             closestWaypointIndex = i;
                         }
                     }
@@ -103,21 +103,21 @@ namespace AutoDuty.Helpers
                 return closestWaypointIndex + 1;
             }
 
-            if (AutoDuty.Plugin.Indexer != -1)
+            if (Plugin.Indexer != -1)
             {
-                bool revivalFound = ContentPathsManager.DictionaryPaths[AutoDuty.Plugin.CurrentTerritoryType].Paths[AutoDuty.Plugin.CurrentPath].RevivalFound;
+                bool revivalFound = ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryType].Paths[Plugin.CurrentPath].RevivalFound;
 
                 //Svc.Log.Info("Finding Last Boss");
-                for (int i = AutoDuty.Plugin.Indexer; i >= 0; i--)
+                for (int i = Plugin.Indexer; i >= 0; i--)
                 {
                     if (revivalFound)
                     {
-                        if (AutoDuty.Plugin.Actions[i].Name.Equals("Revival", StringComparison.InvariantCultureIgnoreCase) && i != AutoDuty.Plugin.Indexer)
+                        if (Plugin.Actions[i].Name.Equals("Revival", StringComparison.InvariantCultureIgnoreCase) && i != Plugin.Indexer)
                             return i;
                     }
                     else
                     {
-                        if (AutoDuty.Plugin.Actions[i].Name.Equals("Boss", StringComparison.InvariantCultureIgnoreCase) && i != AutoDuty.Plugin.Indexer)
+                        if (Plugin.Actions[i].Name.Equals("Boss", StringComparison.InvariantCultureIgnoreCase) && i != Plugin.Indexer)
                             return i + 1;
                     }
                 }
@@ -151,7 +151,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= OnRevive;
             if (VNavmesh_IPCSubscriber.Path_IsRunning())
                 VNavmesh_IPCSubscriber.Path_Stop();
-            AutoDuty.Plugin.Stage = Stage.Reading_Path;
+            Plugin.Stage = Stage.Reading_Path;
             Svc.Log.Debug("DeathHelper - Player is Alive, and we are done with Revived Actions, changing state to Alive");
             _deathState = PlayerLifeState.Alive;
         }
@@ -163,13 +163,13 @@ namespace AutoDuty.Helpers
             if (_gameObject == null || !_gameObject.IsTargetable)
             {
                 Svc.Log.Debug("OnRevive: Done");
-                if (AutoDuty.Plugin.Indexer == 0) AutoDuty.Plugin.Indexer = FindWaypoint();
+                if (Plugin.Indexer == 0) Plugin.Indexer = FindWaypoint();
                 Stop();
                 return;
             }
 
-            if (_oldIndex == AutoDuty.Plugin.Indexer)
-                AutoDuty.Plugin.Indexer = FindWaypoint();
+            if (_oldIndex == Plugin.Indexer)
+                Plugin.Indexer = FindWaypoint();
 
             if (ObjectHelper.GetDistanceToPlayer(_gameObject) > 2)
             {

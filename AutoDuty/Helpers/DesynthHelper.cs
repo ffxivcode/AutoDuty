@@ -18,11 +18,11 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Desynth Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("DesynthTimeOut", Stop, 300000);
-                AutoDuty.Plugin.Action = "Desynthing";
+                Plugin.Action = "Desynthing";
                 Svc.Framework.Update += DesynthUpdate;
                 _maxDesynthLevel = PlayerHelper.GetMaxDesynthLevel();
             }
@@ -30,7 +30,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void Stop()
         {
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
             SchedulerHelper.DescheduleAction("DesynthTimeOut");
             Svc.Framework.Update += DesynthStopUpdate;
             Svc.Framework.Update -= DesynthUpdate;
@@ -53,9 +53,9 @@ namespace AutoDuty.Helpers
             else
             {
                 State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Plugin.States &= ~PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(true);
                 Svc.Framework.Update -= DesynthStopUpdate;
             }
             return;
@@ -63,7 +63,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void DesynthUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating) || AutoDuty.Plugin.InDungeon)
+            if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.InDungeon)
                 Stop();
 
             if (!EzThrottler.Throttle("Desynth", 250))
@@ -75,7 +75,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            AutoDuty.Plugin.Action = "Desynthing Inventory";
+            Plugin.Action = "Desynthing Inventory";
 
             if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
             {
@@ -126,7 +126,7 @@ namespace AutoDuty.Helpers
 
                         if (itemLevel == null || itemSheetRow == null) continue;
 
-                        if (!AutoDuty.Plugin.Configuration.AutoDesynthSkillUp || (desynthLevel < itemLevel + 50 && desynthLevel < _maxDesynthLevel))
+                        if (!Plugin.Configuration.AutoDesynthSkillUp || (desynthLevel < itemLevel + 50 && desynthLevel < _maxDesynthLevel))
                         {
                             Svc.Log.Debug($"Salvaging Item({i}): {itemSheetRow.Name.RawString} with iLvl {itemLevel} because our desynth level is {desynthLevel}");
                             foundOne = true;

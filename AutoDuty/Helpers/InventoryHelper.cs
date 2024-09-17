@@ -165,8 +165,8 @@ namespace AutoDuty.Helpers
             return equipedItems->Items[itemLowest];
         }
 
-        internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) <= AutoDuty.Plugin.Configuration.AutoRepairPct;// && (!AutoDuty.Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
-        internal static bool CanRepair(uint percent) => (LowestEquippedItem().Condition / 300f) < percent;// && (!AutoDuty.Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
+        internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) <= Plugin.Configuration.AutoRepairPct;// && (!Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
+        internal static bool CanRepair(uint percent) => (LowestEquippedItem().Condition / 300f) < percent;// && (!Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
 
         //artisan
         internal static bool CanRepairItem(uint itemID)
@@ -187,7 +187,7 @@ namespace AutoDuty.Helpers
                 if (!HasDarkMatterOrBetter(repairItem.Row))
                     return false;
 
-                var jobLevel = PlayerState.Instance()->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint)actualJob)?.ExpArrayIndex ?? 0];
+                var jobLevel = PlayerHelper.GetCurrentLevelFromSheet(actualJob);
                 if (Math.Max(item.LevelEquip - 10, 1) <= jobLevel)
                     return true;
             }

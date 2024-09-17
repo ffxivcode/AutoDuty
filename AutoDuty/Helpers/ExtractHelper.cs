@@ -18,13 +18,13 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Extract Materia Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
+                Plugin.States |= PluginState.Other;
                 SchedulerHelper.ScheduleAction("ExtractTimeOut", Stop, 300000);
-                if (AutoDuty.Plugin.Configuration.AutoExtractAll)
+                if (Plugin.Configuration.AutoExtractAll)
                     _stoppingCategory = 6;
                 else
                     _stoppingCategory = 0;
-                AutoDuty.Plugin.Action = "Extracting Materia";
+                Plugin.Action = "Extracting Materia";
                 Svc.Framework.Update += ExtractUpdate;
             }
         }
@@ -33,10 +33,10 @@ namespace AutoDuty.Helpers
         {
             _currentCategory = 0;
             _switchedCategory = false;
-            AutoDuty.Plugin.States |= PluginState.Other;
-            AutoDuty.Plugin.Action = "";
-            if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                AutoDuty.Plugin.SetGeneralSettings(false);
+            Plugin.States |= PluginState.Other;
+            Plugin.Action = "";
+            if (!Plugin.States.HasFlag(PluginState.Looping))
+                Plugin.SetGeneralSettings(false);
             SchedulerHelper.DescheduleAction("ExtractTimeOut");
             Svc.Framework.Update += ExtractStopUpdate;
             Svc.Framework.Update -= ExtractUpdate;
@@ -61,9 +61,9 @@ namespace AutoDuty.Helpers
             else
             {
                 State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Plugin.States &= ~PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(true);
                 Svc.Framework.Update -= ExtractStopUpdate;
             }
             return;
@@ -71,7 +71,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void ExtractUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating) || AutoDuty.Plugin.InDungeon)
+            if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.InDungeon)
                 Stop();
 
             if (!EzThrottler.Throttle("Extract", 250))
@@ -83,7 +83,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            AutoDuty.Plugin.Action = "Extracting Materia";
+            Plugin.Action = "Extracting Materia";
 
             if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
             {

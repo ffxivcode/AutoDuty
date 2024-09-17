@@ -15,12 +15,12 @@ namespace AutoDuty.IPC
         [EzIPC] public void ListConfig() => ConfigHelper.ListConfig();
         [EzIPC] public string GetConfig(string config) => ConfigHelper.GetConfig(config);
         [EzIPC] public void SetConfig (string config, string setting) => ConfigHelper.ModifyConfig(config, setting);
-        [EzIPC] public void Run(uint territoryType, int loops = 0, bool bareMode = false) => AutoDuty.Plugin.Run(territoryType, loops, bareMode);
-        [EzIPC] public void Start(bool startFromZero = true) => AutoDuty.Plugin.StartNavigation(startFromZero);
-        [EzIPC] public void Stop() => AutoDuty.Plugin.Stage = Stage.Stopped;
-        [EzIPC] public bool IsNavigating() => AutoDuty.Plugin.States.HasFlag(PluginState.Navigating);
-        [EzIPC] public bool IsLooping() => AutoDuty.Plugin.States.HasFlag(PluginState.Looping);
-        [EzIPC] public bool IsStopped() => AutoDuty.Plugin.Stage == Stage.Stopped;
+        [EzIPC] public void Run(uint territoryType, int loops = 0, bool bareMode = false) => Plugin.Run(territoryType, loops, bareMode);
+        [EzIPC] public void Start(bool startFromZero = true) => Plugin.StartNavigation(startFromZero);
+        [EzIPC] public void Stop() => Plugin.Stage = Stage.Stopped;
+        [EzIPC] public bool IsNavigating() => Plugin.States.HasFlag(PluginState.Navigating);
+        [EzIPC] public bool IsLooping() => Plugin.States.HasFlag(PluginState.Looping);
+        [EzIPC] public bool IsStopped() => Plugin.Stage == Stage.Stopped;
         [EzIPC] public bool ContentHasPath(uint territoryType) => ContentHelper.DictionaryContent.ContainsKey(territoryType);
         
     }

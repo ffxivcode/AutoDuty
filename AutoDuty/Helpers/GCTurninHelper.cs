@@ -22,9 +22,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("GCTurnin Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GCTurninTimeOut", Stop, 600000);
                 Svc.Framework.Update += GCTurninUpdate;
             }
@@ -37,7 +37,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Info("GCTurnin Finished");
             _deliverooStarted = false;
             GotoHelper.Stop();
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
             Svc.Framework.Update += GCTurninStopUpdate;
             Svc.Framework.Update -= GCTurninUpdate;
             SchedulerHelper.DescheduleAction("GCTurninTimeOut");
@@ -57,9 +57,9 @@ namespace AutoDuty.Helpers
             if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
             {
                 State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Plugin.States &= ~PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(true);
                 Svc.Framework.Update -= GCTurninStopUpdate;
             }
             else if (Svc.Targets.Target != null)
@@ -77,7 +77,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe void GCTurninUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
+            if (Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug("AutoDuty is Started, Stopping GCTurninHelper");
                 Stop();
@@ -103,12 +103,12 @@ namespace AutoDuty.Helpers
                 //Svc.Log.Debug("Goto Running");
                 return;
             }
-            AutoDuty.Plugin.Action = "GC Turning In";
+            Plugin.Action = "GC Turning In";
 
             if (GotoHelper.State != ActionState.Running && Svc.ClientState.TerritoryType != PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany()))
             {
                 Svc.Log.Debug("Moving to GC Supply");
-                if (AutoDuty.Plugin.Configuration.AutoGCTurninUseTicket && InventoryHelper.ItemCount(_aetheryteTicketId) > 0)
+                if (Plugin.Configuration.AutoGCTurninUseTicket && InventoryHelper.ItemCount(_aetheryteTicketId) > 0)
                 {
                     if (!PlayerHelper.IsCasting)
                         InventoryHelper.UseItem(_aetheryteTicketId);

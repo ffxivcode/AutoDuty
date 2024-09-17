@@ -52,7 +52,7 @@ namespace AutoDuty.Managers
 
                 if (Paths.Count > 1)
                 {
-                    if (AutoDuty.Plugin.Configuration.PathSelections.TryGetValue(Content.TerritoryType, out Dictionary<Job, int>? jobConfig))
+                    if (Plugin.Configuration.PathSelections.TryGetValue(Content.TerritoryType, out Dictionary<Job, int>? jobConfig))
                     {
                         if (jobConfig.TryGetValue((Job) job, out int pathId))
                         {
@@ -98,7 +98,7 @@ namespace AutoDuty.Managers
             {
                 Match pathMatch = RegexHelper.PathFileRegex().Match(FileName);
 
-                string pathFileColor = AutoDuty.Plugin.Configuration.DoNotUpdatePathFiles.Contains(FileName) ? ImGuiHelper.pathFileColorNoUpdate : ImGuiHelper.pathFileColor;
+                string pathFileColor = Plugin.Configuration.DoNotUpdatePathFiles.Contains(FileName) ? ImGuiHelper.pathFileColorNoUpdate : ImGuiHelper.pathFileColor;
                 id = uint.Parse(pathMatch.Groups[2].Value);
                 ColoredNameString = pathMatch.Success ?
                                              $"<0.8,0.8,1>{pathMatch.Groups[4]}</>{pathFileColor}{pathMatch.Groups[5]}</>" :
@@ -169,7 +169,7 @@ namespace AutoDuty.Managers
                                     {
                                         Actions = [.. pathActions]
                                     };
-                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = AutoDuty.Plugin.Configuration.Version });
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = Plugin.Configuration.Version });
                                 }
 
                                 string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
@@ -248,7 +248,7 @@ namespace AutoDuty.Managers
                                     pathFile = JsonSerializer.Deserialize<PathFile>(json);
                                     if (pathFile == null) return new();
                                     pathFile.Actions = [.. pathActions];
-                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = AutoDuty.Plugin.Configuration.Version });
+                                    pathFile.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = Plugin.Configuration.Version });
                                     string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
                                     File.WriteAllText(FilePath, jsonNew);
                                 }
@@ -284,7 +284,7 @@ namespace AutoDuty.Managers
                                         tag = ActionTag.Treasure;
                                     x.Tag = tag;
                                 });
-                                pathFile?.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = AutoDuty.Plugin.Configuration.Version });
+                                pathFile?.Meta.Changelog.Add(new() { Change = "Converted to JSON Structure with Tags", Version = Plugin.Configuration.Version });
                                 string jsonNew = JsonSerializer.Serialize(PathFile, BuildTab.jsonSerializerOptions);
                                 File.WriteAllText(FilePath, jsonNew);
                             }

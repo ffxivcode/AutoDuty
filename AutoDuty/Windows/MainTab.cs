@@ -1,6 +1,5 @@
 ﻿using AutoDuty.Helpers;
 using AutoDuty.IPC;
-using Dalamud.Game.Gui.ContextMenu;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using ECommons;
@@ -13,8 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using static AutoDuty.AutoDuty;
-using static AutoDuty.Data.Classes;
 
 namespace AutoDuty.Windows
 {

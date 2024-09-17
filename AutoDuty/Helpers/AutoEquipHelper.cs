@@ -21,11 +21,11 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("AutoEquip - Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
                 
-                if (AutoDuty.Plugin.Configuration.AutoEquipRecommendedGearGearsetter && Gearsetter_IPCSubscriber.IsEnabled)
+                if (Plugin.Configuration.AutoEquipRecommendedGearGearsetter && Gearsetter_IPCSubscriber.IsEnabled)
                 {
                     SchedulerHelper.ScheduleAction("AutoEquipTimeOut", Stop, 5000);
                     Svc.Framework.Update += AutoEquipGearSetterUpdate;
@@ -43,14 +43,14 @@ namespace AutoDuty.Helpers
             Svc.Log.Debug("AutoEquipHelper.Stop");
             if (State == ActionState.Running)
                 Svc.Log.Info("AutoEquip Finished");
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
             SchedulerHelper.DescheduleAction("AutoEquipTimeOut");
             Svc.Framework.Update -= AutoEquipUpdate;
             Svc.Framework.Update -= AutoEquipGearSetterUpdate;
             State = ActionState.None;
-            AutoDuty.Plugin.States &= ~PluginState.Other;
-            if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                AutoDuty.Plugin.SetGeneralSettings(true);
+            Plugin.States &= ~PluginState.Other;
+            if (!Plugin.States.HasFlag(PluginState.Looping))
+                Plugin.SetGeneralSettings(true);
             _statesExecuted = AutoEquipState.None;
             _index = 0;
             _ringCount = 0;

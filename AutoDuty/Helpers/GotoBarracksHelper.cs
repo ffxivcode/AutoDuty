@@ -16,9 +16,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto Barracks Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
                 SchedulerHelper.ScheduleAction("GotoBarracksTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoBarracksUpdate;
             }
@@ -32,12 +32,12 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update -= GotoBarracksUpdate;
             GotoHelper.Stop();
             State = ActionState.None;
-            AutoDuty.Plugin.States &= ~PluginState.Other;
-            if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                AutoDuty.Plugin.SetGeneralSettings(true);
+            Plugin.States &= ~PluginState.Other;
+            if (!Plugin.States.HasFlag(PluginState.Looping))
+                Plugin.SetGeneralSettings(true);
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
         }
 
         internal static ActionState State = ActionState.None;
@@ -50,7 +50,7 @@ namespace AutoDuty.Helpers
 
         internal static void GotoBarracksUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
+            if (Plugin.States.HasFlag(PluginState.Navigating))
                 Stop();
 
             if (!EzThrottler.Check("GotoBarracks"))
@@ -64,7 +64,7 @@ namespace AutoDuty.Helpers
             if (GotoHelper.State == ActionState.Running)
                 return;
 
-            AutoDuty.Plugin.Action = "Retiring to Barracks";
+            Plugin.Action = "Retiring to Barracks";
 
             if (Svc.ClientState.TerritoryType == BarracksTerritoryType(PlayerHelper.GetGrandCompany()))
             {

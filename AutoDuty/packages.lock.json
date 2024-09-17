@@ -8,6 +8,12 @@
         "resolved": "2.1.13",
         "contentHash": "rMN1omGe8536f4xLMvx9NwfvpAc9YFFfeXJ1t4P4PE6Gu8WCIoFliR1sh07hM+bfODmesk/dvMbji7vNI+B/pQ=="
       },
+      "Octokit": {
+        "type": "Direct",
+        "requested": "[13.0.1, )",
+        "resolved": "13.0.1",
+        "contentHash": "tjXTa2FXzbd3n17VWpi8UXe05EIJqHcWJW8C2kukftIve00duWiZL8x4i1vlZQ0zQ4RbRANbRc7J5K7Co/1spQ=="
+      },
       "TinyIpc": {
         "type": "Direct",
         "requested": "[4.3.1, )",

@@ -62,11 +62,11 @@ namespace AutoDuty.Helpers
 
         internal static bool SetLevelingTrustMembers(Content content)
         {
-            AutoDuty.Plugin.Configuration.SelectedTrustMembers = new TrustMemberName?[3];
+            Plugin.Configuration.SelectedTrustMembers = new TrustMemberName?[3];
 
             TrustMember?[] trustMembers = new TrustMember?[3];
 
-            Job        playerJob  = Player.Available ? Player.Object.GetJob() : AutoDuty.Plugin.JobLastKnown;
+            Job        playerJob  = Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
             CombatRole playerRole = playerJob.GetCombatRole();
 
             JobRole playerJobRole = Player.Available ? Player.Object.ClassJob.GameData?.GetJobRole() ?? JobRole.None : JobRole.None;
@@ -102,8 +102,8 @@ namespace AutoDuty.Helpers
 
             if (trustMembers.All(tm => tm != null))
             {
-                AutoDuty.Plugin.Configuration.SelectedTrustMembers = trustMembers.Select(tm => tm?.MemberName).ToArray();
-                AutoDuty.Plugin.Configuration.Save();
+                Plugin.Configuration.SelectedTrustMembers = trustMembers.Select(tm => tm?.MemberName).ToArray();
+                Plugin.Configuration.Save();
                 return true;
             }
 
@@ -159,11 +159,11 @@ namespace AutoDuty.Helpers
         {
             if (!PlayerHelper.IsValid) return;
 
-            if (AutoDuty.Plugin.Configuration.SelectedTrustMembers.Count(x => x is not null) == 3)
+            if (Plugin.Configuration.SelectedTrustMembers.Count(x => x is not null) == 3)
             {
                 CombatRole playerRole = Player.Job.GetCombatRole();
 
-                TrustMember[] trustMembers = AutoDuty.Plugin.Configuration.SelectedTrustMembers.Select(name => Members[(TrustMemberName)name!]).ToArray();
+                TrustMember[] trustMembers = Plugin.Configuration.SelectedTrustMembers.Select(name => Members[(TrustMemberName)name!]).ToArray();
 
                 int dps = trustMembers.Count(x => x.Role is TrustRole.DPS);
                 int healers = trustMembers.Count(x => x.Role is TrustRole.Healer);
@@ -175,12 +175,12 @@ namespace AutoDuty.Helpers
                     CombatRole.Healer => healers == 1,
                     CombatRole.Tank => tanks == 1,
                     _ => false
-                } || trustMembers.Any(tm => tm.Level < AutoDuty.Plugin.CurrentTerritoryContent?.ClassJobLevelRequired);
+                } || trustMembers.Any(tm => tm.Level < Plugin.CurrentTerritoryContent?.ClassJobLevelRequired);
 
                 if (needsReset)
                 {
-                    AutoDuty.Plugin.Configuration.SelectedTrustMembers = new TrustMemberName?[3];
-                    AutoDuty.Plugin.Configuration.Save();
+                    Plugin.Configuration.SelectedTrustMembers = new TrustMemberName?[3];
+                    Plugin.Configuration.Save();
                 }
             }
         }
@@ -195,7 +195,7 @@ namespace AutoDuty.Helpers
                     
             _getLevelsContent = content;
 
-            _getLevelsContent ??= AutoDuty.Plugin.CurrentTerritoryContent;
+            _getLevelsContent ??= Plugin.CurrentTerritoryContent;
 
             if (_getLevelsContent == null)
             {
@@ -240,7 +240,7 @@ namespace AutoDuty.Helpers
         private static Content? _getLevelsContent = null;
         internal static unsafe void GetLevelsUpdate(IFramework framework)
         {
-            if (_getLevelsContent == null || AutoDuty.Plugin.InDungeon)
+            if (_getLevelsContent == null || Plugin.InDungeon)
                 Stop();
 
             if (!EzThrottler.Throttle("GetLevelsUpdate", 5) || !PlayerHelper.IsValid) return;

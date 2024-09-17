@@ -18,9 +18,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info($"Goto {whichHousing} Started");
                 State = ActionState.Running;
-                AutoDuty.Plugin.States |= PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(false);
+                Plugin.States |= PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(false);
                 _whichHousing = whichHousing;
                 SchedulerHelper.ScheduleAction("GotoHousingTimeOut", Stop, 600000);
                 Svc.Framework.Update += GotoHousingUpdate;
@@ -36,7 +36,7 @@ namespace AutoDuty.Helpers
             Svc.Framework.Update += GotoHousingStopUpdate;
             Svc.Framework.Update -= GotoHousingUpdate;
             _whichHousing = Housing.Apartment;
-            AutoDuty.Plugin.Action = "";
+            Plugin.Action = "";
             _index = 0;
         }
 
@@ -72,7 +72,7 @@ namespace AutoDuty.Helpers
 
         private static IGameObject? _entranceGameObject => _whichHousing == Housing.FC_Estate ? TeleportHelper.FCEstateEntranceGameObject : (_whichHousing == Housing.Personal_Home ? TeleportHelper.PersonalHomeEntranceGameObject : TeleportHelper.ApartmentEntranceGameObject);
         private static Housing _whichHousing = Housing.Apartment;
-        private static List<Vector3> _entrancePath => _whichHousing == Housing.Personal_Home ? AutoDuty.Plugin.Configuration.PersonalHomeEntrancePath : AutoDuty.Plugin.Configuration.FCEstateEntrancePath;
+        private static List<Vector3> _entrancePath => _whichHousing == Housing.Personal_Home ? Plugin.Configuration.PersonalHomeEntrancePath : Plugin.Configuration.FCEstateEntrancePath;
         private static int _index = 0;
 
         internal unsafe static void GotoHousingStopUpdate(IFramework framework)
@@ -84,9 +84,9 @@ namespace AutoDuty.Helpers
             else if (PlayerHelper.IsReady)
             {
                 State = ActionState.None;
-                AutoDuty.Plugin.States &= ~PluginState.Other;
-                if (!AutoDuty.Plugin.States.HasFlag(PluginState.Looping))
-                    AutoDuty.Plugin.SetGeneralSettings(true);
+                Plugin.States &= ~PluginState.Other;
+                if (!Plugin.States.HasFlag(PluginState.Looping))
+                    Plugin.SetGeneralSettings(true);
                 Svc.Framework.Update -= GotoHousingStopUpdate;
             }
             return;
@@ -94,7 +94,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void GotoHousingUpdate(IFramework framework)
         {
-            if (AutoDuty.Plugin.States.HasFlag(PluginState.Navigating))
+            if (Plugin.States.HasFlag(PluginState.Navigating))
             {
                 Svc.Log.Debug($"AutoDuty has Started, Stopping GotoHousing");
                 Stop();
@@ -114,7 +114,7 @@ namespace AutoDuty.Helpers
             if (GotoHelper.State == ActionState.Running)
                 return;
 
-            AutoDuty.Plugin.Action = $"Retiring to {_whichHousing}";
+            Plugin.Action = $"Retiring to {_whichHousing}";
 
             if (InPrivateHouse(_whichHousing))
             {
