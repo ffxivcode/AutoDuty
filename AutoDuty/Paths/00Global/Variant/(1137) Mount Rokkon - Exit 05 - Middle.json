@@ -1,0 +1,413 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 145.46,
+        "Y": 134,
+        "Z": 815.67
+      },
+      "arguments": [
+        "12000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 145.07,
+        "Y": 134,
+        "Z": 802.19
+      },
+      "arguments": [
+        "20000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2012809"
+      ],
+      "note": "Perceptive Portal"
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 690.81,
+        "Y": 36.51,
+        "Z": 486.31
+      },
+      "arguments": [
+        "2000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 727.71,
+        "Y": 31.78,
+        "Z": 421.24
+      },
+      "arguments": [
+        "1000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 683.97,
+        "Y": 43.41,
+        "Z": 360.63
+      },
+      "arguments": [
+        "1000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 737.23,
+        "Y": 42,
+        "Z": 277.2
+      },
+      "arguments": [
+        "9000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 731.76,
+        "Y": 45.26,
+        "Z": 259.85
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2013344"
+      ],
+      "note": "Woven Rope"
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 737.16,
+        "Y": 45.26,
+        "Z": 257.56
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2013343"
+      ],
+      "note": "Shojo Temple Entrance"
+    },
+    {
+      "tag": 4,
+      "name": "Revival",
+      "position": {
+        "X": 736.17,
+        "Y": 45.45,
+        "Z": 244.3
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 737.08,
+        "Y": 46,
+        "Z": 216.91
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 736.96,
+        "Y": 46,
+        "Z": 203.53
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 758.03,
+        "Y": 57.23,
+        "Z": 103.14
+      },
+      "arguments": [
+        "7000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 730.03,
+        "Y": 57.24,
+        "Z": 51.41
+      },
+      "arguments": [
+        "30000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 735.42,
+        "Y": 57.24,
+        "Z": 47.99
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 728.44,
+        "Y": 57.24,
+        "Z": 6.48
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 743.37,
+        "Y": 57.24,
+        "Z": 11.51
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 783.53,
+        "Y": 76.47,
+        "Z": -26.36
+      },
+      "arguments": [
+        "10000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "PausePandora",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "20000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "DutySpecificCode",
+      "position": {
+        "X": 784.27,
+        "Y": 76.47,
+        "Z": -22.37
+      },
+      "arguments": [
+        "5"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 783.98,
+        "Y": 76.47,
+        "Z": -27.01
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 746.77,
+        "Y": 89.73,
+        "Z": -151.26
+      },
+      "arguments": [
+        "500"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 744.64,
+        "Y": 89.73,
+        "Z": -151.2
+      },
+      "arguments": [
+        "500"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 4,
+      "name": "Revival",
+      "position": {
+        "X": 740.96,
+        "Y": 89.73,
+        "Z": -160.56
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 740.97,
+        "Y": 91,
+        "Z": -192.5
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 740.92,
+        "Y": 91,
+        "Z": -203.3
+      },
+      "arguments": [
+        "500"
+      ],
+      "note": ""
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
+      }
+    ],
+    "notes": []
+  }
+}
