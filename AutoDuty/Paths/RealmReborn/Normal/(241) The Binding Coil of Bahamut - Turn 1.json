@@ -1,0 +1,166 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -3.26,
+        "Y": 13.16,
+        "Z": 55.05
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -2.52,
+        "Y": 11.55,
+        "Z": 16.15
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 48.23,
+        "Y": 6,
+        "Z": -237.34
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "ForceAttack",
+      "position": {
+        "X": 48.23,
+        "Y": 6,
+        "Z": -237.34
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 50.97,
+        "Y": 3.27,
+        "Z": -248.25
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 44.23,
+        "Y": 1.14,
+        "Z": -337.1
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "500"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -9.01,
+        "Y": 0.9,
+        "Z": -384.37
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -14.56,
+        "Y": -0.3,
+        "Z": -397.75
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -44.6,
+        "Y": 0.9,
+        "Z": -411.77
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -44.51,
+        "Y": 0.9,
+        "Z": -417.19
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
+      }
+    ],
+    "notes": []
+  }
+}
