@@ -71,6 +71,7 @@ namespace AutoDuty.Helpers
         internal static void LogInit()
         {
             var path = $"{Plugin.DalamudDirectory}/dalamud.log";
+            if (!File.Exists(path)) return;
             var file = new FileInfo(path);
             if (file == null) return;
             var directory = file.DirectoryName;
