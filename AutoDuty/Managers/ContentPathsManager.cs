@@ -142,7 +142,7 @@ namespace AutoDuty.Managers
                                     {
                                         var action = x.Split('|');
                                         var name = action[0];
-                                        action[1].TryToGetVector3(out var v3);
+                                        var vector3 = action[1].TryGetVector3(out var v3) ? v3 : Vector3.Zero;
                                         var argument = action[2];
                                         var tag = ActionTag.None;
 
@@ -208,11 +208,7 @@ namespace AutoDuty.Managers
                                         var pathAction = new PathAction { Tag = tag, Name = action[0] };
                                         if (action.Length > 1)
                                         {
-                                            var position = action[1].Replace(" ", string.Empty).Split(",");
-
-                                            pathAction.Position = new(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
-
-
+                                            pathAction.Position = action[1].TryGetVector3(out var vector3) ? vector3 : Vector3.Zero;
                                             if (action.Length == 3)
                                             {
                                                 var argument = string.Empty;
@@ -262,7 +258,7 @@ namespace AutoDuty.Managers
 
                                 pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
                                 pathFile?.Actions.Select((Value, Index) => (Value, Index)).Each(x => x.Value.Arguments = [arguments[x.Index]]);
-                                pathFile.Actions.Each(x =>
+                                pathFile?.Actions.Each(x =>
                                 {
                                     var tag = ActionTag.None;
 

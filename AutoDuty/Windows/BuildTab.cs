@@ -4,7 +4,6 @@ using ECommons;
 using ImGuiNET;
 using System.Text.Json;
 using System;
-using static AutoDuty.AutoDuty;
 using System.Numerics;
 using System.Linq;
 using System.Collections.Generic;
@@ -502,11 +501,7 @@ namespace AutoDuty.Windows
             _action.Name = _actionText;
             _action.Arguments = [.. _argumentsString.Split(",", StringSplitOptions.TrimEntries)];
             _action.Tag = _actionTag;
-            var position = _positionText.Replace(" ", string.Empty).Split(",");
-            if (!_comment && position.Length == 3 && float.TryParse(position[0], out var p1) && float.TryParse(position[1], out var p2) && float.TryParse(position[2], out var p3))
-                _action.Position = new(p1, p2, p3);
-            else
-                _action.Position = Vector3.Zero;
+            _action.Position = !_comment && _positionText.TryGetVector3(out var position) ? position : Vector3.Zero;
             _action.Note = _comment && !_note.StartsWith("<--") && !_note.EndsWith("-->") ? $"<-- {_note} -->" : _note;
             if (_buildListSelected == -1)
             {

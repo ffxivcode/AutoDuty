@@ -46,7 +46,7 @@ namespace AutoDuty.Helpers
             try
             {
                 int i = 0;
-                var files = Plugin.AssemblyDirectoryInfo.EnumerateFiles("*.json", SearchOption.TopDirectoryOnly).Where(s => s.Name.StartsWith('('));
+                var files = Plugin.AssemblyDirectoryInfo.EnumerateFiles("*.json", SearchOption.AllDirectories).Where(s => s.Name.StartsWith('('));
 
                 foreach (var file in files)
                 {
