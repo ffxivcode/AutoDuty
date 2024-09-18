@@ -1,0 +1,283 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 267.51,
+        "Y": -2.4,
+        "Z": 86.06
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "10000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 247.43,
+        "Y": -3.53,
+        "Z": 98.03
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 267.51,
+        "Y": -2.4,
+        "Z": 86.06
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 261.46,
+        "Y": -3.56,
+        "Z": 89.48
+      },
+      "arguments": [
+        "2000460"
+      ],
+      "note": "Shifting Sands"
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 114.54,
+        "Y": -0.19,
+        "Z": 185.03
+      },
+      "arguments": [
+        "6000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "8000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 80.75,
+        "Y": -0.41,
+        "Z": 153.73
+      },
+      "arguments": [
+        "2000461"
+      ],
+      "note": "Shifting Sands"
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -18.21,
+        "Y": 1.61,
+        "Z": 114.16
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -25.34,
+        "Y": -11.68,
+        "Z": 198.3
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -15.76,
+        "Y": -9.41,
+        "Z": 208.49
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -9.57,
+        "Y": -6.34,
+        "Z": 215.08
+      },
+      "arguments": [
+        "2000464"
+      ],
+      "note": "Shifting Sands"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 302.96,
+        "Y": -0.7,
+        "Z": -112.54
+      },
+      "arguments": [
+        "2000465"
+      ],
+      "note": "Shifting Sands"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 321.23,
+        "Y": 0.37,
+        "Z": -232.49
+      },
+      "arguments": [
+        "2000466"
+      ],
+      "note": "Shifting Sands"
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -145.29,
+        "Y": -4.86,
+        "Z": 163.05
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -144.05,
+        "Y": -4.36,
+        "Z": 140.8
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -143.8,
+        "Y": -3.92,
+        "Z": 136.91
+      },
+      "arguments": [
+        "2000469"
+      ],
+      "note": "Shifting Sands"
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -181.99,
+        "Y": -4.9,
+        "Z": -204.07
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 144,
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
+      }
+    ],
+    "notes": []
+  }
+}
