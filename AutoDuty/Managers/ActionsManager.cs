@@ -104,7 +104,7 @@ namespace AutoDuty.Managers
             {
                 case "GetDistanceToPlayer":
                     if (conditionArray.Length < 4) return;
-                    if (!conditionArray[1].TryToGetVector3(out var vector3)) return;
+                    if (!conditionArray[1].TryGetVector3(out var vector3)) return;
                     if (!float.TryParse(conditionArray[3], out var distance)) return;
                     if (!(operatorValue = conditionArray[2]).EqualsAny(operation.Keys)) return;
                     var getDistance = GetDistanceToPlayer(vector3);

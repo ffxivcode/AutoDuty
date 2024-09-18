@@ -61,9 +61,9 @@ namespace AutoDuty.Data
             return outString;
         }
 
-        public static string ToCustomString(this PathAction pathAction) =>$"{(pathAction.Tag.EqualsAny(ActionTag.None, ActionTag.Treasure, ActionTag.Revival) ? "" : $"{pathAction.Tag.ToCustomString()}|")}{pathAction.Name}|{pathAction.Position.ToCustomString()}{(pathAction.Arguments.All(x => x.IsNullOrEmpty()) ? "" : $"|{pathAction.Arguments.ToCustomString()}")}{(pathAction.Note.IsNullOrEmpty() ? "" : $"|{pathAction.Note}")}"; 
+        public static string ToCustomString(this PathAction pathAction) =>$"{(pathAction.Tag.EqualsAny(ActionTag.None, ActionTag.Treasure, ActionTag.Revival) ? "" : $"{pathAction.Tag.ToCustomString()}|")}{pathAction.Name}|{pathAction.Position.ToCustomString()}{(pathAction.Arguments.All(x => x.IsNullOrEmpty()) ? "" : $"|{pathAction.Arguments.ToCustomString()}")}{(pathAction.Note.IsNullOrEmpty() ? "" : $"|{pathAction.Note}")}";
 
-        public static string ToCustomString(this Vector3 vector3) => $"{vector3.X:F2}, {vector3.Y:F2}, {vector3.Z:F2}";
+        public static string ToCustomString(this Vector3 vector3) => vector3.ToString("F2", CultureInfo.InvariantCulture).Trim('<', '>');
 
         public static List<string> ToConditional(this string conditionalString)
         {
@@ -91,15 +91,17 @@ namespace AutoDuty.Data
         }
 
 
-        public static bool TryToGetVector3(this string vector3String, out Vector3 vector3)
+        public static bool TryGetVector3(this string vector3String, out Vector3 vector3)
         {
             vector3 = Vector3.Zero;
-            var splitString = vector3String.Replace(" ", string.Empty).Replace("<", string.Empty).Replace(">", string.Empty).Split(',');
+            var cul = CultureInfo.InvariantCulture;
+            var strcomp = StringComparison.InvariantCulture;
+            var splitString = vector3String.Replace(" ", string.Empty, strcomp).Replace("<", string.Empty, strcomp).Replace(">", string.Empty, strcomp).Split(",");
 
             if (splitString.Length < 3) return false;
             
-            vector3 = new(float.Parse(splitString[0], CultureInfo.InvariantCulture), float.Parse(splitString[1], CultureInfo.InvariantCulture), float.Parse(splitString[2], CultureInfo.InvariantCulture));
-            
+            vector3 = new(float.Parse(splitString[0], cul), float.Parse(splitString[1], cul), float.Parse(splitString[2], cul));
+
             return true;
         }
 
