@@ -29,6 +29,7 @@ namespace AutoDuty.Helpers
                         1109u, // The Great Gubal Library
                         1142u, // Sirensong Sea
                         1144u, // Doma Castle
+                        1145u, // Castrum Abania
                         837u,  // Holminster
                         823u,  // Qitana
                         952u,  // Tower of Zot
