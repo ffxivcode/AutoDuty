@@ -1,28 +1,28 @@
 {
   "actions": [
     {
-      "tag": 0,
-      "name": "MoveTo",
+      "tag": 2,
+      "name": "StopForCombat",
       "position": {
-        "X": -100.27,
+        "X": -238.98,
+        "Y": -7.21,
+        "Z": 2.02
+      },
+      "arguments": [
+        "False"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 2,
+      "name": "StopForCombat",
+      "position": {
+        "X": -81.96,
         "Y": 0,
-        "Z": 263.57
+        "Z": 0.3
       },
       "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "Revival",
-      "position": {
-        "X": -100.3,
-        "Y": 7,
-        "Z": 238.13
-      },
-      "arguments": [
-        ""
+        "True"
       ],
       "note": ""
     },
@@ -30,9 +30,9 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": -100.24,
-        "Y": 7,
-        "Z": 201.67
+        "X": -29.7,
+        "Y": 0,
+        "Z": 0.03
       },
       "arguments": [
         ""
@@ -41,24 +41,50 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "Interactable",
       "position": {
-        "X": -71.78,
-        "Y": 7.01,
-        "Z": 102.07
+        "X": -11.15,
+        "Y": 0,
+        "Z": 0.15
       },
       "arguments": [
-        ""
+        "2000500"
+      ],
+      "note": "Aetherial Flow"
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 2,
+      "name": "StopForCombat",
+      "position": {
+        "X": 39.4,
+        "Y": 22,
+        "Z": 0.06
+      },
+      "arguments": [
+        "False"
       ],
       "note": ""
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -56.91,
-        "Y": 7,
-        "Z": 102.18
+        "X": -34.6,
+        "Y": 22.3,
+        "Z": -33.22
       },
       "arguments": [
         ""
@@ -69,35 +95,9 @@
       "tag": 0,
       "name": "TreasureCoffer",
       "position": {
-        "X": -41.49,
-        "Y": 7.04,
-        "Z": 94.16
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -46.36,
-        "Y": 7.05,
-        "Z": -37.68
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": 0.06,
-        "Y": 7.03,
-        "Z": -38.12
+        "X": 200.82,
+        "Y": 22,
+        "Z": 93.55
       },
       "arguments": [
         ""
@@ -108,9 +108,9 @@
       "tag": 0,
       "name": "TreasureCoffer",
       "position": {
-        "X": 5.53,
-        "Y": 7,
-        "Z": -46.39
+        "X": 293.8,
+        "Y": 22,
+        "Z": -3.67
       },
       "arguments": [
         ""
@@ -118,15 +118,15 @@
       "note": ""
     },
     {
-      "tag": 0,
-      "name": "Revival",
+      "tag": 2,
+      "name": "StopForCombat",
       "position": {
-        "X": -0.06,
-        "Y": 7.03,
-        "Z": -72.58
+        "X": 199.94,
+        "Y": 22,
+        "Z": -79.01
       },
       "arguments": [
-        ""
+        "True"
       ],
       "note": ""
     },
@@ -134,9 +134,9 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": 0.06,
-        "Y": 7,
-        "Z": -103.67
+        "X": 199.8,
+        "Y": 22,
+        "Z": -148.45
       },
       "arguments": [
         ""
@@ -145,53 +145,53 @@
     },
     {
       "tag": 0,
-      "name": "TreasureCoffer",
+      "name": "Interactable",
       "position": {
-        "X": 19.27,
-        "Y": 7,
-        "Z": -327.22
+        "X": 199.78,
+        "Y": 22,
+        "Z": -163.96
       },
       "arguments": [
-        ""
+        "2000501"
+      ],
+      "note": "Aetherial Flow"
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2000"
       ],
       "note": ""
     },
     {
-      "tag": 0,
-      "name": "MoveTo",
+      "tag": 2,
+      "name": "StopForCombat",
       "position": {
-        "X": 21.55,
-        "Y": 7.03,
-        "Z": -320.29
+        "X": 194.75,
+        "Y": 44,
+        "Z": -95.08
       },
       "arguments": [
-        ""
+        "False"
       ],
       "note": ""
     },
     {
-      "tag": 0,
-      "name": "TreasureCoffer",
+      "tag": 2,
+      "name": "StopForCombat",
       "position": {
-        "X": 99.15,
-        "Y": 7.05,
-        "Z": -348.13
+        "X": 76.4,
+        "Y": 48,
+        "Z": 0.03
       },
       "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "Revival",
-      "position": {
-        "X": 90.25,
-        "Y": 11.97,
-        "Z": -405.15
-      },
-      "arguments": [
-        ""
+        "True"
       ],
       "note": ""
     },
@@ -199,9 +199,9 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": 90.05,
-        "Y": 12,
-        "Z": -437.4
+        "X": -5.97,
+        "Y": 48,
+        "Z": 0.57
       },
       "arguments": [
         ""
@@ -211,7 +211,7 @@
   ],
   "interactables": [],
   "meta": {
-    "createdAt": 160,
+    "createdAt": 158,
     "changelog": [
       {
         "version": 168,

@@ -17,19 +17,6 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
-        "X": 169.88,
-        "Y": -48,
-        "Z": -169.95
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
         "X": -29.36,
         "Y": -26.82,
         "Z": -194.44
@@ -54,11 +41,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -83.05,
-        "Y": 172.6,
-        "Z": -251.43
+        "X": -83.03,
+        "Y": 172.7,
+        "Z": -250.49
       },
       "arguments": [
         ""
@@ -67,11 +54,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -239.83,
+        "X": -239.82,
         "Y": 202,
-        "Z": -99.12
+        "Z": -99.11
       },
       "arguments": [
         ""
@@ -93,24 +80,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -240.02,
-        "Y": 210,
-        "Z": -39.71
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -288.12,
+        "X": -288.17,
         "Y": 194,
-        "Z": 87.71
+        "Z": 87.15
       },
       "arguments": [
         ""
@@ -119,11 +93,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -254.9,
+        "X": -254.3,
         "Y": 202,
-        "Z": 140.15
+        "Z": 140.05
       },
       "arguments": [
         ""
@@ -132,14 +106,53 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "Wait",
+      "position": {
+        "X": -239.93,
+        "Y": 204.37,
+        "Z": 176.92
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
       "position": {
         "X": -239.89,
         "Y": 204.37,
-        "Z": 188.91
+        "Z": 189.33
       },
       "arguments": [
-        ""
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -239.8,
+        "Y": 211.13,
+        "Z": 200.46
+      },
+      "arguments": [
+        "1000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "3000"
       ],
       "note": ""
     },
@@ -155,35 +168,14 @@
         ""
       ],
       "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -239.63,
-        "Y": 210,
-        "Z": 246.75
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
     }
   ],
   "interactables": [],
   "meta": {
-    "createdAt": 106,
+    "createdAt": 160,
     "changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
+        "version": 168,
         "change": "Converted to JSON Structure with Tags"
       }
     ],

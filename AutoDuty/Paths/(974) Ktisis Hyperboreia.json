@@ -17,19 +17,6 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
-        "X": -144.17,
-        "Y": 496,
-        "Z": 36.33
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
         "X": -144.26,
         "Y": 500,
         "Z": 12.56
@@ -54,11 +41,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -104.98,
+        "X": -105.26,
         "Y": 624,
-        "Z": 119.39
+        "Z": 118.88
       },
       "arguments": [
         ""
@@ -67,11 +54,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 5.53,
+        "X": 5.4,
         "Y": 624,
-        "Z": 121.39
+        "Z": 121.73
       },
       "arguments": [
         ""
@@ -85,19 +72,6 @@
         "X": 0.37,
         "Y": 630,
         "Z": 48.82
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -0.03,
-        "Y": 630,
-        "Z": 32.54
       },
       "arguments": [
         ""
@@ -171,11 +145,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 38.26,
+        "X": 38.03,
         "Y": -600,
-        "Z": -43.73
+        "Z": -43.7
       },
       "arguments": [
         ""
@@ -223,11 +197,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -45.23,
+        "X": -44.94,
         "Y": -140,
-        "Z": 29.85
+        "Z": 29.58
       },
       "arguments": [
         ""
@@ -272,35 +246,14 @@
         ""
       ],
       "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": 0.09,
-        "Y": 0,
-        "Z": -62.27
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
     }
   ],
   "interactables": [],
   "meta": {
-    "createdAt": 106,
+    "createdAt": 160,
     "changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
+        "version": 168,
         "change": "Converted to JSON Structure with Tags"
       }
     ],

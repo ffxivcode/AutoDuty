@@ -17,19 +17,6 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
-        "X": 68.1,
-        "Y": -442.97,
-        "Z": -136.8
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
         "X": 66.77,
         "Y": -443.47,
         "Z": -170.92
@@ -80,11 +67,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -342.8,
-        "Y": -180.83,
-        "Z": 77.4
+        "X": -342.41,
+        "Y": -180.82,
+        "Z": 77.25
       },
       "arguments": [
         ""
@@ -119,11 +106,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -225.84,
+        "X": -225.83,
         "Y": -171.83,
-        "Z": 65.63
+        "Z": 65.61
       },
       "arguments": [
         ""
@@ -150,19 +137,6 @@
         "X": -257.53,
         "Y": -169,
         "Z": -27.28
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -257.58,
-        "Y": -169,
-        "Z": -40.07
       },
       "arguments": [
         ""
@@ -249,11 +223,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 22.9,
-        "Y": 535.6,
-        "Z": -38.08
+        "X": 22.65,
+        "Y": 535.61,
+        "Z": -38.63
       },
       "arguments": [
         ""
@@ -262,11 +236,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 39.99,
+        "X": 40.13,
         "Y": 539.11,
-        "Z": -100.02
+        "Z": -100.14
       },
       "arguments": [
         ""
@@ -298,35 +272,14 @@
         ""
       ],
       "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -23.98,
-        "Y": 546.1,
-        "Z": -52.85
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
     }
   ],
   "interactables": [],
   "meta": {
-    "createdAt": 106,
+    "createdAt": 160,
     "changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
+        "version": 168,
         "change": "Converted to JSON Structure with Tags"
       }
     ],
