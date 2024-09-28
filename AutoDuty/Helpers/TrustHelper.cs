@@ -224,12 +224,12 @@ namespace AutoDuty.Helpers
 
             State = ActionState.Running;
             Svc.Framework.Update += GetLevelsUpdate;
-            SchedulerHelper.ScheduleAction("CheckTrustLevelTimeout", Stop, 2500);
+            SchedulerHelper.ScheduleAction("CheckTrustLevelTimeout", () => Stop(), 2500);
         }
 
-        private unsafe static void Stop()
+        private unsafe static void Stop(bool forceHide = false)
         {
-            if (_getLevelsContent?.TrustMembers.TrueForAll(tm => tm.LevelIsSet) ?? false)
+            if (forceHide || (_getLevelsContent?.TrustMembers.TrueForAll(tm => tm.LevelIsSet) ?? false))
                 AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Hide();
             Svc.Framework.Update -= GetLevelsUpdate;
             State = ActionState.None; 
@@ -263,7 +263,7 @@ namespace AutoDuty.Helpers
             if (addonDawn->AtkValues[225].UInt < (_getLevelsContent!.ExVersion - 2))
             {
                 Svc.Log.Debug($"TrustHelper - You do not have expansion: {_getLevelsContent.ExVersion} unlocked stopping");
-                Stop();
+                Stop(true);
                 return;
             }
 
