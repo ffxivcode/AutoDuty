@@ -151,7 +151,7 @@ namespace AutoDuty.Helpers
             AddMember(TrustMemberName.Yshtola, 4, TrustRole.DPS, ClassJobType.Black_Mage);
             AddMember(TrustMemberName.Ryne, 5, TrustRole.DPS, ClassJobType.Rogue, 71, 80);
             AddMember(TrustMemberName.Estinien, 5, TrustRole.DPS, ClassJobType.Dragoon, 81);
-            AddMember(TrustMemberName.Graha, 6, TrustRole.AllRounder, ClassJobType.Black_Mage, 81);
+            AddMember(TrustMemberName.Graha, 6, TrustRole.AllRounder, ClassJobType.Black_Mage, 80);
             AddMember(TrustMemberName.Zero, 7, TrustRole.DPS, ClassJobType.Reaper, 90, 90);
             AddMember(TrustMemberName.Krile, 7, TrustRole.DPS, ClassJobType.Pictomancer, 91);
         }
