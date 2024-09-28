@@ -34,7 +34,11 @@ namespace AutoDuty.Helpers
                 return false;
 
             if (!UIState.IsInstanceContentCompleted(content.Id))
-                return false;
+                if (content.ClassJobLevelRequired >= 100 || !ContentHelper.DictionaryContent.Values.Any(c =>
+                                                                                                            content.DutyModes.HasFlag(DutyMode.Trust)               &&
+                                                                                                            c.ClassJobLevelRequired > content.ClassJobLevelRequired &&
+                                                                                                            !UIState.IsInstanceContentUnlocked(c.Id)))
+                    return false;
 
             return !checkTrustLevels || CanTrustRunMembers(content);
         }
@@ -56,7 +60,6 @@ namespace AutoDuty.Helpers
                         return true;
                 }
             }
-
             return false;
         }
 
