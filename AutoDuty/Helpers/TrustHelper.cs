@@ -32,7 +32,7 @@ namespace AutoDuty.Helpers
         {
             if (!content.DutyModes.HasFlag(DutyMode.Trust))
                 return false;
-            
+
             if (!UIState.IsInstanceContentCompleted(content.Id))
                 return false;
 
@@ -41,7 +41,7 @@ namespace AutoDuty.Helpers
 
         private static bool CanTrustRunMembers(Content content)
         {
-            if (content.TrustMembers.Any(tm => !tm.LevelIsSet)) 
+            if (content.TrustMembers.Any(tm => !tm.LevelIsSet))
                 GetLevels(content);
 
             TrustMember?[] members = new TrustMember?[3];
@@ -79,7 +79,7 @@ namespace AutoDuty.Helpers
             try
             {
                 TrustMember[] membersPossible = [.. content.TrustMembers
-                                                       .OrderBy(tm => tm.Level + (tm.Level < tm.LevelCap ? 0 : 100) + 
+                              .OrderBy(tm => tm.Level + (tm.Level < tm.LevelCap ? 0 : 100) +
                                                                       (playerRole == CombatRole.DPS ? playerJobRole == tm.Job!.GetJobRole() ? 0.5f : 0 : 0))];
                 foreach (TrustMember member in membersPossible)
                 {
@@ -132,16 +132,16 @@ namespace AutoDuty.Helpers
             if (dawnSheet == null || jobSheet == null) return;
 
             void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100) => Members.Add(name, new TrustMember
-            {
+                {
                 Index = index,
                 Name = dawnSheet.GetRow((uint)name)!.Unknown0.RawString,
                 Role = role,
                 Job = jobSheet.GetRow((uint)classJob)!,
-                MemberName = name,
+                    MemberName = name,
                 LevelInit = levelInit,
                 Level = levelInit,
                 LevelCap = levelCap
-            });
+                });
 
             AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer, ClassJobType.Sage);
             AddMember(TrustMemberName.Alisaie, 1, TrustRole.DPS, ClassJobType.RedMage);
@@ -187,9 +187,9 @@ namespace AutoDuty.Helpers
 
         internal static void ClearCachedLevels() => Members.Each(x => x.Value.ResetLevel());
 
-        internal static void ClearCachedLevels(Content content) => content?.TrustMembers.Each(x => x.ResetLevel());
+        internal static void ClearCachedLevels(Content content) => content?.TrustMembers.Each(x => { if (x.Level < x.LevelCap) x.ResetLevel(); });
 
-        internal static void GetLevels(Content? content)
+    internal static void GetLevels(Content? content)
         {
             if (State == ActionState.Running) return;
                     
