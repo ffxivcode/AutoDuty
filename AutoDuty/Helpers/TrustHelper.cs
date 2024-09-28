@@ -132,16 +132,17 @@ namespace AutoDuty.Helpers
             if (dawnSheet == null || jobSheet == null) return;
 
             void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100) => Members.Add(name, new TrustMember
-                {
-                Index = index,
-                Name = dawnSheet.GetRow((uint)name)!.Unknown0.RawString,
-                Role = role,
-                Job = jobSheet.GetRow((uint)classJob)!,
-                    MemberName = name,
-                LevelInit = levelInit,
-                Level = levelInit,
-                LevelCap = levelCap
-                });
+                         {
+                             Index      = index,
+                             Name       = dawnSheet.GetRow((uint)name)!.Unknown0.RawString,
+                             Role       = role,
+                             Job        = jobSheet.GetRow((uint)classJob)!,
+                             MemberName = name,
+                             LevelInit  = levelInit,
+                             Level      = levelInit,
+                             LevelCap   = levelCap,
+                             LevelIsSet = levelInit == levelCap
+                         });
 
             AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer, ClassJobType.Sage);
             AddMember(TrustMemberName.Alisaie, 1, TrustRole.DPS, ClassJobType.RedMage);

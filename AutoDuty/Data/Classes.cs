@@ -57,8 +57,8 @@ namespace AutoDuty.Data
 
             public void ResetLevel()
             {
-                LevelIsSet = false;
-                Level = LevelInit;
+                Level      = LevelInit;
+                LevelIsSet = LevelInit == LevelCap;
             }
 
             public void SetLevel(uint level)
