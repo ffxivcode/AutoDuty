@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Lumina.Excel.GeneratedSheets2;
 using Dalamud.Plugin.Services;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoDuty.Helpers
 {
@@ -33,12 +34,8 @@ namespace AutoDuty.Helpers
             if (!content.DutyModes.HasFlag(DutyMode.Trust))
                 return false;
 
-            if (!UIState.IsInstanceContentCompleted(content.Id))
-                if (content.ClassJobLevelRequired >= 100 || !ContentHelper.DictionaryContent.Values.Any(c =>
-                                                                                                            content.DutyModes.HasFlag(DutyMode.Trust)               &&
-                                                                                                            c.ClassJobLevelRequired > content.ClassJobLevelRequired &&
-                                                                                                            !UIState.IsInstanceContentUnlocked(c.Id)))
-                    return false;
+            if (!UIState.IsInstanceContentCompleted(content.Id) && !QuestManager.IsQuestComplete(content.UnlockQuest))
+                return false;
 
             return !checkTrustLevels || CanTrustRunMembers(content);
         }

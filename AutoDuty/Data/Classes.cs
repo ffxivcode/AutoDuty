@@ -40,6 +40,7 @@ namespace AutoDuty.Data
             public int GCArmyIndex { get; set; } = -1;
             public List<TrustMember> TrustMembers { get; set; } = [];
             public DutyMode DutyModes { get; set; } = DutyMode.None;
+            public uint UnlockQuest { get; init; }
         }
 
         public class TrustMember
