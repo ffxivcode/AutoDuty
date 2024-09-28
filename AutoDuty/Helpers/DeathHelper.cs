@@ -7,8 +7,6 @@ using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
-using System.Linq;
-using System.Numerics;
 
 namespace AutoDuty.Helpers
 {
@@ -72,7 +70,7 @@ namespace AutoDuty.Helpers
                 //Svc.Log.Info($"Finding Closest Waypoint {ListBoxPOSText.Count}");
                 float closestWaypointDistance = float.MaxValue;
                 int closestWaypointIndex = -1;
-                float currentDistance = 0;
+                float currentDistance;
 
                 for (int i = 0; i < Plugin.Actions.Count; i++)
                 {
@@ -100,19 +98,19 @@ namespace AutoDuty.Helpers
                     }
                 }
                 //Svc.Log.Info($"Closest Waypoint was {closestWaypointIndex}");
-                return closestWaypointIndex + 1;
+                return closestWaypointIndex;
             }
 
             if (Plugin.Indexer != -1)
             {
                 bool revivalFound = ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryType].Paths[Plugin.CurrentPath].RevivalFound;
 
-                //Svc.Log.Info("Finding Last Boss");
+                Svc.Log.Info("Finding Revival Point");
                 for (int i = Plugin.Indexer; i >= 0; i--)
                 {
                     if (revivalFound)
                     {
-                        if (Plugin.Actions[i].Name.Equals("Revival", StringComparison.InvariantCultureIgnoreCase) && i != Plugin.Indexer)
+                        if (Plugin.Actions[i].Name.Equals("Revival", StringComparison.InvariantCultureIgnoreCase) && i != Plugin.Indexer) 
                             return i;
                     }
                     else
@@ -138,11 +136,11 @@ namespace AutoDuty.Helpers
             if (_gameObject == null || !_gameObject!.IsTargetable)
             {
                 Svc.Log.Debug($"OnRevive: Couldn't find shortcut");
-                Stop();
-                return;
-            }
-
-            Svc.Log.Debug("OnRevive: Found shortcut");
+                Plugin.Indexer = 0;
+                //Stop();
+                //return;
+            } else
+                Svc.Log.Debug("OnRevive: Found shortcut");
             Svc.Framework.Update += OnRevive;
         }
 
@@ -163,11 +161,11 @@ namespace AutoDuty.Helpers
             if (_gameObject == null || !_gameObject.IsTargetable)
             {
                 Svc.Log.Debug("OnRevive: Done");
-                if (Plugin.Indexer == 0) Plugin.Indexer = FindWaypoint();
+                if(Plugin.Indexer == 0) 
+                    Plugin.Indexer = FindWaypoint();
                 Stop();
                 return;
             }
-
             if (_oldIndex == Plugin.Indexer)
                 Plugin.Indexer = FindWaypoint();
 
