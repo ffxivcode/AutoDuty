@@ -213,12 +213,14 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug($"Get Trust Levels: we already have all our trust levels, returning");
                 return;
             }
+
             if (!_getLevelsContent.CanTrustRun(false))
             {
                 Svc.Log.Debug($"Get Trust Levels: this content CanTrustRun is false, returning");
                 return;
             }
-            Svc.Log.Info($"TrustHelper - Getting trust levels for expansion {_getLevelsContent.ExVersion}");
+            Svc.Log.Info($"TrustHelper - Getting trust levels for expansion {_getLevelsContent.ExVersion} from {_getLevelsContent.EnglishName}");
+            Svc.Log.Info("Get Trust Levels: Level not set for: " + string.Join(" | ", _getLevelsContent.TrustMembers.Where(tm => !tm.LevelIsSet).Select(tm => tm.Name)));
 
             State = ActionState.Running;
             Svc.Framework.Update += GetLevelsUpdate;
