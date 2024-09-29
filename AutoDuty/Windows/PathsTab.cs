@@ -82,6 +82,11 @@ namespace AutoDuty.Windows
                     headers[key] = !anyHeaderOpen;
             }
 
+            if (ImGuiEx.ButtonWrapped("Download Paths"))
+            {
+                FileHelper.DownloadNewPaths();
+            }
+
 
             ImGuiStylePtr style = ImGui.GetStyle();
             ImGui.PushStyleColor(ImGuiCol.ChildBg, style.Colors[(int)ImGuiCol.FrameBg]);
