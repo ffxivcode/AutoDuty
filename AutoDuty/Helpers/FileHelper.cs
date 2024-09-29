@@ -7,10 +7,13 @@ using System.Security.Cryptography;
 
 namespace AutoDuty.Helpers
 {
+    using System.IO.Compression;
+    using System.Net.Http;
     using Windows;
     using Managers;
     using ECommons;
     using Serilog.Events;
+    using Task = System.Threading.Tasks.Task;
 
     internal static class FileHelper
     {
@@ -40,12 +43,46 @@ namespace AutoDuty.Helpers
 
         internal static void OnStart()
         {
+            UpdatePaths();
+        }
+
+        public static void DownloadNewPaths()
+        {
+            async Task? GetPaths()
+            {
+                if (Plugin.AssemblyDirectoryInfo == null)
+                    return;
+
+                using HttpClient          client         = new();
+                using HttpResponseMessage response       = await client.GetAsync(@"https://codeload.github.com/ffxivcode/AutoDuty/zip/refs/heads/master");
+                await using Stream        downloadStream = await response.Content.ReadAsStreamAsync();
+
+                using ZipArchive archive = new(downloadStream);
+
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                    if (entry.Name.Contains(".json") && (Path.GetDirectoryName(entry.FullName)?.Contains(@"AutoDuty-master\AutoDuty\Paths") ?? false))
+                    {
+                        string path = Path.Combine(Plugin.AssemblyDirectoryInfo.FullName, Path.GetRelativePath(@"AutoDuty-master\AutoDuty\Paths", entry.FullName));
+                        Svc.Log.Info($"Writing {entry.Name} to {path}");
+                        entry.ExtractToFile(path, true);
+                    }
+            }
+
+            Task? getPaths = GetPaths();
+
+            Task.Run(() => getPaths);
+
+            SchedulerHelper.ScheduleAction("UpdatePathsFromDownload", UpdatePaths, () => getPaths.IsCompletedSuccessfully);
+        }
+
+        public static void UpdatePaths()
+        {
             //Move all the paths to the Paths folder on first install or update
             if (Plugin.AssemblyDirectoryInfo == null)
                 return;
             try
             {
-                int i = 0;
+                int i     = 0;
                 var files = Plugin.AssemblyDirectoryInfo.EnumerateFiles("*.json", SearchOption.AllDirectories).Where(s => s.Name.StartsWith('('));
 
                 foreach (var file in files)
