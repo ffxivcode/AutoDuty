@@ -83,6 +83,7 @@ namespace AutoDuty.Helpers
                     return result;
                 }
 
+                DawnContent? dawnContent = listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId);
                 var content = new Content
                               {
                                   Id = contentFinderCondition.Content.Row,
@@ -95,12 +96,13 @@ namespace AutoDuty.Helpers
                                   ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                                   ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
                                   ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
-                                  DawnIndex = TryGetDawnIndex(listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId)?.RowId ?? 0, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
+                                  DawnIndex = TryGetDawnIndex(dawnContent?.RowId ?? 0, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
                                   TrustIndex = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value == contentFinderCondition), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1,
                                   VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                                   VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                                   GCArmyContent = ListGCArmyContent.Any(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
-                                  GCArmyIndex = ListGCArmyContent.FindIndex(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId)
+                                  GCArmyIndex = ListGCArmyContent.FindIndex(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
+                                  UnlockQuest = dawnContent?.Unknown0 ?? 0
                               };
 
                 if (contentFinderCondition.ContentType.Value.RowId == 2)

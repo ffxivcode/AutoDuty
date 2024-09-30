@@ -365,6 +365,10 @@ namespace AutoDuty.Windows
                                     if (InventoryHelper.CurrentItemLevel < 370)
                                         Plugin.LevelingModeEnum = LevelingMode.None;
                                     TrustHelper.ClearCachedLevels();
+
+                                    SchedulerHelper.ScheduleAction("Refresh Levels - ShB", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[837u]), () => TrustHelper.State == ActionState.None);
+                                    SchedulerHelper.ScheduleAction("Refresh Levels - EW", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[952u]), () => TrustHelper.State == ActionState.None);
+                                    SchedulerHelper.ScheduleAction("Refresh Levels - DT", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[1167u]), () => TrustHelper.State == ActionState.None);
                                 }
                                 ImGui.NextColumn();
                                 ImGui.Columns(1, null, true);
@@ -374,6 +378,10 @@ namespace AutoDuty.Windows
                                 if (InventoryHelper.CurrentItemLevel < 370)
                                     Plugin.LevelingModeEnum = LevelingMode.None;
                                 TrustHelper.ClearCachedLevels();
+
+                                SchedulerHelper.ScheduleAction("Refresh Levels - ShB", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[837u]), () => TrustHelper.State == ActionState.None);
+                                SchedulerHelper.ScheduleAction("Refresh Levels - EW", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[952u]), () => TrustHelper.State == ActionState.None);
+                                SchedulerHelper.ScheduleAction("Refresh Levels - DT", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[1167u]), () => TrustHelper.State == ActionState.None);
                             }
                         }
 

@@ -40,6 +40,7 @@ namespace AutoDuty.Data
             public int GCArmyIndex { get; set; } = -1;
             public List<TrustMember> TrustMembers { get; set; } = [];
             public DutyMode DutyModes { get; set; } = DutyMode.None;
+            public uint UnlockQuest { get; init; }
         }
 
         public class TrustMember
@@ -57,13 +58,13 @@ namespace AutoDuty.Data
 
             public void ResetLevel()
             {
-                LevelIsSet = false;
-                Level = LevelInit;
+                Level      = LevelInit;
+                LevelIsSet = LevelInit == LevelCap;
             }
 
             public void SetLevel(uint level)
             {
-                if (level >= LevelInit)
+                if (level >= LevelInit-1)
                 {
                     LevelIsSet = true;
                     Level = level;
