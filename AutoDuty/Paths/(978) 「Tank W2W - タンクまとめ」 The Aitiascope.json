@@ -1,0 +1,1017 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 1 --\u003E"
+    },
+    {
+      "tag": 1,
+      "name": "StopForCombat",
+      "position": {
+        "X": -8.15,
+        "Y": 200,
+        "Z": 583.36
+      },
+      "arguments": [
+        "False"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -22.63,
+        "Y": 200.19,
+        "Z": 549.31
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "1800"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": -12.62,
+        "Y": 200.11,
+        "Z": 541.46
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "True"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Trash Packs / \u96D1\u9B5A 2 \u0026 3 --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": -54,
+        "Y": 197.55,
+        "Z": 482.97
+      },
+      "arguments": [
+        "False"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -61.54,
+        "Y": 195.31,
+        "Z": 453.84
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": -54.55,
+        "Y": 195.3,
+        "Z": 451.32
+      },
+      "arguments": [
+        "18200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -7.79,
+        "Y": 188.14,
+        "Z": 409.38
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": -19.34,
+        "Y": 188.02,
+        "Z": 412.27
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": -12.57,
+        "Y": 188.1,
+        "Z": 408.59
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "True"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 4 --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 21.29,
+        "Y": 185.43,
+        "Z": 421.81
+      },
+      "arguments": [
+        "False"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 45.5,
+        "Y": 176.1,
+        "Z": 471.03
+      },
+      "arguments": [
+        "True"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -6.1,
+        "Y": 164,
+        "Z": 457.32
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": -4.8,
+        "Y": 164,
+        "Z": 465.85
+      },
+      "arguments": [
+        "4000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -5.58,
+        "Y": 164,
+        "Z": 469.72
+      },
+      "arguments": [
+        "2011758"
+      ],
+      "note": "Aether Current"
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Trash Packs / \u96D1\u9B5A 5 \u0026 6 --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 7.56,
+        "Y": -181.12,
+        "Z": 446.45
+      },
+      "arguments": [
+        "False"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 31.5,
+        "Y": -185.39,
+        "Z": 421.38
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 25.11,
+        "Y": -199.95,
+        "Z": 359.43
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 20.33,
+        "Y": -200.15,
+        "Z": 355.37
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "True"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 18.44,
+        "Y": -200.46,
+        "Z": 353.62
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Trash Packs / \u96D1\u9B5A 7 \u0026 8 --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0.53,
+        "Y": -201.78,
+        "Z": 323.09
+      },
+      "arguments": [
+        "False"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "4500"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -14.21,
+        "Y": -206.75,
+        "Z": 290.95
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -12.44,
+        "Y": -211.12,
+        "Z": 241
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": -14.91,
+        "Y": -211.44,
+        "Z": 250.72
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": -13.55,
+        "Y": -210.85,
+        "Z": 243.91
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "True"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -5.5,
+        "Y": -212.01,
+        "Z": 223.18
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 10.48,
+        "Y": -211.41,
+        "Z": 129.72
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 11.92,
+        "Y": -211.04,
+        "Z": 98.45
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 12.37,
+        "Y": -211.12,
+        "Z": 89.61
+      },
+      "arguments": [
+        "2000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "4000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 9 --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Not double-pulling cuz too far away --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 10.92,
+        "Y": -212.06,
+        "Z": -121.27
+      },
+      "arguments": [
+        "False"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 20.25,
+        "Y": -228.45,
+        "Z": -187.65
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 21.63,
+        "Y": -228.5,
+        "Z": -194.52
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "True"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -15.15,
+        "Y": -235.91,
+        "Z": -219.18
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Trash Pack / \u96D1\u9B5A 10 --\u003E"
+    },
+    {
+      "tag": 1,
+      "name": "StopForCombat",
+      "position": {
+        "X": -10.22,
+        "Y": -235.49,
+        "Z": -242.85
+      },
+      "arguments": [
+        "False"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -25.04,
+        "Y": -240.02,
+        "Z": -286.32
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": -21.68,
+        "Y": -240.39,
+        "Z": -291.29
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "True"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Trash Packs / \u96D1\u9B5A 11 \u0026 12 --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": -19.16,
+        "Y": -241.57,
+        "Z": -325.4
+      },
+      "arguments": [
+        "False"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "1000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -9.74,
+        "Y": -238.44,
+        "Z": -380.13
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "6200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -21.43,
+        "Y": -239.07,
+        "Z": -423.1
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": -19.59,
+        "Y": -238.79,
+        "Z": -412.79
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 1,
+      "name": "Wait",
+      "position": {
+        "X": -21.03,
+        "Y": -238.92,
+        "Z": -421.01
+      },
+      "arguments": [
+        "4200"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "True"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -17.84,
+        "Y": -238.44,
+        "Z": -432.05
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E"
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 10.4,
+        "Y": -236,
+        "Z": -506.87
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 160,
+    "changelog": [
+      {
+        "version": 168,
+        "change": "Converted to JSON Structure with Tags"
+      }
+    ],
+    "notes": [
+      "See Tower of Zot Tank Path for additional notes and Testing data.",
+      "As usual with W2W Paths, eating real food is recommended."
+    ]
+  }
+}

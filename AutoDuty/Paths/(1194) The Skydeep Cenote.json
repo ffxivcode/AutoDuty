@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": 0,
       "name": "Revival",
       "position": {
         "X": -105.21,
@@ -46,19 +46,6 @@
         "X": -105.08,
         "Y": -52,
         "Z": -158.5
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -105.04,
-        "Y": -52,
-        "Z": -168.91
       },
       "arguments": [
         ""
@@ -93,11 +80,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -216.64,
+        "X": -216.38,
         "Y": -210,
-        "Z": -49.38
+        "Z": -49.75
       },
       "arguments": [
         ""
@@ -132,9 +119,9 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -78.21,
+        "X": -78.31,
         "Y": -210,
         "Z": -92.33
       },
@@ -144,7 +131,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": 0,
       "name": "Revival",
       "position": {
         "X": -84.9,
@@ -173,19 +160,6 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
-        "X": -69.91,
-        "Y": -210,
-        "Z": -155.3
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
         "X": 38.56,
         "Y": -210,
         "Z": -155.22
@@ -197,11 +171,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 110.41,
+        "X": 110.31,
         "Y": -189.75,
-        "Z": -214.27
+        "Z": -214.02
       },
       "arguments": [
         ""
@@ -236,11 +210,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 137.06,
+        "X": 136.98,
         "Y": -184.9,
-        "Z": -335.19
+        "Z": -334.97
       },
       "arguments": [
         ""
@@ -248,7 +222,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": 0,
       "name": "Revival",
       "position": {
         "X": 100.07,
@@ -285,39 +259,14 @@
         ""
       ],
       "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": 100.01,
-        "Y": -191.99,
-        "Z": -436.88
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
     }
   ],
   "interactables": [],
   "meta": {
-    "createdAt": 106,
+    "createdAt": 160,
     "changelog": [
       {
-        "version": 119,
-        "change": ""
-      },
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
+        "version": 168,
         "change": "Converted to JSON Structure with Tags"
       }
     ],

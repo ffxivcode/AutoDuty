@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": 0,
       "name": "Revival",
       "position": {
         "X": -98.76,
@@ -119,14 +119,14 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "Wait",
       "position": {
-        "X": -75.8,
+        "X": -72.64,
         "Y": -120,
-        "Z": -179.96
+        "Z": -180.03
       },
       "arguments": [
-        ""
+        "5000"
       ],
       "note": ""
     },
@@ -145,11 +145,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 44.58,
+        "X": 44.26,
         "Y": -120,
-        "Z": -129.21
+        "Z": -129.55
       },
       "arguments": [
         ""
@@ -190,9 +190,7 @@
         "Y": 0,
         "Z": 0
       },
-      "arguments": [
-        ""
-      ],
+      "arguments": [],
       "note": ""
     },
     {
@@ -210,11 +208,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -187.33,
+        "X": -187.18,
         "Y": -94,
-        "Z": -86.08
+        "Z": -85.96
       },
       "arguments": [
         ""
@@ -222,7 +220,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": 0,
       "name": "Revival",
       "position": {
         "X": -171.57,
@@ -241,19 +239,6 @@
         "X": -172.06,
         "Y": -94,
         "Z": -146.5
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -172.06,
-        "Y": -94,
-        "Z": -160.17
       },
       "arguments": [
         ""
@@ -294,18 +279,16 @@
         "Y": 0,
         "Z": 227.16
       },
-      "arguments": [
-        ""
-      ],
+      "arguments": [],
       "note": ""
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 102.84,
+        "X": 102.85,
         "Y": 0,
-        "Z": 220.83
+        "Z": 220.82
       },
       "arguments": [
         ""
@@ -340,11 +323,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 157.48,
+        "X": 157.45,
         "Y": 0,
-        "Z": 179.8
+        "Z": 179.61
       },
       "arguments": [
         ""
@@ -365,7 +348,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": 0,
       "name": "Revival",
       "position": {
         "X": 189.73,
@@ -389,39 +372,14 @@
         ""
       ],
       "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": 189.92,
-        "Y": 0,
-        "Z": -12.38
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
     }
   ],
   "interactables": [],
   "meta": {
-    "createdAt": 106,
+    "createdAt": 160,
     "changelog": [
       {
-        "version": 119,
-        "change": ""
-      },
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
+        "version": 168,
         "change": "Converted to JSON Structure with Tags"
       }
     ],

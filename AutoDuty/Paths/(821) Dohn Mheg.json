@@ -56,22 +56,9 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": -0.59,
-        "Y": 6.85,
-        "Z": 25.03
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -0.02,
+        "X": -0.01,
         "Y": 6.86,
-        "Z": 16.19
+        "Z": 18.19
       },
       "arguments": [
         ""
@@ -106,11 +93,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -54,
+        "X": -54.59,
         "Y": 1.77,
-        "Z": -104.84
+        "Z": -105.28
       },
       "arguments": [
         ""
@@ -145,11 +132,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 5.48,
-        "Y": 12.34,
-        "Z": -233.65
+        "X": 6.58,
+        "Y": 12.44,
+        "Z": -233.91
       },
       "arguments": [
         ""
@@ -160,22 +147,9 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": 6.93,
-        "Y": 23.1,
-        "Z": -346.52
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": 7,
+        "X": 7.23,
         "Y": 23.04,
-        "Z": -358.29
+        "Z": -355.94
       },
       "arguments": [
         ""
@@ -186,9 +160,9 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
-        "X": 7.92,
+        "X": 7.08,
         "Y": 19.3,
-        "Z": -452.47
+        "Z": -444.85
       },
       "arguments": [
         ""
@@ -197,24 +171,37 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "AutoMoveFor",
       "position": {
-        "X": -176.77,
+        "X": 7.09,
+        "Y": 19.3,
+        "Z": -448.7
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -177.06,
         "Y": -182.75,
-        "Z": 32.24
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -169.76,
-        "Y": -178.75,
-        "Z": -5.61
+        "Z": 31.4
       },
       "arguments": [
         ""
@@ -225,9 +212,9 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": -169.87,
+        "Y": -178.75,
+        "Z": -5.39
       },
       "arguments": [
         "2009760"
@@ -275,11 +262,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -120.14,
+        "X": -119.79,
         "Y": -156.01,
-        "Z": -169.03
+        "Z": -169.63
       },
       "arguments": [
         ""
@@ -290,22 +277,9 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": -128.44,
-        "Y": -144.54,
-        "Z": -250.21
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -128.43,
-        "Y": -144.53,
-        "Z": -255.94
+        "X": -128.36,
+        "Y": -144.52,
+        "Z": -259.31
       },
       "arguments": [
         ""
@@ -315,18 +289,10 @@
   ],
   "interactables": [],
   "meta": {
-    "createdAt": 106,
+    "createdAt": 160,
     "changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
+        "version": 168,
         "change": "Converted to JSON Structure with Tags"
       }
     ],

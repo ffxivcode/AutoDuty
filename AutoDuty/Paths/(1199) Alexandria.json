@@ -40,7 +40,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": 0,
       "name": "Revival",
       "position": {
         "X": -116.43,
@@ -106,11 +106,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 807.99,
+        "X": 807.9,
         "Y": 35.53,
-        "Z": 724.31
+        "Z": 724.29
       },
       "arguments": [
         ""
@@ -210,11 +210,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 745.31,
+        "X": 744.68,
         "Y": 64.79,
-        "Z": 617.26
+        "Z": 618.21
       },
       "arguments": [
         ""
@@ -222,7 +222,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": 0,
       "name": "Revival",
       "position": {
         "X": 747.2,
@@ -264,19 +264,6 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
-        "X": -533.12,
-        "Y": -466,
-        "Z": -387.23
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
         "X": -590.15,
         "Y": -472.88,
         "Z": -441.35
@@ -301,11 +288,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -584.64,
+        "X": -584.23,
         "Y": -463.99,
-        "Z": -509.77
+        "Z": -510.04
       },
       "arguments": [
         ""
@@ -327,11 +314,11 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -732.53,
-        "Y": -474.35,
-        "Z": -564.92
+        "X": -732.99,
+        "Y": -474.36,
+        "Z": -564.76
       },
       "arguments": [
         ""
@@ -365,7 +352,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": 0,
       "name": "Revival",
       "position": {
         "X": -758.61,
@@ -389,35 +376,14 @@
         ""
       ],
       "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -759.11,
-        "Y": -474,
-        "Z": -658.35
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
     }
   ],
   "interactables": [],
   "meta": {
-    "createdAt": 106,
+    "createdAt": 160,
     "changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
+        "version": 168,
         "change": "Converted to JSON Structure with Tags"
       }
     ],
