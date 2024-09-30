@@ -83,12 +83,13 @@ namespace AutoDuty.Helpers
                     return result;
                 }
 
-                DawnContent? dawnContent = listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId);
+                DawnContent?           dawnContent      = listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId);
+                ContentFinderCondition englishCondition = contentFinderConditionsEnglish?.GetRow(contentFinderCondition.RowId) ?? contentFinderCondition;
                 var content = new Content
                               {
                                   Id = contentFinderCondition.Content.Row,
                                   Name = CleanName(contentFinderCondition.Name.ToDalamudString().TextValue),
-                                  EnglishName = CleanName(contentFinderConditionsEnglish!.GetRow(contentFinderCondition.RowId)!.Name.ToDalamudString().TextValue),
+                                  EnglishName = CleanName(englishCondition!.Name.ToDalamudString().TextValue),
                                   TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
                                   ContentType = contentFinderCondition.ContentType.Value.RowId,
                                   ContentMemberType = contentFinderCondition.ContentMemberType.Value?.RowId ?? 0,
