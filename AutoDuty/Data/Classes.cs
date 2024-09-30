@@ -64,7 +64,7 @@ namespace AutoDuty.Data
 
             public void SetLevel(uint level)
             {
-                if (level >= LevelInit)
+                if (level >= LevelInit-1)
                 {
                     LevelIsSet = true;
                     Level = level;
