@@ -1,0 +1,49 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "/vbmai off"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -6.79,
+        "Y": 0.02,
+        "Z": -1.58
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
+      }
+    ],
+    "notes": []
+  }
+}
