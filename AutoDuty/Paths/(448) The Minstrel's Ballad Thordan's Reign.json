@@ -1,0 +1,36 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 0.09,
+        "Y": 0.04,
+        "Z": 14.03
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -0.08,
+        "Y": 0.04,
+        "Z": -11.49
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 170,
+    "changelog": [],
+    "notes": []
+  }
+}

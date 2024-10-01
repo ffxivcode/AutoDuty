@@ -1,0 +1,14 @@
+{
+  "actions": [
+    "MoveTo|11.9, 11.2, 0|",
+    "Interactable|0, 0, 0|Allagan Teleporter",
+    "MoveTo|11.6, 10.2, 0|",
+    "Boss|10.4, 10.5, 0|",
+    "MoveTo|9.3, 11.2, 0|"
+  ],
+  "meta": {
+    "createdAt": 106,
+    "changelog": [],
+    "notes": []
+  }
+}

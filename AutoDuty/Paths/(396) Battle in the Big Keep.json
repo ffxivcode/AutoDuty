@@ -1,0 +1,71 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -147.64,
+        "Y": -2.8,
+        "Z": -0.5
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -114.96637,
+        "Y": -2.8000038,
+        "Z": 0.5902905
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -49.10786,
+        "Y": 0.088905215,
+        "Z": -0.22393066
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -31.71,
+        "Y": 0.2,
+        "Z": -0.07
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -15.74,
+        "Y": 0,
+        "Z": 0.04
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 170,
+    "changelog": [],
+    "notes": []
+  }
+}

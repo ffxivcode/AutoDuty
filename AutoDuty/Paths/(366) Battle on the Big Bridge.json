@@ -1,0 +1,91 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -129.2597,
+        "Y": 1.3145969,
+        "Z": -0.09031831
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -77.21873,
+        "Y": 1.4460518,
+        "Z": 0.09717287
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -57.69,
+        "Y": 2,
+        "Z": 0.1
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -5.588481,
+        "Y": 0,
+        "Z": -0.9230764
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 34.72553,
+        "Y": -7.000001,
+        "Z": -0.76388246
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 104.83039,
+        "Y": -5.532879,
+        "Z": 0.050939985
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 113.45,
+        "Y": -4.98,
+        "Z": 0.12
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 170,
+    "changelog": [],
+    "notes": []
+  }
+}
