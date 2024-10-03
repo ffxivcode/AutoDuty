@@ -22,7 +22,7 @@ jobs:
       - name: List all files in S3 bucket
         id: list-s3-files
         run: |
-          aws s3 ls s3://${{ secrets.AWS_BUCKET_NAME }} --recursive --summarize | awk '{if($4) print $4}' > s3_files.txt
+          aws s3api list-objects --bucket ${{ secrets.AWS_BUCKET_NAME }} --output text --query "Contents[].{Key: Key}" > s3_files.txt
           echo "S3 files:"
           cat s3_files.txt
 
