@@ -23,9 +23,15 @@ jobs:
           rm -rf AutoDuty
           ls -lah
 
+      - name: Update file timestamps to last commit time
+        run: |
+          for file in $(find . -type f); do
+            git log -1 --format="%at" -- "$file" | xargs -I{} touch -d @{} "$file"
+          done
+
       - name: List files and folders
         run: |
-          echo "Listing all files and folders in the base workspace directory:d"
+          echo "Listing all files and folders in the base workspace directory:"
           ls -la
 
       - name: Configure AWS Credentials
@@ -37,4 +43,4 @@ jobs:
 
       - name: Sync paths folder to S3 bucket
         run: |
-          aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/ --delete --exclude ".git/*"
+          aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/ --delete --exclude ".github/*"
