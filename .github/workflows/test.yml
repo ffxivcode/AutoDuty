@@ -1,5 +1,4 @@
 name: checkout paths
-
 on:
   push:
 jobs:
