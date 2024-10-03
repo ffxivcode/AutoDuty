@@ -1,10 +1,12 @@
 name: list changed-files
 on:
-  push:
+  pull_request:
 jobs:
   changedfiles:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v45
