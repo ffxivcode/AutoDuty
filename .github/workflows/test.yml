@@ -27,20 +27,20 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
           aws-region: us-west-2
-      - name: Sync Paths to S3
+      - name: Delete any files in Paths that Match MD5
         run: |
-          find . -type f | while IFS= read -r file; do
-            if aws s3api head-object --bucket "${{ secrets.BUCKET_NAME }}" --key "$file" >/dev/null 2>&1; then
-              s3_etag=$(aws s3api head-object --bucket "${{ secrets.BUCKET_NAME }}" --key "$file" --query ETag --output text | tr -d '"')
+          find . -type f ! -path "./.git/*" | while IFS= read -r file; do
+            s3_key="${file#./}"
+            if aws s3api head-object --bucket "${{ secrets.AWS_BUCKET_NAME }}" --key "$s3_key" >/dev/null 2>&1; then
+              s3_etag=$(aws s3api head-object --bucket "${{ secrets.AWS_BUCKET_NAME }}" --key "$s3_key" --query ETag --output text | tr -d '"')
               md5_local=$(md5sum "$file" | awk '{ print $1 }')
-              if [ "$md5_local" != "$s3_etag" ]; then
-                echo "Uploading $file to S3"
-                aws s3 cp "$file" "s3://${{ secrets.BUCKET_NAME }}/$file"
-              else
-                echo "$file is up to date, skipping upload"
+              if [ "$md5_local" == "$s3_etag" ]; then
+                echo "$file is up to date, deleting local file"
+                rm "$file"
               fi
-            else
-              echo "$file does not exist in S3, uploading"
-              aws s3 cp "$file" "s3://${{ secrets.BUCKET_NAME }}/$file"
             fi
           done
+      
+      - name: Sync Path Files to S3
+        run: |
+          aws s3 sync . "s3://${{ secrets.AWS_BUCKET_NAME }}" --delete
