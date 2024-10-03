@@ -1,0 +1,25 @@
+name: checkout paths
+
+on:
+  push:
+    types: [released]
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout paths folder
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: 'AutoDuty/Paths'
+          sparse-checkout-cone-mode: false
+      - name: Move paths folder files to root
+        run: |
+          ls -lah
+          shopt -s dotglob
+          mv AutoDuty/Paths/* .
+          rm -rf AutoDuty
+          ls -lah
+      - name: Echo moved files
+        run: |
+          echo "Moved files:"
+          ls -lah
