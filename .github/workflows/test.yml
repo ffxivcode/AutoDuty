@@ -40,7 +40,6 @@ jobs:
               fi
             fi
           done
-      
       - name: Sync Path Files to S3
         run: |
-          aws s3 sync . "s3://${{ secrets.AWS_BUCKET_NAME }}" --delete
+          aws s3 sync . "s3://${{ secrets.AWS_BUCKET_NAME }}" --delete --exclude ".git/*"
