@@ -15,7 +15,7 @@ jobs:
       - name: List all files in AutoDuty/Paths folder
         id: list-local-files
         run: |
-          find AutoDuty/Paths -type f > local_files.txt
+          find AutoDuty/Paths -type f | sed 's|AutoDuty/Paths/||' > local_files.txt
           echo "Local files:"
           cat local_files.txt
       
