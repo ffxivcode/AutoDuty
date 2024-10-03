@@ -1,4 +1,4 @@
-name: list changed-files
+name: list changed-files on merge
 on:
   push:
 jobs:
