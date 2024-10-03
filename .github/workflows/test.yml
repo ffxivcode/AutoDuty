@@ -1,6 +1,6 @@
 name: checkout paths
 on:
-  push:
+  release:
 jobs:
   checkout:
     runs-on: ubuntu-latest
