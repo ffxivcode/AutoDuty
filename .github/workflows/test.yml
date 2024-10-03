@@ -29,9 +29,9 @@ jobs:
           aws-region: us-west-2
       - name: Sync Paths to S3
         run: |
-          for file in $(find . -type f); do
-            if aws s3api head-object --bucket ${{ secrets.AWS_BUCKET_NAME }} --key "$file" >/dev/null 2>&1; then
-              s3_etag=$(aws s3api head-object --bucket ${{ secrets.AWS_BUCKET_NAME }} --key "$file" --query ETag --output text | tr -d '"')
+          find . -type f | while IFS= read -r file; do
+            if aws s3api head-object --bucket "${{ secrets.AWS_BUCKET_NAME }}" --key "$file" >/dev/null 2>&1; then
+              s3_etag=$(aws s3api head-object --bucket "${{ secrets.AWS_BUCKET_NAME }}" --key "$file" --query ETag --output text | tr -d '"')
               md5_local=$(md5sum "$file" | awk '{ print $1 }')
               if [ "$md5_local" != "$s3_etag" ]; then
                 echo "Uploading $file to S3"
