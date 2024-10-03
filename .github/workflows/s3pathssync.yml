@@ -1,4 +1,4 @@
-name: list changed-files
+name: list changed-filesd
 on:
   pull_request:
     types:
