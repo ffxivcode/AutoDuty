@@ -1,8 +1,11 @@
 name: list changed-files
 on:
-  push:
+  pull_request:
+    types:
+      - closed
 jobs:
   workflow:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Test changed-files
     steps:
