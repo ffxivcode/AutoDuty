@@ -1,0 +1,543 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -115.25,
+        "Y": 60.27,
+        "Z": 428.72
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -103.99,
+        "Y": 53.49,
+        "Z": 397.22
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -79.76,
+        "Y": 50.01,
+        "Z": 385.49
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -49.17,
+        "Y": 46.16,
+        "Z": 350.31
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -72.35,
+        "Y": 37.16,
+        "Z": 312.6
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -72.07,
+        "Y": 2.94,
+        "Z": 291.38
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -71.12,
+        "Y": 2.92,
+        "Z": 250.8
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -71.83,
+        "Y": 3,
+        "Z": 201.64
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -70.38,
+        "Y": -3,
+        "Z": 148.82
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -70.3,
+        "Y": -3,
+        "Z": 128.42
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -70.97,
+        "Y": -3,
+        "Z": 115.34
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -67.66,
+        "Y": -5,
+        "Z": 18.9
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -26.56,
+        "Y": -8.5,
+        "Z": 18.67
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -0.9,
+        "Y": -8.83,
+        "Z": 8.36
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 39.03,
+        "Y": -16.5,
+        "Z": 34.93
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 34.03,
+        "Y": -16.45,
+        "Z": 51.19
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": "Optional Treasure Chest"
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 51.84,
+        "Y": -16.49,
+        "Z": 35.54
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 91.65,
+        "Y": -21.85,
+        "Z": 34.52
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 96.51,
+        "Y": -24.8,
+        "Z": 13.05
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 64.17,
+        "Y": -27.36,
+        "Z": -10.69
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 45.4,
+        "Y": -25.5,
+        "Z": -32.89
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 30.99,
+        "Y": -25.5,
+        "Z": -63.87
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": "Optional Treasure Chest"
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 60.21,
+        "Y": -25.51,
+        "Z": -61.62
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 59.05,
+        "Y": -26,
+        "Z": -102.72
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 59.44,
+        "Y": -26,
+        "Z": -122.09
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 59.35,
+        "Y": -26,
+        "Z": -136.95
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 58.23,
+        "Y": -97.03,
+        "Z": -177.22
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 43.28,
+        "Y": -96.28,
+        "Z": -223.02
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 66.04,
+        "Y": -97.07,
+        "Z": -234.21
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": "Optional Treasure Chest"
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 91.99,
+        "Y": -96.35,
+        "Z": -238.76
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 90.01,
+        "Y": -96.82,
+        "Z": -284.71
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 64.04,
+        "Y": -96.87,
+        "Z": -314.87
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 69.18,
+        "Y": -96.89,
+        "Z": -331.95
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": "Optional Treasure Chest"
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 64.38,
+        "Y": -96.83,
+        "Z": -326.06
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 63.92,
+        "Y": -93,
+        "Z": -370.75
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 64.06,
+        "Y": -90,
+        "Z": -436.6
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 62.74,
+        "Y": -88,
+        "Z": -457.24
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 62.17,
+        "Y": -88,
+        "Z": -475.3
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 61.95,
+        "Y": -88,
+        "Z": -483.96
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 62.06,
+        "Y": -88,
+        "Z": -488.76
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 62.06,
+        "Y": -88,
+        "Z": -488.76
+      },
+      "arguments": [
+        "2000139"
+      ],
+      "note": "Exit"
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 170,
+    "changelog": [],
+    "notes": []
+  }
+}
