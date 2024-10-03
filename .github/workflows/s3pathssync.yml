@@ -74,6 +74,7 @@ jobs:
           find $TEMP_DIR -type f
 
       - name: Configure AWS Credentials
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           aws-access-key-id: ${{ secrets.AWS_KEY }}
@@ -81,6 +82,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Sync temp folder to S3 bucket
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
+          aws s3 sync $TEMP_DIR s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
           
