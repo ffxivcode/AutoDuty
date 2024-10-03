@@ -33,7 +33,7 @@ jobs:
 
       - name: List files and folders
         run: |
-          echo "Listing all files and folders in the base workspace directory: s"
+          echo "Listing all files and folders in the base workspace directory:"
           ls -la
 
       - name: Configure AWS Credentials
