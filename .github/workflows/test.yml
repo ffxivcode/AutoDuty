@@ -17,6 +17,10 @@ jobs:
           mv AutoDuty/Paths/* .
           rm -rf AutoDuty
           ls -lah
+      - name: List files and folders
+        run: |
+          echo "Listing all files and folders in the base workspace directory:"
+          ls -la
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
