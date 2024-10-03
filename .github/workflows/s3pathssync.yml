@@ -18,12 +18,6 @@ jobs:
       - name: Configure Git to handle non-ASCII characters
         run: git config --global core.quotePath false
 
-      - name: Move paths folder files to root preserving timestamps
-        run: |
-          shopt -s dotglob
-          rsync -a "AutoDuty/Paths/" .
-          rm -rf AutoDuty
-
       - name: Check if files are tracked by Git
         run: |
           find . -type f -print0 | xargs -0 -I {} bash -c '
@@ -56,6 +50,12 @@ jobs:
               echo "Invalid commit time for \"$file\": $commit_time"
             fi
           '
+
+      - name: Move paths folder files to root preserving timestamps
+        run: |
+          shopt -s dotglob
+          rsync -a "AutoDuty/Paths/" .
+          rm -rf AutoDuty
 
       - name: List files and folders
         run: |
