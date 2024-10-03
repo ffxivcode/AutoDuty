@@ -24,9 +24,29 @@ jobs:
           rsync -a "AutoDuty/Paths/" .
           rm -rf AutoDuty
 
+      - name: Check if files are tracked by Git
+        run: |
+          find . -type f -print0 | xargs -0 -I {} bash -c '
+            file="{}"
+            if git ls-files --error-unmatch "$file" > /dev/null 2>&1; then
+              echo "$file is tracked by Git."
+            else
+              echo "$file is not tracked by Git."
+            fi
+          '
+
+      - name: Check commit history for each file
+        run: |
+          find . -type f -print0 | xargs -0 -I {} bash -c '
+            file="{}"
+            echo "Commit history for \"$file\":"
+            git log -- "$file" || echo "No commits found for \"$file\""
+          '
+
       - name: Update file timestamps to last commit time and echo timestamps
         run: |
-          find . -type f | while IFS= read -r file; do
+          find . -type f -print0 | xargs -0 -I {} bash -c '
+            file="{}"
             commit_time=$(git log -1 --format="%at" -- "$file")
             echo "Commit time for \"$file\": $commit_time"
             if [[ $commit_time =~ ^[0-9]+$ ]]; then
@@ -35,7 +55,7 @@ jobs:
             else
               echo "Invalid commit time for \"$file\": $commit_time"
             fi
-          done
+          '
 
       - name: List files and folders
         run: |
