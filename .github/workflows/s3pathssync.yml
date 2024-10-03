@@ -43,8 +43,8 @@ jobs:
           comm -23 <(sort s3_files.txt) <(sort local_files.txt) > files_to_delete.txt
           echo "Files to delete:"
           cat files_to_delete.txt
-           while read -r file; do
-            aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/$file
+          while IFS= read -r file; do
+            aws s3 rm "s3://${{ secrets.AWS_BUCKET_NAME }}/$file"
           done < files_to_delete.txt
           
       - name: Get changed files in the paths folder
@@ -70,8 +70,8 @@ jobs:
           TEMP_DIR=$(mktemp -d)
           echo "Temporary directory created at $TEMP_DIR"
           for file in $(echo $ALL_CHANGED_FILES | jq -r '.[]'); do
-            mkdir -p "$TEMP_DIR/$(dirname $file)"
-            rsync -R "$file" "$TEMP_DIR/$(dirname $file)"
+            mkdir -p "$TEMP_DIR/$(dirname "$file")"
+            rsync -R "$file" "$TEMP_DIR/$(dirname "$file")"
           done
           echo "Files moved to $TEMP_DIR"
 
