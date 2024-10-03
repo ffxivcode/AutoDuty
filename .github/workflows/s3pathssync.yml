@@ -39,15 +39,11 @@ jobs:
           cat s3_files.txt
 
       - name: Delete files in S3 bucket not in local folder
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           comm -23 <(sort s3_files.txt) <(sort local_files.txt) > files_to_delete.txt
           echo "Files to delete:"
           cat files_to_delete.txt
-          while read -r file; do
-            aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/$file
-          done < files_to_delete.txt
-
+          
       - name: Get changed files in the paths folder
         id: changed-files-specific
         uses: tj-actions/changed-files@v45.0.3
