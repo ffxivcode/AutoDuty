@@ -30,10 +30,9 @@ jobs:
           echo "Debugging S3 ls output:"
           aws s3 ls s3://${{ secrets.AWS_BUCKET_NAME }} --recursive --human-readable --summarize
       - name: List all files in S3 bucket
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
         id: list-s3-files
         run: |
-          aws s3 ls s3://${{ secrets.AWS_BUCKET_NAME }} --recursive --human-readable --summarize | awk '{print $4}' > s3_files.txt
+          aws s3 ls s3://${{ secrets.AWS_BUCKET_NAME }} --recursive | awk '{$1=$2=$3=$4=""; print substr($0,5)}' > s3_files.txt
           echo "S3 files:"
           cat s3_files.txt
 
