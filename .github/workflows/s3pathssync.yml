@@ -43,6 +43,9 @@ jobs:
           comm -23 <(sort s3_files.txt) <(sort local_files.txt) > files_to_delete.txt
           echo "Files to delete:"
           cat files_to_delete.txt
+           while read -r file; do
+            aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/$file
+          done < files_to_delete.txt
           
       - name: Get changed files in the paths folder
         id: changed-files-specific
