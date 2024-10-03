@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout paths folder
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
         with:
           sparse-checkout: 'AutoDuty/Paths'
           sparse-checkout-cone-mode: false
