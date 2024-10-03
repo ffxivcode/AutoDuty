@@ -27,23 +27,20 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
           aws-region: us-west-2
-      - name: Paths processing
+      - name: Sync Paths to S3
         run: |
-          FOLDER_PATH="/"
-          BUCKET_NAME=${{ secrets.BUCKET_NAME }}
-          for FILE_PATH in $FOLDER_PATH/*; do
-            if [ -f "$FILE_PATH" ]; then
-              FILE_NAME=$(basename "$FILE_PATH")
-              OBJECT_KEY="$FILE_NAME"
-              MD5_CHECKSUM=$(md5sum "$FILE_PATH" | awk '{ print $1 }')
-              ETag=$(aws s3api head-object --bucket $BUCKET_NAME --key $OBJECT_KEY --query ETag --output text || echo "NOT_FOUND")
-              ETag=${ETag//\"/}
-              echo "checking $FILE_PATH md5: gh: $MD5_CHECKSUM s3: $ETag"
-              if [ "$MD5_CHECKSUM" == "$ETag" ]; then
-                echo "MD5 checksum matches ETag for $FILE_NAME. Skipping upload."
+          for file in $(find . -type f); do
+            if aws s3api head-object --bucket ${{ secrets.AWS_BUCKET_NAME }} --key "$file" >/dev/null 2>&1; then
+              s3_etag=$(aws s3api head-object --bucket ${{ secrets.AWS_BUCKET_NAME }} --key "$file" --query ETag --output text | tr -d '"')
+              md5_local=$(md5sum "$file" | awk '{ print $1 }')
+              if [ "$md5_local" != "$s3_etag" ]; then
+                echo "Uploading $file to S3"
+                aws s3 cp "$file" "s3://${{ secrets.AWS_BUCKET_NAME }}/$file"
               else
-                echo "MD5 checksum does not match ETag for $FILE_NAME or file not found. Uploading file."
-                aws s3 cp "$FILE_PATH" "s3://$BUCKET_NAME/$OBJECT_KEY"
+                echo "$file is up to date, skipping upload"
               fi
+            else
+              echo "$file does not exist in S3, uploading"
+              aws s3 cp "$file" "s3://${{ secrets.AWS_BUCKET_NAME }}/$file"
             fi
           done
