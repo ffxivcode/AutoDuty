@@ -30,17 +30,17 @@ jobs:
       - name: Sync Paths to S3
         run: |
           find . -type f | while IFS= read -r file; do
-            if aws s3api head-object --bucket "${{ secrets.AWS_BUCKET_NAME }}" --key "$file" >/dev/null 2>&1; then
+            if aws s3api head-object --bucket "${{ secrets.BUCKET_NAME }}" --key "$file" >/dev/null 2>&1; then
               s3_etag=$(aws s3api head-object --bucket "${{ secrets.BUCKET_NAME }}" --key "$file" --query ETag --output text | tr -d '"')
               md5_local=$(md5sum "$file" | awk '{ print $1 }')
               if [ "$md5_local" != "$s3_etag" ]; then
                 echo "Uploading $file to S3"
-                aws s3 cp "$file" "s3://${{ secrets.AWS_BUCKET_NAME }}/$file"
+                aws s3 cp "$file" "s3://${{ secrets.BUCKET_NAME }}/$file"
               else
                 echo "$file is up to date, skipping upload"
               fi
             else
               echo "$file does not exist in S3, uploading"
-              aws s3 cp "$file" "s3://${{ secrets.AWS_BUCKET_NAME }}/$file"
+              aws s3 cp "$file" "s3://${{ secrets.BUCKET_NAME }}/$file"
             fi
           done
