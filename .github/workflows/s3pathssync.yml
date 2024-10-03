@@ -18,7 +18,15 @@ jobs:
           find AutoDuty/Paths -type f > local_files.txt
           echo "Local files:"
           cat local_files.txt
-
+      
+      - name: Configure AWS Credentials
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: us-west-2
+          
       - name: List all files in S3 bucket
         id: list-s3-files
         run: |
@@ -68,14 +76,6 @@ jobs:
         run: |
           echo "Listing all files in $TEMP_DIR:"
           find $TEMP_DIR -type f
-
-      - name: Configure AWS Credentials
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
-        uses: aws-actions/configure-aws-credentials@v4.0.2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
-          aws-region: us-west-2
 
       - name: Sync temp folder to S3 bucket
         if: steps.changed-files-specific.outputs.any_changed == 'true'
