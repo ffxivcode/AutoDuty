@@ -1,66 +1,77 @@
-name: Sync paths folder to S3
+name: list changed-files
 on:
   pull_request:
     types:
       - closed
-
 jobs:
-  checkout:
+  workflow:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    name: Test changed-files
     steps:
-      - name: Checkout paths folder
+      - name: Checkout
         uses: actions/checkout@v4
+
+      - name: List all files in AutoDuty/Paths folder
+        id: list-local-files
+        run: |
+          find AutoDuty/Paths -type f > local_files.txt
+          echo "Local files:"
+          cat local_files.txt
+
+      - name: List all files in S3 bucket
+        id: list-s3-files
+        env:
+          AWS_BUCKET: your-s3-bucket-name
+        run: |
+          aws s3 ls s3://$AWS_BUCKET --recursive --human-readable --summarize | awk '{print $4}' > s3_files.txt
+          echo "S3 files:"
+          cat s3_files.txt
+
+      - name: Delete files in S3 bucket not in local folder
+        env:
+          AWS_BUCKET: your-s3-bucket-name
+        run: |
+          comm -23 <(sort s3_files.txt) <(sort local_files.txt) > files_to_delete.txt
+          echo "Files to delete:"
+          cat files_to_delete.txt
+          while read -r file; do
+            aws s3 rm s3://$AWS_BUCKET/$file
+          done < files_to_delete.txt
+
+      - name: Get changed files in the paths folder
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v45.0.3
         with:
-          sparse-checkout: 'AutoDuty/Paths'
-          sparse-checkout-cone-mode: false
+          json: "true"
+          quotepath: "false"
+          files: AutoDuty/Paths/**
+          separator: ","
 
-      - name: Configure Git to handle non-ASCII characters
-        run: git config --global core.quotePath false
-
-      - name: Check if files are tracked by Git
+      - name: Run step if any file(s) in the paths folder change
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files-specific.outputs.all_changed_files }}
         run: |
-          find . -type f -print0 | xargs -0 -I {} bash -c '
-            file="{}"
-            if git ls-files --error-unmatch "$file" > /dev/null 2>&1; then
-              echo "$file is tracked by Git."
-            else
-              echo "$file is not tracked by Git."
-            fi
-          '
+          echo "One or more files in the paths folder has changed."
+          echo "List all the files that have changed: $ALL_CHANGED_FILES"
 
-      - name: Check commit history for each file
+      - name: Move changed files to temporary folder
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          find . -type f -print0 | xargs -0 -I {} bash -c '
-            file="{}"
-            echo "Commit history for \"$file\":"
-            git log -- "$file" || echo "No commits found for \"$file\""
-          '
+          TEMP_DIR=$(mktemp -d)
+          echo "Temporary directory created at $TEMP_DIR"
+          for file in $(echo $ALL_CHANGED_FILES | jq -r '.[]'); do
+            mkdir -p "$TEMP_DIR/$(dirname $file)"
+            rsync -R "$file" "$TEMP_DIR/$(dirname $file)"
+          done
+          echo "Files moved to $TEMP_DIR"
 
-      - name: Update file timestamps to last commit time and echo timestamps
+      - name: List all files in temporary folder
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          find . -type f -print0 | xargs -0 -I {} bash -c '
-            file="{}"
-            commit_time=$(git log -1 --format="%at" -- "$file")
-            echo "Commit time for \"$file\": $commit_time"
-            if [[ $commit_time =~ ^[0-9]+$ ]]; then
-              touch -d "@$commit_time" "$file"
-              echo "Updated timestamp for \"$file\": $(stat -c %y "$file")"
-            else
-              echo "Invalid commit time for \"$file\": $commit_time"
-            fi
-          '
-
-      - name: Move paths folder files to root preserving timestamps
-        run: |
-          shopt -s dotglob
-          rsync -a "AutoDuty/Paths/" .
-          rm -rf AutoDuty
-
-      - name: List files and folders
-        run: |
-          echo "Listing all files and folders in the base workspace directory:"
-          ls -la
+          echo "Listing all files in $TEMP_DIR:"
+          find $TEMP_DIR -type f
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.0.2
@@ -69,6 +80,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
           aws-region: us-west-2
 
-      - name: Sync paths folder to S3 bucket
+      - name: Sync temp folder to S3 bucket
         run: |
-          aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/ --delete --exclude ".github/*"
+          aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
+          
