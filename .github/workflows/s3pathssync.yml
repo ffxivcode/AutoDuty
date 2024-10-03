@@ -25,8 +25,12 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
           aws-region: us-west-2
-          
+      - name: Debug S3 ls output
+        run: |
+          echo "Debugging S3 ls output:"
+          aws s3 ls s3://${{ secrets.AWS_BUCKET_NAME }} --recursive --human-readable --summarize
       - name: List all files in S3 bucket
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         id: list-s3-files
         run: |
           aws s3 ls s3://${{ secrets.AWS_BUCKET_NAME }} --recursive --human-readable --summarize | awk '{print $4}' > s3_files.txt
@@ -34,6 +38,7 @@ jobs:
           cat s3_files.txt
 
       - name: Delete files in S3 bucket not in local folder
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           comm -23 <(sort s3_files.txt) <(sort local_files.txt) > files_to_delete.txt
           echo "Files to delete:"
