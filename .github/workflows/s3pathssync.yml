@@ -66,6 +66,8 @@ jobs:
 
       - name: Move changed files to temporary folder
         if: steps.changed-files-specific.outputs.any_changed == 'true'
+        env:
+         TEMP_DIR: ""
         run: |
           TEMP_DIR=$(mktemp -d)
           echo "Temporary directory created at $TEMP_DIR"
