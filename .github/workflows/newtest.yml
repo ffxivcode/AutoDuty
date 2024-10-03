@@ -1,0 +1,40 @@
+name: Sync paths folder to S3
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  checkout:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout paths folder
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: 'AutoDuty/Paths'
+          sparse-checkout-cone-mode: false
+
+      - name: Move paths folder files to root
+        run: |
+          ls -lah
+          shopt -s dotglob
+          mv AutoDuty/Paths/* .
+          rm -rf AutoDuty
+          ls -lah
+
+      - name: List files and folders
+        run: |
+          echo "Listing all files and folders in the base workspace directory:"
+          ls -la
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: us-west-2
+
+      - name: Sync paths folder to S3 bucket
+        run: |
+          aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/ --exact-timestamps --delete
