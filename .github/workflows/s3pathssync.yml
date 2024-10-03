@@ -15,11 +15,11 @@ jobs:
           sparse-checkout: 'AutoDuty/Paths'
           sparse-checkout-cone-mode: false
 
-      - name: Move paths folder files to root
+      - name: Move paths folder files to root preserving timestamps
         run: |
           ls -lah
           shopt -s dotglob
-          mv AutoDuty/Paths/* .
+          rsync -a AutoDuty/Paths/ .
           rm -rf AutoDuty
           ls -lah
 
