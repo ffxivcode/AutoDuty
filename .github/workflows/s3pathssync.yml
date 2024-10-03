@@ -27,8 +27,13 @@ jobs:
         run: |
           for file in $(find . -type f); do
             commit_time=$(git log -1 --format="%at" -- "$file")
-            touch -d @$commit_time "$file"
-            echo "Updated timestamp for $file: $(stat -c %y "$file")"
+            echo "Commit time for $file: $commit_time"
+            if [[ $commit_time =~ ^[0-9]+$ ]]; then
+              touch -d "@$commit_time" "$file"
+              echo "Updated timestamp for $file: $(stat -c %y "$file")"
+            else
+              echo "Invalid commit time for $file: $commit_time"
+            fi
           done
 
       - name: List files and folders
