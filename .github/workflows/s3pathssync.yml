@@ -37,4 +37,4 @@ jobs:
 
       - name: Sync paths folder to S3 bucket
         run: |
-          aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/ --exact-timestamps --delete --exclude ".github/*"
+          aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/ --delete --exclude ".github/*"
