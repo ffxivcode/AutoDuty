@@ -81,6 +81,11 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Paths\Fold2\" />
+    <Folder Include="Paths\das\" />
+  </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="cp &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
