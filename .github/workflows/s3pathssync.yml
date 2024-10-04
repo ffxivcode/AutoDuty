@@ -1,4 +1,4 @@
-name: list changed-filesd
+name: list changed-files
 on:
   pull_request:
     types:
@@ -64,7 +64,7 @@ jobs:
           mkdir -p "$TEMP_DIR"
           echo "TEMP_DIR=$TEMP_DIR" >> $GITHUB_ENV
           echo "Temporary directory created at $TEMP_DIR"
-          for file in $(echo ${{ steps.changed-files-specific.outputs.all_changed_files }} | jq -r '.[]'); do
+          echo "${{ steps.changed-files-specific.outputs.all_changed_files }}" | jq -r '.[]' | while IFS= read -r file; do
             stripped_file=$(echo "$file" | sed 's|AutoDuty/Paths/||')
             dest_dir="$TEMP_DIR/$(dirname "$stripped_file")"
             mkdir -p "$dest_dir"
@@ -83,4 +83,3 @@ jobs:
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           aws s3 sync $RUNNER_TEMP/changed_files s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
-          
