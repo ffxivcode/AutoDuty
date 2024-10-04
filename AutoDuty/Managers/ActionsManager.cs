@@ -287,6 +287,14 @@ namespace AutoDuty.Managers
                     _taskManager.Enqueue(() => !IsReady, 500, "WaitFor-NotIsReady-500");
                     _taskManager.Enqueue(() => IsReady, int.MaxValue, "WaitFor-IsReady");
                     break;
+                case "DistanceTo":
+                    if (waitForWhats.Length < 3)
+                        return;
+                    if (waitForWhats[1].TryGetVector3(out var position)) return;
+                    if (float.TryParse(waitForWhats[2], out var distance)) return;
+
+                    _taskManager.Enqueue(() => Vector3.Distance(Player.Position, position) <= distance, int.MaxValue, $"WaitFor-DistanceTo({position})<={distance}");
+                    break;
                 case "ConditionFlag":
                     if (waitForWhats.Length < 3)
                         return;
