@@ -46,6 +46,7 @@ jobs:
         id: changed-files-specific
         uses: tj-actions/changed-files@v45.0.3
         with:
+          safe_output: "false"
           quotepath: "false"
           files: AutoDuty/Paths/**
           separator: ","
