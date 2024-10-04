@@ -1,4 +1,4 @@
-name: list changed-filesd
+name: list changed-files
 on:
   pull_request:
     types:
@@ -83,4 +83,3 @@ jobs:
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           aws s3 sync $RUNNER_TEMP/changed_files s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
-          
