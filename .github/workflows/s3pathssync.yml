@@ -65,11 +65,8 @@ jobs:
           echo "Temporary directory created at $TEMP_DIR"
           IFS=',' read -ra files <<< "${{ steps.changed-files-specific.outputs.all_changed_files }}"
           for file in "${files[@]}"; do
-            stripped_file=$(echo "$file" | sed 's|AutoDuty/Paths/||')
-            dest_dir="$TEMP_DIR/$(dirname "$stripped_file")"
-            mkdir -p "$dest_dir"
-            echo "Copying $file to $dest_dir/"
-            rsync -av --progress "$file" "$dest_dir/"
+            echo "Moving $file to $TEMP_DIR/"
+            mv "$file" "$TEMP_DIR/"
           done
           echo "Files moved to $TEMP_DIR"
       
