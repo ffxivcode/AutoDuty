@@ -65,8 +65,9 @@ jobs:
           echo "TEMP_DIR=$TEMP_DIR" >> $GITHUB_ENV
           echo "Temporary directory created at $TEMP_DIR"
           for file in $(echo ${{ steps.changed-files-specific.outputs.all_changed_files }} | jq -r '.[]'); do
-            mkdir -p "$TEMP_DIR/$(dirname "$file")"
-            rsync -R "$file" "$TEMP_DIR/$(dirname "$file")"
+            dest_dir="$TEMP_DIR/$(dirname "$file" | sed 's|AutoDuty/Paths/||')"
+            mkdir -p "$dest_dir"
+            rsync "$file" "$dest_dir/"
           done
           echo "Files moved to $TEMP_DIR"
       
