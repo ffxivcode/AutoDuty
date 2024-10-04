@@ -77,10 +77,10 @@ jobs:
       - name: List all files in temporary folder
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          echo "Listing all files in $RUNNER_TEMP/changed_files:"
-          find $RUNNER_TEMP/changed_files -type f
+          echo "Listing all files in $TEMP_DIR"
+          find $TEMP_DIR -type f
           
       - name: Sync temp folder to S3 bucket
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          aws s3 sync $RUNNER_TEMP/changed_files/** s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
+          aws s3 sync "$TEMP_DIR" "s3://${{ secrets.AWS_BUCKET_NAME }}/"
