@@ -66,7 +66,8 @@ jobs:
           echo "Temporary directory created at $TEMP_DIR"
           IFS=',' read -ra files <<< "${{ steps.changed-files-specific.outputs.all_changed_files }}"
           for file in "${files[@]}"; do
-            dest_dir="$TEMP_DIR/$(dirname "$file")"
+            stripped_file=$(echo "$file" | sed 's|AutoDuty/Paths/||')
+            dest_dir="$TEMP_DIR/$(dirname "$stripped_file")"
             mkdir -p "$dest_dir"
             echo "Moving $GITHUB_WORKSPACE/$file to $dest_dir/"
             mv "$GITHUB_WORKSPACE/$file" "$dest_dir/"
