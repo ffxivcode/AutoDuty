@@ -46,7 +46,6 @@ jobs:
         id: changed-files-specific
         uses: tj-actions/changed-files@v45.0.3
         with:
-          json: "true"
           quotepath: "false"
           files: AutoDuty/Paths/**
           separator: ","
@@ -64,7 +63,8 @@ jobs:
           mkdir -p "$TEMP_DIR"
           echo "TEMP_DIR=$TEMP_DIR" >> $GITHUB_ENV
           echo "Temporary directory created at $TEMP_DIR"
-          echo "${{ steps.changed-files-specific.outputs.all_changed_files }}" | jq -r '.[]' | while IFS= read -r file; do
+          IFS=',' read -ra files <<< "${{ steps.changed-files-specific.outputs.all_changed_files }}"
+          for file in "${files[@]}"; do
             stripped_file=$(echo "$file" | sed 's|AutoDuty/Paths/||')
             dest_dir="$TEMP_DIR/$(dirname "$stripped_file")"
             mkdir -p "$dest_dir"
