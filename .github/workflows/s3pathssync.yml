@@ -3,8 +3,6 @@ on:
   pull_request:
     types:
       - closed
-env:
-  TEMP_DIR: ""
 jobs:
   workflow:
     if: github.event.pull_request.merged == true
@@ -62,22 +60,24 @@ jobs:
       - name: Move changed files to temporary folder
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          TEMP_DIR=$(mktemp -d)
+          TEMP_DIR=$RUNNER_TEMP/changed_files
+          mkdir -p $TEMP_DIR
+          echo "TEMP_DIR=$TEMP_DIR" >> $GITHUB_ENV
           echo "Temporary directory created at $TEMP_DIR"
           for file in $(echo ${{ steps.changed-files-specific.outputs.all_changed_files }} | jq -r '.[]'); do
             mkdir -p "$TEMP_DIR/$(dirname "$file")"
             rsync -R "$file" "$TEMP_DIR/$(dirname "$file")"
           done
           echo "Files moved to $TEMP_DIR"
-
+      
       - name: List all files in temporary folder
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          echo "Listing all files in $TEMP_DIR:"
-          find $TEMP_DIR -type f
-
+          echo "Listing all files in $RUNNER_TEMP/changed_files:"
+          find $RUNNER_TEMP/changed_files -type f
+          
       - name: Sync temp folder to S3 bucket
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          aws s3 sync $TEMP_DIR s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
+          aws s3 sync $RUNNER_TEMP/changed_files s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
           
