@@ -65,10 +65,10 @@ jobs:
           echo "Temporary directory created at $TEMP_DIR"
           IFS=',' read -ra files <<< "${{ steps.changed-files-specific.outputs.all_changed_files }}"
           for file in "${files[@]}"; do
-            echo "Moving $file to $GITHUB_WORKSPACE/$TEMP_DIR/"
-            mv "$file" "$GITHUB_WORKSPACE/$TEMP_DIR/"
+            echo "Moving $GITHUB_WORKSPACE/$file to $TEMP_DIR/"
+            mv "$GITHUB_WORKSPACE/$file" "$TEMP_DIR/"
           done
-          echo "Files moved to $GITHUB_WORKSPACE/$TEMP_DIR"
+          echo "Files moved to $TEMP_DIR"
       
       - name: List all files in temporary folder
         if: steps.changed-files-specific.outputs.any_changed == 'true'
@@ -79,4 +79,4 @@ jobs:
       - name: Sync temp folder to S3 bucket
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          aws s3 sync $GITHUB_WORKSPACE/$RUNNER_TEMP/changed_files s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
+          aws s3 sync $RUNNER_TEMP/changed_files s3://${{ secrets.AWS_BUCKET_NAME }}/ --exclude ".github/*"
