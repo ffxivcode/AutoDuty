@@ -61,13 +61,15 @@ jobs:
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           TEMP_DIR=$RUNNER_TEMP/changed_files
-          mkdir -p $TEMP_DIR
+          mkdir -p "$TEMP_DIR"
           echo "TEMP_DIR=$TEMP_DIR" >> $GITHUB_ENV
           echo "Temporary directory created at $TEMP_DIR"
           for file in $(echo ${{ steps.changed-files-specific.outputs.all_changed_files }} | jq -r '.[]'); do
-            dest_dir="$TEMP_DIR/$(dirname "$file" | sed 's|AutoDuty/Paths/||')"
+            stripped_file=$(echo "$file" | sed 's|AutoDuty/Paths/||')
+            dest_dir="$TEMP_DIR/$(dirname "$stripped_file")"
             mkdir -p "$dest_dir"
-            rsync "$file" "$dest_dir/"
+            echo "Copying $file to $dest_dir/"
+            rsync -av --progress "$file" "$dest_dir/"
           done
           echo "Files moved to $TEMP_DIR"
       
