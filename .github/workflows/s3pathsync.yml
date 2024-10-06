@@ -1,4 +1,4 @@
-name: list changed-files
+name: s3-path-uploader
 on:
   pull_request:
     types:
