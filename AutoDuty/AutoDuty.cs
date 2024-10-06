@@ -22,7 +22,9 @@ using AutoDuty.Helpers;
 using ECommons.Throttlers;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Linq;
+using System.Text;
 using ECommons.GameFunctions;
+using TinyIpc.Messaging;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
@@ -36,8 +38,6 @@ using AutoDuty.Properties;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Serilog.Events;
-using AutoDuty.Updater;
-using System.Threading.Tasks;
 
 namespace AutoDuty;
 
@@ -154,7 +154,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal int Indexer = -1;
     internal bool MainListClicked = false;
     internal IBattleChara? BossObject;
-    internal static IGameObject? ClosestObject => Svc.Objects.Where(o => o.IsTargetable && o.ObjectKind.EqualsAny(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj, Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)).OrderBy(ObjectHelper.GetDistanceToPlayer).TryGetFirst(out var gameObject) ? gameObject : null;
+    internal IGameObject? ClosestObject => Svc.Objects.Where(o => o.IsTargetable && o.ObjectKind.EqualsAny(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj, Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)).OrderBy(ObjectHelper.GetDistanceToPlayer).TryGetFirst(out var gameObject) ? gameObject : null;
     internal OverrideCamera OverrideCamera;
     internal MainWindow MainWindow { get; init; }
     internal Overlay Overlay { get; init; }
@@ -168,6 +168,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal Chat Chat;
     internal PathAction PathAction = new();
     internal List<Data.Classes.LogMessage> DalamudLogEntries = [];
+
     private LevelingMode levelingModeEnum = LevelingMode.None;
     private Stage _stage = Stage.Stopped;
     private const string CommandName = "/autoduty";
@@ -178,8 +179,8 @@ public sealed class AutoDuty : IDalamudPlugin
     private readonly OverrideAFK _overrideAFK;
     private readonly IPCProvider _ipcProvider;
     private IGameObject? treasureCofferGameObject = null;
-    //private readonly TinyMessageBus _messageBusSend = new("AutoDutyBroadcaster");
-    //private readonly TinyMessageBus _messageBusReceive = new("AutoDutyBroadcaster");
+    private readonly TinyMessageBus _messageBusSend = new("AutoDutyBroadcaster");
+    private readonly TinyMessageBus _messageBusReceive = new("AutoDutyBroadcaster");
     private bool _recentlyWatchedCutscene = false;
     private bool _lootTreasure;
     private SettingsActive _settingsActive = SettingsActive.None;
@@ -216,15 +217,17 @@ public sealed class AutoDuty : IDalamudPlugin
             TrustHelper.PopulateTrustMembers();
             ContentHelper.PopulateDuties();
             RepairNPCHelper.PopulateRepairNPCs();
+            FileHelper.OnStart();
             FileHelper.Init();
-            Patcher.Patch();
-
+            
             Chat = new();
             _overrideAFK = new();
             _ipcProvider = new();
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager);
             _actions = new(Plugin, Chat, TaskManager);
+            _messageBusReceive.MessageReceived +=
+                (sender, e) => MessageReceived(Encoding.UTF8.GetString((byte[])e.Message));
             BuildTab.ActionsList = _actions.ActionsList;
             OverrideCamera = new();
             Overlay = new();
@@ -902,7 +905,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
             var messageJson = System.Text.Json.JsonSerializer.Serialize(message, BuildTab.jsonSerializerOptions);
 
-            //_messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
+            _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
         }
 
         Action = $"{Plugin.Actions[Indexer].ToCustomString()}";
@@ -1291,7 +1294,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
                     var messageJson = System.Text.Json.JsonSerializer.Serialize(message, BuildTab.jsonSerializerOptions);
 
-                    //_messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
+                    _messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
                 }
             }
             _actions.InvokeAction(PathAction);
@@ -1472,7 +1475,6 @@ public sealed class AutoDuty : IDalamudPlugin
 
     public void Dispose()
     {
-        S3.Dispose();
         StopAndResetALL();
         Svc.Framework.Update -= Framework_Update;
         Svc.Framework.Update -= SchedulerHelper.ScheduleInvoker;

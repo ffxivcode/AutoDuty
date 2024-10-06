@@ -32,6 +32,8 @@
   <ItemGroup>
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
     <PackageReference Include="DalamudPackager" Version="2.1.13" />
+    <PackageReference Include="Octokit" Version="13.0.1" />
+    <PackageReference Include="TinyIpc" Version="4.3.1" />
     <Reference Include="Serilog">
       <HintPath>$(DalamudLibPath)Serilog.dll</HintPath>
       <Private>false</Private>
@@ -79,4 +81,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(ProjectDir)Paths\&quot;* &quot;$(ProjectDir)$(OutDir)&quot;" />
+  </Target>
 </Project>

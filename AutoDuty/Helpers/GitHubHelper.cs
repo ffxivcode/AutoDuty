@@ -1,6 +1,7 @@
 ﻿using AutoDuty.Windows;
 using ECommons;
 using ECommons.DalamudServices;
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -155,7 +155,7 @@ namespace AutoDuty.Windows
                             case "Interactable":
                             case "Target":
                                 IGameObject? targetObject = Player.Object.TargetObject;
-                                IGameObject? gameObject = (targetObject ?? null) ?? ClosestObject;
+                                IGameObject? gameObject = (targetObject ?? null) ?? Plugin.ClosestObject;
                                 _arguments = [gameObject != null ? $"{gameObject.DataId}" : string.Empty];
                                 _note = gameObject != null ? gameObject.Name.ExtractText() : string.Empty;
                                 break;
