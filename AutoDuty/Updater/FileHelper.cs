@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using ECommons;
+using Serilog.Events;
+using AutoDuty.Windows;
 
 namespace AutoDuty.Updater
 {
-    using Windows;
-    using Managers;
-    using ECommons;
-    using Serilog.Events;
-
     internal static class FileHelper
     {
         internal static readonly FileSystemWatcher FileSystemWatcher = new(Plugin.PathsDirectory.FullName)
