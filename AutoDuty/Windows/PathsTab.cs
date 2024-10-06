@@ -13,6 +13,7 @@ using ECommons.ExcelServices;
 using ECommons.GameFunctions;
 using AutoDuty.Managers;
 using ECommons.ImGuiMethods;
+using AutoDuty.Updater;
 
 namespace AutoDuty.Windows
 {
@@ -82,11 +83,13 @@ namespace AutoDuty.Windows
                     headers[key] = !anyHeaderOpen;
             }
 
-            if (ImGuiEx.ButtonWrapped("Download Paths"))
+            using (ImRaii.Disabled(Patcher.PatcherState == ActionState.Running))
             {
-                FileHelper.DownloadNewPaths();
+                if (ImGuiEx.ButtonWrapped("Download Paths"))
+                {
+                    Patcher.Patch();
+                }
             }
-
 
             ImGuiStylePtr style = ImGui.GetStyle();
             ImGui.PushStyleColor(ImGuiCol.ChildBg, style.Colors[(int)ImGuiCol.FrameBg]);
