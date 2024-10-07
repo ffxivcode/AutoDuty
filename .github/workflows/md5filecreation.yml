@@ -37,6 +37,7 @@ jobs:
           with open('md5sums.txt', 'r') as f:
               for line in f:
                   hash, filename = line.strip().split('  ')
+                  filename = filename.replace('AutoDuty/Paths/', '')
                   md5_dict[filename] = hash
           with open('AutoDuty/Resources/md5s.json', 'w') as f:
               json.dump(md5_dict, f, indent=4)
