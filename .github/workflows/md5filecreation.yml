@@ -50,6 +50,7 @@ jobs:
           git push origin md5
 
       - name: Create pull request
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: gh pr create -B main -H md5 --title 'Update Path MD5' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
