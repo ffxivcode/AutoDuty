@@ -3,6 +3,10 @@ on:
   pull_request:
     types:
       - closed
+
+env:
+  BASE_BRANCH: main
+
 jobs:
   workflow:
     if: github.event.pull_request.merged == true
@@ -44,14 +48,14 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git checkout -b md5 origin/main
+          git checkout -b md5 origin/${{ env.BASE_BRANCH }}
           git add AutoDuty/Resources/md5s.json
           git commit -m 'Add MD5 hashes for changed files'
           git push origin md5
 
       - name: Create pull request
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: gh pr create -B main -H md5 --title 'Update Path MD5' --body 'Created by Github action'
+        run: gh pr create -B ${{ env.BASE_BRANCH }} -H md5 --title 'Update Path MD5' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             
