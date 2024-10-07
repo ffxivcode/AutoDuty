@@ -37,11 +37,11 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Serilog.Events;
 using AutoDuty.Updater;
-using System.Threading.Tasks;
 
 namespace AutoDuty;
 
 // TODO:
+// Scrapped interable list, going to implement an internal list that when a interactable step end in fail, the Dataid gets add to the list and is scanned for from there on out, if found we goto it and get it, then remove from list.
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
 // make config saving per character
 // drap drop on build is jacked when theres scrolling
@@ -337,7 +337,6 @@ public sealed class AutoDuty : IDalamudPlugin
 
             PathFile = path?.FilePath ?? "";
             Actions = [.. path?.Actions];
-            Interactables = [.. path?.Interactables];
             //Svc.Log.Info($"Loading Path: {CurrentPath} {ListBoxPOSText.Count}");
         }
         catch (Exception e)

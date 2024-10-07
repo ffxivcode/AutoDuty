@@ -331,7 +331,6 @@ namespace AutoDuty.Managers
             }
 
             public List<PathAction> Actions => PathFile.Actions;
-            public uint[] Interactables => PathFile.Interactables;
             public bool RevivalFound { get; private set; }
         }
     }
