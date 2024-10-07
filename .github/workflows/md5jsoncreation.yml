@@ -35,7 +35,7 @@ jobs:
               for line in f:
                   hash, filename = line.strip().split('  ')
                   md5_dict[filename] = hash
-          with open('AutoDuty/Paths/mdfs.json', 'w') as f:
+          with open('AutoDuty/Paths/md5s.json', 'w') as f:
               json.dump(md5_dict, f, indent=4)
           "
           cat AutoDuty/Paths/md5s.json
