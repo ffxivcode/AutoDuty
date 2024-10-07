@@ -2,46 +2,20 @@
   "actions": [
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "Interactable",
       "position": {
         "X": -3.68,
         "Y": -2.38,
         "Z": -5.96
       },
       "arguments": [
-        ""
+        "2002325"
       ],
-      "note": ""
+      "note": "Tiny Key"
     },
     {
-      "tag": 0,
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        "Tiny Key"
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": 21.82,
-        "Y": 7.1,
-        "Z": 27.4
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
+      "tag": 5,
+      "name": "TreasureCoffer",
       "position": {
         "X": 64.57,
         "Y": 3.41,
@@ -54,29 +28,16 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "Interactable",
       "position": {
         "X": 104.01,
         "Y": -0.08,
         "Z": 12.5
       },
       "arguments": [
-        ""
+        "2002182"
       ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        "Runstop Headgate"
-      ],
-      "note": ""
+      "note": "Runstop Headgate"
     },
     {
       "tag": 0,
@@ -101,6 +62,19 @@
       },
       "arguments": [
         ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 83.04,
+        "Y": 4.73,
+        "Z": -102.25
+      },
+      "arguments": [
+        "Combat"
       ],
       "note": ""
     },
@@ -132,24 +106,37 @@
     },
     {
       "tag": 0,
-      "name": "WaitFor",
+      "name": "Wait",
       "position": {
-        "X": 45.29,
-        "Y": 7.02,
-        "Z": -129.71
+        "X": 46.92,
+        "Y": 7.14,
+        "Z": -127.1
       },
       "arguments": [
-        "10000"
+        "15000"
       ],
       "note": ""
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "AutoMoveFor",
       "position": {
-        "X": 44.67,
-        "Y": 7.02,
-        "Z": -131.59
+        "X": 45.56,
+        "Y": 7.01,
+        "Z": -130
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -13.9,
+        "Y": 25.41,
+        "Z": -171.53
       },
       "arguments": [
         ""
@@ -157,8 +144,8 @@
       "note": ""
     },
     {
-      "tag": 0,
-      "name": "MoveTo",
+      "tag": 5,
+      "name": "TreasureCoffer",
       "position": {
         "X": -41.32,
         "Y": 18.65,
@@ -171,120 +158,55 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "Interactable",
       "position": {
         "X": -88.1,
         "Y": 13.67,
         "Z": -125.75
       },
       "arguments": [
-        ""
+        "2002642"
       ],
-      "note": ""
+      "note": "Tiny Key"
     },
     {
       "tag": 0,
       "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        "Tiny Key"
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
       "position": {
         "X": -95.86,
         "Y": 13.02,
         "Z": -123.64
       },
       "arguments": [
-        ""
+        "2002184"
       ],
-      "note": ""
+      "note": "Swiftmake Checkgate"
     },
     {
       "tag": 0,
       "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        "Swiftmake Checkgate"
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -102.58,
-        "Y": 20.74,
-        "Z": -180.6
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
       "position": {
         "X": -101.39,
         "Y": 20.74,
         "Z": -178.08
       },
       "arguments": [
-        ""
+        "2002644"
       ],
-      "note": ""
+      "note": "Tiny Key"
     },
     {
       "tag": 0,
       "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        "Tiny Key"
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
       "position": {
         "X": -101.31,
         "Y": 21.31,
         "Z": -188.72
       },
       "arguments": [
-        ""
+        "2002884"
       ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        "Swiftmake Checkgate"
-      ],
-      "note": ""
+      "note": "Swiftmake Checkgate"
     },
     {
       "tag": 0,
@@ -315,6 +237,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 171,
+        "change": "Replaced interactable names with DataID\u0027s, Added extra waitfor for gobbies to spawn"
       }
     ],
     "notes": []
