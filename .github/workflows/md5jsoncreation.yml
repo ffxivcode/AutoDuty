@@ -38,10 +38,10 @@ jobs:
               for line in f:
                   hash, filename = line.strip().split('  ')
                   md5_dict[filename] = hash
-          with open('AutoDuty/Paths/md5s.json', 'w') as f:
+          with open('AutoDuty/Resources/md5s.json', 'w') as f:
               json.dump(md5_dict, f, indent=4)
           "
-          cat AutoDuty/Paths/md5s.json
+          cat AutoDuty/Resources/md5s.json
 
       - name: Commit changes to new branch
         if: steps.changed-files-specific.outputs.any_changed == 'true'
@@ -49,7 +49,7 @@ jobs:
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git checkout -b md5 origin/${{ env.BASE_BRANCH }}
-          git add AutoDuty/Paths/md5s.json
+          git add AutoDuty/Resources/md5s.json
           git commit -m 'Add MD5 hashes for changed files'
           git push origin md5
 
