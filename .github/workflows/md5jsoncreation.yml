@@ -63,8 +63,9 @@ jobs:
         run: |
           PR_NUMBER=$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ffxivcode/AutoDuty/pulls?head=ffxivcode:md5 | jq '.[0].number')
           gh pr merge $PR_NUMBER --merge --delete-branch
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Delete branch
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
