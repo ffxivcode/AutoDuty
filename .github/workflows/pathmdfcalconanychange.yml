@@ -39,12 +39,12 @@ jobs:
               json.dump(md5_dict, f, indent=4)
                     "
                     cat AutoDuty/Paths/mdfs.json
-          
-                - name: Commit changes
-                  if: steps.changed-files-specific.outputs.any_changed == 'true'
-                  run: |
-                    git config --global user.name 'github-actions'
-                    git config --global user.email 'github-actions@github.com'
-                    git add AutoDuty/Paths/mdfs.json
-                    git commit -m 'Add MD5 hashes for changed files'
-                    git push
+                    
+      - name: Commit changes
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add AutoDuty/Paths/mdfs.json
+          git commit -m 'Add MD5 hashes for changed files'
+          git push
