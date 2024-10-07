@@ -4,6 +4,9 @@ on:
     types:
       - closed
 
+env:
+  BASE_BRANCH: md5-test
+
 jobs:
   workflow:
     if: github.event.pull_request.merged == true
@@ -35,25 +38,25 @@ jobs:
               for line in f:
                   hash, filename = line.strip().split('  ')
                   md5_dict[filename] = hash
-          with open('AutoDuty/Paths/md5s.json', 'w') as f:
+          with open('AutoDuty/Paths/mdfs.json', 'w') as f:
               json.dump(md5_dict, f, indent=4)
           "
-          cat AutoDuty/Paths/md5s.json
+          cat AutoDuty/Paths/mdfs.json
 
       - name: Commit changes to new branch
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git checkout -b md5 origin/md5-test
-          git add AutoDuty/Paths/md5s.json
+          git checkout -b md5 origin/${{ env.BASE_BRANCH }}
+          git add AutoDuty/Paths/mdfs.json
           git commit -m 'Add MD5 hashes for changed files'
           git push origin md5
 
       - name: Create pull request
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          PR_DATA=$(jq -n --arg title "Add MD5 hashes for changed files" --arg body "This PR adds MD5 hashes for the changed files in the AutoDuty/Paths folder." --arg head "md5" --arg base "md5-test" '{title: $title, body: $body, head: $head, base: $base}')
+          PR_DATA=$(jq -n --arg title "Add MD5 hashes for changed files" --arg body "This PR adds MD5 hashes for the changed files in the AutoDuty/Paths folder." --arg head "md5" --arg base "${{ env.BASE_BRANCH }}" '{title: $title, body: $body, head: $head, base: $base}')
           curl -X POST -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ffxivcode/AutoDuty/pulls -d "$PR_DATA"
 
       - name: Merge pull request
