@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace AutoDuty.Updater
 {
@@ -41,22 +40,16 @@ namespace AutoDuty.Updater
                     fileInfo => fileInfo.Name,
                     fileInfo => BitConverter.ToString(FileHelper.CalculateMD5(fileInfo.FullName)).Replace("-", "")
                 );
-                var xml = await S3.ListObjectsAsync($"https://autoduty.s3.us-west-2.amazonaws.com");
-                var xmlDoc = XDocument.Parse(xml);
-                XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
-                foreach (var file in xmlDoc.Descendants(ns + "Contents"))
+                var list = await GitHubHelper.GetPathFileListAsync();
+                if (list == null) return false;
+
+                var downloadList = list.Where(kvp => !localFilesDictionary.ContainsKey(kvp.Key) || !localFilesDictionary[kvp.Key].Equals(kvp.Value, StringComparison.OrdinalIgnoreCase));
+
+                foreach (var file in downloadList)
                 {
-                    var key = file.Element(ns + "Key")?.Value;
-                    var etag = file.Element(ns + "ETag")?.Value?.Trim('"');
-                    if (key != null && etag != null)
-                    {
-                        if ((!localFilesDictionary.TryGetValue(key, out string? value) || !value.Equals(etag, StringComparison.OrdinalIgnoreCase) || skipMD5) && !Plugin.Configuration.DoNotUpdatePathFiles.Contains(key))
-                        {
-                            var result = await S3.DownloadFileAsync($"https://autoduty.s3.us-west-2.amazonaws.com/{key}",$"{Plugin.PathsDirectory.FullName}/{key}");
-                            var logger = result ? $"Succesfully downloaded: {key}" : $"Failed to download: {key}";
-                            Svc.Log.Info(logger);
-                        }
-                    }
+                    var result = await GitHubHelper.DownloadFileAsync($"https://raw.githubusercontent.com/ffxivcode/AutoDuty/refs/heads/master/AutoDuty/Paths/{file.Key}",$"{Plugin.PathsDirectory.FullName}/{file.Key}");
+                    var logger = result ? $"Succesfully downloaded: {file.Key}" : $"Failed to download: {file.Key}";
+                    Svc.Log.Info(logger);
                 }
                 return true;
             }
