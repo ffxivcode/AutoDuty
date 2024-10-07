@@ -190,6 +190,11 @@ namespace AutoDuty.Windows
             {
                 try
                 {
+                    if (Plugin.Actions.Count < 1)
+                    {
+                        Svc.Log.Error($"You must add at least one action to save the path, please add an action and try again");
+                        return;
+                    }
                     Svc.Log.Info($"Saving {Plugin.PathFile}");
 
                     PathFile? pathFile = null;
