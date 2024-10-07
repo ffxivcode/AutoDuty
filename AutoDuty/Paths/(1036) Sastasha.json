@@ -12,13 +12,7 @@
         "1"
       ],
       "note": ""
-    },
-    {
-      "tag": 5,
-      "name": "TreasureCoffer",
-      "position": {
-        "X": 132.58,
-        "Y": 27.83,
+
         "Z": -100.06
       },
       "arguments": [
