@@ -28,12 +28,20 @@ namespace AutoDuty.Helpers
                         1066u, // The Vault
                         1109u, // The Great Gubal Library
                         1142u, // Sirensong Sea
+                        616u,  //Shisui of the Violet Tides
+                        1143u, // Bardam's Mettle
                         1144u, // Doma Castle
                         1145u, // Castrum Abania
                         837u,  // Holminster
+                        821u,  // Dohn Mheg
                         823u,  // Qitana
+                        836u,  // Malikah's Well
+                        822u,  // Mt. Gulg
                         952u,  // Tower of Zot
+                        969u,  // Tower of Babil
+                        970u,  // Vanaspati
                         974u,  // Ktisis Hyperboreia
+                        978u,  // Aitiascope
                         1167u, // Ihuykatumu
                         1193u, // Worqor Zormor
                         1194u, // The Skydeep Cenote
