@@ -1,0 +1,48 @@
+[
+  {
+    "Author": "Herculezz, James",
+    "Name": "AutoDuty JL",
+    "Punchline": "AutoDuty JL",
+    "Description": "A plugin to run dungeons for you with Trust, Duty Support, Squadrons, Variants, and Regular, Requires BossMod, vnavmesh and a Rotation Plugin (BossMod AutoRotation or RotationSolverReborn)",
+    "Tags": [],
+    "InternalName": "AutoDuty",
+    "RepoUrl": "https://github.com/justicelock1/adjl",
+    "DownloadCount": 230231,
+    "LastUpdate": 1728285253284,
+    "DownloadLinkInstall": "https://puni.sh/api/plugins/download/54/AutoDuty/versions/latest.zip",
+    "DownloadLinkUpdate": "https://puni.sh/api/plugins/download/54/AutoDuty/versions/latest.zip",
+    "AssemblyVersion": "0.0.0.172",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": "10",
+    "Changelog": "## What's Changed\r\n* Fix Brayflox Hard by @Herculezz55 in https://github.com/ffxivcode/AutoDuty/pull/553\r\n* Revert Interactable field for a different implementation in todo by @Herculezz55 in https://github.com/ffxivcode/AutoDuty/pull/554\r\n* Added addtional 10s wait from to waitfor combat as waitforcombat time… by @Herculezz55 in https://github.com/ffxivcode/AutoDuty/pull/555\r\n* Wait Time between loops Fix by @Herculezz55 in https://github.com/ffxivcode/AutoDuty/pull/556\r\n* Added check for Arguments.Count > 0 by @Herculezz55 in https://github.com/ffxivcode/AutoDuty/pull/557\r\n* Fixed a bug that would crash if a empty path was saved then clicked… by @Herculezz55 in https://github.com/ffxivcode/AutoDuty/pull/558\r\n* Remove-Italics-/Italics-tags-from-Duty-Names by @Herculezz55 in https://github.com/ffxivcode/AutoDuty/pull/560\r\n* Modified patcher to retrieve md5's.json from repo and patch based on that pulling the files individually from GitHub. by @Herculezz55 in https://github.com/ffxivcode/AutoDuty/pull/596\r\n* Fix s3 by @Herculezz55 in https://github.com/ffxivcode/AutoDuty/pull/597\r\n\r\n\r\n**Full Changelog**: https://github.com/ffxivcode/AutoDuty/compare/0.0.0.171...0.0.0.172",
+    "IconUrl": "https://s3.puni.sh/media/plugin/54/icon-15ug2vnr9m1.png",
+    "ImageUrls": [
+      "https://s3.puni.sh/media/plugin/54/image-15l1o9gf3yg.png",
+      "https://s3.puni.sh/media/plugin/54/image-gc84lu4pdpb.png",
+      "https://s3.puni.sh/media/plugin/54/image-vkvtqki3ggh.png",
+      "https://s3.puni.sh/media/plugin/54/image-pw9lcsan22.png",
+      "https://s3.puni.sh/media/plugin/54/image-5lu04i95hz8.png"
+    ]
+  },
+  {
+    "Author": "Herculezz",
+    "Name": "MBT",
+    "Punchline": "Multi-boxer tool kit",
+    "Description": "A bunch of utilities to simplify multi-boxing, and a IPC broadcaster",
+    "Tags": [],
+    "InternalName": "MBT",
+    "RepoUrl": "https://github.com/ffxivcode/MBT",
+    "DownloadCount": 350,
+    "LastUpdate": 1725604589403,
+    "DownloadLinkInstall": "https://puni.sh/api/plugins/download/59/MBT/versions/latest.zip",
+    "DownloadLinkUpdate": "https://puni.sh/api/plugins/download/59/MBT/versions/latest.zip",
+    "AssemblyVersion": "0.0.0.16",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": "10",
+    "Changelog": "## What's Changed\r\n* Add issue templates by @Aimsucks\r\n\r\n## New Contributors\r\n* @Aimsucks made their first contribution\r\n\r\n**Full Changelog**: https://github.com/ffxivcode/MBT/compare/0.0.0.15...0.0.0.16",
+    "IconUrl": "https://s3.puni.sh/media/plugin/59/icon-ip39o3kb75.png",
+    "ImageUrls": [
+      "https://s3.puni.sh/media/plugin/59/image-76g0cnkuc7q.png"
+    ]
+  }
+]
