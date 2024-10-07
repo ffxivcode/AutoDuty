@@ -28,6 +28,19 @@
     },
     {
       "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": -330.68,
+        "Y": 41,
+        "Z": -146.37
+      },
+      "arguments": [
+        "10000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": -330.68,
