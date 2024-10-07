@@ -7,7 +7,7 @@ jobs:
   workflow:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    name: Test changed-files
+    name: s3-path-uploader
     steps:
       - name: Checkout
         uses: actions/checkout@v4
