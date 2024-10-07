@@ -218,7 +218,6 @@ public sealed class AutoDuty : IDalamudPlugin
             RepairNPCHelper.PopulateRepairNPCs();
             FileHelper.Init();
             Patcher.Patch();
-
             Chat = new();
             _overrideAFK = new();
             _ipcProvider = new();
