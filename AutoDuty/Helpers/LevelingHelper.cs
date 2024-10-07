@@ -28,7 +28,7 @@ namespace AutoDuty.Helpers
                         1066u, // The Vault
                         1109u, // The Great Gubal Library
                         1142u, // Sirensong Sea
-                        616u,  //Shisui of the Violet Tides
+                        616u,  // Shisui of the Violet Tides
                         1143u, // Bardam's Mettle
                         1144u, // Doma Castle
                         1145u, // Castrum Abania
