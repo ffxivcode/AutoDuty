@@ -77,9 +77,6 @@ namespace AutoDuty.Data
             [JsonPropertyName("actions")]
             public List<PathAction> Actions { get; set; } = [];
 
-            [JsonPropertyName("interactables")]
-            public uint[] Interactables { get; set; } = [];
-
             [JsonPropertyName("meta")]
             public PathFileMetaData Meta { get; set; } = new()
             {
