@@ -65,8 +65,3 @@ jobs:
           gh pr merge $PR_NUMBER --merge --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Delete branch
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: |
-          git push origin --delete md5
