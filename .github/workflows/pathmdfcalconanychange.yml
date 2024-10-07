@@ -38,13 +38,46 @@ jobs:
           with open('AutoDuty/Paths/mdfs.json', 'w') as f:
               json.dump(md5_dict, f, indent=4)
                     "
-                    cat AutoDuty/Paths/mdfs.json
-                    
-      - name: Commit changes
+          cat AutoDuty/Paths/mdfs.json
+
+      - name: Commit changes to new md5 branch
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
+          git checkout -b md5
           git add AutoDuty/Paths/mdfs.json
-          git commit -m 'Add MD5 hashes for changed files'
-          git push
+          git commit -m 'Update MD5 hashes'
+          git push origin md5
+
+      - name: Create pull request
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: md5
+          title: 'Update MD5 hashes'
+          body: 'This PR updates MD5 hashes because there were changed files in the AutoDuty/Paths folder.'
+
+      - name: Merge pull request
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: pullRequest } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: 'md5'
+            });
+            if (pullRequest.length > 0) {
+              await github.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pullRequest[0].number
+              });
+            }
+
+      - name: Delete branch
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          git push origin --delete md5
