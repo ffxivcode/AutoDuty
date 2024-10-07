@@ -23,26 +23,5 @@
       "https://s3.puni.sh/media/plugin/54/image-pw9lcsan22.png",
       "https://s3.puni.sh/media/plugin/54/image-5lu04i95hz8.png"
     ]
-  },
-  {
-    "Author": "Herculezz",
-    "Name": "MBT",
-    "Punchline": "Multi-boxer tool kit",
-    "Description": "A bunch of utilities to simplify multi-boxing, and a IPC broadcaster",
-    "Tags": [],
-    "InternalName": "MBT",
-    "RepoUrl": "https://github.com/ffxivcode/MBT",
-    "DownloadCount": 350,
-    "LastUpdate": 1725604589403,
-    "DownloadLinkInstall": "https://puni.sh/api/plugins/download/59/MBT/versions/latest.zip",
-    "DownloadLinkUpdate": "https://puni.sh/api/plugins/download/59/MBT/versions/latest.zip",
-    "AssemblyVersion": "0.0.0.16",
-    "ApplicableVersion": "any",
-    "DalamudApiLevel": "10",
-    "Changelog": "## What's Changed\r\n* Add issue templates by @Aimsucks\r\n\r\n## New Contributors\r\n* @Aimsucks made their first contribution\r\n\r\n**Full Changelog**: https://github.com/ffxivcode/MBT/compare/0.0.0.15...0.0.0.16",
-    "IconUrl": "https://s3.puni.sh/media/plugin/59/icon-ip39o3kb75.png",
-    "ImageUrls": [
-      "https://s3.puni.sh/media/plugin/59/image-76g0cnkuc7q.png"
-    ]
   }
 ]
