@@ -1471,7 +1471,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     public void Dispose()
     {
-        S3.Dispose();
+        GitHubHelper.Dispose();
         StopAndResetALL();
         Svc.Framework.Update -= Framework_Update;
         Svc.Framework.Update -= SchedulerHelper.ScheduleInvoker;
