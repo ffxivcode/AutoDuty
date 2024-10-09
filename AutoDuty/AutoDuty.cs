@@ -937,7 +937,7 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
 
-        if (EzThrottler.Throttle("BossChecker", 25) && PathAction.Equals("Boss") && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) < 50)
+        if (EzThrottler.Throttle("BossChecker", 25) && PathAction.Equals("Boss") && PathAction.Position != Vector3.Zero && ObjectHelper.BelowDistanceToPlayer(PathAction.Position, 50, 10))
         {
             BossObject = ObjectHelper.GetBossObject(25);
             if (BossObject != null)

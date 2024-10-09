@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -4.86,
@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 65,
@@ -53,7 +53,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 86.27,
@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 71.25,
@@ -92,12 +92,15 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 160,
     "changelog": [
       {
         "version": 168,
+        "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 172,
         "change": "Converted to JSON Structure with Tags"
       }
     ],

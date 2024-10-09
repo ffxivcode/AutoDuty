@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -38,7 +38,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -114,7 +114,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -138,7 +138,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -116.43,
@@ -190,7 +190,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -240,7 +240,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 807.9,
@@ -292,7 +292,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -329,7 +329,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -353,7 +353,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 744.68,
@@ -366,7 +366,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 747.2,
@@ -405,7 +405,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -429,7 +429,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -518,7 +518,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -555,7 +555,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -584.23,
@@ -633,7 +633,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -732.99,
@@ -646,7 +646,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -657,7 +657,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E"
     },
     {
-      "tag": 0,
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -758.74,
@@ -683,12 +683,15 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 160,
     "changelog": [
       {
         "version": 168,
+        "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 172,
         "change": "Converted to JSON Structure with Tags"
       }
     ],
