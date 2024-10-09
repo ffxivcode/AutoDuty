@@ -707,7 +707,7 @@ public static class ConfigTab
             using (ImRaii.Disabled(!Configuration.EnablePreLoopActions))
             {
                 ImGui.Separator();
-                if (ImGui.Checkbox("Execute commands on start of all loops: ", ref Configuration.ExecuteCommandsPreLoop))
+                if (ImGui.Checkbox($"Execute commands on start of all loops{(Configuration.ExecuteCommandsPreLoop ? ":" : string.Empty)} ", ref Configuration.ExecuteCommandsPreLoop))
                     Configuration.Save();
 
                 ImGuiComponents.HelpMarker("Execute commands on start of all loops.\nFor example, /echo test");
@@ -908,33 +908,39 @@ public static class ConfigTab
                     }
                     ImGui.PopItemWidth();
                     ImGui.Unindent();
-                    ImGui.Text("Preferred Repair NPC: ");
-                    ImGuiComponents.HelpMarker("It's a good idea to match the Repair NPC with Summoning Bell and if possible Retire Location");
-                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                    if (ImGui.BeginCombo("##PreferredRepair", Configuration.PreferredRepairNPC != null ? $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})" : "Grand Company Inn"))
+                    if (!Configuration.AutoRepairSelf)
                     {
-                        if (ImGui.Selectable("Grand Company Inn"))
+                        ImGui.Text("Preferred Repair NPC: ");
+                        ImGuiComponents.HelpMarker("It's a good idea to match the Repair NPC with Summoning Bell and if possible Retire Location");
+                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                        if (ImGui.BeginCombo("##PreferredRepair",
+                                             Configuration.PreferredRepairNPC != null ?
+                                                 $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})" :
+                                                 "Grand Company Inn"))
                         {
-                            Configuration.PreferredRepairNPC = null;
-                            Configuration.Save();
-                        }
-
-                        foreach (RepairNpcData repairNPC in RepairNPCs)
-                        {
-                            var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
-
-                            if (territoryType == null) continue;
-
-                            if (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
+                            if (ImGui.Selectable("Grand Company Inn"))
                             {
-                                Configuration.PreferredRepairNPC = repairNPC;
+                                Configuration.PreferredRepairNPC = null;
                                 Configuration.Save();
                             }
-                        }
 
-                        ImGui.EndCombo();
+                            foreach (RepairNpcData repairNPC in RepairNPCs)
+                            {
+                                var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
+
+                                if (territoryType == null) continue;
+
+                                if (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
+                                {
+                                    Configuration.PreferredRepairNPC = repairNPC;
+                                    Configuration.Save();
+                                }
+                            }
+
+                            ImGui.EndCombo();
+                        }
+                        ImGui.PopItemWidth();
                     }
-                    ImGui.PopItemWidth();
                 }
 
                 if (ImGui.Checkbox("Auto Consume", ref Configuration.AutoConsume))
@@ -1044,13 +1050,16 @@ public static class ConfigTab
                         Configuration.Save();
                     }
                 }
+
+                ImGui.Columns(2);
+
                 if (ImGui.Checkbox("Auto Desynth", ref Configuration.autoDesynth))
                 {
                     Configuration.AutoDesynth = Configuration.autoDesynth;
                     Configuration.Save();
                 }
-
-                ImGui.SameLine(0, 5);
+                ImGui.NextColumn();
+                //ImGui.SameLine(0, 5);
                 using (ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
                 {
                     if (ImGui.Checkbox("Auto GC Turnin", ref Configuration.autoGCTurnin))
@@ -1058,9 +1067,28 @@ public static class ConfigTab
                         Configuration.AutoGCTurnin = Configuration.autoGCTurnin;
                         Configuration.Save();
                     }
+                    
+                    ImGui.NextColumn();
+
+                    //slightly cursed
+                    using (ImRaii.Enabled())
+                    {
+                        if (Configuration.AutoDesynth)
+                        {
+                            ImGui.Indent();
+                            if (ImGui.Checkbox("Only Skill Ups", ref Configuration.autoDesynthSkillUp))
+                            {
+                                Configuration.AutoDesynthSkillUp = Configuration.autoDesynthSkillUp;
+                                Configuration.Save();
+                            }
+                            ImGui.Unindent();
+                        }
+                    }
 
                     if (Configuration.AutoGCTurnin)
                     {
+                        ImGui.NextColumn();
+
                         ImGui.Indent();
                         if (ImGui.Checkbox("Inventory Slots Left @", ref Configuration.AutoGCTurninSlotsLeftBool))
                             Configuration.Save();
@@ -1088,13 +1116,13 @@ public static class ConfigTab
                             }
                             ImGui.PopItemWidth();
                         }
-                        if (ImGui.Checkbox("Use GC Aetheryte Ticket", ref Configuration.AutoGCTurninUseTicket))
-                        {
+                        if (ImGui.Checkbox("Use GC Aetheryte Ticket", ref Configuration.AutoGCTurninUseTicket)) 
                             Configuration.Save();
-                        }
                         ImGui.Unindent();
                     }
                 }
+                ImGui.Columns(1);
+
                 if (!Deliveroo_IPCSubscriber.IsEnabled)
                 {
                     if (Configuration.AutoGCTurnin)
@@ -1107,16 +1135,7 @@ public static class ConfigTab
                     ImGui.SameLine(0, 0);
                     ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
                 }
-                if (Configuration.AutoDesynth)
-                {
-                    ImGui.Indent();
-                    if (ImGui.Checkbox("Only Skill Ups", ref Configuration.autoDesynthSkillUp))
-                    {
-                        Configuration.AutoDesynthSkillUp = Configuration.autoDesynthSkillUp;
-                        Configuration.Save();
-                    }
-                    ImGui.Unindent();
-                }
+
                 using (ImRaii.Disabled(!AutoRetainer_IPCSubscriber.IsEnabled))
                 {
                     if (ImGui.Checkbox("Enable AutoRetainer Integration", ref Configuration.EnableAutoRetainer))
@@ -1280,7 +1299,7 @@ public static class ConfigTab
                     ImGui.EndListBox();
                 }
 
-                if (ImGui.Checkbox("Execute commands on termination of all loops: ", ref Configuration.ExecuteCommandsTermination))
+                if (ImGui.Checkbox($"Execute commands on termination of all loops{(Configuration.ExecuteCommandsTermination ? ":" : string.Empty)} ", ref Configuration.ExecuteCommandsTermination))
                     Configuration.Save();
 
                 ImGuiComponents.HelpMarker("Execute commands on termination of all loops.\nFor example, /echo test");
