@@ -1050,13 +1050,16 @@ public static class ConfigTab
                         Configuration.Save();
                     }
                 }
+
+                ImGui.Columns(2);
+
                 if (ImGui.Checkbox("Auto Desynth", ref Configuration.autoDesynth))
                 {
                     Configuration.AutoDesynth = Configuration.autoDesynth;
                     Configuration.Save();
                 }
-
-                ImGui.SameLine(0, 5);
+                ImGui.NextColumn();
+                //ImGui.SameLine(0, 5);
                 using (ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
                 {
                     if (ImGui.Checkbox("Auto GC Turnin", ref Configuration.autoGCTurnin))
@@ -1065,8 +1068,27 @@ public static class ConfigTab
                         Configuration.Save();
                     }
 
+                    ImGui.NextColumn();
+
+                    //slightly cursed
+                    using (ImRaii.Enabled())
+                    {
+                        if (Configuration.AutoDesynth)
+                        {
+                            ImGui.Indent();
+                            if (ImGui.Checkbox("Only Skill Ups", ref Configuration.autoDesynthSkillUp))
+                            {
+                                Configuration.AutoDesynthSkillUp = Configuration.autoDesynthSkillUp;
+                                Configuration.Save();
+                            }
+                            ImGui.Unindent();
+                        }
+                    }
+
                     if (Configuration.AutoGCTurnin)
                     {
+                        ImGui.NextColumn();
+
                         ImGui.Indent();
                         if (ImGui.Checkbox("Inventory Slots Left @", ref Configuration.AutoGCTurninSlotsLeftBool))
                             Configuration.Save();
@@ -1101,6 +1123,8 @@ public static class ConfigTab
                         ImGui.Unindent();
                     }
                 }
+                ImGui.Columns(1);
+
                 if (!Deliveroo_IPCSubscriber.IsEnabled)
                 {
                     if (Configuration.AutoGCTurnin)
@@ -1113,16 +1137,7 @@ public static class ConfigTab
                     ImGui.SameLine(0, 0);
                     ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
                 }
-                if (Configuration.AutoDesynth)
-                {
-                    ImGui.Indent();
-                    if (ImGui.Checkbox("Only Skill Ups", ref Configuration.autoDesynthSkillUp))
-                    {
-                        Configuration.AutoDesynthSkillUp = Configuration.autoDesynthSkillUp;
-                        Configuration.Save();
-                    }
-                    ImGui.Unindent();
-                }
+
                 using (ImRaii.Disabled(!AutoRetainer_IPCSubscriber.IsEnabled))
                 {
                     if (ImGui.Checkbox("Enable AutoRetainer Integration", ref Configuration.EnableAutoRetainer))
