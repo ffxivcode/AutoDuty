@@ -49,6 +49,9 @@ namespace AutoDuty.Helpers
 
         internal unsafe static float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.GameObject->Position);
 
+        internal static unsafe bool BelowDistanceToPlayer(Vector3 v3, float maxDistance, float maxHeightDistance) => Vector3.Distance(v3, Player.GameObject->Position) < maxDistance &&
+                                                                                                                     MathF.Abs(v3.Y - Player.GameObject->Position.Y) < maxHeightDistance;
+
         internal unsafe static IGameObject? GetPartyMemberFromRole(string role)
         {
             if (Player.Object != null && PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
