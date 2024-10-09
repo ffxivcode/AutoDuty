@@ -908,10 +908,15 @@ public static class ConfigTab
                     }
                     ImGui.PopItemWidth();
                     ImGui.Unindent();
+                    if (!Configuration.AutoRepairSelf)
+                    {
                     ImGui.Text("Preferred Repair NPC: ");
                     ImGuiComponents.HelpMarker("It's a good idea to match the Repair NPC with Summoning Bell and if possible Retire Location");
                     ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                    if (ImGui.BeginCombo("##PreferredRepair", Configuration.PreferredRepairNPC != null ? $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})" : "Grand Company Inn"))
+                        if (ImGui.BeginCombo("##PreferredRepair",
+                                             Configuration.PreferredRepairNPC != null ?
+                                                 $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})" :
+                                                 "Grand Company Inn"))
                     {
                         if (ImGui.Selectable("Grand Company Inn"))
                         {
@@ -935,6 +940,7 @@ public static class ConfigTab
                         ImGui.EndCombo();
                     }
                     ImGui.PopItemWidth();
+                }
                 }
 
                 if (ImGui.Checkbox("Auto Consume", ref Configuration.AutoConsume))
