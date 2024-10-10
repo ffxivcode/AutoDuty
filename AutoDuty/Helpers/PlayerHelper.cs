@@ -99,7 +99,7 @@ namespace AutoDuty.Helpers
 
         internal static bool IsReady => IsValid && !IsOccupied;
 
-        internal static bool IsOccupied => GenericHelpers.IsOccupied();
+        internal static bool IsOccupied => GenericHelpers.IsOccupied() || Svc.Condition[ConditionFlag.Jumping61];
 
         internal static bool IsReadyFull => IsValid && !IsOccupiedFull;
 
