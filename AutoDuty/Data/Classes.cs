@@ -1,4 +1,5 @@
 ﻿using ECommons;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using Serilog.Events;
 using System.Collections.Generic;
 using System.IO;
@@ -57,6 +58,9 @@ namespace AutoDuty.Data
             public uint LevelCap { get; set; }
             public uint LevelInit { get; set; }
             public bool LevelIsSet { get; set; }
+            public uint UnlockQuest { get; init; }
+
+            public bool Available => this.UnlockQuest <= 0 || QuestManager.IsQuestComplete(this.UnlockQuest);
 
             public void ResetLevel()
             {
