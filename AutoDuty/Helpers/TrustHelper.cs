@@ -62,12 +62,31 @@ namespace AutoDuty.Helpers
 
         internal static bool SetLevelingTrustMembers(Content content)
         {
+            Job        playerJob  = Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
+            CombatRole playerRole = playerJob.GetCombatRole();
+
+            if (!Members.Any(tm => tm.Value.Level < tm.Value.LevelCap) && Plugin.Configuration.SelectedTrustMembers.Any(tmn => tmn.HasValue))
+            {
+                bool test = true;
+
+                for (int i = 0; i < 3 && test; i++)
+                {
+                    TrustMember?[] curMembers = Plugin.Configuration.SelectedTrustMembers.Select(tmn => Members[tmn!.Value]).ToArray();
+                    TrustMember    testMember = curMembers[i]!;
+                    curMembers[i] = null;
+                    test &= curMembers.CanSelectMember(testMember, playerRole);
+                }
+
+                if (test)
+                {
+                    Svc.Log.Info("Leveling Trust Members retained from previous selection");
+                    return true;
+                }
+            }
+
             Plugin.Configuration.SelectedTrustMembers = new TrustMemberName?[3];
 
             TrustMember?[] trustMembers = new TrustMember?[3];
-
-            Job        playerJob  = Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
-            CombatRole playerRole = playerJob.GetCombatRole();
 
             JobRole playerJobRole = Player.Available ? Player.Object.ClassJob.GameData?.GetJobRole() ?? JobRole.None : JobRole.None;
 
