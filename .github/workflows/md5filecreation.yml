@@ -53,6 +53,8 @@ jobs:
           git add AutoDuty/Resources/md5s.json
           git commit -m 'Add MD5 hashes for changed files'
           git push origin md5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request
         if: steps.changed-files-specific.outputs.any_changed == 'true'
