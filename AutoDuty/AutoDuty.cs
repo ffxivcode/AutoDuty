@@ -1191,9 +1191,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 //set it as the active preset for both
                 if (BossMod_IPCSubscriber.Presets_GetActive() != "AutoDuty")
                     BossMod_IPCSubscriber.Presets_SetActive("AutoDuty");
-
-                if (BossMod_IPCSubscriber.AI_GetPreset() != "AutoDuty")
-                    BossMod_IPCSubscriber.AI_SetPreset("AutoDuty");
             }
             else
             {
