@@ -192,6 +192,9 @@ namespace AutoDuty.Managers
             Plugin.Action = $"StopForCombat: {action.Arguments[0]}";
             Plugin.StopForCombat = boolTrueFalse;
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
+            if(boolTrueFalse)
+                this.Wait(new PathAction {Arguments = ["500"]});
         }
 
         public unsafe void ForceAttack(PathAction action)
