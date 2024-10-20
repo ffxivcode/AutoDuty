@@ -592,7 +592,7 @@ namespace AutoDuty.Managers
 
         private string? GlobalStringStore;
 
-        private unsafe void PraeUpdate(IFramework _)
+        private unsafe void PraeFrameworkUpdateIn(IFramework _)
         {
             if (!EzThrottler.Throttle("PraeUpdate", 50))
                 return;
@@ -629,12 +629,12 @@ namespace AutoDuty.Managers
                     {
                         case "1":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
-                            Svc.Framework.Update += this.PraeUpdate;
+                            Plugin.Framework_Update_InDuty += this.PraeFrameworkUpdateIn;
                             Interactable(new PathAction { Arguments = ["2012819"] });
                             break;
                         case "2":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
-                            Svc.Framework.Update -= this.PraeUpdate;
+                            Plugin.Framework_Update_InDuty -= this.PraeFrameworkUpdateIn;
                             break;
                     }
                     break;

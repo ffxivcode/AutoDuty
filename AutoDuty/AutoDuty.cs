@@ -368,9 +368,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
         Svc.Log.Debug($"ClientState_TerritoryChanged: t={t}");
 
-        CurrentTerritoryType = t;
-        MainListClicked = false;
-
+        CurrentTerritoryType         = t;
+        MainListClicked              = false;
+        this.Framework_Update_InDuty = _ => { };
         if (t == 0)
             return;
         CurrentPath = -1;
@@ -1391,6 +1391,8 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         PreStageChecks();
 
+        this.Framework_Update_InDuty(framework);
+
         switch (Stage)
         {
             case Stage.Reading_Path:
@@ -1410,6 +1412,8 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
+    public event IFramework.OnUpdateDelegate Framework_Update_InDuty = _ => {};
+
     private void StopAndResetALL()
     {
         if (_bareModeSettingsActive != SettingsActive.None)
@@ -1422,7 +1426,8 @@ public sealed class AutoDuty : IDalamudPlugin
         States = PluginState.None;
         TaskManager?.SetStepMode(false);
         TaskManager?.Abort();
-        MainListClicked = false;
+        MainListClicked              = false;
+        this.Framework_Update_InDuty = _ => {};
         if (!InDungeon)
             CurrentLoop = 0;
         if (Configuration.AutoManageBossModAISettings)
