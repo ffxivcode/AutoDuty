@@ -606,7 +606,7 @@ namespace AutoDuty.Managers
                     Svc.Targets.Target = protoArmOrDoor;
             }
 
-            if (Svc.Targets.Target != null && Svc.Targets.Target.IsHostile())
+            if (Svc.Condition[ConditionFlag.Mounted] && Svc.Targets.Target != null && Svc.Targets.Target.IsHostile())
             {
                 var dir = Vector2.Normalize(new Vector2(Svc.Targets.Target.Position.X, Svc.Targets.Target.Position.Z) - new Vector2(Player.Position.X, Player.Position.Z));
                 float rot = (float)Math.Atan2(dir.X, dir.Y);
@@ -629,12 +629,12 @@ namespace AutoDuty.Managers
                     {
                         case "1":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
-                            Svc.Framework.Update += PraeUpdate;
-                            Interactable(new PathAction() { Arguments = ["2012819"] });
+                            Svc.Framework.Update += this.PraeUpdate;
+                            Interactable(new PathAction { Arguments = ["2012819"] });
                             break;
                         case "2":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
-                            Svc.Framework.Update -= PraeUpdate;
+                            Svc.Framework.Update -= this.PraeUpdate;
                             break;
                     }
                     break;
