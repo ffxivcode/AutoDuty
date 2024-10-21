@@ -21,6 +21,8 @@ using static AutoDuty.Helpers.PlayerHelper;
 
 namespace AutoDuty.Managers
 {
+    using System.Xml;
+
     internal class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
     {
         public readonly List<(string, string, string)> ActionsList =
@@ -592,7 +594,7 @@ namespace AutoDuty.Managers
 
         private string? GlobalStringStore;
 
-        private unsafe void PraeFrameworkUpdateIn(IFramework _)
+        private unsafe void PraeFrameworkUpdateMount(IFramework _)
         {
             if (!EzThrottler.Throttle("PraeUpdate", 50))
                 return;
@@ -618,6 +620,21 @@ namespace AutoDuty.Managers
             }
         }
 
+
+        private static readonly uint[] praeGaiusIds = [9020u, 14453u, 14455u];
+        private void PraeFrameworkUpdateGaius(IFramework _)
+        {
+            if (!EzThrottler.Throttle("PraeUpdate", 50) || !IsReady || Svc.Targets.Target != null && praeGaiusIds.Contains(Svc.Targets.Target.DataId))
+                return;
+
+            List<IGameObject>? objects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc);
+
+            IGameObject? gaius = objects?.FirstOrDefault(x => x.IsTargetable && praeGaiusIds.Contains(x.DataId));
+            if (gaius != null)
+                Svc.Targets.Target = gaius;
+        }
+
+
         public unsafe void DutySpecificCode(PathAction action)
         {
             IGameObject? gameObject = null;
@@ -629,12 +646,15 @@ namespace AutoDuty.Managers
                     {
                         case "1":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
-                            Plugin.Framework_Update_InDuty += this.PraeFrameworkUpdateIn;
+                            Plugin.Framework_Update_InDuty += this.PraeFrameworkUpdateMount;
                             Interactable(new PathAction { Arguments = ["2012819"] });
                             break;
                         case "2":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
-                            Plugin.Framework_Update_InDuty -= this.PraeFrameworkUpdateIn;
+                            Plugin.Framework_Update_InDuty -= this.PraeFrameworkUpdateMount;
+                            break;
+                        case "3":
+                            Plugin.Framework_Update_InDuty += this.PraeFrameworkUpdateGaius;
                             break;
                     }
                     break;
