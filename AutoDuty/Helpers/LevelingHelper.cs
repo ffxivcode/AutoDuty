@@ -32,6 +32,7 @@ namespace AutoDuty.Helpers
                         1145u, // Castrum Abania
                         837u,  // Holminster
                         823u,  // Qitana
+                        822u,  // Mt. Gulg
                         952u,  // Tower of Zot
                         974u,  // Ktisis Hyperboreia
                         1167u, // Ihuykatumu
