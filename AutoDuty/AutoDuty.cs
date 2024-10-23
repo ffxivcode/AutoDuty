@@ -40,6 +40,8 @@ using AutoDuty.Updater;
 
 namespace AutoDuty;
 
+using System.Globalization;
+
 // TODO:
 // Scrapped interable list, going to implement an internal list that when a interactable step end in fail, the Dataid gets add to the list and is scanned for from there on out, if found we goto it and get it, then remove from list.
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
@@ -1232,6 +1234,13 @@ public sealed class AutoDuty : IDalamudPlugin
             Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTargetFloat}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlotFloat}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
+        }
+        else
+        {
+            /** string presetName, string moduleTypeName, string trackName, string value*/
+            string arg4 = MathF.Round(this.Configuration.MaxDistanceToTargetFloat, 1).ToString(CultureInfo.InvariantCulture);
+            Svc.Log.Info($"SETTING RANGE TO {arg4}------------------------------------------------------------------------------------------------------------------\n" +
+                         $"{BossMod_IPCSubscriber.Presets_AddTransientStrategy("AutoDuty", "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", arg4)}");
         }
 
         Chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player.Name)))}");

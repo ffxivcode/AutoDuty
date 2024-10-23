@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace AutoDuty.IPC
 {
+
     internal static class AutoRetainer_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AutoRetainer_IPCSubscriber), "AutoRetainer.PluginState", SafeWrapper.IPCException);
@@ -78,6 +79,8 @@ namespace AutoDuty.IPC
         [EzIPC("Presets.ClearActive", true)] internal static readonly Func<bool> Presets_ClearActive;
         [EzIPC("Presets.GetForceDisabled", true)] internal static readonly Func<bool> Presets_GetForceDisabled; 
         [EzIPC("Presets.SetForceDisabled", true)] internal static readonly Func<bool> Presets_SetForceDisabled;
+        /** string presetName, string moduleTypeName, string trackName, string value*/
+        [EzIPC("Presets.AddTransientStrategy")] internal static readonly Func<string, string, string, string, bool> Presets_AddTransientStrategy;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
