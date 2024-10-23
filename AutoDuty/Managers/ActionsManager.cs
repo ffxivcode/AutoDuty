@@ -21,6 +21,8 @@ using static AutoDuty.Helpers.PlayerHelper;
 
 namespace AutoDuty.Managers
 {
+    using System.Xml;
+
     internal class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
     {
         public readonly List<(string, string, string)> ActionsList =
@@ -192,6 +194,9 @@ namespace AutoDuty.Managers
             Plugin.Action = $"StopForCombat: {action.Arguments[0]}";
             Plugin.StopForCombat = boolTrueFalse;
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
+            if(boolTrueFalse)
+                this.Wait(new PathAction {Arguments = ["500"]});
         }
 
         public unsafe void ForceAttack(PathAction action)
@@ -496,7 +501,7 @@ namespace AutoDuty.Managers
             if (((Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
                 return true;
 
-            if (EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
+            if (EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional) && !Plugin.Configuration.UsingAlternativeBossPlugin && IPCSubscriber_Common.IsReady("BossModReborn"))
                 Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
 
             return false;
@@ -589,7 +594,7 @@ namespace AutoDuty.Managers
 
         private string? GlobalStringStore;
 
-        private unsafe void PraeUpdate(IFramework _)
+        private unsafe void PraeFrameworkUpdateMount(IFramework _)
         {
             if (!EzThrottler.Throttle("PraeUpdate", 50))
                 return;
@@ -603,7 +608,7 @@ namespace AutoDuty.Managers
                     Svc.Targets.Target = protoArmOrDoor;
             }
 
-            if (Svc.Targets.Target != null && Svc.Targets.Target.IsHostile())
+            if (Svc.Condition[ConditionFlag.Mounted] && Svc.Targets.Target != null && Svc.Targets.Target.IsHostile())
             {
                 var dir = Vector2.Normalize(new Vector2(Svc.Targets.Target.Position.X, Svc.Targets.Target.Position.Z) - new Vector2(Player.Position.X, Player.Position.Z));
                 float rot = (float)Math.Atan2(dir.X, dir.Y);
@@ -614,6 +619,21 @@ namespace AutoDuty.Managers
                 ActionManager.Instance()->UseActionLocation(ActionType.Action, 1128, Player.Object.GameObjectId, &targetPosition);
             }
         }
+
+
+        private static readonly uint[] praeGaiusIds = [9020u, 14453u, 14455u];
+        private void PraeFrameworkUpdateGaius(IFramework _)
+        {
+            if (!EzThrottler.Throttle("PraeUpdate", 50) || !IsReady || Svc.Targets.Target != null && praeGaiusIds.Contains(Svc.Targets.Target.DataId))
+                return;
+
+            List<IGameObject>? objects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc);
+
+            IGameObject? gaius = objects?.FirstOrDefault(x => x.IsTargetable && praeGaiusIds.Contains(x.DataId));
+            if (gaius != null)
+                Svc.Targets.Target = gaius;
+        }
+
 
         public unsafe void DutySpecificCode(PathAction action)
         {
@@ -626,12 +646,15 @@ namespace AutoDuty.Managers
                     {
                         case "1":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
-                            Svc.Framework.Update += PraeUpdate;
-                            Interactable(new PathAction() { Arguments = ["2012819"] });
+                            Plugin.Framework_Update_InDuty += this.PraeFrameworkUpdateMount;
+                            Interactable(new PathAction { Arguments = ["2012819"] });
                             break;
                         case "2":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
-                            Svc.Framework.Update -= PraeUpdate;
+                            Plugin.Framework_Update_InDuty -= this.PraeFrameworkUpdateMount;
+                            break;
+                        case "3":
+                            Plugin.Framework_Update_InDuty += this.PraeFrameworkUpdateGaius;
                             break;
                     }
                     break;

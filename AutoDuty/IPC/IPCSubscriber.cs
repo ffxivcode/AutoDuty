@@ -78,9 +78,6 @@ namespace AutoDuty.IPC
         [EzIPC("Presets.ClearActive", true)] internal static readonly Func<bool> Presets_ClearActive;
         [EzIPC("Presets.GetForceDisabled", true)] internal static readonly Func<bool> Presets_GetForceDisabled; 
         [EzIPC("Presets.SetForceDisabled", true)] internal static readonly Func<bool> Presets_SetForceDisabled;
-        
-        [EzIPC("AI.SetPreset", true)] internal static readonly Action<string> AI_SetPreset;
-        [EzIPC("AI.GetPreset", true)] internal static readonly Func<string> AI_GetPreset;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }

@@ -368,9 +368,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
         Svc.Log.Debug($"ClientState_TerritoryChanged: t={t}");
 
-        CurrentTerritoryType = t;
-        MainListClicked = false;
-
+        CurrentTerritoryType         = t;
+        MainListClicked              = false;
+        this.Framework_Update_InDuty = _ => { };
         if (t == 0)
             return;
         CurrentPath = -1;
@@ -972,7 +972,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         Action = $"Waiting For Combat";
 
-        if (ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
+        if (ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional) && !Plugin.Configuration.UsingAlternativeBossPlugin && IPCSubscriber_Common.IsReady("BossModReborn"))
             Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
 
         if (PathAction.Name.Equals("Boss") && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) < 50)
@@ -1191,9 +1191,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 //set it as the active preset for both
                 if (BossMod_IPCSubscriber.Presets_GetActive() != "AutoDuty")
                     BossMod_IPCSubscriber.Presets_SetActive("AutoDuty");
-
-                if (BossMod_IPCSubscriber.AI_GetPreset() != "AutoDuty")
-                    BossMod_IPCSubscriber.AI_SetPreset("AutoDuty");
             }
             else
             {
@@ -1223,22 +1220,27 @@ public sealed class AutoDuty : IDalamudPlugin
         }
         Chat.ExecuteCommand($"/vbmai on");
         Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+
         Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
         Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
-        Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
-        Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
-        Chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
-        Chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
-        Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTargetFloat}");
-        Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlotFloat}");
+        if (bmr)
+        {
+            Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringCombat {Configuration.FollowDuringCombat}");
+            Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
+            Chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
+            Chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
+            Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTargetFloat}");
+            Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlotFloat}");
+            Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
+        }
+
         Chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player.Name)))}");
 
-        if (!bmr)
+        if (!bmr && false)
         {
             Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
             Chat.ExecuteCommand($"/vbm cfg AIConfig OverrideRange true");
         }
-        Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
     }
 
     internal void BMRoleChecks()
@@ -1389,6 +1391,8 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         PreStageChecks();
 
+        this.Framework_Update_InDuty(framework);
+
         switch (Stage)
         {
             case Stage.Reading_Path:
@@ -1408,6 +1412,8 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
+    public event IFramework.OnUpdateDelegate Framework_Update_InDuty = _ => {};
+
     private void StopAndResetALL()
     {
         if (_bareModeSettingsActive != SettingsActive.None)
@@ -1420,7 +1426,8 @@ public sealed class AutoDuty : IDalamudPlugin
         States = PluginState.None;
         TaskManager?.SetStepMode(false);
         TaskManager?.Abort();
-        MainListClicked = false;
+        MainListClicked              = false;
+        this.Framework_Update_InDuty = _ => {};
         if (!InDungeon)
             CurrentLoop = 0;
         if (Configuration.AutoManageBossModAISettings)
