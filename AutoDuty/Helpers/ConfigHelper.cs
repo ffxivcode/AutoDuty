@@ -42,6 +42,16 @@ namespace AutoDuty.Helpers
                 if (configType == typeof(string))
                 {
                     field.SetValue(Plugin.Configuration, configValue);
+                } else if (configType.IsEnum)
+                {
+                    if(Enum.TryParse(configType, configValue, true, out object? configEnum))
+                    {
+                        field.SetValue(Plugin.Configuration, configEnum);
+                    } else
+                    {
+                        Svc.Log.Error($"Unable to set config setting: {field.Name.Replace(">k__BackingField", "").Replace("<", "")}, value must be of type: {field.FieldType.ToString().Replace("System.", "")}");
+                        return false;
+                    }
                 }
                 else if(configType.GetInterface(nameof(IConvertible)) != null)
                 {
