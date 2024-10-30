@@ -91,14 +91,14 @@ namespace AutoDuty.Managers
                 actionArray = actions.Split(";");
             var invokeAction = false;
             var operation = new Dictionary<string, Func<object, object, bool>>
-            {
-              { ">", (x, y) => (float)x > (float)y },
-              { ">=", (x, y) => (float)x >= (float)y },
-              { "<", (x, y) => (float)x < (float)y },
-              { "<=", (x, y) => (float)x <= (float)y },
-              { "==", (x, y) => x == y },
-              { "!=", (x, y) => x != y }
-            };
+                            {
+                                { ">", (x,  y) => Convert.ToSingle(x) > Convert.ToSingle(y) },
+                                { ">=", (x, y) => Convert.ToSingle(x) >= Convert.ToSingle(y) },
+                                { "<", (x,  y) => Convert.ToSingle(x) < Convert.ToSingle(y) },
+                                { "<=", (x, y) => Convert.ToSingle(x) <= Convert.ToSingle(y) },
+                                { "==", (x, y) => x                   == y },
+                                { "!=", (x, y) => x                   != y }
+                            };
             var operatorValue = string.Empty;
             var operationResult = false;
            
