@@ -117,7 +117,7 @@ namespace AutoDuty.Managers
                 case "ItemCount":
                     if (conditionArray.Length < 4) return;
                     if (!uint.TryParse(conditionArray[1], out var itemId)) return;
-                    if (!uint.TryParse(conditionArray[3], out var quantity)) return;
+                    if (!uint.TryParse(conditionArray[2], out var quantity)) return;
                     if (!(operatorValue = conditionArray[2]).EqualsAny(operation.Keys)) return;
                     var itemCount = InventoryHelper.ItemCount(itemId);
                     if (operationResult = operation[operatorValue](itemCount, quantity))
