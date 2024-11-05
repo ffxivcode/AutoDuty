@@ -87,7 +87,7 @@
         "Z": -71.07
       },
       "arguments": [
-        "1500"
+        "2500"
       ],
       "note": ""
     },
@@ -477,9 +477,9 @@
         "Z": 0
       },
       "arguments": [
-        "Fiery Portal"
+        "2011292"
       ],
-      "note": ""
+      "note": "Fiery Portal"
     },
     {
       "tag": 0,
@@ -625,7 +625,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -640,6 +639,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 173,
+        "change": ""
       }
     ],
     "notes": []
