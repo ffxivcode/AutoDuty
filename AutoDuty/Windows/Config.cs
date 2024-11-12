@@ -217,6 +217,7 @@ public class Configuration : IPluginConfiguration
     public int StopLevelInt = 1;
     public bool StopNoRestedXP = false;
     public bool StopItemQty = false;
+    public bool StopItemAll = false;
     public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary = [];
     public int StopItemQtyInt = 1;
     public bool ExecuteCommandsTermination = false;
@@ -1297,6 +1298,8 @@ public static class ConfigTab
                         }
                     }
                     ImGui.EndListBox();
+                    if (ImGui.Checkbox("Stop Looping Only When All Items Obtained", ref Configuration.StopItemAll))
+                        Configuration.Save();
                 }
 
                 if (ImGui.Checkbox($"Execute commands on termination of all loops{(Configuration.ExecuteCommandsTermination ? ":" : string.Empty)} ", ref Configuration.ExecuteCommandsTermination))
