@@ -40,6 +40,8 @@ using AutoDuty.Updater;
 
 namespace AutoDuty;
 
+using System.Globalization;
+
 // TODO:
 // Scrapped interable list, going to implement an internal list that when a interactable step end in fail, the Dataid gets add to the list and is scanned for from there on out, if found we goto it and get it, then remove from list.
 // Need to expand AutoRepair to include check for level and stuff to see if you are eligible for self repair. and check for dark matter
@@ -1167,7 +1169,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
     internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false)
     {
-        if (!Configuration.AutoManageRotationPluginState && !ignoreConfig) return;
+        if(!ignoreConfig && !this.Configuration.AutoManageRotationPluginState) 
+            return;
+        bool bmEnabled = BossMod_IPCSubscriber.IsEnabled;
 
         if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
         {
@@ -1175,30 +1179,35 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Auto)
                     ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+
+                if (bmEnabled && this.Configuration.AutoManageBossModAISettings)
+                {
+                    BossMod_IPCSubscriber.AddPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
+                    BossMod_IPCSubscriber.SetPreset("AutoDuty Passive");
+                }
             }
-            else if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
-                ReflectionHelper.RotationSolver_Reflection.RotationStop();
+            else
+            {
+                if (bmEnabled && this.Configuration.AutoManageBossModAISettings)
+                    BossMod_IPCSubscriber.DisablePresets();
+
+                if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
+                {
+                    ReflectionHelper.RotationSolver_Reflection.RotationStop();
+                }
+            }
         }
-        else if (BossMod_IPCSubscriber.IsEnabled)
+        else if (bmEnabled)
         {
             if (on)
             {
-                //check if our preset does not exist
-                if (BossMod_IPCSubscriber.Presets_Get("AutoDuty") == null)
-                {
-                    //load it
-                    Svc.Log.Debug($"AutoDuty Preset Loaded: {BossMod_IPCSubscriber.Presets_Create(Resources.AutoDutyPreset, true)}");
-                }
-
-                //set it as the active preset for both
-                if (BossMod_IPCSubscriber.Presets_GetActive() != "AutoDuty")
-                    BossMod_IPCSubscriber.Presets_SetActive("AutoDuty");
+                BossMod_IPCSubscriber.AddPreset("AutoDuty", Resources.AutoDutyPreset);
+                BossMod_IPCSubscriber.SetPreset("AutoDuty");
             }
             else
             {
                 //set disabled as preset
-                if (!BossMod_IPCSubscriber.Presets_GetForceDisabled())
-                    BossMod_IPCSubscriber.Presets_SetForceDisabled();
+                BossMod_IPCSubscriber.DisablePresets();
             }
         }
     }
@@ -1231,10 +1240,11 @@ public sealed class AutoDuty : IDalamudPlugin
             Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
-            Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTargetFloat}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlotFloat}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
         }
+
+        BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
 
         Chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player.Name)))}");
 
@@ -1687,6 +1697,10 @@ public sealed class AutoDuty : IDalamudPlugin
                 var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
                 Svc.Log.Info($"{tt?.RowId}");
                 ImGui.SetClipboardText($"{tt?.RowId}");
+                break;
+            case "range":
+                if (float.TryParse(argsArray[1], out float newRange))
+                    BossMod_IPCSubscriber.SetRange(Math.Clamp(newRange, 1, 30));
                 break;
             case "spew":
                 IGameObject? spewObj = null;

@@ -1,9 +1,12 @@
-﻿using ECommons.DalamudServices;
+﻿using AutoDuty.Properties;
+using ECommons.Automation;
+using ECommons.DalamudServices;
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace AutoDuty.IPC
 {
+
     internal static class AutoRetainer_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AutoRetainer_IPCSubscriber), "AutoRetainer.PluginState", SafeWrapper.IPCException);
@@ -78,8 +82,43 @@ namespace AutoDuty.IPC
         [EzIPC("Presets.ClearActive", true)] internal static readonly Func<bool> Presets_ClearActive;
         [EzIPC("Presets.GetForceDisabled", true)] internal static readonly Func<bool> Presets_GetForceDisabled; 
         [EzIPC("Presets.SetForceDisabled", true)] internal static readonly Func<bool> Presets_SetForceDisabled;
+        /** string presetName, string moduleTypeName, string trackName, string value*/
+        [EzIPC("Presets.AddTransientStrategy")] internal static readonly Func<string, string, string, string, bool> Presets_AddTransientStrategy;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+
+        public static void AddPreset(string name, string preset)
+        {
+            //check if our preset does not exist
+            if (Presets_Get(name) == null)
+                //load it
+                Svc.Log.Debug($"AutoDuty Preset Loaded: {Presets_Create(preset, true)}");
+        }
+
+        public static void SetPreset(string name)
+        {
+            if (Presets_GetActive() != name)
+                Presets_SetActive(name);
+        }
+
+        public static void DisablePresets()
+        {
+            if (!Presets_GetForceDisabled())
+                Presets_SetForceDisabled();
+        }
+
+        public static void SetRange(float range)
+        {
+            if(IPCSubscriber_Common.IsReady("BossModReborn"))
+            {
+                Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {range}");
+            }
+            else
+            {
+                Presets_AddTransientStrategy("AutoDuty",         "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
+                Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
+            }
+        }
     }
 
     /* Seem's YesAlready is not Initializing this

@@ -62,6 +62,20 @@ namespace AutoDuty.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to {
+        ///  &quot;Name&quot;: &quot;AutoDuty Passive&quot;,
+        ///  &quot;Modules&quot;: {
+        ///    &quot;BossMod.Autorotation.MiscAI.StayCloseToTarget&quot;: []
+        ///  }
+        ///}.
+        /// </summary>
+        internal static string AutoDutyPassivePreset {
+            get {
+                return ResourceManager.GetString("AutoDutyPassivePreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
         ///  &quot;Name&quot;: &quot;AutoDuty&quot;,
         ///  &quot;Modules&quot;: {
         ///    &quot;BossMod.Autorotation.xan.BLM&quot;: [

@@ -384,6 +384,7 @@
         "Track": "LShot",
         "Option": "Opener"
       }
-    ]
+    ],
+    "BossMod.Autorotation.MiscAI.StayCloseToTarget": []
   }
 }
