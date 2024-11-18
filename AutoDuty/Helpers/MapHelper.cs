@@ -29,7 +29,7 @@ namespace AutoDuty.Helpers
         {
             var closestDistance = float.MaxValue;
             Aetheryte? closestAetheryte = null;
-            var map = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(territoryType)?.Map.Value;
+            var map = Svc.Data.GetExcelSheet<TerritoryType>().GetRowOrDefault(territoryType)?.Map.Value;
             var aetherytes = Svc.Data.GetExcelSheet<Aetheryte>();
 
             if (aetherytes == null || map == null)
@@ -38,14 +38,17 @@ namespace AutoDuty.Helpers
             foreach (var aetheryte in aetherytes)
             {
                 if (( aetheryte.IsAetheryte && aetheryte.Territory.RowId != territoryType ) || aetheryte.Territory.ValueNullable == null || aetheryte.Territory.Value.RowId != territoryType) continue;
-                MapMarker mapMarker = Svc.Data.GetSubrowExcelSheet<MapMarker>().Flatten().FirstOrDefault(m => m.DataType == 4 && m.DataKey.RowId == aetheryte.AethernetName.ValueNullable?.RowId);
+                MapMarker mapMarker = Svc.Data.GetSubrowExcelSheet<MapMarker>().AllRows().FirstOrDefault(m => m.DataType == 4 && m.DataKey.RowId == aetheryte.AethernetName.RowId); //todo whatever the heck
 
-                var distance = Vector2.Distance(ConvertWorldXZToMap(location.ToVector2(), map.Value), ConvertMarkerToMap(mapMarker, map.Value));
-
-                if (distance < closestDistance)
+                if (mapMarker.RowId > 0)
                 {
-                    closestDistance = distance;
-                    closestAetheryte = aetheryte;
+                    var distance = Vector2.Distance(ConvertWorldXZToMap(location.ToVector2(), map.Value), ConvertMarkerToMap(mapMarker, map.Value));
+
+                    if (distance < closestDistance)
+                    {
+                        closestDistance  = distance;
+                        closestAetheryte = aetheryte;
+                    }
                 }
             }
 
