@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace AutoDuty.Helpers
 {
+    using Data;
+    using static Data.Classes;
+
     internal static class LevelingHelper
     {
         private static Content[] levelingDuties = [];

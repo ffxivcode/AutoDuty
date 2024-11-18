@@ -8,13 +8,14 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Collections.Generic;
-using Lumina.Excel.GeneratedSheets2;
 using Dalamud.Plugin.Services;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using Lumina.Excel.Sheets;
 
 namespace AutoDuty.Helpers
 {
+    using static Data.Classes;
     internal static class TrustHelper
     {
         internal static unsafe uint GetLevelFromTrustWindow(AtkUnitBase* addon)
@@ -88,7 +89,7 @@ namespace AutoDuty.Helpers
 
             TrustMember?[] trustMembers = new TrustMember?[3];
 
-            JobRole playerJobRole = Player.Available ? Player.Object.ClassJob.GameData?.GetJobRole() ?? JobRole.None : JobRole.None;
+            JobRole playerJobRole = Player.Available ? Player.Object.ClassJob.ValueNullable?.GetJobRole() ?? JobRole.None : JobRole.None;
 
             Svc.Log.Info("Leveling Trust Members set");
             Svc.Log.Info(content.TrustMembers.Count.ToString());
@@ -99,7 +100,7 @@ namespace AutoDuty.Helpers
             {
                 TrustMember[] membersPossible = [.. content.TrustMembers
                               .OrderBy(tm => tm.Level + (tm.Level < tm.LevelCap ? 0 : 100) +
-                                                                      (playerRole == CombatRole.DPS ? playerJobRole == tm.Job!.GetJobRole() ? 0.5f : 0 : 0))];
+                                                                      (playerRole == CombatRole.DPS ? playerJobRole == tm.Job?.GetJobRole() ? 0.5f : 0 : 0))];
                 foreach (TrustMember member in membersPossible)
                 {
                     Svc.Log.Info("checking: " + member.Name);
@@ -147,14 +148,14 @@ namespace AutoDuty.Helpers
         internal static void PopulateTrustMembers()
         {
             var dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
-            var jobSheet = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.ClassJob>();
+            var jobSheet = Svc.Data.GetExcelSheet<ClassJob>();
 
             if (dawnSheet == null || jobSheet == null) return;
 
             void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100, uint unlockQuest = 0) => Members.Add(name, new TrustMember
                          {
                              Index       = index,
-                             Name        = dawnSheet.GetRow((uint)name)!.Unknown0.RawString,
+                             Name        = dawnSheet.GetRow((uint)name)!.Unknown0.ToString(),
                              Role        = role,
                              Job         = jobSheet.GetRow((uint)classJob)!,
                              MemberName  = name,
@@ -248,7 +249,7 @@ namespace AutoDuty.Helpers
             SchedulerHelper.ScheduleAction("CheckTrustLevelTimeout", () => Stop(), 2500);
         }
 
-        private unsafe static void Stop(bool forceHide = false)
+        private static unsafe void Stop(bool forceHide = false)
         {
             if (forceHide || (_getLevelsContent?.TrustMembers.TrueForAll(tm => tm.LevelIsSet || !tm.Available) ?? false))
                 AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Hide();
@@ -281,14 +282,14 @@ namespace AutoDuty.Helpers
             else
                 EzThrottler.Throttle("OpenDawn", 5, true);
 
-            if (addonDawn->AtkValues[225].UInt < (_getLevelsContent!.ExVersion - 2))
+            if (addonDawn->AtkValues[241].UInt < (_getLevelsContent!.ExVersion - 2))
             {
                 Svc.Log.Debug($"TrustHelper - You do not have expansion: {_getLevelsContent.ExVersion} unlocked stopping");
                 Stop(true);
                 return;
             }
 
-            if (addonDawn->AtkValues[226].UInt != (_getLevelsContent!.ExVersion - 3))
+            if (addonDawn->AtkValues[242].UInt != (_getLevelsContent!.ExVersion - 3))
             {
                 Svc.Log.Debug($"TrustHelper - Opening Expansion: {_getLevelsContent.ExVersion}");
                 AddonHelper.FireCallBack(addonDawn, true, 20, (_getLevelsContent!.ExVersion - 3));

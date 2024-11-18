@@ -79,7 +79,7 @@ namespace AutoDuty.Helpers
             if (!_statesExecuted.HasFlag(AutoEquipState.Setting_Up))
             {
                 Svc.Log.Debug($"AutoEquipHelper - RecommendEquipModule - SetupForClassJob");
-                RecommendEquipModule.Instance()->SetupForClassJob((byte)Svc.ClientState.LocalPlayer!.ClassJob.Id);
+                RecommendEquipModule.Instance()->SetupForClassJob((byte)Svc.ClientState.LocalPlayer!.ClassJob.RowId);
                 _statesExecuted |= AutoEquipState.Setting_Up;
             }
             else if (!_statesExecuted.HasFlag(AutoEquipState.Equipping))
@@ -122,7 +122,7 @@ namespace AutoDuty.Helpers
             else if (_gearset != null && !_statesExecuted.HasFlag(AutoEquipState.Getting_Ring_Count))
             {
                 Svc.Log.Debug($"AutoEquipHelper - Gearsetter_IPCSubscriber - GettingRingCountFromRecommendation");
-                _ringCount = _equippedRingCount = _gearset.Where(x => InventoryHelper.GetEquippedSlot(InventoryHelper.GetExcelItem(x.ItemId)!).EqualsAny(EquippedSlotIndex.Ring1, EquippedSlotIndex.Ring2)).Count();
+                _ringCount      =  _equippedRingCount = _gearset.Count(x => InventoryHelper.GetEquippedSlot(InventoryHelper.GetExcelItem(x.ItemId).Value).EqualsAny(EquippedSlotIndex.Ring1, EquippedSlotIndex.Ring2));
                 _statesExecuted |= AutoEquipState.Getting_Ring_Count;
             }
             else if (_gearset != null && _index < _gearset.Count)
@@ -134,7 +134,7 @@ namespace AutoDuty.Helpers
                 {
                     var itemData = InventoryHelper.GetExcelItem(itemId);
                     if (itemData == null) return;
-                    var equipSlotIndex = InventoryHelper.GetEquippedSlot(itemData);
+                    var equipSlotIndex = InventoryHelper.GetEquippedSlot(itemData.Value);
                     if (equipSlotIndex.EqualsAny(EquippedSlotIndex.Ring1, EquippedSlotIndex.Ring2))
                     {
                         if (_ringCount == 2)
@@ -142,10 +142,10 @@ namespace AutoDuty.Helpers
                         else
                             equipSlotIndex = InventoryHelper.GetRingSlot();
                     }
-                    InventoryHelper.EquipGear(itemData, (InventoryType)inventoryType, (int)sourceInventorySlot, equipSlotIndex);
+                    InventoryHelper.EquipGear(itemData.Value, (InventoryType)inventoryType, (int)sourceInventorySlot, equipSlotIndex);
                     if (InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems)->Items[(int)equipSlotIndex].ItemId == itemId)
                     {
-                        Svc.Log.Debug($"AutoEquipGearSetter: Successfully Equipped {itemData.Name} to {equipSlotIndex.ToCustomString()}");
+                        Svc.Log.Debug($"AutoEquipGearSetter: Successfully Equipped {itemData.Value.Name} to {equipSlotIndex.ToCustomString()}");
                         if (equipSlotIndex.EqualsAny(EquippedSlotIndex.Ring1, EquippedSlotIndex.Ring2))
                             _equippedRingCount--;
                         _index++;

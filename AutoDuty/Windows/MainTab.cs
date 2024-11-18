@@ -15,6 +15,7 @@ using System.Numerics;
 
 namespace AutoDuty.Windows
 {
+    using static Data.Classes;
     internal static class MainTab
     {
         internal static ContentPathsManager.ContentPathContainer? DutySelected;

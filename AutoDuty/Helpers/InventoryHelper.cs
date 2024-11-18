@@ -2,15 +2,14 @@
 using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
 using System;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons.Throttlers;
-using System.Net.NetworkInformation;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Excel.Sheets;
+
     internal unsafe static class InventoryHelper
     {
         internal static uint SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();
@@ -61,14 +60,14 @@ namespace AutoDuty.Helpers
 
         internal static bool IsItemAvailable(uint itemId, bool allowHq = true) => (allowHq && ItemCount(itemId + 1_000_000) >= 1) || ItemCount(itemId) >= 1;
 
-        internal static Item? GetExcelItem(uint itemId) => Svc.Data.GetExcelSheet<Item>()?.GetRow(itemId);
+        internal static Item? GetExcelItem(uint itemId) => Svc.Data.GetExcelSheet<Item>()?.GetRowOrDefault(itemId);
 
         internal static EquippedSlotIndex GetRingSlot()
         {
             InventoryContainer* equipped = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
 
-            uint ring1SlotiLvl = GetExcelItem(equipped->Items[(int)EquippedSlotIndex.Ring1].ItemId)?.LevelItem.Value?.RowId ?? 0u;
-            uint ring2SlotiLvl = GetExcelItem(equipped->Items[(int)EquippedSlotIndex.Ring2].ItemId)?.LevelItem.Value?.RowId ?? 0u;
+            uint ring1SlotiLvl = GetExcelItem(equipped->Items[(int)EquippedSlotIndex.Ring1].ItemId)?.LevelItem.ValueNullable?.RowId ?? 0u;
+            uint ring2SlotiLvl = GetExcelItem(equipped->Items[(int)EquippedSlotIndex.Ring2].ItemId)?.LevelItem.ValueNullable?.RowId ?? 0u;
             return ring1SlotiLvl < ring2SlotiLvl ? EquippedSlotIndex.Ring1 : EquippedSlotIndex.Ring2;
         }
 
@@ -176,19 +175,19 @@ namespace AutoDuty.Helpers
             if (item == null)
                 return false;
 
-            if (item.ClassJobRepair.Row > 0)
+            if (item.Value.ClassJobRepair.RowId > 0)
             {
-                var actualJob = (Job)(item.ClassJobRepair.Row);
-                var repairItem = item.ItemRepair.Value?.Item;
+                var actualJob = (Job)(item.Value.ClassJobRepair.RowId);
+                var repairItem = item.Value.ItemRepair.ValueNullable?.Item;
 
                 if (repairItem == null)
                     return false;
 
-                if (!HasDarkMatterOrBetter(repairItem.Row))
+                if (!HasDarkMatterOrBetter(repairItem.Value.RowId))
                     return false;
 
                 var jobLevel = PlayerHelper.GetCurrentLevelFromSheet(actualJob);
-                if (Math.Max(item.LevelEquip - 10, 1) <= jobLevel)
+                if (Math.Max(item.Value.LevelEquip - 10, 1) <= jobLevel)
                     return true;
             }
 
@@ -201,10 +200,10 @@ namespace AutoDuty.Helpers
             var repairResources = Svc.Data.Excel.GetSheet<ItemRepairResource>();
             foreach (var dm in repairResources!)
             {
-                if (dm.Item.Row < darkMatterID)
+                if (dm.Item.RowId < darkMatterID)
                     continue;
 
-                if (InventoryManager.Instance()->GetInventoryItemCount(dm.Item.Row) > 0)
+                if (InventoryManager.Instance()->GetInventoryItemCount(dm.Item.RowId) > 0)
                     return true;
             }
             return false;

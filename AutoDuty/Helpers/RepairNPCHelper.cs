@@ -2,7 +2,6 @@
 using ECommons.DalamudServices;
 using Lumina.Data.Files;
 using Lumina.Data.Parsing.Layer;
-using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,8 @@ using System.Numerics;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Excel.Sheets;
+
     public static class RepairNPCHelper
     {
         public class ENpcResidentData
@@ -34,49 +35,53 @@ namespace AutoDuty.Helpers
             var enpcResidentsSheet = Svc.Data.GetExcelSheet<ENpcResident>();
             var enpcBaseSheet = Svc.Data.GetExcelSheet<ENpcBase>();
             var levelSheet = Svc.Data.GetExcelSheet<Level>();
-            var menderENpcResidents = enpcResidentsSheet?.ToList().Where(x => x.RowId != 1025308 && (x.Singular.RawString.Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.RawString.Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.RawString.Contains("Repairman", StringComparison.InvariantCultureIgnoreCase)));
+            // todo: use IDs instead of english string
+            var menderENpcResidents = enpcResidentsSheet?.ToList().Where(x => x.RowId != 1025308 && (x.Singular.ToString().Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.ToString().Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.ToString().Contains("Repairman", StringComparison.InvariantCultureIgnoreCase)));
             var menderENpcBases = enpcBaseSheet?.ToList();
 
-            var cityAreaTerritoryTypes = Svc.Data.GetExcelSheet<TerritoryType>()?.ToList().Where(x => x.TerritoryIntendedUse == 0);
+            var cityAreaTerritoryTypes = Svc.Data.GetExcelSheet<TerritoryType>().ToList().Where(x => x.TerritoryIntendedUse.Value.RowId == 0);
 
-            if (menderENpcResidents == null || cityAreaTerritoryTypes == null)
+            if (menderENpcResidents == null)
                 return;
 
             BuildEnpcFromLgbFile(cityAreaTerritoryTypes);
 
             foreach (var mender in menderENpcResidents)
             {
-                var level = levelSheet?.FirstOrDefault(y => y.Object == mender.RowId);
-                var eNpcBaseENpcData = menderENpcBases?.FirstOrDefault(z => z.RowId == mender.RowId)?.ENpcData;
-                var repairIndex = eNpcBaseENpcData.IndexOf(x => x == 720915);
+                var level = levelSheet.FirstOrDefault(y => y.Object.RowId == mender.RowId);
+                var eNpcBaseENpcData = menderENpcBases?.FirstOrDefault(z => z.RowId == mender.RowId).ENpcData;
+                var repairIndex = eNpcBaseENpcData.Value.IndexOf(x => x.RowId == 720915);
                 uint territoryType = 0;
                 Vector3 position = Vector3.Zero;
 
-                if (level == null || level.Territory.Value == null || level.Territory.Value.TerritoryIntendedUse != 0)
+                if (level.RowId != default)
                 {
-                    var npc = cityENpcResidents.FirstOrDefault(x => x.DataId == mender.RowId);
-                    if (npc == null) continue;
-                    RepairNPCs.Add(new RepairNpcData
+                    if (level.Territory.Value.RowId != 0 || level.Territory.Value.TerritoryIntendedUse.RowId != 0)
                     {
-                        DataId = npc.DataId,
-                        Name = npc.Name,
-                        Position = npc.Position,
-                        TerritoryType = npc.TerritoryType,
-                        RepairIndex = repairIndex
-                    });
-                }
-                else
-                {
-                    position = new Vector3(level.X, level.Y, level.Z);
-                    territoryType = level.Territory.Value.RowId;
-                    RepairNPCs.Add(new RepairNpcData
+                        var npc = cityENpcResidents.FirstOrDefault(x => x.DataId == mender.RowId);
+                        if (npc == null) continue;
+                        RepairNPCs.Add(new RepairNpcData
+                                       {
+                                           DataId        = npc.DataId,
+                                           Name          = npc.Name,
+                                           Position      = npc.Position,
+                                           TerritoryType = npc.TerritoryType,
+                                           RepairIndex   = repairIndex
+                                       });
+                    }
+                    else
                     {
-                        DataId = mender.RowId,
-                        Name = mender.Singular.RawString,
-                        Position = position,
-                        TerritoryType = territoryType,
-                        RepairIndex = repairIndex
-                    });
+                        position      = new Vector3(level.X, level.Y, level.Z);
+                        territoryType = level.Territory.Value.RowId;
+                        RepairNPCs.Add(new RepairNpcData
+                                       {
+                                           DataId        = mender.RowId,
+                                           Name          = mender.Singular.ToString(),
+                                           Position      = position,
+                                           TerritoryType = territoryType,
+                                           RepairIndex   = repairIndex
+                                       });
+                    }
                 }
             }
             cityENpcResidents = [];
@@ -109,7 +114,7 @@ namespace AutoDuty.Helpers
                         cityENpcResidents.Add(new ENpcResidentData
                         {
                             DataId = eNpcResidentDataId,
-                            Name = eNpcResident.Singular.RawString,
+                            Name = eNpcResident.Value.Singular.ToString(),
                             Position = new Vector3(instanceObject.Transform.Translation.X, instanceObject.Transform.Translation.Y, instanceObject.Transform.Translation.Z),
                             TerritoryType = territoryType.RowId,
                         });
@@ -118,6 +123,6 @@ namespace AutoDuty.Helpers
             }
             
         }
-        private static LgbFile? GetLgbFile(TerritoryType territoryType) => Svc.Data.GetFile<LgbFile>($"bg/{territoryType.Bg.RawString[..(territoryType.Bg.RawString.IndexOf("/level/") + 1)]}level/planevent.lgb");
+        private static LgbFile? GetLgbFile(TerritoryType territoryType) => Svc.Data.GetFile<LgbFile>($"bg/{territoryType.Bg.ToString()[..(territoryType.Bg.ToString().IndexOf("/level/") + 1)]}level/planevent.lgb");
     }
 }

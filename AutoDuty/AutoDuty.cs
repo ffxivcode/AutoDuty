@@ -30,7 +30,6 @@ using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
 using System.Diagnostics;
-using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.Properties;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
@@ -40,7 +39,8 @@ using AutoDuty.Updater;
 
 namespace AutoDuty;
 
-using System.Globalization;
+using Lumina.Excel.Sheets;
+using static Data.Classes;
 
 // TODO:
 // Scrapped interable list, going to implement an internal list that when a interactable step end in fail, the Dataid gets add to the list and is scanned for from there on out, if found we goto it and get it, then remove from list.
@@ -301,7 +301,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (message == null) return;
 
-        if (message.Sender == Player.Name || message.Action.Count == 0 || !Svc.Party.Any(x => x.Name.ExtractText() == message.Sender))
+        if (message.Sender == Player.Name || message.Action.Count == 0 || Svc.Party.All(x => x.Name.ExtractText() != message.Sender))
             return;
 
         message.Action.Each(_actions.InvokeAction);
@@ -995,7 +995,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Svc.Targets.Target == null)
             {
                 //find and target closest attackable npc, if we are not targeting
-                var gos = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateKind(o) is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
+                var gos = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)?.FirstOrDefault(o => o.GetNameplateKind() is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
 
                 if (gos != null)
                     Svc.Targets.Target = gos;
@@ -1258,23 +1258,23 @@ public sealed class AutoDuty : IDalamudPlugin
     internal void BMRoleChecks()
     {
         //RoleBased Positional
-        if (PlayerHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalEnum != (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee ? Positional.Rear : Positional.Any))
+        if (PlayerHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalEnum != (Player.Object.ClassJob.Value.GetJobRole() == JobRole.Melee ? Positional.Rear : Positional.Any))
         {
-            Configuration.PositionalEnum = (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee ? Positional.Rear : Positional.Any);
+            Configuration.PositionalEnum = (Player.Object.ClassJob.Value.GetJobRole() == JobRole.Melee ? Positional.Rear : Positional.Any);
             Configuration.Save();
         }
 
         //RoleBased MaxDistanceToTarget
-        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTargetFloat != (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee || PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Tank ? 2.6f : 10))
+        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Math.Abs(this.Configuration.MaxDistanceToTargetFloat - (Player.Object.ClassJob.ValueNullable?.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank ? 2.6f : 10)) > 0.01f)
         {
-            Configuration.MaxDistanceToTargetFloat = (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee || PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Tank ? 2.6f : 10);
+            Configuration.MaxDistanceToTargetFloat = (Player.Object.ClassJob.Value.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank ? 2.6f : 10);
             Configuration.Save();
         }
 
         //RoleBased MaxDistanceToTargetAoE
-        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTargetAoEFloat != (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee || PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Tank ? 2.6f : 10))
+        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Math.Abs(this.Configuration.MaxDistanceToTargetAoEFloat - (Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank ? 2.6f : 10)) > 0.01f)
         {
-            Configuration.MaxDistanceToTargetAoEFloat = (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee || PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Tank || Player.Object.ClassJob.GameData?.JobIndex == 18 ? 2.6f : 10);
+            Configuration.MaxDistanceToTargetAoEFloat = (Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank || Player.Object.ClassJob.ValueNullable?.JobIndex == 18 ? 2.6f : 10);
             Configuration.Save();
         }
 
@@ -1694,7 +1694,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 Run(territoryType, loopTimes, bareMode: argsArray.Length > 4 && bool.TryParse(argsArray[4], out bool parsedBool) && parsedBool);
                 break;
             case "tt":
-                var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
+                var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.ValueNullable != null && x.ContentFinderCondition.Value.Name.ToString().Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
                 Svc.Log.Info($"{tt?.RowId}");
                 ImGui.SetClipboardText($"{tt?.RowId}");
                 break;

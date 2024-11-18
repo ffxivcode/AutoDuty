@@ -1,5 +1,4 @@
-﻿using Lumina.Excel.GeneratedSheets;
-using System;
+﻿using System;
 
 namespace AutoDuty.Data
 {
