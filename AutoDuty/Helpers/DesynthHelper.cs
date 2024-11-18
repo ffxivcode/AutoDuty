@@ -6,10 +6,11 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel.GeneratedSheets;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Excel.Sheets;
+
     internal static class DesynthHelper
     {
         internal static void Invoke()
@@ -28,7 +29,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal unsafe static void Stop()
+        internal static unsafe void Stop()
         {
             Plugin.Action = "";
             SchedulerHelper.DescheduleAction("DesynthTimeOut");
@@ -121,14 +122,14 @@ namespace AutoDuty.Helpers
                         if (itemId == 10146) continue;
 
                         var itemSheetRow = Svc.Data.Excel.GetSheet<Item>()?.GetRow(itemId);
-                        var itemLevel = itemSheetRow?.LevelItem.Value?.RowId;
+                        var itemLevel = itemSheetRow?.LevelItem.ValueNullable?.RowId;
                         var desynthLevel = PlayerHelper.GetDesynthLevel(item.ClassJob);
 
                         if (itemLevel == null || itemSheetRow == null) continue;
 
                         if (!Plugin.Configuration.AutoDesynthSkillUp || (desynthLevel < itemLevel + 50 && desynthLevel < _maxDesynthLevel))
                         {
-                            Svc.Log.Debug($"Salvaging Item({i}): {itemSheetRow.Name.RawString} with iLvl {itemLevel} because our desynth level is {desynthLevel}");
+                            Svc.Log.Debug($"Salvaging Item({i}): {itemSheetRow.Value.Name.ToString()} with iLvl {itemLevel} because our desynth level is {desynthLevel}");
                             foundOne = true;
                             AddonHelper.FireCallBack((AtkUnitBase*)addonSalvageItemSelector, true, 12, i);
                             return;

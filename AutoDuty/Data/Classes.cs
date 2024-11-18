@@ -9,6 +9,8 @@ using System.Text.Json.Serialization;
 
 namespace AutoDuty.Data
 {
+    using Lumina.Excel.Sheets;
+
     public class Classes
     {
         public class LogMessage
@@ -50,7 +52,7 @@ namespace AutoDuty.Data
         {
             public uint Index { get; set; }
             public TrustRole Role { get; set; } // 0 = DPS, 1 = Healer, 2 = Tank, 3 = G'raha All Rounder
-            public Lumina.Excel.GeneratedSheets.ClassJob? Job { get; set; } = null;//closest actual job that applies. G'raha gets Blackmage
+            public ClassJob? Job { get; set; } = null;//closest actual job that applies. G'raha gets Blackmage
             public string Name { get; set; } = string.Empty;
             public TrustMemberName MemberName { get; set; }
 

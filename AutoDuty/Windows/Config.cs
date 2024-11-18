@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ECommons.ExcelServices;
 using ECommons.DalamudServices;
-using Lumina.Excel.GeneratedSheets;
 using ECommons;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Components;
@@ -23,6 +22,9 @@ using static AutoDuty.Windows.ConfigTab;
 using Serilog.Events;
 
 namespace AutoDuty.Windows;
+
+using Data;
+using Lumina.Excel.Sheets;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
@@ -280,8 +282,8 @@ public class Configuration : IPluginConfiguration
             }
         }
     }
-    public Role FollowRoleEnum = Role.Healer;
-    internal bool maxDistanceToTargetRoleBased = true;
+    public   Enums.Role FollowRoleEnum               = Enums.Role.Healer;
+    internal bool       maxDistanceToTargetRoleBased = true;
     public bool MaxDistanceToTargetRoleBased
     {
         get => maxDistanceToTargetRoleBased;
@@ -325,7 +327,7 @@ public static class ConfigTab
     private static Configuration Configuration = Plugin.Configuration;
     private static string preLoopCommand = string.Empty; 
     private static string terminationCommand = string.Empty;
-    private static Dictionary<uint, string> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x.Name.RawString) ?? [];
+    private static Dictionary<uint, string> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.ToString().IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x.Name.ToString()) ?? [];
     private static string stopItemQtyItemNameInput = "";
     private static KeyValuePair<uint, string> stopItemQtySelectedItem = new(0, "");
 
@@ -337,7 +339,7 @@ public static class ConfigTab
         public ushort StatusId;
     }
 
-    private static List<ConsumableItem> ConsumableItems { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.RawString.IsNullOrEmpty() && x.ItemUICategory.Value?.RowId is 44 or 46 && x.ItemAction.Value?.Data[0] is 48 or 49).Select(x => new ConsumableItem() { StatusId = x.ItemAction.Value!.Data[0], ItemId = x.RowId, Name = x.Name.RawString, CanBeHq = x.CanBeHq }).ToList() ?? [];
+    private static List<ConsumableItem> ConsumableItems { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.ToString().IsNullOrEmpty() && x.ItemUICategory.ValueNullable?.RowId is 44 or 46 && x.ItemAction.ValueNullable?.Data[0] is 48 or 49).Select(x => new ConsumableItem() { StatusId = x.ItemAction.Value!.Data[0], ItemId = x.RowId, Name = x.Name.ToString(), CanBeHq = x.CanBeHq }).ToList() ?? [];
 
     private static string consumableItemsItemNameInput = "";
     private static ConsumableItem consumableItemsSelectedItem = new();
@@ -541,7 +543,7 @@ public static class ConfigTab
                         }
                         if (ImGui.BeginPopup("RolePopup"))
                         {
-                            foreach (Role role in Enum.GetValues(typeof(Role)))
+                            foreach (Enums.Role role in Enum.GetValues(typeof(Enums.Role)))
                             {
                                 if (ImGui.Selectable(role.ToCustomString()))
                                 {
@@ -916,7 +918,7 @@ public static class ConfigTab
                         ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
                         if (ImGui.BeginCombo("##PreferredRepair",
                                              Configuration.PreferredRepairNPC != null ?
-                                                 $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(Configuration.PreferredRepairNPC.TerritoryType)?.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})" :
+                                                 $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value).Y.ToString("0.0", CultureInfo.InvariantCulture)})" :
                                                  "Grand Company Inn"))
                         {
                             if (ImGui.Selectable("Grand Company Inn"))
@@ -931,7 +933,7 @@ public static class ConfigTab
 
                                 if (territoryType == null) continue;
 
-                                if (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.PlaceName.Value?.Name.RawString})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
+                                if (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.Value.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
                                 {
                                     Configuration.PreferredRepairNPC = repairNPC;
                                     Configuration.Save();
@@ -1406,7 +1408,7 @@ public static class ConfigTab
                 if (ImGui.Selectable(sound.ToName()))
                 {
                     Configuration.SoundEnum = sound;
-                    UIModule.PlaySound((uint)sound);
+                    UIGlobals.PlaySoundEffect((uint)sound);
                     Configuration.Save();
                 }
             }

@@ -8,6 +8,7 @@ using AutoDuty.Windows;
 
 namespace AutoDuty.Updater
 {
+    using static Data.Classes;
     internal static class FileHelper
     {
         internal static readonly FileSystemWatcher FileSystemWatcher = new(Plugin.PathsDirectory.FullName)
