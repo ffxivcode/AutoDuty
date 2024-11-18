@@ -154,15 +154,25 @@ namespace AutoDuty.Helpers
                 AddonHelper.FireCallBack(addonDawnStory, true, 11, _content.ExVersion);
                 return;
             }
-            else if (addonDawnStory->AtkValues[21].UInt != _content.DawnIndex + 1)
-            {
-                Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} at index: {_content.DawnIndex + addonDawnStory->AtkValues[27].UInt} {addonDawnStory->AtkValues[27].UInt}");
-                AddonHelper.FireCallBack(addonDawnStory, true, 12, (uint)_content.DawnIndex + addonDawnStory->AtkValues[27].UInt);
-            }
             else
             {
-                Svc.Log.Debug($"Queue Helper - Clicking: Register For Duty");
-                AddonHelper.FireCallBack(addonDawnStory, true, 14);
+                int sideQuestIndex = _content.ExVersion switch
+                {
+                    0 => 15,
+                    1 => 9,
+                    2 => 8,
+                    _ => 99
+                };
+                if (addonDawnStory->AtkValues[21].UInt != _content.DawnIndex + (addonDawnStory->AtkValues[21].UInt > sideQuestIndex ? -sideQuestIndex : 1))
+                {
+                    Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} {_content.DawnIndex} at index: {_content.DawnIndex + addonDawnStory->AtkValues[27].UInt} {addonDawnStory->AtkValues[27].UInt}");
+                    AddonHelper.FireCallBack(addonDawnStory, true, 12, (uint)_content.DawnIndex + addonDawnStory->AtkValues[27].UInt);
+                }
+                else
+                {
+                    Svc.Log.Debug($"Queue Helper - Clicking: Register For Duty");
+                    AddonHelper.FireCallBack(addonDawnStory, true, 14);
+                }
             }
         }
 
