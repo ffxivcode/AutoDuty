@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 
 namespace AutoDuty.Managers
 {
+    using static Data.Classes;
     internal static class ContentPathsManager
     {
         internal static Dictionary<uint, ContentPathContainer> DictionaryPaths = [];

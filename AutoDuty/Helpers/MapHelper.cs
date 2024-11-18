@@ -1,6 +1,5 @@
 ﻿using ECommons.DalamudServices;
 using ECommons.MathHelpers;
-using Lumina.Excel.GeneratedSheets;
 using System.Numerics;
 using System.Linq;
 using Dalamud.Plugin.Services;
@@ -12,6 +11,8 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Excel.Sheets;
+
     internal static class MapHelper
     {
         internal static unsafe bool IsFlagMarkerSet => AgentMap.Instance()->IsFlagMarkerSet > 0;
@@ -28,7 +29,7 @@ namespace AutoDuty.Helpers
         {
             var closestDistance = float.MaxValue;
             Aetheryte? closestAetheryte = null;
-            var map = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(territoryType)?.Map.Value;
+            var map = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(territoryType)?.Map.Value;
             var aetherytes = Svc.Data.GetExcelSheet<Aetheryte>();
 
             if (aetherytes == null || map == null)
@@ -36,11 +37,10 @@ namespace AutoDuty.Helpers
 
             foreach (var aetheryte in aetherytes)
             {
-                if (( aetheryte.IsAetheryte && aetheryte.Territory.Row != territoryType ) || aetheryte.Territory.Value == null || aetheryte.Territory.Value.RowId != territoryType) continue;
-                var mapMarker = Svc.Data.GetExcelSheet<MapMarker>()?.FirstOrDefault(m => m.DataType == 4 && m.DataKey == aetheryte.AethernetName.Value?.RowId);
+                if (( aetheryte.IsAetheryte && aetheryte.Territory.RowId != territoryType ) || aetheryte.Territory.ValueNullable == null || aetheryte.Territory.Value.RowId != territoryType) continue;
+                MapMarker mapMarker = Svc.Data.GetSubrowExcelSheet<MapMarker>().Flatten().FirstOrDefault(m => m.DataType == 4 && m.DataKey.RowId == aetheryte.AethernetName.ValueNullable?.RowId);
 
-                if (mapMarker == null) continue;
-                var distance = Vector2.Distance(ConvertWorldXZToMap(location.ToVector2(), map), ConvertMarkerToMap(mapMarker, map));
+                var distance = Vector2.Distance(ConvertWorldXZToMap(location.ToVector2(), map.Value), ConvertMarkerToMap(mapMarker, map.Value));
 
                 if (distance < closestDistance)
                 {
@@ -56,7 +56,7 @@ namespace AutoDuty.Helpers
         {
             var closestDistance = float.MaxValue;
             Aetheryte? closestAetheryte = null;
-            var map = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(territoryType)?.Map.Value;
+            var map = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(territoryType)?.Map.Value;
             var aetherytes = Svc.Data.GetExcelSheet<Aetheryte>();
 
             if (aetherytes == null || map == null)
@@ -64,13 +64,11 @@ namespace AutoDuty.Helpers
 
             foreach (var aetheryte in aetherytes)
             {
-                if (!aetheryte.IsAetheryte || aetheryte.Territory.Value == null || aetheryte.Territory.Value.RowId != territoryType || aetheryte.PlaceName.Value == null) continue;
+                if (!aetheryte.IsAetheryte || aetheryte.Territory.ValueNullable == null || aetheryte.Territory.Value.RowId != territoryType || aetheryte.PlaceName.ValueNullable == null) continue;
 
-                var mapMarker = Svc.Data.GetExcelSheet<MapMarker>()?.FirstOrDefault(m => m.DataType == 3 && m.DataKey == aetheryte.RowId);
+                var mapMarker = Svc.Data.GetSubrowExcelSheet<MapMarker>().Flatten().FirstOrDefault(m => m.DataType == 3 && m.DataKey.RowId == aetheryte.RowId);
 
-                if (mapMarker == null) continue;
-
-                var distance = Vector2.Distance(ConvertWorldXZToMap(location.ToVector2(), map), ConvertMarkerToMap(mapMarker, map));
+                var distance = Vector2.Distance(ConvertWorldXZToMap(location.ToVector2(), map.Value), ConvertMarkerToMap(mapMarker, map.Value));
 
                 if (distance < closestDistance)
                 {

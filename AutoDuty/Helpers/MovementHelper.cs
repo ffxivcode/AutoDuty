@@ -5,15 +5,16 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ECommons.DalamudServices;
-using Lumina.Excel.GeneratedSheets;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using ECommons.GameFunctions;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Excel.Sheets;
+
     internal static class MovementHelper
     {
-        public unsafe static bool IsFlyingSupported => Svc.ClientState.TerritoryType != 0 && Svc.Data.GetExcelSheet<TerritoryType>()!.GetRow(Svc.ClientState.TerritoryType)?.TerritoryIntendedUse is 1 or 49 or 47 && PlayerState.Instance()->IsAetherCurrentZoneComplete(Svc.Data.GetExcelSheet<TerritoryType>()!.GetRow(Svc.ClientState.TerritoryType)!.Unknown32);
+        public unsafe static bool IsFlyingSupported => Svc.ClientState.TerritoryType != 0 && Svc.Data.GetExcelSheet<TerritoryType>().GetRowOrDefault(Svc.ClientState.TerritoryType)?.TerritoryIntendedUse.RowId is 1 or 49 or 47 && PlayerState.Instance()->IsAetherCurrentZoneComplete(Svc.Data.GetExcelSheet<TerritoryType>()!.GetRow(Svc.ClientState.TerritoryType)!.Unknown4);
 
         internal static void Stop() => VNavmesh_IPCSubscriber.Path_Stop();
 
