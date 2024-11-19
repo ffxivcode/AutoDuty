@@ -350,9 +350,9 @@ public sealed class AutoDuty : IDalamudPlugin
     private unsafe bool StopLoop => Configuration.EnableTerminationActions && (CurrentTerritoryContent == null ||
                                     (Configuration.StopLevel && Player.Level >= Configuration.StopLevelInt) ||
                                     (Configuration.StopNoRestedXP && AgentHUD.Instance()->ExpRestedExperience == 0) ||
-                                    (Configuration.StopItemQty && Configuration.StopItemAll 
+                                    (Configuration.StopItemQty && (Configuration.StopItemAll 
                                         ? Configuration.StopItemQtyItemDictionary.All(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value)
-                                        : Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value)));
+                                        : Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value))));
 
     private void TrustLeveling()
     {
