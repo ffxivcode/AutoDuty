@@ -24,6 +24,7 @@ using Serilog.Events;
 namespace AutoDuty.Windows;
 
 using Data;
+using global::AutoDuty.Properties;
 using Lumina.Excel.Sheets;
 
 [Serializable]
@@ -499,6 +500,11 @@ public static class ConfigTab
             
                 if (bmaiSettingHeaderSelected == true)
                 {
+                    if (ImGui.Button("Update Presets"))
+                    {
+                        BossMod_IPCSubscriber.RefreshPreset("AutoDuty", Resources.AutoDutyPreset);
+                        BossMod_IPCSubscriber.RefreshPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
+                    }
                     if (ImGui.Checkbox("Follow During Combat", ref Configuration.FollowDuringCombat))
                         Configuration.Save();
                     if (ImGui.Checkbox("Follow During Active BossModule", ref Configuration.FollowDuringActiveBossModule))

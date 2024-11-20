@@ -135,10 +135,6 @@
       {
         "Track": "AOE",
         "Option": "AOE"
-      },
-      {
-        "Track": "Buffs",
-        "Option": "Auto"
       }
     ],
     "BossMod.Autorotation.xan.NIN": [
@@ -323,68 +319,82 @@
         "Option": "Automatic"
       }
     ],
-    "BossMod.Autorotation.AkechiGNB": [
+    "BossMod.Autorotation.MiscAI.StayCloseToTarget": [],
+    "BossMod.Autorotation.xan.HealerAI": [
       {
-        "Track": "AoE",
-        "Option": "Auto"
+        "Track": "Raise",
+        "Option": "Raise using Swiftcast only"
       },
       {
-        "Track": "Burst",
-        "Option": "SpendCarts"
+        "Track": "RaiseTargets",
+        "Option": "Alliance raid members"
       },
       {
-        "Track": "Potion",
-        "Option": "Manual"
+        "Track": "Heal",
+        "Option": "Enabled"
       },
       {
-        "Track": "NM",
-        "Option": "Automatic"
-      },
-      {
-        "Track": "Carts",
-        "Option": "Automatic"
-      },
-      {
-        "Track": "SB",
-        "Option": "Auto"
-      },
-      {
-        "Track": "GF",
-        "Option": "Auto"
-      },
-      {
-        "Track": "DD",
-        "Option": "Auto"
-      },
-      {
-        "Track": "BS",
-        "Option": "Auto"
-      },
-      {
-        "Track": "FC",
-        "Option": "Auto"
-      },
-      {
-        "Track": "Zone",
-        "Option": "Automatic"
-      },
-      {
-        "Track": "BF",
-        "Option": "Auto"
-      },
-      {
-        "Track": "BShock",
-        "Option": "Auto"
-      },
-      {
-        "Track": "Dash",
-        "Option": "Force"
-      },
-      {
-        "Track": "LShot",
-        "Option": "Opener"
+        "Track": "Esuna",
+        "Option": "Enabled"
       }
     ],
-    "BossMod.Autorotation.MiscAI.StayCloseToTarget": []
+    "BossMod.Autorotation.xan.MeleeAI": [
+      {
+        "Track": "Second Wind",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Bloodbath",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Stun",
+        "Option": "Enabled"
+      }
+    ],
+    "BossMod.Autorotation.xan.RangedAI": [
+      {
+        "Track": "Head Graze",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Second Wind",
+        "Option": "Enabled"
+      }
+    ],
+    "BossMod.Autorotation.xan.TankAI": [
+      {
+        "Track": "Stance",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Ranged GCD",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Interject",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Low Blow",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Arms\u0027 Length",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Personal mits",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Invuln",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Protect party members",
+        "Option": "Enabled"
+      }
+    ]
   }
 }

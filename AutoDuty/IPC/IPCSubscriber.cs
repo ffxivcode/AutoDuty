@@ -65,16 +65,9 @@ namespace AutoDuty.IPC
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("BossMod") || IPCSubscriber_Common.IsReady("BossModReborn");
 
-        [EzIPC] internal static readonly Func<bool> IsMoving;
-        [EzIPC] internal static readonly Func<int> ForbiddenZonesCount;
         [EzIPC] internal static readonly Func<uint, bool> HasModuleByDataId;
-        [EzIPC] internal static readonly Func<string, bool> ActiveModuleHasComponent;
-        [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentBaseList;
-        [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentList;
         [EzIPC] internal static readonly Func<IReadOnlyList<string>, bool, List<string>> Configuration;
-        [EzIPC("Presets.List", true)] internal static readonly Func<List<string>> Presets_List;
         [EzIPC("Presets.Get", true)] internal static readonly Func<string, string?> Presets_Get;
-        [EzIPC("Presets.ForClass", true)] internal static readonly Func<byte, List<string>> Presets_ForClass;
         [EzIPC("Presets.Create", true)] internal static readonly Func<string, bool, bool> Presets_Create;
         [EzIPC("Presets.Delete", true)] internal static readonly Func<string, bool> Presets_Delete;
         [EzIPC("Presets.GetActive", true)] internal static readonly Func<string> Presets_GetActive;
@@ -93,6 +86,13 @@ namespace AutoDuty.IPC
             if (Presets_Get(name) == null)
                 //load it
                 Svc.Log.Debug($"AutoDuty Preset Loaded: {Presets_Create(preset, true)}");
+        }
+
+        public static void RefreshPreset(string name, string preset)
+        {
+            if (Presets_Get(name) != null)
+                Presets_Delete(name);
+            AddPreset(name, preset);
         }
 
         public static void SetPreset(string name)
