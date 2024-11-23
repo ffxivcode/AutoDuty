@@ -1136,9 +1136,10 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void GetGeneralSettings()
     {
+        /*
         if (Configuration.AutoManageVnavAlignCamera && VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             _settingsActive |= SettingsActive.Vnav_Align_Camera_Off;
-
+        */
         if (ReflectionHelper.YesAlready_Reflection.IsEnabled && ReflectionHelper.YesAlready_Reflection.GetPluginEnabled())
             _settingsActive |= SettingsActive.YesAlready;
 
@@ -1146,7 +1147,6 @@ public sealed class AutoDuty : IDalamudPlugin
             _settingsActive |= SettingsActive.Pandora_Interact_Objects;
 
         Svc.Log.Debug($"General Settings Active: {_settingsActive}");
-
     }
 
     internal void SetGeneralSettings(bool on)
