@@ -1123,7 +1123,8 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Configuration.AutoManageBossModAISettings)
             {
                 Chat.ExecuteCommand($"/vbmai off");
-                Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+                if (!IPCSubscriber_Common.IsReady("BossModReborn"))
+                    Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
             }
             States &= ~PluginState.Navigating;
         }
@@ -1231,7 +1232,8 @@ public sealed class AutoDuty : IDalamudPlugin
             Configuration.PositionalRoleBased = true;
         }
         Chat.ExecuteCommand($"/vbmai on");
-        Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        if(!bmr)
+            Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
 
         Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
         Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
@@ -1446,7 +1448,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.AutoManageBossModAISettings)
         {
             Chat.ExecuteCommand($"/vbmai off");
-            Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+            if(!IPCSubscriber_Common.IsReady("BossModReborn"))
+                Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         }
         SetGeneralSettings(true);
         if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
