@@ -210,6 +210,12 @@ namespace AutoDuty.IPC
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
 
+    internal static class Wrath_IPCSubscriber
+    {
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("WrathCombo");
+    }
+
+
     internal class IPCSubscriber_Common
     {
         internal static bool IsReady(string pluginName) => DalamudReflector.TryGetDalamudPlugin(pluginName, out _, false, true);
