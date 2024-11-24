@@ -58,7 +58,21 @@ namespace AutoDuty.IPC
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
-    
+
+    internal static class BossModReborn_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossModReborn_IPCSubscriber), "BossMod", SafeWrapper.AnyException);
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("BossModReborn");
+
+        [EzIPC("AI.GetPreset", true)] internal static readonly Func<string> Presets_GetActive;
+
+        [EzIPC("AI.SetPreset", true)] internal static readonly Func<string, bool> Presets_SetActive;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
+
     internal static class BossMod_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod", SafeWrapper.AnyException);
@@ -101,8 +115,11 @@ namespace AutoDuty.IPC
             {
                 Presets_SetActive(name);
 
-                if(IPCSubscriber_Common.IsReady("BossModReborn"))
-                    Plugin.Chat.ExecuteCommand($"/vbmai setpresetname {name}");
+                if (BossModReborn_IPCSubscriber.IsEnabled)
+                {
+                    if(BossModReborn_IPCSubscriber.Presets_GetActive() != name)
+                        BossModReborn_IPCSubscriber.Presets_SetActive(name);
+                }
             }
         }
 
