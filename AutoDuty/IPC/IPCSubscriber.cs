@@ -98,7 +98,12 @@ namespace AutoDuty.IPC
         public static void SetPreset(string name)
         {
             if (Presets_GetActive() != name)
+            {
                 Presets_SetActive(name);
+
+                if(IPCSubscriber_Common.IsReady("BossModReborn"))
+                    Plugin.Chat.ExecuteCommand($"/vbmai setpresetname {name}");
+            }
         }
 
         public static void DisablePresets()
