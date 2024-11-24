@@ -58,7 +58,21 @@ namespace AutoDuty.IPC
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
-    
+
+    internal static class BossModReborn_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossModReborn_IPCSubscriber), "BossMod", SafeWrapper.AnyException);
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("BossModReborn");
+
+        [EzIPC("AI.GetPreset", true)] internal static readonly Func<string> Presets_GetActive;
+
+        [EzIPC("AI.SetPreset", true)] internal static readonly Func<string, bool> Presets_SetActive;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
+
     internal static class BossMod_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod", SafeWrapper.AnyException);
@@ -98,7 +112,15 @@ namespace AutoDuty.IPC
         public static void SetPreset(string name)
         {
             if (Presets_GetActive() != name)
+            {
                 Presets_SetActive(name);
+
+                if (BossModReborn_IPCSubscriber.IsEnabled)
+                {
+                    if(BossModReborn_IPCSubscriber.Presets_GetActive() != name)
+                        BossModReborn_IPCSubscriber.Presets_SetActive(name);
+                }
+            }
         }
 
         public static void DisablePresets()
@@ -110,14 +132,9 @@ namespace AutoDuty.IPC
         public static void SetRange(float range)
         {
             if(IPCSubscriber_Common.IsReady("BossModReborn"))
-            {
                 Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {range}");
-            }
-            else
-            {
-                Presets_AddTransientStrategy("AutoDuty",         "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
-                Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
-            }
+            Presets_AddTransientStrategy("AutoDuty",         "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
+            Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
         }
     }
 
@@ -214,6 +231,12 @@ namespace AutoDuty.IPC
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
+
+    internal static class Wrath_IPCSubscriber
+    {
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("WrathCombo");
+    }
+
 
     internal class IPCSubscriber_Common
     {

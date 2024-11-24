@@ -114,7 +114,7 @@ namespace AutoDuty.Helpers
                 if (face) 
                     Plugin.OverrideCamera.Face(gameObject.Position);
                 var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
-                TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
+                TargetSystem.Instance()->InteractWithObject(gameObjectPointer, false);
             }
             catch (Exception ex)
             {

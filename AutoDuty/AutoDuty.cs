@@ -39,8 +39,10 @@ using AutoDuty.Updater;
 
 namespace AutoDuty;
 
+using ECommons.Reflection;
 using Lumina.Excel.Sheets;
 using static Data.Classes;
+using ReflectionHelper = Helpers.ReflectionHelper;
 
 // TODO:
 // Scrapped interable list, going to implement an internal list that when a interactable step end in fail, the Dataid gets add to the list and is scanned for from there on out, if found we goto it and get it, then remove from list.
@@ -1123,7 +1125,8 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Configuration.AutoManageBossModAISettings)
             {
                 Chat.ExecuteCommand($"/vbmai off");
-                Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+                if (!IPCSubscriber_Common.IsReady("BossModReborn"))
+                    Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
             }
             States &= ~PluginState.Navigating;
         }
@@ -1133,9 +1136,10 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void GetGeneralSettings()
     {
+        /*
         if (Configuration.AutoManageVnavAlignCamera && VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             _settingsActive |= SettingsActive.Vnav_Align_Camera_Off;
-
+        */
         if (ReflectionHelper.YesAlready_Reflection.IsEnabled && ReflectionHelper.YesAlready_Reflection.GetPluginEnabled())
             _settingsActive |= SettingsActive.YesAlready;
 
@@ -1143,7 +1147,6 @@ public sealed class AutoDuty : IDalamudPlugin
             _settingsActive |= SettingsActive.Pandora_Interact_Objects;
 
         Svc.Log.Debug($"General Settings Active: {_settingsActive}");
-
     }
 
     internal void SetGeneralSettings(bool on)
@@ -1170,44 +1173,49 @@ public sealed class AutoDuty : IDalamudPlugin
 
     internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false)
     {
-        if(!ignoreConfig && !this.Configuration.AutoManageRotationPluginState) 
+        if (!ignoreConfig && !this.Configuration.AutoManageRotationPluginState)
             return;
-        bool bmEnabled = BossMod_IPCSubscriber.IsEnabled;
+        bool bmEnabled     = BossMod_IPCSubscriber.IsEnabled;
+        bool foundRotation = false;
 
+        if (Wrath_IPCSubscriber.IsEnabled)
+        {
+            Chat.ExecuteCommand($"/wrath auto {(on ? "on" : "off")}");
+            foundRotation = true;
+        }
+        
         if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
         {
-            if (on)
+            if (on && !foundRotation)
             {
                 if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Auto)
                     ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+                foundRotation = true;
+            }
+            else
+            {
+                if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
+                    ReflectionHelper.RotationSolver_Reflection.RotationStop();
+            }
+        }
 
-                if (bmEnabled && this.Configuration.AutoManageBossModAISettings)
+        if (bmEnabled)
+        {
+            if (on)
+            {
+                if (!foundRotation)
+                {
+                    BossMod_IPCSubscriber.AddPreset("AutoDuty", Resources.AutoDutyPreset);
+                    BossMod_IPCSubscriber.SetPreset("AutoDuty");
+                }
+                else if(this.Configuration.AutoManageBossModAISettings)
                 {
                     BossMod_IPCSubscriber.AddPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
                     BossMod_IPCSubscriber.SetPreset("AutoDuty Passive");
                 }
-            }
-            else
+            } 
+            else if(!foundRotation || this.Configuration.AutoManageBossModAISettings)
             {
-                if (bmEnabled && this.Configuration.AutoManageBossModAISettings)
-                    BossMod_IPCSubscriber.DisablePresets();
-
-                if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
-                {
-                    ReflectionHelper.RotationSolver_Reflection.RotationStop();
-                }
-            }
-        }
-        else if (bmEnabled)
-        {
-            if (on)
-            {
-                BossMod_IPCSubscriber.AddPreset("AutoDuty", Resources.AutoDutyPreset);
-                BossMod_IPCSubscriber.SetPreset("AutoDuty");
-            }
-            else
-            {
-                //set disabled as preset
                 BossMod_IPCSubscriber.DisablePresets();
             }
         }
@@ -1231,7 +1239,8 @@ public sealed class AutoDuty : IDalamudPlugin
             Configuration.PositionalRoleBased = true;
         }
         Chat.ExecuteCommand($"/vbmai on");
-        Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        if(!bmr)
+            Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
 
         Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
         Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
@@ -1446,7 +1455,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.AutoManageBossModAISettings)
         {
             Chat.ExecuteCommand($"/vbmai off");
-            Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+            if(!IPCSubscriber_Common.IsReady("BossModReborn"))
+                Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         }
         SetGeneralSettings(true);
         if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
