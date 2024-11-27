@@ -144,6 +144,9 @@ namespace AutoDuty.Helpers
                 return;
             }
 
+            if (Svc.ClientState.TerritoryType != _repairVendorTerritoryType && ContentHelper.DictionaryContent.ContainsKey(Svc.ClientState.TerritoryType) && Plugin.Stage is Stage.Stopped or Stage.Paused) 
+                Stop();
+
             if (Svc.ClientState.TerritoryType != _repairVendorTerritoryType || _repairVendorGameObject == null || Vector3.Distance(Player.Position, _repairVendorGameObject.Position) > 3f)
             {
                 Svc.Log.Debug("Going to RepairVendor");

@@ -105,7 +105,7 @@ namespace AutoDuty.Helpers
             {
                 bool revivalFound = ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryType].Paths[Plugin.CurrentPath].RevivalFound;
 
-                Svc.Log.Info("Finding Revival Point");
+                Svc.Log.Info("Finding Revival Point. Using Revival Action: " + revivalFound);
                 for (int i = Plugin.Indexer; i >= 0; i--)
                 {
                     if (revivalFound)

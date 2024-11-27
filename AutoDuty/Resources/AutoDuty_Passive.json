@@ -1,0 +1,6 @@
+{
+  "Name": "AutoDuty Passive",
+  "Modules": {
+    "BossMod.Autorotation.MiscAI.StayCloseToTarget": []
+  }
+}

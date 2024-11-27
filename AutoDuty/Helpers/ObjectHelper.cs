@@ -2,7 +2,6 @@
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
-using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -17,6 +16,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Excel.Sheets;
+
     internal static class ObjectHelper
     {
         internal static bool TryGetObjectByDataId(uint dataId, out IGameObject? gameObject) => (gameObject = Svc.Objects.OrderBy(GetDistanceToPlayer).FirstOrDefault(x => x.DataId == dataId)) != null;
@@ -45,42 +46,50 @@ namespace AutoDuty.Helpers
 
         internal static IBattleChara? GetBossObject(int radius = 100) => GetObjectsByRadius(radius)?.OfType<IBattleChara>().FirstOrDefault(b => IsBossFromIcon(b) || BossMod_IPCSubscriber.HasModuleByDataId(b.DataId));
 
-        internal unsafe static float GetDistanceToPlayer(IGameObject gameObject) => GetDistanceToPlayer(gameObject.Position);
+        internal static unsafe float GetDistanceToPlayer(IGameObject gameObject) => GetDistanceToPlayer(gameObject.Position);
 
-        internal unsafe static float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.GameObject->Position);
+        internal static unsafe float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.GameObject->Position);
 
-        internal unsafe static IGameObject? GetPartyMemberFromRole(string role)
+        internal static unsafe bool BelowDistanceToPlayer(Vector3 v3, float maxDistance, float maxHeightDistance) => Vector3.Distance(v3, Player.GameObject->Position) < maxDistance &&
+                                                                                                                     MathF.Abs(v3.Y - Player.GameObject->Position.Y) < maxHeightDistance;
+
+        internal static unsafe IGameObject? GetPartyMemberFromRole(string role)
         {
-            if (Player.Object != null && PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
-                return Player.Object;
-            else if (Svc.Party.PartyId != 0)
-                return Svc.Party.Where(x => PlayerHelper.GetJobRole(x.ClassJob.GameData!).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault()?.GameObject;
-            else
+            if (Player.Object != null && Player.Object.ClassJob.Value.GetJobRole().ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
             {
-                var buddies = UIState.Instance()->Buddy.BattleBuddies.ToArray().Where(x => x.DataId != 0);
-                foreach (var buddy in buddies)
-                {
-                    var gameObject = Svc.Objects.FirstOrDefault(x => x.EntityId == buddy.EntityId);
+                return Player.Object;
+            }
 
-                    if (gameObject == null) continue;
+            if (Svc.Party.PartyId != 0)
+            {
+                return Svc.Party.FirstOrDefault(x => x.ClassJob.Value.GetJobRole().ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))?.GameObject;
+            }
 
-                    var classJob = ((ICharacter)gameObject).ClassJob.GameData;
+            var buddies = UIState.Instance()->Buddy.BattleBuddies.ToArray().Where(x => x.DataId != 0);
+            foreach (var buddy in buddies)
+            {
+                var gameObject = Svc.Objects.FirstOrDefault(x => x.EntityId == buddy.EntityId);
 
-                    if (classJob == null) continue;
+                if (gameObject == null) 
+                    continue;
 
-                    if (PlayerHelper.GetJobRole(classJob).ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
-                        return gameObject;
-                }
+                var classJob = ((ICharacter)gameObject).ClassJob.ValueNullable;
+
+                if (classJob == null) 
+                    continue;
+
+                if (classJob.Value.GetJobRole().ToString().Contains(role, StringComparison.InvariantCultureIgnoreCase))
+                    return gameObject;
             }
             return null;
         }
 
-        internal unsafe static IGameObject? GetTankPartyMember() => GetPartyMemberFromRole("Tank");
+        internal static unsafe IGameObject? GetTankPartyMember() => GetPartyMemberFromRole("Tank");
 
-        internal unsafe static IGameObject? GetHealerPartyMember() => GetPartyMemberFromRole("Healer");
+        internal static unsafe IGameObject? GetHealerPartyMember() => GetPartyMemberFromRole("Healer");
 
         //RotationSolver
-        internal unsafe static float GetBattleDistanceToPlayer(IGameObject gameObject)
+        internal static unsafe float GetBattleDistanceToPlayer(IGameObject gameObject)
         {
             if (gameObject == null) return float.MaxValue;
             var player = Player.Object;
@@ -105,7 +114,7 @@ namespace AutoDuty.Helpers
                 if (face) 
                     Plugin.OverrideCamera.Face(gameObject.Position);
                 var gameObjectPointer = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)gameObject.Address;
-                TargetSystem.Instance()->InteractWithObject(gameObjectPointer, true);
+                TargetSystem.Instance()->InteractWithObject(gameObjectPointer, false);
             }
             catch (Exception ex)
             {
@@ -156,7 +165,7 @@ namespace AutoDuty.Helpers
 
             foreach (var item in Svc.Party)
             {
-                switch (item.ClassJob.GameData?.Role)
+                switch (item.ClassJob.ValueNullable?.Role)
                 {
                     case 1:
                         tank = true;

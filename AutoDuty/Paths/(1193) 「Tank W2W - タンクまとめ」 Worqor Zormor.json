@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -116,7 +116,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -257,7 +257,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -268,7 +268,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E"
     },
     {
-      "tag": 0,
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -107.79,
@@ -294,7 +294,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -331,7 +331,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -446,7 +446,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -561,7 +561,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -94.77,
@@ -613,7 +613,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -160.78,
@@ -626,7 +626,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -741,7 +741,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -791,7 +791,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -802,7 +802,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E"
     },
     {
-      "tag": 0,
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -53.32,
@@ -828,7 +828,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -956,7 +956,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -153.31,
@@ -969,7 +969,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -1097,7 +1097,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -69.5,
@@ -1110,7 +1110,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -1121,7 +1121,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E"
     },
     {
-      "tag": 0,
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": -53.94,
@@ -1147,12 +1147,15 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 160,
     "changelog": [
       {
         "version": 168,
+        "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 172,
         "change": "Converted to JSON Structure with Tags"
       }
     ],

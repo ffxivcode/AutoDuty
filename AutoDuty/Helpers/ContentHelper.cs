@@ -5,13 +5,12 @@ using System.Linq;
 using ECommons.GameFunctions;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina.Data;
-using Lumina.Excel.GeneratedSheets2;
 
 namespace AutoDuty.Helpers
 {
+    using static Data.Classes;
     using Dalamud.Utility;
-    using Lumina.Excel;
-    using static global::AutoDuty.Data.Classes;
+    using Lumina.Excel.Sheets;
 
     internal static class ContentHelper
     {
@@ -74,7 +73,7 @@ namespace AutoDuty.Helpers
 
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
-                if (contentFinderCondition.ContentType.Value == null || contentFinderCondition.TerritoryType.Value?.ExVersion.Value == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 && contentFinderCondition.ContentType.Value.RowId != 30) || contentFinderCondition.Name.RawString.IsNullOrEmpty())
+                if (contentFinderCondition.ContentType.ValueNullable == null || contentFinderCondition.TerritoryType.ValueNullable?.ExVersion.ValueNullable == null || (contentFinderCondition.ContentType.Value.RowId != 2 && contentFinderCondition.ContentType.Value.RowId != 4 && contentFinderCondition.ContentType.Value.RowId != 5 && contentFinderCondition.ContentType.Value.RowId != 30) || contentFinderCondition.Name.ToString().IsNullOrEmpty())
                     continue;
 
                 static string CleanName(string name)
@@ -83,27 +82,27 @@ namespace AutoDuty.Helpers
                     return result;
                 }
 
-                DawnContent?           dawnContent      = listDawnContent.FirstOrDefault(x => x.Content.Value?.RowId == contentFinderCondition.RowId);
+                DawnContent?           dawnContent      = listDawnContent.FirstOrDefault(x => x.Content.ValueNullable?.RowId == contentFinderCondition.RowId);
                 ContentFinderCondition englishCondition = contentFinderConditionsEnglish?.GetRow(contentFinderCondition.RowId) ?? contentFinderCondition;
                 var content = new Content
                               {
-                                  Id = contentFinderCondition.Content.Row,
+                                  Id = contentFinderCondition.Content.RowId,
                                   Name = CleanName(contentFinderCondition.Name.ToDalamudString().TextValue),
                                   EnglishName = CleanName(englishCondition!.Name.ToDalamudString().TextValue),
                                   TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
                                   ContentType = contentFinderCondition.ContentType.Value.RowId,
-                                  ContentMemberType = contentFinderCondition.ContentMemberType.Value?.RowId ?? 0,
+                                  ContentMemberType = contentFinderCondition.ContentMemberType.ValueNullable?.RowId ?? 0,
                                   ContentFinderCondition = contentFinderCondition.RowId,
                                   ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                                   ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
                                   ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
                                   DawnIndex = TryGetDawnIndex(dawnContent?.RowId ?? 0, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
-                                  TrustIndex = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value == contentFinderCondition), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1,
+                                  TrustIndex = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value.RowId == contentFinderCondition.RowId), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1,
                                   VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                                   VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                                   GCArmyContent = ListGCArmyContent.Any(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
                                   GCArmyIndex = ListGCArmyContent.FindIndex(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
-                                  UnlockQuest = dawnContent?.Unknown0 ?? 0
+                                  UnlockQuest = dawnContent?.RowId != default(uint) ? dawnContent?.Unknown0 ?? 0 : 0
                               };
 
                 if (contentFinderCondition.ContentType.Value.RowId == 2)

@@ -25,7 +25,6 @@ namespace AutoDuty.Windows
         private static bool _scrollBottom = false;
         private static string _changelog = string.Empty;
         private static PathAction? _action = null;
-        private static HashSet<uint> _interactables = [];
         private static string _actionText = string.Empty;
         private static string _note = string.Empty;
         private static Vector3 _position = Vector3.Zero;
@@ -41,8 +40,6 @@ namespace AutoDuty.Windows
         private static bool _dragDrop = false;
         private static bool _noArgument = false;
         private static bool _comment = false;
-        private static int _interactableInput = 0;
-        private static int _interactableModify = -1;
         private static Vector4 _argumentTextColor = new(1,1,1,1);
         private static bool _deleteItem = false;
         private static int _deleteItemIndex = -1;
@@ -61,7 +58,6 @@ namespace AutoDuty.Windows
                     DrawSeperator();
                     DrawButtons();
                     DrawSeperator();
-                    DrawInteractablesSet();
                 }
                 DrawBuildList();
             }
@@ -155,7 +151,7 @@ namespace AutoDuty.Windows
                             case "Interactable":
                             case "Target":
                                 IGameObject? targetObject = Player.Object.TargetObject;
-                                IGameObject? gameObject = (targetObject ?? null) ?? Plugin.ClosestObject;
+                                IGameObject? gameObject = (targetObject ?? null) ?? ClosestObject;
                                 _arguments = [gameObject != null ? $"{gameObject.DataId}" : string.Empty];
                                 _note = gameObject != null ? gameObject.Name.ExtractText() : string.Empty;
                                 break;
@@ -194,6 +190,11 @@ namespace AutoDuty.Windows
             {
                 try
                 {
+                    if (Plugin.Actions.Count < 1)
+                    {
+                        Svc.Log.Error($"You must add at least one action to save the path, please add an action and try again");
+                        return;
+                    }
                     Svc.Log.Info($"Saving {Plugin.PathFile}");
 
                     PathFile? pathFile = null;
@@ -219,7 +220,6 @@ namespace AutoDuty.Windows
                     pathFile ??= new();
 
                     pathFile.Actions = [.. Plugin.Actions];
-                    pathFile.Interactables = [.. _interactables];
                     string json = JsonSerializer.Serialize(pathFile, jsonSerializerOptions);
                     File.WriteAllText(Plugin.PathFile, json);
                     Plugin.CurrentPath = 0;
@@ -253,9 +253,7 @@ namespace AutoDuty.Windows
             {
                 if (ImGuiEx.ButtonWrapped(_addActionButton))
                 {
-                    if (_action.Name == "Interactable" && !_addActionButton.Equals("Modify", StringComparison.InvariantCultureIgnoreCase))
-                        ImGui.OpenPopup("InteractableAdd");
-                    else if (_action.Name == "MoveToObject" || _action.Name == "Target")
+                    if (_action.Name is "MoveToObject" or "Target" or "Interactable")
                     {
                         if (uint.TryParse(_arguments[0], out var dataId))
                             AddAction();
@@ -266,26 +264,6 @@ namespace AutoDuty.Windows
                         AddAction();
                 }
             }
-            if (ImGui.BeginPopup("InteractableAdd"))
-            {
-                if (ImGui.Selectable("Add to Path"))
-                {
-                    if (uint.TryParse(_arguments[0], out var dataId))
-                        AddAction();
-                    else
-                        ShowPopup("Error", "Interactable's must be uint's corresponding to the objects DataId", true);
-                    
-                }
-                if (ImGui.Selectable("Add to Special"))
-                {
-                    if (uint.TryParse(_arguments[0], out var dataId))
-                        _interactables.Add(dataId);
-                    else
-                        ShowPopup("Error", "Special interactable's must be uint's corresponding to the objects DataId", true);
-                }
-                ImGui.EndPopup();
-            }
-            DrawPopup(true);
             ImGui.SameLine();
             ImGuiEx.CheckboxWrapped("Dont Move", ref _dontMove);
             ImGui.SameLine();
@@ -345,37 +323,6 @@ namespace AutoDuty.Windows
             }
         }
 
-        private static void DrawInteractablesSet()
-        {
-            ImGui.TextWrapped("Special Interactables List:"); 
-            ImGuiComponents.HelpMarker("AutoDuty will attempt to interact with these objects under the following conditions:\n- The object exists in our ObjectTable\n- We are on or past the Interactable step in our path file for this object\n*Note* this should not be used for static GameObject's this is meant for those objects\nthat spawn in from an event such as killing some monsters");
-            if (!ImGui.BeginListBox("##InteractablesList", new Vector2(ImGui.GetContentRegionAvail().X, _interactables.Count > 0 ? ImGui.GetTextLineHeightWithSpacing() * _interactables.Count: ImGui.GetTextLineHeightWithSpacing() * (_interactables.Count + 1)))) return;
-
-            var removeItem = false;
-            var removeItemValue = 0u;
-
-            foreach (var item in _interactables.Select((Value, Index) => (Value, Index)))
-            {
-                ImGui.Selectable($"{item.Value}");
-                if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
-                {
-                    Svc.Log.Info("Left");
-                    _interactableModify = _interactableInput = (int)item.Value;
-                    ImGui.OpenPopup("InputInteractable");
-                }
-                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                {
-                    removeItem = true;
-                    removeItemValue = item.Value;
-                }
-            }
-            InteractableInputPopup();
-            if (removeItem)
-                _interactables.Remove(removeItemValue);
-
-            ImGui.EndListBox();
-        }
-
         private static void DrawBuildList()
         {
             if (!ImGui.BeginListBox("##BuildList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
@@ -402,7 +349,7 @@ namespace AutoDuty.Windows
                             else
                             {
                                 _comment = item.Value.Name.Equals($"<-- Comment -->", StringComparison.InvariantCultureIgnoreCase);
-                                _noArgument = (ActionsList?.Any(x => x.Item1.Equals($"{item.Value.Name}", StringComparison.InvariantCultureIgnoreCase) && x.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase)) ?? false) || item.Value.Name.Equals("MoveTo", StringComparison.InvariantCultureIgnoreCase);
+                                _noArgument = (ActionsList?.Any(x => x.Item1.Equals($"{item.Value.Name}", StringComparison.InvariantCultureIgnoreCase) && x.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase)) ?? false);// || item.Value.Name.Equals("MoveTo", StringComparison.InvariantCultureIgnoreCase);
                                 _dontMove = item.Value.Position == Vector3.Zero;
                                 _actionText = item.Value.Name;
                                 _note = item.Value.Note;
@@ -455,24 +402,6 @@ namespace AutoDuty.Windows
                 _scrollBottom = false;
             }
             ImGui.EndListBox();
-        }
-
-        private static void InteractableInputPopup()
-        {
-            if (ImGui.BeginPopup("InputInteractable"))
-            {
-                if (ImGui.Button(_interactableModify > -1 ? "Modify" : "Add"))
-                {
-                    if (_interactableModify > -1)
-                        _interactables.Remove((uint)_interactableModify);
-                    _interactables.Add((uint)_interactableInput);
-                    ImGui.CloseCurrentPopup();
-                }
-                ImGui.Text("Data Id:");
-                ImGui.SameLine();
-                ImGui.InputInt("##DataId", ref _interactableInput);
-                ImGui.EndPopup();
-            }
         }
 
         private static void ClearAll()

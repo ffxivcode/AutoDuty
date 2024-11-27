@@ -3,7 +3,6 @@ using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using System.Collections.Generic;
 using System.Numerics;
-using Lumina.Excel.GeneratedSheets;
 using AutoDuty.IPC;
 using ECommons;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -11,6 +10,8 @@ using Dalamud.Game.ClientState.Objects.Types;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Excel.Sheets;
+
     internal static class GotoHelper
     {
         internal static void Invoke(uint territoryType) => Invoke(territoryType, 0);
@@ -136,20 +137,18 @@ namespace AutoDuty.Helpers
                         Stop();
                         return;
                     }
+
+                    if (Svc.ClientState.TerritoryType != MapHelper.GetAetheryteForAethernet(aetheryte.Value)?.Territory.ValueNullable?.RowId)
+                    {
+                        TeleportHelper.TeleportAetheryte(MapHelper.GetAetheryteForAethernet(aetheryte.Value)?.RowId ?? 0, 0);
+                        EzThrottler.Throttle("Goto", 7500, true);
+                    }
                     else
                     {
-                        if (Svc.ClientState.TerritoryType != MapHelper.GetAetheryteForAethernet(aetheryte)?.Territory.Value?.RowId)
-                        {
-                            TeleportHelper.TeleportAetheryte(MapHelper.GetAetheryteForAethernet(aetheryte)?.RowId ?? 0, 0);
-                            EzThrottler.Throttle("Goto", 7500, true);
-                        }
-                        else
-                        {
-                            if (TeleportHelper.MoveToClosestAetheryte())
-                                TeleportHelper.TeleportAethernet(aetheryte.AethernetName.Value?.Name ?? "", _territoryType);
-                        }
-                        return;
+                        if (TeleportHelper.MoveToClosestAetheryte())
+                            TeleportHelper.TeleportAethernet(aetheryte.Value.AethernetName.ValueNullable?.Name.ToString() ?? "", _territoryType);
                     }
+                    return;
                 }
                 TeleportHelper.TeleportAetheryte(aetheryte?.RowId ?? 0, 0);
                 EzThrottler.Throttle("Goto", 7500, true);
@@ -160,11 +159,11 @@ namespace AutoDuty.Helpers
                 Aetheryte? aetheryteLoc = MapHelper.GetClosestAethernet(_territoryType, _moveLocations.Count > 0 ? _moveLocations[0] : Vector3.Zero);
                 Aetheryte? aetheryteMe = MapHelper.GetClosestAethernet(_territoryType, Svc.ClientState.LocalPlayer.Position);
 
-                if (aetheryteLoc != aetheryteMe)
+                if (aetheryteLoc?.RowId != aetheryteMe?.RowId)
                 {
                     if (TeleportHelper.MoveToClosestAetheryte())
                     {
-                        TeleportHelper.TeleportAethernet(aetheryteLoc?.AethernetName.Value?.Name ?? "", _territoryType);
+                        TeleportHelper.TeleportAethernet(aetheryteLoc?.AethernetName.ValueNullable?.Name.ToString() ?? "", _territoryType);
                     }
                     return;
                 }

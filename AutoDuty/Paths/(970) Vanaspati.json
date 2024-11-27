@@ -2,24 +2,11 @@
   "actions": [
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "Wait",
       "position": {
         "X": -205.43,
         "Y": 15.48,
         "Z": 271.22
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
       },
       "arguments": [
         "5000"
@@ -41,19 +28,32 @@
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "Wait",
       "position": {
         "X": -330.68,
         "Y": 41,
         "Z": -146.37
       },
       "arguments": [
-        ""
+        "10000"
       ],
       "note": ""
     },
     {
       "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -330.68,
+        "Y": 41,
+        "Z": -146.37
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -340.88,
@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -309.54,
@@ -105,7 +105,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 307.18,
@@ -144,7 +144,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 291.58,
@@ -170,12 +170,15 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 160,
     "changelog": [
       {
         "version": 168,
+        "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 172,
         "change": "Converted to JSON Structure with Tags"
       }
     ],

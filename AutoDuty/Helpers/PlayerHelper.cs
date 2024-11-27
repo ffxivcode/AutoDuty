@@ -1,7 +1,6 @@
 ﻿using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
-using Lumina.Excel.GeneratedSheets;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System.Linq;
 using Dalamud.Game.ClientState.Conditions;
@@ -11,22 +10,29 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace AutoDuty.Helpers
 {
+    using Lumina.Excel.Sheets;
+
     internal static class PlayerHelper
     {
-        internal unsafe static uint GetGrandCompanyTerritoryType(uint grandCompany) => grandCompany == 1 ? 128u : (grandCompany == 2 ? 132u : 130u);
+        internal static unsafe uint GetGrandCompanyTerritoryType(uint grandCompany) => grandCompany switch
+        {
+            1 => 128u,
+            2 => 132u,
+            _ => 130u
+        };
 
-        internal unsafe static uint GetGrandCompany() => UIState.Instance()->PlayerState.GrandCompany;
+        internal static unsafe uint GetGrandCompany() => UIState.Instance()->PlayerState.GrandCompany;
 
-        internal unsafe static uint GetGrandCompanyRank() => UIState.Instance()->PlayerState.GetGrandCompanyRank();
+        internal static unsafe uint GetGrandCompanyRank() => UIState.Instance()->PlayerState.GetGrandCompanyRank();
 
-        internal static uint GetMaxDesynthLevel() => Svc.Data.Excel.GetSheet<Item>()?.Where(x => x.Desynth > 0).OrderBy(x => x.LevelItem.Row).LastOrDefault()?.LevelItem.Row ?? 0;
+        internal static uint GetMaxDesynthLevel() => Svc.Data.Excel.GetSheet<Item>().Where(x => x.Desynth > 0).OrderBy(x => x.LevelItem.RowId).LastOrDefault().LevelItem.RowId;
 
-        internal unsafe static float GetDesynthLevel(uint classJobId) => PlayerState.Instance()->GetDesynthesisLevel(classJobId);
+        internal static unsafe float GetDesynthLevel(uint classJobId) => PlayerState.Instance()->GetDesynthesisLevel(classJobId);
 
         internal static unsafe short GetCurrentLevelFromSheet(Job? job = null)
         {
             PlayerState* playerState = PlayerState.Instance();
-            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>()?.GetRow((uint) (job ?? (Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown)))?.ExpArrayIndex ?? 0];
+            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>().GetRowOrDefault((uint)(job ?? (Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown)))?.ExpArrayIndex ?? 0];
         }
 
         internal static float JobRange
@@ -34,15 +40,13 @@ namespace AutoDuty.Helpers
             get
             {
                 float radius = 25;
-                if (!Player.Available) return radius;
-                switch (Svc.Data.GetExcelSheet<ClassJob>()?.GetRow(
-                    Player.Object.ClassJob.Id)?.GetJobRole() ?? JobRole.None)
+                if (!Player.Available) 
+                    return radius;
+                radius = (Svc.Data.GetExcelSheet<ClassJob>().GetRowOrDefault(Player.Object.ClassJob.RowId)?.GetJobRole() ?? JobRole.None) switch
                 {
-                    case JobRole.Tank:
-                    case JobRole.Melee:
-                        radius = 2.6f;
-                        break;
-                }
+                    JobRole.Tank or JobRole.Melee => 2.6f,
+                    _ => radius
+                };
                 return radius;
             }
         }
@@ -53,15 +57,13 @@ namespace AutoDuty.Helpers
             {
                 float radius = 10;
                 if (!Player.Available) return radius;
-                switch (Svc.Data.GetExcelSheet<ClassJob>()?.GetRow(
-                    Player.Object.ClassJob.Id)?.GetJobRole() ?? JobRole.None)
+                radius = (Svc.Data.GetExcelSheet<ClassJob>().GetRowOrDefault(Player.Object.ClassJob.RowId)?.GetJobRole() ?? JobRole.None) switch
                 {
-                    case JobRole.Tank:
-                    case JobRole.Melee:
-                        radius = 2.6f;
-                        break;
-                }
-                if (Player.Object.ClassJob.Id == 38)
+                    JobRole.Tank or JobRole.Melee => 2.6f,
+                    _ => radius
+                };
+
+                if (Player.Object.ClassJob.RowId == 38)
                     radius = 3;
                 return radius;
             }
@@ -73,7 +75,7 @@ namespace AutoDuty.Helpers
 
             if (role is JobRole.Ranged or JobRole.None)
             {
-                role = job.ClassJobCategory.Row switch
+                role = job.ClassJobCategory.RowId switch
                 {
                     30 => JobRole.Ranged_Physical,
                     31 => JobRole.Ranged_Magical,
@@ -99,7 +101,7 @@ namespace AutoDuty.Helpers
 
         internal static bool IsReady => IsValid && !IsOccupied;
 
-        internal static bool IsOccupied => GenericHelpers.IsOccupied();
+        internal static bool IsOccupied => GenericHelpers.IsOccupied() || Svc.Condition[ConditionFlag.Jumping61];
 
         internal static bool IsReadyFull => IsValid && !IsOccupiedFull;
 

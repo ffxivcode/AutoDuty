@@ -1,11 +1,16 @@
-﻿using Serilog.Events;
+﻿using ECommons;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using Serilog.Events;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace AutoDuty.Data
 {
+    using Lumina.Excel.Sheets;
+
     public class Classes
     {
         public class LogMessage
@@ -47,7 +52,7 @@ namespace AutoDuty.Data
         {
             public uint Index { get; set; }
             public TrustRole Role { get; set; } // 0 = DPS, 1 = Healer, 2 = Tank, 3 = G'raha All Rounder
-            public Lumina.Excel.GeneratedSheets.ClassJob? Job { get; set; } = null;//closest actual job that applies. G'raha gets Blackmage
+            public ClassJob? Job { get; set; } = null;//closest actual job that applies. G'raha gets Blackmage
             public string Name { get; set; } = string.Empty;
             public TrustMemberName MemberName { get; set; }
 
@@ -55,6 +60,9 @@ namespace AutoDuty.Data
             public uint LevelCap { get; set; }
             public uint LevelInit { get; set; }
             public bool LevelIsSet { get; set; }
+            public uint UnlockQuest { get; init; }
+
+            public bool Available => this.UnlockQuest <= 0 || QuestManager.IsQuestComplete(this.UnlockQuest);
 
             public void ResetLevel()
             {
@@ -76,9 +84,6 @@ namespace AutoDuty.Data
         {
             [JsonPropertyName("actions")]
             public List<PathAction> Actions { get; set; } = [];
-
-            [JsonPropertyName("interactables")]
-            public uint[] Interactables { get; set; } = [];
 
             [JsonPropertyName("meta")]
             public PathFileMetaData Meta { get; set; } = new()
@@ -128,6 +133,90 @@ namespace AutoDuty.Data
 
             [JsonPropertyName("change")]
             public string Change { get; set; } = string.Empty;
+        }
+
+        public class PollResponseClass
+        {
+            [JsonPropertyName("interval")]
+            public int Interval { get; set; } = -1;
+
+            [JsonPropertyName("error")]
+            public string Error { get; set; } = string.Empty;
+
+            [JsonPropertyName("error_description")]
+            public string Error_Description { get; set; } = string.Empty;
+
+            [JsonPropertyName("error_uri")]
+            public string Error_Uri { get; set; } = string.Empty;
+
+            [JsonPropertyName("access_token")]
+            public string Access_Token = string.Empty;
+
+            [JsonPropertyName("expires_in")]
+            public int Expires_In { get; set; } = 0;
+
+            [JsonPropertyName("refresh_token")]
+            public string Refresh_Token = string.Empty;
+
+            [JsonPropertyName("refresh_token_expires_in")]
+            public int Refresh_Token_Expires_In = 0;
+
+            [JsonPropertyName("token_type")]
+            public string Token_Type = string.Empty;
+
+            [JsonPropertyName("scope")]
+            public string Scope = string.Empty;
+        }
+
+        public class UserCode
+        {
+            [JsonPropertyName("device_code")]
+            public string Device_Code { get; set; } = string.Empty;
+
+            [JsonPropertyName("expires_in")]
+            public int Expires_In { get; set; } = 0;
+
+            [JsonPropertyName("user_code")]
+            public string User_Code { get; set; } = string.Empty;
+
+            [JsonPropertyName("verification_uri")]
+            public string Verification_Uri { get; set; } = string.Empty;
+
+            [JsonPropertyName("interval")]
+            public int Interval { get; set; } = 500;
+        }
+
+        public class GitHubIssue
+        {
+            [JsonPropertyName("title")]
+            public string Title { get; set; } = "[Bug] ";
+
+            [JsonPropertyName("body")]
+            public string Body { get; set; } = string.Empty;
+
+            [JsonPropertyName("labels")]
+            public List<string> Labels = ["bug", "unconfirmed"];
+
+            public static string Version => $"{Plugin.Configuration.Version}";
+
+            public static string LogFile => Plugin.DalamudLogEntries.SelectMulti(x => x.Message).ToList().ToCustomString("\n");
+
+            public static string InstalledPlugins => PluginInterface.InstalledPlugins.Select(x => $"{x.InternalName}, Version= {x.Version}").ToList().ToCustomString("\n");
+
+            public static string ConfigFile => ReadConfigFile().ToCustomString("\n");
+
+            private static List<string> ReadConfigFile()
+            {
+                using FileStream fs = new(Plugin.ConfigFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using StreamReader sr = new(fs);
+                string? x;
+                List<string> strings = [];
+                while ((x = sr.ReadLine()) != null)
+                {
+                    strings.Add(x);
+                }
+                return strings;
+            }
         }
     }
 }

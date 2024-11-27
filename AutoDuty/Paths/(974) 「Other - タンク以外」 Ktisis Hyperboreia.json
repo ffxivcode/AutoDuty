@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -116,7 +116,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -192,7 +192,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -281,7 +281,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -331,7 +331,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -355,7 +355,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -405,7 +405,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -494,7 +494,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -544,7 +544,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -105.26,
@@ -557,7 +557,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -646,7 +646,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -722,7 +722,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 5.4,
@@ -735,7 +735,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -759,7 +759,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -809,7 +809,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -859,7 +859,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -922,7 +922,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -985,7 +985,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 38.03,
@@ -998,7 +998,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -1061,7 +1061,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -1124,7 +1124,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -44.94,
@@ -1137,7 +1137,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -1187,7 +1187,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -1211,12 +1211,15 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 160,
     "changelog": [
       {
         "version": 168,
+        "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 172,
         "change": "Converted to JSON Structure with Tags"
       }
     ],

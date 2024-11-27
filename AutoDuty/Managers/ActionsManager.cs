@@ -21,6 +21,8 @@ using static AutoDuty.Helpers.PlayerHelper;
 
 namespace AutoDuty.Managers
 {
+    using System.Xml;
+
     internal class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
     {
         public readonly List<(string, string, string)> ActionsList =
@@ -89,14 +91,14 @@ namespace AutoDuty.Managers
                 actionArray = actions.Split(";");
             var invokeAction = false;
             var operation = new Dictionary<string, Func<object, object, bool>>
-            {
-              { ">", (x, y) => (float)x > (float)y },
-              { ">=", (x, y) => (float)x >= (float)y },
-              { "<", (x, y) => (float)x < (float)y },
-              { "<=", (x, y) => (float)x <= (float)y },
-              { "==", (x, y) => x == y },
-              { "!=", (x, y) => x != y }
-            };
+                            {
+                                { ">", (x,  y) => Convert.ToSingle(x) > Convert.ToSingle(y) },
+                                { ">=", (x, y) => Convert.ToSingle(x) >= Convert.ToSingle(y) },
+                                { "<", (x,  y) => Convert.ToSingle(x) < Convert.ToSingle(y) },
+                                { "<=", (x, y) => Convert.ToSingle(x) <= Convert.ToSingle(y) },
+                                { "==", (x, y) => x                   == y },
+                                { "!=", (x, y) => x                   != y }
+                            };
             var operatorValue = string.Empty;
             var operationResult = false;
            
@@ -115,10 +117,10 @@ namespace AutoDuty.Managers
                 case "ItemCount":
                     if (conditionArray.Length < 4) return;
                     if (!uint.TryParse(conditionArray[1], out var itemId)) return;
-                    if (!uint.TryParse(conditionArray[2], out var quantity)) return;
-                    if (!(operatorValue = conditionArray[2]).EqualsAny(operation.Keys)) return;
+                    if (!uint.TryParse(conditionArray[3], out var quantity)) return;
+                    if (!operation.TryGetValue(operatorValue = conditionArray[2], out var operationFunc)) return;
                     var itemCount = InventoryHelper.ItemCount(itemId);
-                    if (operationResult = operation[operatorValue](itemCount, quantity))
+                    if (operationResult = operationFunc(itemCount, quantity))
                         invokeAction = true;
                     Svc.Log.Info($"Condition: {itemCount}{operatorValue}{quantity} = {operationResult}");
                     break;
@@ -192,6 +194,9 @@ namespace AutoDuty.Managers
             Plugin.Action = $"StopForCombat: {action.Arguments[0]}";
             Plugin.StopForCombat = boolTrueFalse;
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
+            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
+            if(boolTrueFalse)
+                this.Wait(new PathAction {Arguments = ["500"]});
         }
 
         public unsafe void ForceAttack(PathAction action)
@@ -286,6 +291,14 @@ namespace AutoDuty.Managers
                 case "IsReady":
                     _taskManager.Enqueue(() => !IsReady, 500, "WaitFor-NotIsReady-500");
                     _taskManager.Enqueue(() => IsReady, int.MaxValue, "WaitFor-IsReady");
+                    break;
+                case "DistanceTo":
+                    if (waitForWhats.Length < 3)
+                        return;
+                    if (waitForWhats[1].TryGetVector3(out var position)) return;
+                    if (float.TryParse(waitForWhats[2], out var distance)) return;
+
+                    _taskManager.Enqueue(() => Vector3.Distance(Player.Position, position) <= distance, int.MaxValue, $"WaitFor-DistanceTo({position})<={distance}");
                     break;
                 case "ConditionFlag":
                     if (waitForWhats.Length < 3)
@@ -488,7 +501,7 @@ namespace AutoDuty.Managers
             if (((Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
                 return true;
 
-            if (EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional))
+            if (EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional) && !Plugin.Configuration.UsingAlternativeBossPlugin && IPCSubscriber_Common.IsReady("BossModReborn"))
                 Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
 
             return false;
@@ -581,7 +594,7 @@ namespace AutoDuty.Managers
 
         private string? GlobalStringStore;
 
-        private unsafe void PraeUpdate(IFramework _)
+        private unsafe void PraeFrameworkUpdateMount(IFramework _)
         {
             if (!EzThrottler.Throttle("PraeUpdate", 50))
                 return;
@@ -595,7 +608,7 @@ namespace AutoDuty.Managers
                     Svc.Targets.Target = protoArmOrDoor;
             }
 
-            if (Svc.Targets.Target != null && Svc.Targets.Target.IsHostile())
+            if (Svc.Condition[ConditionFlag.Mounted] && Svc.Targets.Target != null && Svc.Targets.Target.IsHostile())
             {
                 var dir = Vector2.Normalize(new Vector2(Svc.Targets.Target.Position.X, Svc.Targets.Target.Position.Z) - new Vector2(Player.Position.X, Player.Position.Z));
                 float rot = (float)Math.Atan2(dir.X, dir.Y);
@@ -606,6 +619,21 @@ namespace AutoDuty.Managers
                 ActionManager.Instance()->UseActionLocation(ActionType.Action, 1128, Player.Object.GameObjectId, &targetPosition);
             }
         }
+
+
+        private static readonly uint[] praeGaiusIds = [9020u, 14453u, 14455u];
+        private void PraeFrameworkUpdateGaius(IFramework _)
+        {
+            if (!EzThrottler.Throttle("PraeUpdate", 50) || !IsReady || Svc.Targets.Target != null && praeGaiusIds.Contains(Svc.Targets.Target.DataId))
+                return;
+
+            List<IGameObject>? objects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc);
+
+            IGameObject? gaius = objects?.FirstOrDefault(x => x.IsTargetable && praeGaiusIds.Contains(x.DataId));
+            if (gaius != null)
+                Svc.Targets.Target = gaius;
+        }
+
 
         public unsafe void DutySpecificCode(PathAction action)
         {
@@ -618,12 +646,15 @@ namespace AutoDuty.Managers
                     {
                         case "1":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
-                            Svc.Framework.Update += PraeUpdate;
-                            Interactable(new PathAction() { Arguments = ["2012819"] });
+                            Plugin.Framework_Update_InDuty += this.PraeFrameworkUpdateMount;
+                            Interactable(new PathAction { Arguments = ["2012819"] });
                             break;
                         case "2":
                             Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
-                            Svc.Framework.Update -= PraeUpdate;
+                            Plugin.Framework_Update_InDuty -= this.PraeFrameworkUpdateMount;
+                            break;
+                        case "3":
+                            Plugin.Framework_Update_InDuty += this.PraeFrameworkUpdateGaius;
                             break;
                     }
                     break;

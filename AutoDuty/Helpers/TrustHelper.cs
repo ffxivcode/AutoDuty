@@ -8,13 +8,14 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Collections.Generic;
-using Lumina.Excel.GeneratedSheets2;
 using Dalamud.Plugin.Services;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using Lumina.Excel.Sheets;
 
 namespace AutoDuty.Helpers
 {
+    using static Data.Classes;
     internal static class TrustHelper
     {
         internal static unsafe uint GetLevelFromTrustWindow(AtkUnitBase* addon)
@@ -42,7 +43,7 @@ namespace AutoDuty.Helpers
 
         private static bool CanTrustRunMembers(Content content)
         {
-            if (content.TrustMembers.Any(tm => !tm.LevelIsSet))
+            if (content.TrustMembers.Any(tm => tm is { LevelIsSet: false, Available: true }))
                 GetLevels(content);
 
             TrustMember?[] members = new TrustMember?[3];
@@ -62,14 +63,33 @@ namespace AutoDuty.Helpers
 
         internal static bool SetLevelingTrustMembers(Content content)
         {
+            Job        playerJob  = Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
+            CombatRole playerRole = playerJob.GetCombatRole();
+
+            if (!Members.Any(tm => tm.Value.Level < tm.Value.LevelCap) && Plugin.Configuration.SelectedTrustMembers.Any(tmn => tmn.HasValue))
+            {
+                bool test = true;
+
+                for (int i = 0; i < 3 && test; i++)
+                {
+                    TrustMember?[] curMembers = Plugin.Configuration.SelectedTrustMembers.Select(tmn => Members[tmn!.Value]).ToArray();
+                    TrustMember    testMember = curMembers[i]!;
+                    curMembers[i] = null;
+                    test &= curMembers.CanSelectMember(testMember, playerRole);
+                }
+
+                if (test)
+                {
+                    Svc.Log.Info("Leveling Trust Members retained from previous selection");
+                    return true;
+                }
+            }
+
             Plugin.Configuration.SelectedTrustMembers = new TrustMemberName?[3];
 
             TrustMember?[] trustMembers = new TrustMember?[3];
 
-            Job        playerJob  = Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
-            CombatRole playerRole = playerJob.GetCombatRole();
-
-            JobRole playerJobRole = Player.Available ? Player.Object.ClassJob.GameData?.GetJobRole() ?? JobRole.None : JobRole.None;
+            JobRole playerJobRole = Player.Available ? Player.Object.ClassJob.ValueNullable?.GetJobRole() ?? JobRole.None : JobRole.None;
 
             Svc.Log.Info("Leveling Trust Members set");
             Svc.Log.Info(content.TrustMembers.Count.ToString());
@@ -80,7 +100,7 @@ namespace AutoDuty.Helpers
             {
                 TrustMember[] membersPossible = [.. content.TrustMembers
                               .OrderBy(tm => tm.Level + (tm.Level < tm.LevelCap ? 0 : 100) +
-                                                                      (playerRole == CombatRole.DPS ? playerJobRole == tm.Job!.GetJobRole() ? 0.5f : 0 : 0))];
+                                                                      (playerRole == CombatRole.DPS ? playerJobRole == tm.Job?.GetJobRole() ? 0.5f : 0 : 0))];
                 foreach (TrustMember member in membersPossible)
                 {
                     Svc.Log.Info("checking: " + member.Name);
@@ -113,6 +133,7 @@ namespace AutoDuty.Helpers
 
         public static bool CanSelectMember(this TrustMember?[] trustMembers, TrustMember member, CombatRole playerRole) =>
             playerRole != CombatRole.NonCombat &&
+            member.Available &&
             member.Role switch
             {
                 TrustRole.DPS => playerRole == CombatRole.DPS && !trustMembers.Where(x => x != null).Any(x => x.Role is TrustRole.DPS) ||
@@ -127,33 +148,34 @@ namespace AutoDuty.Helpers
         internal static void PopulateTrustMembers()
         {
             var dawnSheet = Svc.Data.GetExcelSheet<DawnMemberUIParam>();
-            var jobSheet = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.ClassJob>();
+            var jobSheet = Svc.Data.GetExcelSheet<ClassJob>();
 
             if (dawnSheet == null || jobSheet == null) return;
 
-            void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100) => Members.Add(name, new TrustMember
+            void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100, uint unlockQuest = 0) => Members.Add(name, new TrustMember
                          {
-                             Index      = index,
-                             Name       = dawnSheet.GetRow((uint)name)!.Unknown0.RawString,
-                             Role       = role,
-                             Job        = jobSheet.GetRow((uint)classJob)!,
-                             MemberName = name,
-                             LevelInit  = levelInit,
-                             Level      = levelInit,
-                             LevelCap   = levelCap,
-                             LevelIsSet = levelInit == levelCap
+                             Index       = index,
+                             Name        = dawnSheet.GetRow((uint)name)!.Unknown0.ToString(),
+                             Role        = role,
+                             Job         = jobSheet.GetRow((uint)classJob)!,
+                             MemberName  = name,
+                             LevelInit   = levelInit,
+                             Level       = levelInit,
+                             LevelCap    = levelCap,
+                             LevelIsSet  = levelInit == levelCap,
+                             UnlockQuest = unlockQuest
                          });
 
-            AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer, ClassJobType.Sage);
-            AddMember(TrustMemberName.Alisaie, 1, TrustRole.DPS, ClassJobType.RedMage);
-            AddMember(TrustMemberName.Thancred, 2, TrustRole.Tank, ClassJobType.Gunbreaker);
-            AddMember(TrustMemberName.Urianger, 3, TrustRole.Healer, ClassJobType.Astrologian);
-            AddMember(TrustMemberName.Yshtola, 4, TrustRole.DPS, ClassJobType.Black_Mage);
-            AddMember(TrustMemberName.Ryne, 5, TrustRole.DPS, ClassJobType.Rogue, 71, 80);
-            AddMember(TrustMemberName.Estinien, 5, TrustRole.DPS, ClassJobType.Dragoon, 81);
-            AddMember(TrustMemberName.Graha, 6, TrustRole.AllRounder, ClassJobType.Black_Mage, 81);
-            AddMember(TrustMemberName.Zero, 7, TrustRole.DPS, ClassJobType.Reaper, 90, 90);
-            AddMember(TrustMemberName.Krile, 7, TrustRole.DPS, ClassJobType.Pictomancer, 91);
+            AddMember(TrustMemberName.Alphinaud, 0, TrustRole.Healer,     ClassJobType.Sage);
+            AddMember(TrustMemberName.Alisaie,   1, TrustRole.DPS,        ClassJobType.RedMage);
+            AddMember(TrustMemberName.Thancred,  2, TrustRole.Tank,       ClassJobType.Gunbreaker);
+            AddMember(TrustMemberName.Urianger,  3, TrustRole.Healer,     ClassJobType.Astrologian);
+            AddMember(TrustMemberName.Yshtola,   4, TrustRole.DPS,        ClassJobType.Black_Mage);
+            AddMember(TrustMemberName.Ryne,      5, TrustRole.DPS,        ClassJobType.Rogue,       71, 80);
+            AddMember(TrustMemberName.Estinien,  5, TrustRole.DPS,        ClassJobType.Dragoon,     81);
+            AddMember(TrustMemberName.Graha,     6, TrustRole.AllRounder, ClassJobType.Black_Mage,  81, unlockQuest: 69318);
+            AddMember(TrustMemberName.Zero,      7, TrustRole.DPS,        ClassJobType.Reaper,      90, 90);
+            AddMember(TrustMemberName.Krile,     7, TrustRole.DPS,        ClassJobType.Pictomancer, 91);
         }
 
         public static void ResetTrustIfInvalid()
@@ -208,7 +230,7 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug($"Get Trust Levels: our content was not dawn content, returning");
                 return;
             }
-            if (_getLevelsContent.TrustMembers.TrueForAll(tm => tm.LevelIsSet))
+            if (_getLevelsContent.TrustMembers.TrueForAll(tm => tm.LevelIsSet || !tm.Available))
             {
                 Svc.Log.Debug($"Get Trust Levels: we already have all our trust levels, returning");
                 return;
@@ -220,16 +242,16 @@ namespace AutoDuty.Helpers
                 return;
             }
             Svc.Log.Info($"TrustHelper - Getting trust levels for expansion {_getLevelsContent.ExVersion} from {_getLevelsContent.EnglishName}");
-            Svc.Log.Info("Get Trust Levels: Level not set for: " + string.Join(" | ", _getLevelsContent.TrustMembers.Where(tm => !tm.LevelIsSet).Select(tm => tm.Name)));
+            Svc.Log.Info("Get Trust Levels: Level not set for: " + string.Join(" | ", _getLevelsContent.TrustMembers.Where(tm => tm is { LevelIsSet: false, Available: true }).Select(tm => tm.Name)));
 
             State = ActionState.Running;
             Svc.Framework.Update += GetLevelsUpdate;
             SchedulerHelper.ScheduleAction("CheckTrustLevelTimeout", () => Stop(), 2500);
         }
 
-        private unsafe static void Stop(bool forceHide = false)
+        private static unsafe void Stop(bool forceHide = false)
         {
-            if (forceHide || (_getLevelsContent?.TrustMembers.TrueForAll(tm => tm.LevelIsSet) ?? false))
+            if (forceHide || (_getLevelsContent?.TrustMembers.TrueForAll(tm => tm.LevelIsSet || !tm.Available) ?? false))
                 AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Hide();
             Svc.Framework.Update -= GetLevelsUpdate;
             State = ActionState.None; 
@@ -260,14 +282,14 @@ namespace AutoDuty.Helpers
             else
                 EzThrottler.Throttle("OpenDawn", 5, true);
 
-            if (addonDawn->AtkValues[225].UInt < (_getLevelsContent!.ExVersion - 2))
+            if (addonDawn->AtkValues[241].UInt < (_getLevelsContent!.ExVersion - 2))
             {
                 Svc.Log.Debug($"TrustHelper - You do not have expansion: {_getLevelsContent.ExVersion} unlocked stopping");
                 Stop(true);
                 return;
             }
 
-            if (addonDawn->AtkValues[226].UInt != (_getLevelsContent!.ExVersion - 3))
+            if (addonDawn->AtkValues[242].UInt != (_getLevelsContent!.ExVersion - 3))
             {
                 Svc.Log.Debug($"TrustHelper - Opening Expansion: {_getLevelsContent.ExVersion}");
                 AddonHelper.FireCallBack(addonDawn, true, 20, (_getLevelsContent!.ExVersion - 3));
@@ -281,15 +303,14 @@ namespace AutoDuty.Helpers
             {
                 for (int id = 0; id < _getLevelsContent.TrustMembers.Count; id++)
                 {
-                    int index = id;
-
-                    if (!_getLevelsContent.TrustMembers[index].LevelIsSet)
+                    TrustMember trustMember = _getLevelsContent.TrustMembers[id];
+                    if (trustMember is { LevelIsSet: false, Available: true })
                     {
                         
-                        AddonHelper.FireCallBack(addonDawn, true, 16, index);
-                        var lvl = GetLevelFromTrustWindow(addonDawn);
-                        Svc.Log.Debug($"TrustHelper - Setting {_getLevelsContent.TrustMembers[index].MemberName} level to {lvl}");
-                        _getLevelsContent.TrustMembers[index].SetLevel(lvl);
+                        AddonHelper.FireCallBack(addonDawn, true, 16, id);
+                        uint lvl = GetLevelFromTrustWindow(addonDawn);
+                        Svc.Log.Debug($"TrustHelper - Setting {trustMember.MemberName} level to {lvl}");
+                        trustMember.SetLevel(lvl);
                     }
                 }
                 Stop();

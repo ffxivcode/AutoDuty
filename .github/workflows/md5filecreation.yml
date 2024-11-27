@@ -1,0 +1,71 @@
+name: path-mdf-calc-onanychange
+on:
+  pull_request:
+    types:
+      - closed
+
+env:
+  BASE_BRANCH: master
+
+jobs:
+  workflow:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    name: path-mdf-calc-onanychange
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed files in the paths folder
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v45.0.3
+        with:
+          safe_output: "false"
+          quotepath: "false"
+          files: AutoDuty/Paths/**
+          separator: ","
+
+      - name: Calculate MD5 hashes and create JSON
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        id: calculate-md5
+        run: |
+          mkdir -p AutoDuty/Paths
+          md5sum AutoDuty/Paths/* > md5sums.txt
+          python -c "
+          import json
+          md5_dict = {}
+          with open('md5sums.txt', 'r') as f:
+              for line in f:
+                  hash, filename = line.strip().split('  ')
+                  filename = filename.replace('AutoDuty/Paths/', '')
+                  md5_dict[filename] = hash
+          with open('AutoDuty/Resources/md5s.json', 'w') as f:
+              json.dump(md5_dict, f, indent=4)
+          "
+          cat AutoDuty/Resources/md5s.json
+
+      - name: Commit changes to new branch
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git checkout -b md5 origin/${{ env.BASE_BRANCH }}
+          git add AutoDuty/Resources/md5s.json
+          git commit -m 'Add MD5 hashes for changed files'
+          git push origin md5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create pull request
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: gh pr create -B ${{ env.BASE_BRANCH }} -H md5 --title 'Update Path MD5' --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            
+      - name: Merge pull request
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          PR_NUMBER=$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ffxivcode/AutoDuty/pulls?head=ffxivcode:md5 | jq '.[0].number')
+          gh pr merge $PR_NUMBER --merge --delete-branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
