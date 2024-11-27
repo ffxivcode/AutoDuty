@@ -1,0 +1,458 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 230.11583,
+        "Y": 9.827038,
+        "Z": -23.979305
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 4,
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 138.32365,
+        "Y": -1.6419466,
+        "Z": -6.0795965
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 122.16758,
+        "Y": -3.0464303,
+        "Z": 35.170464
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 124.595665,
+        "Y": -3.7119107,
+        "Z": 66.68335
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 91.701355,
+        "Y": -3.6533675,
+        "Z": 82.36648
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 75.18,
+        "Y": 3.16,
+        "Z": 89.96
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 17.785288,
+        "Y": 0.9252167,
+        "Z": 99.11807
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 30.54,
+        "Y": 0.95,
+        "Z": 129.66
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 36.138577,
+        "Y": 0.9545418,
+        "Z": 127.80088
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 32.06,
+        "Y": 0.95,
+        "Z": 129.77
+      },
+      "arguments": [
+        "2001619"
+      ],
+      "note": "Aetherial Flow"
+    },
+    {
+      "tag": 4,
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2001624"
+      ],
+      "note": "Chain Winch"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 74.644196,
+        "Y": -10.853093,
+        "Z": -108.25956
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2001625"
+      ],
+      "note": "Chain Winch"
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 41.44,
+        "Y": -10.89,
+        "Z": -84.35
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -13.74324,
+        "Y": -1.5165342,
+        "Z": -116.668564
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -5.7234087,
+        "Y": -10.661033,
+        "Z": -187.30362
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2001626"
+      ],
+      "note": "Chain Winch"
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 18.28,
+        "Y": -10.93,
+        "Z": -190.16
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -31.192667,
+        "Y": -11.049809,
+        "Z": -127.65173
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2001627"
+      ],
+      "note": "Chain Winch"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -71.372,
+        "Y": -10.794906,
+        "Z": -107.85388
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2001628"
+      ],
+      "note": "Chain Winch"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -119.09809,
+        "Y": -6.2826014,
+        "Z": -110.3725
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -179.64,
+        "Y": -15.31,
+        "Z": -132.33
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -183.59157,
+        "Y": -15.306585,
+        "Z": -135.03816
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -183.35744,
+        "Y": -15.306585,
+        "Z": -135.50076
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2001647"
+      ],
+      "note": "Aetherial Flow"
+    },
+    {
+      "tag": 4,
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -159.9117,
+        "Y": 9.060096,
+        "Z": -13.877168
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -121.42,
+        "Y": 9.83,
+        "Z": -1.11
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -172.88,
+        "Y": 12.66,
+        "Z": 11.6
+      },
+      "arguments": [
+        "2001623"
+      ],
+      "note": "Ludus Door"
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -269.39,
+        "Y": 17.23,
+        "Z": 19.49
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 175,
+    "changelog": [],
+    "notes": []
+  }
+}
