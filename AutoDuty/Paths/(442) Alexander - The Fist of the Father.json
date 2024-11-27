@@ -1,0 +1,210 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.09,
+        "Y": -15,
+        "Z": 64.02
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 9.79,
+        "Y": -14.95,
+        "Z": 63.75
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 10.06,
+        "Y": -7.16,
+        "Z": 42.59
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.12,
+        "Y": -7.19,
+        "Z": 42.77
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.02,
+        "Y": -7.71,
+        "Z": 23.55
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -6.2,
+        "Y": -6.12,
+        "Z": 13.66
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -7.82,
+        "Y": -4.94,
+        "Z": 6.94
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.1,
+        "Y": -3.73,
+        "Z": 0.12
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 6.11,
+        "Y": -3.19,
+        "Z": -2.96
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 6.19,
+        "Y": 5.49,
+        "Z": -17.66
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.18,
+        "Y": 5.61,
+        "Z": -18.33
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.41,
+        "Y": 8,
+        "Z": -45.34
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 0.16,
+        "Y": 8,
+        "Z": -53.36
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -0.13,
+        "Y": 11.87,
+        "Z": -109
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -0.04,
+        "Y": -23.9,
+        "Z": -161.8
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "interactables": [],
+  "meta": {
+    "createdAt": 156,
+    "changelog": [
+      {
+        "version": 169,
+        "change": "Converted to JSON Structure with Tags"
+      }
+    ],
+    "notes": []
+  }
+}
