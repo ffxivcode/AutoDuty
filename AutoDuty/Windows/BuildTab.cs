@@ -199,7 +199,7 @@ namespace AutoDuty.Windows
 
                     PathFile? pathFile = null;
 
-                    if (DictionaryPaths.TryGetValue(Plugin.CurrentTerritoryContent!.TerritoryType, out ContentPathContainer? container))
+                    if (DictionaryPaths.TryGetValue(Svc.ClientState.TerritoryType, out ContentPathContainer? container))
                     {
                         DutyPath? dutyPath = container.Paths.FirstOrDefault(dp => dp.FilePath == Plugin.PathFile);
                         if (dutyPath != null)
