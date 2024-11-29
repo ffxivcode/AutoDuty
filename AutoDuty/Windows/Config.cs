@@ -476,7 +476,7 @@ public static class ConfigTab
 
             if (ImGui.Checkbox("Auto Manage Rotation Plugin State", ref Configuration.AutoManageRotationPluginState))
                 Configuration.Save();
-            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Rotation Solver or BossMod AutoRotation\n**AutoDuty will automaticaly determine which you are using");
+            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Wrath, Rotation Solver or BossMod AutoRotation\n**AutoDuty will try to use them in that order");
 
             if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref Configuration.autoManageBossModAISettings))
                 Configuration.Save();
@@ -685,7 +685,7 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Using Alternative Rotation Plugin", ref Configuration.UsingAlternativeRotationPlugin))
                     Configuration.Save();
-                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Rotation Solver or BossMod AutoRotation.");
+                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Wrath, Rotation Solver or BossMod AutoRotation.");
 
                 if (ImGui.Checkbox("Using Alternative Movement Plugin", ref Configuration.UsingAlternativeMovementPlugin))
                     Configuration.Save();
