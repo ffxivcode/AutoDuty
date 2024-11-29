@@ -1,0 +1,434 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -114.75661,
+        "Y": 55.735172,
+        "Z": 405.64578
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -81.686104,
+        "Y": 49.948967,
+        "Z": 383.2951
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -52.450977,
+        "Y": 46.1441,
+        "Z": 349.06082
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": -72.35,
+        "Y": 37.03,
+        "Z": 306.76
+      },
+      "arguments": [
+        "5"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -72.35,
+        "Y": 37.03,
+        "Z": 306.76
+      },
+      "arguments": [
+        "3"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -71.33,
+        "Y": 2.7,
+        "Z": 287.06
+      },
+      "arguments": [
+        "Ready"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -71.78,
+        "Y": 2.74,
+        "Z": 245.64
+      },
+      "arguments": [
+        "Ready"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": -71.22,
+        "Y": 3,
+        "Z": 213.84
+      },
+      "arguments": [
+        "Ready"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -70.671646,
+        "Y": 1.2856507,
+        "Z": 185.19055
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -70.5,
+        "Y": -3,
+        "Z": 147.14
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -71.43,
+        "Y": -3,
+        "Z": 116.41
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -70.05259,
+        "Y": -5,
+        "Z": 21.398354
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -31.29067,
+        "Y": -8.548758,
+        "Z": 18.539719
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 9.025879,
+        "Y": -12.1499195,
+        "Z": 10.587378
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 34.11,
+        "Y": -16.5,
+        "Z": 52.3
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 47.48,
+        "Y": -16.53,
+        "Z": 34.28
+      },
+      "arguments": [
+        "Ready"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 97.70991,
+        "Y": -22.653568,
+        "Z": 29.225046
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 96.2301,
+        "Y": -24.96964,
+        "Z": 11.795042
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 63.842278,
+        "Y": -27.356482,
+        "Z": -6.970578
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 45.75,
+        "Y": -25.5,
+        "Z": -45.02
+      },
+      "arguments": [
+        "Ready"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 31.18,
+        "Y": -25.5,
+        "Z": -63.33
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 55.731586,
+        "Y": -25.5,
+        "Z": -61.65506
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 58.8,
+        "Y": -26,
+        "Z": -108.58
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 58.9,
+        "Y": -26,
+        "Z": -136.73
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 59.468548,
+        "Y": -27.52916,
+        "Z": -156.11606
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 59.47,
+        "Y": -27.53,
+        "Z": -156.12
+      },
+      "arguments": [
+        "3"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 42.653843,
+        "Y": -96.26793,
+        "Z": -219.36272
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 65.8,
+        "Y": -97.07,
+        "Z": -234.19
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 87.52709,
+        "Y": -96.43495,
+        "Z": -240.44427
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 62.65,
+        "Y": -96.82,
+        "Z": -320.63
+      },
+      "arguments": [
+        "Ready"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 69.62,
+        "Y": -96.89,
+        "Z": -332.54
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 62.283955,
+        "Y": -96.87135,
+        "Z": -325.90903
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 61.29,
+        "Y": -92.98,
+        "Z": -364.62
+      },
+      "arguments": [
+        "Ready"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 62.02,
+        "Y": -88,
+        "Z": -457.53
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 62.23,
+        "Y": -88,
+        "Z": -483.43
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 172,
+    "changelog": [],
+    "notes": []
+  }
+}
