@@ -330,72 +330,94 @@ namespace AutoDuty.Windows
             {
                 if (Plugin.InDungeon)
                 {
+                    int? dragIndex = null;
+                    int? dragNext  = null;
+
+
                     foreach (var item in Plugin.Actions.Select((Value, Index) => (Value, Index)))
                     {
-                        var v4 = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
+                        var                           v4   = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
 
                         var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Note : $"{item.Value.ToCustomString()}";
 
                         ImGui.PushStyleColor(ImGuiCol.Text, v4);
                         if (ImGui.Selectable($"{item.Index}: {text}###Text{item.Index}", item.Index == _buildListSelected))
                         {
-                            /*if (_dragDrop)
-                            {
-                                _dragDrop = false;
-                                return;
-                            }*/
+                            Svc.Log.Info("0");
                             if (_buildListSelected == item.Index)
+                            {
+                                Svc.Log.Info("0.1");
                                 ClearAll();
+                            }
                             else
                             {
+                                Svc.Log.Info("0.2");
                                 _comment = item.Value.Name.Equals($"<-- Comment -->", StringComparison.InvariantCultureIgnoreCase);
-                                _noArgument = (ActionsList?.Any(x => x.Item1.Equals($"{item.Value.Name}", StringComparison.InvariantCultureIgnoreCase) && x.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase)) ?? false);// || item.Value.Name.Equals("MoveTo", StringComparison.InvariantCultureIgnoreCase);
-                                _dontMove = item.Value.Position == Vector3.Zero;
-                                _actionText = item.Value.Name;
-                                _note = item.Value.Note;
-                                _arguments = item.Value.Arguments;
-                                _argumentsString = item.Value.Arguments.ToCustomString();
-                                _position = item.Value.Position;
-                                _positionText = _position.ToCustomString();
+                                _noArgument = (ActionsList?.Any(x => x.Item1.Equals($"{item.Value.Name}", StringComparison.InvariantCultureIgnoreCase) &&
+                                                                     x.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase)) ??
+                                               false); // || item.Value.Name.Equals("MoveTo", StringComparison.InvariantCultureIgnoreCase);
+                                _dontMove          = item.Value.Position == Vector3.Zero;
+                                _actionText        = item.Value.Name;
+                                _note              = item.Value.Note;
+                                _arguments         = item.Value.Arguments;
+                                _argumentsString   = item.Value.Arguments.ToCustomString();
+                                _position          = item.Value.Position;
+                                _positionText      = _position.ToCustomString();
                                 _buildListSelected = item.Index;
-                                _showAddActionUI = true;
-                                _dropdownSelected = ("", "", "");
-                                _addActionButton = "Modify";
-                                _action = item.Value;
-                                _actionTag = item.Value.Tag;
+                                _showAddActionUI   = true;
+                                _dropdownSelected  = ("", "", "");
+                                _addActionButton   = "Modify";
+                                _action            = item.Value;
+                                _actionTag         = item.Value.Tag;
                             }
                         }
+
                         ImGui.PopStyleColor();
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                         {
-                            _deleteItem = true;
+                            _deleteItem      = true;
                             _deleteItemIndex = item.Index;
                         }
-                        /*if (ImGui.IsItemActive() && !ImGui.IsItemHovered() && !ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+
+                        if (ImGui.IsItemActive() && !ImGui.IsItemHovered() && !_dragDrop) 
+                            _buildListSelected = item.Index;
+
+                        if (_buildListSelected == item.Index && ImGui.IsMouseDown(ImGuiMouseButton.Left))
                         {
-                            int n_next = item.Index + (ImGui.GetMouseDragDelta(0).Y < 0f ? -1 : 1);
-                            if (n_next >= 0 && n_next < Plugin.Actions.Count)
+                            float mouseYDelta = ImGui.GetMouseDragDelta(0).Y;
+
+                            if (MathF.Abs(mouseYDelta) > ImGui.GetTextLineHeight())
                             {
-                                Plugin.Actions[item.Index] = Plugin.Actions[n_next];
-                                Plugin.Actions[n_next] = item.Value;
-                                _buildListSelected = -1;
-                                ImGui.ResetMouseDragDelta();
                                 _dragDrop = true;
-                                ClearAll();
+                                dragIndex = item.Index;
+                                dragNext  = item.Index + (mouseYDelta < 0f ? -1 : 1);
                             }
-                        }*/
+                        }
                     }
+
+                    if (dragIndex.HasValue && dragNext is >= 0 && dragNext < Plugin.Actions.Count)
+                    {
+                        (Plugin.Actions[dragNext.Value], Plugin.Actions[dragIndex.Value]) = (Plugin.Actions[dragIndex.Value], Plugin.Actions[dragNext.Value]);
+                        _buildListSelected                                                = dragNext.Value;
+                        ImGui.ResetMouseDragDelta();
+                    }
+                    else if(!ImGui.IsMouseDown(ImGuiMouseButton.Left))
+                    {
+                        _dragDrop          = false;
+                        _buildListSelected = -1;
+                    }
+
                     if (_deleteItem)
                     {
                         Plugin.Actions.RemoveAt(_deleteItemIndex);
                         _deleteItemIndex = -1;
-                        _deleteItem = false;
+                        _deleteItem      = false;
                     }
                 }
                 else
                     ImGuiEx.TextWrapped(new Vector4(0, 1, 0, 1), "You must enter a dungeon to Build a Path");
             }
-            catch (Exception) { }
+            catch (Exception ex) { Svc.Log.Error(ex.ToString()); }
             if (_scrollBottom)
             {
                 ImGui.SetScrollHereY(1.0f);
