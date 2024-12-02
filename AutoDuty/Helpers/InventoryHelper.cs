@@ -8,6 +8,7 @@ using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
 {
+    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
     using Lumina.Excel.Sheets;
 
     internal unsafe static class InventoryHelper
@@ -62,38 +63,29 @@ namespace AutoDuty.Helpers
 
         internal static Item? GetExcelItem(uint itemId) => Svc.Data.GetExcelSheet<Item>()?.GetRowOrDefault(itemId);
 
-        internal static EquippedSlotIndex GetRingSlot()
+        internal static RaptureGearsetModule.GearsetItemIndex GetEquippedSlot(Item itemData)
         {
-            InventoryContainer* equipped = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
-
-            uint ring1SlotiLvl = GetExcelItem(equipped->Items[(int)EquippedSlotIndex.Ring1].ItemId)?.LevelItem.ValueNullable?.RowId ?? 0u;
-            uint ring2SlotiLvl = GetExcelItem(equipped->Items[(int)EquippedSlotIndex.Ring2].ItemId)?.LevelItem.ValueNullable?.RowId ?? 0u;
-            return ring1SlotiLvl < ring2SlotiLvl ? EquippedSlotIndex.Ring1 : EquippedSlotIndex.Ring2;
-        }
-
-        internal static EquippedSlotIndex GetEquippedSlot(Item itemData)
-        {
-            EquippedSlotIndex targetSlot = itemData!.EquipSlotCategory.Value switch
+            RaptureGearsetModule.GearsetItemIndex targetSlot = itemData!.EquipSlotCategory.Value switch
             {
-                { MainHand: > 0 } => EquippedSlotIndex.MainHand,
-                { OffHand: > 0 } => EquippedSlotIndex.Offhand,
-                { Head: > 0 } => EquippedSlotIndex.Helm,
-                { Body: > 0 } => EquippedSlotIndex.Body,
-                { Gloves: > 0 } => EquippedSlotIndex.Hands,
-                { Legs: > 0 } => EquippedSlotIndex.Legs,
-                { Feet: > 0 } => EquippedSlotIndex.Feet,
-                { Ears: > 0 } => EquippedSlotIndex.Earring,
-                { Neck: > 0 } => EquippedSlotIndex.Neck,
-                { Wrists: > 0 } => EquippedSlotIndex.Wrist,
-                { FingerL: > 0 } => EquippedSlotIndex.Ring1,
-                { FingerR: > 0 } => EquippedSlotIndex.Ring1,
+                { MainHand: > 0 } => RaptureGearsetModule.GearsetItemIndex.MainHand,
+                { OffHand: > 0 } => RaptureGearsetModule.GearsetItemIndex.OffHand,
+                { Head: > 0 } => RaptureGearsetModule.GearsetItemIndex.Head,
+                { Body: > 0 } => RaptureGearsetModule.GearsetItemIndex.Body,
+                { Gloves: > 0 } => RaptureGearsetModule.GearsetItemIndex.Hands,
+                { Legs: > 0 } => RaptureGearsetModule.GearsetItemIndex.Legs,
+                { Feet: > 0 } => RaptureGearsetModule.GearsetItemIndex.Feet,
+                { Ears: > 0 } => RaptureGearsetModule.GearsetItemIndex.Ears,
+                { Neck: > 0 } => RaptureGearsetModule.GearsetItemIndex.Neck,
+                { Wrists: > 0 } => RaptureGearsetModule.GearsetItemIndex.Wrists,
+                { FingerL: > 0 } => RaptureGearsetModule.GearsetItemIndex.RingLeft,
+                { FingerR: > 0 } => RaptureGearsetModule.GearsetItemIndex.RingRight,
                 _ => throw new ArgumentOutOfRangeException("the heck is " + itemData.RowId)
             };
 
             return targetSlot;
         }
 
-        internal static void EquipGear(Item item, InventoryType type, int slotIndex, EquippedSlotIndex targetSlot) => InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot, 1);
+        internal static void EquipGear(Item item, InventoryType type, int slotIndex, RaptureGearsetModule.GearsetItemIndex targetSlot) => InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot, 1);
 
         internal static ushort CurrentItemLevel => *(ushort*)((nint)(AgentStatus.Instance()) + 48);
 
