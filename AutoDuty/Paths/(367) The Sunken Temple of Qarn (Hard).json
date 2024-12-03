@@ -22,9 +22,9 @@
         "Z": 0
       },
       "arguments": [
-        "Sun Sphere"
+        "2004380"
       ],
-      "note": ""
+      "note": "Sun Sphere"
     },
     {
       "tag": 0,
@@ -61,9 +61,9 @@
         "Z": 0
       },
       "arguments": [
-        "Locked Door"
+        "2004382"
       ],
-      "note": ""
+      "note": "Locked Door"
     },
     {
       "tag": 0,
@@ -178,9 +178,9 @@
         "Z": 0
       },
       "arguments": [
-        "Moon Sphere"
+        "2004387"
       ],
-      "note": ""
+      "note": "Moon Sphere"
     },
     {
       "tag": 0,
@@ -204,9 +204,9 @@
         "Z": 0
       },
       "arguments": [
-        "Moon Sphere"
+        "2004387"
       ],
-      "note": ""
+      "note": "Moon Sphere"
     },
     {
       "tag": 0,
@@ -230,9 +230,9 @@
         "Z": 0
       },
       "arguments": [
-        "Locked Door"
+        "2004388"
       ],
-      "note": ""
+      "note": "Locked Door"
     },
     {
       "tag": 0,
@@ -334,9 +334,9 @@
         "Z": 0
       },
       "arguments": [
-        "Star Sphere"
+        "2004390"
       ],
-      "note": ""
+      "note": "Star Sphere"
     },
     {
       "tag": 0,
@@ -412,9 +412,9 @@
         "Z": 0
       },
       "arguments": [
-        "Magicked Pedestal"
+        "2004398"
       ],
-      "note": ""
+      "note": "Magicked Pedestal"
     },
     {
       "tag": 0,
@@ -438,9 +438,9 @@
         "Z": 0
       },
       "arguments": [
-        "Magicked Pedestal"
+        "2004400"
       ],
-      "note": ""
+      "note": "Magicked Pedestal"
     },
     {
       "tag": 0,
@@ -464,9 +464,9 @@
         "Z": 0
       },
       "arguments": [
-        "Magicked Pedestal"
+        "2004396"
       ],
-      "note": ""
+      "note": "Magicked Pedestal"
     },
     {
       "tag": 0,
@@ -534,7 +534,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -549,6 +548,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 179,
+        "change": "Updated ItemIds"
       }
     ],
     "notes": []
