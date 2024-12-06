@@ -44,7 +44,7 @@
         "Z": 44.14
       },
       "arguments": [
-        "ture"
+        "true"
       ],
       "note": ""
     },
@@ -89,13 +89,24 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": -0.08,
+        "X": -12.92,
         "Y": 3,
-        "Z": -82.03
+        "Z": -71.97
       },
       "arguments": [
         ""
       ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -0.0753649,
+        "Y": 2.1095777,
+        "Z": -41.37993
+      },
+      "arguments": [],
       "note": ""
     },
     {
@@ -113,6 +124,30 @@
     },
     {
       "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -15.511482,
+        "Y": -349.94394,
+        "Z": -11.174804
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -22.24,
@@ -121,6 +156,30 @@
       },
       "arguments": [
         "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -70.681595,
+        "Y": -359.93765,
+        "Z": -71.650345
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -64.12,
+        "Y": -359.94,
+        "Z": -74.76
+      },
+      "arguments": [
+        ""
       ],
       "note": ""
     },
@@ -162,6 +221,19 @@
       "note": ""
     },
     {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 7.77,
+        "Y": -360.39,
+        "Z": -104.85
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
       "tag": 0,
       "name": "MoveTo",
       "position": {
@@ -189,9 +261,9 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": 83.4,
+        "X": 94.05,
         "Y": -358.65,
-        "Z": -82.13
+        "Z": -91.47
       },
       "arguments": [
         ""
@@ -219,6 +291,19 @@
       },
       "arguments": [
         "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 185.73,
+        "Y": -346.04,
+        "Z": -215.15
+      },
+      "arguments": [
+        ""
       ],
       "note": ""
     },
@@ -285,11 +370,46 @@
     },
     {
       "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 300.58124,
+        "Y": -355,
+        "Z": -256.19977
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 291.43,
+        "Y": -346.04,
+        "Z": -281.34
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 295.7569,
+        "Y": -346.0001,
+        "Z": -283.60883
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "Boss",
       "position": {
-        "X": 350.2,
+        "X": 360.89,
         "Y": -345.52,
-        "Z": -348.15
+        "Z": -359.6
       },
       "arguments": [
         ""
@@ -302,7 +422,7 @@
     "changelog": [
       {
         "version": 178,
-        "change": ""
+        "change": "Added Treasure coffer steps, moved boss steps closer and added safety steps"
       }
     ],
     "notes": []
