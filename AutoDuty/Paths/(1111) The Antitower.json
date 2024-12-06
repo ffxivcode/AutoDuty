@@ -314,6 +314,19 @@
     },
     {
       "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 231.84,
+        "Y": -9.45,
+        "Z": -181.72
+      },
+      "arguments": [
+        ""
+      ],
+      "note": "Small Calca and Brina dolls"
+    },
+    {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 220.82,
@@ -323,7 +336,7 @@
       "arguments": [
         ""
       ],
-      "note": ""
+      "note": "Wait for phase change and fight big Calcabrina doll"
     }
   ],
   "interactables": [],
