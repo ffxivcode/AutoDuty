@@ -39,6 +39,7 @@ using AutoDuty.Updater;
 
 namespace AutoDuty;
 
+using Data;
 using ECommons.Reflection;
 using Lumina.Excel.Sheets;
 using static Data.Classes;
@@ -112,6 +113,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 case Stage.Condition:
                     Action = $"ConditionChange";
                     SchedulerHelper.ScheduleAction("ConditionChangeStageReadingPath", () => _stage = Stage.Reading_Path, () => !Svc.Condition[ConditionFlag.BetweenAreas] && !Svc.Condition[ConditionFlag.BetweenAreas51] && !Svc.Condition[ConditionFlag.Jumping61]);
+                    break;
+                case Stage.Waiting_For_Combat:
+                    BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
                     break;
             }
             _stage = value;
@@ -1021,12 +1025,12 @@ public sealed class AutoDuty : IDalamudPlugin
                     if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_IsRunning())
                         VNavmesh_IPCSubscriber.Path_Stop();
 
-                    if (enemyCount > 2 && floatMDT != Configuration.MaxDistanceToTargetAoEFloat)
+                    if (enemyCount > 2 && Math.Abs(floatMDT - this.Configuration.MaxDistanceToTargetAoEFloat) > 0.01f)
                     {
                         Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetAoEFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
                         BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoEFloat}"], false);
                     }
-                    else if (enemyCount < 3 && floatMDT != Configuration.MaxDistanceToTargetFloat)
+                    else if (enemyCount < 3 && Math.Abs(floatMDT - this.Configuration.MaxDistanceToTargetFloat) > 0.01f)
                     {
                         Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
                         BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
@@ -1047,7 +1051,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 var gotMDT = float.TryParse(mdt, out float floatMDT);
 
-                if (gotMDT && floatMDT != Configuration.MaxDistanceToTargetFloat)
+                if (gotMDT && Math.Abs(floatMDT - this.Configuration.MaxDistanceToTargetFloat) > 0.01f)
                 {
                     Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM  MaxDistanceToTarget={floatMDT}");
                     BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
@@ -1203,6 +1207,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (on)
             {
+                BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
                 if (!foundRotation)
                 {
                     BossMod_IPCSubscriber.AddPreset("AutoDuty", Resources.AutoDutyPreset);
@@ -1301,6 +1306,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (PathAction.Name.Equals("Boss"))
             {
+
                 if (Configuration.DutyModeEnum == DutyMode.Regular && Svc.Party.PartyId > 0)
                 {
                     Message message = new()
@@ -1399,8 +1405,13 @@ public sealed class AutoDuty : IDalamudPlugin
         if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType != 0 && InDungeon)
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
-        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (PathAction?.Name == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
-            ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
+        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (PathAction?.Name == "Boss" && Stage == Stage.Action)) &&
+            (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)
+                                                   ?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        {
+            BossMod_IPCSubscriber.SetRange(30f);
+            ObjectHelper.InteractWithObject(this.treasureCofferGameObject, false);
+        }
 
         if (Indexer >= Actions.Count && Actions.Count > 0 && States.HasFlag(PluginState.Navigating))
             DoneNavigating();
@@ -1751,7 +1762,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 try { Svc.Log.Info($"VfxScale: {gObj.VfxScale}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"HitboxRadius: {gObj.HitboxRadius}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"DrawOffset: {gObj.DrawOffset}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
-                try { Svc.Log.Info($"EventId: {gObj.EventId}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"EventId: {gObj.EventId.Id}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"FateId: {gObj.FateId}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"NamePlateIconId: {gObj.NamePlateIconId}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"RenderFlags: {gObj.RenderFlags}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
