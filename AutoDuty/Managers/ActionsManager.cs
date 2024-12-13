@@ -70,7 +70,7 @@ namespace AutoDuty.Managers
                 Svc.Log.Error(ex.ToString());
             }
         }
-        
+
         public void Follow(PathAction action) => FollowHelper.SetFollow(GetObjectByName(action.Arguments[0]));
 
         public void SetBMSettings(PathAction action) => Plugin.SetBMSettings(bool.TryParse(action.Arguments[0], out bool defaultsettings) && defaultsettings);
@@ -101,7 +101,7 @@ namespace AutoDuty.Managers
                             };
             var operatorValue = string.Empty;
             var operationResult = false;
-           
+
             switch (conditionArray[0])
             {
                 case "GetDistanceToPlayer":
@@ -406,7 +406,7 @@ namespace AutoDuty.Managers
             if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid() || !IsValid)
                 return true;
 
-            if (EzThrottler.Throttle("Interactable", 250))
+            if (EzThrottler.Throttle("Interactable", 1000))
             {
                 if (!TryGetObjectByDataId(gameObject?.DataId ?? 0, out gameObject)) return true;
 
@@ -474,7 +474,7 @@ namespace AutoDuty.Managers
                 dataIds.Add(TryGetObjectIdRegex(action.Arguments[0], out objectDataId) ? (uint.TryParse(objectDataId, out var dataId) ? dataId : 0) : 0);
 
             if (dataIds.All(x => x.Equals("0"))) return;
-            
+
             IGameObject? gameObject = null;
             Plugin.Action = $"Interactable";
             _taskManager.Enqueue(() => Player.Character->InCombat || (gameObject = Svc.Objects.Where(x => x.DataId.EqualsAny(dataIds) && x.IsTargetable).OrderBy(GetDistanceToPlayer).FirstOrDefault()) != null, "Interactable-GetGameObjectUnlessInCombat");
@@ -550,7 +550,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => BossCheck(), int.MaxValue, "Boss-BossCheck");
             _taskManager.Enqueue(() => { Plugin.StopForCombat = true; }, "Boss-SetStopForCombatTrue");
             _taskManager.Enqueue(() => { Plugin.BossObject = null; }, "Boss-ClearBossObject");
-            
+
             if (Plugin.Configuration.LootTreasure)
             {
                 _taskManager.DelayNext("Boss-TreasureDelay", 1000);
