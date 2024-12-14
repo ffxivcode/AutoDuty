@@ -39,6 +39,7 @@ using AutoDuty.Updater;
 
 namespace AutoDuty;
 
+using System.Linq.Expressions;
 using Data;
 using ECommons.Reflection;
 using Lumina.Excel.Sheets;
@@ -694,21 +695,25 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
+
         SetGeneralSettings(false);
 
         if (Configuration.EnableTerminationActions)
         {
+            TaskManager.Enqueue(() => PlayerHelper.IsReadyFull);
             TaskManager.Enqueue(() => Svc.Log.Debug($"TerminationActions are Enabled"));
             if (Configuration.ExecuteCommandsTermination)
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"ExecutingCommandsTermination, executing {Configuration.CustomCommandsTermination.Count} commands"));
                 Configuration.CustomCommandsTermination.Each(x => Chat.ExecuteCommand(x));
             }
+
             if (Configuration.PlayEndSound)
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Playing End Sound"));
                 SoundHelper.StartSound(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundEnum);
             }
+
             if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Killing PC"));
@@ -733,6 +738,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 {
                     //hell if I know
                 }
+
                 Chat.ExecuteCommand($"/xlkill");
             }
             else if (Configuration.TerminationMethodEnum == TerminationMode.Kill_Client)
@@ -759,23 +765,19 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.DelayNext(2000);
                 TaskManager.Enqueue(() => Chat.ExecuteCommand($"/logout"));
                 TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
-                TaskManager.Enqueue(() => States &= ~PluginState.Looping);
-                TaskManager.Enqueue(() => CurrentLoop = 0);
-                TaskManager.Enqueue(() => Stage = Stage.Stopped);
             }
             else if (Configuration.TerminationMethodEnum == TerminationMode.Start_AR_Multi_Mode)
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Starting AR Multi Mode"));
-                TaskManager.Enqueue(() => Chat.ExecuteCommand($"/ays multi"));
-                TaskManager.Enqueue(() => States &= ~PluginState.Looping);
-                TaskManager.Enqueue(() => CurrentLoop = 0);
-                TaskManager.Enqueue(() => Stage = Stage.Stopped);
+                TaskManager.Enqueue(() => Chat.ExecuteCommand($"/ays multi e"));
             }
         }
+
         Svc.Log.Debug($"Removing Looping, Setting CurrentLoop to 0, and Setting Stage to Stopped");
-        States &= ~PluginState.Looping;
-        CurrentLoop = 0;
-        SchedulerHelper.ScheduleAction("SetStageStopped", () => Stage = Stage.Stopped, 1);
+
+        States      &= ~PluginState.Looping;
+        CurrentLoop =  0;
+        TaskManager.Enqueue(() => SchedulerHelper.ScheduleAction("SetStageStopped", () => Stage = Stage.Stopped, 1));
     }
 
     private void AutoEquipRecommendedGear()
