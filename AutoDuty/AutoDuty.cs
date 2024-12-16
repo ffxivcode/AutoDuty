@@ -41,6 +41,7 @@ namespace AutoDuty;
 
 using Data;
 using ECommons.Reflection;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using Lumina.Excel.Sheets;
 using static Data.Classes;
 using ReflectionHelper = Helpers.ReflectionHelper;
@@ -1184,8 +1185,19 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (Wrath_IPCSubscriber.IsEnabled)
         {
-            Chat.ExecuteCommand($"/wrath auto {(on ? "on" : "off")}");
-            foundRotation = true;
+            bool wrathRotation = true;
+            if (on)
+                if (!Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady())
+                    if (this.Configuration.Wrath_AutoSetupJobs)
+                        Wrath_IPCSubscriber.SetJobAutoReady();
+                    else
+                        wrathRotation = false;
+
+            if (!on || wrathRotation)
+            {
+                Wrath_IPCSubscriber.SetAutoMode(on);
+                foundRotation = true;
+            }
         }
         
         if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
@@ -1511,6 +1523,8 @@ public sealed class AutoDuty : IDalamudPlugin
             AutoEquipHelper.Stop();
         if (DeathHelper.DeathState == PlayerLifeState.Revived)
             DeathHelper.Stop();
+         
+        Wrath_IPCSubscriber.Release();
         Action = "";
     }
 

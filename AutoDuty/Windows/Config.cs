@@ -313,6 +313,13 @@ public class Configuration : IPluginConfiguration
     internal bool       positionalAvarice = true;
     public   Positional PositionalEnum    = Positional.Any;
 
+    #region Wrath
+
+    public bool Wrath_AutoSetupJobs { get; set; } = true;
+
+    #endregion
+
+
     public void Save()
     {
         PluginInterface.SavePluginConfig(this);
@@ -347,11 +354,12 @@ public static class ConfigTab
 
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
-    private static bool overlayHeaderSelected = false;
-    private static bool dutyConfigHeaderSelected = false;
+    private static bool overlayHeaderSelected     = false;
+    private static bool dutyConfigHeaderSelected  = false;
     private static bool bmaiSettingHeaderSelected = false;
-    private static bool advModeHeaderSelected = false;
-    private static bool preLoopHeaderSelected = false;
+    private static bool wrathSettingHeaderSelected = false;
+    private static bool advModeHeaderSelected     = false;
+    private static bool preLoopHeaderSelected     = false;
     private static bool betweenLoopHeaderSelected = false;
     private static bool terminationHeaderSelected = false;
 
@@ -478,6 +486,36 @@ public static class ConfigTab
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Wrath, Rotation Solver or BossMod AutoRotation\n**AutoDuty will try to use them in that order");
 
+            if (Configuration.AutoManageRotationPluginState)
+            {
+                if (Wrath_IPCSubscriber.IsEnabled)
+                {
+                    ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+                    var wrathSettingHeader = ImGui.Selectable("> Wrath Config Options <", wrathSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+                    ImGui.PopStyleVar();
+                    if (ImGui.IsItemHovered())
+                        ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                    if (wrathSettingHeader)
+                        wrathSettingHeaderSelected = !wrathSettingHeaderSelected;
+
+                    if (wrathSettingHeaderSelected)
+                    {
+                        ImGui.Indent();
+
+                        bool wrath_AutoSetupJobs = Configuration.Wrath_AutoSetupJobs;
+                        if (ImGui.Checkbox("Auto setup jobs for autorotation", ref wrath_AutoSetupJobs))
+                        {
+                            Configuration.Wrath_AutoSetupJobs = wrath_AutoSetupJobs;
+                            Configuration.Save();
+                        }
+                        ImGuiComponents.HelpMarker("If this is not enabled and a job is not setup in wrath, AD will instead use RSR or bm AutoRotation");
+
+                        ImGui.Unindent();
+                        ImGui.Separator();
+                    }
+                }
+            }
+
             if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref Configuration.autoManageBossModAISettings))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Autoduty will enable BMAI and any options you configure at the start of each duty.");
@@ -500,6 +538,8 @@ public static class ConfigTab
             
                 if (bmaiSettingHeaderSelected == true)
                 {
+                    ImGui.Indent();
+
                     if (ImGui.Button("Update Presets"))
                     {
                         BossMod_IPCSubscriber.RefreshPreset("AutoDuty", Resources.AutoDutyPreset);
@@ -627,6 +667,8 @@ public static class ConfigTab
                         Configuration.Save();
                     }
                     ImGuiComponents.HelpMarker("Clicking this will reset your BMAI config to the default and *recommended* settings for AD");
+
+                    ImGui.Unindent();
                     ImGui.Separator();
                 }              
             }
