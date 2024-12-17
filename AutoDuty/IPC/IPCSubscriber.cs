@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 namespace AutoDuty.IPC
 {
     using System.ComponentModel;
+    using ECommons.GameFunctions;
+    using Helpers;
 
     internal static class AutoRetainer_IPCSubscriber
     {
@@ -261,6 +263,44 @@ namespace AutoDuty.IPC
             AllServicesSuspended,
         }
 
+        /// <summary>
+        ///     The subset of <see cref="AutoRotationConfig" /> options that can be set
+        ///     via IPC.
+        /// </summary>
+        public enum AutoRotationConfigOption
+        {
+            InCombatOnly, //bool
+            DPSRotationMode,
+            HealerRotationMode,
+            FATEPriority, //bool
+            QuestPriority,//bool
+            SingleTargetHPP,//int
+            AoETargetHPP,//int
+            SingleTargetRegenHPP,//int
+            ManageKardia,//bool
+            AutoRez,//bool
+            AutoRezDPSJobs,//bool
+            AutoCleanse,//bool
+        }
+
+        public enum AutoRotationConfigDPSRotationSubset
+        {
+            Manual,
+            Highest_Max,
+            Tank_Target,
+            Nearest,
+        }
+
+        /// <summary>
+        ///     The subset of <see cref="AutoRotationConfig.HealerRotationMode" /> options
+        ///     that can be set via IPC.
+        /// </summary>
+        public enum AutoRotationConfigHealerRotationSubset
+        {
+            Manual,
+            Lowest_Current,
+        }
+
         private static Guid? _curLease;
 
 
@@ -370,7 +410,33 @@ namespace AutoDuty.IPC
         /// </remarks>
         [EzIPC] private static readonly Action<Guid> ReleaseControl;
 
+        /// <summary>
+        ///     Get the state of Auto-Rotation Configuration in Wrath Combo.
+        /// </summary>
+        /// <param name="option">The option to check the value of.</param>
+        /// <returns>The correctly-typed value of the configuration.</returns>
+        [EzIPC] private static readonly Func<AutoRotationConfigOption, object?> GetAutoRotationConfigState;
 
+        /// <summary>
+        ///     Set the state of Auto-Rotation Configuration in Wrath Combo.
+        /// </summary>
+        /// <param name="lease">Your lease ID from <see cref="RegisterForLease" /></param>
+        /// <param name="option">
+        ///     The Auto-Rotation Configuration option you want to set.<br />
+        ///     This is a subset of the Auto-Rotation options, flattened into a single
+        ///     enum.<br />
+        ///     All valid options can be parsed from an int, or
+        ///     <see cref="AutoRotationConfigOption" />.
+        /// </param>
+        /// <param name="value">
+        ///     The value you want to set the option to.<br />
+        ///     All valid options can be parsed from an int, or the exact expected types.
+        /// </param>
+        /// <value>+1 <c>set</c></value>
+        /// <seealso cref="AutoRotationConfigOption"/>
+        /// <seealso cref="AutoRotationConfigDPSRotationSubset"/>
+        /// <seealso cref="AutoRotationConfigHealerRotationSubset"/>
+        [EzIPC] private static readonly Action<Guid, AutoRotationConfigOption, object> SetAutoRotationConfigState;
 
         internal static void SetJobAutoReady()
         {
@@ -384,9 +450,20 @@ namespace AutoDuty.IPC
         {
             if (!_curLease.HasValue)
                 Register();
-            if (_curLease.HasValue) 
+            if (_curLease.HasValue)
+            {
                 SetAutoRotationState(_curLease.Value, on);
+                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly,   false);
+                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez,        true);
+                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs, true);
+                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.DPSRotationMode, Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
+                                                                                                          AutoRotationConfigDPSRotationSubset.Highest_Max :
+                                                                                                          AutoRotationConfigDPSRotationSubset.Tank_Target);
+                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.HealerRotationMode, AutoRotationConfigHealerRotationSubset.Lowest_Current);
+            }
         }
+
+
 
         internal static bool Register() => 
             (_curLease ??= RegisterForLease("AutoDuty", "AutoDuty", null)) != null;
