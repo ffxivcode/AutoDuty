@@ -484,14 +484,14 @@ public static class ConfigTab
 
             if (ImGui.Checkbox("Auto Manage Rotation Plugin State", ref Configuration.AutoManageRotationPluginState))
                 Configuration.Save();
-            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Wrath, Rotation Solver or BossMod AutoRotation\n**AutoDuty will try to use them in that order");
+            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Wrath Combo, Rotation Solver or BossMod AutoRotation\n**AutoDuty will try to use them in that order");
 
             if (Configuration.AutoManageRotationPluginState)
             {
                 if (Wrath_IPCSubscriber.IsEnabled)
                 {
                     ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
-                    var wrathSettingHeader = ImGui.Selectable("> Wrath Config Options <", wrathSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+                    var wrathSettingHeader = ImGui.Selectable("> Wrath Combo Config Options <", wrathSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
                     ImGui.PopStyleVar();
                     if (ImGui.IsItemHovered())
                         ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
@@ -508,7 +508,7 @@ public static class ConfigTab
                             Configuration.Wrath_AutoSetupJobs = wrath_AutoSetupJobs;
                             Configuration.Save();
                         }
-                        ImGuiComponents.HelpMarker("If this is not enabled and a job is not setup in wrath, AD will instead use RSR or bm AutoRotation");
+                        ImGuiComponents.HelpMarker("If this is not enabled and a job is not setup in Wrath Combo, AD will instead use RSR or bm AutoRotation");
 
                         ImGui.Unindent();
                         ImGui.Separator();
@@ -727,7 +727,7 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Using Alternative Rotation Plugin", ref Configuration.UsingAlternativeRotationPlugin))
                     Configuration.Save();
-                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Wrath, Rotation Solver or BossMod AutoRotation.");
+                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Wrath Combo, Rotation Solver or BossMod AutoRotation.");
 
                 if (ImGui.Checkbox("Using Alternative Movement Plugin", ref Configuration.UsingAlternativeMovementPlugin))
                     Configuration.Save();
