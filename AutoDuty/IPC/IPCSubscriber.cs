@@ -452,14 +452,27 @@ namespace AutoDuty.IPC
                 Register();
             if (_curLease.HasValue)
             {
-                SetAutoRotationState(_curLease.Value, on);
-                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly,   false);
-                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez,        true);
-                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs, true);
-                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.DPSRotationMode, Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
-                                                                                                          AutoRotationConfigDPSRotationSubset.Highest_Max :
-                                                                                                          AutoRotationConfigDPSRotationSubset.Tank_Target);
-                SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.HealerRotationMode, AutoRotationConfigHealerRotationSubset.Lowest_Current);
+                if (GetAutoRotationState() != on)
+                    SetAutoRotationState(_curLease.Value, on);
+                if (on)
+                {
+                    if (((bool) GetAutoRotationConfigState(AutoRotationConfigOption.InCombatOnly)))
+                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly, false);
+                    if (!(bool) GetAutoRotationConfigState(AutoRotationConfigOption.AutoRez))
+                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez, true);
+                    if (!(bool) GetAutoRotationConfigState(AutoRotationConfigOption.AutoRezDPSJobs))
+                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs, true);
+
+                    AutoRotationConfigDPSRotationSubset dpsConfig = Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
+                                                                        AutoRotationConfigDPSRotationSubset.Highest_Max :
+                                                                        AutoRotationConfigDPSRotationSubset.Tank_Target;
+
+                    if ((AutoRotationConfigDPSRotationSubset) GetAutoRotationConfigState(AutoRotationConfigOption.DPSRotationMode) != dpsConfig)
+                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.DPSRotationMode, dpsConfig);
+
+                    if ((AutoRotationConfigHealerRotationSubset) GetAutoRotationConfigState(AutoRotationConfigOption.HealerRotationMode) != AutoRotationConfigHealerRotationSubset.Lowest_Current)
+                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.HealerRotationMode, AutoRotationConfigHealerRotationSubset.Lowest_Current);
+                }
             }
         }
 
