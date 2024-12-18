@@ -309,8 +309,7 @@ namespace AutoDuty.IPC
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Wrath_IPCSubscriber), "WrathCombo", SafeWrapper.IPCException);
 
         /// <summary>
-        ///     Register your plugin for control of Wrath Combo.<br />
-        ///     Guid? RegisterForLease(string internalPluginName, string pluginName, Action CancellationReason, string? leaseCancelledCallback = null)
+        ///     Register your plugin for control of Wrath Combo.
         /// </summary>
         /// <param name="internalPluginName">
         ///     The internal name of your plugin.<br />
@@ -349,9 +348,8 @@ namespace AutoDuty.IPC
         ///     </list>
         /// </returns>
         /// <remarks>
-        ///     Each lease is limited to controlling <c>40</c> configurations.
+        ///     Each lease is limited to controlling <c>60</c> configurations.
         /// </remarks>
-        /// <seealso cref="Leasing.MaxLeaseConfigurations" />
         [EzIPC] private static readonly Func<string, string, Action<CancellationReason, string>?, Guid?> RegisterForLease;
 
         /// <summary>
@@ -369,7 +367,7 @@ namespace AutoDuty.IPC
         /// </summary>
         /// <param name="lease">Your lease ID from <see cref="RegisterForLease" /></param>
         /// <param name="enabled">
-        ///     Optionally whether to enabled Auto-Rotation.<br />
+        ///     Optionally whether to enable Auto-Rotation.<br />
         ///     Only used to disable Auto-Rotation, as enabling it is the default.
         /// </param>
         /// <seealso cref="GetAutoRotationState" />
@@ -396,8 +394,12 @@ namespace AutoDuty.IPC
         ///     This will try to use the user's existing settings, only enabling default
         ///     states for jobs that are not configured.
         /// </summary>
-        /// <value>+6 <c>set</c></value>
+        /// <value>
+        ///     +2 <c>set</c><br />
+        ///     (can be up to 38 for non-simple jobs, the highest being healers)
+        /// </value>
         /// <param name="lease">Your lease ID from <see cref="RegisterForLease" /></param>
+        /// <remarks>This can take a little bit to finish.</remarks>
         [EzIPC] private static readonly Action<Guid> SetCurrentJobAutoRotationReady;
 
         /// <summary>
@@ -424,9 +426,7 @@ namespace AutoDuty.IPC
         /// <param name="option">
         ///     The Auto-Rotation Configuration option you want to set.<br />
         ///     This is a subset of the Auto-Rotation options, flattened into a single
-        ///     enum.<br />
-        ///     All valid options can be parsed from an int, or
-        ///     <see cref="AutoRotationConfigOption" />.
+        ///     enum.
         /// </param>
         /// <param name="value">
         ///     The value you want to set the option to.<br />

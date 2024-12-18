@@ -2,7 +2,7 @@
   "Author": "Herculezz",
   "Name": "AutoDuty",
   "Punchline": "AutoDuty",
-  "Description": "A plugin to run dungeons for you with Trust, Duty Support, Squadrons, Variants, and Regular, Requires BossMod, vnavmesh and a Rotation Plugin (BossMod AutoRotation or RotationSolverReborn)",
+  "Description": "A plugin to run dungeons for you with Trust, Duty Support, Squadrons, Variants, and Regular, Requires BossMod, vnavmesh and a Rotation Plugin (Wrath Combo, BossMod AutoRotation, or RotationSolverReborn)",
   "InternalName": "AutoDuty",
   "DalamudApiLevel": "11",
   "RepoUrl": "https://github.com/ffxivcode/AutoDuty",
