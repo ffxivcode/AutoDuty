@@ -14,6 +14,17 @@
       "note": ""
     },
     {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -79.36419,
+        "Y": 1.5648358,
+        "Z": 188.34726
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
       "tag": 4,
       "name": "Revival",
       "position": {
@@ -67,27 +78,27 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -64.07,
-        "Y": 40.31,
-        "Z": 52.89
+        "X": -60.254868,
+        "Y": 41.435062,
+        "Z": 52.039204
       },
       "arguments": [
-        "6000"
+        "false"
       ],
       "note": ""
     },
     {
       "tag": 0,
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
-        "X": -38.33,
-        "Y": 55.08,
-        "Z": 27.14
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
-        "5000"
+        "IsReady"
       ],
       "note": ""
     },
@@ -106,27 +117,25 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -46.577,
-        "Y": 55.11,
-        "Z": 16.8
+        "X": -50.016525,
+        "Y": 60.157913,
+        "Z": 15.751594
       },
-      "arguments": [
-        "400"
-      ],
+      "arguments": [],
       "note": ""
     },
     {
       "tag": 0,
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "10000"
+        "IsReady"
       ],
       "note": ""
     },
@@ -184,14 +193,25 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -103.14,
-        "Y": 70.26,
-        "Z": 42.74
+        "X": -107.03283,
+        "Y": 71.05579,
+        "Z": 43.542774
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
-        "6500"
+        "IsReady"
       ],
       "note": ""
     },
@@ -223,14 +243,27 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -59.52,
-        "Y": 103.69,
-        "Z": -18.22
+        "X": -53.99,
+        "Y": 119.58,
+        "Z": -21.28
       },
       "arguments": [
-        "11000"
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -327,17 +360,10 @@
     }
   ],
   "meta": {
-    "createdAt": 160,
-    "changelog": [
-      {
-        "version": 168,
-        "change": "Converted to JSON Structure with Tags"
-      },
-      {
-        "version": 172,
-        "change": "Converted to JSON Structure with Tags"
-      }
-    ],
-    "notes": []
+    "createdAt": 172,
+    "changelog": [],
+    "notes": [
+      "Testing: Using Navigation and IsReady instead of AutoMove and Wait"
+    ]
   }
 }

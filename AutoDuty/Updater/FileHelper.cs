@@ -8,6 +8,7 @@ using AutoDuty.Windows;
 
 namespace AutoDuty.Updater
 {
+    using static Data.Classes;
     internal static class FileHelper
     {
         internal static readonly FileSystemWatcher FileSystemWatcher = new(Plugin.PathsDirectory.FullName)
@@ -26,6 +27,9 @@ namespace AutoDuty.Updater
         };
 
         internal static readonly FileSystemWatcher FileWatcher = new();
+
+        private static readonly object _updateLock = new();
+
 
         public static byte[] CalculateMD5(string filename)
         {
@@ -93,21 +97,24 @@ namespace AutoDuty.Updater
 
         private static void Update()
         {
-            ContentPathsManager.DictionaryPaths = [];
-
-            MainTab.PathsUpdated();
-            PathsTab.PathsUpdated();
-
-            foreach ((uint _, Content? content) in ContentHelper.DictionaryContent)
+            lock (_updateLock)
             {
-                IEnumerable<FileInfo> files = Plugin.PathsDirectory.EnumerateFiles($"({content.TerritoryType})*.json", SearchOption.AllDirectories);
+                ContentPathsManager.DictionaryPaths = [];
 
-                foreach (FileInfo file in files)
+                MainTab.PathsUpdated();
+                PathsTab.PathsUpdated();
+
+                foreach ((uint _, Content? content) in ContentHelper.DictionaryContent)
                 {
-                    if (!ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType))
-                        ContentPathsManager.DictionaryPaths.Add(content.TerritoryType, new ContentPathsManager.ContentPathContainer(content));
+                    IEnumerable<FileInfo> files = Plugin.PathsDirectory.EnumerateFiles($"({content.TerritoryType})*.json", SearchOption.AllDirectories);
 
-                    ContentPathsManager.DictionaryPaths[content.TerritoryType].Paths.Add(new ContentPathsManager.DutyPath(file.FullName));
+                    foreach (FileInfo file in files)
+                    {
+                        if (!ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType))
+                            ContentPathsManager.DictionaryPaths.Add(content.TerritoryType, new ContentPathsManager.ContentPathContainer(content));
+
+                        ContentPathsManager.DictionaryPaths[content.TerritoryType].Paths.Add(new ContentPathsManager.DutyPath(file.FullName));
+                    }
                 }
             }
         }

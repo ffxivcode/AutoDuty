@@ -7,6 +7,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Managers
 {
+    using static Data.Classes;
     //on Rewrite need to check for sufficient seals
     internal class SquadronManager(TaskManager _taskManager)
     {

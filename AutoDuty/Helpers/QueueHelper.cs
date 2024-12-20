@@ -12,7 +12,9 @@ using System.Linq;
 
 namespace AutoDuty.Helpers
 {
-    internal unsafe static class QueueHelper
+    using System;
+    using static Data.Classes;
+    internal static unsafe class QueueHelper
     {
         internal static void Invoke(Content? content, DutyMode dutyMode)
         {
@@ -75,14 +77,14 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (addonDawn->AtkValues[225].UInt < (_content!.ExVersion - 2))
+            if (addonDawn->AtkValues[241].UInt < (_content!.ExVersion - 2))
             {
                 Svc.Log.Debug($"Queue Helper - You do not have expansion: {_content.ExVersion} unlocked stopping");
                 Stop();
                 return;
             }
 
-            if (addonDawn->AtkValues[226].UInt != (_content!.ExVersion - 3))
+            if (addonDawn->AtkValues[242].UInt != (_content!.ExVersion - 3))
             {
                 Svc.Log.Debug($"Queue Helper - Opening Expansion: {_content.ExVersion}");
                 AddonHelper.FireCallBack(addonDawn, true, 20, (_content!.ExVersion - 3));
@@ -146,21 +148,31 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (addonDawnStory->AtkValues[343].UInt != _content!.ExVersion)
+            if (addonDawnStory->AtkValues[423].UInt != _content!.ExVersion)
             {
                 Svc.Log.Debug($"Queue Helper - Opening Expansion: {_content.ExVersion}");
                 AddonHelper.FireCallBack(addonDawnStory, true, 11, _content.ExVersion);
                 return;
             }
-            else if (addonDawnStory->AtkValues[21].UInt != _content.DawnIndex + 1)
-            {
-                Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} at index: {_content.DawnIndex + addonDawnStory->AtkValues[27].UInt} {addonDawnStory->AtkValues[27].UInt}");
-                AddonHelper.FireCallBack(addonDawnStory, true, 12, (uint)_content.DawnIndex + addonDawnStory->AtkValues[27].UInt);
-            }
             else
             {
-                Svc.Log.Debug($"Queue Helper - Clicking: Register For Duty");
-                AddonHelper.FireCallBack(addonDawnStory, true, 14);
+                int sideQuestIndex = _content.ExVersion switch
+                {
+                    0 => 15,
+                    1 => 9,
+                    2 => 8,
+                    _ => 99
+                };
+                if (addonDawnStory->AtkValues[21].UInt != _content.DawnIndex + (addonDawnStory->AtkValues[21].UInt > sideQuestIndex ? -sideQuestIndex : 1))
+                {
+                    Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} {_content.DawnIndex} at index: {_content.DawnIndex + addonDawnStory->AtkValues[27].UInt} {addonDawnStory->AtkValues[27].UInt}");
+                    AddonHelper.FireCallBack(addonDawnStory, true, 12, (uint)_content.DawnIndex + addonDawnStory->AtkValues[27].UInt);
+                }
+                else
+                {
+                    Svc.Log.Debug($"Queue Helper - Clicking: Register For Duty");
+                    AddonHelper.FireCallBack(addonDawnStory, true, 14);
+                }
             }
         }
 
@@ -172,7 +184,7 @@ namespace AutoDuty.Helpers
                 ContentsFinder.Instance()->IsUnrestrictedParty = Plugin.Configuration.Unsynced;
                 return;
             }
-
+            
             if (!_allConditionsMetToJoin && (!GenericHelpers.TryGetAddonByName("ContentsFinder", out _addonContentsFinder) || !GenericHelpers.IsAddonReady((AtkUnitBase*)_addonContentsFinder)))
             {
                 Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content!.Name}");
@@ -182,16 +194,17 @@ namespace AutoDuty.Helpers
 
             if (_addonContentsFinder->DutyList->Items.LongCount == 0)
                 return;
-
+            
             var vectorDutyListItems = _addonContentsFinder->DutyList->Items;
             List<AtkComponentTreeListItem> listAtkComponentTreeListItems = [];
             if (vectorDutyListItems.Count == 0)
                 return;
+            
             vectorDutyListItems.ForEach(pointAtkComponentTreeListItem => listAtkComponentTreeListItems.Add(*(pointAtkComponentTreeListItem.Value)));
 
             if (!_allConditionsMetToJoin && AgentContentsFinder.Instance()->SelectedDutyId != _content!.ContentFinderCondition)
             {
-                Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content.Name} because we have the wrong selection of {listAtkComponentTreeListItems[(int)_addonContentsFinder->SelectedRow].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", "")}");
+                Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content.Name} because we have the wrong selection of {listAtkComponentTreeListItems[(int)_addonContentsFinder->DutyList->SelectedItemIndex].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", "")}");
                 AgentContentsFinder.Instance()->OpenRegularDuty(_content.ContentFinderCondition);
                 EzThrottler.Throttle("QueueHelper", 500, true);
                 return;
@@ -219,6 +232,7 @@ namespace AutoDuty.Helpers
                 AddonHelper.FireCallBack((AtkUnitBase*)_addonContentsFinder, true, 12, 0);
                 return;
             }
+            Svc.Log.Debug("end");
         }
 
         internal static void QueueUpdate(IFramework _)
@@ -233,7 +247,15 @@ namespace AutoDuty.Helpers
                 case DutyMode.Regular:
                 case DutyMode.Trial:
                 case DutyMode.Raid:
-                    QueueRegular();
+                    try
+                    {
+                        QueueRegular();
+                    }
+                    catch (Exception ex)
+                    {
+                        Svc.Log.Error(ex.ToString());
+                    }
+
                     break;
                 case DutyMode.Support:
                     QueueSupport();
@@ -244,26 +266,33 @@ namespace AutoDuty.Helpers
             }
         }
 
-        private static uint HeadersCount(uint before, List<AtkComponentTreeListItem> list)
+        private static uint HeadersCount(int before, List<AtkComponentTreeListItem> list)
         {
             uint count = 0;
-            for (int i = 0; i < before; i++)
+            try
             {
-                if (list[i].UIntValues[0] == 4 || list[i].UIntValues[0] == 2)
-                    count++;
+                for (int i = 0; i < before; i++)
+                {
+                    if (list[i].UIntValues[0] == 0 || list[i].UIntValues[0] == 1)
+                        count++;
+                }
             }
+            catch (Exception ex)
+            {
+                Svc.Log.Error(ex.ToString());
+            }
+
             return count;
         }
 
         private static void SelectDuty(AddonContentsFinder* addonContentsFinder)
         {
             if (addonContentsFinder == null) return;
-
+            
             var vectorDutyListItems = addonContentsFinder->DutyList->Items;
             List<AtkComponentTreeListItem> listAtkComponentTreeListItems = [];
             vectorDutyListItems.ForEach(pointAtkComponentTreeListItem => listAtkComponentTreeListItems.Add(*(pointAtkComponentTreeListItem.Value)));
-
-            AddonHelper.FireCallBack((AtkUnitBase*)addonContentsFinder, true, 3, addonContentsFinder->SelectedRow - (HeadersCount(addonContentsFinder->SelectedRow, listAtkComponentTreeListItems) - 1));
+            AddonHelper.FireCallBack((AtkUnitBase*)addonContentsFinder, true, 3, HeadersCount(addonContentsFinder->DutyList->SelectedItemIndex, listAtkComponentTreeListItems) + 1); // - (HeadersCount(addonContentsFinder->DutyList->SelectedItemIndex, listAtkComponentTreeListItems) + 1));
         }
     }
 }

@@ -135,10 +135,6 @@
       {
         "Track": "AOE",
         "Option": "AOE"
-      },
-      {
-        "Track": "Buffs",
-        "Option": "Auto"
       }
     ],
     "BossMod.Autorotation.xan.NIN": [
@@ -323,66 +319,81 @@
         "Option": "Automatic"
       }
     ],
-    "BossMod.Autorotation.AkechiGNB": [
+    "BossMod.Autorotation.MiscAI.StayCloseToTarget": [],
+    "BossMod.Autorotation.xan.HealerAI": [
       {
-        "Track": "AoE",
-        "Option": "Auto"
+        "Track": "Raise",
+        "Option": "Raise using Swiftcast only"
       },
       {
-        "Track": "Burst",
-        "Option": "SpendCarts"
+        "Track": "RaiseTargets",
+        "Option": "Alliance raid members"
       },
       {
-        "Track": "Potion",
-        "Option": "Manual"
+        "Track": "Heal",
+        "Option": "Enabled"
       },
       {
-        "Track": "NM",
-        "Option": "Automatic"
+        "Track": "Esuna",
+        "Option": "Enabled"
+      }
+    ],
+    "BossMod.Autorotation.xan.MeleeAI": [
+      {
+        "Track": "Second Wind",
+        "Option": "Enabled"
       },
       {
-        "Track": "Carts",
-        "Option": "Automatic"
+        "Track": "Bloodbath",
+        "Option": "Enabled"
       },
       {
-        "Track": "SB",
-        "Option": "Auto"
+        "Track": "Stun",
+        "Option": "Enabled"
+      }
+    ],
+    "BossMod.Autorotation.xan.RangedAI": [
+      {
+        "Track": "Head Graze",
+        "Option": "Enabled"
       },
       {
-        "Track": "GF",
-        "Option": "Auto"
+        "Track": "Second Wind",
+        "Option": "Enabled"
+      }
+    ],
+    "BossMod.Autorotation.xan.TankAI": [
+      {
+        "Track": "Stance",
+        "Option": "Enabled"
       },
       {
-        "Track": "DD",
-        "Option": "Auto"
+        "Track": "Ranged GCD",
+        "Option": "Enabled"
       },
       {
-        "Track": "BS",
-        "Option": "Auto"
+        "Track": "Interject",
+        "Option": "Enabled"
       },
       {
-        "Track": "FC",
-        "Option": "Auto"
+        "Track": "Low Blow",
+        "Option": "Enabled"
       },
       {
-        "Track": "Zone",
-        "Option": "Automatic"
+        "Track": "Arms\u0027 Length",
+        "Option": "Enabled"
       },
       {
-        "Track": "BF",
-        "Option": "Auto"
+        "Track": "Personal mits",
+        "Option": "Enabled"
       },
       {
-        "Track": "BShock",
-        "Option": "Auto"
+        "Track": "Invuln",
+        "Option": "Enabled"
       },
       {
-        "Track": "Dash",
-        "Option": "Force"
-      },
-      {
-        "Track": "LShot",
-        "Option": "Opener"
+        "Track": "Protect party members",
+        "Option": "Enabled"
       }
     ]
   }

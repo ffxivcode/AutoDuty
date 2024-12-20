@@ -4,7 +4,7 @@
   "Punchline": "AutoDuty",
   "Description": "A plugin to run dungeons for you with Trust, Duty Support, Squadrons, Variants, and Regular, Requires BossMod, vnavmesh and a Rotation Plugin (BossMod AutoRotation or RotationSolverReborn)",
   "InternalName": "AutoDuty",
-  "DalamudApiLevel": "10",
+  "DalamudApiLevel": "11",
   "RepoUrl": "https://github.com/ffxivcode/AutoDuty",
   "IconUrl": "https://s3.puni.sh/media/plugin/54/icon-15ug2vnr9m1.png",
   "ImageUrls": [

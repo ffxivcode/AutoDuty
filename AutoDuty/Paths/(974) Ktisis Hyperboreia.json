@@ -28,14 +28,25 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -136.2,
-        "Y": 500.56,
-        "Z": 6.08
+        "X": -136.71408,
+        "Y": 500.31473,
+        "Z": 6.986266
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -125.86,
+        "Y": 501.29,
+        "Z": -5.6
       },
       "arguments": [
-        "3500"
+        "false"
       ],
       "note": ""
     },
@@ -67,6 +78,17 @@
     },
     {
       "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 1.4602538,
+        "Y": 630.0001,
+        "Z": 81.31386
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 0.37,
@@ -80,14 +102,38 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -0.09,
-        "Y": 630,
-        "Z": -6.62
+        "X": 0.057684407,
+        "Y": 629.99994,
+        "Z": -2.5295131
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.19,
+        "Y": 631.63,
+        "Z": -10.82
       },
       "arguments": [
-        "3000"
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -119,14 +165,27 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
         "X": -0.02,
         "Y": -700,
-        "Z": 5.05
+        "Z": -1.35
       },
       "arguments": [
-        "6000"
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -171,14 +230,27 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": 28.3,
-        "Y": -600.37,
-        "Z": -67.87
+        "X": 31,
+        "Y": -600.27,
+        "Z": -72
       },
       "arguments": [
-        "11000"
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -223,14 +295,27 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -34.41,
-        "Y": -140.13,
-        "Z": -5.38
+        "X": -35.26,
+        "Y": -139.47,
+        "Z": -8.55
       },
       "arguments": [
-        "6000"
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -238,9 +323,9 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": 0.06,
+        "X": -0.34,
         "Y": 0,
-        "Z": -53.24
+        "Z": -53.97
       },
       "arguments": [
         ""

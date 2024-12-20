@@ -30,7 +30,6 @@ using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
 using System.Diagnostics;
-using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.ClientState.Conditions;
 using AutoDuty.Properties;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
@@ -39,6 +38,13 @@ using Serilog.Events;
 using AutoDuty.Updater;
 
 namespace AutoDuty;
+
+using System.Linq.Expressions;
+using Data;
+using ECommons.Reflection;
+using Lumina.Excel.Sheets;
+using static Data.Classes;
+using ReflectionHelper = Helpers.ReflectionHelper;
 
 // TODO:
 // Scrapped interable list, going to implement an internal list that when a interactable step end in fail, the Dataid gets add to the list and is scanned for from there on out, if found we goto it and get it, then remove from list.
@@ -108,6 +114,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 case Stage.Condition:
                     Action = $"ConditionChange";
                     SchedulerHelper.ScheduleAction("ConditionChangeStageReadingPath", () => _stage = Stage.Reading_Path, () => !Svc.Condition[ConditionFlag.BetweenAreas] && !Svc.Condition[ConditionFlag.BetweenAreas51] && !Svc.Condition[ConditionFlag.Jumping61]);
+                    break;
+                case Stage.Waiting_For_Combat:
+                    BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
                     break;
             }
             _stage = value;
@@ -200,7 +209,7 @@ public sealed class AutoDuty : IDalamudPlugin
             PathsDirectory = new(_configDirectory.FullName + "/paths");
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
-            Configuration.Version = PluginInterface.Manifest.AssemblyVersion.Revision;
+            Configuration.Version = (PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion).Revision;
             Configuration.Save();
             if (!_configDirectory.Exists)
                 _configDirectory.Create();
@@ -299,7 +308,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (message == null) return;
 
-        if (message.Sender == Player.Name || message.Action.Count == 0 || !Svc.Party.Any(x => x.Name.ExtractText() == message.Sender))
+        if (message.Sender == Player.Name || message.Action.Count == 0 || Svc.Party.All(x => x.Name.ExtractText() != message.Sender))
             return;
 
         message.Action.Each(_actions.InvokeAction);
@@ -345,10 +354,13 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private unsafe bool StopLoop => Configuration.EnableTerminationActions && (CurrentTerritoryContent == null ||
-                                    (Configuration.StopLevel && Player.Level >= Configuration.StopLevelInt) ||
-                                    (Configuration.StopNoRestedXP && AgentHUD.Instance()->ExpRestedExperience == 0) ||
-                                    (Configuration.StopItemQty && Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value)));
+    private unsafe bool StopLoop => Configuration.EnableTerminationActions && 
+                                        (CurrentTerritoryContent == null ||
+                                        (Configuration.StopLevel && Player.Level >= Configuration.StopLevelInt) ||
+                                        (Configuration.StopNoRestedXP && AgentHUD.Instance()->ExpRestedExperience == 0) ||
+                                        (Configuration.StopItemQty && (Configuration.StopItemAll 
+                                            ? Configuration.StopItemQtyItemDictionary.All(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value)
+                                            : Configuration.StopItemQtyItemDictionary.Any(x => InventoryManager.Instance()->GetInventoryItemCount(x.Key) >= x.Value.Value))));
 
     private void TrustLeveling()
     {
@@ -683,21 +695,25 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void LoopsCompleteActions()
     {
+
         SetGeneralSettings(false);
 
         if (Configuration.EnableTerminationActions)
         {
+            TaskManager.Enqueue(() => PlayerHelper.IsReadyFull);
             TaskManager.Enqueue(() => Svc.Log.Debug($"TerminationActions are Enabled"));
             if (Configuration.ExecuteCommandsTermination)
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"ExecutingCommandsTermination, executing {Configuration.CustomCommandsTermination.Count} commands"));
                 Configuration.CustomCommandsTermination.Each(x => Chat.ExecuteCommand(x));
             }
+
             if (Configuration.PlayEndSound)
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Playing End Sound"));
                 SoundHelper.StartSound(Configuration.PlayEndSound, Configuration.CustomSound, Configuration.SoundEnum);
             }
+
             if (Configuration.TerminationMethodEnum == TerminationMode.Kill_PC)
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Killing PC"));
@@ -722,6 +738,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 {
                     //hell if I know
                 }
+
                 Chat.ExecuteCommand($"/xlkill");
             }
             else if (Configuration.TerminationMethodEnum == TerminationMode.Kill_Client)
@@ -748,23 +765,19 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.DelayNext(2000);
                 TaskManager.Enqueue(() => Chat.ExecuteCommand($"/logout"));
                 TaskManager.Enqueue(() => AddonHelper.ClickSelectYesno());
-                TaskManager.Enqueue(() => States &= ~PluginState.Looping);
-                TaskManager.Enqueue(() => CurrentLoop = 0);
-                TaskManager.Enqueue(() => Stage = Stage.Stopped);
             }
             else if (Configuration.TerminationMethodEnum == TerminationMode.Start_AR_Multi_Mode)
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Starting AR Multi Mode"));
-                TaskManager.Enqueue(() => Chat.ExecuteCommand($"/ays multi"));
-                TaskManager.Enqueue(() => States &= ~PluginState.Looping);
-                TaskManager.Enqueue(() => CurrentLoop = 0);
-                TaskManager.Enqueue(() => Stage = Stage.Stopped);
+                TaskManager.Enqueue(() => Chat.ExecuteCommand($"/ays multi e"));
             }
         }
+
         Svc.Log.Debug($"Removing Looping, Setting CurrentLoop to 0, and Setting Stage to Stopped");
-        States &= ~PluginState.Looping;
-        CurrentLoop = 0;
-        SchedulerHelper.ScheduleAction("SetStageStopped", () => Stage = Stage.Stopped, 1);
+
+        States      &= ~PluginState.Looping;
+        CurrentLoop =  0;
+        TaskManager.Enqueue(() => SchedulerHelper.ScheduleAction("SetStageStopped", () => Stage = Stage.Stopped, 1));
     }
 
     private void AutoEquipRecommendedGear()
@@ -991,7 +1004,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Svc.Targets.Target == null)
             {
                 //find and target closest attackable npc, if we are not targeting
-                var gos = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)?.FirstOrDefault(o => ObjectFunctions.GetNameplateKind(o) is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
+                var gos = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)?.FirstOrDefault(o => o.GetNameplateKind() is NameplateKind.HostileEngagedSelfUndamaged or NameplateKind.HostileEngagedSelfDamaged && ObjectHelper.GetBattleDistanceToPlayer(o) <= 75);
 
                 if (gos != null)
                     Svc.Targets.Target = gos;
@@ -1014,12 +1027,12 @@ public sealed class AutoDuty : IDalamudPlugin
                     if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_IsRunning())
                         VNavmesh_IPCSubscriber.Path_Stop();
 
-                    if (enemyCount > 2 && floatMDT != Configuration.MaxDistanceToTargetAoEFloat)
+                    if (enemyCount > 2 && Math.Abs(floatMDT - this.Configuration.MaxDistanceToTargetAoEFloat) > 0.01f)
                     {
                         Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetAoEFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
                         BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetAoEFloat}"], false);
                     }
-                    else if (enemyCount < 3 && floatMDT != Configuration.MaxDistanceToTargetFloat)
+                    else if (enemyCount < 3 && Math.Abs(floatMDT - this.Configuration.MaxDistanceToTargetFloat) > 0.01f)
                     {
                         Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM MaxDistanceToTarget={floatMDT} and enemy count = {enemyCount}");
                         BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
@@ -1040,7 +1053,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 var gotMDT = float.TryParse(mdt, out float floatMDT);
 
-                if (gotMDT && floatMDT != Configuration.MaxDistanceToTargetFloat)
+                if (gotMDT && Math.Abs(floatMDT - this.Configuration.MaxDistanceToTargetFloat) > 0.01f)
                 {
                     Svc.Log.Debug($"Changing MaxDistanceToTarget to {Configuration.MaxDistanceToTargetFloat}, because BM  MaxDistanceToTarget={floatMDT}");
                     BossMod_IPCSubscriber.Configuration(["AIConfig", "MaxDistanceToTarget", $"{Configuration.MaxDistanceToTargetFloat}"], false);
@@ -1118,7 +1131,8 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Configuration.AutoManageBossModAISettings)
             {
                 Chat.ExecuteCommand($"/vbmai off");
-                Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+                if (!IPCSubscriber_Common.IsReady("BossModReborn"))
+                    Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
             }
             States &= ~PluginState.Navigating;
         }
@@ -1128,9 +1142,10 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void GetGeneralSettings()
     {
+        /*
         if (Configuration.AutoManageVnavAlignCamera && VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             _settingsActive |= SettingsActive.Vnav_Align_Camera_Off;
-
+        */
         if (ReflectionHelper.YesAlready_Reflection.IsEnabled && ReflectionHelper.YesAlready_Reflection.GetPluginEnabled())
             _settingsActive |= SettingsActive.YesAlready;
 
@@ -1138,7 +1153,6 @@ public sealed class AutoDuty : IDalamudPlugin
             _settingsActive |= SettingsActive.Pandora_Interact_Objects;
 
         Svc.Log.Debug($"General Settings Active: {_settingsActive}");
-
     }
 
     internal void SetGeneralSettings(bool on)
@@ -1165,38 +1179,51 @@ public sealed class AutoDuty : IDalamudPlugin
 
     internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false)
     {
-        if (!Configuration.AutoManageRotationPluginState && !ignoreConfig) return;
+        if (!ignoreConfig && !this.Configuration.AutoManageRotationPluginState)
+            return;
+        bool bmEnabled     = BossMod_IPCSubscriber.IsEnabled;
+        bool foundRotation = false;
 
+        if (Wrath_IPCSubscriber.IsEnabled)
+        {
+            Chat.ExecuteCommand($"/wrath auto {(on ? "on" : "off")}");
+            foundRotation = true;
+        }
+        
         if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
         {
-            if (on)
+            if (on && !foundRotation)
             {
                 if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Auto)
                     ReflectionHelper.RotationSolver_Reflection.RotationAuto();
-            }
-            else if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
-                ReflectionHelper.RotationSolver_Reflection.RotationStop();
-        }
-        else if (BossMod_IPCSubscriber.IsEnabled)
-        {
-            if (on)
-            {
-                //check if our preset does not exist
-                if (BossMod_IPCSubscriber.Presets_Get("AutoDuty") == null)
-                {
-                    //load it
-                    Svc.Log.Debug($"AutoDuty Preset Loaded: {BossMod_IPCSubscriber.Presets_Create(Resources.AutoDutyPreset, true)}");
-                }
-
-                //set it as the active preset for both
-                if (BossMod_IPCSubscriber.Presets_GetActive() != "AutoDuty")
-                    BossMod_IPCSubscriber.Presets_SetActive("AutoDuty");
+                foundRotation = true;
             }
             else
             {
-                //set disabled as preset
-                if (!BossMod_IPCSubscriber.Presets_GetForceDisabled())
-                    BossMod_IPCSubscriber.Presets_SetForceDisabled();
+                if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
+                    ReflectionHelper.RotationSolver_Reflection.RotationStop();
+            }
+        }
+
+        if (bmEnabled)
+        {
+            if (on)
+            {
+                BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
+                if (!foundRotation)
+                {
+                    BossMod_IPCSubscriber.AddPreset("AutoDuty", Resources.AutoDutyPreset);
+                    BossMod_IPCSubscriber.SetPreset("AutoDuty");
+                }
+                else if(this.Configuration.AutoManageBossModAISettings)
+                {
+                    BossMod_IPCSubscriber.AddPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
+                    BossMod_IPCSubscriber.SetPreset("AutoDuty Passive");
+                }
+            } 
+            else if(!foundRotation || this.Configuration.AutoManageBossModAISettings)
+            {
+                BossMod_IPCSubscriber.DisablePresets();
             }
         }
     }
@@ -1219,7 +1246,8 @@ public sealed class AutoDuty : IDalamudPlugin
             Configuration.PositionalRoleBased = true;
         }
         Chat.ExecuteCommand($"/vbmai on");
-        Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
+        if(!bmr)
+            Chat.ExecuteCommand($"/vbm cfg AIConfig Enable true");
 
         Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidActions false");
         Chat.ExecuteCommand($"/vbm cfg AIConfig ForbidMovement false");
@@ -1229,10 +1257,11 @@ public sealed class AutoDuty : IDalamudPlugin
             Chat.ExecuteCommand($"/vbm cfg AIConfig FollowDuringActiveBossModule {Configuration.FollowDuringActiveBossModule}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig FollowOutOfCombat {Configuration.FollowOutOfCombat}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig FollowTarget {Configuration.FollowTarget}");
-            Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {Configuration.MaxDistanceToTargetFloat}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToSlot {Configuration.MaxDistanceToSlotFloat}");
             Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {Configuration.PositionalEnum}");
         }
+
+        BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
 
         Chat.ExecuteCommand($"/vbmai follow {(Configuration.FollowSelf ? Player.Name : ((Configuration.FollowRole && !ConfigTab.FollowName.IsNullOrEmpty()) ? ConfigTab.FollowName : (Configuration.FollowSlot ? $"Slot{Configuration.FollowSlotInt}" : Player.Name)))}");
 
@@ -1246,23 +1275,23 @@ public sealed class AutoDuty : IDalamudPlugin
     internal void BMRoleChecks()
     {
         //RoleBased Positional
-        if (PlayerHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalEnum != (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee ? Positional.Rear : Positional.Any))
+        if (PlayerHelper.IsValid && Configuration.PositionalRoleBased && Configuration.PositionalEnum != (Player.Object.ClassJob.Value.GetJobRole() == JobRole.Melee ? Positional.Rear : Positional.Any))
         {
-            Configuration.PositionalEnum = (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee ? Positional.Rear : Positional.Any);
+            Configuration.PositionalEnum = (Player.Object.ClassJob.Value.GetJobRole() == JobRole.Melee ? Positional.Rear : Positional.Any);
             Configuration.Save();
         }
 
         //RoleBased MaxDistanceToTarget
-        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTargetFloat != (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee || PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Tank ? 2.6f : 10))
+        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Math.Abs(this.Configuration.MaxDistanceToTargetFloat - (Player.Object.ClassJob.ValueNullable?.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank ? 2.6f : 10)) > 0.01f)
         {
-            Configuration.MaxDistanceToTargetFloat = (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee || PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Tank ? 2.6f : 10);
+            Configuration.MaxDistanceToTargetFloat = (Player.Object.ClassJob.Value.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank ? 2.6f : 10);
             Configuration.Save();
         }
 
         //RoleBased MaxDistanceToTargetAoE
-        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Configuration.MaxDistanceToTargetAoEFloat != (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee || PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Tank ? 2.6f : 10))
+        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Math.Abs(this.Configuration.MaxDistanceToTargetAoEFloat - (Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank ? 2.6f : 10)) > 0.01f)
         {
-            Configuration.MaxDistanceToTargetAoEFloat = (PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Melee || PlayerHelper.GetJobRole(Player.Object.ClassJob.GameData!) == JobRole.Tank || Player.Object.ClassJob.GameData?.JobIndex == 18 ? 2.6f : 10);
+            Configuration.MaxDistanceToTargetAoEFloat = (Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank || Player.Object.ClassJob.ValueNullable?.JobIndex == 18 ? 2.6f : 10);
             Configuration.Save();
         }
 
@@ -1279,6 +1308,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (PathAction.Name.Equals("Boss"))
             {
+
                 if (Configuration.DutyModeEnum == DutyMode.Regular && Svc.Party.PartyId > 0)
                 {
                     Message message = new()
@@ -1377,8 +1407,13 @@ public sealed class AutoDuty : IDalamudPlugin
         if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType != 0 && InDungeon)
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
-        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (PathAction?.Name == "Boss" && Stage == Stage.Action)) && (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
-            ObjectHelper.InteractWithObject(treasureCofferGameObject, false);
+        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (PathAction?.Name == "Boss" && Stage == Stage.Action)) &&
+            (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)
+                                                   ?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        {
+            BossMod_IPCSubscriber.SetRange(30f);
+            ObjectHelper.InteractWithObject(this.treasureCofferGameObject, false);
+        }
 
         if (Indexer >= Actions.Count && Actions.Count > 0 && States.HasFlag(PluginState.Navigating))
             DoneNavigating();
@@ -1433,7 +1468,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.AutoManageBossModAISettings)
         {
             Chat.ExecuteCommand($"/vbmai off");
-            Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
+            if(!IPCSubscriber_Common.IsReady("BossModReborn"))
+                Chat.ExecuteCommand($"/vbm cfg AIConfig Enable false");
         }
         SetGeneralSettings(true);
         if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
@@ -1682,9 +1718,13 @@ public sealed class AutoDuty : IDalamudPlugin
                 Run(territoryType, loopTimes, bareMode: argsArray.Length > 4 && bool.TryParse(argsArray[4], out bool parsedBool) && parsedBool);
                 break;
             case "tt":
-                var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.Value != null && x.ContentFinderCondition.Value.Name.RawString.Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
+                var tt = Svc.Data.Excel.GetSheet<TerritoryType>()?.FirstOrDefault(x => x.ContentFinderCondition.ValueNullable != null && x.ContentFinderCondition.Value.Name.ToString().Equals(args.Replace("tt ", ""), StringComparison.InvariantCultureIgnoreCase)) ?? Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(1);
                 Svc.Log.Info($"{tt?.RowId}");
                 ImGui.SetClipboardText($"{tt?.RowId}");
+                break;
+            case "range":
+                if (float.TryParse(argsArray[1], out float newRange))
+                    BossMod_IPCSubscriber.SetRange(Math.Clamp(newRange, 1, 30));
                 break;
             case "spew":
                 IGameObject? spewObj = null;
@@ -1724,7 +1764,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 try { Svc.Log.Info($"VfxScale: {gObj.VfxScale}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"HitboxRadius: {gObj.HitboxRadius}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"DrawOffset: {gObj.DrawOffset}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
-                try { Svc.Log.Info($"EventId: {gObj.EventId}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"EventId: {gObj.EventId.Id}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"FateId: {gObj.FateId}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"NamePlateIconId: {gObj.NamePlateIconId}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"RenderFlags: {gObj.RenderFlags}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };

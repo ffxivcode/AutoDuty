@@ -7,6 +7,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Managers
 {
+    using static Data.Classes;
     internal class VariantManager(TaskManager _taskManager)
     {
         internal unsafe void RegisterVariantDuty(Content content)

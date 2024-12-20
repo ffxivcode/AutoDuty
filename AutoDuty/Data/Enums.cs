@@ -1,25 +1,9 @@
-﻿using Lumina.Excel.GeneratedSheets;
-using System;
+﻿using System;
 
 namespace AutoDuty.Data
 {
     public class Enums
     {
-        public enum EquippedSlotIndex : ushort
-        {
-            MainHand = 0,
-            Offhand = 1,
-            Helm = 2,
-            Body = 3,
-            Hands = 4,
-            Legs = 6,
-            Feet = 7,
-            Earring = 8,
-            Neck = 9,
-            Wrist = 10,
-            Ring1 = 11,
-            Ring2 = 12
-        }
 
         public enum ActionTag
         {

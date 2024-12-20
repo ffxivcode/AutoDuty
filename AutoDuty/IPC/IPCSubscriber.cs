@@ -1,9 +1,13 @@
-﻿using ECommons.DalamudServices;
+﻿using AutoDuty.Properties;
+using ECommons.Automation;
+using ECommons.DalamudServices;
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace AutoDuty.IPC
 {
+
     internal static class AutoRetainer_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(AutoRetainer_IPCSubscriber), "AutoRetainer.PluginState", SafeWrapper.IPCException);
@@ -54,23 +59,30 @@ namespace AutoDuty.IPC
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
-    
+
+    internal static class BossModReborn_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossModReborn_IPCSubscriber), "BossMod", SafeWrapper.AnyException);
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("BossModReborn");
+
+        [EzIPC("AI.GetPreset", true)] internal static readonly Func<string> Presets_GetActive;
+
+        [EzIPC("AI.SetPreset", true)] internal static readonly Func<string, bool> Presets_SetActive;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
+
     internal static class BossMod_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossMod_IPCSubscriber), "BossMod", SafeWrapper.AnyException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("BossMod") || IPCSubscriber_Common.IsReady("BossModReborn");
 
-        [EzIPC] internal static readonly Func<bool> IsMoving;
-        [EzIPC] internal static readonly Func<int> ForbiddenZonesCount;
         [EzIPC] internal static readonly Func<uint, bool> HasModuleByDataId;
-        [EzIPC] internal static readonly Func<string, bool> ActiveModuleHasComponent;
-        [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentBaseList;
-        [EzIPC] internal static readonly Func<List<string>> ActiveModuleComponentList;
         [EzIPC] internal static readonly Func<IReadOnlyList<string>, bool, List<string>> Configuration;
-        [EzIPC("Presets.List", true)] internal static readonly Func<List<string>> Presets_List;
         [EzIPC("Presets.Get", true)] internal static readonly Func<string, string?> Presets_Get;
-        [EzIPC("Presets.ForClass", true)] internal static readonly Func<byte, List<string>> Presets_ForClass;
         [EzIPC("Presets.Create", true)] internal static readonly Func<string, bool, bool> Presets_Create;
         [EzIPC("Presets.Delete", true)] internal static readonly Func<string, bool> Presets_Delete;
         [EzIPC("Presets.GetActive", true)] internal static readonly Func<string> Presets_GetActive;
@@ -78,8 +90,53 @@ namespace AutoDuty.IPC
         [EzIPC("Presets.ClearActive", true)] internal static readonly Func<bool> Presets_ClearActive;
         [EzIPC("Presets.GetForceDisabled", true)] internal static readonly Func<bool> Presets_GetForceDisabled; 
         [EzIPC("Presets.SetForceDisabled", true)] internal static readonly Func<bool> Presets_SetForceDisabled;
+        /** string presetName, string moduleTypeName, string trackName, string value*/
+        [EzIPC("Presets.AddTransientStrategy")] internal static readonly Func<string, string, string, string, bool> Presets_AddTransientStrategy;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+
+        public static void AddPreset(string name, string preset)
+        {
+            //check if our preset does not exist
+            if (Presets_Get(name) == null)
+                //load it
+                Svc.Log.Debug($"AutoDuty Preset Loaded: {Presets_Create(preset, true)}");
+        }
+
+        public static void RefreshPreset(string name, string preset)
+        {
+            if (Presets_Get(name) != null)
+                Presets_Delete(name);
+            AddPreset(name, preset);
+        }
+
+        public static void SetPreset(string name)
+        {
+            if (Presets_GetActive() != name)
+            {
+                Presets_SetActive(name);
+
+                if (BossModReborn_IPCSubscriber.IsEnabled)
+                {
+                    if(BossModReborn_IPCSubscriber.Presets_GetActive() != name)
+                        BossModReborn_IPCSubscriber.Presets_SetActive(name);
+                }
+            }
+        }
+
+        public static void DisablePresets()
+        {
+            if (!Presets_GetForceDisabled())
+                Presets_SetForceDisabled();
+        }
+
+        public static void SetRange(float range)
+        {
+            if(IPCSubscriber_Common.IsReady("BossModReborn"))
+                Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {range}");
+            Presets_AddTransientStrategy("AutoDuty",         "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
+            Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
+        }
     }
 
     /* Seem's YesAlready is not Initializing this
@@ -113,7 +170,7 @@ namespace AutoDuty.IPC
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Gearsetter");
 
-        [EzIPC] internal static readonly Func<byte, List<(uint ItemId, InventoryType? SourceInventory, byte? SourceInventorySlot)>> GetRecommendationsForGearset;
+        [EzIPC] internal static readonly Func<byte, List<(uint ItemId, InventoryType? SourceInventory, byte? SourceInventorySlot, RaptureGearsetModule.GearsetItemIndex TargetSlot)>> GetRecommendationsForGearset;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
@@ -175,6 +232,12 @@ namespace AutoDuty.IPC
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
+
+    internal static class Wrath_IPCSubscriber
+    {
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("WrathCombo");
+    }
+
 
     internal class IPCSubscriber_Common
     {

@@ -70,7 +70,7 @@ namespace AutoDuty.Managers
                 Svc.Log.Error(ex.ToString());
             }
         }
-        
+
         public void Follow(PathAction action) => FollowHelper.SetFollow(GetObjectByName(action.Arguments[0]));
 
         public void SetBMSettings(PathAction action) => Plugin.SetBMSettings(bool.TryParse(action.Arguments[0], out bool defaultsettings) && defaultsettings);
@@ -91,17 +91,17 @@ namespace AutoDuty.Managers
                 actionArray = actions.Split(";");
             var invokeAction = false;
             var operation = new Dictionary<string, Func<object, object, bool>>
-            {
-              { ">", (x, y) => (float)x > (float)y },
-              { ">=", (x, y) => (float)x >= (float)y },
-              { "<", (x, y) => (float)x < (float)y },
-              { "<=", (x, y) => (float)x <= (float)y },
-              { "==", (x, y) => x == y },
-              { "!=", (x, y) => x != y }
-            };
+                            {
+                                { ">", (x,  y) => Convert.ToSingle(x) > Convert.ToSingle(y) },
+                                { ">=", (x, y) => Convert.ToSingle(x) >= Convert.ToSingle(y) },
+                                { "<", (x,  y) => Convert.ToSingle(x) < Convert.ToSingle(y) },
+                                { "<=", (x, y) => Convert.ToSingle(x) <= Convert.ToSingle(y) },
+                                { "==", (x, y) => x                   == y },
+                                { "!=", (x, y) => x                   != y }
+                            };
             var operatorValue = string.Empty;
             var operationResult = false;
-           
+
             switch (conditionArray[0])
             {
                 case "GetDistanceToPlayer":
@@ -117,10 +117,10 @@ namespace AutoDuty.Managers
                 case "ItemCount":
                     if (conditionArray.Length < 4) return;
                     if (!uint.TryParse(conditionArray[1], out var itemId)) return;
-                    if (!uint.TryParse(conditionArray[2], out var quantity)) return;
-                    if (!(operatorValue = conditionArray[2]).EqualsAny(operation.Keys)) return;
+                    if (!uint.TryParse(conditionArray[3], out var quantity)) return;
+                    if (!operation.TryGetValue(operatorValue = conditionArray[2], out var operationFunc)) return;
                     var itemCount = InventoryHelper.ItemCount(itemId);
-                    if (operationResult = operation[operatorValue](itemCount, quantity))
+                    if (operationResult = operationFunc(itemCount, quantity))
                         invokeAction = true;
                     Svc.Log.Info($"Condition: {itemCount}{operatorValue}{quantity} = {operationResult}");
                     break;
@@ -406,7 +406,7 @@ namespace AutoDuty.Managers
             if (gameObject == null || !gameObject.IsTargetable || !gameObject.IsValid() || !IsValid)
                 return true;
 
-            if (EzThrottler.Throttle("Interactable", 250))
+            if (EzThrottler.Throttle("Interactable", 1000))
             {
                 if (!TryGetObjectByDataId(gameObject?.DataId ?? 0, out gameObject)) return true;
 
@@ -474,7 +474,7 @@ namespace AutoDuty.Managers
                 dataIds.Add(TryGetObjectIdRegex(action.Arguments[0], out objectDataId) ? (uint.TryParse(objectDataId, out var dataId) ? dataId : 0) : 0);
 
             if (dataIds.All(x => x.Equals("0"))) return;
-            
+
             IGameObject? gameObject = null;
             Plugin.Action = $"Interactable";
             _taskManager.Enqueue(() => Player.Character->InCombat || (gameObject = Svc.Objects.Where(x => x.DataId.EqualsAny(dataIds) && x.IsTargetable).OrderBy(GetDistanceToPlayer).FirstOrDefault()) != null, "Interactable-GetGameObjectUnlessInCombat");
@@ -550,7 +550,7 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => BossCheck(), int.MaxValue, "Boss-BossCheck");
             _taskManager.Enqueue(() => { Plugin.StopForCombat = true; }, "Boss-SetStopForCombatTrue");
             _taskManager.Enqueue(() => { Plugin.BossObject = null; }, "Boss-ClearBossObject");
-            
+
             if (Plugin.Configuration.LootTreasure)
             {
                 _taskManager.DelayNext("Boss-TreasureDelay", 1000);

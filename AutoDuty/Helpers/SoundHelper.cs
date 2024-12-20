@@ -8,8 +8,7 @@ namespace AutoDuty.Helpers
         {
             if (!PlayEndSound)
                 return false;
-
-            UIModule.PlaySound((uint)SoundEnum);
+            UIGlobals.PlaySoundEffect((uint)SoundEnum);
             return true;
         }
     }
