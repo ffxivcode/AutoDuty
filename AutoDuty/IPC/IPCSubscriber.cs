@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 namespace AutoDuty.IPC
 {
     using System.ComponentModel;
+    using Windows;
     using ECommons.GameFunctions;
     using Helpers;
 
@@ -452,26 +453,19 @@ namespace AutoDuty.IPC
                 Register();
             if (_curLease.HasValue)
             {
-                if (GetAutoRotationState() != on)
-                    SetAutoRotationState(_curLease.Value, on);
+                SetAutoRotationState(_curLease.Value, on);
                 if (on)
                 {
-                    if (((bool) GetAutoRotationConfigState(AutoRotationConfigOption.InCombatOnly)))
-                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly, false);
-                    if (!(bool) GetAutoRotationConfigState(AutoRotationConfigOption.AutoRez))
-                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez, true);
-                    if (!(bool) GetAutoRotationConfigState(AutoRotationConfigOption.AutoRezDPSJobs))
-                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs, true);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly, false);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez, true);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs, true);
 
                     AutoRotationConfigDPSRotationSubset dpsConfig = Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
-                                                                        AutoRotationConfigDPSRotationSubset.Highest_Max :
-                                                                        AutoRotationConfigDPSRotationSubset.Tank_Target;
+                                                                        Plugin.Configuration.Wrath_TargetingTank :
+                                                                        Plugin.Configuration.Wrath_TargetingNonTank;
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.DPSRotationMode, dpsConfig);
 
-                    if ((AutoRotationConfigDPSRotationSubset) GetAutoRotationConfigState(AutoRotationConfigOption.DPSRotationMode) != dpsConfig)
-                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.DPSRotationMode, dpsConfig);
-
-                    if ((AutoRotationConfigHealerRotationSubset) GetAutoRotationConfigState(AutoRotationConfigOption.HealerRotationMode) != AutoRotationConfigHealerRotationSubset.Lowest_Current)
-                        SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.HealerRotationMode, AutoRotationConfigHealerRotationSubset.Lowest_Current);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.HealerRotationMode, AutoRotationConfigHealerRotationSubset.Lowest_Current);
                 }
             }
         }
