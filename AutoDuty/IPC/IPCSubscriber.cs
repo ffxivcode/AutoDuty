@@ -286,6 +286,7 @@ namespace AutoDuty.IPC
         public enum AutoRotationConfigDPSRotationSubset
         {
             Manual,
+            Lowest_Current,
             Highest_Max,
             Tank_Target,
             Nearest,
