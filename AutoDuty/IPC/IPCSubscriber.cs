@@ -1,6 +1,4 @@
-﻿using AutoDuty.Properties;
-using ECommons.Automation;
-using ECommons.DalamudServices;
+﻿using ECommons.DalamudServices;
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -16,7 +14,8 @@ using System.Threading.Tasks;
 namespace AutoDuty.IPC
 {
     using System.ComponentModel;
-    using Windows;
+    using System.Reflection;
+    using Dalamud.Plugin;
     using ECommons.GameFunctions;
     using Helpers;
 
@@ -351,7 +350,7 @@ namespace AutoDuty.IPC
         /// <remarks>
         ///     Each lease is limited to controlling <c>60</c> configurations.
         /// </remarks>
-        [EzIPC] private static readonly Func<string, string, Action<CancellationReason, string>?, Guid?> RegisterForLease;
+        //[EzIPC] private static readonly Func<string, string, Action<CancellationReason, string>?, Guid?> RegisterForLease;
 
         /// <summary>
         ///     Get the current state of the Auto-Rotation setting in Wrath Combo.
@@ -470,10 +469,44 @@ namespace AutoDuty.IPC
             }
         }
 
+        internal static bool Register()
+        {
+            if (_curLease == null)
+            {
+                if (DalamudReflector.TryGetDalamudPlugin("WrathCombo", out IDalamudPlugin pl, false, true))
+                {
+                    _curLease = Assembly.GetAssembly(pl.GetType())?.GetType("WrathCombo.Services.IPC.Provider")?.GetMethod("RegisterForLease", [typeof(string), typeof(string), typeof(Action<int, string>)])?.Invoke(
+                                 pl.GetType().GetField("IPC", (BindingFlags)60)!.GetValue(pl), ["AutoDuty", "AutoDuty", new Action<int, string>(CancelActions)]) as Guid?;
 
+                    if (_curLease == null && IsEnabled)
+                    {
+                        Plugin.Configuration.AutoManageRotationPluginState = false;
+                        Plugin.Configuration.Save();
+                    }
+                }
+            }
+            return _curLease != null;
+        }
+        
+        private static void CancelActions(int reason, string s)
+        {
+            switch ((CancellationReason) reason)
+            {
+                case CancellationReason.WrathUserManuallyCancelled:
+                    Plugin.Configuration.AutoManageRotationPluginState = false;
+                    Plugin.Configuration.Save();
+                    break;
+                case CancellationReason.LeaseePluginDisabled:
+                case CancellationReason.WrathPluginDisabled:
+                case CancellationReason.LeaseeReleased:
+                case CancellationReason.AllServicesSuspended:
+                default:
+                    break;
+            }
 
-        internal static bool Register() => 
-            (_curLease ??= RegisterForLease("AutoDuty", "AutoDuty", null)) != null;
+            _curLease = null;
+            Svc.Log.Info($"Wrath lease cancelled via {(CancellationReason) reason} for: {s}");
+        }
 
         internal static void Release()
         {
