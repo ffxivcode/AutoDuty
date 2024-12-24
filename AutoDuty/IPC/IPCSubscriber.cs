@@ -351,7 +351,7 @@ namespace AutoDuty.IPC
         /// <remarks>
         ///     Each lease is limited to controlling <c>60</c> configurations.
         /// </remarks>
-        //[EzIPC] private static readonly Func<string, string, Action<CancellationReason, string>?, Guid?> RegisterForLease;
+        [EzIPC] private static readonly Func<string, string, string?, Guid?> RegisterForLeaseWithCallback;
 
         /// <summary>
         ///     Get the current state of the Auto-Rotation setting in Wrath Combo.
@@ -441,19 +441,15 @@ namespace AutoDuty.IPC
 
         internal static void SetJobAutoReady()
         {
-            if (!_curLease.HasValue)
-                Register();
-            if(_curLease.HasValue)
-                SetCurrentJobAutoRotationReady(_curLease.Value);
+            if(Register())
+                SetCurrentJobAutoRotationReady(_curLease!.Value);
         }
 
         internal static void SetAutoMode(bool on)
         {
-            if (!_curLease.HasValue)
-                Register();
-            if (_curLease.HasValue)
+            if (Register())
             {
-                SetAutoRotationState(_curLease.Value, on);
+                SetAutoRotationState(_curLease!.Value, on);
                 if (on)
                 {
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly, false);
@@ -488,8 +484,8 @@ namespace AutoDuty.IPC
             }
             return _curLease != null;
         }
-        
-        private static void CancelActions(int reason, string s)
+
+        internal static void CancelActions(int reason, string s)
         {
             switch ((CancellationReason) reason)
             {

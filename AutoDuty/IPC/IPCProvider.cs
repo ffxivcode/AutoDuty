@@ -1,5 +1,6 @@
 ﻿using AutoDuty.Helpers;
 using ECommons.EzIpcManager;
+using System;
 #nullable disable
 
 namespace AutoDuty.IPC
@@ -21,6 +22,7 @@ namespace AutoDuty.IPC
         [EzIPC] public bool IsLooping() => Plugin.States.HasFlag(PluginState.Looping);
         [EzIPC] public bool IsStopped() => Plugin.Stage == Stage.Stopped;
         [EzIPC] public bool ContentHasPath(uint territoryType) => ContentHelper.DictionaryContent.ContainsKey(territoryType);
-        
+
+        //[EzIPC] public void WrathComboCallback(int reason, string s) => Wrath_IPCSubscriber.CancelActions(reason, s);
     }
 }
