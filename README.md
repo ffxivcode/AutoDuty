@@ -59,7 +59,7 @@ The following plugins are optional. They integrate with AutoDuty well and in som
 - [Deliveroo](https://plugins.carvel.li): Automatically turns in items to your Grand Company
 - [Gearsetter](https://plugins.carvel.li): Automatically finds equipment upgrades in your inventory
 - [AutoRetainer](https://love.puni.sh/ment.json): Automatically manages your retainers and submersibles as well as sends them out on ventures
-
+ 
 # Getting help
 
 When you've found a bug or think you have an issue with the plugin, please ask in [this channel](https://discord.com/channels/1001823907193552978/1236757595738476725) in the [Puni.sh Discord server](https://discord.gg/punishxiv). It might be a known issue or people might be able to help you quickly. Additionally, sometimes it might be an issue with one of the required plugins. Users in Discord will be able to help triage the issue and send you to the right place.
