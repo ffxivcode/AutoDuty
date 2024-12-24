@@ -8,6 +8,8 @@ using System.Reflection.Emit;
 
 namespace AutoDuty.Helpers
 {
+    using System.Linq;
+    using ECommons.DalamudServices;
     using ECommons.EzSharedDataManager;
     using static global::AutoDuty.Data.Enums;
 
@@ -147,15 +149,15 @@ namespace AutoDuty.Helpers
 
                     if (utilType != null)
                     {
-                        isReaperRear  = StaticMethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsReaperAnticipatedRear"));
-                        isSamuraiRear = StaticMethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsSamuraiAnticipatedRear"));
-                        isDragoonRear = StaticMethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsDragoonAnticipatedRear"));
-                        isViperRear   = StaticMethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsViperAnticipatedRear"));
+                        isReaperRear  = MethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsReaperAnticipatedRear"));
+                        isSamuraiRear = MethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsSamuraiAnticipatedRear"));
+                        isDragoonRear = MethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsDragoonAnticipatedRear"));
+                        isViperRear   = MethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsViperAnticipatedRear"));
 
-                        isReaperFlank  = StaticMethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsReaperAnticipatedFlank"));
-                        isSamuraiFlank = StaticMethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsSamuraiAnticipatedFlank"));
-                        isDragoonFlank = StaticMethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsDragoonAnticipatedFlank"));
-                        isViperFlank   = StaticMethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsViperAnticipatedFlank"));
+                        isReaperFlank  = MethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsReaperAnticipatedFlank"));
+                        isSamuraiFlank = MethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsSamuraiAnticipatedFlank"));
+                        isDragoonFlank = MethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsDragoonAnticipatedFlank"));
+                        isViperFlank   = MethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsViperAnticipatedFlank"));
 
                         avariceReady = true;
                     }
@@ -185,13 +187,69 @@ namespace AutoDuty.Helpers
 
 
 
-        public static DelegateType StaticMethodDelegate<DelegateType>(MethodInfo method) where DelegateType : Delegate
+        public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, Type delegateInstanceType = null) where DelegateType : Delegate
         {
-            if ((object)method == null) 
-                throw new ArgumentNullException("method");
-            Type delegateType = typeof(DelegateType);
-            if (method.IsStatic) 
-                return (DelegateType)Delegate.CreateDelegate(delegateType, method);
+            try
+            {
+                if ((object)method == null)
+                    throw new ArgumentNullException("method");
+                Type delegateType = typeof(DelegateType);
+                if (method.IsStatic)
+                    return (DelegateType)Delegate.CreateDelegate(delegateType, method);
+
+                Type declaringType = method.DeclaringType;
+
+                if (instance is null)
+                {
+                    ParameterInfo[] delegateParameters = delegateType.GetMethod("Invoke").GetParameters();
+                    delegateInstanceType ??= delegateParameters[0].ParameterType;
+
+                    if (declaringType is { IsInterface: true } && delegateInstanceType.IsValueType)
+                    {
+                        InterfaceMapping interfaceMapping = delegateInstanceType.GetInterfaceMap(declaringType);
+                        method        = interfaceMapping.TargetMethods[Array.IndexOf(interfaceMapping.InterfaceMethods, method)];
+                        declaringType = delegateInstanceType;
+                    }
+                }
+
+                ParameterInfo[] parameters     = method.GetParameters();
+                int             numParameters  = parameters.Length;
+                Type[]          parameterTypes = new Type[numParameters + 1];
+                parameterTypes[0] = declaringType;
+                for (int i = 0; i < numParameters; i++)
+                    parameterTypes[i + 1] = parameters[i].ParameterType;
+
+                Type[]        delegateArgsResolved = delegateType.GetGenericArguments();
+                Type[]        dynMethodReturn      = delegateArgsResolved.Length < parameterTypes.Length ? parameterTypes : delegateArgsResolved;
+                DynamicMethod dmd                  = new("OpenInstanceDelegate_" + method.Name, method.ReturnType, dynMethodReturn);
+                ILGenerator   ilGen                = dmd.GetILGenerator();
+                if (declaringType is { IsValueType: true } && delegateArgsResolved.Length > 0 && !delegateArgsResolved[0].IsByRef)
+
+                    ilGen.Emit(OpCodes.Ldarga_S, 0);
+                else
+                    ilGen.Emit(OpCodes.Ldarg_0);
+                for (int i = 1; i < parameterTypes.Length; i++)
+                {
+                    ilGen.Emit(OpCodes.Ldarg, i);
+
+                    if (parameterTypes[i].IsValueType && i < delegateArgsResolved.Length &&
+                        !delegateArgsResolved[i].IsValueType)
+
+                        ilGen.Emit(OpCodes.Unbox_Any, parameterTypes[i]);
+                }
+
+                ilGen.Emit(OpCodes.Call, method);
+                ilGen.Emit(OpCodes.Ret);
+                Svc.Log.Info(delegateType.FullName);
+                Svc.Log.Info(string.Join(" | ", delegateType.GenericTypeArguments.Select(t => t.FullName)));
+                Svc.Log.Info(string.Join(" | ", parameterTypes.Select(t => t.FullName)));
+                return (DelegateType)dmd.CreateDelegate(delegateType);
+            }
+            catch (Exception ex)
+            {
+                Svc.Log.Error(ex.ToString());
+            }
+
             return null;
         }
     }

@@ -1,6 +1,4 @@
-﻿using AutoDuty.Properties;
-using ECommons.Automation;
-using ECommons.DalamudServices;
+﻿using ECommons.DalamudServices;
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -15,6 +13,11 @@ using System.Threading.Tasks;
 
 namespace AutoDuty.IPC
 {
+    using System.ComponentModel;
+    using System.Reflection;
+    using Dalamud.Plugin;
+    using ECommons.GameFunctions;
+    using Helpers;
 
     internal static class AutoRetainer_IPCSubscriber
     {
@@ -235,7 +238,287 @@ namespace AutoDuty.IPC
 
     internal static class Wrath_IPCSubscriber
     {
+        /// <summary>
+        ///     Why a lease was cancelled.
+        /// </summary>
+        public enum CancellationReason
+        {
+            [Description("The Wrath user manually elected to revoke your lease.")]
+            WrathUserManuallyCancelled,
+
+            [Description("Your plugin was detected as having been disabled, " +
+                         "not that you're likely to see this.")]
+            LeaseePluginDisabled,
+
+            [Description("The Wrath plugin is being disabled.")]
+            WrathPluginDisabled,
+
+            [Description("Your lease was released by IPC call, " +
+                         "theoretically this was done by you.")]
+            LeaseeReleased,
+
+            [Description("IPC Services have been disabled remotely. "                 +
+                         "Please see the commit history for /res/ipc_status.txt. \n " +
+                         "https://github.com/PunishXIV/WrathCombo/commits/main/res/ipc_status.txt")]
+            AllServicesSuspended,
+        }
+
+        /// <summary>
+        ///     The subset of <see cref="AutoRotationConfig" /> options that can be set
+        ///     via IPC.
+        /// </summary>
+        public enum AutoRotationConfigOption
+        {
+            InCombatOnly, //bool
+            DPSRotationMode,
+            HealerRotationMode,
+            FATEPriority, //bool
+            QuestPriority,//bool
+            SingleTargetHPP,//int
+            AoETargetHPP,//int
+            SingleTargetRegenHPP,//int
+            ManageKardia,//bool
+            AutoRez,//bool
+            AutoRezDPSJobs,//bool
+            AutoCleanse,//bool
+        }
+
+        public enum AutoRotationConfigDPSRotationSubset
+        {
+            Manual,
+            Lowest_Current,
+            Highest_Max,
+            Tank_Target,
+            Nearest,
+        }
+
+        /// <summary>
+        ///     The subset of <see cref="AutoRotationConfig.HealerRotationMode" /> options
+        ///     that can be set via IPC.
+        /// </summary>
+        public enum AutoRotationConfigHealerRotationSubset
+        {
+            Manual,
+            Lowest_Current,
+        }
+
+        private static Guid? _curLease;
+
+
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("WrathCombo");
+
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Wrath_IPCSubscriber), "WrathCombo", SafeWrapper.IPCException);
+
+        /// <summary>
+        ///     Register your plugin for control of Wrath Combo.
+        /// </summary>
+        /// <param name="internalPluginName">
+        ///     The internal name of your plugin.<br />
+        ///     Needs to be the actual internal name of your plugin, as it will be used
+        ///     to check if your plugin is still loaded.
+        /// </param>
+        /// <param name="pluginName">
+        ///     The name you want shown to Wrath users for options your plugin controls.
+        /// </param>
+        /// <param name="leaseCancelledCallback">
+        ///     Your method to be called when your lease is cancelled, usually
+        ///     by the user.<br />
+        ///     The <see cref="CancellationReason" /> and a string with any additional
+        ///     info will be passed to your method.
+        /// </param>
+        /// <returns>
+        ///     Your lease ID to be used in <c>set</c> calls.<br />
+        ///     Or <c>null</c> if your lease was not registered, which can happen for
+        ///     multiple reasons:
+        ///     <list type="bullet">
+        ///         <item>
+        ///             <description>
+        ///                 A lease exists with the <c>pluginName</c>.
+        ///             </description>
+        ///         </item>
+        ///         <item>
+        ///             <description>
+        ///                 Your lease was revoked by the user recently.
+        ///             </description>
+        ///         </item>
+        ///         <item>
+        ///             <description>
+        ///                 The IPC service is currently disabled.
+        ///             </description>
+        ///         </item>
+        ///     </list>
+        /// </returns>
+        /// <remarks>
+        ///     Each lease is limited to controlling <c>60</c> configurations.
+        /// </remarks>
+        [EzIPC] private static readonly Func<string, string, string?, Guid?> RegisterForLeaseWithCallback;
+
+        /// <summary>
+        ///     Get the current state of the Auto-Rotation setting in Wrath Combo.
+        /// </summary>
+        /// <returns>Whether Auto-Rotation is enabled or disabled</returns>
+        /// <remarks>
+        ///     This is only the state of Auto-Rotation, not whether any combos are
+        ///     enabled in Auto-Mode.
+        /// </remarks>
+        [EzIPC] internal static readonly Func<bool> GetAutoRotationState;
+
+        /// <summary>
+        ///     Set the state of Auto-Rotation in Wrath Combo.
+        /// </summary>
+        /// <param name="lease">Your lease ID from <see cref="RegisterForLease" /></param>
+        /// <param name="enabled">
+        ///     Optionally whether to enable Auto-Rotation.<br />
+        ///     Only used to disable Auto-Rotation, as enabling it is the default.
+        /// </param>
+        /// <seealso cref="GetAutoRotationState" />
+        /// <remarks>
+        ///     This is only the state of Auto-Rotation, not whether any combos are
+        ///     enabled in Auto-Mode.
+        /// </remarks>
+        /// <value>+1 <c>set</c></value>
+        [EzIPC] private static readonly Action<Guid, bool> SetAutoRotationState;
+
+        /// <summary>
+        ///     Checks if the current job has a Single and Multi-Target combo configured
+        ///     that are enabled in Auto-Mode.
+        /// </summary>
+        /// <returns>
+        ///     If the user's current job is fully ready for Auto-Rotation.
+        /// </returns>
+        [EzIPC] internal static readonly Func<bool> IsCurrentJobAutoRotationReady;
+
+        /// <summary>
+        ///     Sets up the user's current job for Auto-Rotation.<br />
+        ///     This will enable the Single and Multi-Target combos, and enable them in
+        ///     Auto-Mode.<br />
+        ///     This will try to use the user's existing settings, only enabling default
+        ///     states for jobs that are not configured.
+        /// </summary>
+        /// <value>
+        ///     +2 <c>set</c><br />
+        ///     (can be up to 38 for non-simple jobs, the highest being healers)
+        /// </value>
+        /// <param name="lease">Your lease ID from <see cref="RegisterForLease" /></param>
+        /// <remarks>This can take a little bit to finish.</remarks>
+        [EzIPC] private static readonly Action<Guid> SetCurrentJobAutoRotationReady;
+
+        /// <summary>
+        ///     This cancels your lease, removing your control of Wrath Combo.
+        /// </summary>
+        /// <param name="lease">Your lease ID from <see cref="RegisterForLease" /></param>
+        /// <remarks>
+        ///     Will call your <c>leaseCancelledCallback</c> method if you provided one,
+        ///     with the reason <see cref="CancellationReason.LeaseeReleased" />.
+        /// </remarks>
+        [EzIPC] private static readonly Action<Guid> ReleaseControl;
+
+        /// <summary>
+        ///     Get the state of Auto-Rotation Configuration in Wrath Combo.
+        /// </summary>
+        /// <param name="option">The option to check the value of.</param>
+        /// <returns>The correctly-typed value of the configuration.</returns>
+        [EzIPC] private static readonly Func<AutoRotationConfigOption, object?> GetAutoRotationConfigState;
+
+        /// <summary>
+        ///     Set the state of Auto-Rotation Configuration in Wrath Combo.
+        /// </summary>
+        /// <param name="lease">Your lease ID from <see cref="RegisterForLease" /></param>
+        /// <param name="option">
+        ///     The Auto-Rotation Configuration option you want to set.<br />
+        ///     This is a subset of the Auto-Rotation options, flattened into a single
+        ///     enum.
+        /// </param>
+        /// <param name="value">
+        ///     The value you want to set the option to.<br />
+        ///     All valid options can be parsed from an int, or the exact expected types.
+        /// </param>
+        /// <value>+1 <c>set</c></value>
+        /// <seealso cref="AutoRotationConfigOption"/>
+        /// <seealso cref="AutoRotationConfigDPSRotationSubset"/>
+        /// <seealso cref="AutoRotationConfigHealerRotationSubset"/>
+        [EzIPC] private static readonly Action<Guid, AutoRotationConfigOption, object> SetAutoRotationConfigState;
+
+        internal static void SetJobAutoReady()
+        {
+            if(Register())
+                SetCurrentJobAutoRotationReady(_curLease!.Value);
+        }
+
+        internal static void SetAutoMode(bool on)
+        {
+            if (Register())
+            {
+                SetAutoRotationState(_curLease!.Value, on);
+                if (on)
+                {
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly, false);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez, true);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs, true);
+
+                    AutoRotationConfigDPSRotationSubset dpsConfig = Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
+                                                                        Plugin.Configuration.Wrath_TargetingTank :
+                                                                        Plugin.Configuration.Wrath_TargetingNonTank;
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.DPSRotationMode, dpsConfig);
+
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.HealerRotationMode, AutoRotationConfigHealerRotationSubset.Lowest_Current);
+                }
+            }
+        }
+
+        internal static bool Register()
+        {
+            if (_curLease == null)
+            {
+                if (DalamudReflector.TryGetDalamudPlugin("WrathCombo", out IDalamudPlugin pl, false, true))
+                {
+                    _curLease = Assembly.GetAssembly(pl.GetType())?.GetType("WrathCombo.Services.IPC.Provider")?.GetMethod("RegisterForLease", [typeof(string), typeof(string), typeof(Action<int, string>)])?.Invoke(
+                                 pl.GetType().GetField("IPC", (BindingFlags)60)!.GetValue(pl), ["AutoDuty", "AutoDuty", new Action<int, string>(CancelActions)]) as Guid?;
+
+                    if (_curLease == null && IsEnabled)
+                    {
+                        Plugin.Configuration.AutoManageRotationPluginState = false;
+                        Plugin.Configuration.Save();
+                    }
+                }
+            }
+            return _curLease != null;
+        }
+
+        internal static void CancelActions(int reason, string s)
+        {
+            switch ((CancellationReason) reason)
+            {
+                case CancellationReason.WrathUserManuallyCancelled:
+                    Plugin.Configuration.AutoManageRotationPluginState = false;
+                    Plugin.Configuration.Save();
+                    break;
+                case CancellationReason.LeaseePluginDisabled:
+                case CancellationReason.WrathPluginDisabled:
+                case CancellationReason.LeaseeReleased:
+                case CancellationReason.AllServicesSuspended:
+                default:
+                    break;
+            }
+
+            _curLease = null;
+            Svc.Log.Info($"Wrath lease cancelled via {(CancellationReason) reason} for: {s}");
+        }
+
+        internal static void Release()
+        {
+            if (_curLease.HasValue)
+            {
+                ReleaseControl(_curLease.Value);
+                _curLease = null;
+            }
+        }
+
+        internal static void Dispose()
+        {
+            Release();
+            IPCSubscriber_Common.DisposeAll(_disposalTokens);
+        }
     }
 
 

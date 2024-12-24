@@ -2,24 +2,11 @@
   "actions": [
     {
       "tag": 0,
-      "name": "ChatCommand",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        "/vbmai off"
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
       "name": "Boss",
       "position": {
-        "X": -39.06,
+        "X": -38.98,
         "Y": 114.71,
-        "Z": -4.01
+        "Z": -4.16
       },
       "arguments": [
         ""
@@ -28,115 +15,48 @@
     },
     {
       "tag": 0,
-      "name": "Wait",
-      "position": {
-        "X": -39.97,
-        "Y": 114.71,
-        "Z": 1.96
-      },
-      "arguments": [
-        "2000"
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": -40.24,
+        "Y": 114.71,
+        "Z": 3.47
       },
       "arguments": [
         "2007455"
       ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        "1000"
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "Wait",
-      "position": {
-        "X": -40.09,
-        "Y": 114.71,
-        "Z": 2.81
-      },
-      "arguments": [
-        "500"
-      ],
-      "note": ""
+      "note": "Cranial Hatch"
     },
     {
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": -40.24,
+        "Y": 114.71,
+        "Z": 3.47
       },
       "arguments": [
         "2007456"
       ],
-      "note": ""
+      "note": "Ingress"
     },
     {
       "tag": 0,
-      "name": "Wait",
+      "name": "MoveTo",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": 0.041660503,
+        "Y": -250.29001,
+        "Z": -239.65451
       },
-      "arguments": [
-        "9000"
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "Wait",
-      "position": {
-        "X": 0.75,
-        "Y": -250.29,
-        "Z": -241.15
-      },
-      "arguments": [
-        "2000"
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "ForceAttack",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        ""
-      ],
+      "arguments": [],
       "note": ""
     },
     {
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": -0.24,
+        "X": 0.04,
         "Y": -250.29,
-        "Z": -238.17
+        "Z": -239.65
       },
       "arguments": [
         ""
@@ -144,21 +64,12 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
-    "createdAt": 106,
+    "createdAt": 173,
     "changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
-        "change": "Converted to JSON Structure with Tags"
+        "version": 173,
+        "change": "kuku"
       }
     ],
     "notes": []

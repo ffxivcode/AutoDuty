@@ -313,6 +313,16 @@ public class Configuration : IPluginConfiguration
     internal bool       positionalAvarice = true;
     public   Positional PositionalEnum    = Positional.Any;
 
+    #region Wrath
+
+    public   bool                                                       Wrath_AutoSetupJobs { get; set; } = true;
+    internal Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset    Wrath_TargetingTank    = Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset.Highest_Max;
+    internal Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset    Wrath_TargetingNonTank = Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset.Tank_Target;
+
+
+    #endregion
+
+
     public void Save()
     {
         PluginInterface.SavePluginConfig(this);
@@ -347,11 +357,12 @@ public static class ConfigTab
 
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
-    private static bool overlayHeaderSelected = false;
-    private static bool dutyConfigHeaderSelected = false;
+    private static bool overlayHeaderSelected     = false;
+    private static bool dutyConfigHeaderSelected  = false;
     private static bool bmaiSettingHeaderSelected = false;
-    private static bool advModeHeaderSelected = false;
-    private static bool preLoopHeaderSelected = false;
+    private static bool wrathSettingHeaderSelected = false;
+    private static bool advModeHeaderSelected     = false;
+    private static bool preLoopHeaderSelected     = false;
     private static bool betweenLoopHeaderSelected = false;
     private static bool terminationHeaderSelected = false;
 
@@ -476,7 +487,73 @@ public static class ConfigTab
 
             if (ImGui.Checkbox("Auto Manage Rotation Plugin State", ref Configuration.AutoManageRotationPluginState))
                 Configuration.Save();
-            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Wrath, Rotation Solver or BossMod AutoRotation\n**AutoDuty will try to use them in that order");
+            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Wrath Combo, Rotation Solver or BossMod AutoRotation\n**AutoDuty will try to use them in that order");
+
+            if (Configuration.AutoManageRotationPluginState)
+            {
+                if (Wrath_IPCSubscriber.IsEnabled)
+                {
+                    ImGui.Indent();
+                    ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+                    var wrathSettingHeader = ImGui.Selectable("> Wrath Combo Config Options <", wrathSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+                    ImGui.PopStyleVar();
+                    if (ImGui.IsItemHovered())
+                        ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                    if (wrathSettingHeader)
+                        wrathSettingHeaderSelected = !wrathSettingHeaderSelected;
+
+                    if (wrathSettingHeaderSelected)
+                    {
+                        bool wrath_AutoSetupJobs = Configuration.Wrath_AutoSetupJobs;
+                        if (ImGui.Checkbox("Auto setup jobs for autorotation", ref wrath_AutoSetupJobs))
+                        {
+                            Configuration.Wrath_AutoSetupJobs = wrath_AutoSetupJobs;
+                            Configuration.Save();
+                        }
+                        ImGuiComponents.HelpMarker("If this is not enabled and a job is not setup in Wrath Combo, AD will instead use RSR or bm AutoRotation");
+
+                        ImGui.AlignTextToFramePadding();
+                        ImGui.Text("Targeting | Tank: ");
+                        ImGui.SameLine(0, 5);
+                        ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+                        if (ImGui.BeginCombo("##ConfigWrathTargetingTank", Configuration.Wrath_TargetingTank.ToCustomString()))
+                        {
+                            foreach (Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset)))
+                            {
+                                if(targeting == Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset.Tank_Target)
+                                    continue;
+
+                                if (ImGui.Selectable(targeting.ToCustomString()))
+                                {
+                                    Configuration.Wrath_TargetingTank = targeting;
+                                    Configuration.Save();
+                                }
+                            }
+                            ImGui.EndCombo();
+                        }
+
+                        ImGui.AlignTextToFramePadding();
+                        ImGui.Text("Targeting | Non-Tank: ");
+                        ImGui.SameLine(0, 5);
+                        ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+                        if (ImGui.BeginCombo("##ConfigWrathTargetingNonTank", Configuration.Wrath_TargetingNonTank.ToCustomString()))
+                        {
+                            foreach (Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset)))
+                            {
+                                if (ImGui.Selectable(targeting.ToCustomString()))
+                                {
+                                    Configuration.Wrath_TargetingNonTank = targeting;
+                                    Configuration.Save();
+                                }
+                            }
+                            ImGui.EndCombo();
+                        }
+
+                        ImGui.Separator();
+                    }
+                    ImGui.Unindent();
+                }
+            }
 
             if (ImGui.Checkbox("Auto Manage BossMod AI Settings", ref Configuration.autoManageBossModAISettings))
                 Configuration.Save();
@@ -489,7 +566,7 @@ public static class ConfigTab
                 var maxDistanceToTarget = Configuration.MaxDistanceToTargetFloat;
                 var MaxDistanceToTargetAoEFloat = Configuration.MaxDistanceToTargetAoEFloat;
                 var positionalRoleBased = Configuration.PositionalRoleBased;
-
+                ImGui.Indent();
                 ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
                 var bmaiSettingHeader = ImGui.Selectable("> BMAI Config Options <", bmaiSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
                 ImGui.PopStyleVar();
@@ -627,8 +704,10 @@ public static class ConfigTab
                         Configuration.Save();
                     }
                     ImGuiComponents.HelpMarker("Clicking this will reset your BMAI config to the default and *recommended* settings for AD");
+
                     ImGui.Separator();
-                }              
+                }
+                ImGui.Unindent();
             }
             if (ImGui.Checkbox("Auto Manage Vnav Align Camera", ref Configuration.AutoManageVnavAlignCamera))
                 Configuration.Save();
@@ -685,7 +764,7 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Using Alternative Rotation Plugin", ref Configuration.UsingAlternativeRotationPlugin))
                     Configuration.Save();
-                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Wrath, Rotation Solver or BossMod AutoRotation.");
+                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than Wrath Combo, Rotation Solver or BossMod AutoRotation.");
 
                 if (ImGui.Checkbox("Using Alternative Movement Plugin", ref Configuration.UsingAlternativeMovementPlugin))
                     Configuration.Save();
