@@ -411,6 +411,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 181,
+        "change": "Fixed Vnav issues with moving objects and sharp corners"
       }
     ],
     "notes": []
