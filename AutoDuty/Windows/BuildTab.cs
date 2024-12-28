@@ -401,7 +401,7 @@ namespace AutoDuty.Windows
                         _buildListSelected                                                = dragNext.Value;
                         ImGui.ResetMouseDragDelta();
                     }
-                    else if(!ImGui.IsMouseDown(ImGuiMouseButton.Left))
+                    else if(!ImGui.IsMouseDown(ImGuiMouseButton.Left) && !_showAddActionUI)
                     {
                         _dragDrop          = false;
                         _buildListSelected = -1;
