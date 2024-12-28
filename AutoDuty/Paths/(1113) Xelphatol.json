@@ -26,6 +26,17 @@
     },
     {
       "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 92.59085,
+        "Y": 25.356941,
+        "Z": -33.224667
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 154.57,
@@ -78,6 +89,30 @@
     },
     {
       "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 171.77386,
+        "Y": 55.625,
+        "Z": -72.24998
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 178.07,
+        "Y": 56.75,
+        "Z": -78.19
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -107,12 +142,49 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
+        "X": 187.15,
+        "Y": 85.67,
+        "Z": -86.48
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
         "X": 199.67,
         "Y": 85.65,
         "Z": -79.41
       },
       "arguments": [
         ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 178.08673,
+        "Y": 99.50001,
+        "Z": 3.459605
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 178.15,
+        "Y": 99.5,
+        "Z": 28.35
+      },
+      "arguments": [
+        "false"
       ],
       "note": ""
     },
@@ -194,14 +266,27 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": 341.2,
-        "Y": 144.67,
-        "Z": -163.86
+        "X": 343.44,
+        "Y": 144.88,
+        "Z": -165.26
       },
       "arguments": [
-        "5600"
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -272,14 +357,25 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": 412.9,
-        "Y": 151.93,
-        "Z": -297.61
+        "X": 412.3019,
+        "Y": 152.8067,
+        "Z": -300.4169
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
-        "6500"
+        "IsReady"
       ],
       "note": ""
     },
@@ -297,7 +393,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -316,6 +411,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 181,
+        "change": "Fixed Vnav issues with moving objects and sharp corners"
       }
     ],
     "notes": []
