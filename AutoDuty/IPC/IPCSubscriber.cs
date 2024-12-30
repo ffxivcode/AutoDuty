@@ -281,6 +281,7 @@ namespace AutoDuty.IPC
             AutoRez,//bool
             AutoRezDPSJobs,//bool
             AutoCleanse,//bool
+            IncludeNPCs,//bool
         }
 
         public enum AutoRotationConfigDPSRotationSubset
@@ -452,9 +453,10 @@ namespace AutoDuty.IPC
                 SetAutoRotationState(_curLease!.Value, on);
                 if (on)
                 {
-                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly, false);
-                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez, true);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly,   false);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez,        true);
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs, true);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.IncludeNPCs, true);
 
                     AutoRotationConfigDPSRotationSubset dpsConfig = Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
                                                                         Plugin.Configuration.Wrath_TargetingTank :
