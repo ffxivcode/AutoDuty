@@ -23,6 +23,7 @@ namespace AutoDuty.IPC
         [EzIPC] public bool IsStopped() => Plugin.Stage == Stage.Stopped;
         [EzIPC] public bool ContentHasPath(uint territoryType) => ContentHelper.DictionaryContent.ContainsKey(territoryType);
 
-        //[EzIPC] public void WrathComboCallback(int reason, string s) => Wrath_IPCSubscriber.CancelActions(reason, s);
+        //Callback for Wrath Combo Lease Cancel
+        [EzIPC] public void WrathComboCallback(int reason, string s) => Wrath_IPCSubscriber.CancelActions(reason, s);
     }
 }

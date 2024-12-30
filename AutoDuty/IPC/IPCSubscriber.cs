@@ -472,16 +472,12 @@ namespace AutoDuty.IPC
         {
             if (_curLease == null)
             {
-                if (DalamudReflector.TryGetDalamudPlugin("WrathCombo", out IDalamudPlugin pl, false, true))
-                {
-                    _curLease = Assembly.GetAssembly(pl.GetType())?.GetType("WrathCombo.Services.IPC.Provider")?.GetMethod("RegisterForLease", [typeof(string), typeof(string), typeof(Action<int, string>)])?.Invoke(
-                                 pl.GetType().GetField("IPC", (BindingFlags)60)!.GetValue(pl), ["AutoDuty", "AutoDuty", new Action<int, string>(CancelActions)]) as Guid?;
+                _curLease = RegisterForLeaseWithCallback("AutoDuty", "AutoDuty", null);
 
-                    if (_curLease == null && IsEnabled)
-                    {
-                        Plugin.Configuration.AutoManageRotationPluginState = false;
-                        Plugin.Configuration.Save();
-                    }
+                if (_curLease == null && IsEnabled)
+                {
+                    Plugin.Configuration.AutoManageRotationPluginState = false;
+                    Plugin.Configuration.Save();
                 }
             }
             return _curLease != null;
