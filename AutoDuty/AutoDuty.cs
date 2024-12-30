@@ -967,10 +967,10 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (Indexer == -1 || Indexer >= Actions.Count)
             return;
-
-        if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin && !Svc.Condition[ConditionFlag.OccupiedInCutSceneEvent])
+        
+        if (this.Configuration is { AutoManageRotationPluginState: true, UsingAlternativeRotationPlugin: false } && !Svc.Condition[ConditionFlag.OccupiedInCutSceneEvent])
             SetRotationPluginSettings(true);
-
+        
         if (!TaskManager.IsBusy)
         {
             Stage = Stage.Reading_Path;
@@ -1187,15 +1187,15 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (Wrath_IPCSubscriber.IsEnabled)
         {
-            bool wrathRotation = true;
+            bool wrathRotationReady = true;
             if (on)
                 if (!Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady())
                     if (this.Configuration.Wrath_AutoSetupJobs)
                         Wrath_IPCSubscriber.SetJobAutoReady();
                     else
-                        wrathRotation = false;
+                        wrathRotationReady = false;
 
-            if (!on || wrathRotation)
+            if (!on || wrathRotationReady)
             {
                 Wrath_IPCSubscriber.SetAutoMode(on);
                 foundRotation = true;
