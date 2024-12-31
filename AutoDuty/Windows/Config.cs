@@ -317,7 +317,7 @@ public class Configuration : IPluginConfiguration
 
     public   bool                                                       Wrath_AutoSetupJobs { get; set; } = true;
     internal Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset    Wrath_TargetingTank    = Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset.Highest_Max;
-    internal Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset    Wrath_TargetingNonTank = Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset.Tank_Target;
+    internal Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset    Wrath_TargetingNonTank = Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset.Lowest_Current;
 
 
     #endregion
