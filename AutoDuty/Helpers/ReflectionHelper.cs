@@ -11,6 +11,7 @@ namespace AutoDuty.Helpers
     using System.Linq;
     using ECommons.DalamudServices;
     using ECommons.EzSharedDataManager;
+    using IPC;
     using static global::AutoDuty.Data.Enums;
 
     internal class ReflectionHelper
@@ -78,6 +79,35 @@ namespace AutoDuty.Helpers
             }
 
             internal static void RotationStop() => SetState(StateTypeEnum.Off);
+        }
+
+        internal static class BossModReborn_Reflection
+        {
+            internal static readonly object configInstance;
+
+            internal static FieldRef<object, float> MaxDistanceToTarget;
+
+            static BossModReborn_Reflection()
+            {
+                try
+                {
+                    if (BossModReborn_IPCSubscriber.IsEnabled && DalamudReflector.TryGetDalamudPlugin("BossModReborn", out var pl, false, true))
+                    {
+                        Assembly assembly = Assembly.GetAssembly(pl.GetType());
+                        Type configType = assembly.GetType("BossMod.AI.AIConfig");
+                        FieldInfo fieldInfo = configType.GetField("MaxDistanceToTarget", (BindingFlags)60);
+                        MaxDistanceToTarget = FieldRefAccess<object, float>(fieldInfo, false);
+                        Type managerType = assembly.GetType("BossMod.AI.AIManager");
+                        object instanceField = managerType.GetField("Instance").GetValue(null);
+                        FieldInfo field = managerType.GetField("_config", (BindingFlags)60);
+                        configInstance = field.GetValue(instanceField);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Svc.Log.Error(ex.ToString());
+                }
+            }
         }
 
         internal static class Avarice_Reflection
@@ -183,9 +213,31 @@ namespace AutoDuty.Helpers
             return (FieldRef<F>)dm.CreateDelegate(typeof(FieldRef<F>));
         }
 
+        public delegate ref F FieldRef<in T, F>(T instance = default);
+
+        internal static FieldRef<T, F> FieldRefAccess<T, F>(FieldInfo fieldInfo, bool needCastclass)
+        {
+            var delegateInstanceType = typeof(T);
+            var declaringType        = fieldInfo.DeclaringType;
+
+            var dm = new DynamicMethod($"__refget_{delegateInstanceType.Name}_fi_{fieldInfo.Name}",
+                                       typeof(F).MakeByRefType(), [delegateInstanceType]);
+
+            var il = dm.GetILGenerator();
+
+            il.Emit(OpCodes.Ldarg_0);
+
+            if (needCastclass)
+                il.Emit(OpCodes.Castclass, declaringType);
+            il.Emit(OpCodes.Ldflda, fieldInfo);
+
+            il.Emit(OpCodes.Ret);
+
+            return dm.CreateDelegate<FieldRef<T, F>>();
+        }
+
+
         public delegate bool StaticBoolMethod();
-
-
 
         public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, Type delegateInstanceType = null) where DelegateType : Delegate
         {

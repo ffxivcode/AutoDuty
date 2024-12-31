@@ -136,7 +136,9 @@ namespace AutoDuty.IPC
         public static void SetRange(float range)
         {
             if(IPCSubscriber_Common.IsReady("BossModReborn"))
-                Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig MaxDistanceToTarget {range}");
+                if (Math.Abs(ReflectionHelper.BossModReborn_Reflection.MaxDistanceToTarget(ReflectionHelper.BossModReborn_Reflection.configInstance) - range) > 0.1)
+                    ReflectionHelper.BossModReborn_Reflection.MaxDistanceToTarget(ReflectionHelper.BossModReborn_Reflection.configInstance) = range;
+
             Presets_AddTransientStrategy("AutoDuty",         "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
             Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
         }
