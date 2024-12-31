@@ -14,7 +14,7 @@ public unsafe class Overlay : Window
 {
     public Overlay() : base("AutoDuty Overlay", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize)
     {
-
+        this.RespectCloseHotkey = false;
     }
 
     private static string hideText = " ";
@@ -116,10 +116,7 @@ public unsafe class Overlay : Window
                     Plugin.Configuration.Save();
                 }
 
-            if (ImGui.IsItemHovered())
-                    hideTextAction = "Hide";
-                else
-                    hideTextAction = "";
+                hideTextAction = ImGui.IsItemHovered() ? "Hide" : "";
 
                 ImGui.SameLine(0, 5);
                 ImGui.TextColored(new Vector4(0, 255f, 0, 1), Plugin.Action.Length > 40 ? Plugin.Action[..37] + "..." : Plugin.Action);
