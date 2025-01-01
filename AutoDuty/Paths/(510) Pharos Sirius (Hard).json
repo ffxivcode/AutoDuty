@@ -87,9 +87,9 @@
         "Z": 0
       },
       "arguments": [
-        "Candlekeep Key"
+        "2006467"
       ],
-      "note": ""
+      "note": "Candlekeep Key"
     },
     {
       "tag": 0,
@@ -113,9 +113,9 @@
         "Z": 0
       },
       "arguments": [
-        "Locked Door"
+        "2006470"
       ],
-      "note": ""
+      "note": "Locked Door"
     },
     {
       "tag": 0,
@@ -158,14 +158,14 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": 61.35,
-        "Y": 30,
-        "Z": -56.2
+        "X": 69.55,
+        "Y": 13.37,
+        "Z": -57.51
       },
       "arguments": [
-        "2000"
+        "false"
       ],
       "note": ""
     },
@@ -217,7 +217,7 @@
         "Z": -194.51
       },
       "arguments": [
-        ""
+        "10000"
       ],
       "note": ""
     },
@@ -230,7 +230,7 @@
         "Z": -166.27
       },
       "arguments": [
-        ""
+        "10000"
       ],
       "note": ""
     },
@@ -241,6 +241,19 @@
         "X": -123.99,
         "Y": 2.13,
         "Z": -164.21
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 5,
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -132.73,
+        "Y": 2.18,
+        "Z": -200.09
       },
       "arguments": [
         ""
@@ -287,7 +300,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -302,6 +314,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 181,
+        "change": "Updated Interaction IDs"
       }
     ],
     "notes": []
