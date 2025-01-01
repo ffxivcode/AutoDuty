@@ -381,6 +381,17 @@
     },
     {
       "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 341.08862,
+        "Y": 166.6538,
+        "Z": -408.063
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 318.84,
@@ -415,6 +426,10 @@
       {
         "version": 181,
         "change": "Fixed Vnav issues with moving objects and sharp corners"
+      },
+      {
+        "version": 181,
+        "change": "BMR causing boss confusion with mini-boss"
       }
     ],
     "notes": []
