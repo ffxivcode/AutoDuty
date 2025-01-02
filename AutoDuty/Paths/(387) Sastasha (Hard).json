@@ -43,14 +43,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": 184.13,
+        "Y": 32.16,
+        "Z": -25.09
       },
       "arguments": [
-        "Drainage Pump"
+        "2004406"
       ],
-      "note": ""
+      "note": "Drainage Pump"
     },
     {
       "tag": 0,
@@ -134,14 +134,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": -97.63,
+        "Y": 15.5,
+        "Z": 89.16
       },
       "arguments": [
-        "Door to Dead Man\u0027s Drink"
+        "2004424"
       ],
-      "note": ""
+      "note": "Door to Dead Man\u0027s Drink"
     },
     {
       "tag": 0,
@@ -222,23 +222,9 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
-    "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
-        "change": "Converted to JSON Structure with Tags"
-      }
-    ],
+    "createdAt": 182,
+    "changelog": [],
     "notes": []
   }
 }

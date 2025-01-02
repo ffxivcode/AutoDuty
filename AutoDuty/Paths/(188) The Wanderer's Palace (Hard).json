@@ -134,14 +134,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": 76.63,
+        "Y": -12,
+        "Z": -317.66
       },
       "arguments": [
-        "Asylum Key"
+        "2004549"
       ],
-      "note": ""
+      "note": "Asylum Key"
     },
     {
       "tag": 0,
@@ -160,14 +160,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": 73.89,
+        "Y": -12,
+        "Z": -316.15
       },
       "arguments": [
-        "Asylum Cell"
+        "2004556"
       ],
-      "note": ""
+      "note": "Asylum Cell"
     },
     {
       "tag": 0,
@@ -186,14 +186,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": 73.89,
+        "Y": -12,
+        "Z": -316.15
       },
       "arguments": [
-        "Asylum Cell"
+        "2004557"
       ],
-      "note": ""
+      "note": "Asylum Cell"
     },
     {
       "tag": 0,
@@ -225,14 +225,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": 123.76,
+        "Y": -12,
+        "Z": -340.31
       },
       "arguments": [
-        "Drainage Valve"
+        "2004562"
       ],
-      "note": ""
+      "note": "Drainage Valve"
     },
     {
       "tag": 0,
@@ -251,14 +251,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": 157.14,
+        "Y": -8,
+        "Z": -351.02
       },
       "arguments": [
-        "Nymian Device"
+        "2004565"
       ],
-      "note": ""
+      "note": "Nymian Device"
     },
     {
       "tag": 0,
@@ -313,23 +313,9 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
-    "createdAt": 106,
-    "changelog": [
-      {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
-        "change": "Converted to JSON Structure with Tags"
-      }
-    ],
+    "createdAt": 182,
+    "changelog": [],
     "notes": []
   }
 }
