@@ -223,8 +223,25 @@
     }
   ],
   "meta": {
-    "createdAt": 182,
-    "changelog": [],
+    "createdAt": 106,
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 182,
+        "change": "Updated Interaction ids"
+      }
+    ],
     "notes": []
   }
 }
