@@ -343,7 +343,7 @@
       },
       {
         "version": 182,
-        "change": "Updated interaction ids"
+        "change": "Updated interaction ids and added WaitForCombat step"
       }
     ],
     "notes": []
