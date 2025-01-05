@@ -54,6 +54,19 @@
     },
     {
       "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 79.26,
+        "Y": -10.16,
+        "Z": 27.07
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 43.84,
