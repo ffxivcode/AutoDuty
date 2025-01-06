@@ -171,14 +171,38 @@
     },
     {
       "tag": 0,
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -156.68,
-        "Y": -51.71,
-        "Z": -208.91
+        "X": -152.41342,
+        "Y": -51.581512,
+        "Z": -208.84912
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -170.14,
+        "Y": -51.79,
+        "Z": -209.15
       },
       "arguments": [
-        "5000"
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -222,12 +246,12 @@
       "note": ""
     },
     {
-      "tag": 0,
-      "name": "MoveTo",
+      "tag": 5,
+      "name": "TreasureCoffer",
       "position": {
-        "X": -216.64,
+        "X": -216.38,
         "Y": -210,
-        "Z": -49.38
+        "Z": -49.75
       },
       "arguments": [
         ""
@@ -261,10 +285,10 @@
       "note": ""
     },
     {
-      "tag": 0,
-      "name": "MoveTo",
+      "tag": 5,
+      "name": "TreasureCoffer",
       "position": {
-        "X": -78.21,
+        "X": -78.31,
         "Y": -210,
         "Z": -92.33
       },
@@ -326,12 +350,12 @@
       "note": ""
     },
     {
-      "tag": 0,
-      "name": "MoveTo",
+      "tag": 5,
+      "name": "TreasureCoffer",
       "position": {
-        "X": 110.41,
+        "X": 110.31,
         "Y": -189.75,
-        "Z": -214.27
+        "Z": -214.02
       },
       "arguments": [
         ""
@@ -353,14 +377,14 @@
     },
     {
       "tag": 0,
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
         "X": 100.22,
         "Y": -189.9,
         "Z": -230.67
       },
       "arguments": [
-        "8500"
+        "IsReady"
       ],
       "note": ""
     },
@@ -378,12 +402,12 @@
       "note": ""
     },
     {
-      "tag": 0,
-      "name": "MoveTo",
+      "tag": 5,
+      "name": "TreasureCoffer",
       "position": {
-        "X": 137.06,
+        "X": 136.98,
         "Y": -184.9,
-        "Z": -335.19
+        "Z": -334.97
       },
       "arguments": [
         ""
@@ -431,14 +455,14 @@
     },
     {
       "tag": 0,
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
         "X": 100.39,
         "Y": -194.9,
         "Z": -363.66
       },
       "arguments": [
-        "7500"
+        "IsReady"
       ],
       "note": ""
     },
@@ -488,6 +512,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 182,
+        "change": "Adjusted Wait and AutoMoves"
       }
     ],
     "notes": []
