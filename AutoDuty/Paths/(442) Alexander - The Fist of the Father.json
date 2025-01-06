@@ -2,6 +2,19 @@
   "actions": [
     {
       "tag": 0,
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "/vnav rebuild"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 0.09,
@@ -196,13 +209,16 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 156,
     "changelog": [
       {
         "version": 169,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 182,
+        "change": ""
       }
     ],
     "notes": []
