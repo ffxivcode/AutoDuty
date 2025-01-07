@@ -1,0 +1,33 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 57.99951,
+        "Y": -8.999996,
+        "Z": -41.794495
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 57.61,
+        "Y": -9,
+        "Z": -63.12
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 182,
+    "changelog": [],
+    "notes": []
+  }
+}
