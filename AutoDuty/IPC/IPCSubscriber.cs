@@ -271,28 +271,28 @@ namespace AutoDuty.IPC
         /// </summary>
         public enum AutoRotationConfigOption
         {
-            InCombatOnly, //bool
-            DPSRotationMode,
-            HealerRotationMode,
-            FATEPriority, //bool
-            QuestPriority,//bool
-            SingleTargetHPP,//int
-            AoETargetHPP,//int
-            SingleTargetRegenHPP,//int
-            ManageKardia,//bool
-            AutoRez,//bool
-            AutoRezDPSJobs,//bool
-            AutoCleanse,//bool
-            IncludeNPCs,//bool
+            InCombatOnly = 0, //bool
+            DPSRotationMode = 1,
+            HealerRotationMode = 2,
+            FATEPriority = 3, //bool
+            QuestPriority = 4,//bool
+            SingleTargetHPP = 5,//int
+            AoETargetHPP = 6,//int
+            SingleTargetRegenHPP = 7,//int
+            ManageKardia = 8,//bool
+            AutoRez = 9,//bool
+            AutoRezDPSJobs = 10,//bool
+            AutoCleanse = 11,//bool
+            IncludeNPCs = 12,//bool
         }
 
         public enum AutoRotationConfigDPSRotationSubset
         {
-            Manual,
-            Lowest_Current,
-            Highest_Max,
-            Tank_Target,
-            Nearest,
+            Manual = 0,
+            Lowest_Current = 4,
+            Highest_Max = 1,
+            Tank_Target = 5,
+            Nearest = 6,
         }
 
         /// <summary>
@@ -301,8 +301,8 @@ namespace AutoDuty.IPC
         /// </summary>
         public enum AutoRotationConfigHealerRotationSubset
         {
-            Manual,
-            Lowest_Current,
+            Manual = 0,
+            Lowest_Current = 2
         }
 
         private static Guid? _curLease;
