@@ -4,7 +4,9 @@ using ECommons.DalamudServices;
 
 namespace AutoDuty.Helpers
 {
+    using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
 
     internal static class ConfigHelper
     {
@@ -52,6 +54,37 @@ namespace AutoDuty.Helpers
                         Svc.Log.Error($"Unable to set config setting: {field.Name.Replace(">k__BackingField", "").Replace("<", "")}, value must be of type: {field.FieldType.ToString().Replace("System.", "")}");
                         return false;
                     }
+                }
+                else if (configType == typeof(TrustMemberName?[]))
+                {
+                    string[] memberNames = configValue.Split(",");
+
+                    if (memberNames.Length > 3)
+                    {
+                        Svc.Log.Error("Unable to set more than 3 trust members");
+                        return false;
+                    }
+
+                    List<TrustMemberName> members = [];
+
+                    foreach (string memberName in memberNames)
+                        if (Enum.TryParse(typeof(TrustMemberName), memberName, true, out object? member))
+                            members.Add((TrustMemberName)member);
+
+                    if (members.Count <= 0)
+                    {
+                        Svc.Log.Error("No trust members recognized");
+                        return false;
+                    }
+
+                    TrustMemberName?[] value = (TrustMemberName?[]) field.GetValue(Plugin.Configuration);
+
+                    for (int i = 0; i < members.Count; i++)
+                    {
+                        TrustMemberName member = members[i];
+                        value[i] = member;
+                    }
+                    field.SetValue(Plugin.Configuration, value);
                 }
                 else if(configType.GetInterface(nameof(IConvertible)) != null)
                 {
