@@ -190,10 +190,11 @@ public sealed class AutoDuty : IDalamudPlugin
     private IGameObject? treasureCofferGameObject = null;
     //private readonly TinyMessageBus _messageBusSend = new("AutoDutyBroadcaster");
     //private readonly TinyMessageBus _messageBusReceive = new("AutoDutyBroadcaster");
-    private bool _recentlyWatchedCutscene = false;
-    private bool _lootTreasure;
-    private SettingsActive _settingsActive = SettingsActive.None;
-    private SettingsActive _bareModeSettingsActive = SettingsActive.None;
+    private         bool           _recentlyWatchedCutscene = false;
+    private         bool           _lootTreasure;
+    private         SettingsActive _settingsActive         = SettingsActive.None;
+    private         SettingsActive _bareModeSettingsActive = SettingsActive.None;
+    public readonly bool           isDev;
 
     public AutoDuty()
     {
@@ -212,6 +213,9 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             Configuration.Version = (PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion).Revision;
             Configuration.Save();
+
+            this.isDev = PluginInterface.IsDev;
+
             if (!_configDirectory.Exists)
                 _configDirectory.Create();
             if (!PathsDirectory.Exists)

@@ -279,11 +279,14 @@ namespace AutoDuty.Windows
                 ImGui.SameLine();
                 if (ImGuiEx.ButtonWrapped("Copy to Clipboard"))
                     ImGui.SetClipboardText(_action?.ToCustomString());
-                ImGui.SameLine();
-                using (ImRaii.Disabled(!Player.Available || _action == null))
+                if (Plugin.isDev)
                 {
-                    if (ImGuiEx.ButtonWrapped("Teleport To"))
-                        Player.GameObject->SetPosition(_action!.Position.X, _action.Position.Y, _action.Position.Z);
+                    ImGui.SameLine();
+                    using (ImRaii.Disabled(!Player.Available || _action == null))
+                    {
+                        if (ImGuiEx.ButtonWrapped("Teleport To"))
+                            Player.GameObject->SetPosition(_action!.Position.X, _action.Position.Y, _action.Position.Z);
+                    }
                 }
             }
             using (ImRaii.Disabled(_noArgument || _comment))
