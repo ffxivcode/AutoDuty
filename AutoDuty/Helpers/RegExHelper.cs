@@ -12,6 +12,9 @@ namespace AutoDuty.Helpers
 
         [GeneratedRegex(@"([0-9]{3,})", RegexOptions.CultureInvariant)]
         public static partial Regex ObjectIdRegex();
+
+        [GeneratedRegex(@"""([^""]+)""|\S+", RegexOptions.CultureInvariant)]
+        public static partial Regex ArgumentParserRegex();
     }
 
     public static class PathIdentifiers
