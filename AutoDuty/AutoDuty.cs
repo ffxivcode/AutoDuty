@@ -1564,7 +1564,7 @@ public sealed class AutoDuty : IDalamudPlugin
             match = match.NextMatch();
         }
 
-        string[] argsArray = matches.ToArray();
+        string[] argsArray = matches.Count > 0 ? matches.ToArray() : [string.Empty];
 
         switch (argsArray[0])
         {
