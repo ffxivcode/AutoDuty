@@ -114,10 +114,12 @@ namespace AutoDuty.Windows
                     Plugin.LoadPath();
                 else
                 {
+                    ImGui.AlignTextToFramePadding();
                     var progress = VNavmesh_IPCSubscriber.IsEnabled ? VNavmesh_IPCSubscriber.Nav_BuildProgress() : 0;
                     if (progress >= 0)
                     {
                         ImGui.Text($"{Plugin.CurrentTerritoryContent.Name} Mesh: Loading: ");
+                        ImGui.SameLine();
                         ImGui.ProgressBar(progress, new Vector2(200, 0));
                     }
                     else
