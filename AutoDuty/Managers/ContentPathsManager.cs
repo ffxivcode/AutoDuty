@@ -43,7 +43,7 @@ namespace AutoDuty.Managers
 
             public DutyPath? SelectPath(out int pathIndex, Job? job = null)
             {
-                job ??= Player.Object.GetJob();
+                job ??= Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
 
                 if (job == null)
                 {

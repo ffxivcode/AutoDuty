@@ -345,7 +345,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 return;
             }
 
-            ContentPathsManager.DutyPath? path = CurrentPath < 0 && Player.Available ?
+            ContentPathsManager.DutyPath? path = CurrentPath < 0 ?
                                                      container.SelectPath(out CurrentPath) :
                                                      container.Paths[CurrentPath > -1 ? CurrentPath : 0];
 
