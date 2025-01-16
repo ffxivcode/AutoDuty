@@ -362,8 +362,6 @@
   "meta": {
     "createdAt": 172,
     "changelog": [],
-    "notes": [
-      "Testing: Using Navigation and IsReady instead of AutoMove and Wait"
-    ]
+    "notes": []
   }
 }
