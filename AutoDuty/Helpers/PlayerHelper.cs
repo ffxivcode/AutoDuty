@@ -111,7 +111,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe bool IsMoving => AgentMap.Instance()->IsPlayerMoving == 1;
 
-        internal static unsafe bool InCombat => Player.Character->InCombat;
+        internal static unsafe bool InCombat => Svc.Condition[ConditionFlag.InCombat];
 
         /*internal static unsafe short GetCurrentItemLevelFromGearSet(int gearsetId = -1, bool updateGearsetBeforeCheck = true)
         {

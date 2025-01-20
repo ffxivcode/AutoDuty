@@ -286,23 +286,31 @@ namespace AutoDuty.IPC
             IncludeNPCs = 12,//bool
         }
 
-        public enum AutoRotationConfigDPSRotationSubset
+        public enum DPSRotationMode
         {
-            Manual = 0,
-            Lowest_Current = 4,
-            Highest_Max = 1,
-            Tank_Target = 5,
-            Nearest = 6,
+            Manual          = 0,
+            Highest_Max     = 1,
+            Lowest_Max      = 2,
+            Highest_Current = 3,
+            Lowest_Current  = 4,
+            Tank_Target     = 5,
+            Nearest         = 6,
+            Furthest        = 7,
         }
 
         /// <summary>
         ///     The subset of <see cref="AutoRotationConfig.HealerRotationMode" /> options
         ///     that can be set via IPC.
         /// </summary>
-        public enum AutoRotationConfigHealerRotationSubset
+        public enum HealerRotationMode
         {
-            Manual = 0,
-            Lowest_Current = 2
+            Manual          = 0,
+            Highest_Current = 1,
+            Lowest_Current  = 2
+            //Self_Priority,
+            //Tank_Priority,
+            //Healer_Priority,
+            //DPS_Priority,
         }
 
         private static Guid? _curLease;
@@ -438,8 +446,8 @@ namespace AutoDuty.IPC
         /// </param>
         /// <value>+1 <c>set</c></value>
         /// <seealso cref="AutoRotationConfigOption"/>
-        /// <seealso cref="AutoRotationConfigDPSRotationSubset"/>
-        /// <seealso cref="AutoRotationConfigHealerRotationSubset"/>
+        /// <seealso cref="DPSRotationMode"/>
+        /// <seealso cref="HealerRotationMode"/>
         [EzIPC] private static readonly Action<Guid, AutoRotationConfigOption, object> SetAutoRotationConfigState;
 
         internal static void SetJobAutoReady()
@@ -460,12 +468,12 @@ namespace AutoDuty.IPC
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs, true);
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.IncludeNPCs, true);
 
-                    AutoRotationConfigDPSRotationSubset dpsConfig = Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
+                    DPSRotationMode dpsConfig = Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
                                                                         Plugin.Configuration.Wrath_TargetingTank :
                                                                         Plugin.Configuration.Wrath_TargetingNonTank;
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.DPSRotationMode, dpsConfig);
 
-                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.HealerRotationMode, AutoRotationConfigHealerRotationSubset.Lowest_Current);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.HealerRotationMode, HealerRotationMode.Lowest_Current);
                 }
             }
         }
