@@ -317,8 +317,8 @@ public class Configuration : IPluginConfiguration
     #region Wrath
 
     public   bool                                                       Wrath_AutoSetupJobs { get; set; } = true;
-    internal Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset    Wrath_TargetingTank    = Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset.Highest_Max;
-    internal Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset    Wrath_TargetingNonTank = Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset.Lowest_Current;
+    internal Wrath_IPCSubscriber.DPSRotationMode    Wrath_TargetingTank    = Wrath_IPCSubscriber.DPSRotationMode.Highest_Max;
+    internal Wrath_IPCSubscriber.DPSRotationMode    Wrath_TargetingNonTank = Wrath_IPCSubscriber.DPSRotationMode.Lowest_Current;
 
 
     #endregion
@@ -519,9 +519,9 @@ public static class ConfigTab
                         ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
                         if (ImGui.BeginCombo("##ConfigWrathTargetingTank", Configuration.Wrath_TargetingTank.ToCustomString()))
                         {
-                            foreach (Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset)))
+                            foreach (Wrath_IPCSubscriber.DPSRotationMode targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.DPSRotationMode)))
                             {
-                                if(targeting == Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset.Tank_Target)
+                                if(targeting == Wrath_IPCSubscriber.DPSRotationMode.Tank_Target)
                                     continue;
 
                                 if (ImGui.Selectable(targeting.ToCustomString()))
@@ -539,7 +539,7 @@ public static class ConfigTab
                         ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
                         if (ImGui.BeginCombo("##ConfigWrathTargetingNonTank", Configuration.Wrath_TargetingNonTank.ToCustomString()))
                         {
-                            foreach (Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.AutoRotationConfigDPSRotationSubset)))
+                            foreach (Wrath_IPCSubscriber.DPSRotationMode targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.DPSRotationMode)))
                             {
                                 if (ImGui.Selectable(targeting.ToCustomString()))
                                 {
