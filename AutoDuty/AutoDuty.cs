@@ -1212,14 +1212,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (on)
                 if (!Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady())
                     if (this.Configuration.Wrath_AutoSetupJobs)
-                    {
                         Wrath_IPCSubscriber.SetJobAutoReady();
-                        if (!Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady())
-                        {
-                            Wrath_IPCSubscriber.Release();
-                            wrathRotationReady = false;
-                        }
-                    }
                     else
                         wrathRotationReady = false;
 
