@@ -10,6 +10,7 @@ using ECommons.GameFunctions;
 
 namespace AutoDuty.Helpers
 {
+    using ECommons.Automation;
     using Lumina.Excel.Sheets;
 
     internal static class MovementHelper
@@ -73,7 +74,11 @@ namespace AutoDuty.Helpers
             if (!useMesh)
             {
                 if (!VNavmesh_IPCSubscriber.Path_IsRunning())
+                {
+                    Chat.Instance.ExecuteCommand("/automove off");
                     VNavmesh_IPCSubscriber.Path_MoveTo([position], fly);
+                }
+
                 return false;
             }
 
@@ -82,6 +87,7 @@ namespace AutoDuty.Helpers
 
             if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() || VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
             {
+                Chat.Instance.ExecuteCommand("/automove off");
                 VNavmesh_IPCSubscriber.Path_SetTolerance(tollerance);
                 VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(position, fly);
             }

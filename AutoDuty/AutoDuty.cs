@@ -906,9 +906,12 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
         {
+            Chat.Instance.ExecuteCommand("/automove off");
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
             if (PathAction.Name == "MoveTo" && PathAction.Arguments.Count > 0 && bool.TryParse(PathAction.Arguments[0], out bool useMesh) && !useMesh)
+            {
                 VNavmesh_IPCSubscriber.Path_MoveTo([PathAction.Position], false);
+            }
             else
                 VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(PathAction.Position, false);
             Stage = Stage.Moving;
