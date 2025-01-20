@@ -186,17 +186,17 @@ namespace AutoDuty.IPC
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("vnavmesh");
 
-        [EzIPC("Nav.IsReady", true)] internal static readonly Func<bool> Nav_IsReady;
-        [EzIPC("Nav.BuildProgress", true)] internal static readonly Func<float> Nav_BuildProgress;
-        [EzIPC("Nav.Reload", true)] internal static readonly Action Nav_Reload;
-        [EzIPC("Nav.Rebuild", true)] internal static readonly Action Nav_Rebuild;
-        [EzIPC("Nav.Pathfind", true)] internal static readonly Func<Vector3, Vector3, bool, Task<List<Vector3>>> Nav_Pathfind;
+        [EzIPC("Nav.IsReady",            true)] internal static readonly Func<bool>                                                           Nav_IsReady;
+        [EzIPC("Nav.BuildProgress",      true)] internal static readonly Func<float>                                                          Nav_BuildProgress;
+        [EzIPC("Nav.Reload",             true)] internal static readonly Func<bool>                                                           Nav_Reload;
+        [EzIPC("Nav.Rebuild",            true)] internal static readonly Func<bool>                                                           Nav_Rebuild;
+        [EzIPC("Nav.Pathfind",           true)] internal static readonly Func<Vector3, Vector3, bool, Task<List<Vector3>>>                    Nav_Pathfind;
         [EzIPC("Nav.PathfindCancelable", true)] internal static readonly Func<Vector3, Vector3, bool, CancellationToken, Task<List<Vector3>>> Nav_PathfindCancelable;
-        [EzIPC("Nav.PathfindCancelAll", true)] internal static readonly Action Nav_PathfindCancelAll;
-        [EzIPC("Nav.PathfindInProgress", true)] internal static readonly Func<bool> Nav_PathfindInProgress;
-        [EzIPC("Nav.PathfindNumQueued", true)] internal static readonly Func<int> Nav_PathfindNumQueued;
-        [EzIPC("Nav.IsAutoLoad", true)] internal static readonly Func<bool> Nav_IsAutoLoad;
-        [EzIPC("Nav.SetAutoLoad", true)] internal static readonly Action<bool> Nav_SetAutoLoad;
+        [EzIPC("Nav.PathfindCancelAll",  true)] internal static readonly Action                                                               Nav_PathfindCancelAll;
+        [EzIPC("Nav.PathfindInProgress", true)] internal static readonly Func<bool>                                                           Nav_PathfindInProgress;
+        [EzIPC("Nav.PathfindNumQueued",  true)] internal static readonly Func<int>                                                            Nav_PathfindNumQueued;
+        [EzIPC("Nav.IsAutoLoad",         true)] internal static readonly Func<bool>                                                           Nav_IsAutoLoad;
+        [EzIPC("Nav.SetAutoLoad",        true)] internal static readonly Action<bool>                                                         Nav_SetAutoLoad;
 
         [EzIPC("Query.Mesh.NearestPoint", true)] internal static readonly Func<Vector3, float, float, Vector3> Query_Mesh_NearestPoint;
         [EzIPC("Query.Mesh.PointOnFloor", true)] internal static readonly Func<Vector3, bool, float, Vector3> Query_Mesh_PointOnFloor;
