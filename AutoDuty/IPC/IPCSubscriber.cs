@@ -271,19 +271,20 @@ namespace AutoDuty.IPC
         /// </summary>
         public enum AutoRotationConfigOption
         {
-            InCombatOnly = 0, //bool
-            DPSRotationMode = 1,
-            HealerRotationMode = 2,
-            FATEPriority = 3, //bool
-            QuestPriority = 4,//bool
-            SingleTargetHPP = 5,//int
-            AoETargetHPP = 6,//int
-            SingleTargetRegenHPP = 7,//int
-            ManageKardia = 8,//bool
-            AutoRez = 9,//bool
-            AutoRezDPSJobs = 10,//bool
-            AutoCleanse = 11,//bool
-            IncludeNPCs = 12,//bool
+            InCombatOnly         = 0, //bool
+            DPSRotationMode      = 1,
+            HealerRotationMode   = 2,
+            FATEPriority         = 3,  //bool
+            QuestPriority        = 4,  //bool
+            SingleTargetHPP      = 5,  //int
+            AoETargetHPP         = 6,  //int
+            SingleTargetRegenHPP = 7,  //int
+            ManageKardia         = 8,  //bool
+            AutoRez              = 9,  //bool
+            AutoRezDPSJobs       = 10, //bool
+            AutoCleanse          = 11, //bool
+            IncludeNPCs          = 12, //bool
+            OnlyAttackInCombat   = 13, //bool
         }
 
         public enum DPSRotationMode
@@ -463,10 +464,11 @@ namespace AutoDuty.IPC
                 SetAutoRotationState(_curLease!.Value, on);
                 if (on)
                 {
-                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly,   false);
-                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez,        true);
-                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs, true);
-                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.IncludeNPCs, true);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly,       false);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez,            true);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRezDPSJobs,     true);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.IncludeNPCs,        true);
+                    SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.OnlyAttackInCombat, false);
 
                     DPSRotationMode dpsConfig = Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
                                                                         Plugin.Configuration.Wrath_TargetingTank :
