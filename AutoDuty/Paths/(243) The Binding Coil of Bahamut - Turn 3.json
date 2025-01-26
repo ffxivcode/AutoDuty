@@ -277,14 +277,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": -7.73,
+        "Y": -113.32,
+        "Z": 25.06
       },
       "arguments": [
-        "Silent Terminal"
+        "2001132"
       ],
-      "note": ""
+      "note": "Silent Terminal"
     },
     {
       "tag": 0,
@@ -706,14 +706,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": -8.87,
+        "Y": -300.87,
+        "Z": -11.97
       },
       "arguments": [
-        "Silent Terminal"
+        "2001140"
       ],
-      "note": ""
+      "note": "Silent Terminal"
     },
     {
       "tag": 0,
@@ -1096,14 +1096,14 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": -25.32,
+        "Y": -423.47,
+        "Z": 42.15
       },
       "arguments": [
-        "Silent Terminal"
+        "2002600"
       ],
-      "note": ""
+      "note": "Silent Terminal"
     },
     {
       "tag": 0,
@@ -1122,17 +1122,16 @@
       "tag": 0,
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": -17.74,
+        "Y": -423.8,
+        "Z": 20.49
       },
       "arguments": [
-        "Allagan Terminal"
+        "2001162"
       ],
-      "note": ""
+      "note": "Allagan Terminal"
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -1147,6 +1146,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 186,
+        "change": ""
       }
     ],
     "notes": []
