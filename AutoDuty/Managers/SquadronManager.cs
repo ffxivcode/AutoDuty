@@ -106,7 +106,7 @@ namespace AutoDuty.Managers
             }
 
             // Attempt to get the squadron sergeant once and reuse the result --- This still sets this every call I will change this to one and done later.
-            IGameObject? gameObject = ObjectHelper.GetObjectByPartialName("Squadron Sergeant");
+            IGameObject? gameObject = ObjectHelper.GetObjectByDataId(1016924u) ?? ObjectHelper.GetObjectByDataId(1016986u) ?? ObjectHelper.GetObjectByDataId(1016987u);
             if (gameObject == null || !MovementHelper.Move(gameObject, 0.25f, 6f))
             {
                 return false;
