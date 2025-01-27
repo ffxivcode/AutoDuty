@@ -74,6 +74,17 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
+        "X": 54.023067,
+        "Y": 12.039997,
+        "Z": 141.4132
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
         "X": 54.15484,
         "Y": 12.04,
         "Z": 71.47165
@@ -116,6 +127,17 @@
       "arguments": [
         ""
       ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 115.77848,
+        "Y": 12.039999,
+        "Z": 47.31985
+      },
+      "arguments": [],
       "note": ""
     },
     {
