@@ -1315,16 +1315,18 @@ public sealed class AutoDuty : IDalamudPlugin
         }
 
         //RoleBased MaxDistanceToTarget
-        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Math.Abs(this.Configuration.MaxDistanceToTargetFloat - (Player.Object.ClassJob.ValueNullable?.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank ? 2.6f : 10)) > 0.01f)
+        float maxDistanceToTarget = (Player.Object.ClassJob.Value.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value.GetJobRole() == JobRole.Tank ? 2.6f : 10);
+        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Math.Abs(this.Configuration.MaxDistanceToTargetFloat - maxDistanceToTarget) > 0.01f)
         {
-            Configuration.MaxDistanceToTargetFloat = (Player.Object.ClassJob.Value.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank ? 2.6f : 10);
+            Configuration.MaxDistanceToTargetFloat = maxDistanceToTarget;
             Configuration.Save();
         }
 
         //RoleBased MaxDistanceToTargetAoE
-        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Math.Abs(this.Configuration.MaxDistanceToTargetAoEFloat - (Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank ? 2.6f : 10)) > 0.01f)
+        float maxDistanceToTargetAoE = (Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank || Player.Object.ClassJob.ValueNullable?.JobIndex == 18 ? 2.6f : 10);
+        if (PlayerHelper.IsValid && Configuration.MaxDistanceToTargetRoleBased && Math.Abs(this.Configuration.MaxDistanceToTargetAoEFloat - maxDistanceToTargetAoE) > 0.01f)
         {
-            Configuration.MaxDistanceToTargetAoEFloat = (Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Melee || Player.Object.ClassJob.Value!.GetJobRole() == JobRole.Tank || Player.Object.ClassJob.ValueNullable?.JobIndex == 18 ? 2.6f : 10);
+            Configuration.MaxDistanceToTargetAoEFloat = maxDistanceToTargetAoE;
             Configuration.Save();
         }
 
