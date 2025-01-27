@@ -54,6 +54,19 @@
     },
     {
       "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -21.72,
@@ -80,6 +93,19 @@
     },
     {
       "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -2.17,
@@ -93,6 +119,19 @@
     },
     {
       "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -16.67,
@@ -101,6 +140,32 @@
       },
       "arguments": [
         ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "false"
       ],
       "note": ""
     },
@@ -127,6 +192,19 @@
       },
       "arguments": [
         ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "true"
       ],
       "note": ""
     },
@@ -165,7 +243,7 @@
         "Z": -18.96
       },
       "arguments": [
-        ""
+        "false"
       ],
       "note": ""
     },
@@ -212,12 +290,12 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
-        "X": 19.59,
-        "Y": 9.21,
-        "Z": -24.06
+        "X": 20.9,
+        "Y": 8.67,
+        "Z": -24.19
       },
       "arguments": [
-        ""
+        "false"
       ],
       "note": ""
     },
@@ -282,13 +360,13 @@
         "Z": -41.79
       },
       "arguments": [
-        ""
+        "false"
       ],
       "note": ""
     },
     {
       "tag": 0,
-      "name": "MoveTo",
+      "name": "Boss",
       "position": {
         "X": 57.84,
         "Y": -9,
@@ -300,7 +378,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 157,
     "changelog": [
@@ -315,6 +392,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 187,
+        "change": "Updated movement, mob pack handling, and boss tag"
       }
     ],
     "notes": []
