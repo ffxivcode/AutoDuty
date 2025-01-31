@@ -67,6 +67,30 @@
     },
     {
       "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 38.689632,
+        "Y": 5.519903,
+        "Z": -103.78054
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 42.73,
+        "Y": 6.98,
+        "Z": -80.07
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -5.17,
