@@ -17,6 +17,8 @@ using AutoDuty.Updater;
 
 namespace AutoDuty.Windows
 {
+    using ECommons;
+
     internal static class PathsTab
     {
         //private static Dictionary<CombatRole, Job[]> _jobs = Enum.GetValues<Job>().Where(j => !j.IsUpgradeable() && j != Job.BLU).GroupBy(j => j.GetRole()).Where(ig => ig.Key != CombatRole.NonCombat).ToDictionary(ig => ig.Key, ig => ig.ToArray());
@@ -126,9 +128,9 @@ namespace AutoDuty.Windows
                             ImGui.BeginGroup();
                             ImGui.Indent(20);
 
-                            if (Plugin.Configuration.PathSelections.TryGetValue(container.id, out Dictionary<Job, int>? pathSelections))
-                                foreach ((Job job, int index) in pathSelections)
-                                    pathJobs[index].Add(new Tuple<CombatRole, Job>(job.GetCombatRole(), job));
+                            if (Plugin.Configuration.PathSelections.TryGetValue(container.id, out Dictionary<Job, string>? pathSelections))
+                                foreach ((Job job, string pathName) in pathSelections)
+                                    pathJobs[container.Paths.IndexOf(dp => dp.FileName.Equals(pathName))].Add(new Tuple<CombatRole, Job>(job.GetCombatRole(), job));
                         }
 
                         for (int pathIndex = 0; pathIndex < container.Paths.Count; pathIndex++)

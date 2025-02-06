@@ -14,7 +14,7 @@ namespace AutoDuty.Updater
 
         internal static void Patch(bool skipMD5 = false)
         {
-            if (PatcherTask == null)
+            if (PatcherTask == null && false)
             {
                 PatcherTask = Task.Run(() => PatchTask(skipMD5));
                 PatcherTask.ContinueWith(t => {

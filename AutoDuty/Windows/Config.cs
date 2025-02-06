@@ -11,7 +11,6 @@ using ECommons;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Components;
 using ECommons.ImGuiMethods;
-using FFXIVClientStructs.FFXIV.Common.Math;
 using AutoDuty.Helpers;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using Dalamud.Interface;
@@ -23,9 +22,12 @@ using Serilog.Events;
 
 namespace AutoDuty.Windows;
 
+using System.Numerics;
+using System.Text.Json.Serialization;
 using Data;
-using global::AutoDuty.Properties;
+using Properties;
 using Lumina.Excel.Sheets;
+using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
@@ -33,7 +35,7 @@ public class Configuration : IPluginConfiguration
     //Meta
     public int Version { get; set; }
     public HashSet<string> DoNotUpdatePathFiles = [];
-    public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
+    public Dictionary<uint, Dictionary<Job, string>> PathSelections = [];
 
 
     //LogOptions
@@ -144,6 +146,8 @@ public class Configuration : IPluginConfiguration
     public bool       UsingAlternativeRotationPlugin = false;
     public bool       UsingAlternativeMovementPlugin = false;
     public bool       UsingAlternativeBossPlugin     = false;
+
+    public JobWithRole W2WJobs = JobWithRole.Tanks;
 
     //PreLoop Config Options
     public bool EnablePreLoopActions = true;
@@ -761,6 +765,68 @@ public static class ConfigTab
             if (ImGui.Checkbox("Override Party Validation", ref Configuration.OverridePartyValidation))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("AutoDuty will ignore your party makeup when queueing for duties\nThis is for Multi-Boxing Only\n*AutoDuty is not recommended to be used with other players*");
+
+            //ImGui.BeginListBox("##W2WRoleSelection", new System.Numerics.Vector2(300, 800));
+
+            //ImGui.PushStyleVar(ImGuiStyleVar);
+            ImGui.BeginListBox("##W2WConfig", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, 500));
+
+            List<JobWithRole> enumVals = Enum.GetValues<JobWithRole>().Skip(1).ToList();
+
+            void DrawW2WSelectable(JobWithRole jwr, bool category = false)
+            {
+                int flag = (int)Configuration.W2WJobs;
+                
+                if (ImGui.CheckboxFlags(jwr.ToString().Replace("_", " "), ref flag, (int)jwr))
+                {
+                    Configuration.W2WJobs = (JobWithRole)flag;
+                    Configuration.Save();
+                    Svc.Log.Info(Configuration.W2WJobs.ToString());
+                }
+                
+            }
+
+            Dictionary<JobWithRole, IEnumerable<JobWithRole>> categories = enumVals.Select(jwr => (jwr, enumVals.Where(jwrr => jwr != jwrr && jwr.HasFlag(jwrr)))).Where(j => j.Item2.Any())
+                                                                                   .ToDictionary(j => j.jwr, j => j.Item2);
+            Dictionary<JobWithRole, IEnumerable<JobWithRole>> values = enumVals.Select(jwr => (jwr, enumVals.Where(jwrr => jwr != jwrr && jwrr.HasFlag(jwr)))).Where(j => j.Item2.Any())
+                                                                               .ToDictionary(j => j.jwr, j => j.Item2);
+
+            void DrawW2WCategory(JobWithRole category)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Header,        Vector4.Zero);
+                ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(0.2f));
+                ImGui.PushStyleColor(ImGuiCol.HeaderActive,  new Vector4(0.3f));
+                bool collapse = ImGui.CollapsingHeader("##" + category, ImGuiTreeNodeFlags.AllowItemOverlap);
+                ImGui.PopStyleColor(3);
+                ImGui.SameLine();
+                DrawW2WSelectable(category, true);
+                if (collapse)
+                {
+                    ImGui.Indent();
+                    foreach (JobWithRole jobW in categories[category])
+                        if (values[jobW].MinBy(jwr => categories[jwr].Count()) == category)
+                            if (categories.ContainsKey(jobW))
+                            {
+                                DrawW2WCategory(jobW);
+                            }
+                            else
+                            {
+                                ImGui.Indent();
+                                DrawW2WSelectable(jobW);
+                                ImGui.Unindent();
+                            }
+
+                    ImGui.Unindent();
+                }
+            }
+
+            DrawW2WCategory(JobWithRole.All);
+            ImGui.EndListBox();
+            /*
+            foreach (JobWithRole category in categories.Keys) 
+                DrawW2WCategory(category);
+            */
+            //ImGui.EndListBox();
 
             ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
             var advModeHeader = ImGui.Selectable("Advanced Config Options", advModeHeaderSelected, ImGuiSelectableFlags.DontClosePopups);

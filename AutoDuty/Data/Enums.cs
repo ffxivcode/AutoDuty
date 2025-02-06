@@ -2,17 +2,21 @@
 
 namespace AutoDuty.Data
 {
-    public class Enums
-    {
+    using System.Linq;
+    using ECommons.ExcelServices;
 
+    public static class Enums
+    {
+        [Flags]
         public enum ActionTag
         {
-            None = 0,
-            Synced = 1,
-            Unsynced = 2,
-            Comment = 3,
-            Revival = 4,
-            Treasure = 5,
+            None     = 0,
+            Synced   = 1 << 0,
+            Unsynced = 1 << 1,
+            Comment  = 1 << 2,
+            Revival  = 1 << 3,
+            Treasure = 1 << 4,
+            W2W      = 1 << 5
         }
 
         public enum ClassJobType
@@ -59,6 +63,78 @@ namespace AutoDuty.Data
             Reaper = 39,
             Sage = 40,
             Pictomancer = 42
+        }
+
+        [Flags]
+        public enum JobWithRole
+        {
+            None        = 0,
+            Paladin     = 1 << 0,
+            Warrior     = 1 << 1,
+            Dark_Knight = 1 << 2,
+            Gunbreaker  = 1 << 3,
+            Tanks       = Paladin | Warrior | Dark_Knight | Gunbreaker,
+            White_Mage  = 1 << 4,
+            Scholar     = 1 << 5,
+            Astrologian = 1 << 6,
+            Sage        = 1 << 7,
+            Healers     = White_Mage | Scholar | Astrologian | Sage,
+            Monk        = 1 << 8,
+            Dragoon     = 1 << 9,
+            Ninja       = 1 << 10,
+            Samurai     = 1 << 11,
+            Reaper      = 1 << 12,
+            Viper       = 1 << 13,
+            Striking    = Monk     | Samurai,
+            Maiming     = Dragoon  | Reaper,
+            Scouting    = Ninja    | Viper,
+            Melee       = Striking | Maiming | Scouting,
+            Bard        = 1 << 14,
+            Machinist   = 1 << 15,
+            Dancer      = 1 << 16,
+            Aiming      = Bard | Machinist | Dancer,
+            Black_Mage  = 1 << 17,
+            Summoner    = 1 << 18,
+            Red_Mage    = 1 << 19,
+            Pictomancer = 1 << 20,
+            Casters     = Black_Mage | Summoner | Red_Mage | Pictomancer,
+            DPS         = Melee      | Aiming   | Casters,
+            All         = Tanks      | Healers  | DPS
+        }
+
+        public static bool HasJob(this JobWithRole jwr, Job job)
+        {
+            JobWithRole jw = JobToJobWithRole(job);
+            return jwr.HasFlag(jw);
+        }
+
+        private static JobWithRole JobToJobWithRole(Job job)
+        {
+            return job switch
+            {
+                Job.GLA or Job.PLD => JobWithRole.Paladin,
+                Job.MRD or Job.WAR => JobWithRole.Warrior,
+                Job.DRK => JobWithRole.Dark_Knight,
+                Job.GNB => JobWithRole.Gunbreaker,
+                Job.CNJ or Job.WHM => JobWithRole.White_Mage,
+                Job.SCH => JobWithRole.Scholar,
+                Job.SGE => JobWithRole.Sage,
+                Job.AST => JobWithRole.Astrologian,
+                Job.PGL or Job.MNK => JobWithRole.Monk,
+                Job.LNC or Job.DRG => JobWithRole.Dragoon,
+                Job.ROG or Job.NIN => JobWithRole.Ninja,
+                Job.SAM => JobWithRole.Samurai,
+                Job.RPR => JobWithRole.Reaper,
+                Job.VPR => JobWithRole.Viper,
+                Job.ARC or Job.BRD => JobWithRole.Bard,
+                Job.MCH => JobWithRole.Machinist,
+                Job.DNC => JobWithRole.Dancer,
+                Job.THM or Job.BLM => JobWithRole.Black_Mage,
+                Job.ACN or Job.SMN => JobWithRole.Summoner,
+                Job.RDM => JobWithRole.Red_Mage,
+                Job.PCT => JobWithRole.Pictomancer,
+                _ => JobWithRole.None
+            };
         }
 
         public enum JobRole
@@ -289,6 +365,11 @@ namespace AutoDuty.Data
             SmallBlue = 60779,
             MediumBlue = 60780,
             LargeBlue = 60781,
+        }
+
+        public static bool HasAnyFlag<T>(this T instance, params T[] parameter) where T : Enum
+        {
+            return parameter.Any(enu => instance.HasFlag(enu));
         }
     }
 }

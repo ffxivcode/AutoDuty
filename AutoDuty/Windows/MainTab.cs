@@ -83,7 +83,7 @@ namespace AutoDuty.Windows
                         ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
                         if (ImGui.BeginCombo("##SelectedPath", curPaths[curPath].Name))
                         {
-                            foreach (var path in curPaths.Select((Value, Index) => (Value, Index)))
+                            foreach ((ContentPathsManager.DutyPath Value, int Index) path in curPaths.Select((value, index) => (Value: value, Index: index)))
                             {
                                 if (ImGui.Selectable(path.Value.Name))
                                 {
@@ -91,7 +91,7 @@ namespace AutoDuty.Windows
                                     if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent!.TerritoryType))
                                         Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryContent.TerritoryType, []);
 
-                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPath;
+                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPaths[curPath].FileName;
                                     Plugin.Configuration.Save();
                                     Plugin.CurrentPath = curPath;
                                     Plugin.LoadPath();

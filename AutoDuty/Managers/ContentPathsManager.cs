@@ -53,13 +53,15 @@ namespace AutoDuty.Managers
 
                 if (Paths.Count > 1)
                 {
-                    if (Plugin.Configuration.PathSelections.TryGetValue(Content.TerritoryType, out Dictionary<Job, int>? jobConfig))
+                    if (Plugin.Configuration.PathSelections.TryGetValue(Content.TerritoryType, out Dictionary<Job, string>? jobConfig))
                     {
-                        if (jobConfig.TryGetValue((Job) job, out int pathId))
+                        if (jobConfig.TryGetValue((Job) job, out string? path))
                         {
-                            if (pathId < Paths.Count)
+                            int pInx = Paths.IndexOf(dp => dp.FileName.Equals(path));
+
+                            if (pInx < Paths.Count)
                             {
-                                pathIndex = pathId;
+                                pathIndex = pInx;
                                 return Paths[pathIndex];
                             }
                         }
@@ -135,7 +137,20 @@ namespace AutoDuty.Managers
 
                             pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
 
-                            RevivalFound = PathFile.Actions.Any(x => x.Tag == ActionTag.Revival);
+                            RevivalFound = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.Revival));
+                            /*
+                            if (this.pathFile.Meta.LastUpdatedVersion < 188)
+                            {
+
+                                pathFile.Meta.Changelog.Add(new PathFileChangelogEntry
+                                                            {
+                                                                Version = 188,
+                                                                Change  = "Adjusted tags to string values"
+                                                            });
+                                
+                                json = JsonSerializer.Serialize(pathFile, BuildTab.jsonSerializerOptions);
+                                File.WriteAllText(FilePath, json);
+                            }>*/
                         }
                         catch (Exception ex)
                         {

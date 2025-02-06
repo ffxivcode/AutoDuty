@@ -96,6 +96,7 @@ namespace AutoDuty.Data
 
         public class PathAction
         {
+            [JsonConverter(typeof(JsonStringEnumConverter))]
             [JsonPropertyName("tag")]
             public ActionTag Tag { get; set; } = ActionTag.None;
 
