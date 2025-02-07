@@ -181,7 +181,7 @@ namespace AutoDuty.Windows
                                         continue;
                                     
                                     ImGui.SameLine(0, 15);
-                                    ImGui.Spacing();
+                                    ImGui.Text(string.Empty);
                                     ImGui.AlignTextToFramePadding();
 
                                     void DrawRole(JobWithRole jwr, Vector4 col)
@@ -194,9 +194,9 @@ namespace AutoDuty.Windows
                                         }
                                     }
 
-                                    DrawRole(JobWithRole.DPS,   ImGuiHelper.RoleDPSColor);
+                                    DrawRole(JobWithRole.Melee,   ImGuiHelper.RoleDPSColor);
                                     DrawRole(JobWithRole.Healers, ImGuiHelper.RoleHealerColor);
-                                    DrawRole(JobWithRole.Tanks,   ImGuiHelper.RoleTankColor);
+                                    DrawRole(JobWithRole.Tanks, ImGuiHelper.RoleTankColor);
                                 }
                             }
                         }

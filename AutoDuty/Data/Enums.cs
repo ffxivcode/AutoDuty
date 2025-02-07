@@ -8,6 +8,7 @@ namespace AutoDuty.Data
     using Dalamud.Interface.Utility.Raii;
     using ECommons.ExcelServices;
     using ImGuiNET;
+    using FFXIVClientStructs.FFXIV.Common.Lua;
 
     public static class Enums
     {
@@ -103,7 +104,7 @@ namespace AutoDuty.Data
             Pictomancer = 1 << 20,
             Casters     = Black_Mage | Summoner | Red_Mage | Pictomancer,
             DPS         = Melee      | Aiming   | Casters,
-            All         = Tanks      | Healers  | DPS 
+            All         = Tanks      | Healers  | DPS
         }
 
         public enum JobRole
