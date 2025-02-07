@@ -2,8 +2,10 @@
 
 namespace AutoDuty.Data
 {
+    using System.Collections.Generic;
     using System.Linq;
     using ECommons.ExcelServices;
+    using FFXIVClientStructs.FFXIV.Common.Lua;
 
     public static class Enums
     {
@@ -100,41 +102,6 @@ namespace AutoDuty.Data
             Casters     = Black_Mage | Summoner | Red_Mage | Pictomancer,
             DPS         = Melee      | Aiming   | Casters,
             All         = Tanks      | Healers  | DPS
-        }
-
-        public static bool HasJob(this JobWithRole jwr, Job job)
-        {
-            JobWithRole jw = JobToJobWithRole(job);
-            return jwr.HasFlag(jw);
-        }
-
-        private static JobWithRole JobToJobWithRole(Job job)
-        {
-            return job switch
-            {
-                Job.GLA or Job.PLD => JobWithRole.Paladin,
-                Job.MRD or Job.WAR => JobWithRole.Warrior,
-                Job.DRK => JobWithRole.Dark_Knight,
-                Job.GNB => JobWithRole.Gunbreaker,
-                Job.CNJ or Job.WHM => JobWithRole.White_Mage,
-                Job.SCH => JobWithRole.Scholar,
-                Job.SGE => JobWithRole.Sage,
-                Job.AST => JobWithRole.Astrologian,
-                Job.PGL or Job.MNK => JobWithRole.Monk,
-                Job.LNC or Job.DRG => JobWithRole.Dragoon,
-                Job.ROG or Job.NIN => JobWithRole.Ninja,
-                Job.SAM => JobWithRole.Samurai,
-                Job.RPR => JobWithRole.Reaper,
-                Job.VPR => JobWithRole.Viper,
-                Job.ARC or Job.BRD => JobWithRole.Bard,
-                Job.MCH => JobWithRole.Machinist,
-                Job.DNC => JobWithRole.Dancer,
-                Job.THM or Job.BLM => JobWithRole.Black_Mage,
-                Job.ACN or Job.SMN => JobWithRole.Summoner,
-                Job.RDM => JobWithRole.Red_Mage,
-                Job.PCT => JobWithRole.Pictomancer,
-                _ => JobWithRole.None
-            };
         }
 
         public enum JobRole
@@ -371,5 +338,55 @@ namespace AutoDuty.Data
         {
             return parameter.Any(enu => instance.HasFlag(enu));
         }
+    }
+
+    public static class JobWithRoleHelper
+    {
+        private static readonly List<JobWithRole> enumVals = Enum.GetValues<JobWithRole>().Skip(1).ToList();
+
+        public static Dictionary<JobWithRole, IEnumerable<JobWithRole>> categories = enumVals.Select(jwr => (jwr, enumVals.Where(jwrr => jwr != jwrr && jwr.HasFlag(jwrr)))).Where(j => j.Item2.Any())
+                                                                                             .ToDictionary(j => j.jwr, j => j.Item2);
+
+        public static Dictionary<JobWithRole, IEnumerable<JobWithRole>> values = enumVals.Select(jwr => (jwr, enumVals.Where(jwrr => jwr != jwrr && jwrr.HasFlag(jwr)))).Where(j => j.Item2.Any())
+                                                                                         .ToDictionary(j => j.jwr, j => j.Item2);
+
+        public static bool HasJobFlagFast(this JobWithRole value, JobWithRole flag) =>
+            (value & flag) == flag;
+
+        public static bool HasJob(this JobWithRole jwr, Job job)
+        {
+            JobWithRole jw = job.JobToJobWithRole();
+            return jwr.HasJobFlagFast(jw);
+        }
+
+        public static JobWithRole JobToJobWithRole(this Job job) =>
+            job switch
+            {
+                Job.GLA or Job.PLD => JobWithRole.Paladin,
+                Job.MRD or Job.WAR => JobWithRole.Warrior,
+                Job.DRK => JobWithRole.Dark_Knight,
+                Job.GNB => JobWithRole.Gunbreaker,
+                Job.CNJ or Job.WHM => JobWithRole.White_Mage,
+                Job.SCH => JobWithRole.Scholar,
+                Job.SGE => JobWithRole.Sage,
+                Job.AST => JobWithRole.Astrologian,
+                Job.PGL or Job.MNK => JobWithRole.Monk,
+                Job.LNC or Job.DRG => JobWithRole.Dragoon,
+                Job.ROG or Job.NIN => JobWithRole.Ninja,
+                Job.SAM => JobWithRole.Samurai,
+                Job.RPR => JobWithRole.Reaper,
+                Job.VPR => JobWithRole.Viper,
+                Job.ARC or Job.BRD => JobWithRole.Bard,
+                Job.MCH => JobWithRole.Machinist,
+                Job.DNC => JobWithRole.Dancer,
+                Job.THM or Job.BLM => JobWithRole.Black_Mage,
+                Job.ACN or Job.SMN => JobWithRole.Summoner,
+                Job.RDM => JobWithRole.Red_Mage,
+                Job.PCT => JobWithRole.Pictomancer,
+                _ => JobWithRole.None
+            };
+
+        public static IEnumerable<Job> ContainedJobs(this JobWithRole jwr) =>
+            Enum.GetValuesAsUnderlyingType<Job>().Cast<Job>().Where(job => jwr.HasJob(job));
     }
 }

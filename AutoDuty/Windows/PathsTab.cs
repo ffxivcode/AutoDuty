@@ -17,6 +17,7 @@ using AutoDuty.Updater;
 
 namespace AutoDuty.Windows
 {
+    using Data;
     using ECommons;
 
     internal static class PathsTab
@@ -69,11 +70,11 @@ namespace AutoDuty.Windows
 
             ImGui.PopStyleColor();
             ImGui.SameLine();
-            using (ImRaii.Disabled(!Plugin.Configuration.PathSelections.Any(kvp => kvp.Value.Any())))
+            using (ImRaii.Disabled(!Plugin.Configuration.PathSelectionsByPath.Any(kvp => kvp.Value.Any())))
             {
                 if (ImGuiEx.ButtonWrapped("Clear all cached classes"))
                 {
-                    Plugin.Configuration.PathSelections.Clear();
+                    Plugin.Configuration.PathSelectionsByPath.Clear();
                     Plugin.Configuration.Save();
                 }
             }
@@ -119,8 +120,8 @@ namespace AutoDuty.Windows
                         ImGuiHelper.ColoredText(container.ColoredNameRegex, $"({container.id}) {container.Content.Name}");
                     }
 
-                    List<Tuple<CombatRole, Job>>[] pathJobs = Enumerable.Range(0, container.Paths.Count).Select(_ => new List<Tuple<CombatRole, Job>>()).ToArray();
-
+                    List<Tuple<CombatRole, Job>>[]   pathJobs       = Enumerable.Range(0, container.Paths.Count).Select(_ => new List<Tuple<CombatRole, Job>>()).ToArray();
+                    Dictionary<string, JobWithRole>? pathSelections = null;
                     if (open)
                     {
                         if (multiple)
@@ -128,9 +129,9 @@ namespace AutoDuty.Windows
                             ImGui.BeginGroup();
                             ImGui.Indent(20);
 
-                            if (Plugin.Configuration.PathSelections.TryGetValue(container.id, out Dictionary<Job, string>? pathSelections))
-                                foreach ((Job job, string pathName) in pathSelections)
-                                    pathJobs[container.Paths.IndexOf(dp => dp.FileName.Equals(pathName))].Add(new Tuple<CombatRole, Job>(job.GetCombatRole(), job));
+                            if (Plugin.Configuration.PathSelectionsByPath.TryGetValue(container.id, out pathSelections))
+                                foreach ((string? path, JobWithRole jobs) in pathSelections)
+                                    ;//pathJobs[container.Paths.IndexOf(dp => dp.FileName.Equals(jobs))].Add(new Tuple<CombatRole, Job>(path.GetCombatRole(), path));
                         }
 
                         for (int pathIndex = 0; pathIndex < container.Paths.Count; pathIndex++)
@@ -168,18 +169,30 @@ namespace AutoDuty.Windows
                             ImGui.SameLine(0, 2);
                             ImGuiHelper.ColoredText(path.ColoredNameRegex, path.Name);
 
-                            if (multiple)
+                            if (multiple && pathSelections != null)
                             {
-                                foreach ((CombatRole role, Job job) in pathJobs[pathIndex])
+                                if (pathSelections.TryGetValue(path.FileName, out JobWithRole jobs))
                                 {
-                                    ImGui.SameLine(0, 2);
-                                    ImGui.TextColored(role switch
+                                    if(jobs == JobWithRole.None)
+                                        continue;
+                                    
+                                    ImGui.SameLine(0, 15);
+                                    ImGui.Text(string.Empty);
+                                    ImGui.AlignTextToFramePadding();
+
+                                    void DrawRole(JobWithRole jwr, Vector4 col)
                                     {
-                                        CombatRole.DPS => ImGuiHelper.RoleDPSColor,
-                                        CombatRole.Healer => ImGuiHelper.RoleHealerColor,
-                                        CombatRole.Tank => ImGuiHelper.RoleTankColor,
-                                        _ => Vector4.One
-                                    }, job.ToString());
+                                        JobWithRole jb = jobs & jwr;
+                                        if (jb != JobWithRole.None)
+                                        {
+                                            ImGui.SameLine(0, 5);
+                                            ImGui.TextColored(col, jb.ToString().Replace('_', ' '));
+                                        }
+                                    }
+
+                                    DrawRole(JobWithRole.Melee,   ImGuiHelper.RoleDPSColor);
+                                    DrawRole(JobWithRole.Healers, ImGuiHelper.RoleHealerColor);
+                                    DrawRole(JobWithRole.Tanks, ImGuiHelper.RoleTankColor);
                                 }
                             }
                         }

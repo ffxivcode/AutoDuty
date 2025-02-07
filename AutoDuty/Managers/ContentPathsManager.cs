@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 
 namespace AutoDuty.Managers
 {
+    using Data;
     using static Data.Classes;
     internal static class ContentPathsManager
     {
@@ -53,29 +54,19 @@ namespace AutoDuty.Managers
 
                 if (Paths.Count > 1)
                 {
-                    if (Plugin.Configuration.PathSelections.TryGetValue(Content.TerritoryType, out Dictionary<Job, string>? jobConfig))
+                    if (Plugin.Configuration.PathSelectionsByPath.TryGetValue(Content.TerritoryType, out Dictionary<string, JobWithRole>? jobConfig))
                     {
-                        if (jobConfig.TryGetValue((Job) job, out string? path))
+                        foreach ((string? pathName, JobWithRole pathJobs) in jobConfig)
                         {
-                            int pInx = Paths.IndexOf(dp => dp.FileName.Equals(path));
-
-                            if (pInx < Paths.Count)
+                            if (pathJobs.HasJob((Job)job))
                             {
-                                pathIndex = pInx;
-                                return Paths[pathIndex];
-                            }
-                        }
-                    }
+                                int pInx = Paths.IndexOf(dp => dp.FileName.Equals(pathName));
 
-                    if (job.GetCombatRole() == CombatRole.Tank)
-                    {
-                        for (int index = 0; index < Paths.Count; index++)
-                        {
-                            string curPath = Paths[index].Name;
-                            if (curPath.Contains(PathIdentifiers.W2W))
-                            {
-                                pathIndex = index;
-                                return Paths[index];
+                                if (pInx < Paths.Count)
+                                {
+                                    pathIndex = pInx;
+                                    return Paths[pathIndex];
+                                }
                             }
                         }
                     }

@@ -33,9 +33,9 @@ using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 public class Configuration : IPluginConfiguration
 {
     //Meta
-    public int Version { get; set; }
-    public HashSet<string> DoNotUpdatePathFiles = [];
-    public Dictionary<uint, Dictionary<Job, string>> PathSelections = [];
+    public int                                                Version { get; set; }
+    public HashSet<string>                                    DoNotUpdatePathFiles = [];
+    public Dictionary<uint, Dictionary<string, JobWithRole>?> PathSelectionsByPath = [];
 
 
     //LogOptions
@@ -771,8 +771,6 @@ public static class ConfigTab
             //ImGui.PushStyleVar(ImGuiStyleVar);
             ImGui.BeginListBox("##W2WConfig", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, 500));
 
-            List<JobWithRole> enumVals = Enum.GetValues<JobWithRole>().Skip(1).ToList();
-
             void DrawW2WSelectable(JobWithRole jwr, bool category = false)
             {
                 int flag = (int)Configuration.W2WJobs;
@@ -786,11 +784,6 @@ public static class ConfigTab
                 
             }
 
-            Dictionary<JobWithRole, IEnumerable<JobWithRole>> categories = enumVals.Select(jwr => (jwr, enumVals.Where(jwrr => jwr != jwrr && jwr.HasFlag(jwrr)))).Where(j => j.Item2.Any())
-                                                                                   .ToDictionary(j => j.jwr, j => j.Item2);
-            Dictionary<JobWithRole, IEnumerable<JobWithRole>> values = enumVals.Select(jwr => (jwr, enumVals.Where(jwrr => jwr != jwrr && jwrr.HasFlag(jwr)))).Where(j => j.Item2.Any())
-                                                                               .ToDictionary(j => j.jwr, j => j.Item2);
-
             void DrawW2WCategory(JobWithRole category)
             {
                 ImGui.PushStyleColor(ImGuiCol.Header,        Vector4.Zero);
@@ -803,9 +796,9 @@ public static class ConfigTab
                 if (collapse)
                 {
                     ImGui.Indent();
-                    foreach (JobWithRole jobW in categories[category])
-                        if (values[jobW].MinBy(jwr => categories[jwr].Count()) == category)
-                            if (categories.ContainsKey(jobW))
+                    foreach (JobWithRole jobW in JobWithRoleHelper.categories[category])
+                        if (JobWithRoleHelper.values[jobW].MinBy(jwr => JobWithRoleHelper.categories[jwr].Count()) == category)
+                            if (JobWithRoleHelper.categories.ContainsKey(jobW))
                             {
                                 DrawW2WCategory(jobW);
                             }
