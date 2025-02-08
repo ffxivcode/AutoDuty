@@ -317,6 +317,42 @@ namespace AutoDuty.IPC
             //DPS_Priority,
         }
 
+        public enum SetResult
+        {
+            [Description("A default value that shouldn't ever be seen.")]
+            IGNORED = -1,
+
+            // Success Statuses
+
+            [Description("The configuration was set successfully.")]
+            Okay = 0,
+
+            [Description("The configuration will be set, it is working asynchronously.")]
+            OkayWorking = 1,
+
+            // Error Statuses
+            [Description("IPC services are currently disabled.")]
+            IPCDisabled = 10,
+
+            [Description("Invalid lease.")]
+            InvalidLease = 11,
+
+            [Description("Blacklisted lease.")]
+            BlacklistedLease = 12,
+
+            [Description("Configuration you are trying to set is already set.")]
+            Duplicate = 13,
+
+            [Description("Player object is not available.")]
+            PlayerNotAvailable = 14,
+
+            [Description("The configuration you are trying to set is not available.")]
+            InvalidConfiguration = 15,
+
+            [Description("The value you are trying to set is invalid.")]
+            InvalidValue = 16,
+        }
+
         private static Guid? _curLease;
 
 
@@ -392,7 +428,7 @@ namespace AutoDuty.IPC
         ///     enabled in Auto-Mode.
         /// </remarks>
         /// <value>+1 <c>set</c></value>
-        [EzIPC] private static readonly Action<Guid, bool> SetAutoRotationState;
+        [EzIPC] private static readonly Func<Guid, bool, SetResult> SetAutoRotationState;
 
         /// <summary>
         ///     Checks if the current job has a Single and Multi-Target combo configured
@@ -416,7 +452,7 @@ namespace AutoDuty.IPC
         /// </value>
         /// <param name="lease">Your lease ID from <see cref="RegisterForLease" /></param>
         /// <remarks>This can take a little bit to finish.</remarks>
-        [EzIPC] private static readonly Action<Guid> SetCurrentJobAutoRotationReady;
+        [EzIPC] private static readonly Func<Guid, SetResult> SetCurrentJobAutoRotationReady;
 
         /// <summary>
         ///     This cancels your lease, removing your control of Wrath Combo.
@@ -452,20 +488,53 @@ namespace AutoDuty.IPC
         /// <seealso cref="AutoRotationConfigOption"/>
         /// <seealso cref="DPSRotationMode"/>
         /// <seealso cref="HealerRotationMode"/>
-        [EzIPC] private static readonly Action<Guid, AutoRotationConfigOption, object> SetAutoRotationConfigState;
+        [EzIPC] private static readonly Func<Guid, AutoRotationConfigOption, object, SetResult> SetAutoRotationConfigState;
 
-        internal static void SetJobAutoReady()
+        public static bool DoThing(Func<SetResult> action)
         {
-            if(Register())
-                SetCurrentJobAutoRotationReady(_curLease!.Value);
+            SetResult result = action();
+            bool      check  = result.CheckResult();
+            if (!check && result == SetResult.InvalidLease)
+                check = action().CheckResult();
+            return check;
         }
+
+        private static bool CheckResult(this SetResult result)
+        {
+            switch (result)
+            {
+                case SetResult.Okay:
+                case SetResult.OkayWorking:
+                    return true;
+                case SetResult.InvalidLease:
+                    _curLease = null;
+                    Register();
+                    return false;
+                case SetResult.BlacklistedLease:
+                    Plugin.Configuration.AutoManageRotationPluginState = false;
+                    Plugin.Configuration.Save();
+                    return false;
+                case SetResult.IPCDisabled:
+                case SetResult.Duplicate:
+                case SetResult.PlayerNotAvailable:
+                case SetResult.InvalidConfiguration:
+                case SetResult.InvalidValue:
+                case SetResult.IGNORED:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(result), result, null);
+            }
+        }
+
+        internal static bool SetJobAutoReady() => 
+            Register() && DoThing(() => SetCurrentJobAutoRotationReady(_curLease!.Value));
 
         internal static void SetAutoMode(bool on)
         {
             if (Register())
             {
-                SetAutoRotationState(_curLease!.Value, on);
-                if (on)
+                bool autoRotationState = DoThing(() => SetAutoRotationState(_curLease!.Value, on));
+                if (autoRotationState && on)
                 {
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.InCombatOnly,       false);
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.AutoRez,            true);
@@ -474,11 +543,12 @@ namespace AutoDuty.IPC
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.OnlyAttackInCombat, false);
 
                     DPSRotationMode dpsConfig = Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
-                                                                        Plugin.Configuration.Wrath_TargetingTank :
-                                                                        Plugin.Configuration.Wrath_TargetingNonTank;
+                                                    Plugin.Configuration.Wrath_TargetingTank :
+                                                    Plugin.Configuration.Wrath_TargetingNonTank;
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.DPSRotationMode, dpsConfig);
 
                     SetAutoRotationConfigState(_curLease.Value, AutoRotationConfigOption.HealerRotationMode, HealerRotationMode.Lowest_Current);
+
                 }
             }
         }
