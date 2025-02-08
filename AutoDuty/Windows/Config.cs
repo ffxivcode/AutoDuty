@@ -362,14 +362,15 @@ public static class ConfigTab
 
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
-    private static bool overlayHeaderSelected     = false;
-    private static bool dutyConfigHeaderSelected  = false;
-    private static bool bmaiSettingHeaderSelected = false;
+    private static bool overlayHeaderSelected      = false;
+    private static bool dutyConfigHeaderSelected   = false;
+    private static bool bmaiSettingHeaderSelected  = false;
     private static bool wrathSettingHeaderSelected = false;
-    private static bool advModeHeaderSelected     = false;
-    private static bool preLoopHeaderSelected     = false;
-    private static bool betweenLoopHeaderSelected = false;
-    private static bool terminationHeaderSelected = false;
+    private static bool w2wSettingHeaderSelected   = false;
+    private static bool advModeHeaderSelected      = false;
+    private static bool preLoopHeaderSelected      = false;
+    private static bool betweenLoopHeaderSelected  = false;
+    private static bool terminationHeaderSelected  = false;
 
     public static void BuildManuals()
     {
@@ -762,6 +763,22 @@ public static class ConfigTab
                     Plugin.loadedDungeonsForRebuild.Clear();
             }
 
+            ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+            bool w2wSettingHeader = ImGui.Selectable($"> {PathIdentifiers.W2W} Jobs <", w2wSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+            ImGui.PopStyleVar();
+            if (ImGui.IsItemHovered())
+                ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+            if (w2wSettingHeader)
+                w2wSettingHeaderSelected = !w2wSettingHeaderSelected;
+
+            if (w2wSettingHeaderSelected)
+            {
+                ImGui.BeginListBox("##W2WConfig", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, 300));
+
+                JobWithRoleHelper.DrawCategory(JobWithRole.All, ref Configuration.W2WJobs);
+                ImGui.EndListBox();
+            }
+
             if (ImGui.Checkbox("Override Party Validation", ref Configuration.OverridePartyValidation))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("AutoDuty will ignore your party makeup when queueing for duties\nThis is for Multi-Boxing Only\n*AutoDuty is not recommended to be used with other players*");
@@ -769,54 +786,9 @@ public static class ConfigTab
             //ImGui.BeginListBox("##W2WRoleSelection", new System.Numerics.Vector2(300, 800));
 
             //ImGui.PushStyleVar(ImGuiStyleVar);
-            ImGui.BeginListBox("##W2WConfig", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, 500));
 
-            void DrawW2WSelectable(JobWithRole jwr, bool category = false)
-            {
-                int flag = (int)Configuration.W2WJobs;
-                
-                if (ImGui.CheckboxFlags(jwr.ToString().Replace("_", " "), ref flag, (int)jwr))
-                {
-                    Configuration.W2WJobs = (JobWithRole)flag;
-                    Configuration.Save();
-                    Svc.Log.Info(Configuration.W2WJobs.ToString());
-                }
-                
-            }
-
-            void DrawW2WCategory(JobWithRole category)
-            {
-                ImGui.PushStyleColor(ImGuiCol.Header,        Vector4.Zero);
-                ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(0.2f));
-                ImGui.PushStyleColor(ImGuiCol.HeaderActive,  new Vector4(0.3f));
-                bool collapse = ImGui.CollapsingHeader("##" + category, ImGuiTreeNodeFlags.AllowItemOverlap);
-                ImGui.PopStyleColor(3);
-                ImGui.SameLine();
-                DrawW2WSelectable(category, true);
-                if (collapse)
-                {
-                    ImGui.Indent();
-                    foreach (JobWithRole jobW in JobWithRoleHelper.categories[category])
-                        if (JobWithRoleHelper.values[jobW].MinBy(jwr => JobWithRoleHelper.categories[jwr].Count()) == category)
-                            if (JobWithRoleHelper.categories.ContainsKey(jobW))
-                            {
-                                DrawW2WCategory(jobW);
-                            }
-                            else
-                            {
-                                ImGui.Indent();
-                                DrawW2WSelectable(jobW);
-                                ImGui.Unindent();
-                            }
-
-                    ImGui.Unindent();
-                }
-            }
-
-            DrawW2WCategory(JobWithRole.All);
-            ImGui.EndListBox();
             /*
-            foreach (JobWithRole category in categories.Keys) 
+            foreach (JobWithRole category in categories.Keys)
                 DrawW2WCategory(category);
             */
             //ImGui.EndListBox();

@@ -4,8 +4,9 @@ namespace AutoDuty.Data
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Numerics;
     using ECommons.ExcelServices;
-    using FFXIVClientStructs.FFXIV.Common.Lua;
+    using ImGuiNET;
 
     public static class Enums
     {
@@ -388,5 +389,46 @@ namespace AutoDuty.Data
 
         public static IEnumerable<Job> ContainedJobs(this JobWithRole jwr) =>
             Enum.GetValuesAsUnderlyingType<Job>().Cast<Job>().Where(job => jwr.HasJob(job));
+
+        public static void DrawSelectable(JobWithRole jwr, ref JobWithRole config)
+        {
+            int flag = (int)config;
+
+            if (ImGui.CheckboxFlags(jwr.ToString().Replace("_", " "), ref flag, (int)jwr))
+            {
+                config = (JobWithRole)flag;
+                Plugin.Configuration.Save();
+            }
+
+        }
+
+        public static void DrawCategory(JobWithRole category, ref JobWithRole config)
+        {
+            ImGui.PushStyleColor(ImGuiCol.Header,        Vector4.Zero);
+            ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(0.2f));
+            ImGui.PushStyleColor(ImGuiCol.HeaderActive,  new Vector4(0.3f));
+            bool collapse = ImGui.CollapsingHeader("##" + category, ImGuiTreeNodeFlags.AllowItemOverlap);
+            ImGui.PopStyleColor(3);
+            ImGui.SameLine();
+            DrawSelectable(category, ref config);
+            if (collapse)
+            {
+                ImGui.Indent();
+                foreach (JobWithRole jobW in categories[category])
+                    if (values[jobW].MinBy(jwr => categories[jwr].Count()) == category)
+                        if (categories.ContainsKey(jobW))
+                        {
+                            DrawCategory(jobW, ref config);
+                        }
+                        else
+                        {
+                            ImGui.Indent();
+                            DrawSelectable(jobW, ref config);
+                            ImGui.Unindent();
+                        }
+
+                ImGui.Unindent();
+            }
+        }
     }
 }
