@@ -797,60 +797,6 @@ public static class ConfigTab
                 Configuration.Save();
             ImGuiComponents.HelpMarker("AutoDuty will ignore your party makeup when queueing for duties\nThis is for Multi-Boxing Only\n*AutoDuty is not recommended to be used with other players*");
 
-            //ImGui.BeginListBox("##W2WRoleSelection", new System.Numerics.Vector2(300, 800));
-
-            //ImGui.PushStyleVar(ImGuiStyleVar);
-            ImGui.BeginListBox("##W2WConfig", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, 500));
-
-            void DrawW2WSelectable(JobWithRole jwr, bool category = false)
-            {
-                int flag = (int)Configuration.W2WJobs;
-                
-                if (ImGui.CheckboxFlags(jwr.ToString().Replace("_", " "), ref flag, (int)jwr))
-                {
-                    Configuration.W2WJobs = (JobWithRole)flag;
-                    Configuration.Save();
-                    Svc.Log.Info(Configuration.W2WJobs.ToString());
-                }
-                
-            }
-
-            void DrawW2WCategory(JobWithRole category)
-            {
-                ImGui.PushStyleColor(ImGuiCol.Header,        Vector4.Zero);
-                ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(0.2f));
-                ImGui.PushStyleColor(ImGuiCol.HeaderActive,  new Vector4(0.3f));
-                bool collapse = ImGui.CollapsingHeader("##" + category, ImGuiTreeNodeFlags.AllowItemOverlap);
-                ImGui.PopStyleColor(3);
-                ImGui.SameLine();
-                DrawW2WSelectable(category, true);
-                if (collapse)
-                {
-                    ImGui.Indent();
-                    foreach (JobWithRole jobW in JobWithRoleHelper.categories[category])
-                        if (JobWithRoleHelper.values[jobW].MinBy(jwr => JobWithRoleHelper.categories[jwr].Count()) == category)
-                            if (JobWithRoleHelper.categories.ContainsKey(jobW))
-                            {
-                                DrawW2WCategory(jobW);
-                            }
-                            else
-                            {
-                                ImGui.Indent();
-                                DrawW2WSelectable(jobW);
-                                ImGui.Unindent();
-                            }
-
-                    ImGui.Unindent();
-                }
-            }
-
-            DrawW2WCategory(JobWithRole.All);
-            ImGui.EndListBox();
-            /*
-            foreach (JobWithRole category in categories.Keys)
-                DrawW2WCategory(category);
-            */
-            //ImGui.EndListBox();
 
             ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
             var advModeHeader = ImGui.Selectable("Advanced Config Options", advModeHeaderSelected, ImGuiSelectableFlags.DontClosePopups);

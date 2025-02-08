@@ -5,6 +5,7 @@ namespace AutoDuty.Data
     using System.Collections.Generic;
     using System.Linq;
     using System.Numerics;
+    using System.Numerics;
     using Dalamud.Interface.Utility.Raii;
     using ECommons.ExcelServices;
     using ImGuiNET;
@@ -392,21 +393,19 @@ namespace AutoDuty.Data
         public static IEnumerable<Job> ContainedJobs(this JobWithRole jwr) =>
             Enum.GetValuesAsUnderlyingType<Job>().Cast<Job>().Where(job => jwr.HasJob(job));
 
-        public static void DrawSelectable(JobWithRole jwr, ref JobWithRole config, bool allowRemoval = true)
+        public static void DrawSelectable(JobWithRole jwr, ref JobWithRole config)
         {
             int flag = (int)config;
-            
-            using(ImRaii.Disabled(!allowRemoval && config.HasFlag(jwr)))
+
+            if (ImGui.CheckboxFlags(jwr.ToString().Replace("_", " "), ref flag, (int)jwr))
             {
-                if (ImGui.CheckboxFlags(jwr.ToString().Replace("_", " "), ref flag, (int)jwr))
-                {
-                    config = (JobWithRole)flag;
-                    Plugin.Configuration.Save();
-                }
+                config = (JobWithRole)flag;
+                Plugin.Configuration.Save();
             }
+
         }
 
-        public static void DrawCategory(JobWithRole category, ref JobWithRole config, bool allowRemoval = true)
+        public static void DrawCategory(JobWithRole category, ref JobWithRole config)
         {
             ImGui.PushStyleColor(ImGuiCol.Header,        Vector4.Zero);
             ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(0.2f));
@@ -414,7 +413,7 @@ namespace AutoDuty.Data
             bool collapse = ImGui.CollapsingHeader("##" + category, ImGuiTreeNodeFlags.AllowItemOverlap);
             ImGui.PopStyleColor(3);
             ImGui.SameLine();
-            DrawSelectable(category, ref config, allowRemoval);
+            DrawSelectable(category, ref config);
             if (collapse)
             {
                 ImGui.Indent();
@@ -422,12 +421,12 @@ namespace AutoDuty.Data
                     if (values[jobW].MinBy(jwr => categories[jwr].Count()) == category)
                         if (categories.ContainsKey(jobW))
                         {
-                            DrawCategory(jobW, ref config, allowRemoval);
+                            DrawCategory(jobW, ref config);
                         }
                         else
                         {
                             ImGui.Indent();
-                            DrawSelectable(jobW, ref config, allowRemoval);
+                            DrawSelectable(jobW, ref config);
                             ImGui.Unindent();
                         }
 

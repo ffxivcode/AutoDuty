@@ -181,7 +181,7 @@ namespace AutoDuty.Windows
                                         continue;
                                     
                                     ImGui.SameLine(0, 15);
-                                    ImGui.Text(string.Empty);
+                                    ImGui.Spacing();
                                     ImGui.AlignTextToFramePadding();
 
                                     void DrawRole(JobWithRole jwr, Vector4 col)
