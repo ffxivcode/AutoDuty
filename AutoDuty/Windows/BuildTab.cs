@@ -15,6 +15,7 @@ using ECommons.ImGuiMethods;
 using Dalamud.Interface.Components;
 using AutoDuty.Data;
 using static AutoDuty.Windows.MainWindow;
+using System.Diagnostics;
 
 namespace AutoDuty.Windows
 {
@@ -238,6 +239,12 @@ namespace AutoDuty.Windows
                 ClearAll();
             }
             ImGuiComponents.HelpMarker("Loads the path");
+            ImGui.SameLine(0, 5);
+            using (ImRaii.Disabled(Plugin.PathFile.IsNullOrEmpty()))
+            {
+                if (ImGuiEx.ButtonWrapped("Open File"))
+                    Process.Start("explorer",  Plugin.PathFile ?? string.Empty);
+            }
         }
 
         private unsafe static void DrawAddActionUIPopup()
