@@ -5,7 +5,6 @@ using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ECommons.ExcelServices;
 using ECommons.DalamudServices;
 using ECommons;
 using Dalamud.Interface.Utility;
@@ -22,8 +21,6 @@ using Serilog.Events;
 
 namespace AutoDuty.Windows;
 
-using System.Numerics;
-using System.Text.Json.Serialization;
 using Data;
 using Properties;
 using Lumina.Excel.Sheets;
@@ -36,6 +33,8 @@ public class Configuration : IPluginConfiguration
     public int                                                Version { get; set; }
     public HashSet<string>                                    DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<string, JobWithRole>?> PathSelectionsByPath = [];
+
+
 
 
     //LogOptions

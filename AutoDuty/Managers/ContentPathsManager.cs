@@ -17,6 +17,7 @@ namespace AutoDuty.Managers
 {
     using Data;
     using static Data.Classes;
+
     internal static class ContentPathsManager
     {
         internal static Dictionary<uint, ContentPathContainer> DictionaryPaths = [];
@@ -75,15 +76,22 @@ namespace AutoDuty.Managers
                 pathIndex = 0;
                 return Paths[0];
             }
+
+            public void AddPath(string name)
+            {
+                this.Paths.Add(new DutyPath(name, this));
+            }
         }
 
         internal class DutyPath
         {
-            public DutyPath(string filePath)
+            public DutyPath(string filePath, ContentPathContainer container)
             {
-                FilePath = filePath;
-                FileName = Path.GetFileName(filePath);
-                Name     = FileName.Replace(".json", string.Empty);
+                FilePath  = filePath;
+                FileName  = Path.GetFileName(filePath);
+                Name      = FileName.Replace(".json", string.Empty);
+                this.container = container;
+
 
                 UpdateColoredNames();
             }
@@ -99,6 +107,8 @@ namespace AutoDuty.Managers
                                              FileName;
                 ColoredNameRegex = RegexHelper.ColoredTextRegex().Match(ColoredNameString);
             }
+
+            public readonly ContentPathContainer container;
 
             public uint id;
 
@@ -157,5 +167,11 @@ namespace AutoDuty.Managers
             public List<PathAction> Actions => PathFile.Actions;
             public bool RevivalFound { get; private set; }
         }
+    }
+
+    internal static class ContentPathContainerExtensions
+    {
+        public static bool IsFirstPath(this ContentPathsManager.ContentPathContainer container, ContentPathsManager.DutyPath dp) => 
+            container.Paths[0] == dp;
     }
 }

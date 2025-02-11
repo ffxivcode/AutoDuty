@@ -5,6 +5,7 @@ namespace AutoDuty.Data
     using System.Collections.Generic;
     using System.Linq;
     using System.Numerics;
+    using Dalamud.Interface.Utility.Raii;
     using ECommons.ExcelServices;
     using ImGuiNET;
 
@@ -102,7 +103,7 @@ namespace AutoDuty.Data
             Pictomancer = 1 << 20,
             Casters     = Black_Mage | Summoner | Red_Mage | Pictomancer,
             DPS         = Melee      | Aiming   | Casters,
-            All         = Tanks      | Healers  | DPS
+            All         = Tanks      | Healers  | DPS 
         }
 
         public enum JobRole
@@ -390,19 +391,21 @@ namespace AutoDuty.Data
         public static IEnumerable<Job> ContainedJobs(this JobWithRole jwr) =>
             Enum.GetValuesAsUnderlyingType<Job>().Cast<Job>().Where(job => jwr.HasJob(job));
 
-        public static void DrawSelectable(JobWithRole jwr, ref JobWithRole config)
+        public static void DrawSelectable(JobWithRole jwr, ref JobWithRole config, bool allowRemoval = true)
         {
             int flag = (int)config;
-
-            if (ImGui.CheckboxFlags(jwr.ToString().Replace("_", " "), ref flag, (int)jwr))
+            
+            using(ImRaii.Disabled(!allowRemoval && config.HasFlag(jwr)))
             {
-                config = (JobWithRole)flag;
-                Plugin.Configuration.Save();
+                if (ImGui.CheckboxFlags(jwr.ToString().Replace("_", " "), ref flag, (int)jwr))
+                {
+                    config = (JobWithRole)flag;
+                    Plugin.Configuration.Save();
+                }
             }
-
         }
 
-        public static void DrawCategory(JobWithRole category, ref JobWithRole config)
+        public static void DrawCategory(JobWithRole category, ref JobWithRole config, bool allowRemoval = true)
         {
             ImGui.PushStyleColor(ImGuiCol.Header,        Vector4.Zero);
             ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(0.2f));
@@ -410,7 +413,7 @@ namespace AutoDuty.Data
             bool collapse = ImGui.CollapsingHeader("##" + category, ImGuiTreeNodeFlags.AllowItemOverlap);
             ImGui.PopStyleColor(3);
             ImGui.SameLine();
-            DrawSelectable(category, ref config);
+            DrawSelectable(category, ref config, allowRemoval);
             if (collapse)
             {
                 ImGui.Indent();
@@ -418,12 +421,12 @@ namespace AutoDuty.Data
                     if (values[jobW].MinBy(jwr => categories[jwr].Count()) == category)
                         if (categories.ContainsKey(jobW))
                         {
-                            DrawCategory(jobW, ref config);
+                            DrawCategory(jobW, ref config, allowRemoval);
                         }
                         else
                         {
                             ImGui.Indent();
-                            DrawSelectable(jobW, ref config);
+                            DrawSelectable(jobW, ref config, allowRemoval);
                             ImGui.Unindent();
                         }
 
