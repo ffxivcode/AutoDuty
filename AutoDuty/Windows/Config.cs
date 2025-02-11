@@ -121,7 +121,10 @@ public class Configuration : IPluginConfiguration
     public bool ExtractButton = true;
     public bool RepairButton = true;
     public bool EquipButton = true;
-    
+
+    internal bool updatePathsOnStartup = true;
+    public bool UpdatePathsOnStartup => !Plugin.isDev || this.updatePathsOnStartup;
+
     //Duty Config Options
     public bool AutoExitDuty = true;
     public bool AutoManageRotationPluginState = true;
@@ -362,6 +365,7 @@ public static class ConfigTab
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
     private static bool overlayHeaderSelected      = false;
+    private static bool devHeaderSelected          = false;
     private static bool dutyConfigHeaderSelected   = false;
     private static bool bmaiSettingHeaderSelected  = false;
     private static bool wrathSettingHeaderSelected = false;
@@ -473,7 +477,24 @@ public static class ConfigTab
             
         }
 
-        //Start of Duty Config Settings
+        if (Plugin.isDev)
+        {
+            ImGui.Separator();
+            ImGui.Spacing();
+            ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+            var devHeader = ImGui.Selectable("Dev Settings", devHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+            ImGui.PopStyleVar();
+            if (ImGui.IsItemHovered())
+                ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+            if (devHeader)
+                devHeaderSelected = !devHeaderSelected;
+
+            if (devHeaderSelected)
+            {
+                if (ImGui.Checkbox("Update Paths on startup", ref Configuration.updatePathsOnStartup))
+                    Configuration.Save();
+            }
+        }
         ImGui.Spacing();
         ImGui.Separator();
         ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
