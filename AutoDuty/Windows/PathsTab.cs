@@ -194,9 +194,9 @@ namespace AutoDuty.Windows
                                         }
                                     }
 
-                                    DrawRole(JobWithRole.Melee,   ImGuiHelper.RoleDPSColor);
+                                    DrawRole(JobWithRole.DPS,   ImGuiHelper.RoleDPSColor);
                                     DrawRole(JobWithRole.Healers, ImGuiHelper.RoleHealerColor);
-                                    DrawRole(JobWithRole.Tanks, ImGuiHelper.RoleTankColor);
+                                    DrawRole(JobWithRole.Tanks,   ImGuiHelper.RoleTankColor);
                                 }
                             }
                         }

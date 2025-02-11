@@ -73,7 +73,9 @@ namespace AutoDuty.Windows
 
                         Dictionary<string, JobWithRole>? pathSelection    = null;
                         JobWithRole                      curJob = Svc.ClientState.LocalPlayer.GetJob().JobToJobWithRole();
-                        using (ImRaii.Disabled(!Plugin.Configuration.PathSelectionsByPath.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || !(pathSelection = Plugin.Configuration.PathSelectionsByPath[Plugin.CurrentTerritoryContent.TerritoryType]).Any(kvp => kvp.Value.HasJob(Svc.ClientState.LocalPlayer.GetJob()))))
+                        using (ImRaii.Disabled(curPath <= 0 ||
+                                               !Plugin.Configuration.PathSelectionsByPath.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || 
+                                               !(pathSelection = Plugin.Configuration.PathSelectionsByPath[Plugin.CurrentTerritoryContent.TerritoryType]).Any(kvp => kvp.Value.HasJob(Svc.ClientState.LocalPlayer.GetJob()))))
                         {
                             if (ImGui.Button("Clear Saved Path"))
                             {
