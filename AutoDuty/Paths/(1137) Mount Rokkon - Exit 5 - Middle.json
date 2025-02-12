@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 145.46,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 145.07,
@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -40,7 +40,7 @@
       "note": "Perceptive Portal"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -53,7 +53,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 690.81,
@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 727.71,
@@ -79,7 +79,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 683.97,
@@ -92,7 +92,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 737.23,
@@ -105,7 +105,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 731.76,
@@ -118,7 +118,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -131,7 +131,7 @@
       "note": "Woven Rope"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -144,7 +144,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 737.16,
@@ -157,7 +157,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -170,7 +170,7 @@
       "note": "Shojo Temple Entrance"
     },
     {
-      "tag": 4,
+      "tag": "Revival",
       "name": "Revival",
       "position": {
         "X": 736.17,
@@ -183,7 +183,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 737.08,
@@ -196,7 +196,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 736.96,
@@ -209,7 +209,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 758.03,
@@ -222,7 +222,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 730.03,
@@ -235,7 +235,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 735.42,
@@ -248,7 +248,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 728.44,
@@ -261,7 +261,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 743.37,
@@ -274,7 +274,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 783.53,
@@ -287,7 +287,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "PausePandora",
       "position": {
         "X": 0,
@@ -300,7 +300,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "DutySpecificCode",
       "position": {
         "X": 784.27,
@@ -313,7 +313,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 783.98,
@@ -326,7 +326,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 746.77,
@@ -339,7 +339,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 744.64,
@@ -352,7 +352,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": "Revival",
       "name": "Revival",
       "position": {
         "X": 740.96,
@@ -365,7 +365,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 740.97,
@@ -378,7 +378,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 740.92,
@@ -391,7 +391,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -406,6 +405,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 188,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

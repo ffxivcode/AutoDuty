@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 168.15,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 183.97,
@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 256.4,
@@ -40,7 +40,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "AutoMoveFor",
       "position": {
         "X": 264.92,
@@ -53,7 +53,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -165.85,
@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 12.46,
@@ -79,7 +79,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 0.14,
@@ -92,7 +92,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -105,7 +105,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -0.13,
@@ -118,7 +118,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -4.63,
@@ -131,7 +131,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -0.41,
@@ -144,7 +144,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "AutoMoveFor",
       "position": {
         "X": -10,
@@ -157,7 +157,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 0.02,
@@ -170,7 +170,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -27.45,
@@ -183,7 +183,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -35.59,
@@ -196,7 +196,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "AutoMoveFor",
       "position": {
         "X": -35.85,
@@ -209,7 +209,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": -34.92,
@@ -222,7 +222,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -35.24,
@@ -235,7 +235,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -250,6 +249,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 188,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

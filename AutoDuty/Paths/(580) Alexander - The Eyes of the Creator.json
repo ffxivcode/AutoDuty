@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -123.69,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -40,7 +40,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -53,7 +53,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": -38.54,
@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": -40.22,
@@ -79,7 +79,7 @@
       "note": "Cranial Hatch"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "WaitFor",
       "position": {
         "X": -40.22,
@@ -92,7 +92,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": -40.22,
@@ -105,7 +105,7 @@
       "note": "Ingress"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -118,7 +118,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "ForceAttack",
       "position": {
         "X": 1.32,
@@ -131,7 +131,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 1.32,
@@ -144,7 +144,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 156,
     "changelog": [
@@ -159,6 +158,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 188,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

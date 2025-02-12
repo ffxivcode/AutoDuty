@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 5.17,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 0.17,
@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": 5,
+      "tag": "Treasure",
       "name": "TreasureCoffer",
       "position": {
         "X": 132.96,
@@ -40,7 +40,7 @@
       "note": ""
     },
     {
-      "tag": 5,
+      "tag": "Treasure",
       "name": "TreasureCoffer",
       "position": {
         "X": 46.85,
@@ -53,7 +53,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 61.64,
@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 35.62,
@@ -79,7 +79,7 @@
       "note": ""
     },
     {
-      "tag": 5,
+      "tag": "Treasure",
       "name": "TreasureCoffer",
       "position": {
         "X": 41.42,
@@ -92,7 +92,7 @@
       "note": ""
     },
     {
-      "tag": 5,
+      "tag": "Treasure",
       "name": "TreasureCoffer",
       "position": {
         "X": -6.87,
@@ -105,7 +105,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 17.22,
@@ -118,7 +118,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 17.29,
@@ -131,7 +131,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 17.05,
@@ -144,7 +144,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -167,6 +166,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 188,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

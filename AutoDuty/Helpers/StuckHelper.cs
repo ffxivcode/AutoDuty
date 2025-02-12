@@ -11,7 +11,7 @@ namespace AutoDuty.Helpers
         internal static Vector3 LastPosition = Vector3.Zero;
         internal static long LastPositionUpdate = 0;
 
-        internal unsafe static bool IsStuck()
+        internal static bool IsStuck()
         {
             if (!Player.Available) return false;
             if (!VNavmesh_IPCSubscriber.Path_IsRunning())
@@ -20,15 +20,17 @@ namespace AutoDuty.Helpers
             }
             else
             {
-                if (Vector3.Distance(LastPosition, Player.Position) > 0.5f)
+                if (Vector3.DistanceSquared(LastPosition, Player.Position) > 1f)
                 {
                     LastPositionUpdate = Environment.TickCount64;
-                    LastPosition = Player.Position;
+                    LastPosition       = Player.Position;
                 }
             }
 
+
             if (Environment.TickCount64 - LastPositionUpdate > 500 && EzThrottler.Throttle("RequeueMoveTo", 1000))
             {
+                
                 Svc.Log.Debug($"Stuck pathfinding.");
                 return true;
             }

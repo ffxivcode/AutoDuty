@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -25.400412,
@@ -12,7 +12,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 56.715706,
@@ -23,7 +23,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": "Revival",
       "name": "Revival",
       "position": {
         "X": 72.9,
@@ -36,7 +36,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 72.95,
@@ -49,7 +49,7 @@
       "note": "Lindblum Zaghnal"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 72.97724,
@@ -60,7 +60,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 96.12107,
@@ -71,7 +71,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 54.023067,
@@ -82,7 +82,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 54.15484,
@@ -93,7 +93,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -106,7 +106,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 52.097523,
@@ -117,7 +117,7 @@
       "note": ""
     },
     {
-      "tag": 5,
+      "tag": "Treasure",
       "name": "TreasureCoffer",
       "position": {
         "X": 76.827225,
@@ -130,7 +130,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 115.77848,
@@ -141,7 +141,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 116.42867,
@@ -152,7 +152,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 120.971085,
@@ -163,7 +163,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 116.328125,
@@ -174,7 +174,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": "Revival",
       "name": "Revival",
       "position": {
         "X": 115.97,
@@ -187,7 +187,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 115.88,
@@ -200,7 +200,7 @@
       "note": "Overseer Kanilokka"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 116.263374,
@@ -211,7 +211,7 @@
       "note": ""
     },
     {
-      "tag": 5,
+      "tag": "Treasure",
       "name": "TreasureCoffer",
       "position": {
         "X": 127.3062,
@@ -222,7 +222,7 @@
       "note": ""
     },
     {
-      "tag": 5,
+      "tag": "Treasure",
       "name": "TreasureCoffer",
       "position": {
         "X": 86.46,
@@ -235,7 +235,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": "Revival",
       "name": "Revival",
       "position": {
         "X": 0,
@@ -248,7 +248,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 91.654076,
@@ -259,7 +259,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 91.654076,
@@ -272,7 +272,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -285,7 +285,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 36.04,
@@ -298,7 +298,7 @@
       "note": "Lunipyati"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 29.416544,
@@ -319,6 +319,10 @@
       {
         "version": 177,
         "change": "Adjusted wait time for mob pack after b2, safety steps right after"
+      },
+      {
+        "version": 188,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

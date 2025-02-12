@@ -197,14 +197,14 @@ public sealed class AutoDuty : IDalamudPlugin
     private         SettingsActive _bareModeSettingsActive = SettingsActive.None;
     public readonly bool           isDev;
 
-    public HashSet<uint> loadedDungeonsForRebuild = [];
-
     public AutoDuty()
     {
         try
         {
             Plugin = this;
             ECommonsMain.Init(PluginInterface, Plugin, Module.DalamudReflector, Module.ObjectFunctions);
+
+            this.isDev = PluginInterface.IsDev;
 
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             ConfigTab.BuildManuals();
@@ -214,10 +214,11 @@ public sealed class AutoDuty : IDalamudPlugin
             PathsDirectory = new(_configDirectory.FullName + "/paths");
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
-            Configuration.Version = (PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion).Revision;
+            
+            Configuration.Version = 
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 188) :
+                  PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
             Configuration.Save();
-
-            this.isDev = PluginInterface.IsDev;
 
             if (!_configDirectory.Exists)
                 _configDirectory.Create();
@@ -581,17 +582,6 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => Svc.Log.Debug($"Done Queueing-WaitDutyStarted, NavIsReady"));
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted,          "Run-WaitDutyStarted");
         TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run-WaitNavIsReady");
-        TaskManager.Enqueue(() =>
-                            {
-                                if (this.Configuration.RebuildNavmeshOnFirstEntry && !Plugin.loadedDungeonsForRebuild.Contains(this.CurrentTerritoryContent.Id))
-                                {
-                                    //this.Chat.ExecuteCommand("/vnav rebuild");
-                                    VNavmesh_IPCSubscriber.Nav_Rebuild();
-                                    Plugin.loadedDungeonsForRebuild.Add(this.CurrentTerritoryContent.Id);
-                                }
-                            }, int.MaxValue, "Run-NavRebuild");
-        TaskManager.DelayNext("Run-WaitNavRebuild100", 100);
-        TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run-WaitNavIsReady2");
         TaskManager.Enqueue(() => Svc.Log.Debug($"Start Navigation"));
         TaskManager.Enqueue(() => StartNavigation(startFromZero), "Run-StartNavigation");
         if (CurrentLoop == 0)
@@ -863,35 +853,42 @@ public sealed class AutoDuty : IDalamudPlugin
 
         PathAction = Actions[Indexer];
 
-        if (PathAction.Tag == ActionTag.Unsynced && (!Configuration.Unsynced || !Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial)))
+        if (PathAction.Tag.HasFlag(ActionTag.W2W) && !Configuration.W2WJobs.HasJob(this.JobLastKnown))
+        {
+            Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are not W2W-ing");
+            this.Indexer++;
+            return;
+        }
+
+        if (PathAction.Tag.HasFlag(ActionTag.Unsynced) && (!Configuration.Unsynced || !Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial)))
         {
             Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are synced");
             Indexer++;
             return;
         }
 
-        if (PathAction.Tag == ActionTag.Synced && Configuration.Unsynced)
+        if (PathAction.Tag.HasFlag(ActionTag.Synced) && Configuration.Unsynced)
         {
             Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are unsynced");
             Indexer++;
             return;
         }
 
-        if (PathAction.Tag == ActionTag.Comment)
+        if (PathAction.Tag.HasFlag(ActionTag.Comment))
         {
             Svc.Log.Debug($"Skipping path entry {Actions[Indexer].Name} because it is a comment");
             Indexer++;
             return;
         }
 
-        if (PathAction.Tag == ActionTag.Revival)
+        if (PathAction.Tag.HasFlag(ActionTag.Revival))
         {
             Svc.Log.Debug($"Skipping path entry {Actions[Indexer].Name} because it is a Revival Tag");
             Indexer++;
             return;
         }
 
-        if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && PathAction.Tag == ActionTag.Treasure)
+        if ((SkipTreasureCoffer || !Configuration.LootTreasure || Configuration.LootBossTreasureOnly) && PathAction.Tag.HasFlag(ActionTag.Treasure))
         {
             Svc.Log.Debug($"Skipping path entry {Actions[Indexer].Name} because we are either in revival mode, LootTreasure is off or BossOnly");
             Indexer++;
@@ -952,6 +949,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (StuckHelper.IsStuck())
         {
             VNavmesh_IPCSubscriber.Path_Stop();
+            if (Configuration.RebuildNavmeshOnStuck)
+                VNavmesh_IPCSubscriber.Nav_Rebuild();
             Stage = Stage.Reading_Path;
             return;
         }

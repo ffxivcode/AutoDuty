@@ -15,7 +15,7 @@ namespace AutoDuty.Helpers
         public static readonly Vector4 White = new(1, 1, 1, 1);
         public static readonly Vector4 MaxLevelColor = new(0.5f, 1, 0.5f, 1);
 
-        public static readonly Vector4 RoleTankColor       = new(0, 0.5f, 1, 1);
+        public static readonly Vector4 RoleTankColor       = new(0, 0.8f, 1, 1);
         public static readonly Vector4 RoleHealerColor     = new(0, 1, 0, 1);
         public static readonly Vector4 RoleDPSColor        = new(1, 0, 0, 1);
         public static readonly Vector4 RoleAllRounderColor = new(1, 1, 0.5f, 1);

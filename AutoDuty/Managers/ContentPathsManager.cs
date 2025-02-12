@@ -15,7 +15,9 @@ using System.Text.RegularExpressions;
 
 namespace AutoDuty.Managers
 {
+    using Data;
     using static Data.Classes;
+
     internal static class ContentPathsManager
     {
         internal static Dictionary<uint, ContentPathContainer> DictionaryPaths = [];
@@ -53,27 +55,19 @@ namespace AutoDuty.Managers
 
                 if (Paths.Count > 1)
                 {
-                    if (Plugin.Configuration.PathSelections.TryGetValue(Content.TerritoryType, out Dictionary<Job, int>? jobConfig))
+                    if (Plugin.Configuration.PathSelectionsByPath.TryGetValue(Content.TerritoryType, out Dictionary<string, JobWithRole>? jobConfig))
                     {
-                        if (jobConfig.TryGetValue((Job) job, out int pathId))
+                        foreach ((string? pathName, JobWithRole pathJobs) in jobConfig)
                         {
-                            if (pathId < Paths.Count)
+                            if (pathJobs.HasJob((Job)job))
                             {
-                                pathIndex = pathId;
-                                return Paths[pathIndex];
-                            }
-                        }
-                    }
+                                int pInx = Paths.IndexOf(dp => dp.FileName.Equals(pathName));
 
-                    if (job.GetCombatRole() == CombatRole.Tank)
-                    {
-                        for (int index = 0; index < Paths.Count; index++)
-                        {
-                            string curPath = Paths[index].Name;
-                            if (curPath.Contains(PathIdentifiers.W2W))
-                            {
-                                pathIndex = index;
-                                return Paths[index];
+                                if (pInx < Paths.Count)
+                                {
+                                    pathIndex = pInx;
+                                    return Paths[pathIndex];
+                                }
                             }
                         }
                     }
@@ -82,15 +76,22 @@ namespace AutoDuty.Managers
                 pathIndex = 0;
                 return Paths[0];
             }
+
+            public void AddPath(string name)
+            {
+                this.Paths.Add(new DutyPath(name, this));
+            }
         }
 
         internal class DutyPath
         {
-            public DutyPath(string filePath)
+            public DutyPath(string filePath, ContentPathContainer container)
             {
-                FilePath = filePath;
-                FileName = Path.GetFileName(filePath);
-                Name     = FileName.Replace(".json", string.Empty);
+                FilePath  = filePath;
+                FileName  = Path.GetFileName(filePath);
+                Name      = FileName.Replace(".json", string.Empty);
+                this.container = container;
+
 
                 UpdateColoredNames();
             }
@@ -106,6 +107,8 @@ namespace AutoDuty.Managers
                                              FileName;
                 ColoredNameRegex = RegexHelper.ColoredTextRegex().Match(ColoredNameString);
             }
+
+            public readonly ContentPathContainer container;
 
             public uint id;
 
@@ -135,7 +138,20 @@ namespace AutoDuty.Managers
 
                             pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
 
-                            RevivalFound = PathFile.Actions.Any(x => x.Tag == ActionTag.Revival);
+                            RevivalFound = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.Revival));
+                            /*
+                            if (this.pathFile.Meta.LastUpdatedVersion < 188)
+                            {
+
+                                pathFile.Meta.Changelog.Add(new PathFileChangelogEntry
+                                                            {
+                                                                Version = 188,
+                                                                Change  = "Adjusted tags to string values"
+                                                            });
+                                
+                                json = JsonSerializer.Serialize(pathFile, BuildTab.jsonSerializerOptions);
+                                File.WriteAllText(FilePath, json);
+                            }>*/
                         }
                         catch (Exception ex)
                         {
@@ -151,5 +167,11 @@ namespace AutoDuty.Managers
             public List<PathAction> Actions => PathFile.Actions;
             public bool RevivalFound { get; private set; }
         }
+    }
+
+    internal static class ContentPathContainerExtensions
+    {
+        public static bool IsFirstPath(this ContentPathsManager.ContentPathContainer container, ContentPathsManager.DutyPath dp) => 
+            container.Paths[0] == dp;
     }
 }

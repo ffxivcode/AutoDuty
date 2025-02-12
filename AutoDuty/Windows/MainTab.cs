@@ -15,6 +15,7 @@ using System.Numerics;
 
 namespace AutoDuty.Windows
 {
+    using Data;
     using static Data.Classes;
     internal static class MainTab
     {
@@ -68,12 +69,20 @@ namespace AutoDuty.Windows
                     List<ContentPathsManager.DutyPath> curPaths = container.Paths;
                     if (curPaths.Count > 1)
                     {
-                        int curPath = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
-                        using (ImRaii.Disabled(!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || !Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType].ContainsKey(Svc.ClientState.LocalPlayer.GetJob())))
+                        int                              curPath       = Math.Clamp(Plugin.CurrentPath, 0, curPaths.Count - 1);
+
+                        Dictionary<string, JobWithRole>? pathSelection    = null;
+                        JobWithRole                      curJob = Svc.ClientState.LocalPlayer.GetJob().JobToJobWithRole();
+                        using (ImRaii.Disabled(curPath <= 0 ||
+                                               !Plugin.Configuration.PathSelectionsByPath.ContainsKey(Plugin.CurrentTerritoryContent.TerritoryType) || 
+                                               !(pathSelection = Plugin.Configuration.PathSelectionsByPath[Plugin.CurrentTerritoryContent.TerritoryType]).Any(kvp => kvp.Value.HasJob(Svc.ClientState.LocalPlayer.GetJob()))))
                         {
                             if (ImGui.Button("Clear Saved Path"))
                             {
-                                Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType].Remove(Svc.ClientState.LocalPlayer.GetJob());
+                                foreach (KeyValuePair<string, JobWithRole> keyValuePair in pathSelection) 
+                                    pathSelection[keyValuePair.Key] &= ~curJob;
+
+                                PathSelectionHelper.RebuildFirstPath(Plugin.CurrentTerritoryContent.TerritoryType);
                                 Plugin.Configuration.Save();
                                 if (!Plugin.InDungeon)
                                     container.SelectPath(out Plugin.CurrentPath);
@@ -83,15 +92,22 @@ namespace AutoDuty.Windows
                         ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
                         if (ImGui.BeginCombo("##SelectedPath", curPaths[curPath].Name))
                         {
-                            foreach (var path in curPaths.Select((Value, Index) => (Value, Index)))
+                            foreach ((ContentPathsManager.DutyPath Value, int Index) path in curPaths.Select((value, index) => (Value: value, Index: index)))
                             {
                                 if (ImGui.Selectable(path.Value.Name))
                                 {
                                     curPath = path.Index;
-                                    if (!Plugin.Configuration.PathSelections.ContainsKey(Plugin.CurrentTerritoryContent!.TerritoryType))
-                                        Plugin.Configuration.PathSelections.Add(Plugin.CurrentTerritoryContent.TerritoryType, []);
+                                    PathSelectionHelper.AddPathSelectionEntry(Plugin.CurrentTerritoryContent!.TerritoryType);
+                                    Dictionary<string, JobWithRole> pathJobs = Plugin.Configuration.PathSelectionsByPath[Plugin.CurrentTerritoryContent.TerritoryType]!;
+                                    pathJobs.TryAdd(path.Value.FileName, JobWithRole.None);
+                                    
+                                    foreach (string jobsKey in pathJobs.Keys) 
+                                        pathJobs[jobsKey] &= ~curJob;
 
-                                    Plugin.Configuration.PathSelections[Plugin.CurrentTerritoryContent.TerritoryType][Svc.ClientState.LocalPlayer.GetJob()] = curPath;
+                                    pathJobs[path.Value.FileName] |= curJob;
+
+                                    PathSelectionHelper.RebuildFirstPath(Plugin.CurrentTerritoryContent.TerritoryType);
+
                                     Plugin.Configuration.Save();
                                     Plugin.CurrentPath = curPath;
                                     Plugin.LoadPath();
@@ -102,8 +118,10 @@ namespace AutoDuty.Windows
                             ImGui.EndCombo();
                         }
                         ImGui.PopItemWidth();
+                        
                         if (ImGui.IsItemHovered() && !curPaths[curPath].PathFile.Meta.Notes.All(x => x.IsNullOrEmpty()))
                             ImGui.SetTooltip(string.Join("\n", curPaths[curPath].PathFile.Meta.Notes));
+                        
                     }
                 }
             }

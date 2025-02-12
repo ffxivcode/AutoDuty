@@ -113,7 +113,7 @@ namespace AutoDuty.Updater
                         if (!ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType))
                             ContentPathsManager.DictionaryPaths.Add(content.TerritoryType, new ContentPathsManager.ContentPathContainer(content));
 
-                        ContentPathsManager.DictionaryPaths[content.TerritoryType].Paths.Add(new ContentPathsManager.DutyPath(file.FullName));
+                        ContentPathsManager.DictionaryPaths[content.TerritoryType].AddPath(file.FullName);
                     }
                 }
             }
