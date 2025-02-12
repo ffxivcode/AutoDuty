@@ -197,8 +197,6 @@ public sealed class AutoDuty : IDalamudPlugin
     private         SettingsActive _bareModeSettingsActive = SettingsActive.None;
     public readonly bool           isDev;
 
-    public HashSet<uint> loadedDungeonsForRebuild = [];
-
     public AutoDuty()
     {
         try
@@ -584,17 +582,6 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => Svc.Log.Debug($"Done Queueing-WaitDutyStarted, NavIsReady"));
         TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted,          "Run-WaitDutyStarted");
         TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run-WaitNavIsReady");
-        TaskManager.Enqueue(() =>
-                            {
-                                if (this.Configuration.RebuildNavmeshOnFirstEntry && !Plugin.loadedDungeonsForRebuild.Contains(this.CurrentTerritoryContent.Id))
-                                {
-                                    //this.Chat.ExecuteCommand("/vnav rebuild");
-                                    VNavmesh_IPCSubscriber.Nav_Rebuild();
-                                    Plugin.loadedDungeonsForRebuild.Add(this.CurrentTerritoryContent.Id);
-                                }
-                            }, int.MaxValue, "Run-NavRebuild");
-        TaskManager.DelayNext("Run-WaitNavRebuild100", 100);
-        TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Run-WaitNavIsReady2");
         TaskManager.Enqueue(() => Svc.Log.Debug($"Start Navigation"));
         TaskManager.Enqueue(() => StartNavigation(startFromZero), "Run-StartNavigation");
         if (CurrentLoop == 0)
@@ -962,6 +949,8 @@ public sealed class AutoDuty : IDalamudPlugin
         if (StuckHelper.IsStuck())
         {
             VNavmesh_IPCSubscriber.Path_Stop();
+            if (Configuration.RebuildNavmeshOnStuck)
+                VNavmesh_IPCSubscriber.Nav_Rebuild();
             Stage = Stage.Reading_Path;
             return;
         }

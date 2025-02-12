@@ -143,7 +143,7 @@ public class Configuration : IPluginConfiguration
     public LootMethod LootMethodEnum                 = LootMethod.AutoDuty;
     public bool       LootBossTreasureOnly           = false;
     public int        TreasureCofferScanDistance     = 25;
-    public bool       RebuildNavmeshOnFirstEntry     = true;
+    public bool       RebuildNavmeshOnStuck          = true;
     public bool       OverridePartyValidation        = false;
     public bool       UsingAlternativeRotationPlugin = false;
     public bool       UsingAlternativeMovementPlugin = false;
@@ -774,14 +774,8 @@ public static class ConfigTab
             }
             ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");
 
-            if (ImGui.Checkbox("Rebuild Navmesh on first dungeon load this session", ref Configuration.RebuildNavmeshOnFirstEntry))
+            if (ImGui.Checkbox("Rebuild Navmesh when stuck", ref Configuration.RebuildNavmeshOnStuck))
                 Configuration.Save();
-            if (Configuration.RebuildNavmeshOnFirstEntry && Plugin.loadedDungeonsForRebuild.Count > 0)
-            {
-                ImGui.SameLine();
-                if (ImGui.Button("Clear cache of already visited dungeons"))
-                    Plugin.loadedDungeonsForRebuild.Clear();
-            }
 
             ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
             bool w2wSettingHeader = ImGui.Selectable($"> {PathIdentifiers.W2W} Jobs <", w2wSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
