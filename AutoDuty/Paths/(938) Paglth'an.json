@@ -100,7 +100,7 @@
         "Z": 0
       },
       "arguments": [
-        "10000"
+        "20000"
       ],
       "note": ""
     },
@@ -158,6 +158,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 188,
+        "change": "Changed waiting time after interacting with Dragon"
       },
       {
         "version": 188,
