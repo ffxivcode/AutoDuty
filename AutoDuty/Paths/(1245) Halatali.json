@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 230.11583,
@@ -12,7 +12,7 @@
       "note": ""
     },
     {
-      "tag": "Revival",
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 0,
@@ -25,7 +25,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 138.32365,
@@ -36,7 +36,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 122.16758,
@@ -47,7 +47,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -60,7 +60,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 124.595665,
@@ -71,7 +71,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 91.701355,
@@ -82,7 +82,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 75.18,
@@ -95,7 +95,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 17.785288,
@@ -106,7 +106,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 30.54,
@@ -119,7 +119,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 36.138577,
@@ -130,7 +130,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 32.06,
@@ -143,7 +143,7 @@
       "note": "Aetherial Flow"
     },
     {
-      "tag": "Revival",
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 0,
@@ -156,7 +156,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -169,7 +169,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -182,7 +182,7 @@
       "note": "Chain Winch"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 74.644196,
@@ -193,7 +193,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -206,7 +206,7 @@
       "note": "Chain Winch"
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 41.44,
@@ -219,7 +219,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -13.74324,
@@ -230,7 +230,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -5.7234087,
@@ -241,7 +241,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -254,7 +254,7 @@
       "note": "Chain Winch"
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 18.28,
@@ -267,7 +267,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -31.192667,
@@ -278,7 +278,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -291,7 +291,7 @@
       "note": "Chain Winch"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -71.372,
@@ -302,7 +302,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -315,7 +315,7 @@
       "note": "Chain Winch"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -119.09809,
@@ -326,7 +326,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -179.64,
@@ -339,7 +339,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -183.59157,
@@ -350,7 +350,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -183.35744,
@@ -361,7 +361,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -374,7 +374,7 @@
       "note": "Aetherial Flow"
     },
     {
-      "tag": "Revival",
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 0,
@@ -387,7 +387,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -400,7 +400,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -159.9117,
@@ -411,7 +411,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -121.42,
@@ -424,7 +424,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -172.88,
@@ -437,7 +437,7 @@
       "note": "Ludus Door"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -269.39,
@@ -452,12 +452,7 @@
   ],
   "meta": {
     "createdAt": 175,
-    "changelog": [
-      {
-        "version": 188,
-        "change": "Adjusted tags to string values"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -147.64,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -114.96637,
@@ -25,7 +25,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -49.10786,
@@ -36,7 +36,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -31.71,
@@ -49,7 +49,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -15.74,
@@ -62,14 +62,10 @@
       "note": ""
     }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 170,
-    "changelog": [
-      {
-        "version": 188,
-        "change": "Adjusted tags to string values"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 535.81,
@@ -14,14 +14,10 @@
       "note": ""
     }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 170,
-    "changelog": [
-      {
-        "version": 188,
-        "change": "Adjusted tags to string values"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

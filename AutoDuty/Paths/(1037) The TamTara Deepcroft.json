@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 4.35,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 2.82,
@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -8.22,
@@ -40,7 +40,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -53,7 +53,7 @@
       "note": "Cultist Orb"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -18.43,
@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -23.07,
@@ -79,7 +79,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -92,7 +92,7 @@
       "note": "Cultist Orb"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -177.97,
@@ -105,7 +105,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -118,7 +118,7 @@
       "note": "Cultist Rosary"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -104.14,
@@ -131,7 +131,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -144,7 +144,7 @@
       "note": "Sealed Barrier"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -93.34,
@@ -157,7 +157,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -94.66,
@@ -170,7 +170,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -183,7 +183,7 @@
       "note": "Cultist Orb"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -89.51,
@@ -196,7 +196,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -209,7 +209,7 @@
       "note": "Cultist Orb"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -222,7 +222,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -51.88,
@@ -235,7 +235,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -46.75,
@@ -262,10 +262,6 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
-      },
-      {
-        "version": 188,
-        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

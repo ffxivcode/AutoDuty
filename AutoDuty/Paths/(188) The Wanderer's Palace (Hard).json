@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 125.51,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 124.93,
@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 125.11,
@@ -40,7 +40,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 77.39,
@@ -53,7 +53,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 79.26,
@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 43.84,
@@ -79,7 +79,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -24.84,
@@ -92,7 +92,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -26.67,
@@ -105,7 +105,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 43.41,
@@ -118,7 +118,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 37.87,
@@ -131,7 +131,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 76.67,
@@ -144,7 +144,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 76.63,
@@ -157,7 +157,7 @@
       "note": "Asylum Key"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 70.92,
@@ -170,7 +170,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 73.89,
@@ -183,7 +183,7 @@
       "note": "Asylum Cell"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 71.16,
@@ -196,7 +196,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 73.89,
@@ -209,7 +209,7 @@
       "note": "Asylum Cell"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 93.03,
@@ -222,7 +222,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 123.89,
@@ -235,7 +235,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 123.76,
@@ -248,7 +248,7 @@
       "note": "Drainage Valve"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 156.95,
@@ -261,7 +261,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 157.14,
@@ -274,7 +274,7 @@
       "note": "Nymian Device"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 72.07,
@@ -287,7 +287,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 90.68,
@@ -300,7 +300,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 73.46,
@@ -313,7 +313,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 72.86,
@@ -344,10 +344,6 @@
       {
         "version": 182,
         "change": "Updated interaction ids and added WaitForCombat step"
-      },
-      {
-        "version": 188,
-        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

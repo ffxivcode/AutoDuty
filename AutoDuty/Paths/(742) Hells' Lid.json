@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -114.75661,
@@ -12,7 +12,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -81.686104,
@@ -23,7 +23,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -52.450977,
@@ -34,7 +34,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": -72.35,
@@ -47,7 +47,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -72.35,
@@ -60,7 +60,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": -71.33,
@@ -73,7 +73,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": -71.78,
@@ -86,7 +86,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": -71.22,
@@ -99,7 +99,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -70.671646,
@@ -110,7 +110,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -70.5,
@@ -123,7 +123,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -71.43,
@@ -136,7 +136,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -70.05259,
@@ -147,7 +147,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -31.29067,
@@ -158,7 +158,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 9.025879,
@@ -169,7 +169,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 34.11,
@@ -182,7 +182,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": 47.48,
@@ -195,7 +195,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 97.70991,
@@ -206,7 +206,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 96.2301,
@@ -217,7 +217,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 63.842278,
@@ -228,7 +228,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": 45.75,
@@ -241,7 +241,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 31.18,
@@ -254,7 +254,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 55.731586,
@@ -265,7 +265,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 58.8,
@@ -278,7 +278,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 58.9,
@@ -291,7 +291,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 59.468548,
@@ -302,7 +302,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 59.47,
@@ -315,7 +315,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 42.653843,
@@ -326,7 +326,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 65.8,
@@ -339,7 +339,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 87.52709,
@@ -350,7 +350,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": 62.65,
@@ -363,7 +363,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 69.62,
@@ -376,7 +376,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 62.283955,
@@ -387,7 +387,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": 61.29,
@@ -400,7 +400,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 62.02,
@@ -413,7 +413,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 62.23,
@@ -428,12 +428,7 @@
   ],
   "meta": {
     "createdAt": 172,
-    "changelog": [
-      {
-        "version": 188,
-        "change": "Adjusted tags to string values"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }

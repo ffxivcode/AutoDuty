@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -0.1,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 0.03,
@@ -27,14 +27,10 @@
       "note": ""
     }
   ],
+  "interactables": [],
   "meta": {
     "createdAt": 170,
-    "changelog": [
-      {
-        "version": 188,
-        "change": "Adjusted tags to string values"
-      }
-    ],
+    "changelog": [],
     "notes": []
   }
 }
