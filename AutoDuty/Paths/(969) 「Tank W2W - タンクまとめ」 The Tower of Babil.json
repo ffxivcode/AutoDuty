@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -12,7 +12,7 @@
       "note": "\u003C-- Trash Packs / \u96D1\u9B5A 1 \u0026 2 --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -270.37,
@@ -25,7 +25,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -267.96,
@@ -38,7 +38,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -51,7 +51,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": -265.33,
@@ -64,7 +64,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -77,7 +77,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -88,7 +88,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 3 --\u003E"
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -99,7 +99,7 @@
       "note": "\u003C-- Not double-pulling cuz too dangerous --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -267.12,
@@ -112,7 +112,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -267.2,
@@ -125,7 +125,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -251.78,
@@ -138,7 +138,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -151,7 +151,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": -252.02,
@@ -164,7 +164,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -177,7 +177,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -188,7 +188,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 4 --\u003E"
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": -252.03,
@@ -201,7 +201,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -263.59,
@@ -214,7 +214,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -227,7 +227,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": -272.18,
@@ -240,7 +240,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -253,7 +253,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -264,7 +264,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 1 --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -300.14,
@@ -277,7 +277,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -288,7 +288,7 @@
       "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -300.24,
@@ -301,7 +301,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": -300.29,
@@ -314,7 +314,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -327,7 +327,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 400.03,
@@ -340,7 +340,7 @@
       "note": "Control Terminal"
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -351,7 +351,7 @@
       "note": "\u003C-- Trash Packs / \u96D1\u9B5A 5 - 7 --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -364,7 +364,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -377,7 +377,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -390,7 +390,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 400.2,
@@ -403,7 +403,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -416,7 +416,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": 400.05,
@@ -429,7 +429,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -442,7 +442,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 399.88,
@@ -455,7 +455,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -468,7 +468,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": 400.01,
@@ -481,7 +481,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -494,7 +494,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 406.26,
@@ -507,7 +507,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -520,7 +520,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -533,7 +533,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -544,7 +544,7 @@
       "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 402.11,
@@ -557,7 +557,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 402.22,
@@ -570,7 +570,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -583,7 +583,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 342.3,
@@ -596,7 +596,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -607,7 +607,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 8 --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 334.48,
@@ -620,7 +620,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 277.4,
@@ -633,7 +633,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 210.6,
@@ -646,7 +646,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -657,7 +657,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 2 --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 220.91,
@@ -670,7 +670,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -681,7 +681,7 @@
       "note": "\u003C-- Movement / \u52D5\u304D --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 157.89,
@@ -694,7 +694,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "AutoMoveFor",
       "position": {
         "X": 156.92,
@@ -707,7 +707,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -720,7 +720,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": -0.02,
@@ -733,7 +733,7 @@
       "note": "Control Terminal"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -746,7 +746,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -757,7 +757,7 @@
       "note": "\u003C-- Trash Packs / \u96D1\u9B5A 9 \u0026 10 --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 0.05,
@@ -770,7 +770,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -0.04,
@@ -783,7 +783,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 19.88,
@@ -796,7 +796,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -809,7 +809,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 4.8,
@@ -822,7 +822,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -835,7 +835,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 31.74,
@@ -848,7 +848,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -861,7 +861,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -872,7 +872,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 11 --\u003E"
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -883,7 +883,7 @@
       "note": "\u003C-- Not double-pulling cuz too dangerous --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": -7.81,
@@ -896,7 +896,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -30.59,
@@ -909,7 +909,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": -14.75,
@@ -922,7 +922,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -935,7 +935,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -946,7 +946,7 @@
       "note": "\u003C-- Trash Pack / \u96D1\u9B5A 12 --\u003E"
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "StopForCombat",
       "position": {
         "X": -32.36,
@@ -959,7 +959,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": -43.03,
@@ -972,7 +972,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -985,7 +985,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": -5.28,
@@ -998,7 +998,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -1011,7 +1011,7 @@
       "note": ""
     },
     {
-      "tag": "Synced",
+      "tag": 1,
       "name": "Wait",
       "position": {
         "X": 0.31,
@@ -1024,7 +1024,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -1037,7 +1037,7 @@
       "note": ""
     },
     {
-      "tag": "Comment",
+      "tag": 3,
       "name": "\u003C-- Comment --\u003E",
       "position": {
         "X": 0,
@@ -1048,7 +1048,7 @@
       "note": "\u003C-- Boss / \u30DC\u30B9 3 --\u003E"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -0.28,
@@ -1071,10 +1071,6 @@
       {
         "version": 172,
         "change": "Converted to JSON Structure with Tags"
-      },
-      {
-        "version": 188,
-        "change": "Adjusted tags to string values"
       }
     ],
     "notes": [

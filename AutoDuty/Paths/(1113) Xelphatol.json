@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": -70.55,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": "Revival",
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 0,
@@ -25,7 +25,7 @@
       "note": "CheckPoint1"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 92.59085,
@@ -36,7 +36,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 154.57,
@@ -49,7 +49,7 @@
       "note": "Bone Key"
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 137.21,
@@ -62,7 +62,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 167.19,
@@ -75,7 +75,7 @@
       "note": "Imposing Gate"
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 184.73,
@@ -88,7 +88,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 171.77386,
@@ -99,7 +99,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 178.07,
@@ -112,7 +112,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -126,7 +126,7 @@
       "note": "Lift Lever"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 0,
@@ -139,7 +139,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 187.15,
@@ -152,7 +152,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 199.67,
@@ -165,7 +165,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 178.08673,
@@ -176,7 +176,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 178.15,
@@ -189,7 +189,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 243.85,
@@ -202,7 +202,7 @@
       "note": ""
     },
     {
-      "tag": "Revival",
+      "tag": 4,
       "name": "Revival",
       "position": {
         "X": 0,
@@ -213,7 +213,7 @@
       "note": "CheckPoint2"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 299.63,
@@ -226,7 +226,7 @@
       "note": "Airstone"
     },
     {
-      "tag": "Treasure",
+      "tag": 5,
       "name": "TreasureCoffer",
       "position": {
         "X": 336.29,
@@ -239,7 +239,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "DutySpecificCode",
       "position": {
         "X": 341.02,
@@ -252,7 +252,7 @@
       "note": "Tailwind Relic"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 336.09,
@@ -265,7 +265,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 343.44,
@@ -278,7 +278,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -291,7 +291,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 419.71,
@@ -304,7 +304,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Wait",
       "position": {
         "X": 437.42,
@@ -317,7 +317,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -330,7 +330,7 @@
       "note": "Airstone"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "DutySpecificCode",
       "position": {
         "X": 415.48,
@@ -343,7 +343,7 @@
       "note": "Tailwind Relic"
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 414.39,
@@ -356,7 +356,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 412.3019,
@@ -367,7 +367,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -380,7 +380,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "MoveTo",
       "position": {
         "X": 341.08862,
@@ -391,7 +391,7 @@
       "note": ""
     },
     {
-      "tag": "None",
+      "tag": 0,
       "name": "Boss",
       "position": {
         "X": 318.84,
@@ -430,10 +430,6 @@
       {
         "version": 181,
         "change": "BMR causing boss confusion with mini-boss"
-      },
-      {
-        "version": 188,
-        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []
