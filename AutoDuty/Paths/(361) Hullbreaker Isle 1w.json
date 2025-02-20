@@ -1,0 +1,914 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 313.3838,
+        "Y": 8.392372,
+        "Z": 281.7334
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 293.37183,
+        "Y": 13.724805,
+        "Z": 263.2256
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 282.83475,
+        "Y": 18.473375,
+        "Z": 245.23889
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 283.08563,
+        "Y": 22.209885,
+        "Z": 226.56725
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 279.36798,
+        "Y": 25.864716,
+        "Z": 205.4329
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 310.52362,
+        "Y": 33.252056,
+        "Z": 179.83899
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 322.0148,
+        "Y": 42.76523,
+        "Z": 154.95427
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 315.86163,
+        "Y": 49.768913,
+        "Z": 131.99791
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 276.62817,
+        "Y": 56.34322,
+        "Z": 135.43568
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 243.90402,
+        "Y": 61.15905,
+        "Z": 125.08721
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 223.49191,
+        "Y": 63.007053,
+        "Z": 116.51878
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 220.95499,
+        "Y": 65.03987,
+        "Z": 98.64096
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 220.42618,
+        "Y": 64.74997,
+        "Z": 38.847862
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 221.58186,
+        "Y": 64.76198,
+        "Z": 9.116077
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 220.6,
+        "Y": 64.69,
+        "Z": -15.08
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 219.85655,
+        "Y": 64.6908,
+        "Z": -29.932491
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 219.96754,
+        "Y": 67.05615,
+        "Z": -92.931206
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 216.78372,
+        "Y": 63.170475,
+        "Z": -133.24901
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 203.24196,
+        "Y": 65.66713,
+        "Z": -134.41452
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 202.9019,
+        "Y": 65.66713,
+        "Z": -138.41432
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 202.91,
+        "Y": 65.67,
+        "Z": -137.54
+      },
+      "arguments": [
+        "2004074"
+      ],
+      "note": "Treasure Coffer"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 202.52,
+        "Y": 65.67,
+        "Z": -138.09
+      },
+      "arguments": [
+        "2004054"
+      ],
+      "note": "Stone Tablet"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 218.35832,
+        "Y": 63.151424,
+        "Z": -131.946
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 228.03821,
+        "Y": 62.598637,
+        "Z": -142.14806
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 233.3344,
+        "Y": 63.394444,
+        "Z": -130.08693
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 232.07582,
+        "Y": 65.91977,
+        "Z": -144.09564
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 232.08,
+        "Y": 65.92,
+        "Z": -144.1
+      },
+      "arguments": [
+        "2004075"
+      ],
+      "note": "Treasure Coffer"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 228.36,
+        "Y": 62.58,
+        "Z": -141.09
+      },
+      "arguments": [
+        "2004054"
+      ],
+      "note": "Stone Tablet"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 206.47899,
+        "Y": 62.028606,
+        "Z": -154.27824
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 168.71588,
+        "Y": 53.132767,
+        "Z": -184.28694
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 162.94366,
+        "Y": 52.607826,
+        "Z": -185.5714
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 162.94,
+        "Y": 52.61,
+        "Z": -185.57
+      },
+      "arguments": [
+        "2004057"
+      ],
+      "note": "Stone Pedestal"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 164.0397,
+        "Y": 52.23026,
+        "Z": -192.20755
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 136.23412,
+        "Y": 50.375443,
+        "Z": -195.77519
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 124.44408,
+        "Y": 49.22897,
+        "Z": -203.47348
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 98.051796,
+        "Y": 48.58332,
+        "Z": -189.4283
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 82.25805,
+        "Y": 53.829166,
+        "Z": -225.50804
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 82.26,
+        "Y": 53.83,
+        "Z": -225.51
+      },
+      "arguments": [
+        "2004076"
+      ],
+      "note": "Treasure Coffer"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 82.26,
+        "Y": 53.83,
+        "Z": -225.51
+      },
+      "arguments": [
+        "2004055"
+      ],
+      "note": "Stone Tablet"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 66.871216,
+        "Y": 53.574364,
+        "Z": -213.49583
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 66.88,
+        "Y": 53.56,
+        "Z": -213.78
+      },
+      "arguments": [
+        "2004077"
+      ],
+      "note": "Treasure Coffer"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 66.63,
+        "Y": 53.61,
+        "Z": -213.3
+      },
+      "arguments": [
+        "2004056"
+      ],
+      "note": "Stone Tablet"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 67.583664,
+        "Y": 53.761677,
+        "Z": -210.13669
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 68.26,
+        "Y": 53.62,
+        "Z": -210.69
+      },
+      "arguments": [
+        "2004078"
+      ],
+      "note": "Treasure Coffer"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 90.41098,
+        "Y": 50.193024,
+        "Z": -198.46199
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 56.189617,
+        "Y": 44.590378,
+        "Z": -170.17323
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 37.418686,
+        "Y": 42.917793,
+        "Z": -169.39072
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 30.260262,
+        "Y": 44.087963,
+        "Z": -147.78922
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 18.792936,
+        "Y": 44.894405,
+        "Z": -136.52281
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 40.096798,
+        "Y": 44.367115,
+        "Z": -130.46419
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 39.75074,
+        "Y": 44.185642,
+        "Z": -127.393326
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 39.75,
+        "Y": 44.19,
+        "Z": -127.39
+      },
+      "arguments": [
+        "2004079"
+      ],
+      "note": "Treasure Coffer"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 18.470798,
+        "Y": 44.647697,
+        "Z": -128.06187
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -13.828918,
+        "Y": 44.907402,
+        "Z": -119.00255
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -33.95337,
+        "Y": 44.996815,
+        "Z": -117.84345
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -33.95,
+        "Y": 45,
+        "Z": -117.84
+      },
+      "arguments": [
+        "2004058"
+      ],
+      "note": "Stone Pedestal"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -34.10716,
+        "Y": 44.94787,
+        "Z": -129.13844
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -34.11,
+        "Y": 44.95,
+        "Z": -129.14
+      },
+      "arguments": [
+        "2004059"
+      ],
+      "note": "Stone Pedestal"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -36.04839,
+        "Y": 44.98822,
+        "Z": -123.82226
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -62.797024,
+        "Y": 44.230167,
+        "Z": -125.1183
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -79.22,
+        "Y": 44.13,
+        "Z": -125.04
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -95.159035,
+        "Y": 44.099987,
+        "Z": -122.81799
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -160.94048,
+        "Y": 51.47259,
+        "Z": -111.44082
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -166.57498,
+        "Y": 53.20683,
+        "Z": -92.38618
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -166.57,
+        "Y": 53.21,
+        "Z": -92.39
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -173.98727,
+        "Y": 6.2297144,
+        "Z": -63.128864
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -190.54526,
+        "Y": 1.331907,
+        "Z": -43.336372
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -204.76231,
+        "Y": -0.29996932,
+        "Z": -26.52392
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -216.54259,
+        "Y": 0.018636107,
+        "Z": -7.9207945
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -234.87856,
+        "Y": 0.026432276,
+        "Z": -11.858812
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -249.96439,
+        "Y": 4.7244587,
+        "Z": -24.808735
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -268.3963,
+        "Y": 4.782939,
+        "Z": -6.0264993
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -292.79187,
+        "Y": 4.381178,
+        "Z": 0.5918892
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -307.0562,
+        "Y": 4.421956,
+        "Z": 13.294272
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -310.40903,
+        "Y": 2.8166792,
+        "Z": 30.593014
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -318.38843,
+        "Y": 1.8999999,
+        "Z": 34.741104
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -318.39,
+        "Y": 1.9,
+        "Z": 34.74
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -326.9179,
+        "Y": 1.8999999,
+        "Z": 35.083134
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": -326.92,
+        "Y": 1.9,
+        "Z": 35.08
+      },
+      "arguments": [
+        "20000"
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 188,
+    "changelog": [],
+    "notes": []
+  }
+}

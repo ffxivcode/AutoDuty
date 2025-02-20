@@ -1,0 +1,35 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 100.3,
+        "Y": -0,
+        "Z": 102.8
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 100.3,
+        "Y": -0,
+        "Z": 102.8
+      },
+      "arguments": [
+        "20000"
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 186,
+    "changelog": [],
+    "notes": []
+  }
+}

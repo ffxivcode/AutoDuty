@@ -1,0 +1,851 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -0.3758368,
+        "Y": -5.9604645E-07,
+        "Z": 68.95774
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 1.150237,
+        "Y": 0,
+        "Z": 11.118551
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 11.01187,
+        "Y": 0,
+        "Z": -1.9486916
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -2.2590132,
+        "Y": 1.4044416,
+        "Z": -23.85941
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -5.874576,
+        "Y": 1.4044411,
+        "Z": -28.504364
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": -4.16,
+        "Y": 1.4,
+        "Z": -24.28
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -17.638098,
+        "Y": 2.4522426,
+        "Z": -23.833054
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -17.64,
+        "Y": 2.45,
+        "Z": -23.83
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 30.514826,
+        "Y": 29.999989,
+        "Z": 21.896343
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 29.220745,
+        "Y": 30,
+        "Z": 1.4902016
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 42.693977,
+        "Y": 29.99996,
+        "Z": 0.61412615
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 42.33233,
+        "Y": 29.99996,
+        "Z": -22.58523
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 42.33,
+        "Y": 30,
+        "Z": -22.59
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 41.768166,
+        "Y": 30.00124,
+        "Z": -37.39144
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 42.11,
+        "Y": 30,
+        "Z": -59.17
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 41.987125,
+        "Y": 30.001019,
+        "Z": -70.083046
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 21.993746,
+        "Y": 30.069828,
+        "Z": -57.045425
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -28.577394,
+        "Y": 30.000957,
+        "Z": -56.157993
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -46.366123,
+        "Y": 30.000257,
+        "Z": -54.684975
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -42.745045,
+        "Y": 30.001455,
+        "Z": -32.268528
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -42.186974,
+        "Y": 29.99996,
+        "Z": 15.659502
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -27.196278,
+        "Y": 30.000008,
+        "Z": 15.237898
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -4.2081246,
+        "Y": 30.000013,
+        "Z": -15.46031
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -23.959702,
+        "Y": 30.000011,
+        "Z": -0.34817058
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -23.953825,
+        "Y": 33.433975,
+        "Z": -16.049166
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -16.912762,
+        "Y": 36.676167,
+        "Z": -22.987173
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.40793037,
+        "Y": 40,
+        "Z": -25.874998
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 16.55745,
+        "Y": 43.77457,
+        "Z": -23.951942
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 24.820713,
+        "Y": 47.46534,
+        "Z": -14.761943
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 26.544983,
+        "Y": 51.210682,
+        "Z": 9.262904
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 19.163904,
+        "Y": 55.452904,
+        "Z": 19.736122
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.69993776,
+        "Y": 59.999992,
+        "Z": 26.94909
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -0.14612402,
+        "Y": 60.00003,
+        "Z": 42.597874
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -18.015095,
+        "Y": 60.00002,
+        "Z": 40.931404
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -30.649677,
+        "Y": 60.00003,
+        "Z": 28.21193
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": -30.65,
+        "Y": 60,
+        "Z": 28.21
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -38.714973,
+        "Y": 60.00003,
+        "Z": 19.425158
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -41.864292,
+        "Y": 61.7717,
+        "Z": 6.744664
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -41.86,
+        "Y": 61.77,
+        "Z": 6.74
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 26.89311,
+        "Y": 80.32577,
+        "Z": -32.65611
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 40.96765,
+        "Y": 86.00003,
+        "Z": -7.7765746
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 33.74954,
+        "Y": 86.65797,
+        "Z": 0.33434796
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 17.394234,
+        "Y": 90,
+        "Z": -0.49633306
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 2.1,
+        "Y": 90.14,
+        "Z": -0.54
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -14.312902,
+        "Y": 90.13986,
+        "Z": -0.5772014
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -17.892006,
+        "Y": 90,
+        "Z": -0.1763737
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -55.0405,
+        "Y": 90.00004,
+        "Z": 3.6849575
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -51.154606,
+        "Y": 90.11461,
+        "Z": 22.268692
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -45.42012,
+        "Y": 90.64092,
+        "Z": 28.175917
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": -45.42,
+        "Y": 90.64,
+        "Z": 28.18
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 19.201223,
+        "Y": 120.01359,
+        "Z": -50.537323
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.67520845,
+        "Y": 120.00003,
+        "Z": -53.170696
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 3.9160767,
+        "Y": 120.12268,
+        "Z": -45.56733
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 5.138934,
+        "Y": 120.38666,
+        "Z": -33.116966
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 5.14,
+        "Y": 120.39,
+        "Z": -33.12
+      },
+      "arguments": [
+        "2002730"
+      ],
+      "note": "Aether Valve"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -20.266172,
+        "Y": 123.21641,
+        "Z": -34.339878
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -36.78062,
+        "Y": 128.76459,
+        "Z": -13.605755
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -36.30136,
+        "Y": 131.94093,
+        "Z": 14.517754
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -23.052076,
+        "Y": 136.54527,
+        "Z": 31.933628
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -6.9223886,
+        "Y": 140.00005,
+        "Z": 37.442413
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 1.0863105,
+        "Y": 140.40024,
+        "Z": 42.89109
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 1.09,
+        "Y": 140.4,
+        "Z": 42.89
+      },
+      "arguments": [
+        "2002731"
+      ],
+      "note": "Aether Valve"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -0.011976638,
+        "Y": 139.95,
+        "Z": 17.273207
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 0.55,
+        "Y": 139.9,
+        "Z": 5.75
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 0.35656464,
+        "Y": 139.95,
+        "Z": -18.165035
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 1.0250595,
+        "Y": 140.39297,
+        "Z": -36.457912
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 12.554598,
+        "Y": 141.6691,
+        "Z": -35.861553
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 12.55,
+        "Y": 141.67,
+        "Z": -35.86
+      },
+      "arguments": [
+        "3000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 37.42111,
+        "Y": 190,
+        "Z": -0.10674639
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 21.833374,
+        "Y": 194,
+        "Z": -0.03826139
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 7.901715,
+        "Y": 193.93,
+        "Z": 0.047207974
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 4.7,
+        "Y": 194.04,
+        "Z": 0.07
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -13.660786,
+        "Y": 194.04999,
+        "Z": -0.31191427
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": -7.73,
+        "Y": 193.93,
+        "Z": -0.89
+      },
+      "arguments": [
+        "10000"
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 188,
+    "changelog": [],
+    "notes": []
+  }
+}
