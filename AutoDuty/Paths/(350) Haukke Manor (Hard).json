@@ -257,6 +257,258 @@
         "2002916"
       ],
       "note": "Crystal Ball"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 39.154236,
+        "Y": 0,
+        "Z": -75.8486
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 40.92853,
+        "Y": 0,
+        "Z": -63.09047
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 36.28,
+        "Y": 0,
+        "Z": -74.88
+      },
+      "arguments": [
+        "2003313"
+      ],
+      "note": "Tiny Key"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 41.367123,
+        "Y": 0,
+        "Z": -20.994411
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 48.22013,
+        "Y": 0,
+        "Z": -35.39576
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 48.22,
+        "Y": 0,
+        "Z": -35.4
+      },
+      "arguments": [
+        "2003320"
+      ],
+      "note": "Locked Door"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 69.643745,
+        "Y": 0,
+        "Z": -48.41338
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 42.19138,
+        "Y": 0,
+        "Z": -33.913033
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 29.817268,
+        "Y": 0,
+        "Z": -1.3322512
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 22.092804,
+        "Y": 0,
+        "Z": 0.08364535
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 1.37,
+        "Y": 0,
+        "Z": -0.32
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -43.587284,
+        "Y": 0,
+        "Z": 13.980467
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -43.59,
+        "Y": 0,
+        "Z": 13.98
+      },
+      "arguments": [
+        "2002941"
+      ],
+      "note": "Crystal Ball"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 25.850798,
+        "Y": -18.799997,
+        "Z": 29.44701
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 43.463158,
+        "Y": -18.816898,
+        "Z": 22.04017
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 44.61071,
+        "Y": -18.8,
+        "Z": 2.8899183
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 42.428925,
+        "Y": -18.8,
+        "Z": -27.350576
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -28.554186,
+        "Y": -18.79999,
+        "Z": -28.024107
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -32.171726,
+        "Y": -18.799988,
+        "Z": 1.3669995
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -21.249823,
+        "Y": -18.800003,
+        "Z": 0.3779285
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 2.29,
+        "Y": -18.78,
+        "Z": 0.26
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 13.474837,
+        "Y": -18.678322,
+        "Z": -0.13540451
+      },
+      "arguments": [],
+      "note": ""
     }
   ],
   "meta": {
