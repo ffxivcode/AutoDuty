@@ -14,12 +14,12 @@ namespace AutoDuty.Data
         {
             var v4 = index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (pathAction.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
             ImGui.NewLine();
-            if (pathAction.Tag == ActionTag.Comment)
+            if (pathAction.Tag.HasFlag(ActionTag.Comment))
             {
                 TextClicked(new(0, 1, 0, 1), pathAction.Note, () => { });
                 return;
             }
-            if (!pathAction.Tag.EqualsAny(ActionTag.None, ActionTag.Treasure, ActionTag.Revival))
+            if (!pathAction.Tag.HasAnyFlag(ActionTag.None, ActionTag.Treasure, ActionTag.Revival))
             {
                 TextClicked(index == Plugin.Indexer ? v4 : new(1, 165 / 255f, 0, 1), $"{pathAction.Tag}", clickedAction);
                 TextClicked(v4, "|", clickedAction);
@@ -61,7 +61,7 @@ namespace AutoDuty.Data
             return outString;
         }
 
-        public static string ToCustomString(this PathAction pathAction) =>$"{(pathAction.Tag.EqualsAny(ActionTag.None, ActionTag.Treasure, ActionTag.Revival) ? "" : $"{pathAction.Tag.ToCustomString()}|")}{pathAction.Name}|{pathAction.Position.ToCustomString()}{(pathAction.Arguments.All(x => x.IsNullOrEmpty()) ? "" : $"|{pathAction.Arguments.ToCustomString()}")}{(pathAction.Note.IsNullOrEmpty() ? "" : $"|{pathAction.Note}")}";
+        public static string ToCustomString(this PathAction pathAction) =>$"{(pathAction.Tag.HasAnyFlag(ActionTag.None, ActionTag.Treasure, ActionTag.Revival) ? "" : $"{pathAction.Tag.ToCustomString()}|")}{pathAction.Name}|{pathAction.Position.ToCustomString()}{(pathAction.Arguments.All(x => x.IsNullOrEmpty()) ? "" : $"|{pathAction.Arguments.ToCustomString()}")}{(pathAction.Note.IsNullOrEmpty() ? "" : $"|{pathAction.Note}")}";
 
         public static string ToCustomString(this Vector3 vector3) => vector3.ToString("F2", CultureInfo.InvariantCulture).Trim('<', '>');
 

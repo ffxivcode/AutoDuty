@@ -15,6 +15,7 @@ using ECommons.ImGuiMethods;
 using Dalamud.Interface.Components;
 using AutoDuty.Data;
 using static AutoDuty.Windows.MainWindow;
+using System.Diagnostics;
 
 namespace AutoDuty.Windows
 {
@@ -22,30 +23,30 @@ namespace AutoDuty.Windows
     {
         internal static List<(string, string, string)>? ActionsList { get; set; }
 
-        private static bool _scrollBottom = false;
-        private static string _changelog = string.Empty;
-        private static PathAction? _action = null;
-        private static string _actionText = string.Empty;
-        private static string _note = string.Empty;
-        private static Vector3 _position = Vector3.Zero;
-        private static string _positionText = string.Empty;
-        private static List<string> _arguments = [];
-        private static string _argumentsString = string.Empty;
-        private static string _argumentHint = string.Empty;
-        private static bool _dontMove = false;
-        private static bool _showAddActionUI = false;
-        private static (string, string, string) _dropdownSelected = (string.Empty, string.Empty, string.Empty);
-        private static int _buildListSelected = -1;
-        private static string _addActionButton = "Add";
-        private static bool _dragDrop = false;
-        private static bool _noArgument = false;
-        private static bool _comment = false;
-        private static Vector4 _argumentTextColor = new(1,1,1,1);
-        private static bool _deleteItem = false;
-        private static int _deleteItemIndex = -1;
-        private static ActionTag _actionTag;
-        private static List<ActionTag> _actionTags = [ActionTag.None, ActionTag.Synced, ActionTag.Unsynced];
-        public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
+        private static          bool                     _scrollBottom      = false;
+        private static          string                   _changelog         = string.Empty;
+        private static          PathAction?              _action            = null;
+        private static          string                   _actionText        = string.Empty;
+        private static          string                   _note              = string.Empty;
+        private static          Vector3                  _position          = Vector3.Zero;
+        private static          string                   _positionText      = string.Empty;
+        private static          List<string>             _arguments         = [];
+        private static          string                   _argumentsString   = string.Empty;
+        private static          string                   _argumentHint      = string.Empty;
+        private static          bool                     _dontMove          = false;
+        private static          bool                     _showAddActionUI   = false;
+        private static          (string, string, string) _dropdownSelected  = (string.Empty, string.Empty, string.Empty);
+        private static          int                      _buildListSelected = -1;
+        private static          string                   _addActionButton   = "Add";
+        private static          bool                     _dragDrop          = false;
+        private static          bool                     _noArgument        = false;
+        private static          bool                     _comment           = false;
+        private static          Vector4                  _argumentTextColor = new(1,1,1,1);
+        private static          bool                     _deleteItem        = false;
+        private static          int                      _deleteItemIndex   = -1;
+        private static          ActionTag                _actionTag;
+        private static readonly ActionTag[]              _actionTags           = [ActionTag.None, ActionTag.Synced, ActionTag.Unsynced, ActionTag.W2W];
+        public static readonly  JsonSerializerOptions    jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
 
         internal unsafe static void Draw()
         {
@@ -238,6 +239,12 @@ namespace AutoDuty.Windows
                 ClearAll();
             }
             ImGuiComponents.HelpMarker("Loads the path");
+            ImGui.SameLine(0, 5);
+            using (ImRaii.Disabled(Plugin.PathFile.IsNullOrEmpty()))
+            {
+                if (ImGuiEx.ButtonWrapped("Open File"))
+                    Process.Start("explorer",  Plugin.PathFile ?? string.Empty);
+            }
         }
 
         private unsafe static void DrawAddActionUIPopup()
@@ -309,17 +316,21 @@ namespace AutoDuty.Windows
             ImGui.SameLine();
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
             ImGui.InputText("##Note", ref _note, 200);
-            using (ImRaii.Disabled(_action?.Tag.EqualsAny(ActionTag.Comment, ActionTag.Revival, ActionTag.Treasure) ?? true))
+            using (ImRaii.Disabled(_action == null || _action.Tag.HasAnyFlag(ActionTag.Comment, ActionTag.Revival, ActionTag.Treasure)))
             {
                 ImGui.Text("Tag:");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-                if (ImGui.BeginCombo("##RetireLocation", _actionTag.EqualsAny(ActionTag.None, ActionTag.Synced, ActionTag.Unsynced) ? _actionTag.ToCustomString() : ActionTag.None.ToCustomString()))
+                if (ImGui.BeginCombo("##TagSelection", _actionTag.HasAnyFlag(ActionTag.None, ActionTag.Synced, ActionTag.Unsynced) ? _actionTag.ToCustomString() : ActionTag.None.ToCustomString()))
                 {
                     foreach (var actionTag in _actionTags)
                     {
-                        if (ImGui.Selectable(actionTag.ToCustomString()))
-                            _actionTag = actionTag;
+                        bool selected = _actionTag.HasFlag(actionTag);
+                        if (ImGui.Selectable(actionTag.ToCustomString(), selected))
+                            if (selected)
+                                _actionTag &= ~actionTag;
+                            else
+                                _actionTag |= actionTag;
                     }
                     ImGui.EndCombo();
                 }

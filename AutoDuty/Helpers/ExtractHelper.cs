@@ -125,7 +125,7 @@ namespace AutoDuty.Helpers
                         return;
                     }
 
-                    if (spiritbondTextNode->NodeText.ToString() == "100%")
+                    if (spiritbondTextNode->NodeText.ToString().Replace(" ", string.Empty) == "100%")
                     {
                         Svc.Log.Debug($"AutoExtract - Extracting Materia");
                         AddonHelper.FireCallBack(addonMaterialize, true, 2, 0);

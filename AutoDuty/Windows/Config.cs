@@ -5,13 +5,11 @@ using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ECommons.ExcelServices;
 using ECommons.DalamudServices;
 using ECommons;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Components;
 using ECommons.ImGuiMethods;
-using FFXIVClientStructs.FFXIV.Common.Math;
 using AutoDuty.Helpers;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using Dalamud.Interface;
@@ -24,16 +22,19 @@ using Serilog.Events;
 namespace AutoDuty.Windows;
 
 using Data;
-using global::AutoDuty.Properties;
+using Properties;
 using Lumina.Excel.Sheets;
+using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
 {
     //Meta
-    public int Version { get; set; }
-    public HashSet<string> DoNotUpdatePathFiles = [];
-    public Dictionary<uint, Dictionary<Job, int>> PathSelections = [];
+    public int                                                Version { get; set; }
+    public HashSet<string>                                    DoNotUpdatePathFiles = [];
+    public Dictionary<uint, Dictionary<string, JobWithRole>?> PathSelectionsByPath = [];
+
+
 
 
     //LogOptions
@@ -120,7 +121,10 @@ public class Configuration : IPluginConfiguration
     public bool ExtractButton = true;
     public bool RepairButton = true;
     public bool EquipButton = true;
-    
+
+    internal bool updatePathsOnStartup = true;
+    public bool UpdatePathsOnStartup => !Plugin.isDev || this.updatePathsOnStartup;
+
     //Duty Config Options
     public bool AutoExitDuty = true;
     public bool AutoManageRotationPluginState = true;
@@ -139,11 +143,13 @@ public class Configuration : IPluginConfiguration
     public LootMethod LootMethodEnum                 = LootMethod.AutoDuty;
     public bool       LootBossTreasureOnly           = false;
     public int        TreasureCofferScanDistance     = 25;
-    public bool       RebuildNavmeshOnFirstEntry     = true;
+    public bool       RebuildNavmeshOnStuck          = true;
     public bool       OverridePartyValidation        = false;
     public bool       UsingAlternativeRotationPlugin = false;
     public bool       UsingAlternativeMovementPlugin = false;
     public bool       UsingAlternativeBossPlugin     = false;
+
+    public JobWithRole W2WJobs = JobWithRole.Tanks;
 
     //PreLoop Config Options
     public bool EnablePreLoopActions = true;
@@ -358,14 +364,16 @@ public static class ConfigTab
 
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
-    private static bool overlayHeaderSelected     = false;
-    private static bool dutyConfigHeaderSelected  = false;
-    private static bool bmaiSettingHeaderSelected = false;
+    private static bool overlayHeaderSelected      = false;
+    private static bool devHeaderSelected          = false;
+    private static bool dutyConfigHeaderSelected   = false;
+    private static bool bmaiSettingHeaderSelected  = false;
     private static bool wrathSettingHeaderSelected = false;
-    private static bool advModeHeaderSelected     = false;
-    private static bool preLoopHeaderSelected     = false;
-    private static bool betweenLoopHeaderSelected = false;
-    private static bool terminationHeaderSelected = false;
+    private static bool w2wSettingHeaderSelected   = false;
+    private static bool advModeHeaderSelected      = false;
+    private static bool preLoopHeaderSelected      = false;
+    private static bool betweenLoopHeaderSelected  = false;
+    private static bool terminationHeaderSelected  = false;
 
     public static void BuildManuals()
     {
@@ -469,7 +477,24 @@ public static class ConfigTab
             
         }
 
-        //Start of Duty Config Settings
+        if (Plugin.isDev)
+        {
+            ImGui.Separator();
+            ImGui.Spacing();
+            ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+            var devHeader = ImGui.Selectable("Dev Settings", devHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+            ImGui.PopStyleVar();
+            if (ImGui.IsItemHovered())
+                ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+            if (devHeader)
+                devHeaderSelected = !devHeaderSelected;
+
+            if (devHeaderSelected)
+            {
+                if (ImGui.Checkbox("Update Paths on startup", ref Configuration.updatePathsOnStartup))
+                    Configuration.Save();
+            }
+        }
         ImGui.Spacing();
         ImGui.Separator();
         ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
@@ -749,18 +774,38 @@ public static class ConfigTab
             }
             ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");
 
-            if (ImGui.Checkbox("Rebuild Navmesh on first dungeon load this session", ref Configuration.RebuildNavmeshOnFirstEntry))
+            if (ImGui.Checkbox("Rebuild Navmesh when stuck", ref Configuration.RebuildNavmeshOnStuck))
                 Configuration.Save();
-            if (Configuration.RebuildNavmeshOnFirstEntry && Plugin.loadedDungeonsForRebuild.Count > 0)
+
+            ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+            bool w2wSettingHeader = ImGui.Selectable($"> {PathIdentifiers.W2W} Jobs <", w2wSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+            ImGui.PopStyleVar();
+            if (ImGui.IsItemHovered())
+                ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+            if (w2wSettingHeader)
+                w2wSettingHeaderSelected = !w2wSettingHeaderSelected;
+
+            if (w2wSettingHeaderSelected)
             {
-                ImGui.SameLine();
-                if (ImGui.Button("Clear cache of already visited dungeons"))
-                    Plugin.loadedDungeonsForRebuild.Clear();
+                ImGui.BeginListBox("##W2WConfig", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, 300));
+
+                JobWithRoleHelper.DrawCategory(JobWithRole.All, ref Configuration.W2WJobs);
+                ImGui.EndListBox();
             }
 
             if (ImGui.Checkbox("Override Party Validation", ref Configuration.OverridePartyValidation))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("AutoDuty will ignore your party makeup when queueing for duties\nThis is for Multi-Boxing Only\n*AutoDuty is not recommended to be used with other players*");
+
+            //ImGui.BeginListBox("##W2WRoleSelection", new System.Numerics.Vector2(300, 800));
+
+            //ImGui.PushStyleVar(ImGuiStyleVar);
+
+            /*
+            foreach (JobWithRole category in categories.Keys)
+                DrawW2WCategory(category);
+            */
+            //ImGui.EndListBox();
 
             ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
             var advModeHeader = ImGui.Selectable("Advanced Config Options", advModeHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
