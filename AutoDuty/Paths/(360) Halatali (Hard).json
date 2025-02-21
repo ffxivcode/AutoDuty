@@ -1,0 +1,575 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 103.78875,
+        "Y": -4.357099,
+        "Z": -70.992615
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 77.78603,
+        "Y": -11.131374,
+        "Z": -98.327675
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 47.183895,
+        "Y": -11.035894,
+        "Z": -97.3285
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -6.3448334,
+        "Y": -2.045627,
+        "Z": -117.01111
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -28.843584,
+        "Y": 0.23747289,
+        "Z": -134.97852
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -30.069244,
+        "Y": -4.017539,
+        "Z": -169.59761
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 9.284256,
+        "Y": -11.0890255,
+        "Z": -186.15508
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -14.067728,
+        "Y": -11.073508,
+        "Z": -149.9691
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -36.75396,
+        "Y": -11.039085,
+        "Z": -123.899796
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -37.22,
+        "Y": -10.95,
+        "Z": -119.69
+      },
+      "arguments": [
+        "1008027"
+      ],
+      "note": "Gladiator Trainer"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -52.700623,
+        "Y": -10.1779995,
+        "Z": -114.09944
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -61,
+        "Y": -10.18,
+        "Z": -108.58
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -79.31611,
+        "Y": -10.1779995,
+        "Z": -93.996445
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -50.41868,
+        "Y": -10.491343,
+        "Z": -90.20921
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -65.903725,
+        "Y": -7.148958,
+        "Z": -72.486694
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -84.12,
+        "Y": -2.58,
+        "Z": -75.07
+      },
+      "arguments": [
+        "1008025"
+      ],
+      "note": "Elite Gladiator Trainer"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 122.50983,
+        "Y": -2.620604,
+        "Z": 25.258612
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 107.00194,
+        "Y": -3.3534782,
+        "Z": 56.42982
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 108.94389,
+        "Y": -2.621469,
+        "Z": 94.121994
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 103.804886,
+        "Y": -3.3534784,
+        "Z": 66.62934
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 59.581936,
+        "Y": 9.162703,
+        "Z": 104.682686
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 14.943473,
+        "Y": 0.9252131,
+        "Z": 101.559906
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 61.72734,
+        "Y": -2.0553064,
+        "Z": 165.42006
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 80.04993,
+        "Y": -2.5004747,
+        "Z": 188.57324
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 100.875496,
+        "Y": 0.022993207,
+        "Z": 197.62791
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 100.68,
+        "Y": 0,
+        "Z": 197.54
+      },
+      "arguments": [
+        "1008028"
+      ],
+      "note": "Gladiator Trainer"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 110.90768,
+        "Y": 0.41691387,
+        "Z": 207.5199
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 131.3816,
+        "Y": 4.5095396,
+        "Z": 216.9253
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 142.21,
+        "Y": 4.51,
+        "Z": 221.89
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 164.83076,
+        "Y": 4.5095387,
+        "Z": 230.95538
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 173.99364,
+        "Y": 3.9091456,
+        "Z": 234.67862
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 175.48206,
+        "Y": 3.9095442,
+        "Z": 219.1673
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 182.61415,
+        "Y": 4.147951,
+        "Z": 223.89734
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 181.80717,
+        "Y": 8.089663,
+        "Z": 242.9043
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 180.81,
+        "Y": 8.55,
+        "Z": 241.9
+      },
+      "arguments": [
+        "1008026"
+      ],
+      "note": "Elite Gladiator Trainer"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -191.76323,
+        "Y": 4.661893,
+        "Z": 95.07836
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -173.63554,
+        "Y": 10.007304,
+        "Z": 65.34688
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -156.58725,
+        "Y": 9.974277,
+        "Z": 68.98682
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -117.68151,
+        "Y": 12.846781,
+        "Z": 90.98893
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -95.68187,
+        "Y": 13.676052,
+        "Z": 72.64716
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -64.90919,
+        "Y": 14.434162,
+        "Z": 64.430435
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -67.63398,
+        "Y": 14.785108,
+        "Z": 23.6995
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -95.59465,
+        "Y": 9.5647545,
+        "Z": 4.186976
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -125.968506,
+        "Y": 10.187153,
+        "Z": 1.6991236
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -139.49248,
+        "Y": 10.187153,
+        "Z": 5.0731597
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -188.10292,
+        "Y": 11.908601,
+        "Z": 13.77909
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": -197.19,
+        "Y": 11.23,
+        "Z": 19.52
+      },
+      "arguments": [
+        "1008029"
+      ],
+      "note": "Bronze Bull"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -237.09966,
+        "Y": 17.622892,
+        "Z": 16.347069
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": -255.73,
+        "Y": 17.62,
+        "Z": 17.72
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": -272.3373,
+        "Y": 17.622786,
+        "Z": 18.62781
+      },
+      "arguments": [],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 188,
+    "changelog": [],
+    "notes": []
+  }
+}

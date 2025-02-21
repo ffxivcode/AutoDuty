@@ -1,0 +1,46 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 99.65,
+        "Y": 0,
+        "Z": 98.9
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 99.647026,
+        "Y": 0,
+        "Z": 99.82811
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 99.65,
+        "Y": 0,
+        "Z": 99.83
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 186,
+    "changelog": [],
+    "notes": []
+  }
+}

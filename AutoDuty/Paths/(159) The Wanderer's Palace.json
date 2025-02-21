@@ -1,0 +1,915 @@
+{
+  "actions": [
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 130.18,
+        "Y": -18,
+        "Z": 388.21
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 132.92798,
+        "Y": -18.066633,
+        "Z": 378.877
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 181.23668,
+        "Y": -17.999996,
+        "Z": 374.15518
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 177.8228,
+        "Y": -14.200506,
+        "Z": 272.59308
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 126.12096,
+        "Y": -14.000002,
+        "Z": 250.73283
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 105.97218,
+        "Y": -14.000002,
+        "Z": 267.2812
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 124.63327,
+        "Y": -14.049899,
+        "Z": 234.92801
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 125.23,
+        "Y": -14,
+        "Z": 190.56
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 125.0357,
+        "Y": -12.050001,
+        "Z": 122.75217
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 125.15,
+        "Y": -12,
+        "Z": 112.52
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 125.13059,
+        "Y": -12.05,
+        "Z": 92.62143
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 118.08523,
+        "Y": -9.800122,
+        "Z": 66.08849
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 118.09,
+        "Y": -9.8,
+        "Z": 66.09
+      },
+      "arguments": [
+        "2001123"
+      ],
+      "note": "Nymian Device"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 125.64723,
+        "Y": -9.511898,
+        "Z": 65.64236
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 125.95,
+        "Y": -9.46,
+        "Z": 60.09
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 125.026634,
+        "Y": -10.05,
+        "Z": 27.954779
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 80.2139,
+        "Y": -10.300005,
+        "Z": 26.349417
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 80.604996,
+        "Y": -10.16426,
+        "Z": 22.420565
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Wait",
+      "position": {
+        "X": 80.62,
+        "Y": -10.16,
+        "Z": 23.06
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 80.6,
+        "Y": -10.16,
+        "Z": 22.42
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 80.6,
+        "Y": -10.16,
+        "Z": 22.42
+      },
+      "arguments": [
+        "2002789"
+      ],
+      "note": "Lantern Oil"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 78.2,
+        "Y": -10.05,
+        "Z": 3.76
+      },
+      "arguments": [
+        "2002789"
+      ],
+      "note": "Lantern Oil"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 79.94951,
+        "Y": -5.050021,
+        "Z": -17.01018
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 68.52,
+        "Y": -2.63,
+        "Z": -16.85
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 40.61,
+        "Y": -0.16,
+        "Z": -16.67
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 40.61,
+        "Y": -0.16,
+        "Z": -16.67
+      },
+      "arguments": [
+        "2002789"
+      ],
+      "note": "Lantern Oil"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 35.07,
+        "Y": 0.15,
+        "Z": -6.89
+      },
+      "arguments": [
+        "2001124"
+      ],
+      "note": "Rusted Nymian Device"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 35.28,
+        "Y": 0.15,
+        "Z": -27.13
+      },
+      "arguments": [
+        "2001125"
+      ],
+      "note": "Rusted Nymian Device"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 43.225113,
+        "Y": -0.16426003,
+        "Z": -26.225996
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 43.15,
+        "Y": 0.2,
+        "Z": -57.79
+      },
+      "arguments": [
+        "2001126"
+      ],
+      "note": "Rusted Nymian Device"
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 43.15,
+        "Y": 0.2,
+        "Z": -57.79
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 51.839214,
+        "Y": 1.9073486E-06,
+        "Z": -38.780407
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 69.57142,
+        "Y": 1.9073486E-06,
+        "Z": -38.48212
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 71.552475,
+        "Y": 7.950102,
+        "Z": -66.23613
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 44.109245,
+        "Y": 7.950102,
+        "Z": -68.957504
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 43.45,
+        "Y": 7.84,
+        "Z": -98.98
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 52.59,
+        "Y": 8.15,
+        "Z": -96.03
+      },
+      "arguments": [
+        "2001127"
+      ],
+      "note": "Nymian Device"
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 44.67,
+        "Y": 7.95,
+        "Z": -104.94
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 27.93304,
+        "Y": 7.950102,
+        "Z": -116.91823
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 15.2450905,
+        "Y": 8.000004,
+        "Z": -119.78891
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 15.809546,
+        "Y": 1.9073486E-06,
+        "Z": -144.20432
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 44.002438,
+        "Y": 0,
+        "Z": -145.50356
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 91.13656,
+        "Y": 1.9073486E-06,
+        "Z": -142.02025
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 119.156654,
+        "Y": -0.29999864,
+        "Z": -145.77126
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 119.16,
+        "Y": -0.3,
+        "Z": -145.77
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 117.25,
+        "Y": -0.3,
+        "Z": -144.75
+      },
+      "arguments": [
+        "2002789"
+      ],
+      "note": "Lantern Oil"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 117.25,
+        "Y": -0.3,
+        "Z": -144.75
+      },
+      "arguments": [
+        "2002789"
+      ],
+      "note": "Lantern Oil"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 119.9,
+        "Y": -0.3,
+        "Z": -145.83
+      },
+      "arguments": [
+        "2001128"
+      ],
+      "note": "Rusted Nymian Device"
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 119.9,
+        "Y": -0.3,
+        "Z": -145.83
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 121.249245,
+        "Y": -1.7881393E-06,
+        "Z": -156.45215
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 36.26247,
+        "Y": 0.1998781,
+        "Z": -149.98203
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 36.26,
+        "Y": 0.2,
+        "Z": -149.98
+      },
+      "arguments": [
+        "2001129"
+      ],
+      "note": "Rusted Nymian Device"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 42.741913,
+        "Y": 0.3728603,
+        "Z": -149.87273
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 43.39307,
+        "Y": 0,
+        "Z": -168.79868
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 43.09,
+        "Y": -0,
+        "Z": -180.35
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 43.506264,
+        "Y": 0,
+        "Z": -212.77098
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 43.07,
+        "Y": 0,
+        "Z": -227.37
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 37.782192,
+        "Y": 0,
+        "Z": -248.18336
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 42.503784,
+        "Y": 0,
+        "Z": -281.10056
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 42.73,
+        "Y": 0,
+        "Z": -296.87
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 41.994034,
+        "Y": 5,
+        "Z": -313.36584
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 37.92016,
+        "Y": 5,
+        "Z": -319.22
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 70.52501,
+        "Y": 9.950101,
+        "Z": -321.83032
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 73.10791,
+        "Y": 9.8359995,
+        "Z": -371.3127
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "StopForCombat",
+      "position": {
+        "X": 72.99,
+        "Y": 9.84,
+        "Z": -374.35
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 72.85,
+        "Y": 9.84,
+        "Z": -372.84
+      },
+      "arguments": [
+        "2002789"
+      ],
+      "note": "Lantern Oil"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 74.05,
+        "Y": 9.84,
+        "Z": -372.24
+      },
+      "arguments": [
+        "2002789"
+      ],
+      "note": "Lantern Oil"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 63.83,
+        "Y": 9.95,
+        "Z": -320
+      },
+      "arguments": [
+        "2002789"
+      ],
+      "note": "Lantern Oil"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 65.18,
+        "Y": 10.15,
+        "Z": -379.14
+      },
+      "arguments": [
+        "2001131"
+      ],
+      "note": "Rusted Nymian Device"
+    },
+    {
+      "tag": 0,
+      "name": "Interactable",
+      "position": {
+        "X": 80.82,
+        "Y": 10.15,
+        "Z": -379.13
+      },
+      "arguments": [
+        "2001130"
+      ],
+      "note": "Rusted Nymian Device"
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 72.79861,
+        "Y": 10.390436,
+        "Z": -380.79797
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 71.97784,
+        "Y": 9.976898,
+        "Z": -395.93323
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 55.08925,
+        "Y": 5.999981,
+        "Z": -406.00552
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 59.66234,
+        "Y": 5.9999933,
+        "Z": -412.63318
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "Boss",
+      "position": {
+        "X": 72.57,
+        "Y": 6,
+        "Z": -433.19
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": 0,
+      "name": "MoveTo",
+      "position": {
+        "X": 72.846756,
+        "Y": 6,
+        "Z": -461.5674
+      },
+      "arguments": [],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 188,
+    "changelog": [],
+    "notes": []
+  }
+}
