@@ -10,40 +10,49 @@ namespace AutoDuty.Data
 {
     public static class Extensions
     {
-        public static void DrawCustomText(this PathAction pathAction, int index, Action clickedAction)
+        public static void DrawCustomText(this PathAction pathAction, int index, Action? clickedAction)
         {
-            var v4 = index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (pathAction.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
             ImGui.NewLine();
+            GetCustomText(pathAction, index).ForEach(x => TextClicked(x.color, x.text, clickedAction));
+        }
+
+        public static List<(Vector4 color, string text)> GetCustomText(this PathAction pathAction, int index)
+        {
+            List<(Vector4 color, string text)> results = [];
+
+            var v4 = index == Plugin.Indexer ? new Vector4(0, 255, 255, 1) : (pathAction.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1));
+
             if (pathAction.Tag.HasFlag(ActionTag.Comment))
             {
-                TextClicked(new(0, 1, 0, 1), pathAction.Note, () => { });
-                return;
+                results.Add((new Vector4(0, 1, 0, 1), pathAction.Note));
+                return results;
             }
             if (!pathAction.Tag.HasAnyFlag(ActionTag.Treasure, ActionTag.Revival) && pathAction.Tag != ActionTag.None)
             {
-                TextClicked(index == Plugin.Indexer ? v4 : new(1, 165 / 255f, 0, 1), $"{pathAction.Tag}", clickedAction);
-                TextClicked(v4, "|", clickedAction);
+                results.Add((index == Plugin.Indexer ? v4 : new(1, 165 / 255f, 0, 1), $"{pathAction.Tag}"));
+                results.Add((v4, "|"));
             }
-            TextClicked(v4, $"{pathAction.Name}", clickedAction);
-            TextClicked(v4, "|", clickedAction);
-            TextClicked(v4, $"{pathAction.Position.ToCustomString()}", clickedAction);
+            results.Add((v4, $"{pathAction.Name}"));
+            results.Add((v4, "|"));
+            results.Add((v4, $"{pathAction.Position.ToCustomString()}"));
             if (!pathAction.Arguments.All(x => x.IsNullOrEmpty()))
             {
-                TextClicked(v4, "|", clickedAction);
-                TextClicked(v4, $"{pathAction.Arguments.ToCustomString()}", clickedAction);
+                results.Add((v4, "|"));
+                results.Add((v4, $"{pathAction.Arguments.ToCustomString()}"));
             }
             if (!pathAction.Note.IsNullOrEmpty())
             {
-                TextClicked(v4, "|", clickedAction);
-                TextClicked(index == Plugin.Indexer ? v4 : new(0, 1, 0, 1), $"{pathAction.Note}", clickedAction);
+                results.Add((v4, "|"));
+                results.Add((index == Plugin.Indexer ? v4 : new(0, 1, 0, 1), $"{pathAction.Note}"));
             }
+            return results;
         }
 
-        private static void TextClicked(Vector4 col, string text, Action clicked)
+        private static void TextClicked(Vector4 col, string text, Action? clicked)
         {
             ImGui.SameLine(0, 0);
             ImGui.TextColored(col, text);
-            if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
+            if (clicked != null && ImGui.IsItemClicked(ImGuiMouseButton.Left) && Plugin.Stage == 0)
                 clicked();
         }
 
