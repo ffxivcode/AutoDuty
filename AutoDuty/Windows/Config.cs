@@ -123,7 +123,11 @@ public class Configuration : IPluginConfiguration
     public bool EquipButton = true;
 
     internal bool updatePathsOnStartup = true;
-    public bool UpdatePathsOnStartup => !Plugin.isDev || this.updatePathsOnStartup;
+    public   bool UpdatePathsOnStartup
+    {
+        get => !Plugin.isDev || this.updatePathsOnStartup;
+        set => this.updatePathsOnStartup = value;
+    }
 
     //Duty Config Options
     public bool AutoExitDuty = true;
