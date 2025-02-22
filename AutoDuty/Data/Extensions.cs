@@ -19,7 +19,7 @@ namespace AutoDuty.Data
                 TextClicked(new(0, 1, 0, 1), pathAction.Note, () => { });
                 return;
             }
-            if (!pathAction.Tag.HasAnyFlag(ActionTag.None, ActionTag.Treasure, ActionTag.Revival))
+            if (!pathAction.Tag.HasAnyFlag(ActionTag.Treasure, ActionTag.Revival) && pathAction.Tag != ActionTag.None)
             {
                 TextClicked(index == Plugin.Indexer ? v4 : new(1, 165 / 255f, 0, 1), $"{pathAction.Tag}", clickedAction);
                 TextClicked(v4, "|", clickedAction);
