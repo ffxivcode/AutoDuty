@@ -47,10 +47,12 @@ namespace AutoDuty.Managers
             {
                 job ??= Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
 
+                DutyPath defaultPath = this.Paths[0];
+
                 if (job == null)
                 {
                     pathIndex = 0;
-                    return Paths[0];
+                    return defaultPath;
                 }
 
                 if (Paths.Count > 1)
@@ -71,10 +73,23 @@ namespace AutoDuty.Managers
                             }
                         }
                     }
+                    //temporary while w2w gets integrated
+                    if (!defaultPath.W2WFound && Plugin.Configuration.W2WJobs.HasJob(job.Value))
+                    {
+                        for (int index = 0; index < Paths.Count; index++)
+                        {
+                            string curPath = Paths[index].Name;
+                            if (curPath.Contains(PathIdentifiers.W2W))
+                            {
+                                pathIndex = index;
+                                return Paths[index];
+                            }
+                        }
+                    }
                 }
 
                 pathIndex = 0;
-                return Paths[0];
+                return defaultPath;
             }
 
             public void AddPath(string name)
@@ -130,6 +145,8 @@ namespace AutoDuty.Managers
                         try
                         {
                             RevivalFound = false;
+                            W2WFound     = false;
+
                             string json;
 
                             using (StreamReader streamReader = new(FilePath, Encoding.UTF8))
@@ -139,6 +156,7 @@ namespace AutoDuty.Managers
                             pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
 
                             RevivalFound = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.Revival));
+                            W2WFound     = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.W2W));
                             /*
                             if (this.pathFile.Meta.LastUpdatedVersion < 188)
                             {
@@ -148,7 +166,7 @@ namespace AutoDuty.Managers
                                                                 Version = 188,
                                                                 Change  = "Adjusted tags to string values"
                                                             });
-                                
+
                                 json = JsonSerializer.Serialize(pathFile, BuildTab.jsonSerializerOptions);
                                 File.WriteAllText(FilePath, json);
                             }>*/
@@ -164,8 +182,9 @@ namespace AutoDuty.Managers
                 }
             }
 
-            public List<PathAction> Actions => PathFile.Actions;
-            public bool RevivalFound { get; private set; }
+            public List<PathAction> Actions      => PathFile.Actions;
+            public bool             RevivalFound { get; private set; }
+            public bool             W2WFound { get; private set; }
         }
     }
 
