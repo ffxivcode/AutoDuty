@@ -55,34 +55,35 @@ namespace AutoDuty.Managers
                     return defaultPath;
                 }
 
-                if (Paths.Count > 1)
+                if (this.Paths.Count > 1)
                 {
-                    if (Plugin.Configuration.PathSelectionsByPath.TryGetValue(Content.TerritoryType, out Dictionary<string, JobWithRole>? jobConfig))
+                    if (Plugin.Configuration.PathSelectionsByPath.TryGetValue(this.Content.TerritoryType, out Dictionary<string, JobWithRole>? jobConfig))
                     {
                         foreach ((string? pathName, JobWithRole pathJobs) in jobConfig)
                         {
                             if (pathJobs.HasJob((Job)job))
                             {
-                                int pInx = Paths.IndexOf(dp => dp.FileName.Equals(pathName));
+                                int pInx = this.Paths.IndexOf(dp => dp.FileName.Equals(pathName));
 
-                                if (pInx < Paths.Count)
+                                if (pInx < this.Paths.Count)
                                 {
                                     pathIndex = pInx;
-                                    return Paths[pathIndex];
+                                    return this.Paths[pathIndex];
                                 }
                             }
                         }
                     }
+
                     //temporary while w2w gets integrated
                     if (!defaultPath.W2WFound && Plugin.Configuration.W2WJobs.HasJob(job.Value))
                     {
-                        for (int index = 0; index < Paths.Count; index++)
+                        for (int index = 0; index < this.Paths.Count; index++)
                         {
-                            string curPath = Paths[index].Name;
+                            string curPath = this.Paths[index].Name;
                             if (curPath.Contains(PathIdentifiers.W2W))
                             {
                                 pathIndex = index;
-                                return Paths[index];
+                                return this.Paths[index];
                             }
                         }
                     }
@@ -157,19 +158,19 @@ namespace AutoDuty.Managers
 
                             RevivalFound = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.Revival));
                             W2WFound     = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.W2W));
-                            /*
-                            if (this.pathFile.Meta.LastUpdatedVersion < 188)
+                            
+                            if (this.pathFile.Meta.LastUpdatedVersion < 189)
                             {
 
                                 pathFile.Meta.Changelog.Add(new PathFileChangelogEntry
                                                             {
-                                                                Version = 188,
+                                                                Version = 189,
                                                                 Change  = "Adjusted tags to string values"
                                                             });
 
                                 json = JsonSerializer.Serialize(pathFile, BuildTab.jsonSerializerOptions);
                                 File.WriteAllText(FilePath, json);
-                            }>*/
+                            }
                         }
                         catch (Exception ex)
                         {
