@@ -27,22 +27,23 @@ namespace AutoDuty.Helpers
             }
         }
 
-        public static void RebuildFirstPath(uint territoryId)
+        public static void RebuildDefaultPaths(uint territoryId)
         {
             ContentPathsManager.ContentPathContainer container = ContentPathsManager.DictionaryPaths[territoryId];
 
-            string firstFileName = container.Paths.First().FileName;
-
             Dictionary<string, JobWithRole>? pathJobConfigs = Plugin.Configuration.PathSelectionsByPath[territoryId];
 
-            pathJobConfigs[firstFileName] = JobWithRole.None;
             JobWithRole jwr = JobWithRole.All;
 
             foreach (string key in pathJobConfigs.Keys)
                 jwr &= ~pathJobConfigs[key];
 
-            pathJobConfigs[firstFileName] = jwr;
-
+            foreach (Job job in jwr.ContainedJobs())
+            {
+                string path = container.SelectPath(out _, job)!.FileName;
+                pathJobConfigs.TryAdd(path, JobWithRole.None);
+                pathJobConfigs[path] |= job.JobToJobWithRole();
+            }
             Plugin.Configuration.Save();
         }
     }

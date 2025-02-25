@@ -240,7 +240,7 @@ namespace AutoDuty.Windows
 
 
                 bool        firstPath   = _selectedDutyPath.container.IsFirstPath(_selectedDutyPath);
-                JobWithRole jwr = firstPath ? JobWithRole.All : JobWithRole.None;
+                JobWithRole jwr = JobWithRole.None;
 
                 PathSelectionHelper.AddPathSelectionEntry(_selectedDutyPath.container.id);
 
@@ -250,7 +250,7 @@ namespace AutoDuty.Windows
 
                 JobWithRole jwrCheck = jwr;
 
-                JobWithRoleHelper.DrawCategory(JobWithRole.All, ref jwr, !firstPath);
+                JobWithRoleHelper.DrawCategory(JobWithRole.All, ref jwr);
 
                 if(jwr != jwrCheck)
                 {
@@ -261,7 +261,7 @@ namespace AutoDuty.Windows
 
                     pathJobConfigs[_selectedDutyPath.FileName] = jwr;
 
-                    PathSelectionHelper.RebuildFirstPath(_selectedDutyPath.container.id);
+                    PathSelectionHelper.RebuildDefaultPaths(_selectedDutyPath.container.id);
 
                     Plugin.Configuration.Save();
                 }
