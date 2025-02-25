@@ -31,7 +31,7 @@
     "createdAt": 170,
     "changelog": [
       {
-        "version": 188,
+        "version": 189,
         "change": "Adjusted tags to string values"
       }
     ],

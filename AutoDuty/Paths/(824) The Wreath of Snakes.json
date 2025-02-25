@@ -1,0 +1,40 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 99.69,
+        "Y": -0,
+        "Z": 97.91
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": 99.69,
+        "Y": -0,
+        "Z": 97.91
+      },
+      "arguments": [
+        "20000"
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 186,
+    "changelog": [
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
+      }
+    ],
+    "notes": []
+  }
+}

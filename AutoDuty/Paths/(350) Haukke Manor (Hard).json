@@ -1,0 +1,524 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 42.008,
+        "Y": 10.25,
+        "Z": -0.49030906
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 41.230347,
+        "Y": 17,
+        "Z": -20.537533
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 41.879612,
+        "Y": 17,
+        "Z": -71.81737
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 16.764359,
+        "Y": 16.999998,
+        "Z": -77.94284
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 16.162899,
+        "Y": 17,
+        "Z": -55.84244
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 16.16,
+        "Y": 17,
+        "Z": -55.79
+      },
+      "arguments": [
+        "2003312"
+      ],
+      "note": "Tiny Key"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 16.66,
+        "Y": 17,
+        "Z": -83.89
+      },
+      "arguments": [
+        "2003315"
+      ],
+      "note": "Locked Door"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 16.711708,
+        "Y": 17,
+        "Z": -95.74159
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 16.73,
+        "Y": 17,
+        "Z": -99.11
+      },
+      "arguments": [
+        "2003314"
+      ],
+      "note": "Tiny Key"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 0.68,
+        "Y": 17,
+        "Z": -96.53
+      },
+      "arguments": [
+        "2003316"
+      ],
+      "note": "Locked Door"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -17.231945,
+        "Y": 16.999998,
+        "Z": -96.75239
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -17.23,
+        "Y": 17,
+        "Z": -96.75
+      },
+      "arguments": [
+        "2003430"
+      ],
+      "note": "Tiny Key"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -16.24,
+        "Y": 17,
+        "Z": -85.15
+      },
+      "arguments": [
+        "2003317"
+      ],
+      "note": "Locked Door"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -16.977074,
+        "Y": 17,
+        "Z": -76.92111
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -39.43456,
+        "Y": 17,
+        "Z": -76.970665
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -41.25918,
+        "Y": 16.999998,
+        "Z": -48.089794
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -41.82301,
+        "Y": 17,
+        "Z": -19.653454
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -41.70165,
+        "Y": 17,
+        "Z": 15.358435
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -23.532467,
+        "Y": 17,
+        "Z": -0.056501746
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -0.57,
+        "Y": 17,
+        "Z": -0.3
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 12.497504,
+        "Y": 17,
+        "Z": 0.43798807
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 29.64,
+        "Y": 17,
+        "Z": 0.24
+      },
+      "arguments": [
+        "2002916"
+      ],
+      "note": "Crystal Ball"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 39.154236,
+        "Y": 0,
+        "Z": -75.8486
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 40.92853,
+        "Y": 0,
+        "Z": -63.09047
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 36.28,
+        "Y": 0,
+        "Z": -74.88
+      },
+      "arguments": [
+        "2003313"
+      ],
+      "note": "Tiny Key"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 41.367123,
+        "Y": 0,
+        "Z": -20.994411
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 48.22013,
+        "Y": 0,
+        "Z": -35.39576
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 48.22,
+        "Y": 0,
+        "Z": -35.4
+      },
+      "arguments": [
+        "2003320"
+      ],
+      "note": "Locked Door"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 69.643745,
+        "Y": 0,
+        "Z": -48.41338
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 42.19138,
+        "Y": 0,
+        "Z": -33.913033
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 29.817268,
+        "Y": 0,
+        "Z": -1.3322512
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 22.092804,
+        "Y": 0,
+        "Z": 0.08364535
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 1.37,
+        "Y": 0,
+        "Z": -0.32
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -43.587284,
+        "Y": 0,
+        "Z": 13.980467
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -43.59,
+        "Y": 0,
+        "Z": 13.98
+      },
+      "arguments": [
+        "2002941"
+      ],
+      "note": "Crystal Ball"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 25.850798,
+        "Y": -18.799997,
+        "Z": 29.44701
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 43.463158,
+        "Y": -18.816898,
+        "Z": 22.04017
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 44.61071,
+        "Y": -18.8,
+        "Z": 2.8899183
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 42.428925,
+        "Y": -18.8,
+        "Z": -27.350576
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -28.554186,
+        "Y": -18.79999,
+        "Z": -28.024107
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -32.171726,
+        "Y": -18.799988,
+        "Z": 1.3669995
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -21.249823,
+        "Y": -18.800003,
+        "Z": 0.3779285
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 2.29,
+        "Y": -18.78,
+        "Z": 0.26
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 13.474837,
+        "Y": -18.678322,
+        "Z": -0.13540451
+      },
+      "arguments": [],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 188,
+    "changelog": [
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
+      }
+    ],
+    "notes": []
+  }
+}

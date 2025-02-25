@@ -1,0 +1,549 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 84.35972,
+        "Y": 7.950474,
+        "Z": 116.47715
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 83.55606,
+        "Y": 8.000008,
+        "Z": 132.58437
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 64.46294,
+        "Y": 8.091089,
+        "Z": 133.69351
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 51.571514,
+        "Y": 8.002047,
+        "Z": 129.65671
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 51.28717,
+        "Y": 7.950474,
+        "Z": 117.06735
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 31.418505,
+        "Y": 4.2784023,
+        "Z": 116.28088
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 3.6323273,
+        "Y": 0,
+        "Z": 115.688736
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 0.36121657,
+        "Y": 0.13347697,
+        "Z": 96.49888
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -0.013025333,
+        "Y": -0.050000012,
+        "Z": 49.162395
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -19.98415,
+        "Y": -0.05006194,
+        "Z": 47.78515
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -48.17046,
+        "Y": -4.05,
+        "Z": 47.493935
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -47.724815,
+        "Y": -4.059808,
+        "Z": 32.71601
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -54.48,
+        "Y": -4,
+        "Z": 22.05
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -39.04538,
+        "Y": -3.999901,
+        "Z": 23.789383
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -6.442713,
+        "Y": 1.3589859E-05,
+        "Z": 24.239582
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 21.955078,
+        "Y": -0.013465047,
+        "Z": 24.473946
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 25.614916,
+        "Y": 0.030267715,
+        "Z": -14.592061
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 24.09295,
+        "Y": -0.050000012,
+        "Z": -55.329357
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 0.19308917,
+        "Y": 0.04736948,
+        "Z": -56.181286
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 0.46947977,
+        "Y": -1.1920929E-07,
+        "Z": -101.79338
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 8.595865,
+        "Y": 1.1920929E-07,
+        "Z": -111.08293
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 22.250683,
+        "Y": -0.072036386,
+        "Z": -103.43231
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 28.1,
+        "Y": -0.05,
+        "Z": -149.45
+      },
+      "arguments": [
+        "2979"
+      ],
+      "note": "Jura Aevis"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 24.270739,
+        "Y": 0.07064748,
+        "Z": -144.07353
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 27.86,
+        "Y": -0,
+        "Z": -137.89
+      },
+      "arguments": [
+        "2003542"
+      ],
+      "note": "Bertha"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 28.17,
+        "Y": -0,
+        "Z": -137.04
+      },
+      "arguments": [
+        "2003542"
+      ],
+      "note": "Bertha"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 24.213846,
+        "Y": -0.049998283,
+        "Z": -165.5195
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 23.956154,
+        "Y": 0.40966845,
+        "Z": -182.85138
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -8.11272,
+        "Y": 1.3113022E-06,
+        "Z": -176.92827
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -0.17429689,
+        "Y": 2.6816015,
+        "Z": -209.11642
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -0.05257943,
+        "Y": 3.8009408,
+        "Z": -234.8517
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": -0.05,
+        "Y": 3.8,
+        "Z": -234.85
+      },
+      "arguments": [
+        "10000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -0.41,
+        "Y": 3.9,
+        "Z": -224.86
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -1.8546602,
+        "Y": 3.8742793,
+        "Z": -229.57707
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -3.3444088,
+        "Y": 1.3113022E-06,
+        "Z": -187.32921
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -46.803623,
+        "Y": -3.9999998,
+        "Z": -183.43854
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -48.351196,
+        "Y": -0.049429893,
+        "Z": -141.74057
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -51.005886,
+        "Y": -0.049526393,
+        "Z": -127.84002
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -65.24109,
+        "Y": 0,
+        "Z": -126.92687
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -67.46575,
+        "Y": 0,
+        "Z": -99.88326
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -49.094345,
+        "Y": -0.050012708,
+        "Z": -95.41522
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -48.276844,
+        "Y": 0,
+        "Z": -58.0225
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -91.57444,
+        "Y": -4.0500646,
+        "Z": -56.02983
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -88.62,
+        "Y": -4.05,
+        "Z": -55.43
+      },
+      "arguments": [
+        "2003546"
+      ],
+      "note": "Main Storage Vault Key"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -94.09,
+        "Y": -4.05,
+        "Z": -56.19
+      },
+      "arguments": [
+        "2003547"
+      ],
+      "note": "Main Storage Vault Gate"
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -114.56,
+        "Y": -7.91,
+        "Z": -56.51
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -133.87776,
+        "Y": -7.9094667,
+        "Z": -56.062668
+      },
+      "arguments": [],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 188,
+    "changelog": [
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
+      }
+    ],
+    "notes": []
+  }
+}

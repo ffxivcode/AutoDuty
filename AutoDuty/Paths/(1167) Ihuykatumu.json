@@ -377,7 +377,7 @@
         "change": "Changed automove to Move with auto cancel"
       },
       {
-        "version": 188,
+        "version": 189,
         "change": "Adjusted tags to string values"
       }
     ],
