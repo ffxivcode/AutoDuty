@@ -159,6 +159,7 @@ namespace AutoDuty.Managers
                             RevivalFound = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.Revival));
                             W2WFound     = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.W2W));
                             
+                            /*
                             if (this.pathFile.Meta.LastUpdatedVersion < 189)
                             {
 
@@ -170,7 +171,7 @@ namespace AutoDuty.Managers
 
                                 json = JsonSerializer.Serialize(pathFile, BuildTab.jsonSerializerOptions);
                                 File.WriteAllText(FilePath, json);
-                            }
+                            }*/
                         }
                         catch (Exception ex)
                         {
