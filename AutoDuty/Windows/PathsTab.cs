@@ -223,6 +223,19 @@ namespace AutoDuty.Windows
 
                 ImGui.Text(_selectedDutyPath.Name);
 
+                if (ImGui.Button("Clear job selection for this Duty"))
+                {
+                    ImGui.EndChild();
+                    ImGui.EndTable();
+
+                    Plugin.Configuration.PathSelectionsByPath.Remove(_selectedDutyPath.container.id);
+                    Plugin.Configuration.Save();
+
+                    _selectedDutyPath = null;
+
+                    return;
+                }
+
                 ImGui.BeginChild("##PathsTabJobConfiguration", new Vector2(ImGui.GetContentRegionAvail().X, 0), false, ImGuiWindowFlags.HorizontalScrollbar | ImGuiWindowFlags.AlwaysVerticalScrollbar);
 
 
