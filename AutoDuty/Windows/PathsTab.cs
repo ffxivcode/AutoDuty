@@ -89,10 +89,8 @@ namespace AutoDuty.Windows
 
             using (ImRaii.Disabled(Patcher.PatcherState == ActionState.Running))
             {
-                if (ImGuiEx.ButtonWrapped("Download Paths"))
-                {
-                    Patcher.Patch();
-                }
+                if (ImGuiEx.ButtonWrapped("Download Paths")) 
+                    Patcher.Patch(ImGui.IsMouseClicked(ImGuiMouseButton.Right));
             }
             bool showJobSelection = _selectedDutyPath is { container.Paths.Count: > 1 };
             ImGui.BeginTable("##PathTabContent", _selectedDutyPath != null ? 2 : 1);
