@@ -72,8 +72,9 @@ namespace AutoDuty.Windows
             ImGui.SameLine();
             using (ImRaii.Disabled(!Plugin.Configuration.PathSelectionsByPath.Any(kvp => kvp.Value.Any())))
             {
-                if (ImGuiEx.ButtonWrapped("Clear all cached classes"))
+                if (ImGuiEx.ButtonWrapped("Clear all cached jobs"))
                 {
+                    _selectedDutyPath = null;
                     Plugin.Configuration.PathSelectionsByPath.Clear();
                     Plugin.Configuration.Save();
                 }
