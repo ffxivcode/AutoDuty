@@ -225,8 +225,11 @@ namespace AutoDuty.Windows
 
                 ImGui.BeginChild("##PathsTabJobConfiguration", new Vector2(ImGui.GetContentRegionAvail().X, 0), false, ImGuiWindowFlags.HorizontalScrollbar | ImGuiWindowFlags.AlwaysVerticalScrollbar);
 
+
                 bool        firstPath   = _selectedDutyPath.container.IsFirstPath(_selectedDutyPath);
                 JobWithRole jwr = firstPath ? JobWithRole.All : JobWithRole.None;
+
+                PathSelectionHelper.AddPathSelectionEntry(_selectedDutyPath.container.id);
 
                 if (Plugin.Configuration.PathSelectionsByPath.TryGetValue(_selectedDutyPath.container.id, out Dictionary<string, JobWithRole>? pathSelections))
                     if (pathSelections!.TryGetValue(_selectedDutyPath.FileName, out JobWithRole dutyRoles)) 
@@ -238,7 +241,6 @@ namespace AutoDuty.Windows
 
                 if(jwr != jwrCheck)
                 {
-                    PathSelectionHelper.AddPathSelectionEntry(_selectedDutyPath.container.id);
                     Dictionary<string, JobWithRole> pathJobConfigs = Plugin.Configuration.PathSelectionsByPath[_selectedDutyPath.container.id]!;
 
                     foreach (string key in pathJobConfigs.Keys) 
