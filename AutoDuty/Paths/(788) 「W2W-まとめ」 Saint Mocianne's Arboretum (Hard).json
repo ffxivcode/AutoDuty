@@ -423,6 +423,10 @@
       {
         "version": 179,
         "change": "Added Treasure coffer steps, moved boss steps closer and added safety steps"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

@@ -344,6 +344,10 @@
       {
         "version": 182,
         "change": "Updated interaction ids and added WaitForCombat step"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

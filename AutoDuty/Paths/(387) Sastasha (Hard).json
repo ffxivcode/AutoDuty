@@ -240,6 +240,10 @@
       {
         "version": 182,
         "change": "Updated Interaction ids"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

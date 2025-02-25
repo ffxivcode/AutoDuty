@@ -70,6 +70,10 @@
       {
         "version": 173,
         "change": "kuku"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

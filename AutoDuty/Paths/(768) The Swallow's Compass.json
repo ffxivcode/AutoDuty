@@ -214,7 +214,14 @@
   ],
   "meta": {
     "createdAt": 183,
-    "changelog": [],
-    "notes": ["Unsync"]
+    "changelog": [
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
+      }
+    ],
+    "notes": [
+      "Unsync"
+    ]
   }
 }

@@ -152,7 +152,12 @@
   ],
   "meta": {
     "createdAt": 182,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
+      }
+    ],
     "notes": []
   }
 }

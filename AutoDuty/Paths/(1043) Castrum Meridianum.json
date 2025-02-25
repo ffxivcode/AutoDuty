@@ -269,6 +269,10 @@
       {
         "version": 179,
         "change": "Updated to newer standards"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

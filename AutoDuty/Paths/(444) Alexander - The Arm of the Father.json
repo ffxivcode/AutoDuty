@@ -396,6 +396,10 @@
       {
         "version": 187,
         "change": "Updated movement, mob pack handling, and boss tag"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -808.1095,
@@ -12,7 +12,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -763.00256,
@@ -23,7 +23,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -745.3331,
@@ -34,7 +34,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -742.0147,
@@ -45,7 +45,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -747.87225,
@@ -56,7 +56,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -742.71124,
@@ -67,7 +67,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "ForceAttack",
       "position": {
         "X": -742.71,
@@ -102,7 +102,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -681.24615,
@@ -113,7 +113,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -674.8239,
@@ -124,7 +124,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -657.25104,
@@ -135,7 +135,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -637.9043,
@@ -146,7 +146,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -606.09814,
@@ -157,7 +157,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -603.6418,
@@ -168,7 +168,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -582.42413,
@@ -179,47 +179,12 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -537.5162,
         "Y": -0.029845178,
         "Z": 145.67113
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "Boss",
-      "position": {
-        "X": -519.29,
-        "Y": -0.03,
-        "Z": 146.56
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -513.7095,
-        "Y": -0.029845178,
-        "Z": 144.10396
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": 0,
-      "name": "MoveTo",
-      "position": {
-        "X": -504.94455,
-        "Y": -0.029845178,
-        "Z": 145.47078
       },
       "arguments": [],
       "note": ""
@@ -426,9 +391,9 @@
       "tag": 0,
       "name": "Boss",
       "position": {
-        "X": -175.07,
-        "Y": -25,
-        "Z": 39.82
+        "X": -519.29,
+        "Y": -0.03,
+        "Z": 146.56
       },
       "arguments": [
         ""
@@ -439,6 +404,237 @@
       "tag": 0,
       "name": "MoveTo",
       "position": {
+        "X": -513.7095,
+        "Y": -0.029845178,
+        "Z": 144.10396
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -504.94455,
+        "Y": -0.029845178,
+        "Z": 145.47078
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -473.51187,
+        "Y": -2.960563,
+        "Z": 143.36726
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -454.26102,
+        "Y": -6.073945,
+        "Z": 139.45242
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -407.95346,
+        "Y": -9.987575,
+        "Z": 152.18152
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -387.2591,
+        "Y": -10.273695,
+        "Z": 197.35323
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -380.51935,
+        "Y": -10.316005,
+        "Z": 201.50807
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -367.4611,
+        "Y": -10.10006,
+        "Z": 199.12573
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -355.57666,
+        "Y": -10.15715,
+        "Z": 180.41678
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -345.0904,
+        "Y": -10.233635,
+        "Z": 177.72966
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -334.49634,
+        "Y": -10.004366,
+        "Z": 167.01093
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -330.25314,
+        "Y": -10.668382,
+        "Z": 181.3815
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -266.09186,
+        "Y": -23.568441,
+        "Z": 184.47704
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -249.82977,
+        "Y": -23.127977,
+        "Z": 134.00305
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -212.3666,
+        "Y": -23.343822,
+        "Z": 110.36681
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -197.96132,
+        "Y": -23,
+        "Z": 122.49752
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -196.84737,
+        "Y": -22.99954,
+        "Z": 101.084885
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -174.49995,
+        "Y": -23.162643,
+        "Z": 96.428566
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -174.78682,
+        "Y": -25.000093,
+        "Z": 57.632957
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -175.06667,
+        "Y": -25.000183,
+        "Z": 39.820618
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -175.07,
+        "Y": -25,
+        "Z": 39.82
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
         "X": -175.17346,
         "Y": -25.000183,
         "Z": 31.067938
@@ -447,12 +643,56 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -165.4848,
         "Y": -25.000183,
         "Z": 29.281147
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -163.60007,
+        "Y": -25.000187,
+        "Z": -3.149061
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -157.17554,
+        "Y": -25.000187,
+        "Z": -8.394113
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -119.94276,
+        "Y": -25.184584,
+        "Z": -13.486572
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -92.6363,
+        "Y": -25.069721,
+        "Z": -12.83485
       },
       "arguments": [],
       "note": ""
@@ -534,6 +774,83 @@
         "X": 651.05475,
         "Y": -55.500168,
         "Z": -73.6702
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 683.1585,
+        "Y": -55.500168,
+        "Z": -58.740402
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 698.35516,
+        "Y": -55.50017,
+        "Z": -57.707584
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 719.50385,
+        "Y": -55.38427,
+        "Z": -92.41858
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 722.00903,
+        "Y": -55,
+        "Z": -121.1439
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 716.27924,
+        "Y": -55.500168,
+        "Z": -97.20702
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 751.2394,
+        "Y": -55.525776,
+        "Z": -99.18367
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 786.54297,
+        "Y": -56.999996,
+        "Z": -97.49809
       },
       "arguments": [],
       "note": ""
@@ -640,7 +957,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 797.004,
@@ -651,7 +968,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 797,
@@ -686,6 +1003,10 @@
       {
         "version": 188,
         "change": "Additional safety steps"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

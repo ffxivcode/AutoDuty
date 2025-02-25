@@ -536,6 +536,10 @@
       {
         "version": 185,
         "change": "Switch to more reliable elevator methods"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []
