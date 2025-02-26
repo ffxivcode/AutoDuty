@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -145.68,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -165.68,
@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -40,7 +40,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -165.68,
@@ -53,7 +53,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -66,7 +66,7 @@
       "note": "Imperial Identification Key"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -205.69,
@@ -79,7 +79,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -92,7 +92,7 @@
       "note": "Security Terminal"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -194.7,
@@ -105,7 +105,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -118,7 +118,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -194.7,
@@ -131,7 +131,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -144,7 +144,7 @@
       "note": "Imperial Identification Key"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -186.96,
@@ -157,7 +157,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -170,7 +170,7 @@
       "note": "Security Terminal"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": -174.02,
@@ -183,7 +183,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -158.89,
@@ -196,7 +196,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -145.96,
@@ -209,7 +209,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "AutoMoveFor",
       "position": {
         "X": -138.88,
@@ -222,7 +222,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -0.99,
@@ -235,7 +235,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -248,7 +248,7 @@
       "note": "Control Panel"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": -0.24,
@@ -261,7 +261,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": -0.24,
@@ -274,7 +274,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 6.23,
@@ -287,7 +287,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": -0.22,
@@ -300,7 +300,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": -0.22,
@@ -313,7 +313,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": -0.22,
@@ -326,7 +326,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": -13.46,
@@ -339,7 +339,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "AutoMoveFor",
       "position": {
         "X": 12.87,
@@ -352,7 +352,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -365,7 +365,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 114.46,
@@ -378,7 +378,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 130.78,
@@ -391,7 +391,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "AutoMoveFor",
       "position": {
         "X": 172.29,
@@ -404,7 +404,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 323.48,
@@ -417,7 +417,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -430,7 +430,7 @@
       "note": "Imperial Identification Key"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 311.87,
@@ -443,7 +443,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 320.75,
@@ -456,7 +456,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -469,7 +469,7 @@
       "note": "Security Terminal"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 325.77,
@@ -482,7 +482,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 342.84,
@@ -495,7 +495,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 347.8,
@@ -508,7 +508,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 380.98,
@@ -521,7 +521,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 367.82,
@@ -534,7 +534,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 376.61,
@@ -547,7 +547,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 384.57,
@@ -560,7 +560,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 351.8,
@@ -573,7 +573,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 342.08,
@@ -586,7 +586,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [
@@ -605,6 +604,10 @@
       {
         "version": 164,
         "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

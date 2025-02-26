@@ -123,7 +123,11 @@ public class Configuration : IPluginConfiguration
     public bool EquipButton = true;
 
     internal bool updatePathsOnStartup = true;
-    public bool UpdatePathsOnStartup => !Plugin.isDev || this.updatePathsOnStartup;
+    public   bool UpdatePathsOnStartup
+    {
+        get => !Plugin.isDev || this.updatePathsOnStartup;
+        set => this.updatePathsOnStartup = value;
+    }
 
     //Duty Config Options
     public bool AutoExitDuty = true;
@@ -797,15 +801,6 @@ public static class ConfigTab
                 Configuration.Save();
             ImGuiComponents.HelpMarker("AutoDuty will ignore your party makeup when queueing for duties\nThis is for Multi-Boxing Only\n*AutoDuty is not recommended to be used with other players*");
 
-            //ImGui.BeginListBox("##W2WRoleSelection", new System.Numerics.Vector2(300, 800));
-
-            //ImGui.PushStyleVar(ImGuiStyleVar);
-
-            /*
-            foreach (JobWithRole category in categories.Keys)
-                DrawW2WCategory(category);
-            */
-            //ImGui.EndListBox();
 
             ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
             var advModeHeader = ImGui.Selectable("Advanced Config Options", advModeHeaderSelected, ImGuiSelectableFlags.DontClosePopups);

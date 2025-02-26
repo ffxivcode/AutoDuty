@@ -82,7 +82,7 @@ namespace AutoDuty.Windows
                                 foreach (KeyValuePair<string, JobWithRole> keyValuePair in pathSelection) 
                                     pathSelection[keyValuePair.Key] &= ~curJob;
 
-                                PathSelectionHelper.RebuildFirstPath(Plugin.CurrentTerritoryContent.TerritoryType);
+                                PathSelectionHelper.RebuildDefaultPaths(Plugin.CurrentTerritoryContent.TerritoryType);
                                 Plugin.Configuration.Save();
                                 if (!Plugin.InDungeon)
                                     container.SelectPath(out Plugin.CurrentPath);
@@ -106,7 +106,7 @@ namespace AutoDuty.Windows
 
                                     pathJobs[path.Value.FileName] |= curJob;
 
-                                    PathSelectionHelper.RebuildFirstPath(Plugin.CurrentTerritoryContent.TerritoryType);
+                                    PathSelectionHelper.RebuildDefaultPaths(Plugin.CurrentTerritoryContent.TerritoryType);
 
                                     Plugin.Configuration.Save();
                                     Plugin.CurrentPath = curPath;

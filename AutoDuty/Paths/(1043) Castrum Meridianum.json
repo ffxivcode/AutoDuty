@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 224.32,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 130.00374,
@@ -25,7 +25,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 36.381397,
@@ -36,7 +36,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 17.66,
@@ -49,7 +49,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 41.65,
@@ -62,7 +62,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -75,7 +75,7 @@
       "note": "Disposal Chute"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -88,7 +88,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -59.3487,
@@ -99,7 +99,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -46.592396,
@@ -110,7 +110,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -26.48639,
@@ -121,7 +121,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -7.2955933,
@@ -132,7 +132,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": -12.56,
@@ -145,7 +145,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -158,7 +158,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 7.7214556,
@@ -169,7 +169,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -182,7 +182,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -195,7 +195,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -58.45,
@@ -208,7 +208,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -221,7 +221,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "WaitFor",
       "position": {
         "X": 0,
@@ -234,7 +234,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": -100.38,
@@ -269,6 +269,10 @@
       {
         "version": 179,
         "change": "Updated to newer standards"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
       }
     ],
     "notes": []

@@ -216,7 +216,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Configuration.Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 188) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 189) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
             Configuration.Save();
 
@@ -235,7 +235,7 @@ public sealed class AutoDuty : IDalamudPlugin
             ContentHelper.PopulateDuties();
             RepairNPCHelper.PopulateRepairNPCs();
             FileHelper.Init();
-            Patcher.Patch();
+            Patcher.Patch(startup: true);
             Chat = new();
             _overrideAFK = new();
             _ipcProvider = new();
