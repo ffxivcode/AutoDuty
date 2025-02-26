@@ -12,9 +12,9 @@ namespace AutoDuty.Updater
             
         internal static Task<bool>? PatcherTask = null;
 
-        internal static void Patch(bool skipMD5 = false)
+        internal static void Patch(bool skipMD5 = false, bool startup = false)
         {
-            if (PatcherTask == null && Plugin.Configuration.UpdatePathsOnStartup)
+            if (PatcherTask == null && (!startup || Plugin.Configuration.UpdatePathsOnStartup))
             {
                 PatcherTask = Task.Run(() => PatchTask(skipMD5));
                 PatcherTask.ContinueWith(t => {

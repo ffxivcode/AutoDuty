@@ -350,22 +350,18 @@ namespace AutoDuty.Windows
 
                     foreach (var item in Plugin.Actions.Select((Value, Index) => (Value, Index)))
                     {
-                        var                           v4   = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
-
-                        var text = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? item.Value.Note : $"{item.Value.ToCustomString()}";
+                        var v4 = item.Value.Name.StartsWith("<--", StringComparison.InvariantCultureIgnoreCase) ? new Vector4(0, 255, 0, 1) : new Vector4(255, 255, 255, 1);
 
                         ImGui.PushStyleColor(ImGuiCol.Text, v4);
-                        if (ImGui.Selectable($"{item.Index}: {text}###Text{item.Index}", item.Index == _buildListSelected))
+
+                        if (ImGui.Selectable($"{item.Index}: ###Text{item.Index}", item.Index == _buildListSelected))
                         {
-                            Svc.Log.Info("0");
                             if (_buildListSelected == item.Index)
                             {
-                                Svc.Log.Info("0.1");
                                 ClearAll();
                             }
                             else
                             {
-                                Svc.Log.Info("0.2");
                                 _comment = item.Value.Name.Equals($"<-- Comment -->", StringComparison.InvariantCultureIgnoreCase);
                                 _noArgument = (ActionsList?.Any(x => x.Item1.Equals($"{item.Value.Name}", StringComparison.InvariantCultureIgnoreCase) &&
                                                                      x.Item2.Equals("false", StringComparison.InvariantCultureIgnoreCase)) ??
@@ -386,7 +382,6 @@ namespace AutoDuty.Windows
                             }
                         }
 
-                        ImGui.PopStyleColor();
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                         {
                             _deleteItem      = true;
@@ -407,6 +402,13 @@ namespace AutoDuty.Windows
                                 dragNext  = item.Index + (mouseYDelta < 0f ? -1 : 1);
                             }
                         }
+
+                        item.Value.GetCustomText(item.Index).ForEach(x =>
+                                                                     {
+                                                                         ImGui.SameLine(0, 0);
+                                                                         ImGui.TextColored(x.color, x.text);
+                                                                     });
+                        ImGui.PopStyleColor();
                     }
 
                     if (dragIndex.HasValue && dragNext is >= 0 && dragNext < Plugin.Actions.Count)
