@@ -130,9 +130,10 @@ public class Configuration : IPluginConfiguration
     }
 
     //Duty Config Options
-    public bool AutoExitDuty = true;
-    public bool AutoManageRotationPluginState = true;
-    internal bool autoManageBossModAISettings = true;
+    public   bool AutoExitDuty                  = true;
+    public   bool OnlyExitWhenDutyDone          = false;
+    public   bool AutoManageRotationPluginState = true;
+    internal bool autoManageBossModAISettings   = true;
     public bool AutoManageBossModAISettings
     {
         get => autoManageBossModAISettings;
@@ -512,10 +513,15 @@ public static class ConfigTab
 
         if (dutyConfigHeaderSelected == true)
         {
-            if (ImGui.Checkbox("Auto Leave Duty", ref Configuration.AutoExitDuty))
+            ImGui.Columns(2);
+            if (ImGui.Checkbox("Auto Leave Duty in last loop", ref Configuration.AutoExitDuty))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will automatically exit the dungeon upon completion of the path.");
-
+            ImGui.NextColumn();
+            if (ImGui.Checkbox("Only leave dungeon if duty completed", ref Configuration.OnlyExitWhenDutyDone))
+                Configuration.Save();
+            ImGuiComponents.HelpMarker("Blocks leaving dungeon before duty is completed");
+            ImGui.Columns(1);
             if (ImGui.Checkbox("Auto Manage Rotation Plugin State", ref Configuration.AutoManageRotationPluginState))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Wrath Combo, Rotation Solver or BossMod AutoRotation\n**AutoDuty will try to use them in that order");
