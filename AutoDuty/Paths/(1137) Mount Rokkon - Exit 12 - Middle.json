@@ -1,7 +1,7 @@
 {
   "actions": [
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 145.46,
@@ -14,7 +14,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 145.07,
@@ -27,7 +27,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -40,7 +40,7 @@
       "note": "Perceptive Portal"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -53,7 +53,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 690.81,
@@ -66,7 +66,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 727.71,
@@ -79,7 +79,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 683.97,
@@ -92,7 +92,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 737.23,
@@ -105,7 +105,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -118,7 +118,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 737.16,
@@ -131,7 +131,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -144,7 +144,7 @@
       "note": "Shojo Temple Entrance"
     },
     {
-      "tag": 4,
+      "tag": "Revival",
       "name": "Revival",
       "position": {
         "X": 736.17,
@@ -157,7 +157,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 737.08,
@@ -170,7 +170,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 736.96,
@@ -183,7 +183,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 715.42,
@@ -196,7 +196,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 697.24,
@@ -209,7 +209,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 676.45,
@@ -222,7 +222,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 729.45,
@@ -235,7 +235,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 735.42,
@@ -248,7 +248,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "ChatCommand",
       "position": {
         "X": 0,
@@ -261,7 +261,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "ChatCommand",
       "position": {
         "X": 0,
@@ -274,7 +274,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 728.3,
@@ -287,7 +287,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 720.66,
@@ -300,7 +300,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "CameraFacing",
       "position": {
         "X": 720.66,
@@ -313,7 +313,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Jump",
       "position": {
         "X": 0,
@@ -326,7 +326,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -339,7 +339,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Jump",
       "position": {
         "X": 0,
@@ -352,7 +352,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -365,7 +365,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Jump",
       "position": {
         "X": 0,
@@ -378,7 +378,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -391,7 +391,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "CameraFacing",
       "position": {
         "X": 722.09,
@@ -404,7 +404,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Jump",
       "position": {
         "X": 0,
@@ -417,7 +417,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -430,7 +430,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "AutoMoveFor",
       "position": {
         "X": 0,
@@ -443,7 +443,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "CameraFacing",
       "position": {
         "X": 0,
@@ -456,7 +456,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "AutoMoveFor",
       "position": {
         "X": 0,
@@ -469,7 +469,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "CameraFacing",
       "position": {
         "X": 0,
@@ -482,7 +482,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "AutoMoveFor",
       "position": {
         "X": 0,
@@ -495,7 +495,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "CameraFacing",
       "position": {
         "X": 0,
@@ -508,7 +508,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Jump",
       "position": {
         "X": 0,
@@ -521,7 +521,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -534,7 +534,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "ChatCommand",
       "position": {
         "X": 0,
@@ -547,7 +547,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "ChatCommand",
       "position": {
         "X": 0,
@@ -560,7 +560,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 712.88,
@@ -573,7 +573,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -586,7 +586,7 @@
       "note": "Woven Rope"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 693.12,
@@ -599,7 +599,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -612,7 +612,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "CameraFacing",
       "position": {
         "X": 0,
@@ -625,7 +625,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "DutySpecificCode",
       "position": {
         "X": 0,
@@ -638,7 +638,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 692.45,
@@ -651,7 +651,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 682.79,
@@ -664,7 +664,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 723.33,
@@ -677,7 +677,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -690,7 +690,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "DutySpecificCode",
       "position": {
         "X": 0,
@@ -703,7 +703,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 721.12,
@@ -716,7 +716,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 681.23,
@@ -729,7 +729,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -742,7 +742,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "DutySpecificCode",
       "position": {
         "X": 0,
@@ -755,7 +755,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 690.44,
@@ -768,7 +768,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "StopForCombat",
       "position": {
         "X": 690.44,
@@ -781,7 +781,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "ChatCommand",
       "position": {
         "X": 695.27,
@@ -794,7 +794,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 695.27,
@@ -807,7 +807,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": 0,
@@ -820,7 +820,7 @@
       "note": "Lantern of Passage"
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -833,7 +833,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 895.29,
@@ -846,7 +846,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 893.98,
@@ -859,7 +859,7 @@
       "note": ""
     },
     {
-      "tag": 4,
+      "tag": "Revival",
       "name": "Revival",
       "position": {
         "X": 900.08,
@@ -872,7 +872,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 899.52,
@@ -885,7 +885,7 @@
       "note": ""
     },
     {
-      "tag": 0,
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 899.95,
@@ -898,7 +898,6 @@
       "note": ""
     }
   ],
-  "interactables": [],
   "meta": {
     "createdAt": 106,
     "changelog": [

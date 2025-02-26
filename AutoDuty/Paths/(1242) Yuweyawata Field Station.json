@@ -40,7 +40,7 @@
     {
       "tag": "W2W",
       "name": "MoveTo",
-      "position": { 
+      "position": {
         "X": -15.23,
         "Y": -10.62,
         "Z": 511.94
@@ -183,7 +183,7 @@
       "arguments": [],
       "note": ""
     },
-    { 
+    {
       "tag": "W2W",
       "name": "StopForCombat",
       "position": {
@@ -219,7 +219,7 @@
       "note": ""
     },
     {
-      "tag": "W2W", 
+      "tag": "W2W",
       "name": "StopForCombat",
       "position": {
         "X": 0,
@@ -263,7 +263,7 @@
         "Y": 0,
         "Z": 0
       },
-      "arguments": [ 
+      "arguments": [
         "false"
       ],
       "note": ""
@@ -301,7 +301,7 @@
         "Z": -17.48
       },
       "arguments": [
-        "true" 
+        "true"
       ],
       "note": ""
     },
@@ -313,7 +313,7 @@
         "Y": 12.04,
         "Z": -3.98
       },
-      "arguments": [ 
+      "arguments": [
         "true"
       ],
       "note": ""
@@ -390,7 +390,7 @@
       "arguments": [],
       "note": ""
     },
-    { 
+    {
       "tag": "W2W",
       "name": "StopForCombat",
       "position": {
@@ -468,7 +468,7 @@
       "position": {
         "X": 108.82,
         "Y": -6.61,
-        "Z": -402.15 
+        "Z": -402.15
       },
       "arguments": [
         "true"
@@ -489,7 +489,7 @@
       "note": ""
     },
     {
-      "tag": "Treasure", 
+      "tag": "Treasure",
       "name": "TreasureCoffer",
       "position": {
         "X": 86.46,

@@ -5,11 +5,9 @@ namespace AutoDuty.Data
     using System.Collections.Generic;
     using System.Linq;
     using System.Numerics;
-    using System.Numerics;
     using Dalamud.Interface.Utility.Raii;
     using ECommons.ExcelServices;
     using ImGuiNET;
-    using FFXIVClientStructs.FFXIV.Common.Lua;
 
     public static class Enums
     {
