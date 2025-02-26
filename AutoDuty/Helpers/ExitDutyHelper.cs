@@ -24,7 +24,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal unsafe static void Stop()
+        internal static unsafe void Stop()
         {
             Plugin.Action = "";
             SchedulerHelper.DescheduleAction("ExitDutyTimeOut");
@@ -70,7 +70,7 @@ namespace AutoDuty.Helpers
             Exit();
         }
 
-        private unsafe static void Exit()
+        private static unsafe void Exit()
         {
             AgentModule.Instance()->GetAgentByInternalId(AgentId.ContentsFinderMenu)->Show();
             if (GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
