@@ -1155,7 +1155,8 @@ public sealed class AutoDuty : IDalamudPlugin
         //we finished lets exit the duty or stop
         if ((Configuration.AutoExitDuty || CurrentLoop < Configuration.LoopTimes))
         {
-            if ((!Configuration.OnlyExitWhenDutyDone || this.DutyState == DutyState.DutyComplete) &&
+            if (!Stage.EqualsAny(Stage.Stopped, Stage.Paused)                                     &&
+                (!Configuration.OnlyExitWhenDutyDone || this.DutyState == DutyState.DutyComplete) &&
                 !this.States.HasFlag(PluginState.Navigating))
             {
                 if (ExitDutyHelper.State != ActionState.Running)
