@@ -28,9 +28,8 @@ namespace AutoDuty.Helpers
             }
 
 
-            if (Environment.TickCount64 - LastPositionUpdate > 500 && EzThrottler.Throttle("RequeueMoveTo", 1000))
+            if (Environment.TickCount64 - LastPositionUpdate > Plugin.Configuration.MinStuckTime && EzThrottler.Throttle("RequeueMoveTo", 1000))
             {
-                
                 Svc.Log.Debug($"Stuck pathfinding.");
                 return true;
             }

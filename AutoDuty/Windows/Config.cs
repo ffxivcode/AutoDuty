@@ -148,6 +148,7 @@ public class Configuration : IPluginConfiguration
     public bool       LootBossTreasureOnly           = false;
     public int        TreasureCofferScanDistance     = 25;
     public bool       RebuildNavmeshOnStuck          = true;
+    public int        MinStuckTime                   = 500;
     public bool       OverridePartyValidation        = false;
     public bool       UsingAlternativeRotationPlugin = false;
     public bool       UsingAlternativeMovementPlugin = false;
@@ -777,6 +778,12 @@ public static class ConfigTab
                 ImGui.Unindent();
             }
             ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");
+
+            if (ImGui.InputInt("Minimum time before declared stuck (in ms)", ref Configuration.MinStuckTime))
+            {
+                Configuration.MinStuckTime = Math.Max(250, Configuration.MinStuckTime);
+                Configuration.Save();
+            }
 
             if (ImGui.Checkbox("Rebuild Navmesh when stuck", ref Configuration.RebuildNavmeshOnStuck))
                 Configuration.Save();
