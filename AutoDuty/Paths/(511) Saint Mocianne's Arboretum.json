@@ -524,6 +524,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 190,
+        "change": "Modernized"
       }
     ],
     "notes": []
