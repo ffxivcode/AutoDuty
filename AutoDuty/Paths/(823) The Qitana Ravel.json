@@ -132,11 +132,24 @@
     },
     {
       "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
       "name": "Boss",
       "position": {
-        "X": 17.05,
+        "X": 16.81,
         "Y": -77,
-        "Z": -537.73
+        "Z": -552.53
       },
       "arguments": [
         ""
@@ -170,6 +183,14 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 192,
+        "change": ""
+      },
+      {
+        "version": 192,
+        "change": "Adjusted Boss Slide"
       }
     ],
     "notes": []
