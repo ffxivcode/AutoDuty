@@ -216,7 +216,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Configuration.Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 189) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 192) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
             Configuration.Save();
 
