@@ -22,6 +22,7 @@ using Serilog.Events;
 namespace AutoDuty.Windows;
 
 using Data;
+using ECommons.ExcelServices;
 using Properties;
 using Lumina.Excel.Sheets;
 using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
@@ -155,7 +156,21 @@ public class Configuration : IPluginConfiguration
     public bool       UsingAlternativeMovementPlugin = false;
     public bool       UsingAlternativeBossPlugin     = false;
 
-    public JobWithRole W2WJobs = JobWithRole.Tanks;
+    public bool        TreatUnsyncAsW2W = true;
+    public JobWithRole W2WJobs          = JobWithRole.Tanks;
+
+    public bool IsW2W(Job? job = null, bool? unsync = null)
+    {
+        job ??= PlayerHelper.GetJob();
+
+        if (this.W2WJobs.HasJob(job.Value))
+            return true;
+
+        unsync ??= this.Unsynced && this.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial);
+
+        return unsync.Value && this.TreatUnsyncAsW2W;
+    }
+
 
     //PreLoop Config Options
     public bool EnablePreLoopActions = true;
@@ -795,7 +810,7 @@ public static class ConfigTab
                 Configuration.Save();
 
             ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
-            bool w2wSettingHeader = ImGui.Selectable($"> {PathIdentifiers.W2W} Jobs <", w2wSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+            bool w2wSettingHeader = ImGui.Selectable($"> {PathIdentifiers.W2W} Config <", w2wSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
             ImGui.PopStyleVar();
             if (ImGui.IsItemHovered())
                 ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
@@ -804,8 +819,12 @@ public static class ConfigTab
 
             if (w2wSettingHeaderSelected)
             {
-                ImGui.BeginListBox("##W2WConfig", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, 300));
+                if(ImGui.Checkbox("Treat Unsync as W2W", ref Configuration.TreatUnsyncAsW2W))
+                    Configuration.Save();
+                ImGuiComponents.HelpMarker("Only works in paths with W2W tags on steps");
 
+
+                ImGui.BeginListBox("##W2WConfig", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, 300));
                 JobWithRoleHelper.DrawCategory(JobWithRole.All, ref Configuration.W2WJobs);
                 ImGui.EndListBox();
             }

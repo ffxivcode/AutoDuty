@@ -857,17 +857,18 @@ public sealed class AutoDuty : IDalamudPlugin
 
         PathAction = Actions[Indexer];
 
-        if (PathAction.Tag.HasFlag(ActionTag.W2W) && !Configuration.W2WJobs.HasJob(this.JobLastKnown))
-        {
-            Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are not W2W-ing");
-            this.Indexer++;
-            return;
-        }
-
-        if (PathAction.Tag.HasFlag(ActionTag.Unsynced) && (!Configuration.Unsynced || !Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial)))
+        bool sync = !this.Configuration.Unsynced || !this.Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial);
+        if (PathAction.Tag.HasFlag(ActionTag.Unsynced) && sync)
         {
             Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are synced");
             Indexer++;
+            return;
+        }
+
+        if (PathAction.Tag.HasFlag(ActionTag.W2W) && !Configuration.IsW2W(unsync: !sync))
+        {
+            Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are not W2W-ing");
+            this.Indexer++;
             return;
         }
 
