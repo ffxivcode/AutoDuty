@@ -36,7 +36,6 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Serilog.Events;
 using AutoDuty.Updater;
-using ECommons.Logging;
 
 namespace AutoDuty;
 
