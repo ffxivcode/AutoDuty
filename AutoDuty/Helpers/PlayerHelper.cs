@@ -32,7 +32,7 @@ namespace AutoDuty.Helpers
         internal static unsafe short GetCurrentLevelFromSheet(Job? job = null)
         {
             PlayerState* playerState = PlayerState.Instance();
-            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>().GetRowOrDefault((uint)(job ?? (Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown)))?.ExpArrayIndex ?? 0];
+            return playerState->ClassJobLevels[Svc.Data.GetExcelSheet<ClassJob>().GetRowOrDefault((uint)(job ?? GetJob()))?.ExpArrayIndex ?? 0];
         }
 
         internal static float JobRange
@@ -122,6 +122,8 @@ namespace AutoDuty.Helpers
                 gearsetModule->UpdateGearset(gearsetId);
             return gearsetModule->GetGearset(gearsetId)->ItemLevel;
         }*/
+
+        internal static Job GetJob() => Player.Available ? Player.Job : Plugin.JobLastKnown;
 
         internal static CombatRole GetCombatRole(this Job? job) => 
             job != null ? GetCombatRole((Job)job) : CombatRole.NonCombat;

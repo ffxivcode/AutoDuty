@@ -45,7 +45,7 @@ namespace AutoDuty.Managers
 
             public DutyPath? SelectPath(out int pathIndex, Job? job = null)
             {
-                job ??= Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
+                job ??= PlayerHelper.GetJob();
 
                 DutyPath defaultPath = this.Paths[0];
 

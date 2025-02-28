@@ -63,7 +63,7 @@ namespace AutoDuty.Helpers
 
         internal static bool SetLevelingTrustMembers(Content content)
         {
-            Job        playerJob  = Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
+            Job        playerJob  = PlayerHelper.GetJob();
             CombatRole playerRole = playerJob.GetCombatRole();
 
             if (!Members.Any(tm => tm.Value.Level < tm.Value.LevelCap) && Plugin.Configuration.SelectedTrustMembers.Any(tmn => tmn.HasValue))
