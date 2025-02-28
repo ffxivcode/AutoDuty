@@ -68,8 +68,11 @@ namespace AutoDuty.Helpers
 
             var listDawnContent = Svc.Data.GameData.GetExcelSheet<DawnContent>();
 
+            var listDawnParticipableContent = Svc.Data.GameData.GetSubrowExcelSheet<DawnContentParticipable>();
 
             if (listContentFinderCondition == null || listDawnContent == null) return;
+
+            if (listContentFinderCondition == null || listDawnContent == null || listDawnParticipableContent == null) return;
 
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
@@ -120,7 +123,7 @@ namespace AutoDuty.Helpers
                 if (contentFinderCondition.TerritoryType.Value.RowId.EqualsAny(ListGCArmyContent))
                     content.DutyModes |= DutyMode.Squadron;
 
-                if (content.DawnIndex > -1)
+                if (content.DawnIndex > -1 && listDawnParticipableContent.GetSubrowCount(dawnContent!.Value.RowId) > 1)
                     content.DutyModes |= DutyMode.Support;
 
                 if (content.TrustIndex > -1)
