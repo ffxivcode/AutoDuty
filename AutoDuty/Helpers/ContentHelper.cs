@@ -70,7 +70,6 @@ namespace AutoDuty.Helpers
 
             var listDawnParticipableContent = Svc.Data.GameData.GetSubrowExcelSheet<DawnContentParticipable>();
 
-            if (listContentFinderCondition == null || listDawnContent == null) return;
 
             if (listContentFinderCondition == null || listDawnContent == null || listDawnParticipableContent == null) return;
 
@@ -84,7 +83,7 @@ namespace AutoDuty.Helpers
                     string result = char.ToUpper(name.First()) + name.Substring(1);
                     return result;
                 }
-
+                
                 DawnContent?           dawnContent      = listDawnContent.FirstOrDefault(x => x.Content.ValueNullable?.RowId == contentFinderCondition.RowId);
                 ContentFinderCondition englishCondition = contentFinderConditionsEnglish?.GetRow(contentFinderCondition.RowId) ?? contentFinderCondition;
                 var content = new Content
@@ -154,7 +153,7 @@ namespace AutoDuty.Helpers
             DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.TerritoryType).ToDictionary();
         }
 
-        public static bool CanRun(this Content content, short level = -1)
+        public static bool CanRun(this Content content, short level = -1, bool? trust = null, bool trustCheckLevels = true, bool? unsync = null)
         {
             if ((Player.Available ? Player.Object.GetRole() : CombatRole.NonCombat) == CombatRole.NonCombat)
                 return false;
@@ -165,7 +164,25 @@ namespace AutoDuty.Helpers
             if (level < 0) 
                 level = PlayerHelper.GetCurrentLevelFromSheet();
 
-            return content.ClassJobLevelRequired <= level && ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) && content.ItemLevelRequired <= InventoryHelper.CurrentItemLevel;
+            if (content.ClassJobLevelRequired > level                                   ||
+                !ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) ||
+                content.ItemLevelRequired > InventoryHelper.CurrentItemLevel)
+                return false;
+
+
+            trust ??= Plugin.Configuration.DutyModeEnum == DutyMode.Trust;
+            if (trust.Value)
+                if (!content.CanTrustRun(trustCheckLevels))
+                    return false;
+
+            unsync ??= Plugin.Configuration.Unsynced && Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial);
+
+            if (unsync.Value)
+                if (content.ExVersion == 5)
+                    return false;
+
+            return true;
+
         }
     }
 }

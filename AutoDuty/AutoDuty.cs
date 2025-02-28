@@ -1764,10 +1764,10 @@ public sealed class AutoDuty : IDalamudPlugin
                     Svc.Log.Info($"{failPreMessage}Argument 2 value was not of type {dutyMode}, which you inputed in Argument 1, Argument 2 value was {argsArray[2]}{failPostMessage}");
                     return;
                 }
-                if (!content.CanRun(PlayerHelper.GetCurrentLevelFromSheet()) || (dutyMode == DutyMode.Trust && !content.CanTrustRun()))
+                if (!content.CanRun(trust: dutyMode == DutyMode.Trust))
                 {
                     var failReason = !UIState.IsInstanceContentCompleted(content.Id) ? "You dont have it unlocked" : (!ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) ? "There is no path file" : (PlayerHelper.GetCurrentLevelFromSheet() < content.ClassJobLevelRequired ? $"Your Lvl({PlayerHelper.GetCurrentLevelFromSheet()}) is less than {content.ClassJobLevelRequired}" : (InventoryHelper.CurrentItemLevel < content.ItemLevelRequired ? $"Your iLvl({InventoryHelper.CurrentItemLevel}) is less than {content.ItemLevelRequired}" : "Your trust party is not of correct levels")));
-                    Svc.Log.Info($"Unable to run {content.Name}, {failReason} {TrustHelper.CanTrustRun(content)}");
+                    Svc.Log.Info($"Unable to run {content.Name}, {failReason} {content.CanTrustRun()}");
                     return;
                 }
 
