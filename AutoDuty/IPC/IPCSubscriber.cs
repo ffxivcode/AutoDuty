@@ -505,7 +505,6 @@ namespace AutoDuty.IPC
             {
                 case SetResult.Okay:
                 case SetResult.OkayWorking:
-                case SetResult.Duplicate:
                     return true;
                 case SetResult.InvalidLease:
                     _curLease = null;
@@ -516,6 +515,7 @@ namespace AutoDuty.IPC
                     Plugin.Configuration.Save();
                     return false;
                 case SetResult.IPCDisabled:
+                case SetResult.Duplicate:
                 case SetResult.PlayerNotAvailable:
                 case SetResult.InvalidConfiguration:
                 case SetResult.InvalidValue:
