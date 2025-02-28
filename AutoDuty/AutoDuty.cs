@@ -946,10 +946,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (PlayerHelper.InCombat && Plugin.StopForCombat)
         {
             if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
-            {
-                PluginLog.Debug("zbeehere: 1");
                 SetRotationPluginSettings(true);
-            }
             VNavmesh_IPCSubscriber.Path_Stop();
             Stage = Stage.Waiting_For_Combat;
             return;
@@ -998,10 +995,7 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         
         if (this.Configuration is { AutoManageRotationPluginState: true, UsingAlternativeRotationPlugin: false } && !Svc.Condition[ConditionFlag.OccupiedInCutSceneEvent])
-        {
-            PluginLog.Debug("zbeehere: 2");
             SetRotationPluginSettings(true);
-        }
         
         if (!TaskManager.IsBusy)
         {
@@ -1131,10 +1125,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.AutoManageBossModAISettings)
             SetBMSettings();
         if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
-        {
-            PluginLog.Debug("zbeehere: 3");
             SetRotationPluginSettings(true);
-        }
         if (Configuration.LootTreasure)
         {
             if (PandorasBox_IPCSubscriber.IsEnabled)
@@ -1173,10 +1164,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 if (ExitDutyHelper.State != ActionState.Running)
                     ExitDuty();
                 if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
-                {
-                    PluginLog.Debug("zbeehere: 4");
                     SetRotationPluginSettings(false);
-                }
                 if (Configuration.AutoManageBossModAISettings)
                 {
                     Chat.ExecuteCommand($"/vbmai off");
@@ -1242,7 +1230,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             bool wrathRotationReady = true;
             if (on)
-                wrathRotationReady = Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady() || 
+                wrathRotationReady = Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady() ||
                                      this.Configuration.Wrath_AutoSetupJobs && Wrath_IPCSubscriber.SetJobAutoReady();
 
             if (!on || wrathRotationReady)
@@ -1537,10 +1525,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
         SetGeneralSettings(true);
         if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
-        {
-            PluginLog.Debug("zbeehere: 5");
             SetRotationPluginSettings(false);
-        }
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
         if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped)
