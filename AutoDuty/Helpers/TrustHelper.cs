@@ -63,7 +63,7 @@ namespace AutoDuty.Helpers
 
         internal static bool SetLevelingTrustMembers(Content content)
         {
-            Job        playerJob  = Player.Available ? Player.Object.GetJob() : Plugin.JobLastKnown;
+            Job        playerJob  = PlayerHelper.GetJob();
             CombatRole playerRole = playerJob.GetCombatRole();
 
             if (!Members.Any(tm => tm.Value.Level < tm.Value.LevelCap) && Plugin.Configuration.SelectedTrustMembers.Any(tmn => tmn.HasValue))
@@ -152,7 +152,7 @@ namespace AutoDuty.Helpers
 
             if (dawnSheet == null || jobSheet == null) return;
 
-            void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100, uint unlockQuest = 0) => Members.Add(name, new TrustMember
+            void AddMember(TrustMemberName name, byte index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100, uint unlockQuest = 0) => Members.Add(name, new TrustMember
                          {
                              Index       = index,
                              Name        = dawnSheet.GetRow((uint)name)!.Unknown0.ToString(),

@@ -216,7 +216,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Configuration.Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 189) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 192) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
             Configuration.Save();
 
@@ -857,17 +857,18 @@ public sealed class AutoDuty : IDalamudPlugin
 
         PathAction = Actions[Indexer];
 
-        if (PathAction.Tag.HasFlag(ActionTag.W2W) && !Configuration.W2WJobs.HasJob(this.JobLastKnown))
-        {
-            Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are not W2W-ing");
-            this.Indexer++;
-            return;
-        }
-
-        if (PathAction.Tag.HasFlag(ActionTag.Unsynced) && (!Configuration.Unsynced || !Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial)))
+        bool sync = !this.Configuration.Unsynced || !this.Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial);
+        if (PathAction.Tag.HasFlag(ActionTag.Unsynced) && sync)
         {
             Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are synced");
             Indexer++;
+            return;
+        }
+
+        if (PathAction.Tag.HasFlag(ActionTag.W2W) && !Configuration.IsW2W(unsync: !sync))
+        {
+            Svc.Log.Debug($"Skipping path entry {Actions[Indexer]} because we are not W2W-ing");
+            this.Indexer++;
             return;
         }
 
@@ -1763,10 +1764,10 @@ public sealed class AutoDuty : IDalamudPlugin
                     Svc.Log.Info($"{failPreMessage}Argument 2 value was not of type {dutyMode}, which you inputed in Argument 1, Argument 2 value was {argsArray[2]}{failPostMessage}");
                     return;
                 }
-                if (!content.CanRun(PlayerHelper.GetCurrentLevelFromSheet()) || (dutyMode == DutyMode.Trust && !content.CanTrustRun()))
+                if (!content.CanRun(trust: dutyMode == DutyMode.Trust))
                 {
                     var failReason = !UIState.IsInstanceContentCompleted(content.Id) ? "You dont have it unlocked" : (!ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) ? "There is no path file" : (PlayerHelper.GetCurrentLevelFromSheet() < content.ClassJobLevelRequired ? $"Your Lvl({PlayerHelper.GetCurrentLevelFromSheet()}) is less than {content.ClassJobLevelRequired}" : (InventoryHelper.CurrentItemLevel < content.ItemLevelRequired ? $"Your iLvl({InventoryHelper.CurrentItemLevel}) is less than {content.ItemLevelRequired}" : "Your trust party is not of correct levels")));
-                    Svc.Log.Info($"Unable to run {content.Name}, {failReason} {TrustHelper.CanTrustRun(content)}");
+                    Svc.Log.Info($"Unable to run {content.Name}, {failReason} {content.CanTrustRun()}");
                     return;
                 }
 

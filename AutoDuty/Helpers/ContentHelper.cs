@@ -68,8 +68,10 @@ namespace AutoDuty.Helpers
 
             var listDawnContent = Svc.Data.GameData.GetExcelSheet<DawnContent>();
 
+            var listDawnParticipableContent = Svc.Data.GameData.GetSubrowExcelSheet<DawnContentParticipable>();
 
-            if (listContentFinderCondition == null || listDawnContent == null) return;
+
+            if (listContentFinderCondition == null || listDawnContent == null || listDawnParticipableContent == null) return;
 
             foreach (var contentFinderCondition in listContentFinderCondition)
             {
@@ -81,12 +83,14 @@ namespace AutoDuty.Helpers
                     string result = char.ToUpper(name.First()) + name.Substring(1);
                     return result;
                 }
-
+                
                 DawnContent?           dawnContent      = listDawnContent.FirstOrDefault(x => x.Content.ValueNullable?.RowId == contentFinderCondition.RowId);
                 ContentFinderCondition englishCondition = contentFinderConditionsEnglish?.GetRow(contentFinderCondition.RowId) ?? contentFinderCondition;
+
                 var content = new Content
                               {
                                   Id = contentFinderCondition.Content.RowId,
+                                  RowId = contentFinderCondition.RowId,
                                   Name = CleanName(contentFinderCondition.Name.ToDalamudString().TextValue),
                                   EnglishName = CleanName(englishCondition!.Name.ToDalamudString().TextValue),
                                   TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
@@ -96,7 +100,9 @@ namespace AutoDuty.Helpers
                                   ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                                   ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
                                   ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
+                                  DawnRowId = dawnContent?.RowId ?? 0,
                                   DawnIndex = TryGetDawnIndex(dawnContent?.RowId ?? 0, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
+                                  DawnIndicator = (ushort) (dawnContent?.RowId != default(uint) ? dawnContent?.Unknown15 ?? 0u : 0u),
                                   TrustIndex = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value.RowId == contentFinderCondition.RowId), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1,
                                   VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                                   VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
@@ -120,7 +126,7 @@ namespace AutoDuty.Helpers
                 if (contentFinderCondition.TerritoryType.Value.RowId.EqualsAny(ListGCArmyContent))
                     content.DutyModes |= DutyMode.Squadron;
 
-                if (content.DawnIndex > -1)
+                if (content.DawnIndex > -1 && listDawnParticipableContent.GetSubrowCount(dawnContent!.Value.RowId) > 1)
                     content.DutyModes |= DutyMode.Support;
 
                 if (content.TrustIndex > -1)
@@ -151,7 +157,7 @@ namespace AutoDuty.Helpers
             DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.TerritoryType).ToDictionary();
         }
 
-        public static bool CanRun(this Content content, short level = -1)
+        public static bool CanRun(this Content content, short level = -1, bool? trust = null, bool trustCheckLevels = true, bool? unsync = null)
         {
             if ((Player.Available ? Player.Object.GetRole() : CombatRole.NonCombat) == CombatRole.NonCombat)
                 return false;
@@ -162,7 +168,25 @@ namespace AutoDuty.Helpers
             if (level < 0) 
                 level = PlayerHelper.GetCurrentLevelFromSheet();
 
-            return content.ClassJobLevelRequired <= level && ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) && content.ItemLevelRequired <= InventoryHelper.CurrentItemLevel;
+            if (content.ClassJobLevelRequired > level                                   ||
+                !ContentPathsManager.DictionaryPaths.ContainsKey(content.TerritoryType) ||
+                content.ItemLevelRequired > InventoryHelper.CurrentItemLevel)
+                return false;
+
+
+            trust ??= Plugin.Configuration.DutyModeEnum == DutyMode.Trust;
+            if (trust.Value)
+                if (!content.CanTrustRun(trustCheckLevels))
+                    return false;
+
+            unsync ??= Plugin.Configuration.Unsynced && Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial);
+
+            if (unsync.Value)
+                if (content.ExVersion == 5)
+                    return false;
+
+            return true;
+
         }
     }
 }

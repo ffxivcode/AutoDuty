@@ -445,7 +445,7 @@ namespace AutoDuty.Windows
                                     {
                                         if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.DutyModes.HasFlag(DutyMode.Trust))
                                             continue;
-                                        var disabled = !item.Value.CanRun() || (Plugin.Configuration.DutyModeEnum == DutyMode.Trust && !item.Value.CanTrustRun(true));
+                                        var disabled = !item.Value.CanRun();
                                         if (!Plugin.Configuration.HideUnavailableDuties || !disabled)
                                         {
                                             using (ImRaii.Disabled(disabled))
@@ -475,7 +475,7 @@ namespace AutoDuty.Windows
                                             if (!string.IsNullOrWhiteSpace(_searchText) && !content.Name.ToLower().Contains(_searchText))
                                                 continue;  // Skip duties that do not match the search text
 
-                                            bool canRun = content.CanRun(level) && (Plugin.Configuration.DutyModeEnum != DutyMode.Trust || content.CanTrustRun());
+                                            bool canRun = content.CanRun(level);
                                             using (ImRaii.Disabled(!canRun))
                                             {
                                                 if (Plugin.Configuration.HideUnavailableDuties && !canRun)

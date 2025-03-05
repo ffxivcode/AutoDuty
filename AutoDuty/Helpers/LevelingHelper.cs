@@ -81,8 +81,8 @@ namespace AutoDuty.Helpers
                 Svc.Log.Debug($"Leveling Mode: Lowest level is out of range (support<15 and trust<71) at {lvl} or we are not on a combat role {combatRole} or we (support) or we and all trust members are capped, returning");
                 return null;
             }
-            LevelingDuties.Each(x => Svc.Log.Debug($"Leveling Mode: Duties: {x.Name} CanRun: {x.CanRun(lvl)}{(trust ? $"CanTrustRun : {x.CanTrustRun()}" : "")}"));
-            curContent = LevelingDuties.LastOrDefault(x => x.CanRun(lvl) && (!trust || x.CanTrustRun()));
+            LevelingDuties.Each(x => Svc.Log.Debug($"Leveling Mode: Duties: {x.Name} CanRun: {x.CanRun(lvl, false)}{(trust ? $"CanTrustRun : {x.CanTrustRun()}" : "")}"));
+            curContent = LevelingDuties.LastOrDefault(x => x.CanRun(lvl, trust));
 
             Svc.Log.Debug($"Leveling Mode: We found {curContent?.Name ?? "no duty"} to run");
 
