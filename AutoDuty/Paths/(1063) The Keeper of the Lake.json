@@ -28,14 +28,14 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -7.78,
-        "Y": 21.93,
-        "Z": -2.75
+        "X": -16,
+        "Y": 19.4,
+        "Z": 5
       },
       "arguments": [
-        "2000"
+        "false"
       ],
       "note": ""
     },
@@ -236,14 +236,14 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": 6.72,
-        "Y": 345.42,
-        "Z": -118.36
+        "X": 7,
+        "Y": 342.3,
+        "Z": -94
       },
       "arguments": [
-        "2000"
+        "false"
       ],
       "note": ""
     },
@@ -305,6 +305,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 192,
+        "change": "Adjusted area transitions"
       }
     ],
     "notes": []
