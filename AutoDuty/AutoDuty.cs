@@ -599,6 +599,13 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (Configuration.EnableBetweenLoopActions)
         {
+            if (Configuration.ExecuteCommandsBetweenLoop)
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"ExecutingCommandsBetweenLoops, executing {Configuration.CustomCommandsBetweenLoop.Count} commands"));
+                Configuration.CustomCommandsBetweenLoop.Each(x => Chat.ExecuteCommand(x));
+                TaskManager.DelayNext("Loop-DelayAfterCommands", 1000);
+            }
+
             if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.IsEnabled && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"AutoRetainer BetweenLoop Actions"));
