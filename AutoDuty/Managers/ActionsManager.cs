@@ -542,13 +542,13 @@ namespace AutoDuty.Managers
             int index = 0;
             List<IGameObject>? treasureCofferObjects = null;
             Plugin.SkipTreasureCoffer = false;
-            _taskManager.Enqueue(() => BossMoveCheck(action.Position), "Boss-MoveCheck");
+            StopForCombat(new PathAction() { Arguments = ["true"] });
+            _taskManager.Enqueue(() => BossMoveCheck(action.Position),                           "Boss-MoveCheck");
             if (Plugin.BossObject == null)
                 _taskManager.Enqueue(() => (Plugin.BossObject = GetBossObject()) != null, "Boss-GetBossObject");
             _taskManager.Enqueue(() => Plugin.Action = $"Boss: {Plugin.BossObject?.Name.TextValue ?? ""}", "Boss-SetActionVar");
             _taskManager.Enqueue(() => Svc.Condition[ConditionFlag.InCombat], "Boss-WaitInCombat");
             _taskManager.Enqueue(() => BossCheck(), int.MaxValue, "Boss-BossCheck");
-            _taskManager.Enqueue(() => { Plugin.StopForCombat = true; }, "Boss-SetStopForCombatTrue");
             _taskManager.Enqueue(() => { Plugin.BossObject = null; }, "Boss-ClearBossObject");
 
             if (Plugin.Configuration.LootTreasure)
