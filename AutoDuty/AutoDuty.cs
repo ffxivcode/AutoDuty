@@ -959,10 +959,10 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
 
-        if (StuckHelper.IsStuck())
+        if (StuckHelper.IsStuck(out byte stuckCount))
         {
             VNavmesh_IPCSubscriber.Path_Stop();
-            if (Configuration.RebuildNavmeshOnStuck)
+            if (Configuration.RebuildNavmeshOnStuck && stuckCount >= Configuration.RebuildNavmeshAfterStuckXTimes)
                 VNavmesh_IPCSubscriber.Nav_Rebuild();
             Stage = Stage.Reading_Path;
             return;

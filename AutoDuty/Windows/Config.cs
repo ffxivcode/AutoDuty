@@ -151,6 +151,7 @@ public class Configuration : IPluginConfiguration
     public bool       LootBossTreasureOnly           = false;
     public int        TreasureCofferScanDistance     = 25;
     public bool       RebuildNavmeshOnStuck          = true;
+    public byte       RebuildNavmeshAfterStuckXTimes = 5;
     public int        MinStuckTime                   = 500;
     public bool       OverridePartyValidation        = false;
     public bool       UsingAlternativeRotationPlugin = false;
@@ -832,6 +833,17 @@ public static class ConfigTab
 
             if (ImGui.Checkbox("Rebuild Navmesh when stuck", ref Configuration.RebuildNavmeshOnStuck))
                 Configuration.Save();
+
+            if (Configuration.RebuildNavmeshOnStuck)
+            {
+                ImGui.SameLine();
+                int rebuildX = Configuration.RebuildNavmeshAfterStuckXTimes;
+                if(ImGui.InputInt("times##RebuildNavmeshAfterStuckXTimes", ref rebuildX))
+                {
+                    Configuration.RebuildNavmeshAfterStuckXTimes = (byte) Math.Clamp(rebuildX, byte.MinValue+1, byte.MaxValue);
+                    Configuration.Save();
+                }
+            }
 
             ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
             bool w2wSettingHeader = ImGui.Selectable($"> {PathIdentifiers.W2W} Config <", w2wSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
