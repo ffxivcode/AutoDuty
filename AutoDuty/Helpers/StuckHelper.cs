@@ -11,8 +11,14 @@ namespace AutoDuty.Helpers
         internal static Vector3 LastPosition = Vector3.Zero;
         internal static long LastPositionUpdate = 0;
 
-        internal static bool IsStuck()
+        internal static Vector3 LastStuckPosition       = Vector3.Zero;
+        internal static long    LastStuckPositionUpdate = 0;
+
+        private static byte counter = 0;
+
+        internal static bool IsStuck(out byte count)
         {
+            count = 0;
             if (!Player.Available) return false;
             if (!VNavmesh_IPCSubscriber.Path_IsRunning())
             {
@@ -30,8 +36,17 @@ namespace AutoDuty.Helpers
 
             if (Environment.TickCount64 - LastPositionUpdate > Plugin.Configuration.MinStuckTime && EzThrottler.Throttle("RequeueMoveTo", 1000))
             {
-                Svc.Log.Debug($"Stuck pathfinding.");
+                LastStuckPosition       = Player.Position;
+                LastStuckPositionUpdate = Environment.TickCount64;
+
+                count                   = counter++;
+                Svc.Log.Debug($"Stuck pathfinding: " + count);
                 return true;
+            }
+
+            if (Environment.TickCount64 - LastStuckPositionUpdate > Plugin.Configuration.MinStuckTime * 10)
+            {
+                count = counter = 0;
             }
 
             return false;
