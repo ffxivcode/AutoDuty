@@ -195,6 +195,7 @@ public sealed class AutoDuty : IDalamudPlugin
     private         bool           _lootTreasure;
     private         SettingsActive _settingsActive         = SettingsActive.None;
     private         SettingsActive _bareModeSettingsActive = SettingsActive.None;
+    private         DateTime       _lastRotationSetTime    = DateTime.MinValue;
     public readonly bool           isDev;
 
     public AutoDuty()
@@ -1215,6 +1216,11 @@ public sealed class AutoDuty : IDalamudPlugin
 
     internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false)
     {
+        // Only try to set the rotation state every few seconds
+        if ((DateTime.Now - _lastRotationSetTime).TotalSeconds < 5)
+            return;
+        _lastRotationSetTime = DateTime.Now;
+
         if (!ignoreConfig && !this.Configuration.AutoManageRotationPluginState)
             return;
         bool bmEnabled     = BossMod_IPCSubscriber.IsEnabled;
@@ -1224,7 +1230,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             bool wrathRotationReady = true;
             if (on)
-                wrathRotationReady = Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady() || 
+                wrathRotationReady = Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady() ||
                                      this.Configuration.Wrath_AutoSetupJobs && Wrath_IPCSubscriber.SetJobAutoReady();
 
             if (!on || wrathRotationReady)
