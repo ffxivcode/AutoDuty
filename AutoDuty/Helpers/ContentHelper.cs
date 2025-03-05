@@ -86,9 +86,11 @@ namespace AutoDuty.Helpers
                 
                 DawnContent?           dawnContent      = listDawnContent.FirstOrDefault(x => x.Content.ValueNullable?.RowId == contentFinderCondition.RowId);
                 ContentFinderCondition englishCondition = contentFinderConditionsEnglish?.GetRow(contentFinderCondition.RowId) ?? contentFinderCondition;
+
                 var content = new Content
                               {
                                   Id = contentFinderCondition.Content.RowId,
+                                  RowId = contentFinderCondition.RowId,
                                   Name = CleanName(contentFinderCondition.Name.ToDalamudString().TextValue),
                                   EnglishName = CleanName(englishCondition!.Name.ToDalamudString().TextValue),
                                   TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
@@ -98,7 +100,9 @@ namespace AutoDuty.Helpers
                                   ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
                                   ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
                                   ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
+                                  DawnRowId = dawnContent?.RowId ?? 0,
                                   DawnIndex = TryGetDawnIndex(dawnContent?.RowId ?? 0, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
+                                  DawnIndicator = (ushort) (dawnContent?.RowId != default(uint) ? dawnContent?.Unknown15 ?? 0u : 0u),
                                   TrustIndex = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value.RowId == contentFinderCondition.RowId), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1,
                                   VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
                                   VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),

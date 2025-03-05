@@ -26,6 +26,7 @@ using ECommons.ExcelServices;
 using Properties;
 using Lumina.Excel.Sheets;
 using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
+using ECommons.UIHelpers.AddonMasterImplementations;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
@@ -514,6 +515,26 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Update Paths on startup", ref Configuration.updatePathsOnStartup))
                     Configuration.Save();
+                if (ImGui.CollapsingHeader("Available Duty Support"))//ImGui.Button("check duty support?"))
+                {
+                    if(GenericHelpers.TryGetAddonMaster<AddonMaster.DawnStory>(out AddonMaster.DawnStory? m))
+                    {
+                        if (m.IsAddonReady)
+                        {
+                            ImGuiEx.Text("Selected: " + m.Reader.CurrentSelection);
+
+                            ImGuiEx.Text($"Cnt: {m.Reader.EntryCount}");
+                            foreach (var x in m.Entries)
+                            {
+                                ImGuiEx.Text($"{x.Name} / {x.ReaderEntry.Callback} / {x.Index}");
+                                if (ImGuiEx.HoveredAndClicked() && x.Status != 2)
+                                {
+                                    x.Select();
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         ImGui.Spacing();

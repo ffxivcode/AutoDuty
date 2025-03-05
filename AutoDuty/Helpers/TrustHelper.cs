@@ -152,7 +152,7 @@ namespace AutoDuty.Helpers
 
             if (dawnSheet == null || jobSheet == null) return;
 
-            void AddMember(TrustMemberName name, uint index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100, uint unlockQuest = 0) => Members.Add(name, new TrustMember
+            void AddMember(TrustMemberName name, byte index, TrustRole role, ClassJobType classJob, uint levelInit = 71, uint levelCap = 100, uint unlockQuest = 0) => Members.Add(name, new TrustMember
                          {
                              Index       = index,
                              Name        = dawnSheet.GetRow((uint)name)!.Unknown0.ToString(),

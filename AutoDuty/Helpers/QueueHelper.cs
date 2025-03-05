@@ -14,6 +14,7 @@ namespace AutoDuty.Helpers
 {
     using System;
     using static Data.Classes;
+
     internal static unsafe class QueueHelper
     {
         internal static void Invoke(Content? content, DutyMode dutyMode)
@@ -68,44 +69,34 @@ namespace AutoDuty.Helpers
         {
             if (TrustHelper.State == ActionState.Running) return;
 
-            if (!GenericHelpers.TryGetAddonByName("Dawn", out AtkUnitBase* addonDawn) || !GenericHelpers.IsAddonReady(addonDawn))
+            AgentDawn* agentDawn = AgentDawn.Instance();
+            if (!agentDawn->IsAddonReady())
             {
                 if (!EzThrottler.Throttle("OpenDawn", 5000)) return;
 
                 Svc.Log.Debug("Queue Helper - Opening Dawn");
-                AgentModule.Instance()->GetAgentByInternalId(AgentId.Dawn)->Show();
+                RaptureAtkModule.Instance()->OpenDawn(_content.RowId);
                 return;
             }
 
-            if (addonDawn->AtkValues[241].UInt < (_content!.ExVersion - 2))
+            if (agentDawn->Data->ContentData.ExpansionCount < (_content!.ExVersion - 2))
             {
                 Svc.Log.Debug($"Queue Helper - You do not have expansion: {_content.ExVersion} unlocked stopping");
                 Stop();
                 return;
             }
 
-            if (addonDawn->AtkValues[242].UInt != (_content!.ExVersion - 3))
-            {
-                Svc.Log.Debug($"Queue Helper - Opening Expansion: {_content.ExVersion}");
-                AddonHelper.FireCallBack(addonDawn, true, 20, (_content!.ExVersion - 3));
-                return;
-            }
-            else if (addonDawn->AtkValues[151].UInt != _content.TrustIndex)
+            if (agentDawn->SelectedDawnContentId != _content.DawnRowId)
             {
                 Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} at index: {_content.TrustIndex}");
-                AddonHelper.FireCallBack(addonDawn, true, 15, _content.TrustIndex);
+                RaptureAtkModule.Instance()->OpenDawn(_content.RowId);
             }
             else if (!_turnedOffTrustMembers)
             {
                 if (EzThrottler.Throttle("_turnedOffTrustMembers", 500))
                 {
-                    for (int i = 0; i <= 7; i++)
-                    {
-                        bool isEnabled = addonDawn->AtkValues[i + 33].Bool;
-                        if (isEnabled)
-                            AddonHelper.FireCallBack(addonDawn, true, 12, i);
-                    }
-
+                    agentDawn->Data->PartyData.ClearParty();
+                    agentDawn->UpdateAddon();
                     SchedulerHelper.ScheduleAction("_turnedOffTrustMembers", () => _turnedOffTrustMembers = true, 250);
                 }
             }
@@ -113,66 +104,60 @@ namespace AutoDuty.Helpers
             {
                 if (EzThrottler.Throttle("_turnedOnConfigMembers", 500))
                 {
-                    var members = Plugin.Configuration.SelectedTrustMembers;
+                    AgentDawnInterface.DawnMemberEntry* curMembers = agentDawn->Data->MemberData.GetMembers(agentDawn->Data->MemberData.CurrentMembersIndex);
+                    var                                 members    = Plugin.Configuration.SelectedTrustMembers;
                     if (members.Count(x => x is not null) == 3)
-                        members.OrderBy(x => TrustHelper.Members[(TrustMemberName)x!].Role).Each(member =>
-                        {
-                            if (member != null)
-                                AddonHelper.FireCallBack(addonDawn, true, 12, TrustHelper.Members[member!.Value].Index);
-                        });
+                        members.OrderBy(x => TrustHelper.Members[(TrustMemberName)x!].Role)
+                               .Each(member =>
+                                     {
+                                         if (member != null)
+                                         {
+                                             byte                               index       = TrustHelper.Members[(TrustMemberName)member].Index;
+                                             AgentDawnInterface.DawnMemberEntry memberEntry = curMembers[index];
+
+                                             agentDawn->Data->PartyData.AddMember(index, &memberEntry);
+                                         }
+                                     });
+                    agentDawn->UpdateAddon();
                     SchedulerHelper.ScheduleAction("_turnedOnConfigMembers", () => _turnedOnConfigMembers = true, 250);
-                }  
+                }
             }
             else
             {
                 Svc.Log.Debug($"Queue Helper - Clicking: Register For Duty");
-                AddonHelper.FireCallBack(addonDawn, true, 14);
+                agentDawn->RegisterForDuty();
             }
         }
 
         internal static void QueueSupport()
         {
-            if (!GenericHelpers.TryGetAddonByName("DawnStory", out AtkUnitBase* addonDawnStory) || !GenericHelpers.IsAddonReady(addonDawnStory))
+            AgentDawnStory* agentDawnStory = AgentDawnStory.Instance();
+            if (!agentDawnStory->IsAddonReady())
             {
                 if (!EzThrottler.Throttle("OpenDawnStory", 5000)) return;
                 
                 Svc.Log.Debug("Queue Helper - Opening DawnStory");
-                AgentModule.Instance()->GetAgentByInternalId(AgentId.DawnStory)->Show();
+                RaptureAtkModule.Instance()->OpenDawnStory(_content.Id);
                 return;
             }
 
-            if (addonDawnStory->AtkValues[8].UInt < _content!.ExVersion)
+            if (agentDawnStory->Data->ContentData.ExpansionCount <= _content!.ExVersion)
             {
-                Svc.Log.Debug($"Queue Helper - You do not have expansion: {_content.ExVersion} unlocked stopping");
+                Svc.Log.Debug($"Queue Helper - You do not have expansion: {_content.ExVersion} unlocked. stopping");
                 Stop();
                 return;
             }
 
-            if (addonDawnStory->AtkValues[423].UInt != _content!.ExVersion)
+            if (agentDawnStory->Data->ContentData.ContentEntries[agentDawnStory->Data->ContentData.SelectedContentEntry].ContentFinderConditionId != _content.RowId)
             {
-                Svc.Log.Debug($"Queue Helper - Opening Expansion: {_content.ExVersion}");
-                AddonHelper.FireCallBack(addonDawnStory, true, 11, _content.ExVersion);
-                return;
+                Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} {_content.RowId}");// instead of {agentDawnStory->Data->ContentData.ContentEntries[agentDawnStory->Data->ContentData.SelectedContentEntry].ContentFinderConditionId}");
+
+                RaptureAtkModule.Instance()->OpenDawnStory(_content.RowId);
             }
             else
             {
-                int sideQuestIndex = _content.ExVersion switch
-                {
-                    0 => 15,
-                    1 => 9,
-                    2 => 8,
-                    _ => 99
-                };
-                if (addonDawnStory->AtkValues[21].UInt != _content.DawnIndex + (addonDawnStory->AtkValues[21].UInt > sideQuestIndex ? -sideQuestIndex : 1))
-                {
-                    Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} {_content.DawnIndex} at index: {_content.DawnIndex + addonDawnStory->AtkValues[27].UInt} {addonDawnStory->AtkValues[27].UInt}");
-                    AddonHelper.FireCallBack(addonDawnStory, true, 12, (uint)_content.DawnIndex + addonDawnStory->AtkValues[27].UInt);
-                }
-                else
-                {
-                    Svc.Log.Debug($"Queue Helper - Clicking: Register For Duty");
-                    AddonHelper.FireCallBack(addonDawnStory, true, 14);
-                }
+                Svc.Log.Debug($"Queue Helper - Clicking: Register For Duty");
+                AgentDawnStory.Instance()->RegisterForDuty();
             }
         }
 
