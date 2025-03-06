@@ -241,7 +241,7 @@ namespace AutoDuty.IPC
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
 
-    internal static class Wrath_IPCSubscriber
+    public static class Wrath_IPCSubscriber
     {
         /// <summary>
         ///     Why a lease was cancelled.
