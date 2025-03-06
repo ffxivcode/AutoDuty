@@ -1064,7 +1064,6 @@ public static class ConfigTab
                         Configuration.Save();
                     }
                     ImGui.PopItemWidth();
-                    ImGui.Unindent();
                     if (!Configuration.AutoRepairSelf)
                     {
                         ImGui.Text("Preferred Repair NPC: ");
@@ -1083,6 +1082,12 @@ public static class ConfigTab
 
                             foreach (RepairNpcData repairNPC in RepairNPCs)
                             {
+                                if (repairNPC.TerritoryType <= 0)
+                                {
+                                    ImGui.Text(CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant()));
+                                    continue;
+                                }
+
                                 var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
 
                                 if (territoryType == null) continue;
@@ -1098,6 +1103,7 @@ public static class ConfigTab
                         }
                         ImGui.PopItemWidth();
                     }
+                    ImGui.Unindent();
                 }
 
                 if (ImGui.Checkbox("Auto Consume", ref Configuration.AutoConsume))
