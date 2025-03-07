@@ -22,15 +22,12 @@ namespace AutoDuty.Helpers
                 Plugin.States |= PluginState.Other;
                 if (!Plugin.States.HasFlag(PluginState.Looping))
                     Plugin.SetGeneralSettings(false);
-                if (Plugin.Configuration.AutoRepairSelf)
-                    SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 300000);
-                else
-                    SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, 600000);
+                SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, Plugin.Configuration.AutoRepairSelf ? 300000 : 600000);
                 Svc.Framework.Update += RepairUpdate;
             }
         }
 
-        internal unsafe static void Stop() 
+        internal static unsafe void Stop() 
         {
             if (State == ActionState.Running)
                 Svc.Log.Info($"Repair Finished");
@@ -80,7 +77,7 @@ namespace AutoDuty.Helpers
             if (Plugin.States.HasFlag(PluginState.Navigating))
                 Stop();
 
-            if (Conditions.IsMounted && GotoHelper.State != ActionState.Running)
+            if (Conditions.Instance()->Mounted && GotoHelper.State != ActionState.Running)
             {
                 Svc.Log.Debug("Dismounting");
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 23);
@@ -144,7 +141,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (Svc.ClientState.TerritoryType != _repairVendorTerritoryType && ContentHelper.DictionaryContent.ContainsKey(Svc.ClientState.TerritoryType) && Plugin.Stage is Stage.Stopped or Stage.Paused) 
+            if (Svc.ClientState.TerritoryType != _repairVendorTerritoryType && ContentHelper.DictionaryContent.ContainsKey(Svc.ClientState.TerritoryType) && Conditions.Instance()->BoundByDuty)
                 Stop();
 
             if (Svc.ClientState.TerritoryType != _repairVendorTerritoryType || _repairVendorGameObject == null || Vector3.Distance(Player.Position, _repairVendorGameObject.Position) > 3f)
