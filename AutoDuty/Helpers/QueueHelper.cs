@@ -169,8 +169,9 @@ namespace AutoDuty.Helpers
                 ContentsFinder.Instance()->IsUnrestrictedParty = Plugin.Configuration.Unsynced;
                 return;
             }
-            
-            if (!_allConditionsMetToJoin && (!GenericHelpers.TryGetAddonByName("ContentsFinder", out _addonContentsFinder) || !GenericHelpers.IsAddonReady((AtkUnitBase*)_addonContentsFinder)))
+
+            GenericHelpers.TryGetAddonByName("ContentsFinder", out _addonContentsFinder);
+            if (!_allConditionsMetToJoin && (_addonContentsFinder == null || !GenericHelpers.IsAddonReady((AtkUnitBase*)_addonContentsFinder)))
             {
                 Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content!.Name}");
                 AgentContentsFinder.Instance()->OpenRegularDuty(_content.ContentFinderCondition);
@@ -225,7 +226,7 @@ namespace AutoDuty.Helpers
             if (_content == null || Plugin.InDungeon || Svc.ClientState.TerritoryType == _content?.TerritoryType)
                 Stop();
 
-            if (!EzThrottler.Throttle("QueueHelper", 250)|| !PlayerHelper.IsReadyFull || ContentsFinderConfirm() || Conditions.IsInDutyQueue) return;
+            if (!EzThrottler.Throttle("QueueHelper", 250)|| !PlayerHelper.IsReadyFull || ContentsFinderConfirm() || Conditions.Instance()->InDutyQueue) return;
 
             switch (_dutyMode)
             {
