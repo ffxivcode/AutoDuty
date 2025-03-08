@@ -122,7 +122,7 @@ namespace AutoDuty.Helpers
                     SchedulerHelper.ScheduleAction("_turnedOnConfigMembers", () => _turnedOnConfigMembers = true, 250);
                 }
             }
-            else
+            else if(EzThrottler.Throttle("ClickRegisterButton", 10000))
             {
                 Svc.Log.Debug($"Queue Helper - Clicking: Register For Duty");
                 agentDawn->RegisterForDuty();
@@ -154,7 +154,7 @@ namespace AutoDuty.Helpers
 
                 RaptureAtkModule.Instance()->OpenDawnStory(_content.RowId);
             }
-            else
+            else if(EzThrottler.Throttle("ClickRegisterButton", 10000))
             {
                 Svc.Log.Debug($"Queue Helper - Clicking: Register For Duty");
                 AgentDawnStory.Instance()->RegisterForDuty();
