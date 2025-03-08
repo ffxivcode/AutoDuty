@@ -39,14 +39,13 @@ using AutoDuty.Updater;
 
 namespace AutoDuty;
 
-using System.Reflection;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using Dalamud.Common;
-using Dalamud.Game;
 using Data;
+using ECommons.Reflection;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using Lumina.Excel.Sheets;
 using static Data.Classes;
-using Module = ECommons.Module;
 using ReflectionHelper = Helpers.ReflectionHelper;
 
 // TODO:
@@ -199,21 +198,11 @@ public sealed class AutoDuty : IDalamudPlugin
     private         DateTime       _lastRotationSetTime    = DateTime.MinValue;
     public readonly bool           isDev;
 
-    public AutoDuty(IDalamudPluginInterface dalamud, ISigScanner sigScanner)
+    public AutoDuty()
     {
         try
         {
             Plugin = this;
-            var dalamudRoot = dalamud.GetType().Assembly.
-                                      GetType("Dalamud.Service`1", true)!.MakeGenericType(dalamud.GetType().Assembly.GetType("Dalamud.Dalamud", true)!).
-                                      GetMethod("Get")!.Invoke(null, BindingFlags.Default, null, [], null);
-            var dalamudStartInfo = dalamudRoot?.GetType().GetProperty("StartInfo", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(dalamudRoot) as DalamudStartInfo;
-            var gameVersion      = dalamudStartInfo?.GameVersion?.ToString() ?? "unknown";
-            InteropGenerator.Runtime.Resolver.GetInstance.Setup(sigScanner.SearchBase, gameVersion, new(dalamud.ConfigDirectory.FullName + "/cs.json"));
-            FFXIVClientStructs.Interop.Generated.Addresses.Register();
-            InteropGenerator.Runtime.Resolver.GetInstance.Resolve();
-
-
             ECommonsMain.Init(PluginInterface, Plugin, Module.DalamudReflector, Module.ObjectFunctions);
 
             this.isDev = PluginInterface.IsDev;
