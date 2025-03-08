@@ -1,3 +1,6 @@
 [submodule "ECommons"]
 	path = ECommons
 	url = https://github.com/ffxivcode/ECommons
+[submodule "FFXIVClientStructs"]
+	path = FFXIVClientStructs
+	url = https://github.com/aers/FFXIVClientStructs.git
