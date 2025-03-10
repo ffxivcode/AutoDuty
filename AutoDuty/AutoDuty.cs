@@ -606,6 +606,14 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.DelayNext("Loop-DelayAfterCommands", 1000);
             }
 
+            if (Configuration.AutoOpenCoffers)
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoCoffers Between Loop Action"));
+                TaskManager.Enqueue(CofferHelper.Invoke, "Loop-AutoCoffers");
+                TaskManager.DelayNext("Loop-Delay50", 50);
+                TaskManager.Enqueue(() => CofferHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoCofferComplete");
+            }
+
             if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.IsEnabled && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"AutoRetainer BetweenLoop Actions"));
@@ -1570,6 +1578,8 @@ public sealed class AutoDuty : IDalamudPlugin
             ExitDutyHelper.Stop();
         if (AutoEquipHelper.State == ActionState.Running)
             AutoEquipHelper.Stop();
+        if (CofferHelper.State == ActionState.Running)
+            CofferHelper.Stop();
         if (DeathHelper.DeathState == PlayerLifeState.Revived)
             DeathHelper.Stop();
          

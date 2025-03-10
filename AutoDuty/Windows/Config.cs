@@ -21,6 +21,7 @@ using Serilog.Events;
 
 namespace AutoDuty.Windows;
 
+using System.Numerics;
 using Data;
 using ECommons.ExcelServices;
 using Properties;
@@ -113,16 +114,17 @@ public class Configuration : IPluginConfiguration
                 SchedulerHelper.ScheduleAction("OverlayNoBGSetter", () => { if (Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoBackground)) Plugin.Overlay.Flags -= ImGuiWindowFlags.NoBackground; }, () => Plugin.Overlay != null);
         }
     }
-    public bool ShowDutyLoopText = true;
-    public bool ShowActionText = true;
-    public bool UseSliderInputs = false;
+    public bool ShowDutyLoopText       = true;
+    public bool ShowActionText         = true;
+    public bool UseSliderInputs        = false;
     public bool OverrideOverlayButtons = true;
-    public bool GotoButton = true;
-    public bool TurninButton = true;
-    public bool DesynthButton = true;
-    public bool ExtractButton = true;
-    public bool RepairButton = true;
-    public bool EquipButton = true;
+    public bool GotoButton             = true;
+    public bool TurninButton           = true;
+    public bool DesynthButton          = true;
+    public bool ExtractButton          = true;
+    public bool RepairButton           = true;
+    public bool EquipButton            = true;
+    public bool CofferButton            = true;
 
     internal bool updatePathsOnStartup = true;
     public   bool UpdatePathsOnStartup
@@ -198,6 +200,8 @@ public class Configuration : IPluginConfiguration
     public bool         ExecuteCommandsBetweenLoop     = false;
     public List<string> CustomCommandsBetweenLoop      = [];
     public bool         AutoExtract                    = false;
+
+    public bool AutoOpenCoffers = false;
 
     internal bool autoExtractAll = false;
     public bool AutoExtractAll
@@ -489,7 +493,9 @@ public static class ConfigTab
                         Configuration.Save();
                     if (ImGui.Checkbox("Equip", ref Configuration.EquipButton))
                         Configuration.Save();
-                    
+                    if (ImGui.Checkbox("Coffer", ref Configuration.CofferButton))
+                        Configuration.Save();
+
                     ImGui.Unindent();
                 }
                 ImGui.Unindent();
@@ -1217,6 +1223,14 @@ public static class ConfigTab
                         Configuration.Save();
                     }
                 }
+
+                if (ImGui.Checkbox("Auto open gear coffers", ref Configuration.AutoOpenCoffers))
+                    Configuration.Save();
+
+                ImGuiComponents.HelpMarker("AutoDuty will open gear coffers (like paladin arms) between each loop");
+
+                ImGui.SameLine();
+                ImGui.TextColored(Configuration.AutoOpenCoffers ? GradientColor.Get(ImGuiHelper.ExperimentalColor, ImGuiHelper.ExperimentalColor2, 500) : ImGuiHelper.ExperimentalColor, "EXPERIMENTAL");
 
                 ImGui.Columns(2);
 

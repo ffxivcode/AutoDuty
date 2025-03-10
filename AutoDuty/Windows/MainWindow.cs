@@ -249,6 +249,25 @@ public class MainWindow : Window, IDisposable
                 }
             }
 
+            ImGui.SameLine(0, 5);
+            using (ImRaii.Disabled(Plugin.Configuration is { AutoOpenCoffers: false, OverrideOverlayButtons: false } || !Plugin.Configuration.CofferButton))
+            {
+                using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && CofferHelper.State != ActionState.Running))
+                {
+                    if (CofferHelper.State == ActionState.Running)
+                    {
+                        if (ImGui.Button("Stop"))
+                            Plugin.Stage = Stage.Stopped;
+                    }
+                    else
+                    {
+                        if (ImGui.Button("Coffers")) 
+                            CofferHelper.Invoke();
+                        ToolTip("Click to open coffers");
+                    }
+                }
+            }
+
             if (ImGui.BeginPopup("GotoPopup"))
             {
                 if (ImGui.Selectable("Barracks"))
