@@ -8,6 +8,9 @@ using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
 {
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
     using FFXIVClientStructs.FFXIV.Client.UI.Misc;
     using Lumina.Excel.Sheets;
 
@@ -154,6 +157,22 @@ namespace AutoDuty.Helpers
             }
 
             return equipedItems->Items[itemLowest];
+        }
+
+        public static IEnumerable<InventoryItem> GetInventorySelection(params InventoryType[] types)
+        {
+            IEnumerable<InventoryItem> items = [];
+            foreach (InventoryType type in types)
+            {
+                InventoryContainer container = *InventoryManager.Instance()->GetInventoryContainer(type);
+                if(container.IsLoaded)
+                {
+                    for (uint i = 0; i < container.Size; i++) 
+                        items = items.Append(container.Items[i]);
+                }
+            }
+            
+            return items.Where(item => item.ItemId > 0);
         }
 
         internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) <= Plugin.Configuration.AutoRepairPct;// && (!Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
