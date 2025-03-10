@@ -265,7 +265,7 @@ namespace AutoDuty.Helpers
         private static Content? _getLevelsContent = null;
         internal static unsafe void GetLevelsUpdate(IFramework framework)
         {
-            if (_getLevelsContent == null || Plugin.InDungeon)
+            if (_getLevelsContent == null || Plugin.InDungeon || !AgentHUD.Instance()->IsMainCommandEnabled(82))
                 Stop();
 
             if (!EzThrottler.Throttle("GetLevelsUpdate", 5) || !PlayerHelper.IsValid) return;

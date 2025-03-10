@@ -72,7 +72,7 @@ namespace AutoDuty.Helpers
             AgentDawn* agentDawn = AgentDawn.Instance();
             if (!agentDawn->IsAddonReady())
             {
-                if (!EzThrottler.Throttle("OpenDawn", 5000)) return;
+                if (!EzThrottler.Throttle("OpenDawn", 5000) || !AgentHUD.Instance()->IsMainCommandEnabled(82)) return;
 
                 Svc.Log.Debug("Queue Helper - Opening Dawn");
                 RaptureAtkModule.Instance()->OpenDawn(_content.RowId);
@@ -134,7 +134,7 @@ namespace AutoDuty.Helpers
             AgentDawnStory* agentDawnStory = AgentDawnStory.Instance();
             if (!agentDawnStory->IsAddonReady())
             {
-                if (!EzThrottler.Throttle("OpenDawnStory", 5000)) return;
+                if (!EzThrottler.Throttle("OpenDawnStory", 5000) || !AgentHUD.Instance()->IsMainCommandEnabled(91)) return;
                 
                 Svc.Log.Debug("Queue Helper - Opening DawnStory");
                 RaptureAtkModule.Instance()->OpenDawnStory(_content.Id);
@@ -173,6 +173,8 @@ namespace AutoDuty.Helpers
             GenericHelpers.TryGetAddonByName("ContentsFinder", out _addonContentsFinder);
             if (!_allConditionsMetToJoin && (_addonContentsFinder == null || !GenericHelpers.IsAddonReady((AtkUnitBase*)_addonContentsFinder)))
             {
+                if (!AgentHUD.Instance()->IsMainCommandEnabled(33))
+                    return;
                 Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content!.Name}");
                 AgentContentsFinder.Instance()->OpenRegularDuty(_content.ContentFinderCondition);
                 return;
