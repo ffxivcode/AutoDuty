@@ -195,7 +195,7 @@ namespace AutoDuty.Managers
             Plugin.StopForCombat = boolTrueFalse;
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
             _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
-            if(boolTrueFalse)
+            if(boolTrueFalse && (action.Arguments.Count <= 1 || action.Arguments[1] != "noWait"))
                 this.Wait(new PathAction {Arguments = ["500"]});
         }
 
@@ -542,7 +542,7 @@ namespace AutoDuty.Managers
             int index = 0;
             List<IGameObject>? treasureCofferObjects = null;
             Plugin.SkipTreasureCoffer = false;
-            StopForCombat(new PathAction() { Arguments = ["true"] });
+            StopForCombat(new PathAction() { Arguments = ["true", "noWait"] });
             _taskManager.Enqueue(() => BossMoveCheck(action.Position),                           "Boss-MoveCheck");
             if (Plugin.BossObject == null)
                 _taskManager.Enqueue(() => (Plugin.BossObject = GetBossObject()) != null, "Boss-GetBossObject");
