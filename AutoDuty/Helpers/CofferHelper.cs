@@ -7,17 +7,23 @@ using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
 {
+    using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+    using Lumina.Excel.Sheets;
+
     internal static class CofferHelper
     {
         private static List<InventoryItem> doneItems = [];
+        private static int                 initialGearset;
 
-        internal static void Invoke()
+        internal static unsafe void Invoke()
         {
             if (State != ActionState.Running)
             {
                 Svc.Log.Info("Opening Coffers Started");
                 State         =  ActionState.Running;
                 Plugin.States |= PluginState.Other;
+
+                initialGearset = RaptureGearsetModule.Instance()->CurrentGearsetIndex;
 
                 if (!Plugin.States.HasFlag(PluginState.Looping))
                     Plugin.SetGeneralSettings(false);
@@ -30,6 +36,7 @@ namespace AutoDuty.Helpers
 
         internal unsafe static void Stop()
         {
+            Svc.Log.Info("Opening Coffers Done");
             Plugin.States |= PluginState.Other;
             Plugin.Action =  "";
 
@@ -70,21 +77,56 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (PlayerHelper.IsOccupiedFull || PlayerHelper.IsCasting)
+            if (PlayerHelper.IsCasting || !PlayerHelper.IsReadyFull || Player.IsBusy)
                 return;
 
-            IEnumerable<InventoryItem> items = InventoryHelper.GetInventorySelection(InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4)
-                                                              .Where(iv => !doneItems.Contains(iv) && (InventoryHelper.GetExcelItem(iv.ItemId)?.ItemAction.RowId ?? 0) is 1085 or 388);
+            Svc.Log.Debug("CofferHelper: Checking items");
 
+            IEnumerable <InventoryItem> items = InventoryHelper.GetInventorySelection(InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4)
+                                                               .Where(iv =>
+                                                                      {
+                                                                          Item? excelItem = InventoryHelper.GetExcelItem(iv.ItemId);//                                                      Miscellany
+                                                                          return !doneItems.Contains(iv) && (excelItem?.ItemAction.RowId ?? 0) is 1085 or 388 && excelItem?.ItemUICategory.RowId is 61;
+                                                                      });
+
+
+            RaptureGearsetModule* module = RaptureGearsetModule.Instance();
+            
             if (items.Any())
             {
+                Svc.Log.Debug("CofferHelper: item found");
+                if (Plugin.Configuration.AutoOpenCoffersGearset != null && module->CurrentGearsetIndex != Plugin.Configuration.AutoOpenCoffersGearset)
+                {
+                    Svc.Log.Debug("CofferHelper: change gearset");
+                    if (!module->IsValidGearset((int)Plugin.Configuration.AutoOpenCoffersGearset))
+                    {
+                        Svc.Log.Debug("CofferHelper: invalid gearset");
+                        Plugin.Configuration.AutoOpenCoffersGearset = null;
+                        Plugin.Configuration.Save();
+                    } else
+                    {
+                        module->EquipGearset(Plugin.Configuration.AutoOpenCoffersGearset.Value);
+                        return;
+                    }
+                }
+
                 InventoryItem item = items.First();
 
                 doneItems.Add(item);
                 InventoryHelper.UseItem(item.ItemId);
+            } else if (initialGearset != module->CurrentGearsetIndex)
+            {
+                if (!EzThrottler.Throttle("CofferChangeBack", 1000))
+                    return;
+
+                Svc.Log.Debug("CofferHelper: change back to original gearset");
+                module->EquipGearset(initialGearset);
             }
             else
+            {
+                Svc.Log.Debug("CofferHelper: no items found");
                 Stop();
+            }
         }
     }
 }

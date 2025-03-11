@@ -28,6 +28,7 @@ using Properties;
 using Lumina.Excel.Sheets;
 using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 using ECommons.UIHelpers.AddonMasterImplementations;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
@@ -202,6 +203,7 @@ public class Configuration : IPluginConfiguration
     public bool         AutoExtract                    = false;
 
     public bool AutoOpenCoffers = false;
+    public byte? AutoOpenCoffersGearset;
 
     internal bool autoExtractAll = false;
     public bool AutoExtractAll
@@ -1231,6 +1233,48 @@ public static class ConfigTab
 
                 ImGui.SameLine();
                 ImGui.TextColored(Configuration.AutoOpenCoffers ? GradientColor.Get(ImGuiHelper.ExperimentalColor, ImGuiHelper.ExperimentalColor2, 500) : ImGuiHelper.ExperimentalColor, "EXPERIMENTAL");
+                if (Configuration.AutoOpenCoffers)
+                {
+                    unsafe
+                    {
+                        ImGui.Indent();
+                        ImGui.Text("Open Coffers with Gearset: ");
+                        ImGui.AlignTextToFramePadding();
+                        ImGui.SameLine();
+
+                        RaptureGearsetModule* module = RaptureGearsetModule.Instance();
+                        
+                        if (Configuration.AutoOpenCoffersGearset != null && !module->IsValidGearset((int) Configuration.AutoOpenCoffersGearset))
+                        {
+                            Configuration.AutoOpenCoffersGearset = null;
+                            Configuration.Save();
+                        }
+
+
+                        if (ImGui.BeginCombo("##CofferGearsetSelection", Configuration.AutoOpenCoffersGearset != null ? module->GetGearset(Configuration.AutoOpenCoffersGearset.Value)->NameString : "Current Gearset"))
+                        {
+                            if (ImGui.Selectable("Current Gearset"))
+                            {
+                                Configuration.AutoOpenCoffersGearset = null;
+                                Configuration.Save();
+                            }
+
+                            for (int i = 0; i < module->NumGearsets; i++)
+                            {
+                                RaptureGearsetModule.GearsetEntry* gearset = module->GetGearset(i);
+                                if(ImGui.Selectable(gearset->NameString))
+                                {
+                                    Configuration.AutoOpenCoffersGearset = gearset->Id;
+                                    Configuration.Save();
+                                }
+                            }
+
+                            ImGui.EndCombo();
+                        }
+
+                        ImGui.Unindent();
+                    }
+                }
 
                 ImGui.Columns(2);
 
