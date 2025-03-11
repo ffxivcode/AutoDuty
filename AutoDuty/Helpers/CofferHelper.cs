@@ -85,8 +85,8 @@ namespace AutoDuty.Helpers
             IEnumerable <InventoryItem> items = InventoryHelper.GetInventorySelection(InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4)
                                                                .Where(iv =>
                                                                       {
-                                                                          Item? excelItem = InventoryHelper.GetExcelItem(iv.ItemId);//                                                      Miscellany
-                                                                          return !doneItems.Contains(iv) && (excelItem?.ItemAction.RowId ?? 0) is 1085 or 388 && excelItem?.ItemUICategory.RowId is 61;
+                                                                          Item? excelItem = InventoryHelper.GetExcelItem(iv.ItemId);
+                                                                          return !doneItems.Contains(iv) && excelItem.HasValue && ValidCoffer(excelItem.Value);
                                                                       });
 
 
@@ -128,5 +128,8 @@ namespace AutoDuty.Helpers
                 Stop();
             }
         }
+
+        internal static bool ValidCoffer(Item item) => //                Miscellany
+            item.ItemAction.RowId is 1085 or 388 && item.ItemUICategory.RowId is 61 && (!Plugin.Configuration.AutoOpenCoffersBlacklistUse || !Plugin.Configuration.AutoOpenCoffersBlacklist.ContainsKey(item.RowId));
     }
 }
