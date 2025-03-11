@@ -22,6 +22,7 @@ using Serilog.Events;
 namespace AutoDuty.Windows;
 
 using System.Numerics;
+using System.Text.Json.Serialization;
 using Data;
 using ECommons.ExcelServices;
 using Properties;
@@ -202,8 +203,10 @@ public class Configuration : IPluginConfiguration
     public List<string> CustomCommandsBetweenLoop      = [];
     public bool         AutoExtract                    = false;
 
-    public bool AutoOpenCoffers = false;
-    public byte? AutoOpenCoffersGearset;
+    public bool                     AutoOpenCoffers = false;
+    public byte?                    AutoOpenCoffersGearset;
+    public bool                     AutoOpenCoffersBlacklistUse;
+    public Dictionary<uint, string> AutoOpenCoffersBlacklist = [];
 
     internal bool autoExtractAll = false;
     public bool AutoExtractAll
@@ -377,9 +380,12 @@ public static class ConfigTab
     private static string preLoopCommand = string.Empty;
     private static string betweenLoopCommand = string.Empty;
     private static string terminationCommand = string.Empty;
-    private static Dictionary<uint, string> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.ToString().IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x.Name.ToString()) ?? [];
+    private static Dictionary<uint, Item> Items { get; set; } = Svc.Data.GetExcelSheet<Item>()?.Where(x => !x.Name.ToString().IsNullOrEmpty()).ToDictionary(x => x.RowId, x => x) ?? [];
     private static string stopItemQtyItemNameInput = "";
     private static KeyValuePair<uint, string> stopItemQtySelectedItem = new(0, "");
+
+    private static string                     autoOpenCoffersNameInput    = "";
+    private static KeyValuePair<uint, string> autoOpenCoffersSelectedItem = new(0, "");
 
     public class ConsumableItem
     {
@@ -1272,6 +1278,52 @@ public static class ConfigTab
                             ImGui.EndCombo();
                         }
 
+                        if (ImGui.Checkbox("Use Blacklist", ref Configuration.AutoOpenCoffersBlacklistUse))
+                            Configuration.Save();
+
+                        ImGuiComponents.HelpMarker("Option to disable some coffers from being opened automatically.");
+                        if (Configuration.AutoOpenCoffersBlacklistUse)
+                        {
+                            if (ImGui.BeginCombo("Select Coffer", autoOpenCoffersSelectedItem.Value))
+                            {
+                                ImGui.InputTextWithHint("Coffer Name", "Start typing coffer name to search", ref autoOpenCoffersNameInput, 1000);
+                                foreach (var item in Items.Where(x => CofferHelper.ValidCoffer(x.Value) && x.Value.Name.ToString().Contains(autoOpenCoffersNameInput, StringComparison.InvariantCultureIgnoreCase)))
+                                {
+                                    if (ImGui.Selectable($"{item.Value.Name.ToString()}"))
+                                        autoOpenCoffersSelectedItem = new KeyValuePair<uint, string>(item.Key, item.Value.Name.ToString());
+                                }
+                                ImGui.EndCombo();
+                            }
+
+                            ImGui.SameLine(0, 5);
+                            using (ImRaii.Disabled(autoOpenCoffersSelectedItem.Value.IsNullOrEmpty()))
+                            {
+                                if (ImGui.Button("Add Coffer"))
+                                {
+                                    if (!Configuration.AutoOpenCoffersBlacklist.TryAdd(autoOpenCoffersSelectedItem.Key, autoOpenCoffersSelectedItem.Value))
+                                    {
+                                        Configuration.AutoOpenCoffersBlacklist.Remove(autoOpenCoffersSelectedItem.Key);
+                                        Configuration.AutoOpenCoffersBlacklist.Add(autoOpenCoffersSelectedItem.Key, autoOpenCoffersSelectedItem.Value);
+                                    }
+                                    autoOpenCoffersSelectedItem = new(0, "");
+                                    Configuration.Save();
+                                }
+                            }
+                            
+                            if (!ImGui.BeginListBox("##CofferBlackList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.AutoOpenCoffersBlacklist.Count) + 5))) return;
+
+                            foreach (var item in Configuration.AutoOpenCoffersBlacklist)
+                            {
+                                ImGui.Selectable($"{item.Value}");
+                                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                                {
+                                    Configuration.AutoOpenCoffersBlacklist.Remove(item);
+                                    Configuration.Save();
+                                }
+                            }
+                            ImGui.EndListBox();
+                        }
+                        
                         ImGui.Unindent();
                     }
                 }
@@ -1484,10 +1536,10 @@ public static class ConfigTab
                     if (ImGui.BeginCombo("Select Item", stopItemQtySelectedItem.Value))
                     {
                         ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref stopItemQtyItemNameInput, 1000);
-                        foreach (var item in Items.Where(x => x.Value.Contains(stopItemQtyItemNameInput, StringComparison.InvariantCultureIgnoreCase))!)
+                        foreach (var item in Items.Where(x => x.Value.Name.ToString().Contains(stopItemQtyItemNameInput, StringComparison.InvariantCultureIgnoreCase))!)
                         {
-                            if (ImGui.Selectable($"{item.Value}"))
-                                stopItemQtySelectedItem = item;
+                            if (ImGui.Selectable($"{item.Value.Name.ToString()}"))
+                                stopItemQtySelectedItem = new KeyValuePair<uint, string>(item.Key, item.Value.Name.ToString());
                         }
                         ImGui.EndCombo();
                     }
