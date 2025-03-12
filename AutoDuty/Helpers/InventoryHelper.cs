@@ -24,12 +24,12 @@ namespace AutoDuty.Helpers
 
         internal static void UseItem(uint itemId) => ActionManager.Instance()->UseAction(ActionType.Item, itemId, extraParam: 65535);
 
-        internal static bool UseItemUntilStatus(uint itemId, uint statusId, bool allowHq = true)
+        internal static bool UseItemUntilStatus(uint itemId, uint statusId, float minTime = 0, bool allowHq = true)
         {
             if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !PlayerHelper.IsReady || Player.Character->IsCasting)
                 return false;
 
-            if (PlayerHelper.HasStatus(statusId))
+            if (PlayerHelper.HasStatus(statusId, minTime))
                 return true;
 
             UseItemIfAvailable(itemId, allowHq);

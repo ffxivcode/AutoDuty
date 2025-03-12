@@ -179,22 +179,23 @@ public class Configuration : IPluginConfiguration
 
 
     //PreLoop Config Options
-    public bool EnablePreLoopActions = true;
-    public bool ExecuteCommandsPreLoop = false;
-    public List<string> CustomCommandsPreLoop = [];
-    public bool RetireMode = false;
-    public RetireLocation RetireLocationEnum = RetireLocation.Inn;
-    public List<System.Numerics.Vector3> PersonalHomeEntrancePath = [];
-    public List<System.Numerics.Vector3> FCEstateEntrancePath = [];
-    public bool AutoEquipRecommendedGear;
-    public bool AutoEquipRecommendedGearGearsetter;
-    public bool AutoRepair = false;
-    public int AutoRepairPct = 50;
-    public bool AutoRepairSelf = false;
-    public RepairNpcData? PreferredRepairNPC = null;
-    public bool AutoConsume = false;
-    public bool AutoConsumeIgnoreStatus = false;
-    public List<KeyValuePair<ushort, ConsumableItem>> AutoConsumeItemsList = [];
+    public bool                                       EnablePreLoopActions     = true;
+    public bool                                       ExecuteCommandsPreLoop   = false;
+    public List<string>                               CustomCommandsPreLoop    = [];
+    public bool                                       RetireMode               = false;
+    public RetireLocation                             RetireLocationEnum       = RetireLocation.Inn;
+    public List<System.Numerics.Vector3>              PersonalHomeEntrancePath = [];
+    public List<System.Numerics.Vector3>              FCEstateEntrancePath     = [];
+    public bool                                       AutoEquipRecommendedGear;
+    public bool                                       AutoEquipRecommendedGearGearsetter;
+    public bool                                       AutoRepair              = false;
+    public int                                        AutoRepairPct           = 50;
+    public bool                                       AutoRepairSelf          = false;
+    public RepairNpcData?                             PreferredRepairNPC      = null;
+    public bool                                       AutoConsume             = false;
+    public bool                                       AutoConsumeIgnoreStatus = false;
+    public int                                        AutoConsumeTime         = 29;
+    public List<KeyValuePair<ushort, ConsumableItem>> AutoConsumeItemsList    = [];
 
     //Between Loop Config Options
     public bool         EnableBetweenLoopActions       = true;
@@ -1120,18 +1121,37 @@ public static class ConfigTab
                     ImGui.Unindent();
                 }
 
+                ImGui.Columns(3);
+
                 if (ImGui.Checkbox("Auto Consume", ref Configuration.AutoConsume))
                     Configuration.Save();
 
                 ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop (if status does not exist)");
                 if (Configuration.AutoConsume)
                 {
-                    ImGui.SameLine(0, 5);
+                    //ImGui.SameLine(0, 5);
+                    ImGui.NextColumn();
                     if (ImGui.Checkbox("Ignore Status", ref Configuration.AutoConsumeIgnoreStatus))
                         Configuration.Save();
 
                     ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop every time (even if status does exists)");
+                    ImGui.NextColumn();
+                    //ImGui.SameLine(0, 5);
                     
+                    ImGui.PushItemWidth(80);
+
+                    using (ImRaii.Disabled(Configuration.AutoConsumeIgnoreStatus))
+                    {
+                        if (ImGui.InputInt("Min time remaining", ref Configuration.AutoConsumeTime))
+                        {
+                            Configuration.AutoConsumeTime = Math.Clamp(Configuration.AutoConsumeTime, 0, 59);
+                            Configuration.Save();
+                        }
+                        ImGuiComponents.HelpMarker("If the status has less than this amount of time remaining (in minutes), it will consume these items");
+                    }
+
+                    ImGui.PopItemWidth();
+                    ImGui.Columns(1);
                     ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 115);
                     if (ImGui.BeginCombo("##SelectAutoConsumeItem", consumableItemsSelectedItem.Name))
                     {
@@ -1178,6 +1198,7 @@ public static class ConfigTab
                         Configuration.Save();
                     }
                 }
+                ImGui.Columns(1);
             }
         }
 
