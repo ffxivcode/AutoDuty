@@ -198,11 +198,12 @@ public class Configuration : IPluginConfiguration
     public List<KeyValuePair<ushort, ConsumableItem>> AutoConsumeItemsList    = [];
 
     //Between Loop Config Options
-    public bool         EnableBetweenLoopActions       = true;
-    public int          WaitTimeBeforeAfterLoopActions = 0;
-    public bool         ExecuteCommandsBetweenLoop     = false;
-    public List<string> CustomCommandsBetweenLoop      = [];
-    public bool         AutoExtract                    = false;
+    public bool         EnableBetweenLoopActions         = true;
+    public bool         ExecuteBetweenLoopActionLastLoop = false;
+    public int          WaitTimeBeforeAfterLoopActions   = 0;
+    public bool         ExecuteCommandsBetweenLoop       = false;
+    public List<string> CustomCommandsBetweenLoop        = [];
+    public bool         AutoExtract                      = false;
 
     public bool                     AutoOpenCoffers = false;
     public byte?                    AutoOpenCoffersGearset;
@@ -1215,11 +1216,20 @@ public static class ConfigTab
 
         if (betweenLoopHeaderSelected == true)
         {
+            ImGui.Columns(2);
+
             if (ImGui.Checkbox("Enable###BetweenLoopEnable", ref Configuration.EnableBetweenLoopActions))
                 Configuration.Save();
 
             using (ImRaii.Disabled(!Configuration.EnableBetweenLoopActions))
             {
+                ImGui.NextColumn();
+
+                if (ImGui.Checkbox("Run on last Loop###BetweenLoopEnableLastLoop", ref Configuration.ExecuteBetweenLoopActionLastLoop))
+                    Configuration.Save();
+
+                ImGui.Columns(1);
+
                 ImGui.Separator();
                 ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - ImGui.CalcItemWidth());
                 if (ImGui.InputInt("(s) Wait time between loops", ref Configuration.WaitTimeBeforeAfterLoopActions))
