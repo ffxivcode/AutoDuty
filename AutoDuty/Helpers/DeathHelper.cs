@@ -132,8 +132,8 @@ namespace AutoDuty.Helpers
                 SchedulerHelper.ScheduleAction("FindShortcut", FindShortcut, 500);
                 return;
             }
-
-            if (_gameObject == null || !_gameObject!.IsTargetable)
+            
+            if (_gameObject == null || !_gameObject.IsTargetable)
             {
                 Svc.Log.Debug($"OnRevive: Couldn't find shortcut");
                 Plugin.Indexer = 0;
@@ -158,7 +158,9 @@ namespace AutoDuty.Helpers
         {
             if (!EzThrottler.Throttle("OnRevive", 500) || (!PlayerHelper.IsReady && !Conditions.IsOccupiedInQuestEvent) || PlayerHelper.IsCasting) return;
 
-            if (_gameObject == null || !_gameObject.IsTargetable)
+            float distanceToPlayer;
+
+            if (_gameObject == null || !_gameObject.IsTargetable || (distanceToPlayer = ObjectHelper.GetDistanceToPlayer(_gameObject)) > 50)
             {
                 Svc.Log.Debug("OnRevive: Done");
                 if(Plugin.Indexer == 0) 
@@ -169,10 +171,10 @@ namespace AutoDuty.Helpers
             if (_oldIndex == Plugin.Indexer)
                 Plugin.Indexer = FindWaypoint();
 
-            if (ObjectHelper.GetDistanceToPlayer(_gameObject) > 2)
+            if (distanceToPlayer > 2)
             {
                 MovementHelper.Move(_gameObject, 0.25f, 2);
-                Svc.Log.Debug($"OnRevive: Moving to {_gameObject.Name} at: {_gameObject.Position} which is {ObjectHelper.GetDistanceToPlayer(_gameObject)} away");
+                Svc.Log.Debug($"OnRevive: Moving to {_gameObject.Name} at: {_gameObject.Position} which is {distanceToPlayer} away");
             }
             else
             {
