@@ -112,8 +112,17 @@ namespace AutoDuty.Helpers
 
                 InventoryItem item = items.First();
 
-                doneItems.Add(item);
                 InventoryHelper.UseItem(item.ItemId);
+
+                if (!PlayerHelper.IsCasting)
+                {
+                    Svc.Log.Debug("CofferHelper: failed to use item");
+                    return;
+                }
+
+                Svc.Log.Debug("CofferHelper: item used");
+                doneItems.Add(item);
+
             } else if (initialGearset != module->CurrentGearsetIndex)
             {
                 if (!EzThrottler.Throttle("CofferChangeBack", 1000))
