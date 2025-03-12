@@ -450,10 +450,16 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             else
             {
-                TaskManager.Enqueue(() => Svc.Log.Debug($"Loops Done"), "Loop-Debug");
-                TaskManager.Enqueue(() => PlayerHelper.IsReady, int.MaxValue, "Loop-WaitPlayerReady");
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Loops Done"),                                                                                         "Loop-Debug");
+                TaskManager.Enqueue(() => PlayerHelper.IsReady,                                                                                                 int.MaxValue, "Loop-WaitPlayerReady");
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Loop {CurrentLoop} == {Configuration.LoopTimes} we are done Looping, Invoking LoopsCompleteActions"), "Loop-Debug");
-                TaskManager.Enqueue(() => LoopsCompleteActions(), "Loop-LoopCompleteActions");
+                TaskManager.Enqueue(() =>
+                                    {
+                                        if (this.Configuration.ExecuteBetweenLoopActionLastLoop)
+                                            this.LoopTasks(false);
+                                        else
+                                            this.LoopsCompleteActions();
+                                    },     "Loop-LoopCompleteActions");
             }
         }
     }
@@ -593,7 +599,7 @@ public sealed class AutoDuty : IDalamudPlugin
             CurrentLoop = 1;
     }
 
-    private unsafe void LoopTasks()
+    private unsafe void LoopTasks(bool queue = true)
     {
         if (CurrentTerritoryContent == null) return;
 
@@ -692,6 +698,13 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => GotoHousingHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitGotoComplete");
             }
         }
+
+        if (!queue)
+        {
+            LoopsCompleteActions();
+            return;
+        }
+
         if (LevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
