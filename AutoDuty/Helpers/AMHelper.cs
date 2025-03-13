@@ -114,12 +114,12 @@ namespace AutoDuty.Helpers
             }
             Plugin.Action = "AM Running";
 
-            if (SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) > 4)
+            if (SummoningBellGameObject != null && !SummoningBellHelper.HousingZones.Contains(Player.Territory) && ObjectHelper.GetDistanceToPlayer(SummoningBellGameObject) > 4)
             {
                 Svc.Log.Debug("Moving Closer to Summoning Bell");
                 MovementHelper.Move(SummoningBellGameObject, 0.25f, 4);
             }
-            else if (SummoningBellGameObject == null && GotoHelper.State != ActionState.Running)
+            else if ((SummoningBellGameObject == null || SummoningBellHelper.HousingZones.Contains(Player.Territory)) && GotoHelper.State != ActionState.Running)
             {
                 Svc.Log.Debug("Moving to Summoning Bell Location");
                 SummoningBellHelper.Invoke(Plugin.Configuration.PreferredSummoningBellEnum);

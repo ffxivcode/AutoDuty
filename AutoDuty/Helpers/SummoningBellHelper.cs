@@ -30,6 +30,14 @@ namespace AutoDuty.Helpers
             };
         }
 
+        internal static readonly uint[] HousingZones = [
+            339u, // Mist
+            340u, // The Lavender Beds
+            341u, // The Goblet
+            641u, // Shirogane
+            979u, // Empyreum
+        ];
+
         private static Vector3 SummoningBellVector3s(uint territoryType)
         {
             return territoryType switch
