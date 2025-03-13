@@ -540,6 +540,10 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Update Paths on startup", ref Configuration.updatePathsOnStartup))
                     Configuration.Save();
+
+                if (ImGui.Button("Print mod list")) 
+                    Svc.Log.Info(string.Join("\n", PluginInterface.InstalledPlugins.Where(pl => pl.IsLoaded).GroupBy(pl => pl.Manifest.InstalledFromUrl).OrderByDescending(g => g.Count()).Select(g => g.Key+"\n\t"+string.Join("\n\t", g.Select(pl => pl.Name)))));
+
                 if (ImGui.CollapsingHeader("Available Duty Support"))//ImGui.Button("check duty support?"))
                 {
                     if(GenericHelpers.TryGetAddonMaster<AddonMaster.DawnStory>(out AddonMaster.DawnStory? m))
