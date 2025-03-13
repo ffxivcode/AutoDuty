@@ -711,6 +711,20 @@ public sealed class AutoDuty : IDalamudPlugin
             Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(LevelingModeEnum == LevelingMode.Trust);
             if (duty != null)
             {
+                if (this.LevelingModeEnum == LevelingMode.Support && Configuration.PreferTrustOverSupportLeveling && duty.ClassJobLevelRequired > 70)
+                {
+                    levelingModeEnum           = LevelingMode.Trust;
+                    Configuration.dutyModeEnum = DutyMode.Trust;
+
+                    Content? dutyTrust = LevelingHelper.SelectHighestLevelingRelevantDuty(true);
+
+                    if (duty != dutyTrust)
+                    {
+                        levelingModeEnum           = LevelingMode.Support;
+                        Configuration.dutyModeEnum = DutyMode.Support;
+                    }
+                }
+
                 Svc.Log.Info("Next Leveling Duty: " + duty.Name);
                 CurrentTerritoryContent = duty;
                 ContentPathsManager.DictionaryPaths[duty.TerritoryType].SelectPath(out CurrentPath);
