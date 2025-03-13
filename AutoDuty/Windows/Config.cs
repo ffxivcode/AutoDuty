@@ -61,8 +61,10 @@ public class Configuration : IPluginConfiguration
         }
     }
     
-    public bool Unsynced = false;
-    public bool HideUnavailableDuties = false;
+    public bool Unsynced                       = false;
+    public bool HideUnavailableDuties          = false;
+    public bool PreferTrustOverSupportLeveling = false;
+
     public bool ShowMainWindowOnStartup = false;
 
     //Overlay Config Options
