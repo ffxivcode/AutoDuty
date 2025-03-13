@@ -352,6 +352,9 @@ public class Configuration : IPluginConfiguration
                 SchedulerHelper.ScheduleAction("PositionalRoleBasedBMRoleChecks", () => Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
         }
     }
+    public float MaxDistanceToTargetRoleMelee  = 2.6f;
+    public float MaxDistanceToTargetRoleRanged = 10f;
+
 
     internal bool       positionalAvarice = true;
     public   Positional PositionalEnum    = Positional.Any;
@@ -751,12 +754,28 @@ public static class ConfigTab
                         }
                         ImGui.PopItemWidth();
                     }
-                    ImGui.PushItemWidth(195);
-                    if (ImGui.SliderFloat("Max Distance To Slot", ref Configuration.MaxDistanceToSlotFloat, 1, 30))
+                    using (ImRaii.Disabled(!Configuration.MaxDistanceToTargetRoleBased))
+                    {
+                        ImGui.PushItemWidth(195);
+                        if (ImGui.SliderFloat("Max Distance To Target | Melee", ref Configuration.MaxDistanceToTargetRoleMelee, 1, 30))
                         {
-                            Configuration.MaxDistanceToSlotFloat = Math.Clamp(Configuration.MaxDistanceToSlotFloat, 1, 30);
+                            Configuration.MaxDistanceToTargetRoleMelee = Math.Clamp(Configuration.MaxDistanceToTargetRoleMelee, 1, 30);
                             Configuration.Save();
                         }
+                        if (ImGui.SliderFloat("Max Distance To Target | Ranged", ref Configuration.MaxDistanceToTargetRoleRanged, 1, 30))
+                        {
+                            Configuration.MaxDistanceToTargetRoleRanged = Math.Clamp(Configuration.MaxDistanceToTargetRoleRanged, 1, 30);
+                            Configuration.Save();
+                        }
+                        ImGui.PopItemWidth();
+                    }
+
+                    ImGui.PushItemWidth(195);
+                    if (ImGui.SliderFloat("Max Distance To Slot", ref Configuration.MaxDistanceToSlotFloat, 1, 30))
+                    {
+                        Configuration.MaxDistanceToSlotFloat = Math.Clamp(Configuration.MaxDistanceToSlotFloat, 1, 30);
+                        Configuration.Save();
+                    }
                     ImGui.PopItemWidth();
                     if (ImGui.Checkbox("Set Positional Based on Player Role", ref Configuration.positionalRoleBased))
                     {
