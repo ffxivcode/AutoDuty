@@ -1,0 +1,573 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "/rotation Settings HealthSingleSpell 0.90"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "ChatCommand",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "/rotation Settings HealthSingleSpellHot 0.75"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Comment",
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": "\u003C-- Route 1 --\u003E"
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": -11.41,
+        "Y": 8.25,
+        "Z": 785.9
+      },
+      "arguments": [
+        "12000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": -34.07,
+        "Y": 8.4,
+        "Z": 770.25
+      },
+      "arguments": [
+        "IsOcupied"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": -489.07,
+        "Y": 23.24,
+        "Z": 332.17
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": -526.16,
+        "Y": 22.79,
+        "Z": 251.91
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": -577.45,
+        "Y": 20.64,
+        "Z": 201.07
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Comment",
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": "\u003C-- Midboss --\u003E"
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": -538.77,
+        "Y": 18,
+        "Z": 93.87
+      },
+      "arguments": [
+        "10000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Revival",
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -538.77,
+        "Y": 18,
+        "Z": 93.87
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -541.16,
+        "Y": 18,
+        "Z": 75.76
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -585.1178,
+        "Y": 7.3885107,
+        "Z": 8.323442
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -586.06,
+        "Y": 6.13,
+        "Z": -70.57
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": -612.8,
+        "Y": 6.47,
+        "Z": -140.5
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Comment",
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": "\u003C-- Yes! --\u003E"
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "10000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -619.73,
+        "Y": 6.11,
+        "Z": -127.71
+      },
+      "arguments": [
+        "16359"
+      ],
+      "note": "Matsya"
+    },
+    {
+      "tag": "None",
+      "name": "SelectString",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "1"
+      ],
+      "note": "Fish to your heart\u0027s content."
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsOcupied"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Comment",
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": "\u003C-- Get Rock Bait --\u003E"
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": -677.56,
+        "Y": 6.31,
+        "Z": -241.95
+      },
+      "arguments": [
+        "10000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -677.56,
+        "Y": 6.31,
+        "Z": -241.95
+      },
+      "arguments": [
+        "2013485"
+      ],
+      "note": "Mound of Rocks"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -655.11,
+        "Y": 6.5,
+        "Z": -252.79
+      },
+      "arguments": [
+        "16359"
+      ],
+      "note": "Matsya"
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "10000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": -740.95,
+        "Y": 6.5,
+        "Z": -270.2
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "StopForCombat",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Comment",
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": "\u003C-- Boss --\u003E"
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -798.44,
+        "Y": 11.8,
+        "Z": -360.06
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -794.6,
+        "Y": 13.1,
+        "Z": -362.16
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Revival",
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -788.5,
+        "Y": 14,
+        "Z": -388.07
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -789.97,
+        "Y": 14,
+        "Z": -411.34
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 183,
+    "changelog": [
+      {
+        "version": 198,
+        "change": "Update tags, use selectstring not SND"
+      }
+    ],
+    "notes": [
+      "Boss modules are not consistent, will need manual intervention"
+    ]
+  }
+}
