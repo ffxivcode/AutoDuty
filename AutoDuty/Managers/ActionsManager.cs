@@ -34,6 +34,7 @@ namespace AutoDuty.Managers
             ("Interactable","interact with?", "Adds an Interactable step to the path; after moving to within 2y of the position, AutoDuty will interact with the object specified (recommended to input DataId) until either the object is no longer targetable, you meet certain conditions, or a YesNo/Talk addon appears.\nExample: Interactable|21.82, 7.10, 27.40|1004346 (Goblin Pathfinder)"),
             ("TreasureCoffer","false", "Adds a TreasureCoffer flag to the path; AutoDuty will loot any treasure coffers automatically if it gets within interact range of one (while Config Loop Option is on), this is just a flag to mark the positions of Treasure Coffers.\nNote: AutoDuty will ignore this Path entry when Looting is disabled entirely or Boss Loot Only is enabled.\nExample: TreasureCoffer|3.21, 6.06, -97.63|"),
             ("SelectYesno","yes or no?", "Adds a SelectYesNo step to the path; after moving to the position, AutoDuty will click Yes or No on this addon.\nExample: SelectYesno|9.41, 1.94, -311.25|Yes"),
+            ("SelectString", "list index", "Adds a SelectString step to the path; after moving to the position, AutoDuty will pick the indexed string.\nExample: SelectYesno|908.24, 327.26, -561.96|1"),
             ("MoveToObject","Object Name?", "Adds a MoveToObject step to the path; AutoDuty will will move the object specified (recommend input DataId)"),
             ("DutySpecificCode","step #?", "Adds a DutySpecificCode step to the path; after moving to the position, AutoDuty will invoke the Duty Specific Action for this TerritoryType and the step # specified.\nExample: DutySpecificCode|174.68, 102.00, -66.46|1"),
             ("BossMod", "on / off", "Adds a BossMod step to the path; after moving to the position, AutoDuty will turn BossMod on or off.\nExample: BossMod|-132.08, -342.25, 1.98|Off"),
@@ -340,6 +341,16 @@ namespace AutoDuty.Managers
             _taskManager.Enqueue(() => !IsCasting, "SelectYesno");
             _taskManager.Enqueue(() => Plugin.Action = "");
         }
+        public void SelectString(PathAction action)
+        {
+
+
+            _taskManager.Enqueue(() => Plugin.Action = $"SelectString: {action.Arguments[0]}, {action.Note}", "SelectString");
+            _taskManager.Enqueue(() => AddonHelper.ClickSelectString(Convert.ToInt32(action.Arguments[0])), "SelectString");
+            _taskManager.DelayNext("SelectString", 500);
+            _taskManager.Enqueue(() => !IsCasting, "SelectString");
+            _taskManager.Enqueue(() => Plugin.Action = "");
+        }
 
         public unsafe void MoveToObject(PathAction action)
         {
@@ -398,6 +409,9 @@ namespace AutoDuty.Managers
             else if (AddonHelper.ClickSelectYesno(true))
                 return true;
 
+            if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString) && GenericHelpers.IsAddonReady(addonSelectString))
+                return true;
+
             if (GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk) && GenericHelpers.IsAddonReady(addonTalk) && !AddonHelper.ClickTalk())
                 return false;
             else if (AddonHelper.ClickTalk())
@@ -433,6 +447,8 @@ namespace AutoDuty.Managers
             {
                 var boolAddonSelectYesno = GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno);
 
+                var boolAddonSelectString = GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString) && GenericHelpers.IsAddonReady(addonSelectString);
+
                 var boolAddonTalk = GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk) && GenericHelpers.IsAddonReady(addonTalk);
 
                 if (!boolAddonSelectYesno && !boolAddonTalk && (!(gameObject?.IsTargetable ?? false) ||
@@ -449,6 +465,7 @@ namespace AutoDuty.Managers
                 Svc.Condition[ConditionFlag.Occupied33] ||
                 Svc.Condition[ConditionFlag.Occupied38] ||
                 Svc.Condition[ConditionFlag.Occupied39] ||
+                boolAddonSelectString ||
                 gameObject?.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj))
                 {
                     Plugin.Action = "";
