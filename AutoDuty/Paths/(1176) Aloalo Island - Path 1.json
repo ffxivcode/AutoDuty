@@ -542,7 +542,7 @@
     ],
     "notes": [
       "Depends on RSR configurations to kill the guy, may not result in path 1 with other rotation plugins.",
-      "Boss modules are not consistent, will need manual intervention"
+      "Boss modules are not consistent, will need manual intervention."
     ]
   }
 }
