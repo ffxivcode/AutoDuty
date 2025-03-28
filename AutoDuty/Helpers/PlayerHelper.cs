@@ -11,6 +11,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 namespace AutoDuty.Helpers
 {
     using System;
+    using Dalamud.Utility;
     using FFXIVClientStructs.FFXIV.Client.Game.Control;
     using Lumina.Excel.Sheets;
 
@@ -91,7 +92,7 @@ namespace AutoDuty.Helpers
 
         internal static unsafe bool IsValid =>
             Control.GetLocalPlayer() != null
-         && Environment.CurrentManagedThreadId == 1
+         && ThreadSafety.IsMainThread
          && Svc.Condition.Any()
          && !Svc.Condition[ConditionFlag.BetweenAreas]
          && !Svc.Condition[ConditionFlag.BetweenAreas51]
