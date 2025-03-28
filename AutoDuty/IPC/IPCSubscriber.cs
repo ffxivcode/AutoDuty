@@ -69,7 +69,7 @@ namespace AutoDuty.IPC
 
         [EzIPC("AI.GetPreset", true)] internal static readonly Func<string> Presets_GetActive;
 
-        [EzIPC("AI.SetPreset", true)] internal static readonly Func<string, bool> Presets_SetActive;
+        [EzIPC("AI.SetPreset", true)] internal static readonly Action<string> Presets_SetActive;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
@@ -113,14 +113,16 @@ namespace AutoDuty.IPC
 
         public static void SetPreset(string name)
         {
+            Svc.Log.Info(Presets_GetActive());
             if (Presets_GetActive() != name)
             {
                 Presets_SetActive(name);
-
                 if (BossModReborn_IPCSubscriber.IsEnabled)
                 {
                     if(BossModReborn_IPCSubscriber.Presets_GetActive() != name)
+                    {
                         BossModReborn_IPCSubscriber.Presets_SetActive(name);
+                    }
                 }
             }
         }
