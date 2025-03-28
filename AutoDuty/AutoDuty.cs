@@ -217,7 +217,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Configuration.Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 192) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 200) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
             Configuration.Save();
 
@@ -464,7 +464,7 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    private void Condition_ConditionChange(ConditionFlag flag, bool value)
+    private unsafe void Condition_ConditionChange(ConditionFlag flag, bool value)
     {
         if (Stage == Stage.Stopped) return;
 
@@ -485,14 +485,14 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
         //Svc.Log.Debug($"{flag} : {value}");
-        if (Stage != Stage.Dead && Stage != Stage.Revived && !_recentlyWatchedCutscene && !Conditions.IsWatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && States.HasFlag(PluginState.Navigating) && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
+        if (Stage != Stage.Dead && Stage != Stage.Revived && !_recentlyWatchedCutscene && !Conditions.Instance()->WatchingCutscene && flag != ConditionFlag.WatchingCutscene && flag != ConditionFlag.WatchingCutscene78 && flag != ConditionFlag.OccupiedInCutSceneEvent && Stage != Stage.Action && value && States.HasFlag(PluginState.Navigating) && (flag == ConditionFlag.BetweenAreas || flag == ConditionFlag.BetweenAreas51 || flag == ConditionFlag.Jumping61))
         {
             Svc.Log.Info($"Condition_ConditionChange: Indexer Increase and Change Stage to Condition");
             Indexer++;
             VNavmesh_IPCSubscriber.Path_Stop();
             Stage = Stage.Condition;
         }
-        if (Conditions.IsWatchingCutscene || flag == ConditionFlag.WatchingCutscene || flag == ConditionFlag.WatchingCutscene78 || flag == ConditionFlag.OccupiedInCutSceneEvent)
+        if (Conditions.Instance()->WatchingCutscene || flag == ConditionFlag.WatchingCutscene || flag == ConditionFlag.WatchingCutscene78 || flag == ConditionFlag.OccupiedInCutSceneEvent)
         {
             _recentlyWatchedCutscene = true;
             SchedulerHelper.ScheduleAction("RecentlyWatchedCutsceneTimer", () => _recentlyWatchedCutscene = false, 5000);
@@ -1259,7 +1259,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false)
     {
         // Only try to set the rotation state every few seconds
-        if ((DateTime.Now - _lastRotationSetTime).TotalSeconds < 5)
+        if (on && (DateTime.Now - _lastRotationSetTime).TotalSeconds < 5)
             return;
         _lastRotationSetTime = DateTime.Now;
 
@@ -1281,7 +1281,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 foundRotation = true;
             }
         }
-        
+
         if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
         {
             if (on && !foundRotation)
@@ -1296,6 +1296,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     ReflectionHelper.RotationSolver_Reflection.RotationStop();
             }
         }
+
 
         if (bmEnabled)
         {
@@ -1847,7 +1848,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
                 GameObject gObj = *spewObj.Struct();
                 try { Svc.Log.Info($"Spewing Object Information for: {gObj.NameString}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
-                try { Svc.Log.Info($"Spewing Object Information for: {*gObj.GetName()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"Spewing Object Information for: {gObj.GetName()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 //DrawObject: {gObj.DrawObject}\n
                 //LayoutInstance: { gObj.LayoutInstance}\n
                 //EventHandler: { gObj.EventHandler}\n
@@ -1882,7 +1883,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 try { Svc.Log.Info($"GetGameObjectId().Type: {gObj.GetGameObjectId().Type}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"GetObjectKind: {gObj.GetObjectKind()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"GetIsTargetable: {gObj.GetIsTargetable()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
-                try { Svc.Log.Info($"GetName: {*gObj.GetName()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
+                try { Svc.Log.Info($"GetName: {gObj.GetName()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"GetRadius: {gObj.GetRadius()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"GetHeight: {gObj.GetHeight()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };
                 try { Svc.Log.Info($"GetDrawObject: {*gObj.GetDrawObject()}"); } catch (Exception ex) { Svc.Log.Info($": {ex}"); };

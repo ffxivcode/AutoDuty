@@ -14,8 +14,6 @@ using System.Threading.Tasks;
 namespace AutoDuty.IPC
 {
     using System.ComponentModel;
-    using System.Reflection;
-    using Dalamud.Plugin;
     using ECommons.GameFunctions;
     using Helpers;
 

@@ -15,7 +15,7 @@ namespace AutoDuty.Helpers
 
     internal static class MapHelper
     {
-        internal static unsafe bool IsFlagMarkerSet => AgentMap.Instance()->IsFlagMarkerSet > 0;
+        internal static unsafe bool IsFlagMarkerSet => AgentMap.Instance()->IsFlagMarkerSet;
         
         internal static unsafe FlagMapMarker GetFlagMarker => AgentMap.Instance()->FlagMapMarker;
 

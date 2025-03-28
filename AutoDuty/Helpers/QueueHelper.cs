@@ -86,9 +86,9 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if ((byte) agentDawn->SelectedDawnContentId != _content.DawnRowId)
+            if ((byte) agentDawn->SelectedContentId != _content.DawnRowId)
             {
-                Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} at {_content.RowId} with dawn {_content.DawnRowId} instead of {agentDawn->SelectedDawnContentId}");
+                Svc.Log.Debug($"Queue Helper - Clicking: {_content.EnglishName} at {_content.RowId} with dawn {_content.DawnRowId} instead of {agentDawn->SelectedContentId}");
                 RaptureAtkModule.Instance()->OpenDawn(_content.RowId);
             }
             else if (!_turnedOffTrustMembers)

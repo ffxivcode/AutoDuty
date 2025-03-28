@@ -70,7 +70,7 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("Desynth", 250))
                 return;
 
-            if (Conditions.IsMounted)
+            if (Conditions.Instance()->Mounted)
             {
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 23);
                 return;
@@ -99,12 +99,12 @@ namespace AutoDuty.Helpers
                 AddonHelper.FireCallBack(addonSalvageDialog, true, 0, false);
                 return;
             }
-
+            
             if (!GenericHelpers.TryGetAddonByName<AddonSalvageItemSelector>("SalvageItemSelector", out var addonSalvageItemSelector))
                 AgentSalvage.Instance()->AgentInterface.Show();
             else if (GenericHelpers.IsAddonReady((AtkUnitBase*)addonSalvageItemSelector))
             {
-                AgentSalvage.Instance()->ItemListRefresh();
+                AgentSalvage.Instance()->ItemListRefresh(true);
                 if (AgentSalvage.Instance()->SelectedCategory != AgentSalvage.SalvageItemCategory.InventoryEquipment)
                 {
                     Svc.Log.Info("Switching Category");
