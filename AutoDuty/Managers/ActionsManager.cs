@@ -571,7 +571,7 @@ namespace AutoDuty.Managers
             if (Plugin.Configuration.LootTreasure)
             {
                 _taskManager.DelayNext("Boss-TreasureDelay", 1000);
-                _taskManager.Enqueue(() => treasureCofferObjects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => GetDistanceToPlayer(x) <= 50).ToList(), "Boss-GetTreasureChests");
+                _taskManager.Enqueue(() => treasureCofferObjects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => BelowDistanceToPlayer(x.Position, 50, 10)).ToList(), "Boss-GetTreasureChests");
                 _taskManager.Enqueue(() => BossLoot(treasureCofferObjects, index), "Boss-LootCheck");
             }
         }
