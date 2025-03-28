@@ -18,7 +18,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
 
       - name: Download Dalamud Latest
         run: |
@@ -40,7 +40,7 @@ jobs:
           version_number: ${{ github.ref_name }}
           path: "AutoDuty/bin/Release/AutoDuty/latest.zip"
           type: "latest"
-          dalamud_version: "11"
+          dalamud_version: "12"
           changelog: ${{ github.event.release.body }}
         env:
           PUBLISHER_KEY: ${{ secrets.PUBLISHER_KEY }}
