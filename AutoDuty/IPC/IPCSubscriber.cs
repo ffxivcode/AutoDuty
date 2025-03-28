@@ -117,18 +117,10 @@ namespace AutoDuty.IPC
             if (Presets_GetActive() != name)
             {
                 Presets_SetActive(name);
-                Svc.Log.Info(Presets_GetActive());
-                Svc.Log.Debug(BossModReborn_IPCSubscriber.IsEnabled.ToString());
                 if (BossModReborn_IPCSubscriber.IsEnabled)
                 {
-                    Svc.Log.Info(BossModReborn_IPCSubscriber.Presets_GetActive());
-                    //if(BossModReborn_IPCSubscriber.Presets_GetActive() != name)
+                    if(BossModReborn_IPCSubscriber.Presets_GetActive() != name)
                     {
-
-                        Svc.Log.Info("Count: " + Svc.PluginInterface.GetIpcSubscriber<string>("BossMod." + "AI.GetPreset").HasFunction);
-                        Svc.Log.Info("Count: " + Svc.PluginInterface.GetIpcSubscriber<string, bool>("BossMod." + "AI.SetPreset").HasAction);
-
-                        Svc.Log.Debug("Setting AI Preset");
                         BossModReborn_IPCSubscriber.Presets_SetActive(name);
                     }
                 }
