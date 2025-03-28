@@ -77,7 +77,7 @@ namespace AutoDuty.Helpers
             if (!EzThrottler.Throttle("Extract", 250))
                 return;
 
-            if (Conditions.IsMounted)
+            if (Conditions.Instance()->Mounted)
             {
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 23);
                 return;

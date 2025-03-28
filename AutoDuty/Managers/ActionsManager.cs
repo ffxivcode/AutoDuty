@@ -387,7 +387,7 @@ namespace AutoDuty.Managers
 
         private unsafe bool InteractableCheck(IGameObject? gameObject)
         {
-            if (Conditions.IsMounted || Conditions.IsMounted2)
+            if (Conditions.Instance()->Mounted || Conditions.Instance()->RidingPillion)
                 return true;
 
             if (Player.Available && IsCasting)
@@ -436,8 +436,8 @@ namespace AutoDuty.Managers
                 var boolAddonTalk = GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk) && GenericHelpers.IsAddonReady(addonTalk);
 
                 if (!boolAddonSelectYesno && !boolAddonTalk && (!(gameObject?.IsTargetable ?? false) ||
-                Conditions.IsMounted ||
-                Conditions.IsMounted2 ||
+                Conditions.Instance()->Mounted ||
+                Conditions.Instance()->RidingPillion ||
                 Svc.Condition[ConditionFlag.BetweenAreas] ||
                 Svc.Condition[ConditionFlag.BetweenAreas51] ||
                 Svc.Condition[ConditionFlag.BeingMoved] ||
