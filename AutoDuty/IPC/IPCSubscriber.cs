@@ -113,7 +113,6 @@ namespace AutoDuty.IPC
 
         public static void SetPreset(string name)
         {
-            Svc.Log.Info(Presets_GetActive());
             if (Presets_GetActive() != name)
             {
                 Presets_SetActive(name);
