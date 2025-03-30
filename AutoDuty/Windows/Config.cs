@@ -583,9 +583,9 @@ public static class ConfigTab
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will automatically exit the dungeon upon completion of the path.");
             ImGui.NextColumn();
-            if (ImGui.Checkbox("Only leave dungeon if duty completed", ref Configuration.OnlyExitWhenDutyDone))
+            if (ImGui.Checkbox("Block leaving duty until it's complete", ref Configuration.OnlyExitWhenDutyDone))
                 Configuration.Save();
-            ImGuiComponents.HelpMarker("Blocks leaving dungeon before duty is completed");
+            //ImGuiComponents.HelpMarker("Blocks leaving dungeon before duty is completed");
             ImGui.Columns(1);
             if (ImGui.Checkbox("Auto Manage Rotation Plugin State", ref Configuration.AutoManageRotationPluginState))
                 Configuration.Save();
