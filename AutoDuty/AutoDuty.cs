@@ -1662,7 +1662,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 StartNavigation();
                 break;
             case "stop":
-                StopAndResetALL();
+                Plugin.Stage = Stage.Stopped;
                 break;
             case "pause":
                 Plugin.Stage = Stage.Paused;
