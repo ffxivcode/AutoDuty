@@ -862,9 +862,9 @@ public static class ConfigTab
                     if (ImGui.Checkbox("Loot Boss Treasure Only", ref Configuration.LootBossTreasureOnly))
                         Configuration.Save();
                 }
+                ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");
                 ImGui.Unindent();
             }
-            ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");
 
             if (ImGui.InputInt("Minimum time before declared stuck (in ms)", ref Configuration.MinStuckTime))
             {
