@@ -23,6 +23,7 @@ namespace AutoDuty.Windows;
 
 using System.Numerics;
 using System.Text.Json.Serialization;
+using Dalamud.Utility.Numerics;
 using Data;
 using ECommons.ExcelServices;
 using Properties;
@@ -30,6 +31,7 @@ using Lumina.Excel.Sheets;
 using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using ImPlotNET;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
@@ -957,274 +959,309 @@ public static class ConfigTab
                 MakeCommands("Execute commands on start of all loops", 
                              ref Configuration.ExecuteCommandsPreLoop, ref Configuration.CustomCommandsPreLoop, ref preLoopCommand);
 
-                if (ImGui.Checkbox("Retire To ", ref Configuration.RetireMode))
-                    Configuration.Save();
+                ImGui.Separator();
 
-                using (ImRaii.Disabled(!Configuration.RetireMode))
+                ImGui.TextColored(ImGuiHelper.VersionColor, $"The following are also done between loop, if Between Loop is enabled (currently {(Configuration.EnableBetweenLoopActions ? "enabled" : "disabled")})");
+
+                using (ImRaii.Child("#preloopbetween", ImGui.GetContentRegionAvail().WithY(ImGui.GetFrameHeightWithSpacing()*8 + ImGui.GetTextLineHeight()), true))
                 {
-                    ImGui.SameLine(0, 5);
-                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                    if (ImGui.BeginCombo("##RetireLocation", Configuration.RetireLocationEnum.ToCustomString()))
-                    {
-                        foreach (RetireLocation retireLocation in Enum.GetValues(typeof(RetireLocation)))
-                        {
-                            if (ImGui.Selectable(retireLocation.ToCustomString()))
-                            {
-                                Configuration.RetireLocationEnum = retireLocation;
-                                Configuration.Save();
-                            }
-                        }
-                        ImGui.EndCombo();
-                    }
-                    if (Configuration.RetireMode && Configuration.RetireLocationEnum == RetireLocation.Personal_Home)
-                    {
-                        if (ImGui.Button("Add Current Position"))
-                        {
-                            Configuration.PersonalHomeEntrancePath.Add(Player.Position);
-                            Configuration.Save();
-                        }
-                        ImGuiComponents.HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
-
-                        if (!ImGui.BeginListBox("##PersonalHomeVector3List", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.PersonalHomeEntrancePath.Count) + 5))) return;
-
-                        var removeItem = false;
-                        var removeAt = 0;
-
-                        foreach (var item in Configuration.PersonalHomeEntrancePath.Select((Value, Index) => (Value, Index)))
-                        {
-                            ImGui.Selectable($"{item.Value}");
-                            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                            {
-                                removeItem = true;
-                                removeAt = item.Index;
-                            }
-                        }
-
-                        if (removeItem)
-                        {
-                            Configuration.PersonalHomeEntrancePath.RemoveAt(removeAt);
-                            Configuration.Save();
-                        }
-
-                        ImGui.EndListBox();
-
-                    }
-                    if (Configuration.RetireMode && Configuration.RetireLocationEnum == RetireLocation.FC_Estate)
-                    {
-                        if (ImGui.Button("Add Current Position"))
-                        {
-                            Configuration.FCEstateEntrancePath.Add(Player.Position);
-                            Configuration.Save();
-                        }
-                        ImGuiComponents.HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
-
-                        if (!ImGui.BeginListBox("##FCEstateVector3List", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.FCEstateEntrancePath.Count) + 5))) return;
-
-                        var removeItem = false;
-                        var removeAt = 0;
-
-                        foreach (var item in Configuration.FCEstateEntrancePath.Select((Value, Index) => (Value, Index)))
-                        {
-                            ImGui.Selectable($"{item.Value}");
-                            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                            {
-                                removeItem = true;
-                                removeAt = item.Index;
-                            }
-                        }
-                        if (removeItem)
-                        { 
-                            Configuration.FCEstateEntrancePath.RemoveAt(removeAt);
-                            Configuration.Save();
-                        }
-                        ImGui.EndListBox();
-                    }
-                }
-                if (ImGui.Checkbox("Auto Equip Recommended Gear", ref Configuration.AutoEquipRecommendedGear))
-                    Configuration.Save();
-
-                ImGuiComponents.HelpMarker("Uses Gear from Armory Chest Only");
-
-
-                if (Configuration.AutoEquipRecommendedGear)
-                {
-                    ImGui.Indent();
-                    using (ImRaii.Disabled(!Gearsetter_IPCSubscriber.IsEnabled))
-                    {
-                        if (ImGui.Checkbox("Consider items outside of armoury chest", ref Configuration.AutoEquipRecommendedGearGearsetter))
-                            Configuration.Save();
-                    }
-
-                    if (!Gearsetter_IPCSubscriber.IsEnabled)
-                    {
-                        if (Configuration.AutoEquipRecommendedGearGearsetter)
-                        {
-                            Configuration.AutoEquipRecommendedGearGearsetter = false;
-                            Configuration.Save();
-                        }
-
-                        ImGui.Text("* Items outside the armoury chest requires Gearsetter plugin");
-                        ImGui.Text("Get @ ");
-                        ImGui.SameLine(0, 0);
-                        ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
-                    }
-
-                    ImGui.Unindent();
-                }
-
-                if (ImGui.Checkbox("Auto Repair", ref Configuration.AutoRepair))
-                    Configuration.Save();
-
-                if (Configuration.AutoRepair)
-                {
-                    ImGui.SameLine();
-
-                    if (ImGui.RadioButton("Self", Configuration.AutoRepairSelf))
-                    {
-                        Configuration.AutoRepairSelf = true;
+                    if (ImGui.Checkbox("Retire To ", ref Configuration.RetireMode))
                         Configuration.Save();
-                    }
-                    ImGui.SameLine();
-                    ImGuiComponents.HelpMarker("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
-                    ImGui.SameLine();
 
-                    if (ImGui.RadioButton("CityNpc", !Configuration.AutoRepairSelf))
+                    using (ImRaii.Disabled(!Configuration.RetireMode))
                     {
-                        Configuration.AutoRepairSelf = false;
-                        Configuration.Save();
-                    }
-                    ImGui.SameLine();
-                    ImGuiComponents.HelpMarker("Will use preferred repair npc to repair.");
-                    ImGui.Indent();
-                    ImGui.Text("Trigger @");
-                    ImGui.SameLine();
-                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                    if (ImGui.SliderInt("##Repair@", ref Configuration.AutoRepairPct, 0, 99, "%d%%"))
-                    {
-                        Configuration.AutoRepairPct = Math.Clamp(Configuration.AutoRepairPct, 0, 99);
-                        Configuration.Save();
-                    }
-                    ImGui.PopItemWidth();
-                    if (!Configuration.AutoRepairSelf)
-                    {
-                        ImGui.Text("Preferred Repair NPC: ");
-                        ImGuiComponents.HelpMarker("It's a good idea to match the Repair NPC with Summoning Bell and if possible Retire Location");
+                        ImGui.SameLine(0, 5);
                         ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                        if (ImGui.BeginCombo("##PreferredRepair",
-                                             Configuration.PreferredRepairNPC != null ?
-                                                 $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value).Y.ToString("0.0", CultureInfo.InvariantCulture)})" :
-                                                 "Grand Company Inn"))
+                        if (ImGui.BeginCombo("##RetireLocation", Configuration.RetireLocationEnum.ToCustomString()))
                         {
-                            if (ImGui.Selectable("Grand Company Inn"))
+                            foreach (RetireLocation retireLocation in Enum.GetValues(typeof(RetireLocation)))
                             {
-                                Configuration.PreferredRepairNPC = null;
-                                Configuration.Save();
-                            }
-
-                            foreach (RepairNpcData repairNPC in RepairNPCs)
-                            {
-                                if (repairNPC.TerritoryType <= 0)
+                                if (ImGui.Selectable(retireLocation.ToCustomString()))
                                 {
-                                    ImGui.Text(CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant()));
-                                    continue;
-                                }
-
-                                var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
-
-                                if (territoryType == null) continue;
-
-                                if (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.Value.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
-                                {
-                                    Configuration.PreferredRepairNPC = repairNPC;
+                                    Configuration.RetireLocationEnum = retireLocation;
                                     Configuration.Save();
                                 }
                             }
 
                             ImGui.EndCombo();
                         }
-                        ImGui.PopItemWidth();
+
+                        if (Configuration.RetireMode && Configuration.RetireLocationEnum == RetireLocation.Personal_Home)
+                        {
+                            if (ImGui.Button("Add Current Position"))
+                            {
+                                Configuration.PersonalHomeEntrancePath.Add(Player.Position);
+                                Configuration.Save();
+                            }
+
+                            ImGuiComponents
+                               .HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
+
+                            if (!ImGui.BeginListBox("##PersonalHomeVector3List",
+                                                    new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X,
+                                                                                (ImGui.GetTextLineHeightWithSpacing() * Configuration.PersonalHomeEntrancePath.Count) + 5))) return;
+
+                            var removeItem = false;
+                            var removeAt   = 0;
+
+                            foreach (var item in Configuration.PersonalHomeEntrancePath.Select((Value, Index) => (Value, Index)))
+                            {
+                                ImGui.Selectable($"{item.Value}");
+                                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                                {
+                                    removeItem = true;
+                                    removeAt   = item.Index;
+                                }
+                            }
+
+                            if (removeItem)
+                            {
+                                Configuration.PersonalHomeEntrancePath.RemoveAt(removeAt);
+                                Configuration.Save();
+                            }
+
+                            ImGui.EndListBox();
+
+                        }
+
+                        if (Configuration.RetireMode && Configuration.RetireLocationEnum == RetireLocation.FC_Estate)
+                        {
+                            if (ImGui.Button("Add Current Position"))
+                            {
+                                Configuration.FCEstateEntrancePath.Add(Player.Position);
+                                Configuration.Save();
+                            }
+
+                            ImGuiComponents
+                               .HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
+
+                            if (!ImGui.BeginListBox("##FCEstateVector3List",
+                                                    new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X,
+                                                                                (ImGui.GetTextLineHeightWithSpacing() * Configuration.FCEstateEntrancePath.Count) + 5))) return;
+
+                            var removeItem = false;
+                            var removeAt   = 0;
+
+                            foreach (var item in Configuration.FCEstateEntrancePath.Select((Value, Index) => (Value, Index)))
+                            {
+                                ImGui.Selectable($"{item.Value}");
+                                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                                {
+                                    removeItem = true;
+                                    removeAt   = item.Index;
+                                }
+                            }
+
+                            if (removeItem)
+                            {
+                                Configuration.FCEstateEntrancePath.RemoveAt(removeAt);
+                                Configuration.Save();
+                            }
+
+                            ImGui.EndListBox();
+                        }
                     }
-                    ImGui.Unindent();
-                }
 
-                ImGui.Columns(3);
-
-                if (ImGui.Checkbox("Auto Consume", ref Configuration.AutoConsume))
-                    Configuration.Save();
-
-                ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop (if status does not exist)");
-                if (Configuration.AutoConsume)
-                {
-                    //ImGui.SameLine(0, 5);
-                    ImGui.NextColumn();
-                    if (ImGui.Checkbox("Ignore Status", ref Configuration.AutoConsumeIgnoreStatus))
+                    if (ImGui.Checkbox("Auto Equip Recommended Gear", ref Configuration.AutoEquipRecommendedGear))
                         Configuration.Save();
 
-                    ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop every time (even if status does exists)");
-                    ImGui.NextColumn();
-                    //ImGui.SameLine(0, 5);
-                    
-                    ImGui.PushItemWidth(80);
+                    ImGuiComponents.HelpMarker("Uses Gear from Armory Chest Only");
 
-                    using (ImRaii.Disabled(Configuration.AutoConsumeIgnoreStatus))
+
+                    if (Configuration.AutoEquipRecommendedGear)
                     {
-                        if (ImGui.InputInt("Min time remaining", ref Configuration.AutoConsumeTime))
+                        ImGui.Indent();
+                        using (ImRaii.Disabled(!Gearsetter_IPCSubscriber.IsEnabled))
                         {
-                            Configuration.AutoConsumeTime = Math.Clamp(Configuration.AutoConsumeTime, 0, 59);
-                            Configuration.Save();
+                            if (ImGui.Checkbox("Consider items outside of armoury chest", ref Configuration.AutoEquipRecommendedGearGearsetter))
+                                Configuration.Save();
                         }
-                        ImGuiComponents.HelpMarker("If the status has less than this amount of time remaining (in minutes), it will consume these items");
+
+                        if (!Gearsetter_IPCSubscriber.IsEnabled)
+                        {
+                            if (Configuration.AutoEquipRecommendedGearGearsetter)
+                            {
+                                Configuration.AutoEquipRecommendedGearGearsetter = false;
+                                Configuration.Save();
+                            }
+
+                            ImGui.Text("* Items outside the armoury chest requires Gearsetter plugin");
+                            ImGui.Text("Get @ ");
+                            ImGui.SameLine(0, 0);
+                            ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
+                        }
+
+                        ImGui.Unindent();
                     }
 
-                    ImGui.PopItemWidth();
-                    ImGui.Columns(1);
-                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 115);
-                    if (ImGui.BeginCombo("##SelectAutoConsumeItem", consumableItemsSelectedItem.Name))
+                    if (ImGui.Checkbox("Auto Repair", ref Configuration.AutoRepair))
+                        Configuration.Save();
+
+                    if (Configuration.AutoRepair)
                     {
-                        ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref consumableItemsItemNameInput, 1000);
-                        foreach (var item in ConsumableItems.Where(x => x.Name.Contains(consumableItemsItemNameInput, StringComparison.InvariantCultureIgnoreCase))!)
+                        ImGui.SameLine();
+
+                        if (ImGui.RadioButton("Self", Configuration.AutoRepairSelf))
                         {
-                            if (ImGui.Selectable($"{item.Name}"))
+                            Configuration.AutoRepairSelf = true;
+                            Configuration.Save();
+                        }
+
+                        ImGui.SameLine();
+                        ImGuiComponents.HelpMarker("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
+                        ImGui.SameLine();
+
+                        if (ImGui.RadioButton("CityNpc", !Configuration.AutoRepairSelf))
+                        {
+                            Configuration.AutoRepairSelf = false;
+                            Configuration.Save();
+                        }
+
+                        ImGui.SameLine();
+                        ImGuiComponents.HelpMarker("Will use preferred repair npc to repair.");
+                        ImGui.Indent();
+                        ImGui.Text("Trigger @");
+                        ImGui.SameLine();
+                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                        if (ImGui.SliderInt("##Repair@", ref Configuration.AutoRepairPct, 0, 99, "%d%%"))
+                        {
+                            Configuration.AutoRepairPct = Math.Clamp(Configuration.AutoRepairPct, 0, 99);
+                            Configuration.Save();
+                        }
+
+                        ImGui.PopItemWidth();
+                        if (!Configuration.AutoRepairSelf)
+                        {
+                            ImGui.Text("Preferred Repair NPC: ");
+                            ImGuiComponents.HelpMarker("It's a good idea to match the Repair NPC with Summoning Bell and if possible Retire Location");
+                            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                            if (ImGui.BeginCombo("##PreferredRepair",
+                                                 Configuration.PreferredRepairNPC != null ?
+                                                     $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value).Y.ToString("0.0", CultureInfo.InvariantCulture)})" :
+                                                     "Grand Company Inn"))
                             {
-                                consumableItemsSelectedItem = item;
+                                if (ImGui.Selectable("Grand Company Inn"))
+                                {
+                                    Configuration.PreferredRepairNPC = null;
+                                    Configuration.Save();
+                                }
+
+                                foreach (RepairNpcData repairNPC in RepairNPCs)
+                                {
+                                    if (repairNPC.TerritoryType <= 0)
+                                    {
+                                        ImGui.Text(CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant()));
+                                        continue;
+                                    }
+
+                                    var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
+
+                                    if (territoryType == null) continue;
+
+                                    if
+                                        (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.Value.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
+                                    {
+                                        Configuration.PreferredRepairNPC = repairNPC;
+                                        Configuration.Save();
+                                    }
+                                }
+
+                                ImGui.EndCombo();
+                            }
+
+                            ImGui.PopItemWidth();
+                        }
+
+                        ImGui.Unindent();
+                    }
+
+                    ImGui.Columns(3);
+
+                    if (ImGui.Checkbox("Auto Consume", ref Configuration.AutoConsume))
+                        Configuration.Save();
+
+                    ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop (if status does not exist)");
+                    if (Configuration.AutoConsume)
+                    {
+                        //ImGui.SameLine(0, 5);
+                        ImGui.NextColumn();
+                        if (ImGui.Checkbox("Ignore Status", ref Configuration.AutoConsumeIgnoreStatus))
+                            Configuration.Save();
+
+                        ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop every time (even if status does exists)");
+                        ImGui.NextColumn();
+                        //ImGui.SameLine(0, 5);
+
+                        ImGui.PushItemWidth(80);
+
+                        using (ImRaii.Disabled(Configuration.AutoConsumeIgnoreStatus))
+                        {
+                            if (ImGui.InputInt("Min time remaining", ref Configuration.AutoConsumeTime))
+                            {
+                                Configuration.AutoConsumeTime = Math.Clamp(Configuration.AutoConsumeTime, 0, 59);
+                                Configuration.Save();
+                            }
+
+                            ImGuiComponents.HelpMarker("If the status has less than this amount of time remaining (in minutes), it will consume these items");
+                        }
+
+                        ImGui.PopItemWidth();
+                        ImGui.Columns(1);
+                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 115);
+                        if (ImGui.BeginCombo("##SelectAutoConsumeItem", consumableItemsSelectedItem.Name))
+                        {
+                            ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref consumableItemsItemNameInput, 1000);
+                            foreach (var item in ConsumableItems.Where(x => x.Name.Contains(consumableItemsItemNameInput, StringComparison.InvariantCultureIgnoreCase))!)
+                            {
+                                if (ImGui.Selectable($"{item.Name}"))
+                                {
+                                    consumableItemsSelectedItem = item;
+                                }
+                            }
+
+                            ImGui.EndCombo();
+                        }
+
+                        ImGui.PopItemWidth();
+
+                        ImGui.SameLine(0, 5);
+                        using (ImRaii.Disabled(consumableItemsSelectedItem == null))
+                        {
+                            if (ImGui.Button("Add Item"))
+                            {
+                                if (Configuration.AutoConsumeItemsList.Any(x => x.Key == consumableItemsSelectedItem!.StatusId))
+                                    Configuration.AutoConsumeItemsList.RemoveAll(x => x.Key == consumableItemsSelectedItem!.StatusId);
+
+                                Configuration.AutoConsumeItemsList.Add(new(consumableItemsSelectedItem!.StatusId, consumableItemsSelectedItem));
+                                Configuration.Save();
                             }
                         }
-                        ImGui.EndCombo();
-                    }
-                    ImGui.PopItemWidth();
 
-                    ImGui.SameLine(0, 5);
-                    using (ImRaii.Disabled(consumableItemsSelectedItem == null))
-                    {
-                        if (ImGui.Button("Add Item"))
+                        if (!ImGui.BeginListBox("##ConsumableItemList",
+                                                new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X,
+                                                                            (ImGui.GetTextLineHeightWithSpacing() * Configuration.AutoConsumeItemsList.Count) + 5))) return;
+                        var                                  boolRemoveItem = false;
+                        KeyValuePair<ushort, ConsumableItem> removeItem     = new();
+                        foreach (var item in Configuration.AutoConsumeItemsList)
                         {
-                            if (Configuration.AutoConsumeItemsList.Any(x => x.Key == consumableItemsSelectedItem!.StatusId))
-                                Configuration.AutoConsumeItemsList.RemoveAll(x => x.Key == consumableItemsSelectedItem!.StatusId);
-                             
-                            Configuration.AutoConsumeItemsList.Add(new (consumableItemsSelectedItem!.StatusId, consumableItemsSelectedItem));
+                            ImGui.Selectable($"{item.Value.Name}");
+                            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                            {
+                                boolRemoveItem = true;
+                                removeItem     = item;
+                            }
+                        }
+
+                        ImGui.EndListBox();
+                        if (boolRemoveItem)
+                        {
+                            Configuration.AutoConsumeItemsList.Remove(removeItem);
                             Configuration.Save();
                         }
                     }
-                    if (!ImGui.BeginListBox("##ConsumableItemList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, (ImGui.GetTextLineHeightWithSpacing() * Configuration.AutoConsumeItemsList.Count) + 5))) return;
-                    var boolRemoveItem = false;
-                    KeyValuePair<ushort, ConsumableItem> removeItem = new();
-                    foreach (var item in Configuration.AutoConsumeItemsList)
-                    {
-                        ImGui.Selectable($"{item.Value.Name}");
-                        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                        {
-                            boolRemoveItem = true;
-                            removeItem = item;
-                        }
-                    }
-                    ImGui.EndListBox();
-                    if (boolRemoveItem)
-                    {
-                        Configuration.AutoConsumeItemsList.Remove(removeItem);
-                        Configuration.Save();
-                    }
+
+                    ImGui.Columns(1);
                 }
-                ImGui.Columns(1);
             }
         }
 
