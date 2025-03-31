@@ -566,6 +566,19 @@ public static class ConfigTab
                         }
                     }
                 }
+
+                if (ImGui.Button("Turn on rotation"))
+                {
+                    Plugin.SetRotationPluginSettings(true, ignoreTimer: true);
+                }
+
+                ImGui.SameLine();
+                if (ImGui.Button("Turn off rotation"))
+                {
+                    Plugin.SetRotationPluginSettings(false);
+                    if(Wrath_IPCSubscriber.IsEnabled)
+                        Wrath_IPCSubscriber.Release();
+                }
             }
         }
         ImGui.Spacing();
