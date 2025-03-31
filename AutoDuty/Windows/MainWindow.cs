@@ -427,6 +427,16 @@ public class MainWindow : Window, IDisposable
     public override void Draw()
     {
         DrawPopup();
+
+        if(DalamudInfoHelper.IsOnStaging())
+        {
+            ImGui.TextColored(GradientColor.Get(ImGuiHelper.ExperimentalColor, ImGuiHelper.ExperimentalColor2, 500), "NOT SUPPORTED ON STAGING.");
+            ImGui.Text("Please type in \"/xlbranch\" and pick Release, then restart the game.");
+
+            if (!ImGui.CollapsingHeader("Use despite staging. Support will not be given##stagingHeader"))
+                return;
+        }
+
         EzTabBar("MainTab", null, openTabName, ImGuiTabBarFlags.None, tabList.ToArray());
     }
 }
