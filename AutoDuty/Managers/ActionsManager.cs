@@ -366,7 +366,7 @@ namespace AutoDuty.Managers
 
         public void TreasureCoffer(PathAction _)
         {
-            return;
+            this.Wait(new PathAction() { Arguments = ["250"] });
         }
 
         private bool TargetCheck(IGameObject? gameObject)
@@ -543,6 +543,8 @@ namespace AutoDuty.Managers
             }
 
             _taskManager.Enqueue(() => MovementHelper.Move(gameObjects[index], 0.25f, 1f), "BossLoot-MoveToChest");
+            this.Wait(new PathAction() { Arguments = ["250"] });
+            
             _taskManager.Enqueue(() =>
             {
                 index++;
