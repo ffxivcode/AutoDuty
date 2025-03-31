@@ -41,14 +41,14 @@
     },
     {
       "tag": "None",
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "2500"
+        "IsReady"
       ],
       "note": ""
     },
@@ -67,14 +67,27 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -212.04,
-        "Y": -211.99,
-        "Z": 33.81
+        "X": -212,
+        "Y": -212,
+        "Z": 29
       },
       "arguments": [
-        "3000"
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -92,15 +105,41 @@
       "note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
+      "tag": "Revival",
+      "name": "Revival",
       "position": {
-        "X": -180.02,
-        "Y": -220.04,
-        "Z": -74.94
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
-        "3000"
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -180.01,
+        "Y": -220.04,
+        "Z": -80
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -145,27 +184,14 @@
     },
     {
       "tag": "None",
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "3003"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "Revival",
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        ""
+        "IsReady"
       ],
       "note": ""
     },
@@ -210,14 +236,14 @@
     },
     {
       "tag": "None",
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "3004"
+        "IsReady"
       ],
       "note": ""
     },
@@ -288,14 +314,27 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -17.48,
+        "X": -19,
         "Y": 198,
-        "Z": -180.21
+        "Z": -183
       },
       "arguments": [
-        "3000"
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -352,15 +391,54 @@
       "note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
+      "tag": "Revival",
+      "name": "Revival",
       "position": {
-        "X": -4.06,
-        "Y": 169.9,
-        "Z": -105.75
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
-        "4000"
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 0,
+        "Y": 170,
+        "Z": -108
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -418,14 +496,14 @@
     },
     {
       "tag": "None",
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "3006"
+        "IsReady"
       ],
       "note": ""
     },
@@ -483,14 +561,14 @@
     },
     {
       "tag": "None",
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "3007"
+        "IsReady"
       ],
       "note": ""
     },
@@ -561,27 +639,14 @@
     },
     {
       "tag": "None",
-      "name": "Wait",
+      "name": "WaitFor",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "3008"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "Revival",
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        ""
+        "IsReady"
       ],
       "note": ""
     },
@@ -592,6 +657,19 @@
         "X": 11.41,
         "Y": 8.5,
         "Z": 57.13
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Revival",
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
         ""
@@ -647,6 +725,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 202,
+        "change": "Adjusting revival and automoves"
       }
     ],
     "notes": []
