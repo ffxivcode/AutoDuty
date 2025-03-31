@@ -1252,12 +1252,14 @@ public sealed class AutoDuty : IDalamudPlugin
         }
     }
 
-    internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false)
+    internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false, bool ignoreTimer = false)
     {
         // Only try to set the rotation state every few seconds
-        if (on && (DateTime.Now - _lastRotationSetTime).TotalSeconds < 5)
+        if (on && (DateTime.Now - _lastRotationSetTime).TotalSeconds < 5 && !ignoreTimer)
             return;
-        _lastRotationSetTime = DateTime.Now;
+        
+        if(on)
+            _lastRotationSetTime = DateTime.Now;
 
         if (!ignoreConfig && !this.Configuration.AutoManageRotationPluginState)
             return;
@@ -1273,6 +1275,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
             if (!on || wrathRotationReady)
             {
+                Svc.Log.Verbose("Wrath rotation enabled");
                 Wrath_IPCSubscriber.SetAutoMode(on);
                 foundRotation = true;
             }
@@ -1282,6 +1285,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             if (on && !foundRotation)
             {
+                Svc.Log.Verbose("RSR enabled");
                 if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Auto)
                     ReflectionHelper.RotationSolver_Reflection.RotationAuto();
                 foundRotation = true;
@@ -1301,11 +1305,13 @@ public sealed class AutoDuty : IDalamudPlugin
                 BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
                 if (!foundRotation)
                 {
+                    Svc.Log.Verbose("vbm AR enabled");
                     BossMod_IPCSubscriber.AddPreset("AutoDuty", Resources.AutoDutyPreset);
                     BossMod_IPCSubscriber.SetPreset("AutoDuty");
                 }
                 else if(this.Configuration.AutoManageBossModAISettings)
                 {
+                    Svc.Log.Verbose("vbm passive enabled");
                     BossMod_IPCSubscriber.AddPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
                     BossMod_IPCSubscriber.SetPreset("AutoDuty Passive");
                 }
