@@ -33,7 +33,7 @@
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
     <PackageReference Include="DalamudPackager" Version="12.0.0" />
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\..\..\AppData\Roaming\xivlauncher\Addon\Hooks\dev\Newtonsoft.Json.dll</HintPath>
+      <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Serilog">
       <HintPath>$(DalamudLibPath)Serilog.dll</HintPath>
