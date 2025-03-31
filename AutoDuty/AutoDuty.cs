@@ -39,14 +39,10 @@ using AutoDuty.Updater;
 
 namespace AutoDuty;
 
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using Data;
-using ECommons.Reflection;
-using FFXIVClientStructs.FFXIV.Client.UI;
 using Lumina.Excel.Sheets;
 using static Data.Classes;
-using ReflectionHelper = Helpers.ReflectionHelper;
 
 // TODO:
 // Scrapped interable list, going to implement an internal list that when a interactable step end in fail, the Dataid gets add to the list and is scanned for from there on out, if found we goto it and get it, then remove from list.
@@ -217,7 +213,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Configuration.Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 200) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 202) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
             Configuration.Save();
 
