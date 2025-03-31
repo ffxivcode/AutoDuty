@@ -126,6 +126,17 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
+        "X": -210.11986,
+        "Y": -40.043884,
+        "Z": 176.08403
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
         "X": -230,
         "Y": -42.3,
         "Z": 175
@@ -519,7 +530,12 @@
   ],
   "meta": {
     "createdAt": 200,
-    "changelog": [],
+    "changelog": [
+      {
+        "version": 202,
+        "change": "tweaked b1 entrance"
+      }
+    ],
     "notes": []
   }
 }
