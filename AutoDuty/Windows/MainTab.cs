@@ -146,6 +146,15 @@ namespace AutoDuty.Windows
                     ImGui.Separator();
                     ImGui.Spacing();
 
+                    if (dutyMode == DutyMode.Trust && Plugin.CurrentTerritoryContent != null)
+                    {
+                        ImGui.Columns(3);
+                        using (ImRaii.Disabled()) 
+                            DrawTrustMembers(Plugin.CurrentTerritoryContent);
+                        ImGui.Columns(1);
+                        ImGui.Spacing();
+                    }
+
                     DrawPathSelection();
                     if (!Plugin.States.HasFlag(PluginState.Looping) && !Plugin.Overlay.IsOpen)
                         MainWindow.GotoAndActions();
@@ -307,7 +316,7 @@ namespace AutoDuty.Windows
                             if (DutySelected != null && DutySelected.Content.TrustMembers.Count > 0)
                             {
                                 ImGuiEx.LineCentered(() => ImGuiEx.TextUnderlined("Select your Trust Party"));
-                                ImGui.Columns(3, null, false);
+                                
 
                                 TrustHelper.ResetTrustIfInvalid();
                                 for (int i = 0; i < Plugin.Configuration.SelectedTrustMembers.Length; i++)
@@ -323,67 +332,12 @@ namespace AutoDuty.Windows
                                         Plugin.Configuration.SelectedTrustMembers[i] = null;
                                     }
                                 }
-
+                                ImGui.Columns(3);
                                 using (ImRaii.Disabled(Plugin.TrustLevelingEnabled && TrustHelper.Members.Any(tm => tm.Value.Level < tm.Value.LevelCap)))
                                 {
-                                    foreach (TrustMember member in DutySelected.Content.TrustMembers)
-                                    {
-                                        bool enabled = Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName);
-                                        CombatRole playerRole = Player.Job.GetCombatRole();
-                                        int numberSelected = Plugin.Configuration.SelectedTrustMembers.Count(x => x != null);
-
-                                        TrustMember?[] members = Plugin.Configuration.SelectedTrustMembers.Select(tmn => tmn != null ? TrustHelper.Members[(TrustMemberName)tmn] : null).ToArray();
-
-                                        bool canSelect = members.CanSelectMember(member, playerRole) && member.Level >= DutySelected.Content.ClassJobLevelRequired;
-
-                                        using (ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
-                                        {
-                                            if (ImGui.Checkbox($"###{member.Index}{DutySelected.id}", ref enabled))
-                                            {
-                                                if (enabled)
-                                                {
-                                                    for (int i = 0; i < 3; i++)
-                                                    {
-                                                        if (Plugin.Configuration.SelectedTrustMembers[i] is null)
-                                                        {
-                                                            Plugin.Configuration.SelectedTrustMembers[i] = member.MemberName;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName))
-                                                    {
-                                                        int idx = Plugin.Configuration.SelectedTrustMembers.IndexOf(x => x != null && x == member.MemberName);
-                                                        Plugin.Configuration.SelectedTrustMembers[idx] = null;
-                                                    }
-                                                }
-
-                                                Plugin.Configuration.Save();
-                                            }
-                                        }
-
-                                        ImGui.SameLine(0, 2);
-                                        ImGui.SetItemAllowOverlap();
-                                        ImGui.TextColored(member.Role switch
-                                        {
-                                            TrustRole.DPS => ImGuiHelper.RoleDPSColor,
-                                            TrustRole.Healer => ImGuiHelper.RoleHealerColor,
-                                            TrustRole.Tank => ImGuiHelper.RoleTankColor,
-                                            TrustRole.AllRounder => ImGuiHelper.RoleAllRounderColor,
-                                            _ => Vector4.One
-                                        }, member.Name);
-                                        if (member.Level > 0)
-                                        {
-                                            ImGui.SameLine(0, 2);
-                                            ImGuiEx.TextV(member.Level < member.LevelCap ? ImGuiHelper.White : ImGuiHelper.MaxLevelColor, $"{member.Level.ToString().ReplaceByChar(Digits.Normal, Digits.GameFont)}");
-                                        }
-
-                                        ImGui.NextColumn();
-                                    }
+                                    DrawTrustMembers(DutySelected.Content);
                                 }
-
+                                //ImGui.Columns(3, null, false);
                                 if (DutySelected.Content.TrustMembers.Count == 7)
                                     ImGui.NextColumn();
 
@@ -515,6 +469,66 @@ namespace AutoDuty.Windows
                     }
                     ImGui.EndListBox();
                 }
+            }
+        }
+
+        private static void DrawTrustMembers(Content content)
+        {
+            foreach (TrustMember member in content.TrustMembers)
+            {
+                bool       enabled        = Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName);
+                CombatRole playerRole     = Player.Job.GetCombatRole();
+                int        numberSelected = Plugin.Configuration.SelectedTrustMembers.Count(x => x != null);
+
+                TrustMember?[] members = Plugin.Configuration.SelectedTrustMembers.Select(tmn => tmn != null ? TrustHelper.Members[(TrustMemberName)tmn] : null).ToArray();
+
+                bool canSelect = members.CanSelectMember(member, playerRole) && member.Level >= content.ClassJobLevelRequired;
+
+                using (ImRaii.Disabled(!enabled && (numberSelected == 3 || !canSelect)))
+                {
+                    if (ImGui.Checkbox($"###{member.Index}{content.Id}", ref enabled))
+                    {
+                        if (enabled)
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                if (Plugin.Configuration.SelectedTrustMembers[i] is null)
+                                {
+                                    Plugin.Configuration.SelectedTrustMembers[i] = member.MemberName;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Plugin.Configuration.SelectedTrustMembers.Where(x => x != null).Any(x => x == member.MemberName))
+                            {
+                                int idx = Plugin.Configuration.SelectedTrustMembers.IndexOf(x => x != null && x == member.MemberName);
+                                Plugin.Configuration.SelectedTrustMembers[idx] = null;
+                            }
+                        }
+
+                        Plugin.Configuration.Save();
+                    }
+                }
+
+                ImGui.SameLine(0, 2);
+                ImGui.SetItemAllowOverlap();
+                ImGui.TextColored(member.Role switch
+                {
+                    TrustRole.DPS => ImGuiHelper.RoleDPSColor,
+                    TrustRole.Healer => ImGuiHelper.RoleHealerColor,
+                    TrustRole.Tank => ImGuiHelper.RoleTankColor,
+                    TrustRole.AllRounder => ImGuiHelper.RoleAllRounderColor,
+                    _ => Vector4.One
+                }, member.Name);
+                if (member.Level > 0)
+                {
+                    ImGui.SameLine(0, 2);
+                    ImGuiEx.TextV(member.Level < member.LevelCap ? ImGuiHelper.White : ImGuiHelper.MaxLevelColor, $"{member.Level.ToString().ReplaceByChar(Digits.Normal, Digits.GameFont)}");
+                }
+
+                ImGui.NextColumn();
             }
         }
 
