@@ -454,6 +454,32 @@
       "note": ""
     },
     {
+      "tag": "W2W",
+      "name": "MoveTo",
+      "position": {
+        "X": 1,
+        "Y": -211,
+        "Z": -183
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "W2W",
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "500"
+      ],
+      "note": ""
+    },
+    {
       "tag": "None",
       "name": "MoveTo",
       "position": {
@@ -533,7 +559,11 @@
     "changelog": [
       {
         "version": 202,
-        "change": "tweaked b1 entrance."
+        "change": "tweaked b1 entrance"
+      },
+      {
+        "version": 203,
+        "change": "adjusted staircase w2w pull"
       }
     ],
     "notes": []
