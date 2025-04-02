@@ -42,15 +42,24 @@ namespace AutoDuty.Helpers
 
         internal static bool InPrivateHouse(Housing whichHousing) =>
             //Mist
-            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 59 && Svc.ClientState.TerritoryType == 608) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 59 && (Svc.ClientState.TerritoryType == 282 || Svc.ClientState.TerritoryType == 283 || Svc.ClientState.TerritoryType == 284)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 56 && (Svc.ClientState.TerritoryType == 282 || Svc.ClientState.TerritoryType == 283 || Svc.ClientState.TerritoryType == 284)) ||
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 59 && Svc.ClientState.TerritoryType == 608)               ||
+            (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId  == 56 && Svc.ClientState.TerritoryType is 282 or 283 or 284) ||
             //LavenderBeds
-            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 60 && Svc.ClientState.TerritoryType == 609) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 60 && (Svc.ClientState.TerritoryType == 342 || Svc.ClientState.TerritoryType == 343 || Svc.ClientState.TerritoryType == 344)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 57 && (Svc.ClientState.TerritoryType == 342 || Svc.ClientState.TerritoryType == 343 || Svc.ClientState.TerritoryType == 344)) ||
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 60 && Svc.ClientState.TerritoryType == 609)               ||
+            (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId  == 57 && Svc.ClientState.TerritoryType is 342 or 343 or 344) ||
             //Goblet
-            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 61 && Svc.ClientState.TerritoryType == 610) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 61 && (Svc.ClientState.TerritoryType == 345 || Svc.ClientState.TerritoryType == 346 || Svc.ClientState.TerritoryType == 347)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 58 && (Svc.ClientState.TerritoryType == 345 || Svc.ClientState.TerritoryType == 346 || Svc.ClientState.TerritoryType == 347)) ||
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 61 && Svc.ClientState.TerritoryType == 610)               ||
+            (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId  == 58 && Svc.ClientState.TerritoryType is 345 or 346 or 347) ||
             //Shirogane
-            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 97 && Svc.ClientState.TerritoryType == 655) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 97 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 96 && (Svc.ClientState.TerritoryType == 649 || Svc.ClientState.TerritoryType == 650 || Svc.ClientState.TerritoryType == 651)) ||
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 97 && Svc.ClientState.TerritoryType == 655)               ||
+            (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId  == 96 && Svc.ClientState.TerritoryType is 649 or 650 or 651) ||
             //Empyreum
-            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 165 && Svc.ClientState.TerritoryType == 999) || (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 165 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982)) || (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId == 164 && (Svc.ClientState.TerritoryType == 980 || Svc.ClientState.TerritoryType == 981 || Svc.ClientState.TerritoryType == 982));
+            (whichHousing == Housing.Apartment && TeleportHelper.ApartmentTeleportId == 165 && Svc.ClientState.TerritoryType == 999)               ||
+            (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId  == 164 && Svc.ClientState.TerritoryType is 980 or 981 or 982) ||
+            //Private houses | can be remodeled so... no housing area check
+            (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId is 59 or 60 or 61 or 97 or 165 &&
+             (Svc.ClientState.TerritoryType is 282 or 283 or 284 or 342 or 343 or 344 or 345 or 346 or 347 or 649 or 650 or 651 or 980 or 981 or 982));
+
         internal static bool InHousingArea(Housing whichHousing) =>
             //Mist
             (Svc.ClientState.TerritoryType == 339 &&
