@@ -138,7 +138,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static bool ValidCoffer(Item item) => //                Miscellany
+        internal static bool ValidCoffer(Item item) => // Miscellany
             item.ItemAction.RowId is 1085 or 388 && item.ItemUICategory.RowId is 61 && (!Plugin.Configuration.AutoOpenCoffersBlacklistUse || !Plugin.Configuration.AutoOpenCoffersBlacklist.ContainsKey(item.RowId));
     }
 }

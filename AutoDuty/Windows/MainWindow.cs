@@ -267,6 +267,38 @@ public class MainWindow : Window, IDisposable
                     }
                 }
             }
+            ImGui.SameLine(0, 5);
+            using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && TripleTriadCardSellHelper.State != ActionState.Running))
+            {
+                if (TripleTriadCardSellHelper.State == ActionState.Running)
+                {
+                    if (ImGui.Button("Stop"))
+                        Plugin.Stage = Stage.Stopped;
+                }
+                else
+                {
+                    if (ImGui.Button("TT Cards"))
+                        TripleTriadCardSellHelper.Invoke();
+                    ToolTip("Click to sell TT cards");
+                }
+            }
+
+            ImGui.SameLine(0, 5);
+            using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && TripleTriadCardUseHelper.State != ActionState.Running))
+            {
+                if (TripleTriadCardUseHelper.State == ActionState.Running)
+                {
+                    if (ImGui.Button("Stop"))
+                        Plugin.Stage = Stage.Stopped;
+                }
+                else
+                {
+                    if (ImGui.Button("Register TT Cards"))
+                        TripleTriadCardUseHelper.Invoke();
+                    ToolTip("Click to register TT cards");
+                }
+            }
+
 
             if (ImGui.BeginPopup("GotoPopup"))
             {
@@ -301,6 +333,11 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.Selectable("FC Estate"))
                 {
                     GotoHousingHelper.Invoke(Housing.FC_Estate);
+                }
+
+                if (ImGui.Selectable("Triple Triad Trader"))
+                {
+                    GotoHelper.Invoke(TripleTriadCardSellHelper.GoldSaucerTerritoryType, TripleTriadCardSellHelper.TripleTriadCardVendorLocation);
                 }
                 ImGui.EndPopup();
             }

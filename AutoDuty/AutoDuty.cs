@@ -678,6 +678,24 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => GCTurninHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
             }
 
+            if (Configuration.TripleTriadEnabled)
+            {
+                if (Configuration.TripleTriadRegister)
+                {
+                    TaskManager.Enqueue(() => Svc.Log.Debug($"Registers TT Cards Between Loop Action"));
+                    TaskManager.Enqueue(() => TripleTriadCardUseHelper.Invoke(), "Loop-RegisterTTC");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => TripleTriadCardUseHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitRegisterTTComplete");
+                }
+                if (Configuration.TripleTriadSell)
+                {
+                    TaskManager.Enqueue(() => Svc.Log.Debug($"Selling TT Cards Between Loop Action"));
+                    TaskManager.Enqueue(() => TripleTriadCardSellHelper.Invoke(), "Loop-SellTTC");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => TripleTriadCardSellHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitSellTTComplete");
+                }
+            }
+
             if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Retire Between Loop Action"));
@@ -1612,6 +1630,10 @@ public sealed class AutoDuty : IDalamudPlugin
             AutoEquipHelper.Stop();
         if (CofferHelper.State == ActionState.Running)
             CofferHelper.Stop();
+        if(TripleTriadCardSellHelper.State == ActionState.Running)
+            TripleTriadCardSellHelper.Stop();
+        if (TripleTriadCardUseHelper.State == ActionState.Running)
+            TripleTriadCardUseHelper.Stop();
         if (DeathHelper.DeathState == PlayerLifeState.Revived)
             DeathHelper.Stop();
          

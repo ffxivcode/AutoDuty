@@ -30,7 +30,9 @@ using Properties;
 using Lumina.Excel.Sheets;
 using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 using ECommons.UIHelpers.AddonMasterImplementations;
+using ECommons.UIHelpers.AtkReaderImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImPlotNET;
 
 [Serializable]
@@ -256,6 +258,11 @@ public class Configuration : IPluginConfiguration
     public int AutoGCTurninSlotsLeft = 5;
     public bool AutoGCTurninSlotsLeftBool = false;
     public bool AutoGCTurninUseTicket = false;
+
+    public bool TripleTriadEnabled;
+    public bool TripleTriadRegister;
+    public bool TripleTriadSell;
+
     public bool EnableAutoRetainer = false;
     public SummoningBellLocations PreferredSummoningBellEnum = 0;
     public bool AM = false;
@@ -566,6 +573,32 @@ public static class ConfigTab
                         }
                     }
                 }
+
+                if (ImGui.CollapsingHeader("Available TT cards"))
+                {
+                    unsafe
+                    {
+                        if (GenericHelpers.TryGetAddonByName("TripleTriadCoinExchange", out AtkUnitBase* exchangeAddon))
+                        {
+                            if (exchangeAddon->IsReady)
+                            {
+                                ReaderTripleTriadCoinExchange exchange = new(exchangeAddon);
+
+                                ImGuiEx.Text($"Cnt: {exchange.EntryCount}");
+                                foreach (var x in exchange.Entries)
+                                {
+                                    ImGuiEx.Text($"({x.Id}) {x.Name} | {x.Count} | {x.Value} | {x.InDeck}");
+                                    if (ImGuiEx.HoveredAndClicked())
+                                    {
+                                        //x.Select();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
 
                 if (ImGui.Button("Turn on rotation"))
                 {
@@ -1342,9 +1375,6 @@ public static class ConfigTab
                     Configuration.Save();
 
                 ImGuiComponents.HelpMarker("AutoDuty will open gear coffers (like paladin arms) between each loop");
-
-                ImGui.SameLine();
-                ImGui.TextColored(Configuration.AutoOpenCoffers ? GradientColor.Get(ImGuiHelper.ExperimentalColor, ImGuiHelper.ExperimentalColor2, 500) : ImGuiHelper.ExperimentalColor, "EXPERIMENTAL");
                 if (Configuration.AutoOpenCoffers)
                 {
                     unsafe
@@ -1517,6 +1547,20 @@ public static class ConfigTab
                     ImGui.Text("Get @ ");
                     ImGui.SameLine(0, 0);
                     ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
+                }
+
+                if(ImGui.Checkbox("Triple Triad", ref Configuration.TripleTriadEnabled))
+                    Configuration.Save();
+                ImGui.SameLine();
+                ImGui.TextColored(Configuration.TripleTriadEnabled ? GradientColor.Get(ImGuiHelper.ExperimentalColor, ImGuiHelper.ExperimentalColor2, 500) : ImGuiHelper.ExperimentalColor, "EXPERIMENTAL");
+                if (Configuration.TripleTriadEnabled)
+                {
+                    ImGui.Indent();
+                    if (ImGui.Checkbox("Register Triple Triad Cards", ref Configuration.TripleTriadRegister))
+                        Configuration.Save();
+                    if (ImGui.Checkbox("Sell Triple Triad Cards", ref Configuration.TripleTriadSell))
+                        Configuration.Save();
+                    ImGui.Unindent();
                 }
 
                 using (ImRaii.Disabled(!AutoRetainer_IPCSubscriber.IsEnabled))
