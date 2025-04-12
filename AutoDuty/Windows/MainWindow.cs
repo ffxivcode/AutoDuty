@@ -107,7 +107,7 @@ public class MainWindow : Window, IDisposable
     {
         using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Looping) || Plugin.States.HasFlag(PluginState.Navigating)))
         {
-            using (ImRaii.Disabled(Plugin.Configuration.OverrideOverlayButtons && !Plugin.Configuration.GotoButton))
+            using (ImRaii.Disabled(Plugin.Configuration is { OverrideOverlayButtons: true, GotoButton: false }))
             {
                 using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other) && GotoHelper.State != ActionState.Running))
                 {
@@ -125,6 +125,51 @@ public class MainWindow : Window, IDisposable
                     }
                 }
             }
+
+            if (ImGui.BeginPopup("GotoPopup"))
+            {
+                if (ImGui.Selectable("Barracks"))
+                {
+                    GotoBarracksHelper.Invoke();
+                }
+                if (ImGui.Selectable("Inn"))
+                {
+                    GotoInnHelper.Invoke();
+                }
+                if (ImGui.Selectable("GCSupply"))
+                {
+                    GotoHelper.Invoke(PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany()), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
+                }
+                if (ImGui.Selectable("Flag Marker"))
+                {
+                    MapHelper.MoveToMapMarker();
+                }
+                if (ImGui.Selectable("Summoning Bell"))
+                {
+                    SummoningBellHelper.Invoke(Plugin.Configuration.PreferredSummoningBellEnum);
+                }
+                if (ImGui.Selectable("Apartment"))
+                {
+                    GotoHousingHelper.Invoke(Housing.Apartment);
+                }
+                if (ImGui.Selectable("Personal Home"))
+                {
+                    GotoHousingHelper.Invoke(Housing.Personal_Home);
+                }
+                if (ImGui.Selectable("FC Estate"))
+                {
+                    GotoHousingHelper.Invoke(Housing.FC_Estate);
+                }
+
+                if (ImGui.Selectable("Triple Triad Trader"))
+                {
+                    GotoHelper.Invoke(TripleTriadCardSellHelper.GoldSaucerTerritoryType, TripleTriadCardSellHelper.TripleTriadCardVendorLocation);
+                }
+                ImGui.EndPopup();
+            }
+
+
+
             ImGui.SameLine(0, 5);
             using (ImRaii.Disabled(!Plugin.Configuration.AutoGCTurnin && !Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.TurninButton))
             {
@@ -267,41 +312,31 @@ public class MainWindow : Window, IDisposable
                     }
                 }
             }
+            ImGui.SameLine(0, 5);
 
-            if (ImGui.BeginPopup("GotoPopup"))
+            using (ImRaii.Disabled(!Plugin.Configuration.TripleTriadEnabled && (!Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.TTButton)))
             {
-                if (ImGui.Selectable("Barracks"))
+                using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other)))
                 {
-                    GotoBarracksHelper.Invoke();
+                    if ((GotoHelper.State == ActionState.Running && TripleTriadCardUseHelper.State != ActionState.Running && TripleTriadCardSellHelper.State != ActionState.Running))
+                    {
+                        if (ImGui.Button("Stop"))
+                            Plugin.Stage = Stage.Stopped;
+                    }
+                    else
+                    {
+                        if (ImGui.Button("Triple Triad"))
+                            ImGui.OpenPopup("TTPopup");
+                    }
                 }
-                if (ImGui.Selectable("Inn"))
-                {
-                    GotoInnHelper.Invoke();
-                }
-                if (ImGui.Selectable("GCSupply"))
-                {
-                    GotoHelper.Invoke(PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany()), [GCTurninHelper.GCSupplyLocation], 0.25f, 3f);
-                }
-                if (ImGui.Selectable("Flag Marker"))
-                {
-                    MapHelper.MoveToMapMarker();
-                }
-                if (ImGui.Selectable("Summoning Bell"))
-                {
-                    SummoningBellHelper.Invoke(Plugin.Configuration.PreferredSummoningBellEnum);
-                }
-                if (ImGui.Selectable("Apartment"))
-                {
-                    GotoHousingHelper.Invoke(Housing.Apartment);
-                }
-                if (ImGui.Selectable("Personal Home"))
-                {
-                    GotoHousingHelper.Invoke(Housing.Personal_Home);
-                }
-                if (ImGui.Selectable("FC Estate"))
-                {
-                    GotoHousingHelper.Invoke(Housing.FC_Estate);
-                }
+            }
+
+            if (ImGui.BeginPopup("TTPopup"))
+            {
+                if (ImGui.Selectable("Register TT Cards"))
+                    TripleTriadCardUseHelper.Invoke();
+                if (ImGui.Selectable("Sell TT Cards")) 
+                    TripleTriadCardSellHelper.Invoke();
                 ImGui.EndPopup();
             }
         }

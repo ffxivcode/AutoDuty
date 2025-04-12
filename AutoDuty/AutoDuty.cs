@@ -213,7 +213,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Configuration.Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 202) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 204) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
             Configuration.Save();
 
@@ -447,6 +447,7 @@ public sealed class AutoDuty : IDalamudPlugin
             else
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Loops Done"),                                                                                         "Loop-Debug");
+                TaskManager.Enqueue(() => { States &= ~PluginState.Navigating; },                                                                               "Loop-RemoveNavigationState");
                 TaskManager.Enqueue(() => PlayerHelper.IsReady,                                                                                                 int.MaxValue, "Loop-WaitPlayerReady");
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Loop {CurrentLoop} == {Configuration.LoopTimes} we are done Looping, Invoking LoopsCompleteActions"), "Loop-Debug");
                 TaskManager.Enqueue(() =>
@@ -595,7 +596,7 @@ public sealed class AutoDuty : IDalamudPlugin
             CurrentLoop = 1;
     }
 
-    private unsafe void LoopTasks(bool queue = true)
+    internal unsafe void LoopTasks(bool queue = true)
     {
         if (CurrentTerritoryContent == null) return;
 
@@ -660,6 +661,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => ExtractHelper.Invoke(), "Loop-AutoExtract");
                 TaskManager.DelayNext("Loop-Delay50", 50);
                 TaskManager.Enqueue(() => ExtractHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoExtractComplete");
+                TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                   "Loop-WaitIsReadyFull");
             }
 
             if (Configuration.AutoDesynth)
@@ -668,6 +670,7 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => DesynthHelper.Invoke(), "Loop-AutoDesynth");
                 TaskManager.DelayNext("Loop-Delay50", 50);
                 TaskManager.Enqueue(() => DesynthHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoDesynthComplete");
+                TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                   "Loop-WaitIsReadyFull");
             }
 
             if (Configuration.AutoGCTurnin && (!Configuration.AutoGCTurninSlotsLeftBool || InventoryManager.Instance()->GetEmptySlotsInBag() <= Configuration.AutoGCTurninSlotsLeft) && PlayerHelper.GetGrandCompanyRank() > 5)
@@ -676,6 +679,27 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
                 TaskManager.DelayNext("Loop-Delay50", 50);
                 TaskManager.Enqueue(() => GCTurninHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
+                TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                    "Loop-WaitIsReadyFull");
+            }
+
+            if (Configuration.TripleTriadEnabled)
+            {
+                if (Configuration.TripleTriadRegister)
+                {
+                    TaskManager.Enqueue(() => Svc.Log.Debug($"Registers TT Cards Between Loop Action"));
+                    TaskManager.Enqueue(() => TripleTriadCardUseHelper.Invoke(), "Loop-RegisterTTC");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => TripleTriadCardUseHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitRegisterTTComplete");
+                    TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                              "Loop-WaitIsReadyFull");
+                }
+                if (Configuration.TripleTriadSell)
+                {
+                    TaskManager.Enqueue(() => Svc.Log.Debug($"Selling TT Cards Between Loop Action"));
+                    TaskManager.Enqueue(() => TripleTriadCardSellHelper.Invoke(), "Loop-SellTTC");
+                    TaskManager.DelayNext("Loop-Delay50", 50);
+                    TaskManager.Enqueue(() => TripleTriadCardSellHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitSellTTComplete");
+                    TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                               "Loop-WaitIsReadyFull");
+                }
             }
 
             if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)
@@ -1612,6 +1636,10 @@ public sealed class AutoDuty : IDalamudPlugin
             AutoEquipHelper.Stop();
         if (CofferHelper.State == ActionState.Running)
             CofferHelper.Stop();
+        if(TripleTriadCardSellHelper.State == ActionState.Running)
+            TripleTriadCardSellHelper.Stop();
+        if (TripleTriadCardUseHelper.State == ActionState.Running)
+            TripleTriadCardUseHelper.Stop();
         if (DeathHelper.DeathState == PlayerLifeState.Revived)
             DeathHelper.Stop();
          
