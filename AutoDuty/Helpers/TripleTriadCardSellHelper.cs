@@ -19,7 +19,6 @@ namespace AutoDuty.Helpers
     {
         internal static unsafe void Invoke()
         {
-            
             if (!QuestManager.IsQuestComplete(65970))
             {
                 Svc.Log.Info("Gold Saucer requires having completed quest: It Could Happen To You");
@@ -94,8 +93,11 @@ namespace AutoDuty.Helpers
 
         private static unsafe void GoldSaucerUpdate(IFramework framework)
         {
-            if (Plugin.InDungeon)
+            if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.InDungeon)
+            {
                 Stop();
+                return;
+            }
 
             if (!EzThrottler.Throttle("TTT", 250))
                 return;
@@ -106,7 +108,7 @@ namespace AutoDuty.Helpers
                 return;
             }
 
-            if (GotoHelper.State != ActionState.Running && Svc.ClientState.TerritoryType != GoldSaucerTerritoryType)
+            if (Svc.ClientState.TerritoryType != GoldSaucerTerritoryType)
             {
                 Svc.Log.Debug("Moving to Gold Saucer");
                 GotoHelper.Invoke(GoldSaucerTerritoryType, [TripleTriadCardVendorLocation], 0.25f, 2f, false);

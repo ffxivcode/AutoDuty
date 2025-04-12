@@ -132,7 +132,8 @@ public class Configuration : IPluginConfiguration
     public bool ExtractButton          = true;
     public bool RepairButton           = true;
     public bool EquipButton            = true;
-    public bool CofferButton            = true;
+    public bool CofferButton           = true;
+    public bool TTButton               = true;
 
     internal bool updatePathsOnStartup = true;
     public   bool UpdatePathsOnStartup
@@ -505,21 +506,27 @@ public static class ConfigTab
                     ImGui.Columns(3, "##OverlayButtonColumns", false);
                     if (ImGui.Checkbox("Goto", ref Configuration.GotoButton))
                         Configuration.Save();
+                    ImGui.NextColumn();
                     if (ImGui.Checkbox("Turnin", ref Configuration.TurninButton))
                         Configuration.Save();
                     ImGui.NextColumn();
                     if (ImGui.Checkbox("Desynth", ref Configuration.DesynthButton))
                         Configuration.Save();
+                    ImGui.NextColumn();
                     if (ImGui.Checkbox("Extract", ref Configuration.ExtractButton))
                         Configuration.Save();
                     ImGui.NextColumn();
                     if (ImGui.Checkbox("Repair", ref Configuration.RepairButton))
                         Configuration.Save();
+                    ImGui.NextColumn();
                     if (ImGui.Checkbox("Equip", ref Configuration.EquipButton))
                         Configuration.Save();
+                    ImGui.NextColumn();
                     if (ImGui.Checkbox("Coffer", ref Configuration.CofferButton))
                         Configuration.Save();
-
+                    ImGui.NextColumn();
+                    if (ImGui.Checkbox("Triple Triad##TTButton", ref Configuration.TTButton))
+                        Configuration.Save();
                     ImGui.Unindent();
                 }
                 ImGui.Unindent();
@@ -611,6 +618,13 @@ public static class ConfigTab
                     Plugin.SetRotationPluginSettings(false);
                     if(Wrath_IPCSubscriber.IsEnabled)
                         Wrath_IPCSubscriber.Release();
+                }
+
+                if (ImGui.Button("BetweenLoopActions##DevBetweenLoops"))
+                {
+                    Plugin.CurrentTerritoryContent =  ContentHelper.DictionaryContent.Values.First();
+                    Plugin.States                  |= PluginState.Other;
+                    Plugin.LoopTasks(false);
                 }
             }
         }
