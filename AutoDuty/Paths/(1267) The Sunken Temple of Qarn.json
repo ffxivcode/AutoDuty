@@ -1,0 +1,118 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -71.01,
+        "Y": -12,
+        "Z": -61.7
+      },
+      "arguments": [
+        "on"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -25.371717,
+        "Y": -18.000046,
+        "Z": 0.06027671
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 57.38,
+        "Y": -49.71,
+        "Z": -7.63
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 49.523148,
+        "Y": -19.000088,
+        "Z": 5.0506725
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 120.22537,
+        "Y": -4.0001907,
+        "Z": -0.55485016
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 189.58017,
+        "Y": -4.000005,
+        "Z": 0.053727567
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 189.58,
+        "Y": -4,
+        "Z": 0.05
+      },
+      "arguments": [
+        "2000658"
+      ],
+      "note": "The Scales of Judgment"
+    },
+    {
+      "tag": "None",
+      "name": "SelectYesno",
+      "position": {
+        "X": 189.58,
+        "Y": -4,
+        "Z": 0.05
+      },
+      "arguments": [
+        "Yes"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 233.46,
+        "Y": -4,
+        "Z": -0.17
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 203,
+    "changelog": [],
+    "notes": []
+  }
+}
