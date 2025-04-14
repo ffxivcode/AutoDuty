@@ -210,6 +210,84 @@
     },
     {
       "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -25.41,
+        "Y": -18.8,
+        "Z": -33.66
+      },
+      "arguments": [
+        "2000339"
+      ],
+      "note": "Locked Door"
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -46.45,
+        "Y": -18.8,
+        "Z": -53.6
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -11.35,
+        "Y": -18.8,
+        "Z": -49.97
+      },
+      "arguments": [
+        "2000308"
+      ],
+      "note": "Tiny Key"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 13.48,
+        "Y": -18.8,
+        "Z": -43.61
+      },
+      "arguments": [
+        "2000307"
+      ],
+      "note": "Tiny Key"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 24.91,
+        "Y": -18.8,
+        "Z": 34.35
+      },
+      "arguments": [
+        "2000344"
+      ],
+      "note": "Locked Door"
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 46.66,
+        "Y": -18.8,
+        "Z": 37.5
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": -0.19,
@@ -448,6 +526,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 203,
+        "change": "Unlock coffers to avoid boss loot issue"
       }
     ],
     "notes": []
