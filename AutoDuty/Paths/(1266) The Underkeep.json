@@ -176,6 +176,17 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
+        "X": -246.54092,
+        "Y": -78.23413,
+        "Z": 89.580284
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
         "X": -217.42934,
         "Y": -83.23113,
         "Z": 34.437275
