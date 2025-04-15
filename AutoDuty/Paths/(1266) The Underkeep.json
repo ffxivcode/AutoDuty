@@ -575,6 +575,10 @@
       {
         "version": 203,
         "change": "adjusted staircase w2w pull"
+      },
+      {
+        "version": 203,
+        "change": "adjusted b1 arena exit"
       }
     ],
     "notes": []
