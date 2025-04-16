@@ -61,6 +61,17 @@ namespace AutoDuty.IPC
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
 
+    internal static class DiscardHelper_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(DiscardHelper_IPCSubscriber), "ARDiscard", SafeWrapper.AnyException);
+
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("ARDiscard");
+
+        [EzIPC("IsRunning", true)] internal static readonly Func<bool> IsRunning;
+
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
     internal static class BossModReborn_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossModReborn_IPCSubscriber), "BossMod", SafeWrapper.AnyException);
