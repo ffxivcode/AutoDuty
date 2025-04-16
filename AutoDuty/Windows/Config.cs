@@ -264,6 +264,8 @@ public class Configuration : IPluginConfiguration
     public bool TripleTriadRegister;
     public bool TripleTriadSell;
 
+    public bool DiscardItems;
+
     public bool EnableAutoRetainer = false;
     public SummoningBellLocations PreferredSummoningBellEnum = 0;
     //Termination Config Options
@@ -1474,6 +1476,29 @@ public static class ConfigTab
                         ImGui.Unindent();
                     }
                 }
+
+                using (ImRaii.Disabled(!DiscardHelper_IPCSubscriber.IsEnabled))
+                {
+                    if (ImGui.Checkbox("Discard Items", ref Configuration.DiscardItems))
+                    {
+                        Configuration.Save();
+                    }
+                }
+                if (!DiscardHelper_IPCSubscriber.IsEnabled)
+                {
+                    if (Configuration.DiscardItems)
+                    {
+                        Configuration.DiscardItems = false;
+                        Configuration.Save();
+                    }
+                    ImGui.SameLine();
+                    ImGui.Text("* Discarding Items Requires DiscardHelper plugin!");
+                    ImGui.SameLine();
+                    ImGui.Text("Get @ ");
+                    ImGui.SameLine(0, 0);
+                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
+                }
+
 
                 ImGui.Columns(2);
 
