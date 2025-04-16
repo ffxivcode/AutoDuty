@@ -26,7 +26,7 @@ namespace AutoDuty.Helpers
 
         internal static bool UseItemUntilStatus(uint itemId, uint statusId, float minTime = 0, bool allowHq = true)
         {
-            if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !PlayerHelper.IsReady || Player.Character->IsCasting)
+            if (!EzThrottler.Throttle("UseItemUntilStatus", 250) || !PlayerHelper.IsReadyFull || Player.Character->IsCasting)
                 return false;
 
             if (PlayerHelper.HasStatus(statusId, minTime))
