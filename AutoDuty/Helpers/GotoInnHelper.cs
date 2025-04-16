@@ -9,8 +9,15 @@ using System.Collections.Generic;
 
 namespace AutoDuty.Helpers
 {
-    internal static class GotoInnHelper
+    internal class GotoInnHelper : ActiveHelperBase<GotoInnHelper>
     {
+
+        protected override string Name        => nameof(GotoInnHelper);
+        protected override string DisplayName => string.Empty;
+        protected override int    TimeOut     { get; set; } = 600_000;
+
+        protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "Talk"];
+
         internal static void Invoke(uint whichGrandCompany = 0)
         {
             if (whichGrandCompany == 0 || whichGrandCompany > 3)
@@ -18,62 +25,40 @@ namespace AutoDuty.Helpers
             else
                 _whichGrandCompany = whichGrandCompany;
 
-            if (State != ActionState.Running && Svc.ClientState.TerritoryType != InnTerritoryType(_whichGrandCompany))
+            if (Svc.ClientState.TerritoryType != InnTerritoryType(_whichGrandCompany))
             {
+                Instance.Start();
                 Svc.Log.Info($"Goto Inn Started {_whichGrandCompany}");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(false);
-                SchedulerHelper.ScheduleAction("GotoInnTimeOut", Stop, 600000);
-                Svc.Framework.Update += GotoInnUpdate;
             }
         }
 
-        internal static void Stop() 
+
+        internal override void Stop() 
         {
-            if (State == ActionState.Running)
-                Svc.Log.Info($"Goto Inn Finished");
-            SchedulerHelper.DescheduleAction("GotoInnTimeOut");
-            GotoHelper.Stop();
-            Svc.Framework.Update += GotoInnStopUpdate;
-            Svc.Framework.Update -= GotoInnUpdate;
+            GotoHelper.ForceStop();
             _whichGrandCompany = 0;
-            Plugin.Action = "";
+            base.Stop();
         }
 
-        internal static ActionState State = ActionState.None;
         internal static uint InnTerritoryType(uint _grandCompany) => _grandCompany == 1 ? 177u : (_grandCompany == 2 ? 179u : 178u);
         internal static uint ExitInnDoorDataId(uint _grandCompany) => _grandCompany == 1 ? 2001010u : (_grandCompany == 2 ? 2000087u : 2001011u);
 
         private static uint _whichGrandCompany = 0;
         private static List<Vector3> _innKeepLocation => _whichGrandCompany == 1 ? [new Vector3(15.42688f, 39.99999f, 12.466553f)] : (_whichGrandCompany == 2 ? [new Vector3(25.6627f, -8f, 99.74237f)] : [new Vector3(28.85994f, 6.999999f, -80.12716f)]);
         private static uint _innKeepDataId => _whichGrandCompany == 1 ? 1000974u : (_whichGrandCompany == 2 ? 1000102u : 1001976u);
-        private static IGameObject? _innKeepGameObject => ObjectHelper.GetObjectByDataId(_innKeepDataId);
+        private IGameObject? _innKeepGameObject => ObjectHelper.GetObjectByDataId(_innKeepDataId);
 
-        internal unsafe static void GotoInnStopUpdate(IFramework framework)
+        protected override unsafe void HelperStopUpdate(IFramework framework)
         {
             if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
-            {
-                Svc.Log.Debug("Stopping GotoInn");
-                State = ActionState.None;
-                Plugin.States &= ~PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(true);
-                Svc.Framework.Update -= GotoInnStopUpdate;
-            }
+                base.HelperStopUpdate(framework);
             else if (Svc.Targets.Target != null)
                 Svc.Targets.Target = null;
-            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                addonSelectYesno->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
-                addonSelectString->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("Talk", out AtkUnitBase* addonTalk))
-                addonTalk->Close(true);
-            return;
+            else
+                this.CloseAddons();
         }
 
-        internal unsafe static void GotoInnUpdate(IFramework framework)
+        protected override void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Navigating))
             {

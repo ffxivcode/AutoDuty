@@ -11,58 +11,22 @@ namespace AutoDuty.Helpers
 {
     using Lumina.Excel.Sheets;
 
-    internal static class DesynthHelper
+    internal class DesynthHelper : ActiveHelperBase<DesynthHelper>
     {
-        internal static void Invoke()
+        protected override string Name        => nameof(DesynthHelper);
+        protected override string DisplayName => "Desynthing";
+
+        protected override string[] AddonsToClose { get; } = ["Desynth", "SalvageResult", "SalvageDialog", "SalvageItemSelector"];
+
+        internal override void Start()
         {
-            if (State != ActionState.Running)
-            {
-                Svc.Log.Info("Desynth Started");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(false);
-                SchedulerHelper.ScheduleAction("DesynthTimeOut", Stop, 300000);
-                Plugin.Action = "Desynthing";
-                Svc.Framework.Update += DesynthUpdate;
-                _maxDesynthLevel = PlayerHelper.GetMaxDesynthLevel();
-            }
+            _maxDesynthLevel = PlayerHelper.GetMaxDesynthLevel();
+            base.Start();
         }
 
-        internal static unsafe void Stop()
-        {
-            Plugin.Action = "";
-            SchedulerHelper.DescheduleAction("DesynthTimeOut");
-            Svc.Framework.Update += DesynthStopUpdate;
-            Svc.Framework.Update -= DesynthUpdate;
-            if (GenericHelpers.TryGetAddonByName("Desynth", out AtkUnitBase* addonDesynth))
-                addonDesynth->Close(true);
-        }
+        private float _maxDesynthLevel = 1;
 
-        internal static ActionState State = ActionState.None;
-
-        private static float _maxDesynthLevel = 1;
-        
-        internal static unsafe void DesynthStopUpdate(IFramework framework)
-        {
-            if (GenericHelpers.TryGetAddonByName("SalvageResult", out AtkUnitBase* addonSalvageResultClose))
-                addonSalvageResultClose->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("SalvageDialog", out AtkUnitBase* addonSalvageDialog))
-                addonSalvageDialog->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("SalvageItemSelector", out AtkUnitBase* addonSalvageItemSelectorClose))
-                addonSalvageItemSelectorClose->Close(true);
-            else
-            {
-                State = ActionState.None;
-                Plugin.States &= ~PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(true);
-                Svc.Framework.Update -= DesynthStopUpdate;
-            }
-            return;
-        }
-
-        internal static unsafe void DesynthUpdate(IFramework framework)
+        protected override unsafe void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.InDungeon)
                 Stop();

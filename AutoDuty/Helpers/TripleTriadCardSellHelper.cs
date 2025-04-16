@@ -15,9 +15,13 @@ namespace AutoDuty.Helpers
     using FFXIVClientStructs.FFXIV.Client.Game.UI;
     using Lumina.Excel.Sheets;
 
-    internal static class TripleTriadCardSellHelper
+    internal class TripleTriadCardSellHelper : ActiveHelperBase<TripleTriadCardSellHelper>
     {
-        internal static unsafe void Invoke()
+        protected override string Name        { get; } = nameof(TripleTriadCardSellHelper);
+        protected override string DisplayName { get; } = "Selling TTT Cards";
+        protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "TripleTriadCoinExchange", "ShopCardDialog"];
+
+        internal override void Start()
         {
             if (!QuestManager.IsQuestComplete(65970))
             {
@@ -34,36 +38,11 @@ namespace AutoDuty.Helpers
             }
             else if (State != ActionState.Running)
             {
-                Svc.Log.Info("Gold Saucer started");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                SchedulerHelper.ScheduleAction("GSTimeOut", Stop, 300000);
-
-                Plugin.Action = "Gold Saucer";
-                Svc.Framework.Update += GoldSaucerUpdate;
+                base.Start();
             }
         }
 
-        internal unsafe static void Stop()
-        {
-            Plugin.States     |= PluginState.Other;
-            Plugin.Action     =  "";
-            if (!Plugin.States.HasFlag(PluginState.Looping))
-                Plugin.SetGeneralSettings(false);
-
-            SchedulerHelper.DescheduleAction("GSTimeOut");
-            Svc.Framework.Update += GoldSaucerStopUpdate;
-            Svc.Framework.Update -= GoldSaucerUpdate;
-
-            if (GenericHelpers.TryGetAddonByName("SelectIconString", out AtkUnitBase* addonMaterializeDialog))
-                addonMaterializeDialog->Close(true);
-            if (GenericHelpers.TryGetAddonByName("TripleTriadCoinExchange", out AtkUnitBase* addonMaterialize))
-                addonMaterialize->Close(true);
-        }
-
-        internal static        ActionState State                         = ActionState.None;
         public const           int         GoldSaucerTerritoryType       = 144;
-
 
         public static readonly Vector3     TripleTriadCardVendorLocation = new(-56.1f, 1.6f, 16.6f);
         private const uint tripleTriadVendorDataId = 1016294u;
@@ -73,25 +52,7 @@ namespace AutoDuty.Helpers
         private static unsafe ReaderTripleTriadCoinExchange? readerExchange        = null;
         private static unsafe AtkUnitBase*                   addonSelectIconString = null;
 
-        private static unsafe void GoldSaucerStopUpdate(IFramework framework)
-        {
-            if (GenericHelpers.TryGetAddonByName("SelectIconString", out AtkUnitBase* addonSelectIconString))
-                addonSelectIconString->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("TripleTriadCoinExchange", out AtkUnitBase* addonTTExchange))
-                addonTTExchange->Close(true);
-            else
-            {
-                State         =  ActionState.None;
-                Plugin.States &= ~PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(true);
-                Svc.Framework.Update -= GoldSaucerStopUpdate;
-            }
-
-            return;
-        }
-
-        private static unsafe void GoldSaucerUpdate(IFramework framework)
+        protected override unsafe void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.InDungeon)
             {

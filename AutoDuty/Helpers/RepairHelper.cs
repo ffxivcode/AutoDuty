@@ -11,68 +11,43 @@ using ECommons;
 
 namespace AutoDuty.Helpers
 {
-    internal static class RepairHelper
+    internal class RepairHelper : ActiveHelperBase<RepairHelper>
     {
-        internal static void Invoke()
-        {
-            if (State != ActionState.Running)
-            {
-                Svc.Log.Info($"Repair Started");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(false);
-                SchedulerHelper.ScheduleAction("RepairTimeOut", Stop, Plugin.Configuration.AutoRepairSelf ? 300000 : 600000);
-                Svc.Framework.Update += RepairUpdate;
-            }
-        }
+        protected override string   Name          { get; } = nameof(RepairHelper);
+        protected override string   DisplayName   { get; } = string.Empty;
+        protected override int      TimeOut       => Plugin.Configuration.AutoRepairSelf ? 300000 : 600000;
+        protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
 
-        internal static unsafe void Stop() 
+        internal override unsafe void Stop() 
         {
-            if (State == ActionState.Running)
-                Svc.Log.Info($"Repair Finished");
-            SchedulerHelper.DescheduleAction("RepairTimeOut");
-            Svc.Framework.Update += RepairStopUpdate;
-            Svc.Framework.Update -= RepairUpdate;
-            _seenAddon = false;
-            Plugin.Action = "";
+            base.Stop();
+            _seenAddon           =  false;
             AgentModule.Instance()->GetAgentByInternalId(AgentId.Repair)->Hide();
         }
 
-        internal static ActionState State = ActionState.None;
+        private static Vector3 _repairVendorLocation => _preferredRepairNpc?.Position ?? (PlayerHelper.GetGrandCompany() == 1 ? new Vector3(17.715698f, 40.200005f, 3.9520264f) : (PlayerHelper.GetGrandCompany() == 2 ? new Vector3(24.826416f, -8, 93.18677f) : new Vector3(32.85266f, 6.999999f, -81.31531f)));
+        private static uint _repairVendorDataId => _preferredRepairNpc?.DataId ?? (PlayerHelper.GetGrandCompany() == 1 ? 1003251u : (PlayerHelper.GetGrandCompany() == 2 ? 1000394u : 1004416u));
+        private IGameObject? _repairVendorGameObject => ObjectHelper.GetObjectByDataId(_repairVendorDataId);
+        private static uint _repairVendorTerritoryType => _preferredRepairNpc?.TerritoryType ?? PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany());
 
-        private static Vector3 _repairVendorLocation => _preferredRepairNpc != null ? _preferredRepairNpc.Position : (PlayerHelper.GetGrandCompany() == 1 ? new Vector3(17.715698f, 40.200005f, 3.9520264f) : (PlayerHelper.GetGrandCompany() == 2 ? new Vector3(24.826416f, -8, 93.18677f) : new Vector3(32.85266f, 6.999999f, -81.31531f)));
-        private static uint _repairVendorDataId => _preferredRepairNpc != null ? _preferredRepairNpc.DataId : (PlayerHelper.GetGrandCompany() == 1 ? 1003251u : (PlayerHelper.GetGrandCompany() == 2 ? 1000394u : 1004416u));
-        private static IGameObject? _repairVendorGameObject => ObjectHelper.GetObjectByDataId(_repairVendorDataId);
-        private static uint _repairVendorTerritoryType => _preferredRepairNpc != null ? _preferredRepairNpc.TerritoryType : PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany());
-        private static bool _seenAddon = false;
-        private unsafe static AtkUnitBase* addonRepair = null;
-        private unsafe static AtkUnitBase* addonSelectYesno = null;
-        private unsafe static AtkUnitBase* addonSelectIconString = null;
+        private bool _seenAddon = false;
+
+        private static unsafe AtkUnitBase* addonRepair = null;
+        private static unsafe AtkUnitBase* addonSelectYesno = null;
+        private static unsafe AtkUnitBase* addonSelectIconString = null;
         private static RepairNPCHelper.RepairNpcData? _preferredRepairNpc => Plugin.Configuration.PreferredRepairNPC;
 
-        internal static unsafe void RepairStopUpdate(IFramework framework)
+        protected override unsafe void HelperStopUpdate(IFramework framework)
         {
             if (!Svc.Condition[ConditionFlag.OccupiedInQuestEvent])
-            {
-                State = ActionState.None;
-                Plugin.States &= ~PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(true);
-                Svc.Framework.Update -= RepairStopUpdate;
-            }
+                base.HelperStopUpdate(framework);
             else if (Svc.Targets.Target != null)
                 Svc.Targets.Target = null;
-            else if (GenericHelpers.TryGetAddonByName("SelectIconString", out AtkUnitBase* addonSelectIconString))
-                addonSelectIconString->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                addonSelectYesno->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("Repair", out AtkUnitBase* addonRepair))
-                addonRepair->Close(true);
-            return;
+            else
+                this.CloseAddons();
         }
 
-        internal static unsafe void RepairUpdate(IFramework framework)
+        protected override unsafe void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Navigating))
                 Stop();

@@ -630,21 +630,13 @@ public sealed class AutoDuty : IDalamudPlugin
                 {
                     TaskManager.Enqueue(() => AutoRetainer_IPCSubscriber.IsBusy(), 15000, "Loop-AutoRetainerIntegrationDisabledWait15sRetainerSense");
                     TaskManager.Enqueue(() => !AutoRetainer_IPCSubscriber.IsBusy(), int.MaxValue, "Loop-AutoRetainerIntegrationDisabledWaitARNotBusy");
-                    TaskManager.Enqueue(() => AutoRetainerHelper.Stop(), "Loop-AutoRetainerStop");
+                    TaskManager.Enqueue(() => AutoRetainerHelper.ForceStop(), "Loop-AutoRetainerStop");
                 }
             }
 
             AutoConsume();
 
             AutoEquipRecommendedGear();
-
-            if (Configuration.AM)
-            {
-                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoMarket Between Loop Action"));
-                TaskManager.Enqueue(() => AMHelper.Invoke(), "Loop-AM");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => AMHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAMComplete");
-            }
 
             if (Configuration.AutoRepair && InventoryHelper.CanRepair())
             {
@@ -1486,7 +1478,7 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
 
         if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
-            AutoRetainerHelper.CloseRetainerWindows();
+            while(!AutoRetainerHelper.Instance.CloseAddons());
     }
 
     private void InteractablesCheck()
@@ -1497,7 +1489,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!list.Any()) return;
 
-        var index = Actions.Select((Value, Index) => (Value, Index)).Where(x => Interactables.Contains(x.Value.Arguments.Any(y => y.Any(z => z == ' ')) ? uint.Parse(x.Value.Arguments[0].Split(" ")[0]) : uint.Parse(x.Value.Arguments[0]))).First().Index;
+        var index = this.Actions.Select((Value, Index) => (Value, Index)).First(x => this.Interactables.Contains(x.Value.Arguments.Any(y => y.Any(z => z == ' ')) ? uint.Parse(x.Value.Arguments[0].Split(" ")[0]) : uint.Parse(x.Value.Arguments[0]))).Index;
 
         if (index > Indexer)
         {
@@ -1599,50 +1591,25 @@ public sealed class AutoDuty : IDalamudPlugin
             SetRotationPluginSettings(false);
         if (Indexer > 0 && !MainListClicked)
             Indexer = -1;
-        if (Configuration.ShowOverlay && Configuration.HideOverlayWhenStopped)
+        if (this.Configuration is { ShowOverlay: true, HideOverlayWhenStopped: true })
             Overlay.IsOpen = false;
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetTolerance() > 0.25F)
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
         FollowHelper.SetFollow(null);
-        if (ExtractHelper.State == ActionState.Running)
-            ExtractHelper.Stop();
-        if (GCTurninHelper.State == ActionState.Running)
-            GCTurninHelper.Stop();
-        if (DesynthHelper.State == ActionState.Running)
-            DesynthHelper.Stop();
-        if (GotoHelper.State == ActionState.Running)
-            GotoHelper.Stop();
-        if (GotoInnHelper.State == ActionState.Running)
-            GotoInnHelper.Stop();
-        if (GotoBarracksHelper.State == ActionState.Running)
-            GotoBarracksHelper.Stop();
-        if (RepairHelper.State == ActionState.Running)
-            RepairHelper.Stop();
-        if (QueueHelper.State == ActionState.Running)
-            QueueHelper.Stop();
-        if (AMHelper.State == ActionState.Running)
-            AMHelper.Stop();
-        if (AutoRetainerHelper.State == ActionState.Running)
-            AutoRetainerHelper.Stop();
+
         if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
             VNavmesh_IPCSubscriber.Path_Stop();
+
         if (MapHelper.State == ActionState.Running)
             MapHelper.StopMoveToMapMarker();
-        if (GotoHousingHelper.State == ActionState.Running)
-            GotoHousingHelper.Stop();
-        if (ExitDutyHelper.State == ActionState.Running)
-            ExitDutyHelper.Stop();
-        if (AutoEquipHelper.State == ActionState.Running)
-            AutoEquipHelper.Stop();
-        if (CofferHelper.State == ActionState.Running)
-            CofferHelper.Stop();
-        if(TripleTriadCardSellHelper.State == ActionState.Running)
-            TripleTriadCardSellHelper.Stop();
-        if (TripleTriadCardUseHelper.State == ActionState.Running)
-            TripleTriadCardUseHelper.Stop();
+
         if (DeathHelper.DeathState == PlayerLifeState.Revived)
             DeathHelper.Stop();
-         
+
+        foreach (IActiveHelper helper in ActiveHelper.activeHelpers) 
+            helper.StopIfRunning();
+
+
         Wrath_IPCSubscriber.Release();
         Action = "";
     }
@@ -1806,10 +1773,6 @@ public sealed class AutoDuty : IDalamudPlugin
                     Indexer++;
                     Stage = Stage.Reading_Path;
                 }
-                break;
-            case "am":
-                Configuration.UnhideAM ^= true;
-                Configuration.Save();
                 break;
             case "movetoflag":
                 MapHelper.MoveToMapMarker();

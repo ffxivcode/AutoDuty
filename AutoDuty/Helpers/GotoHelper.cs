@@ -12,8 +12,13 @@ namespace AutoDuty.Helpers
 {
     using Lumina.Excel.Sheets;
 
-    internal static class GotoHelper
+    internal class GotoHelper : ActiveHelperBase<GotoHelper>
     {
+        protected override string Name        { get; } = nameof(GotoHelper);
+        protected override string DisplayName { get; } = string.Empty;
+
+        protected override string[] AddonsToClose { get; } = ["SelectYesno"];
+
         internal static void Invoke(uint territoryType) => Invoke(territoryType, 0);
 
         internal static void Invoke(uint territoryType, uint gameObjectDataId) => Invoke(territoryType, [], gameObjectDataId, 0.25f, 0.25f, false, false, true);
@@ -32,11 +37,8 @@ namespace AutoDuty.Helpers
         {
             if (State != ActionState.Running)
             {
-                Svc.Log.Info($"Goto Started, Going to {territoryType}{(moveLocations.Count>0 ? $" and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations" : "")}");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(false);
+                Svc.Log.Info($"Goto Started, Going to {territoryType}{(moveLocations.Count > 0 ? $" and moving to {moveLocations[^1]} using {moveLocations.Count} pathLocations" : "")}");
+                
                 _territoryType = territoryType;
                 _gameObjectDataId = gameObjectDataId;
                 _moveLocations = moveLocations;
@@ -45,19 +47,21 @@ namespace AutoDuty.Helpers
                 _useAethernetTravel = useAethernetTravel;
                 _useFlight = useFlight;
                 _useMesh = useMesh;
-                Svc.Framework.Update += GotoUpdate;
+                Instance.Start();
+                SchedulerHelper.DescheduleAction($"Helper_{nameof(GotoHelper)}_TimeOut");
             }
         }
 
-        internal unsafe static void Stop() 
+        internal override unsafe void Stop() 
         {
             if (State == ActionState.Running)
                 Svc.Log.Info($"Goto Finished");
-            Svc.Framework.Update -= GotoUpdate;
-            State = ActionState.None;
-            Plugin.States &= ~PluginState.Other;
+            Svc.Framework.Update -= this.HelperUpdate;
+            State                =  ActionState.None;
+            Plugin.States        &= ~PluginState.Other;
             if (!Plugin.States.HasFlag(PluginState.Looping))
                 Plugin.SetGeneralSettings(true);
+
             _territoryType = 0;
             _gameObjectDataId = 0;
             _moveLocations = [];
@@ -68,13 +72,12 @@ namespace AutoDuty.Helpers
             _useFlight = false;
             _useMesh = true;
             Plugin.Action = "";
+
             if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
                 addonSelectYesno->Close(true);
             if (VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_IsRunning())
                 VNavmesh_IPCSubscriber.Path_Stop();
         }
-
-        internal static ActionState State = ActionState.None;
 
         private static uint _territoryType = 0;
         private static uint _gameObjectDataId = 0;
@@ -85,9 +88,10 @@ namespace AutoDuty.Helpers
         private static bool _useAethernetTravel = false;
         private static bool _useFlight = false;
         private static bool _useMesh = true;
-        private static IGameObject? _gameObject => _gameObjectDataId > 0 ? ObjectHelper.GetObjectByDataId(_gameObjectDataId) : null;
+        private IGameObject? _gameObject => _gameObjectDataId > 0 ? ObjectHelper.GetObjectByDataId(_gameObjectDataId) : null;
 
-        internal unsafe static void GotoUpdate(IFramework framework)
+
+        protected override unsafe void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Navigating))
                 Stop();

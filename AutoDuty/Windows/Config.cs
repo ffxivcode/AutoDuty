@@ -266,9 +266,6 @@ public class Configuration : IPluginConfiguration
 
     public bool EnableAutoRetainer = false;
     public SummoningBellLocations PreferredSummoningBellEnum = 0;
-    public bool AM = false;
-    public bool UnhideAM = false;
-
     //Termination Config Options
     public bool EnableTerminationActions = true;
     public bool StopLevel = false;
@@ -1582,21 +1579,7 @@ public static class ConfigTab
                     if (ImGui.Checkbox("Enable AutoRetainer Integration", ref Configuration.EnableAutoRetainer))
                         Configuration.Save();
                 }
-                if (Configuration.UnhideAM)
-                {
-                    ImGui.SameLine(0, 5);
-                    if (ImGui.Checkbox("AM", ref Configuration.AM))
-                    {
-                        if (!AM_IPCSubscriber.IsEnabled)
-                            MainWindow.ShowPopup("DISCLAIMER", "AM Requires a plugin - Visit\nDO NOT DISCUSS THIS OPTION IN PUNI.SH DISCORD\nYOU HAVE BEEN WARNED!!!!!!!");
-                        else if (Configuration.AM)
-                            MainWindow.ShowPopup("DISCLAIMER", "By enabling the usage of this option, you are agreeing to NEVER discuss this option within the Puni.sh Discord or to anyone in Puni.sh! \nYou have been warned!!!");
-                        Configuration.Save();
-                    }
-                    ImGuiComponents.HelpMarker("By enabling the usage of this option, you are agreeing to NEVER discuss this option within the Puni.sh Discord or to anyone in Puni.sh! You have been warned!!!");
-                    MainWindow.DrawPopup();
-                }
-                if (Configuration.EnableAutoRetainer || Configuration.AM)
+                if (Configuration.EnableAutoRetainer)
                 {
                     ImGui.Text("Preferred Summoning Bell Location: ");
                     ImGuiComponents.HelpMarker("No matter what location is chosen, if there is a summoning bell in the location you are in when this is invoked it will go there instead");
@@ -1624,19 +1607,6 @@ public static class ConfigTab
                     ImGui.Text("Visit ");
                     ImGui.SameLine(0, 0);
                     ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://puni.sh/plugin/AutoRetainer");
-                }
-
-
-                if (Configuration.UnhideAM && !AM_IPCSubscriber.IsEnabled)
-                {
-                    if (Configuration.AM)
-                    {
-                        Configuration.AM = false;
-                        Configuration.Save();
-                    }
-                    ImGui.TextWrapped("* AM Requires a plugin, Visit:");
-                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://discord.gg/JzSxThjKnd");
-                    ImGui.TextWrapped("DO NOT DISCUSS THIS OPTION WITHIN THE PUNI.SH DISCORD, YOU HAVE BEEN WARNED!!!!!!!");
                 }
             }
         }
