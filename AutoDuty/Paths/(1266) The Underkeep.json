@@ -78,11 +78,26 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": -144.59764,
-        "Y": -30.885231,
-        "Z": 224.98328
+        "X": -131.28,
+        "Y": -28.01,
+        "Z": 230.14
       },
-      "arguments": [],
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "W2W",
+      "name": "Wait",
+      "position": {
+        "X": -141.83,
+        "Y": -33.67,
+        "Z": 194.98
+      },
+      "arguments": [
+        "1000"
+      ],
       "note": ""
     },
     {
@@ -579,6 +594,10 @@
       {
         "version": 203,
         "change": "adjusted b1 arena exit"
+      },
+      {
+        "version": 204,
+        "change": "Added wait in second mob pull W2W"
       }
     ],
     "notes": []
