@@ -53,13 +53,13 @@ namespace AutoDuty.Helpers
 
             if (GenericHelpers.TryGetAddonByName("SalvageResult", out AtkUnitBase* addonSalvageResult) && GenericHelpers.IsAddonReady(addonSalvageResult))
             {
-                Svc.Log.Info("Closing SalvageResult");
+                DebugLog("Closing SalvageResult");
                 addonSalvageResult->Close(true);
                 return;
             }
             else if (GenericHelpers.TryGetAddonByName("SalvageDialog", out AtkUnitBase* addonSalvageDialog) && GenericHelpers.IsAddonReady(addonSalvageDialog))
             {
-                Svc.Log.Info("Confirming SalvageDialog");
+                DebugLog("Confirming SalvageDialog");
                 AddonHelper.FireCallBack(addonSalvageDialog, true, 0, false);
                 return;
             }
@@ -71,7 +71,7 @@ namespace AutoDuty.Helpers
                 AgentSalvage.Instance()->ItemListRefresh(true);
                 if (AgentSalvage.Instance()->SelectedCategory != AgentSalvage.SalvageItemCategory.InventoryEquipment)
                 {
-                    Svc.Log.Info("Switching Category");
+                    DebugLog("Switching Category");
                     AddonHelper.FireCallBack((AtkUnitBase*)addonSalvageItemSelector, true, 11, 0);
                     return;
                 }
@@ -93,7 +93,7 @@ namespace AutoDuty.Helpers
 
                         if (!Plugin.Configuration.AutoDesynthSkillUp || (desynthLevel < itemLevel + 50 && desynthLevel < _maxDesynthLevel))
                         {
-                            Svc.Log.Debug($"Salvaging Item({i}): {itemSheetRow.Value.Name.ToString()} with iLvl {itemLevel} because our desynth level is {desynthLevel}");
+                            DebugLog($"Salvaging Item({i}): {itemSheetRow.Value.Name.ToString()} with iLvl {itemLevel} because our desynth level is {desynthLevel}");
                             foundOne = true;
                             AddonHelper.FireCallBack((AtkUnitBase*)addonSalvageItemSelector, true, 12, i);
                             return;
@@ -103,14 +103,14 @@ namespace AutoDuty.Helpers
                     if (!foundOne)
                     {
                         addonSalvageItemSelector->Close(true);
-                        Svc.Log.Info("Desynth Finished");
+                        DebugLog("Desynth Finished");
                         Stop();
                     }
                 }
                 else
                 {
                     addonSalvageItemSelector->Close(true);
-                    Svc.Log.Info("Desynth Finished");
+                    DebugLog("Desynth Finished");
                     Stop();
                 }
             }

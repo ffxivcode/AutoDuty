@@ -99,6 +99,8 @@ namespace AutoDuty.Helpers
 
         protected abstract unsafe void HelperUpdate(IFramework framework);
 
+        protected virtual int UpdateBaseThrottle { get; set; } = 500;
+
         protected bool UpdateBase()
         {
             if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.InDungeon)
@@ -107,7 +109,7 @@ namespace AutoDuty.Helpers
                 return false;
             }
 
-            if (!EzThrottler.Throttle(this.Name, 250))
+            if (!EzThrottler.Throttle(this.Name, this.UpdateBaseThrottle))
                 return false;
 
             if (GotoHelper.State == ActionState.Running)

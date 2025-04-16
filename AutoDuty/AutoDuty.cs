@@ -609,13 +609,8 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.DelayNext("Loop-DelayAfterCommands", 1000);
             }
 
-            if (Configuration.AutoOpenCoffers)
-            {
-                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoCoffers Between Loop Action"));
-                TaskManager.Enqueue(CofferHelper.Invoke, "Loop-AutoCoffers");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => CofferHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoCofferComplete");
-            }
+            if (Configuration.AutoOpenCoffers) 
+                EnqueueActiveHelper<CofferHelper>();
 
             if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.IsEnabled && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
             {
@@ -638,61 +633,28 @@ public sealed class AutoDuty : IDalamudPlugin
 
             AutoEquipRecommendedGear();
 
-            if (Configuration.AutoRepair && InventoryHelper.CanRepair())
-            {
-                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoRepair Between Loop Action"));
-                TaskManager.Enqueue(() => RepairHelper.Invoke(), "Loop-AutoRepair");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => RepairHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoRepairComplete");
-                TaskManager.Enqueue(() => PlayerHelper.IsReadyFull, "Loop-WaitIsReadyFull");
-            }
+            if (Configuration.AutoRepair && InventoryHelper.CanRepair()) 
+                EnqueueActiveHelper<RepairHelper>();
 
-            if (Configuration.AutoExtract && (QuestManager.IsQuestComplete(66174)))
-            {
-                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoExtract Between Loop Action"));
-                TaskManager.Enqueue(() => ExtractHelper.Invoke(), "Loop-AutoExtract");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => ExtractHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoExtractComplete");
-                TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                   "Loop-WaitIsReadyFull");
-            }
+            if (Configuration.AutoExtract && QuestManager.IsQuestComplete(66174)) 
+                EnqueueActiveHelper<ExtractHelper>();
 
-            if (Configuration.AutoDesynth)
-            {
-                TaskManager.Enqueue(() => Svc.Log.Debug($"AutoDesynth Between Loop Action"));
-                TaskManager.Enqueue(() => DesynthHelper.Invoke(), "Loop-AutoDesynth");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => DesynthHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoDesynthComplete");
-                TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                   "Loop-WaitIsReadyFull");
-            }
+            if (Configuration.AutoDesynth) 
+                EnqueueActiveHelper<DesynthHelper>();
 
             if (Configuration.AutoGCTurnin && (!Configuration.AutoGCTurninSlotsLeftBool || InventoryManager.Instance()->GetEmptySlotsInBag() <= Configuration.AutoGCTurninSlotsLeft) && PlayerHelper.GetGrandCompanyRank() > 5)
-            {
-                TaskManager.Enqueue(() => Svc.Log.Debug($"GC Turnin Between Loop Action"));
-                TaskManager.Enqueue(() => GCTurninHelper.Invoke(), "Loop-AutoGCTurnin");
-                TaskManager.DelayNext("Loop-Delay50", 50);
-                TaskManager.Enqueue(() => GCTurninHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitAutoGCTurninComplete");
-                TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                    "Loop-WaitIsReadyFull");
-            }
+                EnqueueActiveHelper<GCTurninHelper>();
 
             if (Configuration.TripleTriadEnabled)
             {
-                if (Configuration.TripleTriadRegister)
-                {
-                    TaskManager.Enqueue(() => Svc.Log.Debug($"Registers TT Cards Between Loop Action"));
-                    TaskManager.Enqueue(() => TripleTriadCardUseHelper.Invoke(), "Loop-RegisterTTC");
-                    TaskManager.DelayNext("Loop-Delay50", 50);
-                    TaskManager.Enqueue(() => TripleTriadCardUseHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitRegisterTTComplete");
-                    TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                              "Loop-WaitIsReadyFull");
-                }
-                if (Configuration.TripleTriadSell)
-                {
-                    TaskManager.Enqueue(() => Svc.Log.Debug($"Selling TT Cards Between Loop Action"));
-                    TaskManager.Enqueue(() => TripleTriadCardSellHelper.Invoke(), "Loop-SellTTC");
-                    TaskManager.DelayNext("Loop-Delay50", 50);
-                    TaskManager.Enqueue(() => TripleTriadCardSellHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitSellTTComplete");
-                    TaskManager.Enqueue(() => PlayerHelper.IsReadyFull,                               "Loop-WaitIsReadyFull");
-                }
+                if (Configuration.TripleTriadRegister) 
+                    EnqueueActiveHelper<TripleTriadCardUseHelper>();
+                if (Configuration.TripleTriadSell) 
+                    EnqueueActiveHelper<TripleTriadCardSellHelper>();
             }
+
+            if (Configuration.DiscardItems) 
+                EnqueueActiveHelper<DiscardHelper>();
 
             if (Configuration.DutyModeEnum != DutyMode.Squadron && Configuration.RetireMode)
             {
@@ -710,6 +672,16 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => GotoHousingHelper.State != ActionState.Running && GotoBarracksHelper.State != ActionState.Running && GotoInnHelper.State != ActionState.Running, int.MaxValue, "Loop-WaitGotoComplete");
             }
         }
+
+        void EnqueueActiveHelper<T>() where T : ActiveHelperBase<T>, new()
+        {
+            TaskManager.Enqueue(() => Svc.Log.Debug($"Enqueueing {typeof(T).Name}"), "Loop-ActiveHelper");
+            TaskManager.Enqueue(() => ActiveHelperBase<T>.Invoke(), $"Loop-{typeof(T).Name}");
+            TaskManager.DelayNext("Loop-Delay50", 50);
+            TaskManager.Enqueue(() => ActiveHelperBase<T>.State != ActionState.Running, int.MaxValue, $"Loop-Wait-{typeof(T).Name}-Complete");
+            TaskManager.Enqueue(() => PlayerHelper.IsReadyFull, "Loop-WaitIsReadyFull");
+        }
+
 
         if (!queue)
         {
