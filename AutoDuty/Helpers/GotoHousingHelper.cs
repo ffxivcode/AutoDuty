@@ -10,33 +10,29 @@ using System.Collections.Generic;
 
 namespace AutoDuty.Helpers
 {
-    internal static class GotoHousingHelper
+    internal class GotoHousingHelper : ActiveHelperBase<GotoHousingHelper>
     {
+        protected override string Name        { get; } = nameof(GotoHousingHelper);
+        protected override string DisplayName { get; } = string.Empty;
+
+        protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingWardSelection", "HousingWardSelectionDialog"];
+
+        protected override int TimeOut { get; set; } = 600_000;
+
         internal static void Invoke(Housing whichHousing)
         {
-            if (State != ActionState.Running && !InPrivateHouse(whichHousing))
+            if (!InPrivateHouse(whichHousing))
             {
-                Svc.Log.Info($"Goto {whichHousing} Started");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(false);
                 _whichHousing = whichHousing;
-                SchedulerHelper.ScheduleAction("GotoHousingTimeOut", Stop, 600000);
-                Svc.Framework.Update += GotoHousingUpdate;
+                Instance.Start();
             }
         }
 
-        internal static void Stop() 
+        internal override void Stop() 
         {
-            if (State == ActionState.Running)
-                Svc.Log.Info($"Goto {_whichHousing} Finished");
-            SchedulerHelper.DescheduleAction("GotoHousingTimeOut");
-            GotoHelper.Stop();
-            Svc.Framework.Update += GotoHousingStopUpdate;
-            Svc.Framework.Update -= GotoHousingUpdate;
+            GotoHelper.ForceStop();
+            base.Stop();
             _whichHousing = Housing.Apartment;
-            Plugin.Action = "";
             _index = 0;
         }
 
@@ -91,31 +87,19 @@ namespace AutoDuty.Helpers
               (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId == 165) ||
               (whichHousing == Housing.Apartment     && TeleportHelper.ApartmentTeleportId    == 165)));
 
-        internal static ActionState State = ActionState.None;
-
-        private static IGameObject? _entranceGameObject => _whichHousing == Housing.FC_Estate ? TeleportHelper.FCEstateEntranceGameObject : (_whichHousing == Housing.Personal_Home ? TeleportHelper.PersonalHomeEntranceGameObject : TeleportHelper.ApartmentEntranceGameObject);
-        private static Housing _whichHousing = Housing.Apartment;
-        private static List<Vector3> _entrancePath => _whichHousing == Housing.Personal_Home ? Plugin.Configuration.PersonalHomeEntrancePath : Plugin.Configuration.FCEstateEntrancePath;
-        private static int _index = 0;
-
-        internal unsafe static void GotoHousingStopUpdate(IFramework framework)
+        private static IGameObject? _entranceGameObject => _whichHousing switch
         {
-            if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                addonSelectYesno->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
-                addonSelectString->Close(true);
-            else if (PlayerHelper.IsReady)
-            {
-                State = ActionState.None;
-                Plugin.States &= ~PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(true);
-                Svc.Framework.Update -= GotoHousingStopUpdate;
-            }
-            return;
-        }
+            Housing.FC_Estate => TeleportHelper.FCEstateEntranceGameObject,
+            Housing.Personal_Home => TeleportHelper.PersonalHomeEntranceGameObject,
+            _ => TeleportHelper.ApartmentEntranceGameObject
+        };
+        private static Housing _whichHousing = Housing.Apartment;
+        private static List<Vector3> _entrancePath => _whichHousing == Housing.Personal_Home ? 
+                                                          Plugin.Configuration.PersonalHomeEntrancePath : 
+                                                          Plugin.Configuration.FCEstateEntrancePath;
+        private int _index = 0;
 
-        internal unsafe static void GotoHousingUpdate(IFramework framework)
+        protected override void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Navigating))
             {

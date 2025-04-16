@@ -6,57 +6,35 @@ using ECommons.DalamudServices;
 
 namespace AutoDuty.Helpers
 {
-    internal static class ExitDutyHelper
+    internal class ExitDutyHelper : ActiveHelperBase<ExitDutyHelper>
     {
-        internal static void Invoke()
+        protected override string Name        => nameof(ExitDutyHelper);
+        protected override string DisplayName => "Exiting Duty";
+
+        protected override int TimeOut { get; set; } = 60_000;
+
+        protected override string[] AddonsToClose { get; } = ["ContentsFinderMenu"];
+
+        internal override void Start()
         {
-            if (State != ActionState.Running && Svc.ClientState.TerritoryType != 0)
+            base.Start();
+
+            if (Svc.ClientState.TerritoryType != 0)
             {
-                Svc.Log.Info("ExitDuty Started");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(false);
-                SchedulerHelper.ScheduleAction("ExitDutyTimeOut", Stop, 60000);
-                Plugin.Action = "Exiting Duty";
                 _currentTerritoryType = Svc.ClientState.TerritoryType;
-                Svc.Framework.Update += ExitDutyUpdate;
+                base.Start();
             }
         }
 
-        internal static unsafe void Stop()
-        {
-            Plugin.Action = "";
-            SchedulerHelper.DescheduleAction("ExitDutyTimeOut");
-            Svc.Framework.Update += ExitDutyStopUpdate;
-            Svc.Framework.Update -= ExitDutyUpdate;
+        private uint _currentTerritoryType = 0;
 
-            if (GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
-                addonContentsFinderMenu->Close(true);
+        protected override void HelperStopUpdate(IFramework framework)
+        {
+            base.HelperStopUpdate(framework);
+            this._currentTerritoryType = 0;
         }
 
-        internal static ActionState State = ActionState.None;
-
-        private static uint _currentTerritoryType = 0;
-
-        internal static unsafe void ExitDutyStopUpdate(IFramework framework)
-        {
-            if (GenericHelpers.TryGetAddonByName("ContentsFinderMenu", out AtkUnitBase* addonContentsFinderMenu))
-                addonContentsFinderMenu->Close(true);
-            else
-            {
-                Svc.Log.Info("ExitDuty Finished");
-                State = ActionState.None;
-                Plugin.States &= ~PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(true);
-                _currentTerritoryType = 0;
-                Svc.Framework.Update -= ExitDutyStopUpdate;
-            }
-            return;
-        }
-
-        internal static unsafe void ExitDutyUpdate(IFramework framework)
+        protected override void HelperUpdate(IFramework framework)
         {
             if (!PlayerHelper.IsReady || PlayerHelper.InCombat)
                 return;

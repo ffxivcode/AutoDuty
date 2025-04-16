@@ -15,7 +15,7 @@ namespace AutoDuty.Helpers
 
     internal static class MovementHelper
     {
-        public unsafe static bool IsFlyingSupported => Svc.ClientState.TerritoryType != 0 && Svc.Data.GetExcelSheet<TerritoryType>().GetRowOrDefault(Svc.ClientState.TerritoryType)?.TerritoryIntendedUse.RowId is 1 or 49 or 47 && PlayerState.Instance()->IsAetherCurrentZoneComplete(Svc.Data.GetExcelSheet<TerritoryType>()!.GetRow(Svc.ClientState.TerritoryType).AetherCurrentCompFlgSet.RowId);
+        public static unsafe bool IsFlyingSupported => Svc.ClientState.TerritoryType != 0 && Svc.Data.GetExcelSheet<TerritoryType>().GetRowOrDefault(Svc.ClientState.TerritoryType)?.TerritoryIntendedUse.RowId is 1 or 49 or 47 && PlayerState.Instance()->IsAetherCurrentZoneComplete(Svc.Data.GetExcelSheet<TerritoryType>()!.GetRow(Svc.ClientState.TerritoryType).AetherCurrentCompFlgSet.RowId);
 
         internal static void Stop() => VNavmesh_IPCSubscriber.Path_Stop();
 
@@ -27,7 +27,7 @@ namespace AutoDuty.Helpers
             return Move(gameObject.Position, tollerance, lastPointTollerance, fly, useMesh);
         }
 
-        internal unsafe static bool Move(Vector3 position, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false, bool useMesh = true)
+        internal static unsafe bool Move(Vector3 position, float tollerance = 0.25f, float lastPointTollerance = 0.25f, bool fly = false, bool useMesh = true)
         {
             if (!PlayerHelper.IsValid)
                 return false;

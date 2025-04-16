@@ -6,33 +6,19 @@
     using ECommons.Throttlers;
     using FFXIVClientStructs.FFXIV.Component.GUI;
 
-    internal static class PortraitHelper
+    internal class PortraitHelper : ActiveHelperBase<PortraitHelper>
     {
-        internal static ActionState State = ActionState.None;
+        protected override string Name        { get; } = nameof(PortraitHelper);
+        protected override string DisplayName { get; } = "Updating Portrait";
+        protected override int    TimeOut     { get; set; } = 10_000;
 
-        internal static void Invoke()
+        internal override void Start()
         {
-            if (State != ActionState.Running && Svc.ClientState.TerritoryType != 0)
-            {
-                Svc.Log.Info("Portrait Started");
-                State         =  ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                
-                SchedulerHelper.ScheduleAction("PortraitTimeOut", Stop, 10000);
-                Plugin.Action         =  "Updating Portrait";
-                Svc.Framework.Update  += PortraitUpdate;
-            }
+            if (Svc.ClientState.TerritoryType != 0) 
+                base.Start();
         }
 
-        internal static void Stop()
-        {
-            Plugin.Action = "";
-            SchedulerHelper.DescheduleAction("PortraitTimeOut");
-            Svc.Framework.Update -= PortraitUpdate;
-        }
-
-
-        internal static unsafe void PortraitUpdate(IFramework framework)
+        protected override unsafe void HelperUpdate(IFramework framework)
         {
             if (!EzThrottler.Throttle("PortraitUpdate", 500))
                 return;
@@ -40,7 +26,7 @@
                 return;
             AddonHelper.FireCallBack(addonBanner, true, 0);
 
-            Svc.Framework.Update -= PortraitUpdate;
+            this.Stop();
         }
 
     }

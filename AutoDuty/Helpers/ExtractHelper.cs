@@ -8,68 +8,37 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoDuty.Helpers
 {
-    internal static class ExtractHelper
+    internal class ExtractHelper : ActiveHelperBase<ExtractHelper>
     {
-        internal static void Invoke()
+        protected override string Name        => nameof(ExtractHelper);
+        protected override string DisplayName => "Extracting Materia";
+
+        protected override string[] AddonsToClose { get; } = ["Materialize", "MaterializeDialog", "SelectYesno", "SelectString"];
+
+        internal override void Start()
         {
             if (!QuestManager.IsQuestComplete(66174))
                 Svc.Log.Info("Materia Extraction requires having completed quest: Forging the Spirit");
-            else if (State != ActionState.Running)
+            else
             {
-                Svc.Log.Info("Extract Materia Started");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                SchedulerHelper.ScheduleAction("ExtractTimeOut", Stop, 300000);
-                if (Plugin.Configuration.AutoExtractAll)
-                    _stoppingCategory = 6;
-                else
-                    _stoppingCategory = 0;
-                Plugin.Action = "Extracting Materia";
-                Svc.Framework.Update += ExtractUpdate;
+                base.Start();
+
+                _stoppingCategory = Plugin.Configuration.AutoExtractAll ? 6 : 0;
             }
         }
 
-        internal unsafe static void Stop()
+        internal override unsafe void Stop()
         {
             _currentCategory = 0;
             _switchedCategory = false;
-            Plugin.States |= PluginState.Other;
-            Plugin.Action = "";
-            if (!Plugin.States.HasFlag(PluginState.Looping))
-                Plugin.SetGeneralSettings(false);
-            SchedulerHelper.DescheduleAction("ExtractTimeOut");
-            Svc.Framework.Update += ExtractStopUpdate;
-            Svc.Framework.Update -= ExtractUpdate;
-            if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog))
-                addonMaterializeDialog->Close(true);
-            if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize))
-                addonMaterialize->Close(true);
+            base.Stop();
         }
 
-        internal static ActionState State = ActionState.None;
+        private int _currentCategory = 0;
+        private int _stoppingCategory;
+        private bool _switchedCategory = false;
 
-        private static int _currentCategory = 0;
-        private static int _stoppingCategory;
-        private static bool _switchedCategory = false;
-
-        internal static unsafe void ExtractStopUpdate(IFramework framework)
-        {
-            if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialogClose))
-                addonMaterializeDialogClose->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterializeClose))
-                addonMaterializeClose->Close(true);
-            else
-            {
-                State = ActionState.None;
-                Plugin.States &= ~PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(true);
-                Svc.Framework.Update -= ExtractStopUpdate;
-            }
-            return;
-        }
-
-        internal static unsafe void ExtractUpdate(IFramework framework)
+        protected override unsafe void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.InDungeon)
                 Stop();

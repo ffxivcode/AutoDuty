@@ -14,50 +14,12 @@ namespace AutoDuty.Helpers
     using FFXIVClientStructs.FFXIV.Client.Game.UI;
     using Lumina.Excel.Sheets;
 
-    internal class TripleTriadCardUseHelper
+    internal class TripleTriadCardUseHelper : ActiveHelperBase<TripleTriadCardUseHelper>
     {
-        internal static unsafe void Invoke()
-        {
-            if (State != ActionState.Running)
-            {
-                Svc.Log.Info("Registering Triple Triad Cards");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-
-
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(false);
-
-                SchedulerHelper.ScheduleAction("TTCTimeOut", Stop, 300000);
-                Plugin.Action = "Registering Cards";
-                Svc.Framework.Update += CardsOpenUpdate;
-            }
-        }
-
-        internal unsafe static void Stop()
-        {
-            Svc.Log.Info("Registering Triple Triad Cards Done");
-            Plugin.States |= PluginState.Other;
-            Plugin.Action = "";
-
-            SchedulerHelper.DescheduleAction("TTCTimeOut");
-            Svc.Framework.Update += CardsOpenStopUpdate;
-            Svc.Framework.Update -= CardsOpenUpdate;
-        }
-
-        internal static ActionState State = ActionState.None;
-
-        internal static void CardsOpenStopUpdate(IFramework framework)
-        {
-            State = ActionState.None;
-            Plugin.States &= ~PluginState.Other;
-            if (!Plugin.States.HasFlag(PluginState.Looping))
-                Plugin.SetGeneralSettings(true);
-            Svc.Framework.Update -= CardsOpenStopUpdate;
-        }
-
-
-        internal static unsafe void CardsOpenUpdate(IFramework framework)
+        protected override string Name        { get; } = nameof(TripleTriadCardUseHelper);
+        protected override string DisplayName { get; } = "Registering Cards";
+        
+        protected override unsafe void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.InDungeon)
                 Stop();
@@ -74,7 +36,7 @@ namespace AutoDuty.Helpers
             if (PlayerHelper.IsCasting || !PlayerHelper.IsReadyFull || Player.IsBusy)
                 return;
 
-            Svc.Log.Debug("TripleTriadCardUseHelper: Checking items");
+            DebugLog("Checking items");
 
             IEnumerable<InventoryItem> items = InventoryHelper.GetInventorySelection(InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4)
                                                                .Where(iv =>
@@ -88,7 +50,7 @@ namespace AutoDuty.Helpers
 
             if (items.Any())
             {
-                Svc.Log.Debug("TripleTriadCardUseHelper: item found");
+                DebugLog("item found");
 
                 InventoryItem item = items.First();
 
@@ -96,15 +58,15 @@ namespace AutoDuty.Helpers
 
                 if (!PlayerHelper.IsCasting)
                 {
-                    Svc.Log.Debug("TripleTriadCardUseHelper: failed to use item");
+                    DebugLog("failed to use item");
                     return;
                 }
 
-                Svc.Log.Debug("TripleTriadCardUseHelper: item used");
+                DebugLog("item used");
             }
             else
             {
-                Svc.Log.Debug("TripleTriadCardUseHelper: no items found");
+                DebugLog("no items found");
                 Stop();
             }
         }

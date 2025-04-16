@@ -15,7 +15,7 @@ namespace AutoDuty.Helpers
     using System;
     using static Data.Classes;
 
-    internal static unsafe class QueueHelper
+    internal unsafe class QueueHelper : ActiveHelperBase<QueueHelper>
     {
         internal static void Invoke(Content? content, DutyMode dutyMode)
         {
@@ -24,35 +24,34 @@ namespace AutoDuty.Helpers
                 _dutyMode = dutyMode;
                 _content = content;
                 Svc.Log.Info($"Queueing: {dutyMode}: {content.Name}");
+
+                Instance.Start();
                 Plugin.Action = $"Queueing {_dutyMode}: {content.Name}";
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                Svc.Framework.Update += QueueUpdate;
             }
         }
 
-        internal static void Stop()
+        protected override string Name        => nameof(QueueHelper);
+        protected override string DisplayName => $"Queueing {_dutyMode}: {_content?.Name}";
+
+        internal override void Stop()
         {
-            Svc.Framework.Update -= QueueUpdate;
             if (State == ActionState.Running)
                 Svc.Log.Info($"Done Queueing: {_dutyMode}: {_content?.Name}");
             _content = null;
-            State = ActionState.None;
-            Plugin.States &= ~PluginState.Other;
             _allConditionsMetToJoin = false;
             _turnedOffTrustMembers = false;
             _turnedOnConfigMembers = false;
             _dutyMode = DutyMode.None;
-        }
 
-        internal static ActionState State = ActionState.None;
+            base.Stop();
+        }
 
         private static Content? _content = null;
         private static DutyMode _dutyMode = DutyMode.None;
-        private static AddonContentsFinder* _addonContentsFinder = null;
-        private static bool _allConditionsMetToJoin = false;
-        private static bool _turnedOffTrustMembers = false;
-        private static bool _turnedOnConfigMembers = false;
+        private AddonContentsFinder* _addonContentsFinder = null;
+        private bool _allConditionsMetToJoin = false;
+        private bool _turnedOffTrustMembers = false;
+        private bool _turnedOnConfigMembers = false;
 
         private static bool ContentsFinderConfirm()
         {
@@ -65,7 +64,7 @@ namespace AutoDuty.Helpers
             return false;
         }
 
-        internal static void QueueTrust()
+        private void QueueTrust()
         {
             if (TrustHelper.State == ActionState.Running) return;
 
@@ -129,7 +128,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        internal static void QueueSupport()
+        private void QueueSupport()
         {
             AgentDawnStory* agentDawnStory = AgentDawnStory.Instance();
             if (!agentDawnStory->IsAddonReady())
@@ -161,7 +160,7 @@ namespace AutoDuty.Helpers
             }
         }
 
-        private static void QueueRegular()
+        private void QueueRegular()
         {
             if (ContentsFinder.Instance()->IsUnrestrictedParty != Plugin.Configuration.Unsynced)
             {
@@ -223,7 +222,7 @@ namespace AutoDuty.Helpers
             Svc.Log.Debug("end");
         }
 
-        internal static void QueueUpdate(IFramework _)
+        protected override void HelperUpdate(IFramework framework)
         {
             if (_content == null || Plugin.InDungeon || Svc.ClientState.TerritoryType == _content?.TerritoryType)
                 Stop();

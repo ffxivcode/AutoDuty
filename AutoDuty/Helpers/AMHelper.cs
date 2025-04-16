@@ -10,11 +10,16 @@ using System.Linq;
 
 namespace AutoDuty.Helpers
 {
-    internal static class AMHelper
+    internal class AMHelper : ActiveHelperBase<AMHelper>
     {
-        internal static void Invoke() 
+        protected override string Name        { get; }      = nameof(AMHelper);
+        protected override string DisplayName { get; }      = "AM";
+        protected override int    TimeOut     { get; set; } = 600_000;
+        protected override string[] AddonsToClose { get; } = 
+            ["SelectYesno", "SelectString", "Talk", "RetainerList", "RetainerSellList", "RetainerSell", "ItemSearchResult"];
+
+        internal override void Start()
         {
-            Svc.Log.Debug("AMHelper.Invoke");
             if (!AM_IPCSubscriber.IsEnabled)
             {
                 Svc.Log.Info("AM requires a plugin, visit https://discord.gg/JzSxThjKnd for more info");
@@ -22,64 +27,34 @@ namespace AutoDuty.Helpers
             }
             else if (State != ActionState.Running)
             {
-                Svc.Log.Info("AM Started");
-                State = ActionState.Running;
-                Plugin.States |= PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(false);
-                SchedulerHelper.ScheduleAction("AMTimeOut", Stop, 600000);
-                Svc.Framework.Update += AMUpdate;
+                base.Start();
             }
         }
 
-        internal static void Stop() 
+        internal override void Stop() 
         {
-            Svc.Log.Debug("AMHelper.Stop");
-            if (State == ActionState.Running)
-                Svc.Log.Info("AM Finished");
-            GotoInnHelper.Stop();
-            Plugin.Action = "";
-            SchedulerHelper.DescheduleAction("AMTimeOut");
+            base.Stop();
+            
             _aMStarted = false;
             if (AM_IPCSubscriber.IsRunning())
                 AM_IPCSubscriber.Stop();
-            Svc.Framework.Update += AMStopUpdate;
-            Svc.Framework.Update -= AMUpdate;
         }
-
-        internal static ActionState State = ActionState.None;
-
         private static bool _aMStarted = false;
         private static IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)Plugin.Configuration.PreferredSummoningBellEnum));
 
-        internal static unsafe void AMStopUpdate(IFramework framework)
+        protected override unsafe void HelperStopUpdate(IFramework framework)
         {
             if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
             {
-                State = ActionState.None;
-                Plugin.States &= ~PluginState.Other;
-                if (!Plugin.States.HasFlag(PluginState.Looping))
-                    Plugin.SetGeneralSettings(true);
-                Svc.Framework.Update -= AMStopUpdate;
+                base.HelperStopUpdate(framework);
             }
             else if (Svc.Targets.Target != null)
                 Svc.Targets.Target = null;
-            else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno))
-                addonSelectYesno->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* addonSelectString))
-                addonSelectString->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* addonRetainerList))
-                addonRetainerList->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("RetainerSellList", out AtkUnitBase* addonRetainerSellList))
-                addonRetainerSellList->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("RetainerSell", out AtkUnitBase* addonRetainerSell))
-                addonRetainerSell->Close(true);
-            else if (GenericHelpers.TryGetAddonByName("ItemSearchResult", out AtkUnitBase* addonItemSearchResult))
-                addonItemSearchResult->Close(true);
-            return;
+            else 
+                this.CloseAddons();
         }
 
-        internal static unsafe void AMUpdate(IFramework framework)
+        protected override unsafe void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Paused))
                 return;

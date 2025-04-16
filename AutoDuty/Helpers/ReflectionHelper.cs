@@ -12,10 +12,11 @@ namespace AutoDuty.Helpers
     using ECommons.DalamudServices;
     using ECommons.EzSharedDataManager;
     using IPC;
-    using static global::AutoDuty.Data.Enums;
+    using static Data.Enums;
 
     internal class ReflectionHelper
     {
+        // What do you mean just (BindingFlags) 60 isn't great ?
         private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
         internal static class YesAlready_Reflection

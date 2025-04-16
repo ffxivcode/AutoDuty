@@ -212,7 +212,7 @@ namespace AutoDuty.Helpers
 
         internal static void ClearCachedLevels(Content content) => content?.TrustMembers.Each(x => { if (x.Level < x.LevelCap) x.ResetLevel(); });
 
-    internal static void GetLevels(Content? content)
+        internal static void GetLevels(Content? content)
         {
             if (State == ActionState.Running) return;
                     
