@@ -40,6 +40,7 @@ using AutoDuty.Updater;
 namespace AutoDuty;
 
 using System.Text.RegularExpressions;
+using Dalamud.Utility.Numerics;
 using Data;
 using Lumina.Excel.Sheets;
 using static Data.Classes;
@@ -293,10 +294,45 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.DutyState.DutyRecommenced += DutyState_DutyRecommenced;
             Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
             Svc.Log.MinimumLogLevel = LogEventLevel.Debug;
+            PluginInterface.UiBuilder.Draw += UiBuilderOnDraw;
         }
         catch (Exception e)
         {
             Svc.Log.Info($"Failed loading plugin\n{e}");
+        }
+    }
+
+    private void UiBuilderOnDraw()
+    {
+        if (PlayerHelper.IsValid)
+        {
+            Svc.GameGui.WorldToScreen(Player.Position, out Vector2 playerScreenPos);
+            if (Actions.Any())
+            {
+                Vector2       lastScreenPos = playerScreenPos;
+                ImDrawListPtr drawList      = ImGui.GetBackgroundDrawList();
+
+                for (int index = Indexer; index < Actions.Count; index++)
+                {
+                    PathAction action = Actions[index];
+                    if (action.Position.LengthSquared() > 1)
+                    {
+                        Svc.GameGui.WorldToScreen(action.Position, out Vector2 screenPos);
+
+                        float alpha = MathF.Max(0f, 1f - (index - Indexer) * 0.1f);
+                        
+                        drawList.AddCircle(screenPos, 10, ImGui.GetColorU32(new Vector4(1f, 0.2f, 0f, alpha)), 0, 3);
+                        if (index > 0)
+                            drawList.AddLine(lastScreenPos, screenPos, ImGui.GetColorU32(new Vector4(0.8f, 0.8f, 0.8f, alpha)), 2f);
+                        if(index == Indexer)
+                            drawList.AddLine(playerScreenPos, screenPos, ImGui.GetColorU32(new Vector4(0f, 1f, 1f, 1f)), 2f);
+
+                        drawList.AddText(screenPos - ImGui.CalcTextSize(index.ToString()) / 2, ImGui.GetColorU32(new Vector4(alpha+0.25f)), index.ToString());
+
+                        lastScreenPos = screenPos;
+                    }
+                }
+            }
         }
     }
 
@@ -1599,7 +1635,8 @@ public sealed class AutoDuty : IDalamudPlugin
         MainWindow.Dispose();
         OverrideCamera.Dispose();
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
-        Svc.Condition.ConditionChange -= Condition_ConditionChange;
+        Svc.Condition.ConditionChange    -= Condition_ConditionChange;
+        PluginInterface.UiBuilder.Draw   -= UiBuilderOnDraw;
         Svc.Commands.RemoveHandler(CommandName);
     }
 
