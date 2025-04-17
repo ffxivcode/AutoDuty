@@ -23,7 +23,7 @@ namespace AutoDuty.Helpers
         {
             if (!AutoRetainer_IPCSubscriber.IsEnabled || !AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
                 return;
-            Svc.Log.Debug("AutoRetainerHelper.Invoke");
+            DebugLog("AutoRetainerHelper.Invoke");
             if (!AutoRetainer_IPCSubscriber.IsEnabled)
                 Svc.Log.Info("AutoRetainer requires a plugin, visit https://puni.sh/plugin/AutoRetainer for more info");
             else if (State != ActionState.Running) 
@@ -56,45 +56,32 @@ namespace AutoDuty.Helpers
 
         protected override unsafe void HelperUpdate(IFramework framework)
         {
-            if (Plugin.States.HasFlag(PluginState.Navigating))
-            {
-                Svc.Log.Debug("AutoDuty is Started, Stopping AutoRetainerHelper");
-                this.Stop();
-            }
+            if (!this.UpdateBase())
+                return;
+
+            if (!PlayerHelper.IsValid) return;
 
             if (!this._autoRetainerStarted && AutoRetainer_IPCSubscriber.IsBusy())
             {
-                Svc.Log.Info("AutoRetainer has Started");
+                DebugLog("AutoRetainer has Started");
                 this._autoRetainerStarted = true;
                 return;
             }
             else if (this._autoRetainerStarted && !AutoRetainer_IPCSubscriber.IsBusy())
             {
-                Svc.Log.Debug("AutoRetainer is Complete");
+                DebugLog("AutoRetainer is Complete");
                 this.Stop();
                 return;
             }
 
-            if (!EzThrottler.Throttle("AM", 250))
-                return;
-
-            if (!PlayerHelper.IsValid) return;
-
-            if (GotoHelper.State == ActionState.Running)
-            {
-                Svc.Log.Debug("Goto Running");
-                return;
-            }
-            Plugin.Action = "AutoRetainer Running";
-
             if (this.SummoningBellGameObject != null && !SummoningBellHelper.HousingZones.Contains(Player.Territory) && ObjectHelper.GetDistanceToPlayer(this.SummoningBellGameObject) > 4)
             {
-                Svc.Log.Debug("Moving Closer to Summoning Bell");
+                DebugLog("Moving Closer to Summoning Bell");
                 MovementHelper.Move(this.SummoningBellGameObject, 0.25f, 4);
             }
             else if ((this.SummoningBellGameObject == null || SummoningBellHelper.HousingZones.Contains(Player.Territory)) && GotoHelper.State != ActionState.Running)
             {
-                Svc.Log.Debug("Moving to Summoning Bell Location");
+                DebugLog("Moving to Summoning Bell Location");
                 SummoningBellHelper.Invoke(Plugin.Configuration.PreferredSummoningBellEnum);
             }
             else if (this.SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(this.SummoningBellGameObject) <= 4 && !this._autoRetainerStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* _) && (ObjectHelper.InteractWithObjectUntilAddon(this.SummoningBellGameObject, "RetainerList") == null))
@@ -103,11 +90,11 @@ namespace AutoDuty.Helpers
                 {
                     if (VNavmesh_IPCSubscriber.Path_IsRunning())
                         VNavmesh_IPCSubscriber.Path_Stop();
-                    Svc.Log.Debug("Waiting for AutoRetainer to Start");
-                    new ECommons.Automation.Chat().ExecuteCommand("/autoretainer e");
+                    DebugLog("Waiting for AutoRetainer to Start");
+                    Plugin.Chat.ExecuteCommand("/autoretainer e");
                 }
                 else
-                    Svc.Log.Debug("Interacting with SummoningBell");
+                    DebugLog("Interacting with SummoningBell");
                 
             }
         }
