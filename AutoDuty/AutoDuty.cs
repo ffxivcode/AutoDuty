@@ -1637,7 +1637,12 @@ public sealed class AutoDuty : IDalamudPlugin
                 Plugin.Stage = Stage.Paused;
                 break;
             case "resume":
-                Plugin.Stage = Stage.Reading_Path;
+                if (Plugin.Stage == Stage.Paused)
+                {
+                    Plugin.TaskManager.SetStepMode(false);
+                    Plugin.Stage  =  Plugin.PreviousStage;
+                    Plugin.States &= ~PluginState.Paused;
+                }
                 break;
             case "goto":
                 switch (argsArray[1])
