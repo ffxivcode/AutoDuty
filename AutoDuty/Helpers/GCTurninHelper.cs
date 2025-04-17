@@ -30,6 +30,7 @@ namespace AutoDuty.Helpers
 
         internal override void Stop() 
         {
+            _deliverooStarted = false;
             GotoHelper.ForceStop();
             base.Stop();
         }
@@ -40,7 +41,6 @@ namespace AutoDuty.Helpers
         private static uint _personnelOfficerDataId => PlayerHelper.GetGrandCompany() == 1 ? 1002388u : (PlayerHelper.GetGrandCompany() == 2 ? 1002394u : 1002391u);
         private static uint _aetheryteTicketId = PlayerHelper.GetGrandCompany() == 1 ? 21069u : (PlayerHelper.GetGrandCompany() == 2 ? 21070u : 21071u);
         private bool _deliverooStarted = false;
-        private static Chat _chat = new();
 
         protected override unsafe void HelperStopUpdate(IFramework framework)
         {
@@ -56,8 +56,9 @@ namespace AutoDuty.Helpers
         {
             if (Plugin.States.HasFlag(PluginState.Navigating))
             {
-                Svc.Log.Debug("AutoDuty is Started, Stopping GCTurninHelper");
+                DebugLog("AutoDuty is Started, Stopping GCTurninHelper");
                 Stop();
+                return;
             }
             if (!_deliverooStarted && Deliveroo_IPCSubscriber.IsTurnInRunning())
             {
@@ -67,7 +68,7 @@ namespace AutoDuty.Helpers
             }
             else if (_deliverooStarted && !Deliveroo_IPCSubscriber.IsTurnInRunning())
             {
-                Svc.Log.Debug("Deliveroo is Complete");
+                DebugLog("Deliveroo is Complete");
                 Stop();
                 return;
             }
@@ -77,14 +78,14 @@ namespace AutoDuty.Helpers
 
             if (GotoHelper.State == ActionState.Running)
             {
-                //Svc.Log.Debug("Goto Running");
+                //DebugLog("Goto Running");
                 return;
             }
             Plugin.Action = "GC Turning In";
 
             if (GotoHelper.State != ActionState.Running && Svc.ClientState.TerritoryType != PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany()))
             {
-                Svc.Log.Debug("Moving to GC Supply");
+                DebugLog("Moving to GC Supply");
                 if (Plugin.Configuration.AutoGCTurninUseTicket && InventoryHelper.ItemCount(_aetheryteTicketId) > 0)
                 {
                     if (!PlayerHelper.IsCasting)
@@ -97,18 +98,18 @@ namespace AutoDuty.Helpers
 
             if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) > 4 && PlayerHelper.IsReady && VNavmesh_IPCSubscriber.Nav_IsReady() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0)
             {
-                Svc.Log.Debug("Setting Move to Personnel Officer");
+                DebugLog("Setting Move to Personnel Officer");
                 MovementHelper.Move(GCSupplyLocation, 0.25f, 4f);
                 return;
             }
             else if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) > 4 && VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
             {
-                Svc.Log.Debug("Moving to Personnel Officer");
+                DebugLog("Moving to Personnel Officer");
                 return;
             }
             else if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) <= 4 && VNavmesh_IPCSubscriber.Path_NumWaypoints() > 0)
             {
-                Svc.Log.Debug("Stopping Path");
+                DebugLog("Stopping Path");
                 VNavmesh_IPCSubscriber.Path_Stop();
                 return;
             }
@@ -136,8 +137,8 @@ namespace AutoDuty.Helpers
                 }
                 else
                 {
-                    Svc.Log.Debug("Sending Chat Command /deliveroo e");
-                    _chat.SendMessage("/deliveroo e");
+                    DebugLog("Sending Chat Command /deliveroo e");
+                    Plugin.Chat.SendMessage("/deliveroo e");
                 }
                 return;
             }
