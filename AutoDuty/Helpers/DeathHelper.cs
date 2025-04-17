@@ -105,11 +105,14 @@ namespace AutoDuty.Helpers
             {
                 bool revivalFound = ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryType].Paths[Plugin.CurrentPath].RevivalFound;
 
+                bool isBoss = Plugin.Actions[Plugin.Indexer].Name.Equals("Boss");
                 if (!revivalFound)
                 {
-                    if (Plugin.Indexer > 0 && Plugin.Actions[Plugin.Indexer].Name.Equals("Boss"))
+                    if (Plugin.Indexer > 0 && isBoss)
                         return Plugin.Indexer;
                 }
+
+
 
 
                 Svc.Log.Info("Finding Revival Point. Using Revival Action: " + revivalFound);
@@ -117,8 +120,8 @@ namespace AutoDuty.Helpers
                 {
                     if (revivalFound)
                     {
-                        if (Plugin.Actions[i].Name.Equals("Revival", StringComparison.InvariantCultureIgnoreCase) && i != Plugin.Indexer) 
-                            return i;
+                        if (Plugin.Actions[i].Name.Equals(isBoss ? "Revival" : "Boss", StringComparison.InvariantCultureIgnoreCase) && i != Plugin.Indexer) 
+                            return isBoss ? i : i+1;
                     }/* Pre 7.2
                     else
                     {
