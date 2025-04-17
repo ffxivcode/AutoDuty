@@ -142,6 +142,9 @@ public class Configuration : IPluginConfiguration
         set => this.updatePathsOnStartup = value;
     }
 
+    //Dev Options
+    
+
     //Duty Config Options
     public   bool AutoExitDuty                  = true;
     public   bool OnlyExitWhenDutyDone          = false;
@@ -164,6 +167,10 @@ public class Configuration : IPluginConfiguration
     public bool       RebuildNavmeshOnStuck          = true;
     public byte       RebuildNavmeshAfterStuckXTimes = 5;
     public int        MinStuckTime                   = 500;
+
+    public bool PathDrawEnabled   = false;
+    public int  PathDrawStepCount = 5;
+
     public bool       OverridePartyValidation        = false;
     public bool       UsingAlternativeRotationPlugin = false;
     public bool       UsingAlternativeMovementPlugin = false;
@@ -946,6 +953,24 @@ public static class ConfigTab
                     Configuration.Save();
                 }
             }
+
+            if(ImGui.Checkbox("Draw next steps in Path", ref Configuration.PathDrawEnabled))
+                Configuration.Save();
+
+            if (Configuration.PathDrawEnabled)
+            {
+                ImGui.Indent();
+                ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+                if (ImGui.InputInt("Drawing X steps##PathDrawStepCount", ref Configuration.PathDrawStepCount, 1))
+                {
+                    Configuration.PathDrawStepCount = Math.Max(1, Configuration.PathDrawStepCount);
+                    Configuration.Save();
+                }
+                ImGui.PopItemWidth();
+                ImGui.Unindent();
+            }
+
+
 
             ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
             bool w2wSettingHeader = ImGui.Selectable($"> {PathIdentifiers.W2W} Config <", w2wSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);

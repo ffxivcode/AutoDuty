@@ -43,6 +43,7 @@ using System.Text.RegularExpressions;
 using Dalamud.Utility.Numerics;
 using Data;
 using Lumina.Excel.Sheets;
+using Pictomancy;
 using static Data.Classes;
 
 // TODO:
@@ -201,6 +202,7 @@ public sealed class AutoDuty : IDalamudPlugin
         {
             Plugin = this;
             ECommonsMain.Init(PluginInterface, Plugin, Module.DalamudReflector, Module.ObjectFunctions);
+            PictoService.Initialize(PluginInterface);
 
             this.isDev = PluginInterface.IsDev;
 
@@ -306,30 +308,36 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (PlayerHelper.IsValid)
         {
-            Svc.GameGui.WorldToScreen(Player.Position, out Vector2 playerScreenPos);
-            if (Actions.Any())
+            using PctDrawList? drawList = PictoService.Draw();
+
+            if (drawList != null)
             {
-                Vector2       lastScreenPos = playerScreenPos;
-                ImDrawListPtr drawList      = ImGui.GetBackgroundDrawList();
-
-                for (int index = Indexer; index < Actions.Count; index++)
+                if (Plugin.Configuration.PathDrawEnabled && this.Actions.Any())
                 {
-                    PathAction action = Actions[index];
-                    if (action.Position.LengthSquared() > 1)
+                    Vector3 lastPos         = Player.Position;
+                    float   stepCountFactor = (1f / this.Configuration.PathDrawStepCount);
+
+                    for (int index = Math.Clamp(this.Indexer, 0, this.Actions.Count-1); index < this.Actions.Count; index++)
                     {
-                        Svc.GameGui.WorldToScreen(action.Position, out Vector2 screenPos);
+                        PathAction action = this.Actions[index];
+                        if (action.Position.LengthSquared() > 1)
+                        {
+                            float alpha = MathF.Max(0f, 1f - (index - this.Indexer) * stepCountFactor);
 
-                        float alpha = MathF.Max(0f, 1f - (index - Indexer) * 0.1f);
-                        
-                        drawList.AddCircle(screenPos, 10, ImGui.GetColorU32(new Vector4(1f, 0.2f, 0f, alpha)), 0, 3);
-                        if (index > 0)
-                            drawList.AddLine(lastScreenPos, screenPos, ImGui.GetColorU32(new Vector4(0.8f, 0.8f, 0.8f, alpha)), 2f);
-                        if(index == Indexer)
-                            drawList.AddLine(playerScreenPos, screenPos, ImGui.GetColorU32(new Vector4(0f, 1f, 1f, 1f)), 2f);
+                            if (alpha > 0)
+                            {
+                                drawList.AddCircle(action.Position, 3, ImGui.GetColorU32(new Vector4(1f, 0.2f, 0f, alpha)), 0, 3);
 
-                        drawList.AddText(screenPos - ImGui.CalcTextSize(index.ToString()) / 2, ImGui.GetColorU32(new Vector4(alpha+0.25f)), index.ToString());
+                                if (index > 0)
+                                    drawList.AddLine(lastPos, action.Position, 0f, ImGui.GetColorU32(new Vector4(0.8f, 0.8f, 0.8f, alpha)));
+                                if (index == this.Indexer)
+                                    drawList.AddLine(Player.Position, action.Position, 0, ImGui.GetColorU32(new Vector4(0f, 1f, 1f, 1f)));
 
-                        lastScreenPos = screenPos;
+                                drawList.AddText(action.Position, ImGui.GetColorU32(new Vector4(alpha + 0.25f)), index.ToString(), 20f);
+                            }
+
+                            lastPos = action.Position;
+                        }
                     }
                 }
             }
@@ -1636,6 +1644,7 @@ public sealed class AutoDuty : IDalamudPlugin
         OverrideCamera.Dispose();
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
         Svc.Condition.ConditionChange    -= Condition_ConditionChange;
+        PictoService.Dispose();
         PluginInterface.UiBuilder.Draw   -= UiBuilderOnDraw;
         Svc.Commands.RemoveHandler(CommandName);
     }
