@@ -161,7 +161,8 @@ namespace AutoDuty.Helpers
                 VNavmesh_IPCSubscriber.Path_Stop();
             Plugin.Stage = Stage.Reading_Path;
             Svc.Log.Debug("DeathHelper - Player is Alive, and we are done with Revived Actions, changing state to Alive");
-            _deathState = PlayerLifeState.Alive;
+            _deathState               = PlayerLifeState.Alive;
+            Plugin.SkipTreasureCoffer = false;
         }
 
         private static unsafe void OnRevive(IFramework _)
