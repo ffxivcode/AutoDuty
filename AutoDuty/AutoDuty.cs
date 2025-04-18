@@ -312,7 +312,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
             if (drawList != null)
             {
-                if (Plugin.Configuration.PathDrawEnabled && this.Actions.Any())
+                if (Plugin.Configuration.PathDrawEnabled && this.Actions.Any() && (this.Indexer < 0 || !this.Actions[this.Indexer].Name.Equals("Boss") || Stage != Stage.Action))
                 {
                     Vector3 lastPos         = Player.Position;
                     float   stepCountFactor = (1f / this.Configuration.PathDrawStepCount);
