@@ -105,6 +105,13 @@ public class MainWindow : Window, IDisposable
 
     internal static void GotoAndActions()
     {
+        if(Plugin.States.HasFlag(PluginState.Other))
+        {
+            if(ImGui.Button("Stop"))
+                Plugin.Stage = Stage.Stopped;
+            ImGui.SameLine(0,5);
+        }
+
         using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Looping) || Plugin.States.HasFlag(PluginState.Navigating)))
         {
             using (ImRaii.Disabled(Plugin.Configuration is { OverrideOverlayButtons: true, GotoButton: false }))
