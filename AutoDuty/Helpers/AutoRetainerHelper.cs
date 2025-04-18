@@ -32,7 +32,6 @@ namespace AutoDuty.Helpers
 
         internal override void Stop()
         {
-            Plugin.Chat.ExecuteCommand("/autoretainer d");
             this._autoRetainerStarted = false;
             this._autoRetainerStopped = false;
             GotoInnHelper.ForceStop();
@@ -41,6 +40,7 @@ namespace AutoDuty.Helpers
 
             if (AutoRetainer_IPCSubscriber.IsBusy())
                 AutoRetainer_IPCSubscriber.AbortAllTasks();
+            Plugin.Chat.ExecuteCommand("/autoretainer d");
         }
 
         private bool         _autoRetainerStarted = false;
