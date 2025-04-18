@@ -32,7 +32,9 @@ namespace AutoDuty.Helpers
 
         internal override void Stop()
         {
+            Plugin.Chat.ExecuteCommand("/autoretainer d");
             this._autoRetainerStarted = false;
+            this._autoRetainerStopped = false;
             GotoInnHelper.ForceStop();
 
             base.Stop();
@@ -41,7 +43,8 @@ namespace AutoDuty.Helpers
                 AutoRetainer_IPCSubscriber.AbortAllTasks();
         }
 
-        private bool _autoRetainerStarted = false;
+        private bool         _autoRetainerStarted = false;
+        private bool         _autoRetainerStopped = false;
         private IGameObject? SummoningBellGameObject => Svc.Objects.FirstOrDefault(x => x.DataId == SummoningBellHelper.SummoningBellDataIds((uint)Plugin.Configuration.PreferredSummoningBellEnum));
 
         protected override unsafe void HelperStopUpdate(IFramework framework)
@@ -61,17 +64,31 @@ namespace AutoDuty.Helpers
 
             if (!PlayerHelper.IsValid) return;
 
+            if (this._autoRetainerStopped)
+            {
+                if (AutoRetainer_IPCSubscriber.IsBusy())
+                {
+                    this._autoRetainerStopped = false;
+                }
+                else
+                {
+                    this.Stop();
+                    return;
+                }
+            }
+
             if (!this._autoRetainerStarted && AutoRetainer_IPCSubscriber.IsBusy())
             {
                 DebugLog("AutoRetainer has Started");
                 this._autoRetainerStarted = true;
+                UpdateBaseThrottle        = 1000;
                 return;
             }
             else if (this._autoRetainerStarted && !AutoRetainer_IPCSubscriber.IsBusy())
             {
                 DebugLog("AutoRetainer is Complete");
-                this.Stop();
-                return;
+                this._autoRetainerStopped = true;
+                EzThrottler.Throttle(this.Name, 2000, true);
             }
 
             if (this.SummoningBellGameObject != null && !SummoningBellHelper.HousingZones.Contains(Player.Territory) && ObjectHelper.GetDistanceToPlayer(this.SummoningBellGameObject) > 4)
