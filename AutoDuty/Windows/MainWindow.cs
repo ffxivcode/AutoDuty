@@ -441,13 +441,13 @@ public class MainWindow : Window, IDisposable
             }
             if (ImGuiEx.BeginTabItem(x.name, openTabName == x.name ? ImGuiTabItemFlags.SetSelected : ImGuiTabItemFlags.None))
             {
-                if (x.color != null)
-                {
+                if (x.color != null) 
                     ImGui.PopStyleColor();
-                }
-                if (x.child) ImGui.BeginChild(x.name + "child");
+                if (x.child) 
+                    ImGui.BeginChild(x.name + "child");
                 x.function();
-                if (x.child) ImGui.EndChild();
+                if (x.child) 
+                    ImGui.EndChild();
                 ImGui.EndTabItem();
             }
             else

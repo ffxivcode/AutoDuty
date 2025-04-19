@@ -312,7 +312,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
             if (drawList != null)
             {
-                if (Plugin.Configuration.PathDrawEnabled && this.Actions.Any() && (this.Indexer < 0 || !this.Actions[this.Indexer].Name.Equals("Boss") || Stage != Stage.Action))
+                BuildTab.DrawHelper(drawList);
+
+                if (Plugin.Configuration.PathDrawEnabled && CurrentTerritoryContent?.TerritoryType == Svc.ClientState.TerritoryType && this.Actions.Any() && (this.Indexer < 0 || !this.Actions[this.Indexer].Name.Equals("Boss") || Stage != Stage.Action))
                 {
                     Vector3 lastPos         = Player.Position;
                     float   stepCountFactor = (1f / this.Configuration.PathDrawStepCount);
@@ -331,7 +333,7 @@ public sealed class AutoDuty : IDalamudPlugin
                                 if (index > 0)
                                     drawList.AddLine(lastPos, action.Position, 0f, ImGui.GetColorU32(new Vector4(0.8f, 0.8f, 0.8f, alpha)));
                                 if (index == this.Indexer)
-                                    drawList.AddLine(Player.Position, action.Position, 0, ImGui.GetColorU32(new Vector4(0f, 1f, 1f, 1f)));
+                                    drawList.AddLine(Player.Position, action.Position, 0, 0x00FFFFFF);
 
                                 drawList.AddText(action.Position, ImGui.GetColorU32(new Vector4(alpha + 0.25f)), index.ToString(), 20f);
                             }
