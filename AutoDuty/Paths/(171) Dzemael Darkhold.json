@@ -46,19 +46,6 @@
     },
     {
       "tag": "None",
-      "name": "WaitFor",
-      "position": {
-        "X": 2.18,
-        "Y": 4.62,
-        "Z": 252.21
-      },
-      "arguments": [
-        "combat"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 17.691027,
@@ -110,19 +97,6 @@
         "Z": 173.07343
       },
       "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 144.77,
-        "Y": -7.93,
-        "Z": 169.15
-      },
-      "arguments": [
-        "5000"
-      ],
       "note": ""
     },
     {
@@ -190,13 +164,28 @@
     },
     {
       "tag": "None",
-      "name": "MoveTo",
+      "name": "BossMod",
       "position": {
-        "X": 68.7112,
-        "Y": -14.240367,
-        "Z": 88.06318
+        "X": 71.47426,
+        "Y": -14.039849,
+        "Z": 84.88447
       },
-      "arguments": [],
+      "arguments": [
+        "off"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "10000"
+      ],
       "note": ""
     },
     {
@@ -225,25 +214,27 @@
     },
     {
       "tag": "None",
-      "name": "MoveTo",
+      "name": "WaitFor",
       "position": {
-        "X": -212.64963,
-        "Y": -15.704064,
-        "Z": -0.9331399
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
-      "arguments": [],
+      "arguments": [
+        "IsReady"
+      ],
       "note": ""
     },
     {
       "tag": "None",
-      "name": "WaitFor",
+      "name": "BossMod",
       "position": {
-        "X": -205.84,
-        "Y": -17.07,
-        "Z": -47.9
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
-        "combat"
+        "on"
       ],
       "note": ""
     },
@@ -260,15 +251,13 @@
     },
     {
       "tag": "None",
-      "name": "WaitFor",
+      "name": "MoveTo",
       "position": {
-        "X": -212.65,
-        "Y": -15.7,
-        "Z": -0.93
+        "X": -212.64963,
+        "Y": -15.704064,
+        "Z": -0.9331399
       },
-      "arguments": [
-        "combat"
-      ],
+      "arguments": [],
       "note": ""
     },
     {
@@ -294,14 +283,16 @@
       "note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -225.56435,
-        "Y": -23.109608,
-        "Z": 42.59008
+        "X": -225.56,
+        "Y": -23.11,
+        "Z": 42.59
       },
-      "arguments": [],
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -316,14 +307,16 @@
       "note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -140.00107,
-        "Y": -25.784582,
-        "Z": 56.067333
+        "X": -140,
+        "Y": -25.78,
+        "Z": 56.07
       },
-      "arguments": [],
+      "arguments": [
+        ""
+      ],
       "note": ""
     },
     {
@@ -350,19 +343,6 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -111.05,
-        "Y": -23.73,
-        "Z": 5.16
-      },
-      "arguments": [
-        "3000"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
       "name": "Boss",
       "position": {
         "X": -92.9,
@@ -372,7 +352,7 @@
       "arguments": [
         ""
       ],
-      "note": ""
+      "note": "Taulurd"
     },
     {
       "tag": "None",
@@ -409,19 +389,6 @@
     },
     {
       "tag": "None",
-      "name": "Wait",
-      "position": {
-        "X": -99.63,
-        "Y": -29.91,
-        "Z": -28.05
-      },
-      "arguments": [
-        "10000"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": -96.3,
@@ -432,6 +399,19 @@
         "2000474"
       ],
       "note": "Magitek Transporter"
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
     },
     {
       "tag": "None",
@@ -604,6 +584,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 206,
+        "change": "Modernized some sequences"
       }
     ],
     "notes": []
