@@ -80,6 +80,19 @@
     },
     {
       "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -182.83044,
+        "Y": -6.0000143,
+        "Z": -209.94675
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
       "name": "Wait",
       "position": {
         "X": 0,
@@ -246,6 +259,19 @@
         "2000175"
       ],
       "note": "Lift Lever"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 60.041435,
+        "Y": -8.250014,
+        "Z": 7.4902554
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
     },
     {
       "tag": "None",
@@ -487,6 +513,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 207,
+        "change": "Adjusted elevators"
       }
     ],
     "notes": []
