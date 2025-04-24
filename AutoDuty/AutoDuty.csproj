@@ -28,6 +28,16 @@
    <PropertyGroup Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'">
     <DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
   </PropertyGroup>
+  
+   <ItemGroup>
+     <None Remove="Resources\AutoDuty.json" />
+     <None Remove="Resources\AutoDuty_Passive.json" />
+   </ItemGroup>
+  
+   <ItemGroup>
+     <EmbeddedResource Include="Resources\AutoDuty.json" />
+     <EmbeddedResource Include="Resources\AutoDuty_Passive.json" />
+   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />

@@ -156,7 +156,11 @@ namespace AutoDuty.Managers
             }
         }
 
-        public void BossMod(PathAction action) => _chat.ExecuteCommand($"/vbmai {action.Arguments[0]}");
+        public void BossMod(PathAction action)
+        {
+            if (bool.TryParse(action.Arguments[0], out bool on))
+                BossMod_IPCSubscriber.SetMovement(on);
+        }
 
         public void ModifyIndex(PathAction action)
         {
@@ -194,8 +198,7 @@ namespace AutoDuty.Managers
             var boolTrueFalse = action.Arguments[0].Equals("true", StringComparison.InvariantCultureIgnoreCase);
             Plugin.Action = $"StopForCombat: {action.Arguments[0]}";
             Plugin.StopForCombat = boolTrueFalse;
-            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai followtarget {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
-            _taskManager.Enqueue(() => _chat.ExecuteCommand($"/vbmai {(boolTrueFalse ? "on" : "off")}"), "StopForCombat");
+            _taskManager.Enqueue(() => BossMod_IPCSubscriber.SetMovement(boolTrueFalse), "StopForCombat");
             if(boolTrueFalse && (action.Arguments.Count <= 1 || action.Arguments[1] != "noWait"))
                 this.Wait(new PathAction {Arguments = ["500"]});
         }
@@ -518,9 +521,10 @@ namespace AutoDuty.Managers
             if (((Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
                 return true;
 
+            /*
             if (EzThrottler.Throttle("PositionalChecker", 25) && ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional) && !Plugin.Configuration.UsingAlternativeBossPlugin && IPCSubscriber_Common.IsReady("BossModReborn"))
                 Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");
-
+            */
             return false;
         }
 
@@ -664,12 +668,10 @@ namespace AutoDuty.Managers
                     switch (action.Arguments[0])
                     {
                         case "1":
-                            Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional false");
                             Plugin.Framework_Update_InDuty += this.PraeFrameworkUpdateMount;
                             Interactable(new PathAction { Arguments = ["2012819"] });
                             break;
                         case "2":
-                            Plugin.Chat.ExecuteCommand($"/vbm cfg AIConfig OverridePositional true");
                             Plugin.Framework_Update_InDuty -= this.PraeFrameworkUpdateMount;
                             break;
                         case "3":

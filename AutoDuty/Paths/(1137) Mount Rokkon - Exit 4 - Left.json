@@ -405,14 +405,14 @@
     },
     {
       "tag": "None",
-      "name": "ChatCommand",
+      "name": "Bossmod",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "/vbmai off"
+        "off"
       ],
       "note": ""
     },
@@ -444,14 +444,14 @@
     },
     {
       "tag": "None",
-      "name": "ChatCommand",
+      "name": "Bossmod",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "/vbmai on"
+        "on"
       ],
       "note": ""
     },

@@ -1,6 +1,22 @@
 {
   "Name": "AutoDuty Passive",
   "Modules": {
-    "BossMod.Autorotation.MiscAI.StayCloseToTarget": []
+    "BossMod.Autorotation.MiscAI.StayCloseToTarget": [],
+    "BossMod.Autorotation.MiscAI.StayWithinLeylines": [
+      {
+        "Track": "Use Between The Lines",
+        "Option": "Yes"
+      },
+      {
+        "Track": "Use Retrace",
+        "Option": "Yes"
+      }
+    ],
+    "BossMod.Autorotation.MiscAI.NormalMovement": [
+      {
+        "Track": "Destination",
+        "Option": "Pathfind"
+      }
+    ]
   }
 }

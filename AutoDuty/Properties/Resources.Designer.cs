@@ -64,7 +64,13 @@ namespace AutoDuty.Properties {
         ///   Looks up a localized string similar to {
         ///  &quot;Name&quot;: &quot;AutoDuty Passive&quot;,
         ///  &quot;Modules&quot;: {
-        ///    &quot;BossMod.Autorotation.MiscAI.StayCloseToTarget&quot;: []
+        ///    &quot;BossMod.Autorotation.MiscAI.StayCloseToTarget&quot;: [],
+        ///    &quot;BossMod.Autorotation.MiscAI.NormalMovement&quot;: [
+        ///      {
+        ///        &quot;Track&quot;: &quot;Destination&quot;,
+        ///        &quot;Option&quot;: &quot;Pathfind&quot;
+        ///      }
+        ///    ]
         ///  }
         ///}.
         /// </summary>
@@ -78,6 +84,12 @@ namespace AutoDuty.Properties {
         ///   Looks up a localized string similar to {
         ///  &quot;Name&quot;: &quot;AutoDuty&quot;,
         ///  &quot;Modules&quot;: {
+        ///    &quot;BossMod.Autorotation.MiscAI.AutoFarm&quot;: [
+        ///      {
+        ///        &quot;Track&quot;: &quot;General&quot;,
+        ///        &quot;Option&quot;: &quot;Aggressive&quot;
+        ///      }
+        ///    ],
         ///    &quot;BossMod.Autorotation.xan.BLM&quot;: [
         ///      {
         ///        &quot;Track&quot;: &quot;Targeting&quot;,
@@ -94,15 +106,7 @@ namespace AutoDuty.Properties {
         ///    ],
         ///    &quot;BossMod.Autorotation.xan.PCT&quot;: [
         ///      {
-        ///        &quot;Track&quot;: &quot;Targeting&quot;,
-        ///        &quot;Option&quot;: &quot;Auto&quot;
-        ///      },
-        ///      {
-        ///        &quot;Track&quot;: &quot;AOE&quot;,
-        ///        &quot;Option&quot;: &quot;AOE&quot;
-        ///      },
-        ///      {
-        ///        &quot;Track [rest of string was truncated]&quot;;.
+        ///        &quot;Track&quot;: &quot;Targeti [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AutoDutyPreset {
             get {
