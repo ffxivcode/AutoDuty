@@ -44,21 +44,17 @@ namespace AutoDuty.Helpers
                                                      (TeleportHelper.ApartmentTeleportId == 97  && Svc.ClientState.TerritoryType == 655) ||  //Shirogane
                                                      (TeleportHelper.ApartmentTeleportId == 165 && Svc.ClientState.TerritoryType == 999)) || //Empyreum
             //FC Estates
-            (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId is 56 or 57 or 58 or 96 or 164 &&
-             Svc.ClientState.TerritoryType is 
-                 282 or 283 or 284 or 
-                 342 or 343 or 344 or 
-                 345 or 346 or 347 or 
-                 649 or 650 or 651 or 
-                 980 or 981 or 982) ||
-            //Private houses
-            (whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId is 59 or 60 or 61 or 97 or 165 &&
-             Svc.ClientState.TerritoryType is 
-                 282 or 283 or 284 or 
-                 342 or 343 or 344 or 
-                 345 or 346 or 347 or 
-                 649 or 650 or 651 or 
-                 980 or 981 or 982);
+            (whichHousing == Housing.FC_Estate && TeleportHelper.FCEstateTeleportId is 56 or 57 or 58 or 96 or 164 ||
+             //Private houses
+             whichHousing == Housing.Personal_Home && TeleportHelper.PersonalHomeTeleportId is 59 or 60 or 61 or 97 or 165) &&
+
+            Svc.ClientState.TerritoryType is
+                282 or 283 or 284 or
+                342 or 343 or 344 or
+                345 or 346 or 347 or
+                649 or 650 or 651 or
+                980 or 981 or 982 or
+                1249 or 1250 or 1251; //minimalistic
 
         internal static bool InHousingArea(Housing whichHousing) =>
             //Mist
