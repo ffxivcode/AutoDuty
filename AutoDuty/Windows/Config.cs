@@ -296,55 +296,6 @@ public class Configuration : IPluginConfiguration
     
     //BMAI Config Options
     public bool HideBossModAIConfig = false;
-    public bool FollowDuringCombat = true;
-    public bool FollowDuringActiveBossModule = true;
-    public bool FollowOutOfCombat = false;
-    public bool FollowTarget = true;
-    internal bool followSelf = true;
-    public bool FollowSelf
-    {
-        get => followSelf;
-        set
-        {
-            followSelf = value;
-            if (value)
-            {
-                FollowSlot = false;
-                FollowRole = false;
-            }
-        }
-    }
-    internal bool followSlot = false;
-    public bool FollowSlot
-    {
-        get => followSlot;
-        set
-        {
-            followSlot = value;
-            if (value)
-            {
-                FollowSelf = false;
-                FollowRole = false;
-            }
-        }
-    }
-    public int FollowSlotInt = 1;
-    internal bool followRole = false;
-    public bool FollowRole
-    {
-        get => followRole;
-        set
-        {
-            followRole = value;
-            if (value)
-            {
-                FollowSelf = false;
-                FollowSlot = false;
-                SchedulerHelper.ScheduleAction("FollowRoleBMRoleChecks", () => Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
-            }
-        }
-    }
-    public   Enums.Role FollowRoleEnum               = Enums.Role.Healer;
     internal bool       maxDistanceToTargetRoleBased = true;
     public bool MaxDistanceToTargetRoleBased
     {
@@ -358,7 +309,7 @@ public class Configuration : IPluginConfiguration
     }
     public float MaxDistanceToTargetFloat = 2.6f;
     public float MaxDistanceToTargetAoEFloat = 12;
-    public float MaxDistanceToSlotFloat = 1;
+    
     internal bool positionalRoleBased = true;
     public bool PositionalRoleBased
     {
@@ -731,11 +682,6 @@ public static class ConfigTab
 
             if (Configuration.autoManageBossModAISettings)
             {
-                var followRole = Configuration.FollowRole;
-                var maxDistanceToTargetRoleBased = Configuration.MaxDistanceToTargetRoleBased;
-                var maxDistanceToTarget = Configuration.MaxDistanceToTargetFloat;
-                var MaxDistanceToTargetAoEFloat = Configuration.MaxDistanceToTargetAoEFloat;
-                var positionalRoleBased = Configuration.PositionalRoleBased;
                 ImGui.Indent();
                 ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
                 var bmaiSettingHeader = ImGui.Selectable("> BMAI Config Options <", bmaiSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
@@ -752,62 +698,6 @@ public static class ConfigTab
                         BossMod_IPCSubscriber.RefreshPreset("AutoDuty", Resources.AutoDutyPreset);
                         BossMod_IPCSubscriber.RefreshPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
                     }
-                    if (ImGui.Checkbox("Follow During Combat", ref Configuration.FollowDuringCombat))
-                        Configuration.Save();
-                    if (ImGui.Checkbox("Follow During Active BossModule", ref Configuration.FollowDuringActiveBossModule))
-                        Configuration.Save();
-                    if (ImGui.Checkbox("Follow Out Of Combat (Not Recommended)", ref Configuration.FollowOutOfCombat))
-                        Configuration.Save();
-                    if (ImGui.Checkbox("Follow Target", ref Configuration.FollowTarget))
-                        Configuration.Save();
-                    ImGui.Separator();
-                    if (ImGui.Checkbox("Follow Self", ref Configuration.followSelf))
-                    {
-                        Configuration.FollowSelf = Configuration.followSelf;
-                        Configuration.Save();
-                    }
-                    if (ImGui.Checkbox("Follow Slot #", ref Configuration.followSlot))
-                    {
-                        Configuration.FollowSlot = Configuration.followSlot;
-                        Configuration.Save();
-                    }
-                    using (ImRaii.Disabled(!Configuration.followSlot))
-                    {
-                        ImGui.SameLine(0, 5);
-                        ImGui.PushItemWidth(70);
-                        if (ImGui.SliderInt("##FollowSlot", ref Configuration.FollowSlotInt, 1, 4))
-                        {
-                            Configuration.FollowSlotInt = Math.Clamp(Configuration.FollowSlotInt, 1, 4);
-                            Configuration.Save();
-                        }
-                        ImGui.PopItemWidth();
-                    }
-                    if (ImGui.Checkbox("Follow Role", ref Configuration.followRole))
-                    {
-                        Configuration.FollowRole = Configuration.followRole;
-                        Configuration.Save();
-                    }
-                    using (ImRaii.Disabled(!followRole))
-                    {
-                        ImGui.SameLine(0, 10);
-                        if (ImGui.Button(Configuration.FollowRoleEnum.ToCustomString()))
-                        {
-                            ImGui.OpenPopup("RolePopup");
-                        }
-                        if (ImGui.BeginPopup("RolePopup"))
-                        {
-                            foreach (Enums.Role role in Enum.GetValues(typeof(Enums.Role)))
-                            {
-                                if (ImGui.Selectable(role.ToCustomString()))
-                                {
-                                    Configuration.FollowRoleEnum = role;
-                                    Configuration.Save();
-                                }
-                            }
-                            ImGui.EndPopup();
-                        }
-                    }
-                    ImGui.Separator();
                     if (ImGui.Checkbox("Set Max Distance To Target Based on Player Role", ref Configuration.maxDistanceToTargetRoleBased))
                     {
                         Configuration.MaxDistanceToTargetRoleBased = Configuration.maxDistanceToTargetRoleBased;
@@ -843,14 +733,6 @@ public static class ConfigTab
                         }
                         ImGui.PopItemWidth();
                     }
-
-                    ImGui.PushItemWidth(195);
-                    if (ImGui.SliderFloat("Max Distance To Slot", ref Configuration.MaxDistanceToSlotFloat, 1, 30))
-                    {
-                        Configuration.MaxDistanceToSlotFloat = Math.Clamp(Configuration.MaxDistanceToSlotFloat, 1, 30);
-                        Configuration.Save();
-                    }
-                    ImGui.PopItemWidth();
                     if (ImGui.Checkbox("Set Positional Based on Player Role", ref Configuration.positionalRoleBased))
                     {
                         Configuration.PositionalRoleBased = Configuration.positionalRoleBased;
@@ -878,13 +760,6 @@ public static class ConfigTab
                     }
                     if (ImGui.Button("Use Default BMAI Settings"))
                     {
-                        Configuration.FollowDuringCombat = true;
-                        Configuration.FollowDuringActiveBossModule = true;
-                        Configuration.FollowOutOfCombat = false;
-                        Configuration.FollowTarget = true;
-                        Configuration.followSelf = true;
-                        Configuration.followSlot = false;
-                        Configuration.followRole = false;
                         Configuration.maxDistanceToTargetRoleBased = true;
                         Configuration.positionalRoleBased = true;
                         Configuration.Save();

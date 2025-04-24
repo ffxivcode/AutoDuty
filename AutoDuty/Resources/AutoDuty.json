@@ -1,6 +1,12 @@
 {
   "Name": "AutoDuty",
   "Modules": {
+    "BossMod.Autorotation.MiscAI.AutoFarm": [
+      {
+        "Track": "General",
+        "Option": "Aggressive"
+      }
+    ],
     "BossMod.Autorotation.xan.BLM": [
       {
         "Track": "Targeting",
@@ -335,7 +341,7 @@
       },
       {
         "Track": "Esuna",
-        "Option": "Enabled"
+        "Option": "Cleanse all party members that have a removable debuff"
       }
     ],
     "BossMod.Autorotation.xan.MeleeAI": [
@@ -394,6 +400,22 @@
       {
         "Track": "Protect party members",
         "Option": "Enabled"
+      }
+    ],
+    "BossMod.Autorotation.MiscAI.StayWithinLeylines": [
+      {
+        "Track": "Use Retrace",
+        "Option": "Yes"
+      },
+      {
+        "Track": "Use Between The Lines",
+        "Option": "Yes"
+      }
+    ],
+    "BossMod.Autorotation.MiscAI.NormalMovement": [
+      {
+        "Track": "Destination",
+        "Option": "Pathfind"
       }
     ]
   }

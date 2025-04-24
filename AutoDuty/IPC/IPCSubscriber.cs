@@ -109,10 +109,8 @@ namespace AutoDuty.IPC
 
         public static void AddPreset(string name, string preset)
         {
-            //check if our preset does not exist
             if (Presets_Get(name) == null)
-                //load it
-                Svc.Log.Debug($"AutoDuty Preset Loaded: {Presets_Create(preset, true)}");
+                Svc.Log.Debug($"BossMod Adding Preset: {name} {Presets_Create(preset, true)}");
         }
 
         public static void RefreshPreset(string name, string preset)
@@ -122,37 +120,52 @@ namespace AutoDuty.IPC
             AddPreset(name, preset);
         }
 
-        public static void SetPreset(string name)
+        public static void SetPreset(string name, string preset)
         {
-            if (Presets_GetActive() != name)
-            {
-                Presets_SetActive(name);
-                if (BossModReborn_IPCSubscriber.IsEnabled)
+            if (Plugin.Configuration.AutoManageBossModAISettings)
+                if (Presets_GetActive() != name)
                 {
-                    if(BossModReborn_IPCSubscriber.Presets_GetActive() != name)
-                    {
-                        BossModReborn_IPCSubscriber.Presets_SetActive(name);
-                    }
+                    Svc.Log.Debug($"BossMod Setting Preset: {name}");
+                    AddPreset(name, preset);
+                    Presets_SetActive(name);
                 }
-            }
         }
 
         public static void DisablePresets()
         {
-            if (!Presets_GetForceDisabled())
-                Presets_SetForceDisabled();
+            if (Plugin.Configuration.AutoManageBossModAISettings)
+            {
+                if (Presets_GetActive() != null)
+                {
+                    Svc.Log.Debug($"BossMod Disabling Presets");
+                    Presets_ClearActive();
+                }
+            }
         }
 
         public static void SetRange(float range)
         {
             if (Plugin.Configuration.AutoManageBossModAISettings)
             {
-                if (IPCSubscriber_Common.IsReady("BossModReborn"))
-                    if (Math.Abs(ReflectionHelper.BossModReborn_Reflection.MaxDistanceToTarget(ReflectionHelper.BossModReborn_Reflection.configInstance) - range) > 0.1)
-                        ReflectionHelper.BossModReborn_Reflection.MaxDistanceToTarget(ReflectionHelper.BossModReborn_Reflection.configInstance) = range;
+                Svc.Log.Debug($"BossMod Setting Range to: {range}");
 
                 Presets_AddTransientStrategy("AutoDuty",         "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
                 Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.StayCloseToTarget", "range", MathF.Round(range, 1).ToString(CultureInfo.InvariantCulture));
+            }
+        }
+
+        public enum DestinationStrategy { None, Pathfind, Explicit }
+
+        public static void SetMovement(bool on)
+        {
+            if (Plugin.Configuration.AutoManageBossModAISettings)
+            {
+                Svc.Log.Debug($"BossMod Setting Movement: {on}");
+
+                string destinationStrategy = (on ? DestinationStrategy.Pathfind : DestinationStrategy.None).ToString();
+
+                Presets_AddTransientStrategy("AutoDuty",         "BossMod.Autorotation.MiscAI.NormalMovement", "Destination", destinationStrategy);
+                Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.NormalMovement", "Destination", destinationStrategy);
             }
         }
     }
