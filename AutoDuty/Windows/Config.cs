@@ -135,14 +135,14 @@ public class Configuration : IPluginConfiguration
     public bool CofferButton           = true;
     public bool TTButton               = true;
 
+
+    //Dev Options
     internal bool updatePathsOnStartup = true;
     public   bool UpdatePathsOnStartup
     {
         get => !Plugin.isDev || this.updatePathsOnStartup;
         set => this.updatePathsOnStartup = value;
     }
-
-    //Dev Options
     
 
     //Duty Config Options
@@ -295,8 +295,11 @@ public class Configuration : IPluginConfiguration
     public bool TerminationKeepActive = true;
     
     //BMAI Config Options
-    public bool HideBossModAIConfig = false;
-    internal bool       maxDistanceToTargetRoleBased = true;
+    public   bool HideBossModAIConfig          = false;
+    public   bool BM_UpdatePresetsOnLaunch        = true;
+
+
+    internal bool maxDistanceToTargetRoleBased = true;
     public bool MaxDistanceToTargetRoleBased
     {
         get => maxDistanceToTargetRoleBased;
@@ -698,6 +701,8 @@ public static class ConfigTab
                         BossMod_IPCSubscriber.RefreshPreset("AutoDuty", Resources.AutoDutyPreset);
                         BossMod_IPCSubscriber.RefreshPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
                     }
+                    if (ImGui.Checkbox("Update Presets on Launch", ref Configuration.BM_UpdatePresetsOnLaunch)) 
+                        Configuration.Save();
                     if (ImGui.Checkbox("Set Max Distance To Target Based on Player Role", ref Configuration.maxDistanceToTargetRoleBased))
                     {
                         Configuration.MaxDistanceToTargetRoleBased = Configuration.maxDistanceToTargetRoleBased;
