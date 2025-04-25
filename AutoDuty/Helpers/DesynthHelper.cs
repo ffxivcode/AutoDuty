@@ -65,7 +65,11 @@ namespace AutoDuty.Helpers
             }
             
             if (!GenericHelpers.TryGetAddonByName<AddonSalvageItemSelector>("SalvageItemSelector", out var addonSalvageItemSelector))
+            {
                 AgentSalvage.Instance()->AgentInterface.Show();
+                EzThrottler.Throttle("Desynth", 2000, true);
+                return;
+            }
             else if (GenericHelpers.IsAddonReady((AtkUnitBase*)addonSalvageItemSelector) && addonSalvageItemSelector->IsReady)
             {
                 AgentSalvage.Instance()->ItemListRefresh(true);
