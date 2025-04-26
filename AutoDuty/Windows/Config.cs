@@ -296,7 +296,7 @@ public class Configuration : IPluginConfiguration
     
     //BMAI Config Options
     public   bool HideBossModAIConfig          = false;
-    public   bool BM_UpdatePresetsOnLaunch        = true;
+    public   bool BM_UpdatePresetsAutomatically        = true;
 
 
     internal bool maxDistanceToTargetRoleBased = true;
@@ -701,7 +701,7 @@ public static class ConfigTab
                         BossMod_IPCSubscriber.RefreshPreset("AutoDuty", Resources.AutoDutyPreset);
                         BossMod_IPCSubscriber.RefreshPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
                     }
-                    if (ImGui.Checkbox("Update Presets on Launch", ref Configuration.BM_UpdatePresetsOnLaunch)) 
+                    if (ImGui.Checkbox("Update Presets automatically", ref Configuration.BM_UpdatePresetsAutomatically)) 
                         Configuration.Save();
                     if (ImGui.Checkbox("Set Max Distance To Target Based on Player Role", ref Configuration.maxDistanceToTargetRoleBased))
                     {

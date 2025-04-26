@@ -216,7 +216,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Configuration.Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 208) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 209) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
             Configuration.Save();
 
@@ -236,12 +236,6 @@ public sealed class AutoDuty : IDalamudPlugin
             RepairNPCHelper.PopulateRepairNPCs();
             FileHelper.Init();
             Patcher.Patch(startup: true);
-
-            if (Configuration.BM_UpdatePresetsOnLaunch)
-            {
-                BossMod_IPCSubscriber.RefreshPreset("AutoDuty",         Resources.AutoDutyPreset);
-                BossMod_IPCSubscriber.RefreshPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
-            }
 
             Chat = new();
             _overrideAFK = new();
@@ -1177,6 +1171,12 @@ public sealed class AutoDuty : IDalamudPlugin
         StopForCombat = true;
         if (Configuration.AutoManageVnavAlignCamera && !VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             VNavmesh_IPCSubscriber.Path_SetAlignCamera(true);
+
+        if (this.Configuration is { AutoManageBossModAISettings: true, BM_UpdatePresetsAutomatically: true })
+        {
+            BossMod_IPCSubscriber.RefreshPreset("AutoDuty",         Resources.AutoDutyPreset);
+            BossMod_IPCSubscriber.RefreshPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
+        }
 
         if (Configuration.AutoManageBossModAISettings)
             SetBMSettings();
