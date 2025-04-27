@@ -1434,7 +1434,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void CheckRetainerWindow()
     {
-        if (AutoRetainerHelper.State == ActionState.Running || AMHelper.State == ActionState.Running || AutoRetainer_IPCSubscriber.IsBusy() || AM_IPCSubscriber.IsRunning() || Stage == Stage.Paused)
+        if (AutoRetainerHelper.State == ActionState.Running || AutoRetainer_IPCSubscriber.IsBusy() || AM_IPCSubscriber.IsRunning() || Stage == Stage.Paused)
             return;
 
         if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
