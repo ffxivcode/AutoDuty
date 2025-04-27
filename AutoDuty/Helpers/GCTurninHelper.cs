@@ -45,11 +45,15 @@ namespace AutoDuty.Helpers
         protected override unsafe void HelperStopUpdate(IFramework framework)
         {
             if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.OccupiedInQuestEvent])
+            {
                 base.HelperStopUpdate(framework);
-            else if (Svc.Targets.Target != null)
-                Svc.Targets.Target = null;
+            }
             else
+            {
+                if (Svc.Targets.Target != null)
+                    Svc.Targets.Target = null;
                 this.CloseAddons();
+            }
         }
 
         protected override unsafe void HelperUpdate(IFramework framework)

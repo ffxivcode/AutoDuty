@@ -21,8 +21,6 @@ using Serilog.Events;
 
 namespace AutoDuty.Windows;
 
-using System.Numerics;
-using System.Text.Json.Serialization;
 using Dalamud.Utility.Numerics;
 using Data;
 using ECommons.ExcelServices;
@@ -33,7 +31,7 @@ using ECommons.UIHelpers.AddonMasterImplementations;
 using ECommons.UIHelpers.AtkReaderImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using ImPlotNET;
+using ReflectionHelper = Helpers.ReflectionHelper;
 
 [Serializable]
 public class Configuration : IPluginConfiguration

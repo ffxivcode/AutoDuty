@@ -50,12 +50,17 @@ namespace AutoDuty.Helpers
         protected override unsafe void HelperStopUpdate(IFramework framework)
         {
             if (!Svc.Condition[ConditionFlag.OccupiedSummoningBell])
+            {
                 base.HelperStopUpdate(framework);
-            else if (Svc.Targets.Target != null)
-                Svc.Targets.Target = null;
+            }
             else
+            {
+                if (Svc.Targets.Target != null)
+                    Svc.Targets.Target = null;
                 this.CloseAddons();
+            }
         }
+    
 
         protected override unsafe void HelperUpdate(IFramework framework)
         {
