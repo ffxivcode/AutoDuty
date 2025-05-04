@@ -440,7 +440,7 @@ namespace AutoDuty.Windows
                                             {
                                                 if (Plugin.Configuration.HideUnavailableDuties && !canRun)
                                                     continue;
-                                                if (ImGui.Selectable($"({content.TerritoryType}) {content.Name}", DutySelected?.id == content.TerritoryType))
+                                                if (ImGui.Selectable($"L{content.ClassJobLevelRequired} ({content.TerritoryType}) {content.Name}", DutySelected?.id == content.TerritoryType))
                                                 {
                                                     DutySelected = ContentPathsManager.DictionaryPaths[content.TerritoryType];
                                                     Plugin.CurrentTerritoryContent = content;
