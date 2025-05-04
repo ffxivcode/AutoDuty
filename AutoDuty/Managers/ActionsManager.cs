@@ -158,8 +158,7 @@ namespace AutoDuty.Managers
 
         public void BossMod(PathAction action)
         {
-            if (bool.TryParse(action.Arguments[0], out bool on))
-                BossMod_IPCSubscriber.SetMovement(on);
+            BossMod_IPCSubscriber.SetMovement(action.Arguments[0].Equals("on", StringComparison.InvariantCultureIgnoreCase));
         }
 
         public void ModifyIndex(PathAction action)
