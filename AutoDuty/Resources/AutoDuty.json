@@ -416,6 +416,10 @@
       {
         "Track": "Destination",
         "Option": "Pathfind"
+      },
+      {
+        "Track": "Cast",
+        "Option": "DropMove"
       }
     ]
   }
