@@ -36,7 +36,6 @@ namespace AutoDuty.Windows
         private static          Vector3                  _position          = Vector3.Zero;
         //private static          string                   _positionText      = string.Empty;
         private static          List<string>             _arguments         = [];
-        private static          string                   _argumentsString   = string.Empty;
         private static          string                   _argumentHint      = string.Empty;
         private static          bool                     _dontMove          = false;
         private static          bool                     _showAddActionUI   = false;
@@ -164,7 +163,6 @@ namespace AutoDuty.Windows
                             default:
                                 break;
                         }
-                        _argumentsString = _arguments.ToCustomString();
                         _action = new() { Name = _actionText, Position = _position, Arguments = _arguments, Note = _note, Tag = _actionTag };
                         _showAddActionUI = true;
                     }
@@ -260,7 +258,7 @@ namespace AutoDuty.Windows
                 return;
             }
 
-            using (ImRaii.Disabled(_argumentsString.IsNullOrEmpty() && !_noArgument && !_comment))
+            using (ImRaii.Disabled(_arguments.Count == 0 && !_noArgument && !_comment))
             {
                 if (ImGuiEx.ButtonWrapped(_addActionButton))
                 {
@@ -272,8 +270,8 @@ namespace AutoDuty.Windows
                             ShowPopup("Error", $"{_action.Name}'s must be uint's corresponding to the objects DataId", true);
                     }
                     else
-                        AddAction();
-                }
+                                            AddAction();
+                                    }
             }
             ImGui.SameLine();
             ImGuiEx.CheckboxWrapped("Dont Move", ref _dontMove);
@@ -300,15 +298,72 @@ namespace AutoDuty.Windows
                     }
                 }
             }
-            using (ImRaii.Disabled(_noArgument || _comment))
+            if (!(_noArgument || _comment))
             {
-                ImGui.TextColored(_argumentTextColor, "Argument: (arg1,arg2)");
+                ImGui.TextColored(_argumentTextColor, "Arguments:");
                 ImGui.SameLine();
-                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-                ImGui.InputTextWithHint("##Argument", _argumentHint, ref _argumentsString, 200);
+                ImGui.TextColored(_argumentTextColor, _argumentHint);
+                ImGui.SameLine();
+                if (ImGui.Button("+##AddArgument"))
+                {
+                    _arguments.Add(string.Empty);
+                }
+
+                for (int i = 0; i < _arguments.Count; i++)
+                {
+                    ImGui.PushID(i);
+
+                    using (ImRaii.Disabled(i <= 0))
+                    {
+                        if (ImGui.Button("↑##MoveUp"))
+                        {
+                            var temp = _arguments[i];
+                            _arguments[i] = _arguments[i - 1];
+                            _arguments[i - 1] = temp;
+                        }
+                    }
+
+                    ImGui.SameLine();
+                    using (ImRaii.Disabled(i >= _arguments.Count - 1))
+                    {
+                        if (ImGui.Button("↓##MoveDown"))
+                        {
+                            var temp = _arguments[i];
+                            _arguments[i] = _arguments[i + 1];
+                            _arguments[i + 1] = temp;
+                        }
+                    }
+
+                    ImGui.SameLine();
+                    using (ImRaii.Disabled(!ImGui.GetIO().KeyCtrl))
+                    {
+                        if (ImGui.Button("X##RemoveArgument"))
+                        {
+                            _arguments.RemoveAt(i);
+                            i--;
+                        }
+                    }
+
+                    ImGui.SameLine();
+                    if (ImGui.Button("+##AddArgument"))
+                    {
+                        _arguments.Insert(i + 1, string.Empty);
+                    }
+                    ImGui.SameLine();
+
+                    ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+                    string tempArgument = _arguments[i];
+                    if (ImGui.InputText($"##Argument{i}", ref tempArgument, 200))
+                    {
+                        _arguments[i] = tempArgument;
+                    }
+                    ImGui.PopID();
+                }
+                ImGui.Spacing();
             }
 
-            using (ImRaii.Disabled(_comment))
+
+            if (!_comment)
             {
                 if (ImGui.Button("Position:"))
                     _position = (_position - Player.Position).LengthSquared() <= 0.1f ? Vector3.Zero : Player.Position;
@@ -384,8 +439,7 @@ namespace AutoDuty.Windows
                                 _dontMove          = item.Value.Position == Vector3.Zero;
                                 _actionText        = item.Value.Name;
                                 _note              = item.Value.Note;
-                                _arguments         = item.Value.Arguments;
-                                _argumentsString   = item.Value.Arguments.ToCustomString();
+                                _arguments         = [..item.Value.Arguments];
                                 _position          = item.Value.Position;
                                 //_positionText      = _position.ToCustomString();
                                 _buildListSelected = item.Index;
@@ -480,7 +534,7 @@ namespace AutoDuty.Windows
             if (_action == null) return;
 
             _action.Name = _actionText;
-            _action.Arguments = [.. _argumentsString.Split(",", StringSplitOptions.TrimEntries)];
+            _action.Arguments = [.. _arguments];
             _action.Tag = _actionTag;
             _action.Position = !_comment ? _position : Vector3.Zero;
             _action.Note = _comment && !_note.StartsWith("<--") && !_note.EndsWith("-->") ? $"<-- {_note} -->" : _note;
