@@ -22,11 +22,15 @@ namespace AutoDuty.Helpers
                     return;
                 else if (value == PlayerLifeState.Dead)
                 {
-                    Svc.Log.Debug("DeathHelper - Player is Dead changing state to Dead");
-                    OnDeath();
+                    if (value != _deathState)
+                    {
+                        Svc.Log.Debug("DeathHelper - Player is Dead changing state to Dead");
+                        SchedulerHelper.ScheduleAction("OnDeath", OnDeath, 500, false); 
+                    }
                 }
                 else if (value == PlayerLifeState.Revived)
                 {
+                    SchedulerHelper.DescheduleAction("OnDeath");
                     Svc.Log.Debug("DeathHelper - Player is Revived changing state to Revived");
                     _oldIndex = Plugin.Indexer;
                     _findShortcutStartTime = Environment.TickCount;
@@ -49,13 +53,12 @@ namespace AutoDuty.Helpers
 
             if (Plugin.TaskManager.IsBusy)
                 Plugin.TaskManager.Abort();
-           
-            if (Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid))
+            
+            if (Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid, DutyMode.Variant))
             {
+                Svc.Log.Debug("DeathHelper - On Death, looking for YesNo");
                 if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
                     AddonHelper.ClickSelectYesno();
-                else
-                    SchedulerHelper.ScheduleAction("OnDeath", OnDeath, 500);
             }
         }
 
