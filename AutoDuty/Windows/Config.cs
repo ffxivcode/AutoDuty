@@ -21,6 +21,7 @@ using Serilog.Events;
 
 namespace AutoDuty.Windows;
 
+using System.Numerics;
 using Dalamud.Utility.Numerics;
 using Data;
 using ECommons.ExcelServices;
@@ -32,6 +33,7 @@ using ECommons.UIHelpers.AtkReaderImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ReflectionHelper = Helpers.ReflectionHelper;
+using TerritoryTypeTelepo = Lumina.Excel.Sheets.Experimental.TerritoryTypeTelepo;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
@@ -583,6 +585,42 @@ public static class ConfigTab
                     Plugin.CurrentTerritoryContent =  ContentHelper.DictionaryContent.Values.First();
                     Plugin.States                  |= PluginState.Other;
                     Plugin.LoopTasks(false);
+                }
+
+                if (ImGui.CollapsingHeader("teleport playthings"))
+                {
+                    if (ImGui.CollapsingHeader("Warps"))
+                    {
+                        ImGui.Indent();
+                        foreach (Warp warp in Svc.Data.GameData.GetExcelSheet<Warp>())
+                        {
+                            if (warp.TerritoryType.RowId != 152)
+                                continue;
+
+                            if (ImGui.CollapsingHeader($"{warp.Name} {warp.Question} to {warp.TerritoryType.ValueNullable?.PlaceName.ValueNullable?.Name.ToString()}##{warp.RowId}"))
+                            {
+                                if (warp.PopRange.ValueNullable is { } level)
+                                {
+                                    ImGui.Text($"{level.X} {level.Y} {level.Z} in {level.Territory.ValueNullable?.PlaceName.ValueNullable?.Name.ToString()}");
+                                    ImGui.Text($"{(new Vector3(level.X, level.Y, level.Z) - Player.Position)}");
+                                }
+                            }
+                        }
+
+                        ImGui.Unindent();
+                    }
+
+                    if (ImGui.CollapsingHeader("LevelTest"))
+                    {
+                        foreach ((Level lvl, Vector3, Vector3) level in Svc.Data.GameData.GetExcelSheet<Level>().Where(lvl => lvl.Territory.RowId == 152)
+                                                                           .Select(lvl => (lvl, (new Vector3(lvl.X, lvl.Y, lvl.Z))))
+                                                                           .Select(tuple => (tuple.lvl, tuple.Item2, (tuple.Item2 - Player.Position))).OrderBy(lvl => lvl.Item3.LengthSquared()))
+                        {
+                            ImGui.Text($"{level.lvl.RowId} {level.Item2} {level.Item3} {string.Join(" | ", level.lvl.Object.GetType().GenericTypeArguments.Select(t => t.FullName))}: {level.lvl.Object.RowId}");
+                        }
+                    }
+
+                    ImGuiEx.Text($"{typeof(Achievement).Assembly.GetTypes().Where(x => x.FullName.StartsWith("Lumina.Excel.Sheets")).Select(x => (x, x.GetProperties().Where(f => f.PropertyType.Name == "RowRef`1" && f.PropertyType.GenericTypeArguments[0].FullName == typeof(Map).FullName))).Where(x => x.Item2.Any()).Select(x => $"{x.Item1} references {x.Item2.Select(x => x.Name).Print(", ")}").Print("\n")}");
                 }
             }
         }

@@ -32,12 +32,14 @@ namespace AutoDuty.Helpers
 
             if (Conditions.Instance()->Mounted)
             {
+                DebugLog("Dismount");
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 23);
                 return;
             }
 
             if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
             {
+                this.DebugLog("No empty slots");
                 this.Stop();
                 return;
             }
@@ -51,6 +53,7 @@ namespace AutoDuty.Helpers
                                                                .Where(iv =>
                                                                       {
                                                                           Item? excelItem = InventoryHelper.GetExcelItem(iv.ItemId);
+                                                                          this.DebugLog($"checking item: {iv.ItemId} in {iv.Container} {iv.Slot}");
                                                                           return !this.doneItems.Contains(iv) && excelItem.HasValue && ValidCoffer(excelItem.Value);
                                                                       });
 
