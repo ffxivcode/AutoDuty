@@ -12,7 +12,8 @@ namespace AutoDuty.Helpers
         {
             internal List<Action> Action { get; set; } = [() => { }];
 
-            internal int TimeMS { get; set; } = 0;
+            internal int TimeMS   { get; set; } = 0;
+            internal int Interval { get; set; } 
 
             internal Func<bool>? Condition { get; set; } = null;
 
@@ -33,7 +34,7 @@ namespace AutoDuty.Helpers
         {
             Svc.Log.Debug($"Scheduler Helper - {name} enqueued for scheduling");
 
-            _schedulesToAdd.Enqueue((name, new Schedule() { Action = action, Condition = condition, TimeMS = timeMS > 0 ? Environment.TickCount + timeMS : 0, RunOnce = runOnce }));
+            _schedulesToAdd.Enqueue((name, new Schedule { Action = action, Condition = condition, TimeMS = timeMS > 0 ? Environment.TickCount + timeMS : 0, Interval = timeMS, RunOnce = runOnce }));
         }
 
         private static readonly Queue<(string, Schedule)> _schedulesToAdd = [];
@@ -54,7 +55,7 @@ namespace AutoDuty.Helpers
                     if (schedule.Value.RunOnce || schedule.Value.Condition != null)
                         _schedulesToRemove.Enqueue(schedule.Key);
                     else
-                        schedule.Value.TimeMS += Environment.TickCount;
+                        schedule.Value.TimeMS = Environment.TickCount + schedule.Value.Interval;
                 }
             }
 
