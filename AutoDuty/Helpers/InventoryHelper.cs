@@ -16,9 +16,10 @@ namespace AutoDuty.Helpers
 
     internal unsafe static class InventoryHelper
     {
-        internal static uint SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();
-        internal static uint MySeals => InventoryManager.Instance()->GetCompanySeals(PlayerState.Instance()->GrandCompany);
-        internal static uint MaxSeals => InventoryManager.Instance()->GetMaxCompanySeals(PlayerState.Instance()->GrandCompany);
+        internal static InventoryType[] Bag       => [InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4];
+        internal static uint            SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();
+        internal static uint            MySeals   => InventoryManager.Instance()->GetCompanySeals(PlayerState.Instance()->GrandCompany);
+        internal static uint            MaxSeals  => InventoryManager.Instance()->GetMaxCompanySeals(PlayerState.Instance()->GrandCompany);
 
         internal static int ItemCount(uint itemId) => InventoryManager.Instance()->GetInventoryItemCount(itemId);
 
@@ -89,6 +90,29 @@ namespace AutoDuty.Helpers
         }
 
         internal static void EquipGear(Item item, InventoryType type, int slotIndex, RaptureGearsetModule.GearsetItemIndex targetSlot) => InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot, 1);
+
+        internal static (InventoryType, ushort) GetFirstAvailableSlot(params InventoryType[] types)
+        {
+            foreach (InventoryType type in types)
+            {
+                ushort slot = GetFirstAvailableSlot(type);
+                if(slot > 0)
+                    return (type, slot);
+            }
+
+            return (InventoryType.Invalid, 0);
+        }
+
+        internal static ushort GetFirstAvailableSlot(InventoryType container)
+        {
+            InventoryContainer* cont = InventoryManager.Instance()->GetInventoryContainer(container);
+            for (int i = 0; i < cont->Size; i++)
+            {
+                if (cont->Items[i].ItemId == 0)
+                    return (ushort)i;
+            }
+            return 0;
+        }
 
         internal static ushort CurrentItemLevel => *(ushort*)((nint)(AgentStatus.Instance()) + 48);
 

@@ -33,7 +33,6 @@ using ECommons.UIHelpers.AtkReaderImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ReflectionHelper = Helpers.ReflectionHelper;
-using TerritoryTypeTelepo = Lumina.Excel.Sheets.Experimental.TerritoryTypeTelepo;
 
 [Serializable]
 public class Configuration : IPluginConfiguration
@@ -202,6 +201,7 @@ public class Configuration : IPluginConfiguration
     public List<System.Numerics.Vector3>              FCEstateEntrancePath     = [];
     public bool                                       AutoEquipRecommendedGear;
     public bool                                       AutoEquipRecommendedGearGearsetter;
+    public bool                                       AutoEquipRecommendedGearGearsetterOldToInventory;
     public bool                                       AutoRepair              = false;
     public int                                        AutoRepairPct           = 50;
     public bool                                       AutoRepairSelf          = false;
@@ -1075,10 +1075,19 @@ public static class ConfigTab
                         {
                             if (ImGui.Checkbox("Consider items outside of armoury chest", ref Configuration.AutoEquipRecommendedGearGearsetter))
                                 Configuration.Save();
+
+                            if (Configuration.AutoEquipRecommendedGearGearsetter)
+                            {
+                                ImGui.Indent();
+                                if (ImGui.Checkbox("Move old items to inventory", ref Configuration.AutoEquipRecommendedGearGearsetterOldToInventory)) 
+                                    Configuration.Save();
+                                ImGuiComponents.HelpMarker("Except for weapons, this will move the gear to be replaced to the inventory.");
+                                ImGui.Unindent();
+                            }
                         }
 
                         if (!Gearsetter_IPCSubscriber.IsEnabled)
-                        {
+                        {   
                             if (Configuration.AutoEquipRecommendedGearGearsetter)
                             {
                                 Configuration.AutoEquipRecommendedGearGearsetter = false;
