@@ -12,8 +12,8 @@ namespace AutoDuty.Helpers
 
     internal class CofferHelper : ActiveHelperBase<CofferHelper>
     {
-        private readonly List<InventoryItem> doneItems = [];
-        private          int                 initialGearset;
+        private readonly Dictionary<uint, int> doneItems = [];
+        private          int           initialGearset;
 
         internal override unsafe void Start()
         {
@@ -54,7 +54,7 @@ namespace AutoDuty.Helpers
                                                                       {
                                                                           Item? excelItem = InventoryHelper.GetExcelItem(iv.ItemId);
                                                                           this.DebugLog($"checking item: {iv.ItemId} in {iv.Container} {iv.Slot}");
-                                                                          return !this.doneItems.Contains(iv) && excelItem.HasValue && ValidCoffer(excelItem.Value);
+                                                                          return iv.ItemId > 0 && (!this.doneItems.ContainsKey(iv.ItemId) || this.doneItems[iv.ItemId] != iv.Quantity) && excelItem.HasValue && ValidCoffer(excelItem.Value);
                                                                       });
 
 
@@ -89,7 +89,7 @@ namespace AutoDuty.Helpers
                 }
 
                 this.DebugLog("item used");
-                this.doneItems.Add(item);
+                this.doneItems[item.ItemId] = item.Quantity;
 
             } else if (this.initialGearset != module->CurrentGearsetIndex)
             {
