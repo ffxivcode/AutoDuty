@@ -637,7 +637,7 @@ public static class ConfigTab
 
         if (dutyConfigHeaderSelected == true)
         {
-            ImGui.Columns(2);
+            ImGui.Columns(2, "##DutyConfigHeaderColumns");
             if (ImGui.Checkbox("Auto Leave Duty in last loop", ref Configuration.AutoExitDuty))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will automatically exit the dungeon upon completion of the path.");
@@ -747,7 +747,7 @@ public static class ConfigTab
                     }
                     using (ImRaii.Disabled(Configuration.MaxDistanceToTargetRoleBased))
                     {
-                        ImGui.PushItemWidth(195);
+                        ImGui.PushItemWidth(195 * ImGuiHelpers.GlobalScale);
                         if (ImGui.SliderFloat("Max Distance To Target", ref Configuration.MaxDistanceToTargetFloat, 1, 30))
                         {
                             Configuration.MaxDistanceToTargetFloat = Math.Clamp(Configuration.MaxDistanceToTargetFloat, 1, 30);
@@ -762,7 +762,7 @@ public static class ConfigTab
                     }
                     using (ImRaii.Disabled(!Configuration.MaxDistanceToTargetRoleBased))
                     {
-                        ImGui.PushItemWidth(195);
+                        ImGui.PushItemWidth(195 * ImGuiHelpers.GlobalScale);
                         if (ImGui.SliderFloat("Max Distance To Target | Melee", ref Configuration.MaxDistanceToTargetRoleMelee, 1, 30))
                         {
                             Configuration.MaxDistanceToTargetRoleMelee = Math.Clamp(Configuration.MaxDistanceToTargetRoleMelee, 1, 30);
@@ -1186,7 +1186,7 @@ public static class ConfigTab
                 if (Configuration.AutoConsume)
                 {
                     ImGui.SameLine();
-                    ImGui.Columns(3);
+                    ImGui.Columns(3, "##AutoConsumeColumns");
                     //ImGui.SameLine(0, 5);
                     ImGui.NextColumn();
                     if (ImGui.Checkbox("Ignore Status", ref Configuration.AutoConsumeIgnoreStatus))
@@ -1196,7 +1196,7 @@ public static class ConfigTab
                     ImGui.NextColumn();
                     //ImGui.SameLine(0, 5);
 
-                    ImGui.PushItemWidth(80);
+                    ImGui.PushItemWidth(80 * ImGuiHelpers.GlobalScale);
 
                     using (ImRaii.Disabled(Configuration.AutoConsumeIgnoreStatus))
                     {
@@ -1211,7 +1211,7 @@ public static class ConfigTab
 
                     ImGui.PopItemWidth();
                     ImGui.Columns(1);
-                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 115);
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 115 * ImGuiHelpers.GlobalScale);
                     if (ImGui.BeginCombo("##SelectAutoConsumeItem", consumableItemsSelectedItem.Name))
                     {
                         ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref consumableItemsItemNameInput, 1000);
@@ -1279,7 +1279,7 @@ public static class ConfigTab
 
         if (betweenLoopHeaderSelected == true)
         {
-            ImGui.Columns(2);
+            ImGui.Columns(2, "##BetweenLoopHeaderColumns");
 
             if (ImGui.Checkbox("Enable###BetweenLoopEnable", ref Configuration.EnableBetweenLoopActions))
                 Configuration.Save();
@@ -1442,7 +1442,7 @@ public static class ConfigTab
                 }
 
 
-                ImGui.Columns(2);
+                ImGui.Columns(2, "##DesynthColumns");
 
                 if (ImGui.Checkbox("Auto Desynth", ref Configuration.autoDesynth))
                 {
@@ -1474,6 +1474,7 @@ public static class ConfigTab
                             }
                             if (Configuration.AutoDesynthSkillUp)
                             {
+                                ImGui.Indent();
                                 ImGui.Text("Item Level Limit");
                                 ImGuiComponents.HelpMarker("Stops desynthesising an item once your desynthesis skill reaches the Item Level + this limit.");
                                 ImGui.SameLine();
@@ -1483,6 +1484,8 @@ public static class ConfigTab
                                     Configuration.AutoDesynthSkillUpLimit = Math.Clamp(Configuration.AutoDesynthSkillUpLimit, 0, 50);
                                     Configuration.Save();
                                 }
+                                ImGui.PopItemWidth();
+                                ImGui.Unindent();
                             }
                             ImGui.Unindent();
                         }
@@ -1645,7 +1648,7 @@ public static class ConfigTab
                 ImGuiComponents.HelpMarker("Looping will stop when these conditions are reached, so long as an adequate number of loops have been allocated.");
                 if (Configuration.StopItemQty)
                 {
-                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 125);
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 125 * ImGuiHelpers.GlobalScale);
                     if (ImGui.BeginCombo("Select Item", stopItemQtySelectedItem.Value))
                     {
                         ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref stopItemQtyItemNameInput, 1000);
@@ -1657,7 +1660,7 @@ public static class ConfigTab
                         ImGui.EndCombo();
                     }
                     ImGui.PopItemWidth();
-                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 220);
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 220 * ImGuiHelpers.GlobalScale);
                     if (ImGui.InputInt("Quantity", ref Configuration.StopItemQtyInt))
                         Configuration.Save();
 
@@ -1741,7 +1744,7 @@ public static class ConfigTab
             if (execute)
             {
                 ImGui.Indent();
-                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 185);
+                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 185 * ImGuiHelpers.GlobalScale);
                 if (ImGui.InputTextWithHint($"##Commands{checkbox}", "enter command starting with /", ref curCommand, 500, ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     if (!curCommand.IsNullOrEmpty() && curCommand[0] == '/' && (ImGui.IsKeyDown(ImGuiKey.Enter) || ImGui.IsKeyDown(ImGuiKey.KeypadEnter)))
