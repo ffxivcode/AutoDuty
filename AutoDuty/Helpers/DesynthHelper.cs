@@ -95,7 +95,7 @@ namespace AutoDuty.Helpers
 
                         if (itemLevel == null || itemSheetRow == null) continue;
 
-                        if (!Plugin.Configuration.AutoDesynthSkillUp || (desynthLevel < itemLevel + 50 && desynthLevel < _maxDesynthLevel))
+                        if (!Plugin.Configuration.AutoDesynthSkillUp || (desynthLevel < itemLevel + Plugin.Configuration.AutoDesynthSkillUpLimit && desynthLevel < _maxDesynthLevel))
                         {
                             DebugLog($"Salvaging Item({i}): {itemSheetRow.Value.Name.ToString()} with iLvl {itemLevel} because our desynth level is {desynthLevel}");
                             foundOne = true;

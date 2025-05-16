@@ -252,6 +252,7 @@ public class Configuration : IPluginConfiguration
                 AutoDesynth = false;
         }
     }
+    public int AutoDesynthSkillUpLimit = 50;
     internal bool autoGCTurnin = false;
     public bool AutoGCTurnin
     {
@@ -1470,6 +1471,18 @@ public static class ConfigTab
                             {
                                 Configuration.AutoDesynthSkillUp = Configuration.autoDesynthSkillUp;
                                 Configuration.Save();
+                            }
+                            if (Configuration.AutoDesynthSkillUp)
+                            {
+                                ImGui.Text("Item Level Limit");
+                                ImGuiComponents.HelpMarker("Stops desynthesising an item once your desynthesis skill reaches the Item Level + this limit.");
+                                ImGui.SameLine();
+                                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                                if (ImGui.SliderInt("##AutoDesynthSkillUpLimit", ref Configuration.AutoDesynthSkillUpLimit, 0, 50))
+                                {
+                                    Configuration.AutoDesynthSkillUpLimit = Math.Clamp(Configuration.AutoDesynthSkillUpLimit, 0, 50);
+                                    Configuration.Save();
+                                }
                             }
                             ImGui.Unindent();
                         }
