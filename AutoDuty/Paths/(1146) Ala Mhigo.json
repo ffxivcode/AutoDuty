@@ -158,27 +158,40 @@
     },
     {
       "tag": "None",
-      "name": "MoveTo",
+      "name": "StopForCombat",
       "position": {
         "X": 250,
         "Y": 106.45,
         "Z": -85.17
       },
       "arguments": [
-        ""
+        "false"
       ],
       "note": ""
     },
     {
       "tag": "None",
-      "name": "MoveTo",
+      "name": "StopForCombat",
       "position": {
         "X": 234.48,
         "Y": 110,
         "Z": -149.57
       },
       "arguments": [
-        ""
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "StopForCombat",
+      "position": {
+        "X": 229.04869,
+        "Y": 110,
+        "Z": -150.04295
+      },
+      "arguments": [
+        "false"
       ],
       "note": ""
     },
@@ -192,6 +205,19 @@
       },
       "arguments": [
         ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "StopForCombat",
+      "position": {
+        "X": 216.24066,
+        "Y": 119.84013,
+        "Z": -247.28032
+      },
+      "arguments": [
+        "true"
       ],
       "note": ""
     },
@@ -279,6 +305,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 213,
+        "change": ""
       }
     ],
     "notes": []
