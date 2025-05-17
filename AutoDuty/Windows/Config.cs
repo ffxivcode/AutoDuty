@@ -1759,7 +1759,7 @@ public static class ConfigTab
                 ImGui.SameLine(0, 5);
                 using (ImRaii.Disabled(curCommand.IsNullOrEmpty() || curCommand[0] != '/'))
                 {
-                    if (ImGui.Button("Add Command"))
+                    if (ImGui.Button($"Add Command##CommandButton{checkbox}"))
                     {
                         commands.Add(curCommand);
                         Configuration.Save();
@@ -1773,7 +1773,7 @@ public static class ConfigTab
 
                 foreach (var item in commands.Select((Value, Index) => (Value, Index)))
                 {
-                    ImGui.Selectable($"{item.Value}");
+                    ImGui.Selectable($"{item.Value}##Selectable{checkbox}");
                     if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                     {
                         removeItem = true;
