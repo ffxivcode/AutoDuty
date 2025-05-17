@@ -362,13 +362,6 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    internal static bool CenteredButton(string label, float percentWidth, float xIndent = 0)
-    {
-        var buttonWidth = ImGui.GetContentRegionAvail().X * percentWidth;
-        ImGui.SetCursorPosX(xIndent + (ImGui.GetContentRegionAvail().X - buttonWidth) / 2f);
-        return ImGui.Button(label, new(buttonWidth, 35f));
-    }
-
     internal static void ShowPopup(string popupTitle, string popupText, bool nested = false)
     {
         _popupTitle = popupTitle;
@@ -390,7 +383,7 @@ public class MainWindow : Window, IDisposable
         {
             ImGuiEx.TextCentered(_popupText);
             ImGui.Spacing();
-            if (CenteredButton("OK", .5f, 15))
+            if (ImGuiHelper.CenteredButton("OK", .5f, 15))
             {
                 _showPopup = false;
                 ImGui.CloseCurrentPopup();

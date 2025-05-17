@@ -1,49 +1,170 @@
+using AutoDuty.Helpers;
 using AutoDuty.IPC;
-using Dalamud.Configuration;
+using Dalamud.Interface;
+using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using ECommons;
+using ECommons.DalamudServices;
+using ECommons.ImGuiMethods;
+using ECommons.MathHelpers;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using ImGuiNET;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using ECommons.DalamudServices;
-using ECommons;
-using Dalamud.Interface.Utility;
-using Dalamud.Interface.Components;
-using ECommons.ImGuiMethods;
-using AutoDuty.Helpers;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using Dalamud.Interface;
-using static AutoDuty.Helpers.RepairNPCHelper;
-using ECommons.MathHelpers;
 using System.Globalization;
+using System.Linq;
+using static AutoDuty.Helpers.RepairNPCHelper;
 using static AutoDuty.Windows.ConfigTab;
-using Serilog.Events;
 
 namespace AutoDuty.Windows;
 
-using System.Numerics;
-using Dalamud.Utility.Numerics;
 using Data;
+using ECommons.Configuration;
 using ECommons.ExcelServices;
-using Properties;
-using Lumina.Excel.Sheets;
-using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using ECommons.UIHelpers.AtkReaderImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.Sheets;
+using Newtonsoft.Json;
+using Properties;
+using System.IO;
+using System.Numerics;
+using System.Text;
 using ReflectionHelper = Helpers.ReflectionHelper;
+using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
+
+public class ConfigurationMain : IEzConfig
+{
+    public const string CONFIGNAME_BARE = "Bare";
+
+    public static ConfigurationMain Instance;
+
+    private string activeConfigName = CONFIGNAME_BARE;
+    public  string ActiveConfigName => this.activeConfigName;
+
+
+    public readonly Dictionary<string, Configuration> configByName = [];
+
+    [JsonIgnore]
+    public Configuration GetCurrentConfig
+    {
+        get
+        {
+            if (!this.configByName.TryGetValue(this.ActiveConfigName, out Configuration? config))
+            {
+                this.activeConfigName = CONFIGNAME_BARE;
+                return this.configByName[CONFIGNAME_BARE];
+            }
+            return config;
+        }
+    }
+
+    public void Init()
+    {
+        if (this.configByName.Count == 0)
+        {
+            if (Svc.PluginInterface.ConfigFile.Exists)
+            {
+                Configuration? configuration = EzConfig.DefaultSerializationFactory.Deserialize<Configuration>(File.ReadAllText(Svc.PluginInterface.ConfigFile.FullName, Encoding.UTF8));
+                if (configuration != null)
+                {
+                    this.configByName.Add("Migrated", configuration);
+                    this.activeConfigName = "Migrated";
+                }
+            }
+        }
+
+        this.configByName[CONFIGNAME_BARE] = new Configuration()
+                                             {
+                                                 EnablePreLoopActions = false, 
+                                                 EnableBetweenLoopActions = false, 
+                                                 EnableTerminationActions = false, 
+                                                 LootTreasure = false
+                                             };
+    }
+
+    public bool SetConfig(string name)
+    {
+        Svc.Log.Debug("Changing config to: " + name);
+        if (this.configByName.ContainsKey(name))
+        {
+            this.activeConfigName = name;
+            return true;
+        }
+        return false;
+    }
+
+    public void CreateNewConfig()
+    {
+        CreateConfig("Config" + (this.configByName.Count - 1).ToString(CultureInfo.InvariantCulture));
+    }
+
+    public void CreateConfig(string name) => 
+        this.CreateConfig(name, new Configuration());
+
+    public void CreateConfig(string name, Configuration config)
+    {
+        this.configByName.Add(name, config);
+        this.activeConfigName = name;
+
+        EzConfig.Save();
+    }
+
+    public void DuplicateCurrentConfig()
+    {
+        string name;
+        int    counter = 0;
+
+        string templateName = this.ActiveConfigName.EndsWith("_Copy") ? this.ActiveConfigName : $"{this.ActiveConfigName}_Copy";
+
+        do
+            name = counter++ > 0 ? $"{templateName}{counter}" : templateName;
+        while (this.configByName.ContainsKey(name));
+
+        string?        oldConfig = EzConfig.DefaultSerializationFactory.Serialize(this.GetCurrentConfig);
+        if(oldConfig != null)
+        {
+            Configuration? newConfig = EzConfig.DefaultSerializationFactory.Deserialize<Configuration>(oldConfig);
+            if(newConfig != null)
+                this.CreateConfig(name, newConfig);
+        }
+    }
+
+    public void RemoveCurrentConfig()
+    {
+        this.configByName.Remove(this.ActiveConfigName);
+        this.activeConfigName = CONFIGNAME_BARE;
+        EzConfig.Save();
+    }
+
+    public Configuration GetConfig(string name)
+    {
+        if (configByName.TryGetValue(name, out var config))
+            return config;
+        return new Configuration();
+    }
+}
+
+public class AutoDutySerializationFactory : DefaultSerializationFactory, ISerializationFactory
+{
+    public new string Serialize(object config) => base.Serialize(config, true);
+
+    public override byte[] SerializeAsBin(object config) => 
+        Encoding.UTF8.GetBytes(this.Serialize(config));
+}
+
+
 
 [Serializable]
-public class Configuration : IPluginConfiguration
+public class Configuration
 {
     //Meta
     public int                                                Version { get; set; }
     public HashSet<string>                                    DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<string, JobWithRole>?> PathSelectionsByPath = [];
-
-
-
 
     //LogOptions
     public bool AutoScroll = true;
@@ -344,7 +465,7 @@ public class Configuration : IPluginConfiguration
 
     public void Save()
     {
-        PluginInterface.SavePluginConfig(this);
+        EzConfig.Save();
     }
 
     public TrustMemberName?[] SelectedTrustMembers = new TrustMemberName?[3];
@@ -354,7 +475,7 @@ public static class ConfigTab
 {
     internal static string FollowName = "";
 
-    private static Configuration Configuration = Plugin.Configuration;
+    private static Configuration Configuration => Plugin.Configuration;
     private static string preLoopCommand = string.Empty;
     private static string betweenLoopCommand = string.Empty;
     private static string terminationCommand = string.Empty;
@@ -377,6 +498,8 @@ public static class ConfigTab
 
     private static string consumableItemsItemNameInput = "";
     private static ConsumableItem consumableItemsSelectedItem = new();
+
+    private static string profileRenameInput = "";
 
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
@@ -406,7 +529,82 @@ public static class ConfigTab
     {
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
-        
+
+        ImGui.AlignTextToFramePadding();
+        ImGui.Text("Currently selected profile: ");
+        ImGui.SameLine();
+
+        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 140 * ImGuiHelpers.GlobalScale);
+
+        using(ImRaii.IEndObject configCombo = ImRaii.Combo("##ConfigCombo", ConfigurationMain.Instance.ActiveConfigName))
+        {
+            if(configCombo)
+                foreach (string key in ConfigurationMain.Instance.configByName.Keys)
+                {
+                    if (key == ConfigurationMain.CONFIGNAME_BARE)
+                    {
+                        using ImRaii.Font font = ImRaii.PushFont(UiBuilder.IconFont);
+                        ImGui.SetItemAllowOverlap();
+                        ImGui.Text(FontAwesomeIcon.Lock.ToIconString());
+                        ImGui.SameLine(0);
+                    }
+                    if (ImGui.Selectable(key + "##ConfigSelectable"))
+                    {
+                        ConfigurationMain.Instance.SetConfig(key);
+                        EzConfig.Save();
+                    }
+                }
+        }
+        ImGui.PopItemWidth();
+        ImGui.SameLine();
+
+        if (ImGui.IsPopupOpen("##RenameProfile"))
+        {
+            bool    open     = true;
+            Vector2 textSize = ImGui.CalcTextSize(profileRenameInput);
+            ImGui.SetNextWindowSize(new(textSize.X + 200, textSize.Y + 150));
+            if (ImGui.BeginPopupModal($"##RenameProfile", ref open, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoMove))
+            {
+                ImGui.Text("New Profile Name");
+                ImGui.InputText("##RenameProfileInput", ref profileRenameInput, 100);
+                ImGui.Spacing();
+                if (ImGuiHelper.CenteredButton("OK", .5f, 15))
+                {
+                    open = false;
+                    ImGui.CloseCurrentPopup();
+                }
+
+                ImGui.EndPopup();
+            }
+        }
+
+
+
+        bool bareProfile = ConfigurationMain.Instance.ActiveConfigName == ConfigurationMain.CONFIGNAME_BARE;
+
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus)) 
+            ConfigurationMain.Instance.CreateNewConfig();
+        ImGui.SameLine(0, 15f);
+        using (ImRaii.Disabled(bareProfile))
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Pen))
+            {
+                profileRenameInput = ConfigurationMain.Instance.ActiveConfigName;
+                ImGui.OpenPopup("##RenameProfile");
+            }
+
+        ImGui.SameLine();
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.Copy)) 
+            ConfigurationMain.Instance.DuplicateCurrentConfig();
+        ImGui.SameLine();
+        using(ImRaii.Disabled(bareProfile))
+            if(ImGuiComponents.IconButton(FontAwesomeIcon.TrashAlt)) 
+                ConfigurationMain.Instance.RemoveCurrentConfig();
+
+        if(bareProfile)
+            ImGuiEx.TextWrapped("The bare profile is for just running a duty, and nothing else. You can copy it to make edits.");
+        using ImRaii.IEndObject _        = ImRaii.Disabled(bareProfile);
+
+
         //Start of Window & Overlay Settings
         ImGui.Spacing();
         ImGui.Separator();

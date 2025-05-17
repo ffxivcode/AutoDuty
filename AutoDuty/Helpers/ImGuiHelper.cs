@@ -99,6 +99,11 @@ namespace AutoDuty.Helpers
             }
         }
 
-
+        internal static bool CenteredButton(string label, float percentWidth, float xIndent = 0)
+        {
+            var buttonWidth = ImGui.GetContentRegionAvail().X * percentWidth;
+            ImGui.SetCursorPosX(xIndent + (ImGui.GetContentRegionAvail().X - buttonWidth) / 2f);
+            return ImGui.Button(label, new(buttonWidth, 35f));
+        }
     }
 }
