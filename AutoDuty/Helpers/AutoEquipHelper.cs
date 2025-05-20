@@ -58,11 +58,14 @@ namespace AutoDuty.Helpers
         [Flags]
         enum AutoEquipState : int
         {
-            None = 0,
-            Setting_Up = 1,
-            Equipping = 2,
-            Updating_Gearset = 4,
-            Getting_Recommended_Gear = 8
+            None                                  = 0,
+            Setting_Up                            = 1 << 0,
+            Equipping                             = 1 << 1,
+            Updating_Gearset                      = 1 << 2,
+            Getting_Recommended_Gear              = 1 << 3,
+            Recommended_Gear_Need_Second_Pass     = 1 << 4,
+            Updating_Gearset_Second_Pass          = 1 << 5,
+            Getting_Recommended_Gear_Second_Pass  = 1 << 6,
         }
 
         private AutoEquipState _statesExecuted = AutoEquipState.None;
@@ -128,6 +131,13 @@ namespace AutoDuty.Helpers
                     if (itemData == null) return;
                     var equipSlotIndex = targetSlot;// InventoryHelper.GetEquippedSlot(itemData.Value);
 
+                    if (InventoryManager.Instance()->GetInventoryContainer(inventoryType.Value)->Items[(int)sourceInventorySlot].ItemId != itemId)
+                    {
+                        Svc.Log.Debug($"AutoEquipGearSetter: Item in slot does not match expected item");
+                        this._statesExecuted |= AutoEquipState.Recommended_Gear_Need_Second_Pass;
+                        this._index++;
+                    }
+
                     if (Plugin.Configuration.AutoEquipRecommendedGearGearsetterOldToInventory && equipSlotIndex is not RaptureGearsetModule.GearsetItemIndex.MainHand and not RaptureGearsetModule.GearsetItemIndex.OffHand &&
                         !InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems)->Items[(int)equipSlotIndex].IsEmpty())
                     {
@@ -139,7 +149,7 @@ namespace AutoDuty.Helpers
                         {
                             (InventoryType inv, ushort slot) = InventoryHelper.GetFirstAvailableSlot(InventoryHelper.Bag);
 
-                            if(slot <= 0)
+                            if (slot <= 0)
                             {
                                 DebugLog("Moving to inventory ignored because no empty inventory slot found.. somehow");
                             }
@@ -164,6 +174,21 @@ namespace AutoDuty.Helpers
                 }
                 else
                     this._index++;
+            }
+            else if (this._statesExecuted.HasFlag(AutoEquipState.Recommended_Gear_Need_Second_Pass) && !this._statesExecuted.HasFlag(AutoEquipState.Updating_Gearset_Second_Pass))
+            {
+                // Gearsetter returns the same ring slot for both hands if two instances of the same ring should be used. This allows equiping one of them and the other one.
+                DebugLog($"RaptureGearsetModule - UpdateGearsetSecondPass");
+                RaptureGearsetModule.Instance()->UpdateGearset(RaptureGearsetModule.Instance()->CurrentGearsetIndex);
+                this._statesExecuted |= AutoEquipState.Updating_Gearset_Second_Pass;
+                EzThrottler.Throttle("AutoEquipGearSetter", 500, true);
+            }
+            else if (this._statesExecuted.HasFlag(AutoEquipState.Recommended_Gear_Need_Second_Pass) && !this._statesExecuted.HasFlag(AutoEquipState.Getting_Recommended_Gear_Second_Pass))
+            {
+                DebugLog($"Gearsetter_IPCSubscriber - GetRecommendationsForGearset");
+                this._gearset     =  Gearsetter_IPCSubscriber.GetRecommendationsForGearset((byte)RaptureGearsetModule.Instance()->CurrentGearsetIndex);
+                this._index       = 0;
+                this._statesExecuted |= AutoEquipState.Getting_Recommended_Gear_Second_Pass;
             }
             else
             {
