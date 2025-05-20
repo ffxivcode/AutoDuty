@@ -136,6 +136,7 @@ namespace AutoDuty.Helpers
                         Svc.Log.Debug($"AutoEquipGearSetter: Item in slot does not match expected item");
                         this._statesExecuted |= AutoEquipState.Recommended_Gear_Need_Second_Pass;
                         this._index++;
+                        return;
                     }
 
                     if (Plugin.Configuration.AutoEquipRecommendedGearGearsetterOldToInventory && equipSlotIndex is not RaptureGearsetModule.GearsetItemIndex.MainHand and not RaptureGearsetModule.GearsetItemIndex.OffHand &&
