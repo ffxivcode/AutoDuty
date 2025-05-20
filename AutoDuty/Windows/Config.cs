@@ -1,49 +1,303 @@
+using AutoDuty.Helpers;
 using AutoDuty.IPC;
-using Dalamud.Configuration;
+using Dalamud.Interface;
+using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using ECommons;
+using ECommons.DalamudServices;
+using ECommons.ImGuiMethods;
+using ECommons.MathHelpers;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using ImGuiNET;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using ECommons.DalamudServices;
-using ECommons;
-using Dalamud.Interface.Utility;
-using Dalamud.Interface.Components;
-using ECommons.ImGuiMethods;
-using AutoDuty.Helpers;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using Dalamud.Interface;
-using static AutoDuty.Helpers.RepairNPCHelper;
-using ECommons.MathHelpers;
 using System.Globalization;
+using System.Linq;
+using static AutoDuty.Helpers.RepairNPCHelper;
 using static AutoDuty.Windows.ConfigTab;
-using Serilog.Events;
 
 namespace AutoDuty.Windows;
 
-using System.Numerics;
-using Dalamud.Utility.Numerics;
 using Data;
+using ECommons.Configuration;
 using ECommons.ExcelServices;
-using Properties;
-using Lumina.Excel.Sheets;
-using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using ECommons.UIHelpers.AtkReaderImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.Sheets;
+using Newtonsoft.Json;
+using Properties;
+using System.IO;
+using System.Numerics;
+using System.Text;
 using ReflectionHelper = Helpers.ReflectionHelper;
+using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
+
+[JsonObject(MemberSerialization.OptIn)]
+public class ConfigurationMain : IEzConfig
+{
+    public const string CONFIGNAME_BARE = "Bare";
+
+    public static ConfigurationMain Instance;
+
+    [JsonProperty]
+    public string DefaultConfigName = CONFIGNAME_BARE;
+
+    [JsonProperty]
+    private string activeProfileName = CONFIGNAME_BARE;
+    
+    public  string ActiveProfileName => this.activeProfileName;
+
+    [JsonProperty]
+    private readonly HashSet<ProfileData> profileData = [];
+
+    private readonly Dictionary<string, ProfileData> profileByName = [];
+    private readonly Dictionary<ulong, string> profileByCID = [];
+
+    [JsonProperty]
+    public readonly Dictionary<ulong, CharData> charByCID = [];
+
+    [JsonObject(MemberSerialization.OptOut)]
+    public struct CharData
+    {
+        public required ulong  CID;
+        public          string Name;
+        public          string World;
+
+        public string GetName() => this.Name.Any() ? $"{this.Name}@{this.World}" : CID.ToString();
+
+        public override int GetHashCode() => this.CID.GetHashCode();
+    }
+
+    public IEnumerable<string> ConfigNames => this.profileByName.Keys;
+     
+    public ProfileData GetCurrentProfile
+    {
+        get
+        {
+            if (!this.profileByName.TryGetValue(this.ActiveProfileName, out ProfileData? profiles))
+            {
+                this.SetProfileToDefault();
+                return this.GetCurrentProfile;
+            }
+
+            return profiles;
+        }
+    }
+
+    public Configuration GetCurrentConfig => this.GetCurrentProfile.Config;
+
+    public void Init()
+    {
+        if (this.profileData.Count == 0)
+        {
+            if (Svc.PluginInterface.ConfigFile.Exists)
+            {
+                Configuration? configuration = EzConfig.DefaultSerializationFactory.Deserialize<Configuration>(File.ReadAllText(Svc.PluginInterface.ConfigFile.FullName, Encoding.UTF8));
+                if (configuration != null)
+                {
+                    this.CreateProfile("Migrated", configuration);
+                    this.SetProfileAsDefault();
+                }
+            }
+        }
+
+        void RegisterProfileData(ProfileData profile)
+        {
+            if (profile.CIDs.Any())
+                foreach (ulong cid in profile.CIDs)
+                    this.profileByCID[cid] = profile.Name;
+            this.profileByName[profile.Name] = profile;
+        }
+
+        foreach (ProfileData profile in this.profileData)
+            if(profile.Name != CONFIGNAME_BARE)
+                RegisterProfileData(profile);
+
+        RegisterProfileData(new ProfileData
+                            {
+                                Name = CONFIGNAME_BARE,
+                                Config = new Configuration
+                                         {
+                                             EnablePreLoopActions     = false,
+                                             EnableBetweenLoopActions = false,
+                                             EnableTerminationActions = false,
+                                             LootTreasure             = false
+                                         }
+                            });
+
+        this.SetProfileToDefault();
+    }
+
+    public bool SetProfile(string name)
+    {
+        DebugLog("Changing profile to: " + name);
+        if (this.profileByName.ContainsKey(name))
+        {
+            this.activeProfileName = name;
+            EzConfig.Save();
+            return true;
+        }
+        return false;
+    }
+
+    public void SetProfileAsDefault()
+    {
+        if (this.profileByName.ContainsKey(this.ActiveProfileName))
+        {
+            this.DefaultConfigName = this.ActiveProfileName;
+            EzConfig.Save();
+        }
+    }
+
+    public void SetProfileToDefault()
+    {
+        Svc.Framework.RunOnTick(() =>
+        {
+            DebugLog("Setting to default profile");
+
+            if (PlayerHelper.IsValid && this.profileByCID.TryGetValue(Player.CID, out string? charProfile))
+                if (this.SetProfile(charProfile))
+                    return;
+            DebugLog("No char default found. Using general default");
+            if (!this.SetProfile(this.DefaultConfigName))
+            {
+                DebugLog("Fallback, using bare");
+                this.DefaultConfigName = CONFIGNAME_BARE;
+                this.SetProfile(CONFIGNAME_BARE);
+            }
+        });
+    }
+
+    public void CreateNewProfile() => 
+        this.CreateProfile("Profile" + (this.profileByName.Count - 1).ToString(CultureInfo.InvariantCulture));
+
+    public void CreateProfile(string name) => 
+        this.CreateProfile(name, new Configuration());
+
+    public void CreateProfile(string name, Configuration config)
+    {
+        DebugLog($"Creating new Profile: {name}");
+
+        ProfileData profile = new()
+                           {
+                               Name   = name,
+                               Config = config
+                           };
+
+        this.profileData.Add(profile);
+        this.profileByName.Add(name, profile);
+        this.SetProfile(name);
+    }
+
+    public void DuplicateCurrentProfile()
+    {
+        string name;
+        int    counter = 0;
+
+        string templateName = this.ActiveProfileName.EndsWith("_Copy") ? this.ActiveProfileName : $"{this.ActiveProfileName}_Copy";
+
+        do
+            name = counter++ > 0 ? $"{templateName}{counter}" : templateName;
+        while (this.profileByName.ContainsKey(name));
+
+        string?        oldConfig = EzConfig.DefaultSerializationFactory.Serialize(this.GetCurrentConfig);
+        if(oldConfig != null)
+        {
+            Configuration? newConfig = EzConfig.DefaultSerializationFactory.Deserialize<Configuration>(oldConfig);
+            if(newConfig != null)
+                this.CreateProfile(name, newConfig);
+        }
+    }
+
+    public void RemoveCurrentProfile()
+    {
+        this.profileData.Remove(this.GetCurrentProfile);
+        this.profileByName.Remove(this.ActiveProfileName);
+        this.SetProfileToDefault();
+    }
+
+    public bool RenameCurrentProfile(string newName)
+    {
+        if (this.profileByName.ContainsKey(newName))
+            return false;
+
+        ProfileData config = this.GetCurrentProfile;
+        this.profileByName.Remove(this.ActiveProfileName);
+        this.profileByName[newName] = config;
+        config.Name                 = newName;
+        this.activeProfileName      = newName;
+
+        EzConfig.Save();
+
+        return true;
+    }
+
+    public ProfileData? GetProfile(string name) => 
+        this.profileByName.GetValueOrDefault(name);
+
+    public void SetCharacterDefault()
+    {
+        Svc.Framework.RunOnTick(() =>
+                          {
+
+                              if (!PlayerHelper.IsValid)
+                                  return;
+
+                              ulong cid = Player.CID;
+
+                              if (this.profileByCID.TryGetValue(cid, out string? oldProfile))
+                                  this.profileByName[oldProfile].CIDs.Remove(cid);
+
+                              this.GetCurrentProfile.CIDs.Add(cid);
+                              this.profileByCID.Add(cid, this.ActiveProfileName);
+                              this.charByCID[cid] = new CharData
+                                                    {
+                                                        CID  = cid,
+                                                        Name = Player.Name,
+                                                        World = Player.CurrentWorld
+                              };
+
+                              EzConfig.Save();
+                          });
+    }
+
+    public static void DebugLog(string message)
+    {
+        Svc.Log.Debug($"Configuration Main: {message}");
+    }
+}
+
+[JsonObject(MemberSerialization.OptOut)]
+public class ProfileData
+{
+    public required string         Name;
+    public          HashSet<ulong> CIDs = [];
+    public required Configuration  Config;
+}
+
+public class AutoDutySerializationFactory : DefaultSerializationFactory, ISerializationFactory
+{
+    public override string DefaultConfigFileName { get; } = "AutoDutyConfig.json";
+
+    public new string Serialize(object config) => 
+        base.Serialize(config, true);
+
+    public override byte[] SerializeAsBin(object config) => 
+        Encoding.UTF8.GetBytes(this.Serialize(config));
+}
+
+
 
 [Serializable]
-public class Configuration : IPluginConfiguration
+public class Configuration
 {
     //Meta
-    public int                                                Version { get; set; }
     public HashSet<string>                                    DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<string, JobWithRole>?> PathSelectionsByPath = [];
-
-
-
 
     //LogOptions
     public bool AutoScroll = true;
@@ -344,7 +598,7 @@ public class Configuration : IPluginConfiguration
 
     public void Save()
     {
-        PluginInterface.SavePluginConfig(this);
+        EzConfig.Save();
     }
 
     public TrustMemberName?[] SelectedTrustMembers = new TrustMemberName?[3];
@@ -354,7 +608,7 @@ public static class ConfigTab
 {
     internal static string FollowName = "";
 
-    private static Configuration Configuration = Plugin.Configuration;
+    private static Configuration Configuration => Plugin.Configuration;
     private static string preLoopCommand = string.Empty;
     private static string betweenLoopCommand = string.Empty;
     private static string terminationCommand = string.Empty;
@@ -377,6 +631,8 @@ public static class ConfigTab
 
     private static string consumableItemsItemNameInput = "";
     private static ConsumableItem consumableItemsSelectedItem = new();
+
+    private static string profileRenameInput = "";
 
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
@@ -406,7 +662,124 @@ public static class ConfigTab
     {
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
-        
+
+        { //Start of Profile Selection
+            ImGui.AlignTextToFramePadding();
+            ImGui.Text("Currently selected profile: ");
+            ImGui.SameLine();
+            if (ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.CONFIGNAME_BARE)
+                ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
+            if (ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.Instance.DefaultConfigName)
+                ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
+            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 180 * ImGuiHelpers.GlobalScale);
+            ImGui.SetItemAllowOverlap();
+            using (ImRaii.IEndObject configCombo = ImRaii.Combo("##ConfigCombo", ConfigurationMain.Instance.ActiveProfileName))
+            {
+                if (configCombo)
+                    foreach (string key in ConfigurationMain.Instance.ConfigNames)
+                    {
+                        if (key == ConfigurationMain.CONFIGNAME_BARE)
+                            ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
+                        if (key == ConfigurationMain.Instance.DefaultConfigName)
+                            ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
+                        float x = ImGui.GetCursorPosX();
+                        ImGui.SameLine(0.1f);
+                        ImGui.SetItemAllowOverlap();
+                        if (ImGui.Selectable($"###{key}ConfigSelectable"))
+                            ConfigurationMain.Instance.SetProfile(key);
+                        ImGui.SameLine(x);
+                        ImGui.Text(key);
+
+                        ProfileData? profile = ConfigurationMain.Instance.GetProfile(key);
+                        if(profile?.CIDs.Any() ?? false)
+                        {
+                            ImGui.SameLine();
+                            ImGuiEx.TextWrapped(ImGuiHelper.VersionColor, string.Join(", ", profile.CIDs.Select(cid => ConfigurationMain.Instance.charByCID.TryGetValue(cid, out ConfigurationMain.CharData cd) ? cd.GetName() : cid.ToString())));
+                        }
+                    }
+            }
+
+            ImGui.PopItemWidth();
+            ImGui.SameLine();
+
+            if (ImGui.IsPopupOpen("##RenameProfile"))
+            {
+                bool    open     = true;
+                Vector2 textSize = ImGui.CalcTextSize(profileRenameInput);
+                ImGui.SetNextWindowSize(new Vector2(textSize.X + 200, textSize.Y + 120) * ImGuiHelpers.GlobalScale);
+                if (ImGui.BeginPopupModal($"##RenameProfile", ref open, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoMove))
+                {
+                    ImGuiHelper.CenterNextElement(ImGui.CalcTextSize("New Profile Name").X);
+                    ImGui.Text("New Profile Name");
+                    ImGui.NewLine();
+                    ImGui.SameLine(50);
+                    ImGui.SetNextItemWidth((textSize.X + 100) * ImGuiHelpers.GlobalScale);
+
+                    ImGui.InputText("##RenameProfileInput", ref profileRenameInput, 100);
+                    ImGui.Spacing();
+                    ImGuiHelper.CenterNextElement(ImGui.CalcTextSize("Change Profile Name").X);
+                    if (ImGui.Button("Change Profile Name"))
+                    {
+                        if (ConfigurationMain.Instance.RenameCurrentProfile(profileRenameInput))
+                        {
+                            open = false;
+                            ImGui.CloseCurrentPopup();
+                        }
+                    }
+
+                    ImGui.EndPopup();
+                }
+            }
+
+
+
+            bool bareProfile = ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.CONFIGNAME_BARE;
+
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus))
+                ConfigurationMain.Instance.CreateNewProfile();
+            if (ImGui.IsItemHovered())
+                ImGui.SetTooltip("Create new Profile");
+
+            ImGui.SameLine(0, 15f);
+            using (ImRaii.Disabled(bareProfile))
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.Pen))
+                {
+                    profileRenameInput = ConfigurationMain.Instance.ActiveProfileName;
+                    ImGui.OpenPopup("##RenameProfile");
+                }
+
+            if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
+                ImGui.SetTooltip("Rename Profile");
+
+            ImGui.SameLine();
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Copy))
+                ConfigurationMain.Instance.DuplicateCurrentProfile();
+            if (ImGui.IsItemHovered())
+                ImGui.SetTooltip("Duplicate Profile");
+
+            ImGui.SameLine();
+            using (ImRaii.Disabled(ImGui.GetIO().KeyCtrl ? ConfigurationMain.Instance.GetCurrentProfile.CIDs.Contains(Player.CID) : ConfigurationMain.Instance.DefaultConfigName == ConfigurationMain.Instance.ActiveProfileName))
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.CheckCircle))
+                    if(ImGui.GetIO().KeyCtrl)
+                        ConfigurationMain.Instance.SetCharacterDefault();
+                    else
+                        ConfigurationMain.Instance.SetProfileAsDefault();
+            if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
+                ImGui.SetTooltip("Make Default\nHold ctrl to make default for the current character");
+
+
+            ImGui.SameLine();
+            using (ImRaii.Disabled(bareProfile || !ImGui.GetIO().KeyCtrl))
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.TrashAlt))
+                    ConfigurationMain.Instance.RemoveCurrentProfile();
+            if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
+                ImGui.SetTooltip("Delete Config\nHold ctrl to enable");
+
+            if (bareProfile)
+                ImGuiEx.TextWrapped("The bare profile is for just running a duty, and nothing else. You can duplicate it to make edits.");
+            using ImRaii.IEndObject _ = ImRaii.Disabled(bareProfile);
+        }
+
         //Start of Window & Overlay Settings
         ImGui.Spacing();
         ImGui.Separator();
