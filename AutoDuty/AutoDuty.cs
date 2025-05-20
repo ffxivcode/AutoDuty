@@ -42,6 +42,8 @@ namespace AutoDuty;
 using System.Text.RegularExpressions;
 using Dalamud.Utility.Numerics;
 using Data;
+using ECommons.Configuration;
+using ECommons.SimpleGui;
 using Lumina.Excel.Sheets;
 using Pictomancy;
 using static Data.Classes;
@@ -87,8 +89,11 @@ public sealed class AutoDuty : IDalamudPlugin
     internal FileInfo ConfigFile;
     internal DirectoryInfo? DalamudDirectory;
     internal DirectoryInfo? AssemblyDirectoryInfo;
-    internal Configuration Configuration { get; init; }
+
+    internal Configuration Configuration => ConfigurationMain.Instance.GetCurrentConfig;
     internal WindowSystem WindowSystem = new("AutoDuty");
+
+    public   int   Version { get; set; }
     internal Stage PreviousStage = Stage.Stopped;
     internal Stage Stage
     {
@@ -206,7 +211,14 @@ public sealed class AutoDuty : IDalamudPlugin
 
             this.isDev = PluginInterface.IsDev;
 
-            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            //EzConfig.Init<ConfigurationMain>();
+            EzConfig.DefaultSerializationFactory = new AutoDutySerializationFactory();
+            (ConfigurationMain.Instance = EzConfig.Init<ConfigurationMain>()).Init();
+
+
+
+            //Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            
             ConfigTab.BuildManuals();
             _configDirectory = PluginInterface.ConfigDirectory;
             ConfigFile = PluginInterface.ConfigFile;
@@ -215,10 +227,9 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
-            Configuration.Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 209) :
+            Version = 
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 214) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
-            Configuration.Save();
 
             if (!_configDirectory.Exists)
                 _configDirectory.Create();
@@ -291,6 +302,7 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.Framework.Update += Framework_Update;
             Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
+            Svc.ClientState.Login += ClientStateOnLogin;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
             Svc.DutyState.DutyStarted += DutyState_DutyStarted;
             Svc.DutyState.DutyWiped += DutyState_DutyWiped;
@@ -304,6 +316,9 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.Log.Info($"Failed loading plugin\n{e}");
         }
     }
+
+    private static void ClientStateOnLogin() => 
+        ConfigurationMain.Instance.SetProfileToDefault();
 
     private void UiBuilderOnDraw()
     {

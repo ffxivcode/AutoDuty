@@ -5,7 +5,10 @@ using System.Text.RegularExpressions;
 
 namespace AutoDuty.Helpers
 {
+    using Dalamud.Interface;
+    using Dalamud.Interface.Utility.Raii;
     using System.Numerics;
+    using static Dalamud.Interface.Utility.Raii.ImRaii;
 
     internal static class ImGuiHelper
     {
@@ -99,6 +102,29 @@ namespace AutoDuty.Helpers
             }
         }
 
+        internal static void CenterNextElement(float percentWidth, float xIndent = 0)
+        {
+            var buttonWidth = ImGui.GetContentRegionAvail().X * percentWidth;
+            ImGui.SetCursorPosX(xIndent + (ImGui.GetContentRegionAvail().X - buttonWidth) / 2f);
+        }
 
+        internal static void CenterNextElement(float width)
+        {
+            ImGui.SetCursorPosX((ImGui.GetContentRegionAvail().X - width) / 2f);
+        }
+
+        internal static bool CenteredButton(string label, float percentWidth, float xIndent = 0)
+        {
+            var buttonWidth = ImGui.GetContentRegionAvail().X * percentWidth;
+            ImGui.SetCursorPosX(xIndent + (ImGui.GetContentRegionAvail().X - buttonWidth) / 2f);
+            return ImGui.Button(label, new(buttonWidth, 35f));
+        }
+        internal static void DrawIcon(FontAwesomeIcon icon)
+        {
+            using ImRaii.Font font = ImRaii.PushFont(UiBuilder.IconFont);
+            ImGui.SetItemAllowOverlap();
+            ImGui.Text(icon.ToIconString());
+            ImGui.SameLine();
+        }
     }
 }

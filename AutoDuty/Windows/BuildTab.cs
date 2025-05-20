@@ -208,11 +208,11 @@ namespace AutoDuty.Windows
                         if (dutyPath != null)
                         {
                             pathFile = dutyPath.PathFile;
-                            if (pathFile.Meta.LastUpdatedVersion < Plugin.Configuration.Version || _changelog.Length > 0)
+                            if (pathFile.Meta.LastUpdatedVersion < Plugin.Version || _changelog.Length > 0)
                             {
                                 pathFile.Meta.Changelog.Add(new PathFileChangelogEntry
                                 {
-                                    Version = Plugin.Configuration.Version,
+                                    Version = Plugin.Version,
                                     Change = _changelog
                                 });
                                 _changelog = string.Empty;

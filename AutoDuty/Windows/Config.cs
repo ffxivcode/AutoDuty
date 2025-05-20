@@ -1,48 +1,303 @@
+using AutoDuty.Helpers;
 using AutoDuty.IPC;
-using Dalamud.Configuration;
+using Dalamud.Interface;
+using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using ECommons;
+using ECommons.DalamudServices;
+using ECommons.ImGuiMethods;
+using ECommons.MathHelpers;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using ImGuiNET;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using ECommons.DalamudServices;
-using ECommons;
-using Dalamud.Interface.Utility;
-using Dalamud.Interface.Components;
-using ECommons.ImGuiMethods;
-using AutoDuty.Helpers;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using Dalamud.Interface;
-using static AutoDuty.Helpers.RepairNPCHelper;
-using ECommons.MathHelpers;
 using System.Globalization;
+using System.Linq;
+using static AutoDuty.Helpers.RepairNPCHelper;
 using static AutoDuty.Windows.ConfigTab;
-using Serilog.Events;
 
 namespace AutoDuty.Windows;
 
-using Dalamud.Utility.Numerics;
 using Data;
+using ECommons.Configuration;
 using ECommons.ExcelServices;
-using Properties;
-using Lumina.Excel.Sheets;
-using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using ECommons.UIHelpers.AtkReaderImplementations;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.Sheets;
+using Newtonsoft.Json;
+using Properties;
+using System.IO;
+using System.Numerics;
+using System.Text;
 using ReflectionHelper = Helpers.ReflectionHelper;
+using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
+
+[JsonObject(MemberSerialization.OptIn)]
+public class ConfigurationMain : IEzConfig
+{
+    public const string CONFIGNAME_BARE = "Bare";
+
+    public static ConfigurationMain Instance;
+
+    [JsonProperty]
+    public string DefaultConfigName = CONFIGNAME_BARE;
+
+    [JsonProperty]
+    private string activeProfileName = CONFIGNAME_BARE;
+    
+    public  string ActiveProfileName => this.activeProfileName;
+
+    [JsonProperty]
+    private readonly HashSet<ProfileData> profileData = [];
+
+    private readonly Dictionary<string, ProfileData> profileByName = [];
+    private readonly Dictionary<ulong, string> profileByCID = [];
+
+    [JsonProperty]
+    public readonly Dictionary<ulong, CharData> charByCID = [];
+
+    [JsonObject(MemberSerialization.OptOut)]
+    public struct CharData
+    {
+        public required ulong  CID;
+        public          string Name;
+        public          string World;
+
+        public string GetName() => this.Name.Any() ? $"{this.Name}@{this.World}" : CID.ToString();
+
+        public override int GetHashCode() => this.CID.GetHashCode();
+    }
+
+    public IEnumerable<string> ConfigNames => this.profileByName.Keys;
+     
+    public ProfileData GetCurrentProfile
+    {
+        get
+        {
+            if (!this.profileByName.TryGetValue(this.ActiveProfileName, out ProfileData? profiles))
+            {
+                this.SetProfileToDefault();
+                return this.GetCurrentProfile;
+            }
+
+            return profiles;
+        }
+    }
+
+    public Configuration GetCurrentConfig => this.GetCurrentProfile.Config;
+
+    public void Init()
+    {
+        if (this.profileData.Count == 0)
+        {
+            if (Svc.PluginInterface.ConfigFile.Exists)
+            {
+                Configuration? configuration = EzConfig.DefaultSerializationFactory.Deserialize<Configuration>(File.ReadAllText(Svc.PluginInterface.ConfigFile.FullName, Encoding.UTF8));
+                if (configuration != null)
+                {
+                    this.CreateProfile("Migrated", configuration);
+                    this.SetProfileAsDefault();
+                }
+            }
+        }
+
+        void RegisterProfileData(ProfileData profile)
+        {
+            if (profile.CIDs.Any())
+                foreach (ulong cid in profile.CIDs)
+                    this.profileByCID[cid] = profile.Name;
+            this.profileByName[profile.Name] = profile;
+        }
+
+        foreach (ProfileData profile in this.profileData)
+            if(profile.Name != CONFIGNAME_BARE)
+                RegisterProfileData(profile);
+
+        RegisterProfileData(new ProfileData
+                            {
+                                Name = CONFIGNAME_BARE,
+                                Config = new Configuration
+                                         {
+                                             EnablePreLoopActions     = false,
+                                             EnableBetweenLoopActions = false,
+                                             EnableTerminationActions = false,
+                                             LootTreasure             = false
+                                         }
+                            });
+
+        this.SetProfileToDefault();
+    }
+
+    public bool SetProfile(string name)
+    {
+        DebugLog("Changing profile to: " + name);
+        if (this.profileByName.ContainsKey(name))
+        {
+            this.activeProfileName = name;
+            EzConfig.Save();
+            return true;
+        }
+        return false;
+    }
+
+    public void SetProfileAsDefault()
+    {
+        if (this.profileByName.ContainsKey(this.ActiveProfileName))
+        {
+            this.DefaultConfigName = this.ActiveProfileName;
+            EzConfig.Save();
+        }
+    }
+
+    public void SetProfileToDefault()
+    {
+        Svc.Framework.RunOnTick(() =>
+        {
+            DebugLog("Setting to default profile");
+
+            if (PlayerHelper.IsValid && this.profileByCID.TryGetValue(Player.CID, out string? charProfile))
+                if (this.SetProfile(charProfile))
+                    return;
+            DebugLog("No char default found. Using general default");
+            if (!this.SetProfile(this.DefaultConfigName))
+            {
+                DebugLog("Fallback, using bare");
+                this.DefaultConfigName = CONFIGNAME_BARE;
+                this.SetProfile(CONFIGNAME_BARE);
+            }
+        });
+    }
+
+    public void CreateNewProfile() => 
+        this.CreateProfile("Profile" + (this.profileByName.Count - 1).ToString(CultureInfo.InvariantCulture));
+
+    public void CreateProfile(string name) => 
+        this.CreateProfile(name, new Configuration());
+
+    public void CreateProfile(string name, Configuration config)
+    {
+        DebugLog($"Creating new Profile: {name}");
+
+        ProfileData profile = new()
+                           {
+                               Name   = name,
+                               Config = config
+                           };
+
+        this.profileData.Add(profile);
+        this.profileByName.Add(name, profile);
+        this.SetProfile(name);
+    }
+
+    public void DuplicateCurrentProfile()
+    {
+        string name;
+        int    counter = 0;
+
+        string templateName = this.ActiveProfileName.EndsWith("_Copy") ? this.ActiveProfileName : $"{this.ActiveProfileName}_Copy";
+
+        do
+            name = counter++ > 0 ? $"{templateName}{counter}" : templateName;
+        while (this.profileByName.ContainsKey(name));
+
+        string?        oldConfig = EzConfig.DefaultSerializationFactory.Serialize(this.GetCurrentConfig);
+        if(oldConfig != null)
+        {
+            Configuration? newConfig = EzConfig.DefaultSerializationFactory.Deserialize<Configuration>(oldConfig);
+            if(newConfig != null)
+                this.CreateProfile(name, newConfig);
+        }
+    }
+
+    public void RemoveCurrentProfile()
+    {
+        this.profileData.Remove(this.GetCurrentProfile);
+        this.profileByName.Remove(this.ActiveProfileName);
+        this.SetProfileToDefault();
+    }
+
+    public bool RenameCurrentProfile(string newName)
+    {
+        if (this.profileByName.ContainsKey(newName))
+            return false;
+
+        ProfileData config = this.GetCurrentProfile;
+        this.profileByName.Remove(this.ActiveProfileName);
+        this.profileByName[newName] = config;
+        config.Name                 = newName;
+        this.activeProfileName      = newName;
+
+        EzConfig.Save();
+
+        return true;
+    }
+
+    public ProfileData? GetProfile(string name) => 
+        this.profileByName.GetValueOrDefault(name);
+
+    public void SetCharacterDefault()
+    {
+        Svc.Framework.RunOnTick(() =>
+                          {
+
+                              if (!PlayerHelper.IsValid)
+                                  return;
+
+                              ulong cid = Player.CID;
+
+                              if (this.profileByCID.TryGetValue(cid, out string? oldProfile))
+                                  this.profileByName[oldProfile].CIDs.Remove(cid);
+
+                              this.GetCurrentProfile.CIDs.Add(cid);
+                              this.profileByCID.Add(cid, this.ActiveProfileName);
+                              this.charByCID[cid] = new CharData
+                                                    {
+                                                        CID  = cid,
+                                                        Name = Player.Name,
+                                                        World = Player.CurrentWorld
+                              };
+
+                              EzConfig.Save();
+                          });
+    }
+
+    public static void DebugLog(string message)
+    {
+        Svc.Log.Debug($"Configuration Main: {message}");
+    }
+}
+
+[JsonObject(MemberSerialization.OptOut)]
+public class ProfileData
+{
+    public required string         Name;
+    public          HashSet<ulong> CIDs = [];
+    public required Configuration  Config;
+}
+
+public class AutoDutySerializationFactory : DefaultSerializationFactory, ISerializationFactory
+{
+    public override string DefaultConfigFileName { get; } = "AutoDutyConfig.json";
+
+    public new string Serialize(object config) => 
+        base.Serialize(config, true);
+
+    public override byte[] SerializeAsBin(object config) => 
+        Encoding.UTF8.GetBytes(this.Serialize(config));
+}
+
+
 
 [Serializable]
-public class Configuration : IPluginConfiguration
+public class Configuration
 {
     //Meta
-    public int                                                Version { get; set; }
     public HashSet<string>                                    DoNotUpdatePathFiles = [];
     public Dictionary<uint, Dictionary<string, JobWithRole>?> PathSelectionsByPath = [];
-
-
-
 
     //LogOptions
     public bool AutoScroll = true;
@@ -200,6 +455,7 @@ public class Configuration : IPluginConfiguration
     public List<System.Numerics.Vector3>              FCEstateEntrancePath     = [];
     public bool                                       AutoEquipRecommendedGear;
     public bool                                       AutoEquipRecommendedGearGearsetter;
+    public bool                                       AutoEquipRecommendedGearGearsetterOldToInventory;
     public bool                                       AutoRepair              = false;
     public int                                        AutoRepairPct           = 50;
     public bool                                       AutoRepairSelf          = false;
@@ -250,6 +506,7 @@ public class Configuration : IPluginConfiguration
                 AutoDesynth = false;
         }
     }
+    public int AutoDesynthSkillUpLimit = 50;
     internal bool autoGCTurnin = false;
     public bool AutoGCTurnin
     {
@@ -341,7 +598,7 @@ public class Configuration : IPluginConfiguration
 
     public void Save()
     {
-        PluginInterface.SavePluginConfig(this);
+        EzConfig.Save();
     }
 
     public TrustMemberName?[] SelectedTrustMembers = new TrustMemberName?[3];
@@ -351,7 +608,7 @@ public static class ConfigTab
 {
     internal static string FollowName = "";
 
-    private static Configuration Configuration = Plugin.Configuration;
+    private static Configuration Configuration => Plugin.Configuration;
     private static string preLoopCommand = string.Empty;
     private static string betweenLoopCommand = string.Empty;
     private static string terminationCommand = string.Empty;
@@ -374,6 +631,8 @@ public static class ConfigTab
 
     private static string consumableItemsItemNameInput = "";
     private static ConsumableItem consumableItemsSelectedItem = new();
+
+    private static string profileRenameInput = "";
 
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
@@ -403,7 +662,124 @@ public static class ConfigTab
     {
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
-        
+
+        { //Start of Profile Selection
+            ImGui.AlignTextToFramePadding();
+            ImGui.Text("Currently selected profile: ");
+            ImGui.SameLine();
+            if (ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.CONFIGNAME_BARE)
+                ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
+            if (ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.Instance.DefaultConfigName)
+                ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
+            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 180 * ImGuiHelpers.GlobalScale);
+            ImGui.SetItemAllowOverlap();
+            using (ImRaii.IEndObject configCombo = ImRaii.Combo("##ConfigCombo", ConfigurationMain.Instance.ActiveProfileName))
+            {
+                if (configCombo)
+                    foreach (string key in ConfigurationMain.Instance.ConfigNames)
+                    {
+                        if (key == ConfigurationMain.CONFIGNAME_BARE)
+                            ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
+                        if (key == ConfigurationMain.Instance.DefaultConfigName)
+                            ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
+                        float x = ImGui.GetCursorPosX();
+                        ImGui.SameLine(0.1f);
+                        ImGui.SetItemAllowOverlap();
+                        if (ImGui.Selectable($"###{key}ConfigSelectable"))
+                            ConfigurationMain.Instance.SetProfile(key);
+                        ImGui.SameLine(x);
+                        ImGui.Text(key);
+
+                        ProfileData? profile = ConfigurationMain.Instance.GetProfile(key);
+                        if(profile?.CIDs.Any() ?? false)
+                        {
+                            ImGui.SameLine();
+                            ImGuiEx.TextWrapped(ImGuiHelper.VersionColor, string.Join(", ", profile.CIDs.Select(cid => ConfigurationMain.Instance.charByCID.TryGetValue(cid, out ConfigurationMain.CharData cd) ? cd.GetName() : cid.ToString())));
+                        }
+                    }
+            }
+
+            ImGui.PopItemWidth();
+            ImGui.SameLine();
+
+            if (ImGui.IsPopupOpen("##RenameProfile"))
+            {
+                bool    open     = true;
+                Vector2 textSize = ImGui.CalcTextSize(profileRenameInput);
+                ImGui.SetNextWindowSize(new Vector2(textSize.X + 200, textSize.Y + 120) * ImGuiHelpers.GlobalScale);
+                if (ImGui.BeginPopupModal($"##RenameProfile", ref open, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoMove))
+                {
+                    ImGuiHelper.CenterNextElement(ImGui.CalcTextSize("New Profile Name").X);
+                    ImGui.Text("New Profile Name");
+                    ImGui.NewLine();
+                    ImGui.SameLine(50);
+                    ImGui.SetNextItemWidth((textSize.X + 100) * ImGuiHelpers.GlobalScale);
+
+                    ImGui.InputText("##RenameProfileInput", ref profileRenameInput, 100);
+                    ImGui.Spacing();
+                    ImGuiHelper.CenterNextElement(ImGui.CalcTextSize("Change Profile Name").X);
+                    if (ImGui.Button("Change Profile Name"))
+                    {
+                        if (ConfigurationMain.Instance.RenameCurrentProfile(profileRenameInput))
+                        {
+                            open = false;
+                            ImGui.CloseCurrentPopup();
+                        }
+                    }
+
+                    ImGui.EndPopup();
+                }
+            }
+
+
+
+            bool bareProfile = ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.CONFIGNAME_BARE;
+
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus))
+                ConfigurationMain.Instance.CreateNewProfile();
+            if (ImGui.IsItemHovered())
+                ImGui.SetTooltip("Create new Profile");
+
+            ImGui.SameLine(0, 15f);
+            using (ImRaii.Disabled(bareProfile))
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.Pen))
+                {
+                    profileRenameInput = ConfigurationMain.Instance.ActiveProfileName;
+                    ImGui.OpenPopup("##RenameProfile");
+                }
+
+            if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
+                ImGui.SetTooltip("Rename Profile");
+
+            ImGui.SameLine();
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Copy))
+                ConfigurationMain.Instance.DuplicateCurrentProfile();
+            if (ImGui.IsItemHovered())
+                ImGui.SetTooltip("Duplicate Profile");
+
+            ImGui.SameLine();
+            using (ImRaii.Disabled(ImGui.GetIO().KeyCtrl ? ConfigurationMain.Instance.GetCurrentProfile.CIDs.Contains(Player.CID) : ConfigurationMain.Instance.DefaultConfigName == ConfigurationMain.Instance.ActiveProfileName))
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.CheckCircle))
+                    if(ImGui.GetIO().KeyCtrl)
+                        ConfigurationMain.Instance.SetCharacterDefault();
+                    else
+                        ConfigurationMain.Instance.SetProfileAsDefault();
+            if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
+                ImGui.SetTooltip("Make Default\nHold ctrl to make default for the current character");
+
+
+            ImGui.SameLine();
+            using (ImRaii.Disabled(bareProfile || !ImGui.GetIO().KeyCtrl))
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.TrashAlt))
+                    ConfigurationMain.Instance.RemoveCurrentProfile();
+            if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
+                ImGui.SetTooltip("Delete Config\nHold ctrl to enable");
+
+            if (bareProfile)
+                ImGuiEx.TextWrapped("The bare profile is for just running a duty, and nothing else. You can duplicate it to make edits.");
+            using ImRaii.IEndObject _ = ImRaii.Disabled(bareProfile);
+        }
+
         //Start of Window & Overlay Settings
         ImGui.Spacing();
         ImGui.Separator();
@@ -584,6 +960,42 @@ public static class ConfigTab
                     Plugin.States                  |= PluginState.Other;
                     Plugin.LoopTasks(false);
                 }
+
+                if (ImGui.CollapsingHeader("teleport playthings"))
+                {
+                    if (ImGui.CollapsingHeader("Warps"))
+                    {
+                        ImGui.Indent();
+                        foreach (Warp warp in Svc.Data.GameData.GetExcelSheet<Warp>())
+                        {
+                            if (warp.TerritoryType.RowId != 152)
+                                continue;
+
+                            if (ImGui.CollapsingHeader($"{warp.Name} {warp.Question} to {warp.TerritoryType.ValueNullable?.PlaceName.ValueNullable?.Name.ToString()}##{warp.RowId}"))
+                            {
+                                if (warp.PopRange.ValueNullable is { } level)
+                                {
+                                    ImGui.Text($"{level.X} {level.Y} {level.Z} in {level.Territory.ValueNullable?.PlaceName.ValueNullable?.Name.ToString()}");
+                                    ImGui.Text($"{(new Vector3(level.X, level.Y, level.Z) - Player.Position)}");
+                                }
+                            }
+                        }
+
+                        ImGui.Unindent();
+                    }
+
+                    if (ImGui.CollapsingHeader("LevelTest"))
+                    {
+                        foreach ((Level lvl, Vector3, Vector3) level in Svc.Data.GameData.GetExcelSheet<Level>().Where(lvl => lvl.Territory.RowId == 152)
+                                                                           .Select(lvl => (lvl, (new Vector3(lvl.X, lvl.Y, lvl.Z))))
+                                                                           .Select(tuple => (tuple.lvl, tuple.Item2, (tuple.Item2 - Player.Position))).OrderBy(lvl => lvl.Item3.LengthSquared()))
+                        {
+                            ImGui.Text($"{level.lvl.RowId} {level.Item2} {level.Item3} {string.Join(" | ", level.lvl.Object.GetType().GenericTypeArguments.Select(t => t.FullName))}: {level.lvl.Object.RowId}");
+                        }
+                    }
+
+                    ImGuiEx.Text($"{typeof(Achievement).Assembly.GetTypes().Where(x => x.FullName.StartsWith("Lumina.Excel.Sheets")).Select(x => (x, x.GetProperties().Where(f => f.PropertyType.Name == "RowRef`1" && f.PropertyType.GenericTypeArguments[0].FullName == typeof(Map).FullName))).Where(x => x.Item2.Any()).Select(x => $"{x.Item1} references {x.Item2.Select(x => x.Name).Print(", ")}").Print("\n")}");
+                }
             }
         }
         ImGui.Spacing();
@@ -598,7 +1010,7 @@ public static class ConfigTab
 
         if (dutyConfigHeaderSelected == true)
         {
-            ImGui.Columns(2);
+            ImGui.Columns(2, "##DutyConfigHeaderColumns");
             if (ImGui.Checkbox("Auto Leave Duty in last loop", ref Configuration.AutoExitDuty))
                 Configuration.Save();
             ImGuiComponents.HelpMarker("Will automatically exit the dungeon upon completion of the path.");
@@ -708,7 +1120,7 @@ public static class ConfigTab
                     }
                     using (ImRaii.Disabled(Configuration.MaxDistanceToTargetRoleBased))
                     {
-                        ImGui.PushItemWidth(195);
+                        ImGui.PushItemWidth(195 * ImGuiHelpers.GlobalScale);
                         if (ImGui.SliderFloat("Max Distance To Target", ref Configuration.MaxDistanceToTargetFloat, 1, 30))
                         {
                             Configuration.MaxDistanceToTargetFloat = Math.Clamp(Configuration.MaxDistanceToTargetFloat, 1, 30);
@@ -723,7 +1135,7 @@ public static class ConfigTab
                     }
                     using (ImRaii.Disabled(!Configuration.MaxDistanceToTargetRoleBased))
                     {
-                        ImGui.PushItemWidth(195);
+                        ImGui.PushItemWidth(195 * ImGuiHelpers.GlobalScale);
                         if (ImGui.SliderFloat("Max Distance To Target | Melee", ref Configuration.MaxDistanceToTargetRoleMelee, 1, 30))
                         {
                             Configuration.MaxDistanceToTargetRoleMelee = Math.Clamp(Configuration.MaxDistanceToTargetRoleMelee, 1, 30);
@@ -918,51 +1330,49 @@ public static class ConfigTab
             using (ImRaii.Disabled(!Configuration.EnablePreLoopActions))
             {
                 ImGui.Separator();
-                MakeCommands("Execute commands on start of all loops", 
+                MakeCommands("Execute commands on start of all loops",
                              ref Configuration.ExecuteCommandsPreLoop, ref Configuration.CustomCommandsPreLoop, ref preLoopCommand);
 
                 ImGui.Separator();
 
-                ImGui.TextColored(ImGuiHelper.VersionColor, $"The following are also done between loop, if Between Loop is enabled (currently {(Configuration.EnableBetweenLoopActions ? "enabled" : "disabled")})");
+                ImGui.TextColored(ImGuiHelper.VersionColor,
+                                  $"The following are also done between loop, if Between Loop is enabled (currently {(Configuration.EnableBetweenLoopActions ? "enabled" : "disabled")})");
 
-                using (ImRaii.Child("#preloopbetween", ImGui.GetContentRegionAvail().WithY(ImGui.GetFrameHeightWithSpacing()*8 + ImGui.GetTextLineHeight()), true))
+                if (ImGui.Checkbox("Retire To ", ref Configuration.RetireMode))
+                    Configuration.Save();
+
+                using (ImRaii.Disabled(!Configuration.RetireMode))
                 {
-                    if (ImGui.Checkbox("Retire To ", ref Configuration.RetireMode))
-                        Configuration.Save();
-
-                    using (ImRaii.Disabled(!Configuration.RetireMode))
+                    ImGui.SameLine(0, 5);
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                    if (ImGui.BeginCombo("##RetireLocation", Configuration.RetireLocationEnum.ToCustomString()))
                     {
-                        ImGui.SameLine(0, 5);
-                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                        if (ImGui.BeginCombo("##RetireLocation", Configuration.RetireLocationEnum.ToCustomString()))
+                        foreach (RetireLocation retireLocation in Enum.GetValues(typeof(RetireLocation)))
                         {
-                            foreach (RetireLocation retireLocation in Enum.GetValues(typeof(RetireLocation)))
+                            if (ImGui.Selectable(retireLocation.ToCustomString()))
                             {
-                                if (ImGui.Selectable(retireLocation.ToCustomString()))
-                                {
-                                    Configuration.RetireLocationEnum = retireLocation;
-                                    Configuration.Save();
-                                }
-                            }
-
-                            ImGui.EndCombo();
-                        }
-
-                        if (Configuration.RetireMode && Configuration.RetireLocationEnum == RetireLocation.Personal_Home)
-                        {
-                            if (ImGui.Button("Add Current Position"))
-                            {
-                                Configuration.PersonalHomeEntrancePath.Add(Player.Position);
+                                Configuration.RetireLocationEnum = retireLocation;
                                 Configuration.Save();
                             }
+                        }
 
-                            ImGuiComponents
-                               .HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
+                        ImGui.EndCombo();
+                    }
 
-                            if (!ImGui.BeginListBox("##PersonalHomeVector3List",
-                                                    new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X,
-                                                                                (ImGui.GetTextLineHeightWithSpacing() * Configuration.PersonalHomeEntrancePath.Count) + 5))) return;
+                    if (Configuration is { RetireMode: true, RetireLocationEnum: RetireLocation.Personal_Home })
+                    {
+                        if (ImGui.Button("Add Current Position"))
+                        {
+                            Configuration.PersonalHomeEntrancePath.Add(Player.Position);
+                            Configuration.Save();
+                        }
 
+                        ImGuiComponents
+                           .HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
+
+                        using (ImRaii.ListBox("##PersonalHomeVector3List", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X,
+                                                                                                       (ImGui.GetTextLineHeightWithSpacing() * Configuration.PersonalHomeEntrancePath.Count) + 5)))
+                        {
                             var removeItem = false;
                             var removeAt   = 0;
 
@@ -981,26 +1391,23 @@ public static class ConfigTab
                                 Configuration.PersonalHomeEntrancePath.RemoveAt(removeAt);
                                 Configuration.Save();
                             }
+                        }
+                    }
 
-                            ImGui.EndListBox();
-
+                    if (Configuration is { RetireMode: true, RetireLocationEnum: RetireLocation.FC_Estate })
+                    {
+                        if (ImGui.Button("Add Current Position"))
+                        {
+                            Configuration.FCEstateEntrancePath.Add(Player.Position);
+                            Configuration.Save();
                         }
 
-                        if (Configuration.RetireMode && Configuration.RetireLocationEnum == RetireLocation.FC_Estate)
+                        ImGuiComponents
+                           .HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
+
+                        using (ImRaii.ListBox("##FCEstateVector3List", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X,
+                                                                                                   (ImGui.GetTextLineHeightWithSpacing() * Configuration.FCEstateEntrancePath.Count) + 5)))
                         {
-                            if (ImGui.Button("Add Current Position"))
-                            {
-                                Configuration.FCEstateEntrancePath.Add(Player.Position);
-                                Configuration.Save();
-                            }
-
-                            ImGuiComponents
-                               .HelpMarker("For most houses where the door is a straight shot from teleport location this is not needed, in the rare situations where the door needs a path to get to it, you can create that path here, or if your door seems to be further away from the teleport location than your neighbors, simply goto your door and hit Add Current Position");
-
-                            if (!ImGui.BeginListBox("##FCEstateVector3List",
-                                                    new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X,
-                                                                                (ImGui.GetTextLineHeightWithSpacing() * Configuration.FCEstateEntrancePath.Count) + 5))) return;
-
                             var removeItem = false;
                             var removeAt   = 0;
 
@@ -1019,165 +1426,120 @@ public static class ConfigTab
                                 Configuration.FCEstateEntrancePath.RemoveAt(removeAt);
                                 Configuration.Save();
                             }
+                        }
+                    }
+                }
 
-                            ImGui.EndListBox();
+                if (ImGui.Checkbox("Auto Equip Recommended Gear", ref Configuration.AutoEquipRecommendedGear))
+                    Configuration.Save();
+
+                ImGuiComponents.HelpMarker("Uses Gear from Armory Chest Only");
+
+
+                if (Configuration.AutoEquipRecommendedGear)
+                {
+                    ImGui.Indent();
+                    using (ImRaii.Disabled(!Gearsetter_IPCSubscriber.IsEnabled))
+                    {
+                        if (ImGui.Checkbox("Consider items outside of armoury chest", ref Configuration.AutoEquipRecommendedGearGearsetter))
+                            Configuration.Save();
+
+                        if (Configuration.AutoEquipRecommendedGearGearsetter)
+                        {
+                            ImGui.Indent();
+                            if (ImGui.Checkbox("Move old items to inventory", ref Configuration.AutoEquipRecommendedGearGearsetterOldToInventory))
+                                Configuration.Save();
+                            ImGuiComponents.HelpMarker("Except for weapons, this will move the gear to be replaced to the inventory.");
+                            ImGui.Unindent();
                         }
                     }
 
-                    if (ImGui.Checkbox("Auto Equip Recommended Gear", ref Configuration.AutoEquipRecommendedGear))
-                        Configuration.Save();
-
-                    ImGuiComponents.HelpMarker("Uses Gear from Armory Chest Only");
-
-
-                    if (Configuration.AutoEquipRecommendedGear)
+                    if (!Gearsetter_IPCSubscriber.IsEnabled)
                     {
-                        ImGui.Indent();
-                        using (ImRaii.Disabled(!Gearsetter_IPCSubscriber.IsEnabled))
+                        if (Configuration.AutoEquipRecommendedGearGearsetter)
                         {
-                            if (ImGui.Checkbox("Consider items outside of armoury chest", ref Configuration.AutoEquipRecommendedGearGearsetter))
-                                Configuration.Save();
+                            Configuration.AutoEquipRecommendedGearGearsetter = false;
+                            Configuration.Save();
                         }
 
-                        if (!Gearsetter_IPCSubscriber.IsEnabled)
-                        {
-                            if (Configuration.AutoEquipRecommendedGearGearsetter)
-                            {
-                                Configuration.AutoEquipRecommendedGearGearsetter = false;
-                                Configuration.Save();
-                            }
-
-                            ImGui.Text("* Items outside the armoury chest requires Gearsetter plugin");
-                            ImGui.Text("Get @ ");
-                            ImGui.SameLine(0, 0);
-                            ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
-                        }
-
-                        ImGui.Unindent();
+                        ImGui.Text("* Items outside the armoury chest requires Gearsetter plugin");
+                        ImGui.Text("Get @ ");
+                        ImGui.SameLine(0, 0);
+                        ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
                     }
 
-                    if (ImGui.Checkbox("Auto Repair", ref Configuration.AutoRepair))
-                        Configuration.Save();
+                    ImGui.Unindent();
+                }
 
-                    if (Configuration.AutoRepair)
+                if (ImGui.Checkbox("Auto Repair", ref Configuration.AutoRepair))
+                    Configuration.Save();
+
+                if (Configuration.AutoRepair)
+                {
+                    ImGui.SameLine();
+
+                    if (ImGui.RadioButton("Self", Configuration.AutoRepairSelf))
                     {
-                        ImGui.SameLine();
+                        Configuration.AutoRepairSelf = true;
+                        Configuration.Save();
+                    }
 
-                        if (ImGui.RadioButton("Self", Configuration.AutoRepairSelf))
-                        {
-                            Configuration.AutoRepairSelf = true;
-                            Configuration.Save();
-                        }
+                    ImGui.SameLine();
+                    ImGuiComponents.HelpMarker("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
+                    ImGui.SameLine();
 
-                        ImGui.SameLine();
-                        ImGuiComponents.HelpMarker("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
-                        ImGui.SameLine();
+                    if (ImGui.RadioButton("CityNpc", !Configuration.AutoRepairSelf))
+                    {
+                        Configuration.AutoRepairSelf = false;
+                        Configuration.Save();
+                    }
 
-                        if (ImGui.RadioButton("CityNpc", !Configuration.AutoRepairSelf))
-                        {
-                            Configuration.AutoRepairSelf = false;
-                            Configuration.Save();
-                        }
+                    ImGui.SameLine();
+                    ImGuiComponents.HelpMarker("Will use preferred repair npc to repair.");
+                    ImGui.Indent();
+                    ImGui.Text("Trigger @");
+                    ImGui.SameLine();
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                    if (ImGui.SliderInt("##Repair@", ref Configuration.AutoRepairPct, 0, 99, "%d%%"))
+                    {
+                        Configuration.AutoRepairPct = Math.Clamp(Configuration.AutoRepairPct, 0, 99);
+                        Configuration.Save();
+                    }
 
-                        ImGui.SameLine();
-                        ImGuiComponents.HelpMarker("Will use preferred repair npc to repair.");
-                        ImGui.Indent();
-                        ImGui.Text("Trigger @");
-                        ImGui.SameLine();
+                    ImGui.PopItemWidth();
+                    if (!Configuration.AutoRepairSelf)
+                    {
+                        ImGui.Text("Preferred Repair NPC: ");
+                        ImGuiComponents.HelpMarker("It's a good idea to match the Repair NPC with Summoning Bell and if possible Retire Location");
                         ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                        if (ImGui.SliderInt("##Repair@", ref Configuration.AutoRepairPct, 0, 99, "%d%%"))
+                        if (ImGui.BeginCombo("##PreferredRepair",
+                                             Configuration.PreferredRepairNPC != null ?
+                                                 $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value).Y.ToString("0.0", CultureInfo.InvariantCulture)})" :
+                                                 "Grand Company Inn"))
                         {
-                            Configuration.AutoRepairPct = Math.Clamp(Configuration.AutoRepairPct, 0, 99);
-                            Configuration.Save();
-                        }
-
-                        ImGui.PopItemWidth();
-                        if (!Configuration.AutoRepairSelf)
-                        {
-                            ImGui.Text("Preferred Repair NPC: ");
-                            ImGuiComponents.HelpMarker("It's a good idea to match the Repair NPC with Summoning Bell and if possible Retire Location");
-                            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                            if (ImGui.BeginCombo("##PreferredRepair",
-                                                 Configuration.PreferredRepairNPC != null ?
-                                                     $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value).Y.ToString("0.0", CultureInfo.InvariantCulture)})" :
-                                                     "Grand Company Inn"))
+                            if (ImGui.Selectable("Grand Company Inn"))
                             {
-                                if (ImGui.Selectable("Grand Company Inn"))
-                                {
-                                    Configuration.PreferredRepairNPC = null;
-                                    Configuration.Save();
-                                }
-
-                                foreach (RepairNpcData repairNPC in RepairNPCs)
-                                {
-                                    if (repairNPC.TerritoryType <= 0)
-                                    {
-                                        ImGui.Text(CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant()));
-                                        continue;
-                                    }
-
-                                    var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
-
-                                    if (territoryType == null) continue;
-
-                                    if
-                                        (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.Value.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
-                                    {
-                                        Configuration.PreferredRepairNPC = repairNPC;
-                                        Configuration.Save();
-                                    }
-                                }
-
-                                ImGui.EndCombo();
-                            }
-
-                            ImGui.PopItemWidth();
-                        }
-
-                        ImGui.Unindent();
-                    }
-
-                    ImGui.Columns(3);
-
-                    if (ImGui.Checkbox("Auto Consume", ref Configuration.AutoConsume))
-                        Configuration.Save();
-
-                    ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop (if status does not exist)");
-                    if (Configuration.AutoConsume)
-                    {
-                        //ImGui.SameLine(0, 5);
-                        ImGui.NextColumn();
-                        if (ImGui.Checkbox("Ignore Status", ref Configuration.AutoConsumeIgnoreStatus))
-                            Configuration.Save();
-
-                        ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop every time (even if status does exists)");
-                        ImGui.NextColumn();
-                        //ImGui.SameLine(0, 5);
-
-                        ImGui.PushItemWidth(80);
-
-                        using (ImRaii.Disabled(Configuration.AutoConsumeIgnoreStatus))
-                        {
-                            if (ImGui.InputInt("Min time remaining", ref Configuration.AutoConsumeTime))
-                            {
-                                Configuration.AutoConsumeTime = Math.Clamp(Configuration.AutoConsumeTime, 0, 59);
+                                Configuration.PreferredRepairNPC = null;
                                 Configuration.Save();
                             }
 
-                            ImGuiComponents.HelpMarker("If the status has less than this amount of time remaining (in minutes), it will consume these items");
-                        }
-
-                        ImGui.PopItemWidth();
-                        ImGui.Columns(1);
-                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 115);
-                        if (ImGui.BeginCombo("##SelectAutoConsumeItem", consumableItemsSelectedItem.Name))
-                        {
-                            ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref consumableItemsItemNameInput, 1000);
-                            foreach (var item in ConsumableItems.Where(x => x.Name.Contains(consumableItemsItemNameInput, StringComparison.InvariantCultureIgnoreCase))!)
+                            foreach (RepairNpcData repairNPC in RepairNPCs)
                             {
-                                if (ImGui.Selectable($"{item.Name}"))
+                                if (repairNPC.TerritoryType <= 0)
                                 {
-                                    consumableItemsSelectedItem = item;
+                                    ImGui.Text(CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant()));
+                                    continue;
+                                }
+
+                                var territoryType = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(repairNPC.TerritoryType);
+
+                                if (territoryType == null) continue;
+
+                                if
+                                    (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.Value.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
+                                {
+                                    Configuration.PreferredRepairNPC = repairNPC;
+                                    Configuration.Save();
                                 }
                             }
 
@@ -1185,23 +1547,76 @@ public static class ConfigTab
                         }
 
                         ImGui.PopItemWidth();
+                    }
 
-                        ImGui.SameLine(0, 5);
-                        using (ImRaii.Disabled(consumableItemsSelectedItem == null))
+                    ImGui.Unindent();
+                }
+
+                if (ImGui.Checkbox("Auto Consume", ref Configuration.AutoConsume))
+                    Configuration.Save();
+
+                ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop (if status does not exist)");
+                if (Configuration.AutoConsume)
+                {
+                    ImGui.SameLine();
+                    ImGui.Columns(3, "##AutoConsumeColumns");
+                    //ImGui.SameLine(0, 5);
+                    ImGui.NextColumn();
+                    if (ImGui.Checkbox("Ignore Status", ref Configuration.AutoConsumeIgnoreStatus))
+                        Configuration.Save();
+
+                    ImGuiComponents.HelpMarker("AutoDuty will consume these items on run and between each loop every time (even if status does exists)");
+                    ImGui.NextColumn();
+                    //ImGui.SameLine(0, 5);
+
+                    ImGui.PushItemWidth(80 * ImGuiHelpers.GlobalScale);
+
+                    using (ImRaii.Disabled(Configuration.AutoConsumeIgnoreStatus))
+                    {
+                        if (ImGui.InputInt("Min time remaining", ref Configuration.AutoConsumeTime))
                         {
-                            if (ImGui.Button("Add Item"))
-                            {
-                                if (Configuration.AutoConsumeItemsList.Any(x => x.Key == consumableItemsSelectedItem!.StatusId))
-                                    Configuration.AutoConsumeItemsList.RemoveAll(x => x.Key == consumableItemsSelectedItem!.StatusId);
+                            Configuration.AutoConsumeTime = Math.Clamp(Configuration.AutoConsumeTime, 0, 59);
+                            Configuration.Save();
+                        }
 
-                                Configuration.AutoConsumeItemsList.Add(new(consumableItemsSelectedItem!.StatusId, consumableItemsSelectedItem));
-                                Configuration.Save();
+                        ImGuiComponents.HelpMarker("If the status has less than this amount of time remaining (in minutes), it will consume these items");
+                    }
+
+                    ImGui.PopItemWidth();
+                    ImGui.Columns(1);
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 115 * ImGuiHelpers.GlobalScale);
+                    if (ImGui.BeginCombo("##SelectAutoConsumeItem", consumableItemsSelectedItem.Name))
+                    {
+                        ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref consumableItemsItemNameInput, 1000);
+                        foreach (var item in ConsumableItems.Where(x => x.Name.Contains(consumableItemsItemNameInput, StringComparison.InvariantCultureIgnoreCase))!)
+                        {
+                            if (ImGui.Selectable($"{item.Name}"))
+                            {
+                                consumableItemsSelectedItem = item;
                             }
                         }
 
-                        if (!ImGui.BeginListBox("##ConsumableItemList",
-                                                new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X,
-                                                                            (ImGui.GetTextLineHeightWithSpacing() * Configuration.AutoConsumeItemsList.Count) + 5))) return;
+                        ImGui.EndCombo();
+                    }
+
+                    ImGui.PopItemWidth();
+
+                    ImGui.SameLine(0, 5);
+                    using (ImRaii.Disabled(consumableItemsSelectedItem == null))
+                    {
+                        if (ImGui.Button("Add Item"))
+                        {
+                            if (Configuration.AutoConsumeItemsList.Any(x => x.Key == consumableItemsSelectedItem!.StatusId))
+                                Configuration.AutoConsumeItemsList.RemoveAll(x => x.Key == consumableItemsSelectedItem!.StatusId);
+
+                            Configuration.AutoConsumeItemsList.Add(new(consumableItemsSelectedItem!.StatusId, consumableItemsSelectedItem));
+                            Configuration.Save();
+                        }
+                    }
+
+                    using (ImRaii.ListBox("##ConsumableItemList", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X,
+                                                                                              (ImGui.GetTextLineHeightWithSpacing() * Configuration.AutoConsumeItemsList.Count) + 5)))
+                    {
                         var                                  boolRemoveItem = false;
                         KeyValuePair<ushort, ConsumableItem> removeItem     = new();
                         foreach (var item in Configuration.AutoConsumeItemsList)
@@ -1214,15 +1629,12 @@ public static class ConfigTab
                             }
                         }
 
-                        ImGui.EndListBox();
                         if (boolRemoveItem)
                         {
                             Configuration.AutoConsumeItemsList.Remove(removeItem);
                             Configuration.Save();
                         }
                     }
-
-                    ImGui.Columns(1);
                 }
             }
         }
@@ -1240,7 +1652,7 @@ public static class ConfigTab
 
         if (betweenLoopHeaderSelected == true)
         {
-            ImGui.Columns(2);
+            ImGui.Columns(2, "##BetweenLoopHeaderColumns");
 
             if (ImGui.Checkbox("Enable###BetweenLoopEnable", ref Configuration.EnableBetweenLoopActions))
                 Configuration.Save();
@@ -1403,7 +1815,7 @@ public static class ConfigTab
                 }
 
 
-                ImGui.Columns(2);
+                ImGui.Columns(2, "##DesynthColumns");
 
                 if (ImGui.Checkbox("Auto Desynth", ref Configuration.autoDesynth))
                 {
@@ -1432,6 +1844,21 @@ public static class ConfigTab
                             {
                                 Configuration.AutoDesynthSkillUp = Configuration.autoDesynthSkillUp;
                                 Configuration.Save();
+                            }
+                            if (Configuration.AutoDesynthSkillUp)
+                            {
+                                ImGui.Indent();
+                                ImGui.Text("Item Level Limit");
+                                ImGuiComponents.HelpMarker("Stops desynthesising an item once your desynthesis skill reaches the Item Level + this limit.");
+                                ImGui.SameLine();
+                                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                                if (ImGui.SliderInt("##AutoDesynthSkillUpLimit", ref Configuration.AutoDesynthSkillUpLimit, 0, 50))
+                                {
+                                    Configuration.AutoDesynthSkillUpLimit = Math.Clamp(Configuration.AutoDesynthSkillUpLimit, 0, 50);
+                                    Configuration.Save();
+                                }
+                                ImGui.PopItemWidth();
+                                ImGui.Unindent();
                             }
                             ImGui.Unindent();
                         }
@@ -1594,7 +2021,7 @@ public static class ConfigTab
                 ImGuiComponents.HelpMarker("Looping will stop when these conditions are reached, so long as an adequate number of loops have been allocated.");
                 if (Configuration.StopItemQty)
                 {
-                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 125);
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 125 * ImGuiHelpers.GlobalScale);
                     if (ImGui.BeginCombo("Select Item", stopItemQtySelectedItem.Value))
                     {
                         ImGui.InputTextWithHint("Item Name", "Start typing item name to search", ref stopItemQtyItemNameInput, 1000);
@@ -1606,7 +2033,7 @@ public static class ConfigTab
                         ImGui.EndCombo();
                     }
                     ImGui.PopItemWidth();
-                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 220);
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 220 * ImGuiHelpers.GlobalScale);
                     if (ImGui.InputInt("Quantity", ref Configuration.StopItemQtyInt))
                         Configuration.Save();
 
@@ -1690,7 +2117,7 @@ public static class ConfigTab
             if (execute)
             {
                 ImGui.Indent();
-                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 185);
+                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 185 * ImGuiHelpers.GlobalScale);
                 if (ImGui.InputTextWithHint($"##Commands{checkbox}", "enter command starting with /", ref curCommand, 500, ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     if (!curCommand.IsNullOrEmpty() && curCommand[0] == '/' && (ImGui.IsKeyDown(ImGuiKey.Enter) || ImGui.IsKeyDown(ImGuiKey.KeypadEnter)))
@@ -1705,7 +2132,7 @@ public static class ConfigTab
                 ImGui.SameLine(0, 5);
                 using (ImRaii.Disabled(curCommand.IsNullOrEmpty() || curCommand[0] != '/'))
                 {
-                    if (ImGui.Button("Add Command"))
+                    if (ImGui.Button($"Add Command##CommandButton{checkbox}"))
                     {
                         commands.Add(curCommand);
                         Configuration.Save();
@@ -1719,7 +2146,7 @@ public static class ConfigTab
 
                 foreach (var item in commands.Select((Value, Index) => (Value, Index)))
                 {
-                    ImGui.Selectable($"{item.Value}");
+                    ImGui.Selectable($"{item.Value}##Selectable{checkbox}");
                     if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                     {
                         removeItem = true;

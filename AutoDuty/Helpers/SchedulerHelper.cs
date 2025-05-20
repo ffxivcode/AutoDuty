@@ -12,7 +12,8 @@ namespace AutoDuty.Helpers
         {
             internal List<Action> Action { get; set; } = [() => { }];
 
-            internal int TimeMS { get; set; } = 0;
+            internal int TimeMS   { get; set; } = 0;
+            internal int Interval { get; set; } 
 
             internal Func<bool>? Condition { get; set; } = null;
 
@@ -31,14 +32,13 @@ namespace AutoDuty.Helpers
 
         private static void ScheduleAction(string name, List<Action> action, Func<bool>? condition, int timeMS, bool runOnce = true)
         {
-            if (!Schedules.TryAdd(name, new Schedule() { Action = action, Condition = condition, TimeMS = timeMS > 0 ?Environment.TickCount + timeMS : 0, RunOnce = runOnce }))
-            {
-                Svc.Log.Debug($"SchedulerHelper - {name} already exists in Scheduler, updating");
-                Schedules[name] = new Schedule() { Action = action, Condition = condition, TimeMS = timeMS > 0 ? Environment.TickCount + timeMS : 0, RunOnce = runOnce };
-            }
-            else
-                Svc.Log.Debug($"SchedulerHelper - {name} Added to Scheduler");
+            Svc.Log.Debug($"Scheduler Helper - {name} enqueued for scheduling");
+
+            _schedulesToAdd.Enqueue((name, new Schedule { Action = action, Condition = condition, TimeMS = timeMS > 0 ? Environment.TickCount + timeMS : 0, Interval = timeMS, RunOnce = runOnce }));
         }
+
+        private static readonly Queue<(string, Schedule)> _schedulesToAdd = [];
+
 
         internal static void DescheduleAction(string name) => _schedulesToRemove.Enqueue(name);
 
@@ -55,7 +55,7 @@ namespace AutoDuty.Helpers
                     if (schedule.Value.RunOnce || schedule.Value.Condition != null)
                         _schedulesToRemove.Enqueue(schedule.Key);
                     else
-                        schedule.Value.TimeMS += Environment.TickCount;
+                        schedule.Value.TimeMS = Environment.TickCount + schedule.Value.Interval;
                 }
             }
 
@@ -66,6 +66,21 @@ namespace AutoDuty.Helpers
                     return;
                 Svc.Log.Debug($"SchedulerHelper - {schedule} Removed from Scheduler");
                 Schedules.Remove(schedule);
+            }
+
+            while (_schedulesToAdd.Count != 0)
+            {
+                (string? name, Schedule? schedule) = _schedulesToAdd.Dequeue();
+                if (name.IsNullOrEmpty())
+                    return;
+
+                if (!Schedules.TryAdd(name, schedule))
+                {
+                    Svc.Log.Debug($"SchedulerHelper - {name} already exists in Scheduler, updating");
+                    Schedules[name] = schedule;
+                }
+                else
+                    Svc.Log.Debug($"SchedulerHelper - {name} Added to Scheduler");
             }
         }
     }
