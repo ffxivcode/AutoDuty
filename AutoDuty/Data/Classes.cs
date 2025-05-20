@@ -91,7 +91,7 @@ namespace AutoDuty.Data
             [JsonPropertyName("meta")]
             public PathFileMetaData Meta { get; set; } = new()
             {
-                CreatedAt = Plugin.Configuration.Version,
+                CreatedAt = Plugin.Version,
                 Changelog = [],
                 Notes = []
             };
@@ -201,7 +201,7 @@ namespace AutoDuty.Data
             [JsonPropertyName("labels")]
             public List<string> Labels = ["bug", "unconfirmed"];
 
-            public static string Version => $"{Plugin.Configuration.Version}";
+            public static string Version => $"{Plugin.Version}";
 
             public static string LogFile => Plugin.DalamudLogEntries.SelectMulti(x => x.Message).ToList().ToCustomString("\n");
 

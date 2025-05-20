@@ -92,6 +92,8 @@ public sealed class AutoDuty : IDalamudPlugin
 
     internal Configuration Configuration => ConfigurationMain.Instance.GetCurrentConfig;
     internal WindowSystem WindowSystem = new("AutoDuty");
+
+    public   int   Version { get; set; }
     internal Stage PreviousStage = Stage.Stopped;
     internal Stage Stage
     {
@@ -225,10 +227,9 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyFileInfo = PluginInterface.AssemblyLocation;
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
-            Configuration.Version = 
+            Version = 
                 ((PluginInterface.IsDev     ? new Version(0,0,0, 214) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
-            Configuration.Save();
 
             if (!_configDirectory.Exists)
                 _configDirectory.Create();
@@ -301,6 +302,7 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.Framework.Update += Framework_Update;
             Svc.Framework.Update += SchedulerHelper.ScheduleInvoker;
             Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
+            Svc.ClientState.Login += ClientStateOnLogin;
             Svc.Condition.ConditionChange += Condition_ConditionChange;
             Svc.DutyState.DutyStarted += DutyState_DutyStarted;
             Svc.DutyState.DutyWiped += DutyState_DutyWiped;
@@ -314,6 +316,9 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.Log.Info($"Failed loading plugin\n{e}");
         }
     }
+
+    private static void ClientStateOnLogin() => 
+        ConfigurationMain.Instance.SetProfileToDefault();
 
     private void UiBuilderOnDraw()
     {
