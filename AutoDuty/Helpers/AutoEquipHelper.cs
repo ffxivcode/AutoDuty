@@ -133,7 +133,7 @@ namespace AutoDuty.Helpers
 
                     if (InventoryManager.Instance()->GetInventoryContainer(inventoryType.Value)->Items[(int)sourceInventorySlot].ItemId != itemId)
                     {
-                        Svc.Log.Debug($"AutoEquipGearSetter: Item in slot does not match expected item");
+                        DebugLog($"Item in slot does not match expected item");
                         this._statesExecuted |= AutoEquipState.Recommended_Gear_Need_Second_Pass;
                         this._index++;
                         return;
