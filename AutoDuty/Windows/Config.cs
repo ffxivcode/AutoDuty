@@ -157,9 +157,9 @@ public class ConfigurationMain : IEzConfig
     {
         Svc.Framework.RunOnTick(() =>
         {
-            DebugLog("Setting to default profile");
+            DebugLog($"Setting to default profile for {Player.Name} ({Player.CID}) {PlayerHelper.IsValid}");
 
-            if (PlayerHelper.IsValid && this.profileByCID.TryGetValue(Player.CID, out string? charProfile))
+            if (Player.Available && this.profileByCID.TryGetValue(Player.CID, out string? charProfile))
                 if (this.SetProfile(charProfile))
                     return;
             DebugLog("No char default found. Using general default");
