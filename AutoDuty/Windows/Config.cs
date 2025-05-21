@@ -678,12 +678,20 @@ public static class ConfigTab
                 if (configCombo)
                     foreach (string key in ConfigurationMain.Instance.ConfigNames)
                     {
+                        var icon = false;
                         if (key == ConfigurationMain.CONFIGNAME_BARE)
+                        {
                             ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
+                            icon = true;
+                        }
                         if (key == ConfigurationMain.Instance.DefaultConfigName)
+                        {
                             ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
+                            icon = true;
+                        }
                         float x = ImGui.GetCursorPosX();
-                        ImGui.SameLine(0.1f);
+                        if (icon)
+                            ImGui.SameLine(0.1f);
                         ImGui.SetItemAllowOverlap();
                         if (ImGui.Selectable($"###{key}ConfigSelectable"))
                             ConfigurationMain.Instance.SetProfile(key);
