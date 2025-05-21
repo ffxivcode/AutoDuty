@@ -19,7 +19,7 @@ namespace AutoDuty.Helpers
         // What do you mean just (BindingFlags) 60 isn't great ?
         private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
-        internal static class YesAlready_Reflection
+        private static class YesAlready_Reflection
         {
             internal static bool IsEnabled => DalamudReflector.TryGetDalamudPlugin("YesAlready", out _, false, true);
 
