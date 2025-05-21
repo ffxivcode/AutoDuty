@@ -12,6 +12,7 @@
         "Option": "Yes"
       }
     ],
+    "BossMod.Autorotation.MiscAI.GoToPositional": [],
     "BossMod.Autorotation.MiscAI.NormalMovement": [
       {
         "Track": "Destination",

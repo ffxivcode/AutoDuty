@@ -1100,9 +1100,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
         Action = $"Waiting For Combat";
 
-        /*
+        
         if (ReflectionHelper.Avarice_Reflection.PositionalChanged(out Positional positional) && !Plugin.Configuration.UsingAlternativeBossPlugin && IPCSubscriber_Common.IsReady("BossModReborn"))
-            Chat.ExecuteCommand($"/vbm cfg AIConfig DesiredPositional {positional}");*/
+            BossMod_IPCSubscriber.SetPositional(positional);
 
         if (PathAction.Name.Equals("Boss") && PathAction.Position != Vector3.Zero && ObjectHelper.GetDistanceToPlayer(PathAction.Position) < 50)
         {

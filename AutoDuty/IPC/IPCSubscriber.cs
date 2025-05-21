@@ -168,6 +168,16 @@ namespace AutoDuty.IPC
                 Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.NormalMovement", "Destination", destinationStrategy);
             }
         }
+
+        public static void SetPositional(Positional positional)
+        {
+            if (Plugin.Configuration.AutoManageBossModAISettings)
+            {
+                Svc.Log.Debug($"BossMod Setting Positional: {positional}");
+
+                Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.GoToPositional", "Positional", positional.ToString());
+            }
+        }
     }
 
     /* Seem's YesAlready is not Initializing this
