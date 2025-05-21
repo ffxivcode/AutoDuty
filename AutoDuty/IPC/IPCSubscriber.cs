@@ -180,17 +180,21 @@ namespace AutoDuty.IPC
         }
     }
 
-    /* Seem's YesAlready is not Initializing this
+    
     internal static class YesAlready_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(YesAlready_IPCSubscriber), "YesAlready", SafeWrapper.IPCException);
 
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("YesAlready");
 
-        [EzIPC("YesAlready.SetPluginEnabled", false)] internal static readonly Action<bool> SetPluginEnabled;
+        [EzIPC("SetPluginEnabled")] private static readonly Action<bool> SetPluginEnabled;
+        [EzIPC("IsPluginEnabled")] public static readonly Func<bool> IsPluginEnabled;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
-    }*/
+
+        public static void SetState(bool on) => 
+            SetPluginEnabled(on);
+    }
 
     internal static class Deliveroo_IPCSubscriber
     {

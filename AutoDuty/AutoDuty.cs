@@ -1250,7 +1250,7 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.AutoManageVnavAlignCamera && VNavmesh_IPCSubscriber.IsEnabled && VNavmesh_IPCSubscriber.Path_GetAlignCamera())
             _settingsActive |= SettingsActive.Vnav_Align_Camera_Off;
         */
-        if (ReflectionHelper.YesAlready_Reflection.IsEnabled && ReflectionHelper.YesAlready_Reflection.GetPluginEnabled())
+        if (YesAlready_IPCSubscriber.IsEnabled && YesAlready_IPCSubscriber.IsEnabled)
             _settingsActive |= SettingsActive.YesAlready;
 
         if (PandorasBox_IPCSubscriber.IsEnabled && PandorasBox_IPCSubscriber.GetFeatureEnabled("Auto-interact with Objects in Instances"))
@@ -1274,10 +1274,10 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.Log.Debug($"Setting PandorasBos Auto-interact with Objects in Instances: {on}");
             PandorasBox_IPCSubscriber.SetFeatureEnabled("Auto-interact with Objects in Instances", on);
         }
-        if (ReflectionHelper.YesAlready_Reflection.IsEnabled && _settingsActive.HasFlag(SettingsActive.YesAlready))
+        if (YesAlready_IPCSubscriber.IsEnabled && _settingsActive.HasFlag(SettingsActive.YesAlready))
         {
             Svc.Log.Debug($"Setting YesAlready Enabled: {on}");
-            ReflectionHelper.YesAlready_Reflection.SetPluginEnabled(on);
+            YesAlready_IPCSubscriber.SetState(on);
         }
     }
 
