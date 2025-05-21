@@ -155,11 +155,12 @@ public class ConfigurationMain : IEzConfig
 
     public void SetProfileToDefault()
     {
+        this.SetProfile(CONFIGNAME_BARE);
         Svc.Framework.RunOnTick(() =>
         {
-            DebugLog("Setting to default profile");
+            DebugLog($"Setting to default profile for {Player.Name} ({Player.CID}) {PlayerHelper.IsValid}");
 
-            if (PlayerHelper.IsValid && this.profileByCID.TryGetValue(Player.CID, out string? charProfile))
+            if (Player.Available && this.profileByCID.TryGetValue(Player.CID, out string? charProfile))
                 if (this.SetProfile(charProfile))
                     return;
             DebugLog("No char default found. Using general default");
@@ -215,6 +216,7 @@ public class ConfigurationMain : IEzConfig
 
     public void RemoveCurrentProfile()
     {
+        DebugLog("Removing " + this.ActiveProfileName);
         this.profileData.Remove(this.GetCurrentProfile);
         this.profileByName.Remove(this.ActiveProfileName);
         this.SetProfileToDefault();
