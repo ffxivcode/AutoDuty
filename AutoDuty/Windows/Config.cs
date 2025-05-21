@@ -550,8 +550,8 @@ public class Configuration
     public bool TerminationKeepActive = true;
     
     //BMAI Config Options
-    public   bool HideBossModAIConfig          = false;
-    public   bool BM_UpdatePresetsAutomatically        = true;
+    public bool HideBossModAIConfig           = false;
+    public bool BM_UpdatePresetsAutomatically = true;
 
 
     internal bool maxDistanceToTargetRoleBased = true;
