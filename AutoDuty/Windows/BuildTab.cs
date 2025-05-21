@@ -270,8 +270,10 @@ namespace AutoDuty.Windows
                             ShowPopup("Error", $"{_action.Name}'s must be uint's corresponding to the objects DataId", true);
                     }
                     else
-                                            AddAction();
-                                    }
+                    {
+                        AddAction();
+                    }
+                }
             }
             ImGui.SameLine();
             ImGuiEx.CheckboxWrapped("Dont Move", ref _dontMove);
@@ -300,10 +302,12 @@ namespace AutoDuty.Windows
             }
             if (!(_noArgument || _comment))
             {
+                ImGui.AlignTextToFramePadding();
                 ImGui.TextColored(_argumentTextColor, "Arguments:");
                 ImGui.SameLine();
                 ImGui.TextColored(_argumentTextColor, _argumentHint);
                 ImGui.SameLine();
+                float addX = ImGui.GetCursorPosX();
                 if (ImGui.Button("+##AddArgument"))
                 {
                     _arguments.Add(string.Empty);
@@ -315,23 +319,15 @@ namespace AutoDuty.Windows
 
                     using (ImRaii.Disabled(i <= 0))
                     {
-                        if (ImGui.Button("↑##MoveUp"))
-                        {
-                            var temp = _arguments[i];
-                            _arguments[i] = _arguments[i - 1];
-                            _arguments[i - 1] = temp;
-                        }
+                        if (ImGui.Button("↑##MoveUp")) 
+                            (_arguments[i], _arguments[i - 1]) = (_arguments[i - 1], _arguments[i]);
                     }
 
                     ImGui.SameLine();
                     using (ImRaii.Disabled(i >= _arguments.Count - 1))
                     {
-                        if (ImGui.Button("↓##MoveDown"))
-                        {
-                            var temp = _arguments[i];
-                            _arguments[i] = _arguments[i + 1];
-                            _arguments[i + 1] = temp;
-                        }
+                        if (ImGui.Button("↓##MoveDown")) 
+                            (_arguments[i], _arguments[i + 1]) = (_arguments[i + 1], _arguments[i]);
                     }
 
                     ImGui.SameLine();
@@ -345,18 +341,15 @@ namespace AutoDuty.Windows
                     }
 
                     ImGui.SameLine();
+                    ImGui.SetCursorPosX(addX);
                     if (ImGui.Button("+##AddArgument"))
-                    {
                         _arguments.Insert(i + 1, string.Empty);
-                    }
                     ImGui.SameLine();
 
                     ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                     string tempArgument = _arguments[i];
-                    if (ImGui.InputText($"##Argument{i}", ref tempArgument, 200))
-                    {
+                    if (ImGui.InputText($"##Argument{i}", ref tempArgument, 200)) 
                         _arguments[i] = tempArgument;
-                    }
                     ImGui.PopID();
                 }
                 ImGui.Spacing();
@@ -379,13 +372,14 @@ namespace AutoDuty.Windows
 
 
             }
-
+            ImGui.AlignTextToFramePadding();
             ImGui.Text("Note:");
             ImGui.SameLine();
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
             ImGui.InputText("##Note", ref _note, 200);
             using (ImRaii.Disabled(_action == null || _action.Tag.HasAnyFlag(ActionTag.Comment, ActionTag.Revival, ActionTag.Treasure)))
             {
+                ImGui.AlignTextToFramePadding();
                 ImGui.Text("Tag:");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
