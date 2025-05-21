@@ -267,6 +267,22 @@ public class ConfigurationMain : IEzConfig
                           });
     }
 
+    public void RemoveCharacterDefault()
+    {
+        Svc.Framework.RunOnTick(() =>
+                                {
+                                    if (!PlayerHelper.IsValid)
+                                        return;
+
+                                    ulong cid = Player.CID;
+
+                                    this.profileByName[this.ActiveProfileName].CIDs.Remove(cid);
+                                    this.profileByCID.Remove(cid);
+
+                                    EzConfig.Save();
+                                });
+    }
+
     public static void DebugLog(string message)
     {
         Svc.Log.Debug($"Configuration Main: {message}");
@@ -763,14 +779,17 @@ public static class ConfigTab
                 ImGui.SetTooltip("Duplicate Profile");
 
             ImGui.SameLine();
-            using (ImRaii.Disabled(ImGui.GetIO().KeyCtrl ? ConfigurationMain.Instance.GetCurrentProfile.CIDs.Contains(Player.CID) : ConfigurationMain.Instance.DefaultConfigName == ConfigurationMain.Instance.ActiveProfileName))
+            using (ImRaii.Disabled(ImGui.GetIO().KeyCtrl ? ConfigurationMain.Instance.GetCurrentProfile.CIDs.Contains(Player.CID) != ImGui.GetIO().KeyShift : ConfigurationMain.Instance.DefaultConfigName == ConfigurationMain.Instance.ActiveProfileName))
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.CheckCircle))
                     if(ImGui.GetIO().KeyCtrl)
-                        ConfigurationMain.Instance.SetCharacterDefault();
+                        if (ImGui.GetIO().KeyShift)
+                            ConfigurationMain.Instance.RemoveCharacterDefault();
+                        else
+                            ConfigurationMain.Instance.SetCharacterDefault();
                     else
                         ConfigurationMain.Instance.SetProfileAsDefault();
             if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
-                ImGui.SetTooltip("Make Default\nHold ctrl to make default for the current character");
+                ImGui.SetTooltip("Make Default\nHold ctrl to make default for the current character\nctrl+shift to remove it as default for the current character");
 
 
             ImGui.SameLine();
