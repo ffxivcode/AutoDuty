@@ -217,6 +217,7 @@ public class ConfigurationMain : IEzConfig
     {
         this.profileData.Remove(this.GetCurrentProfile);
         this.profileByName.Remove(this.ActiveProfileName);
+        this.SetProfile(CONFIGNAME_BARE);
         this.SetProfileToDefault();
     }
 
