@@ -441,9 +441,11 @@ namespace AutoDuty.Managers
         }
         private unsafe void Interactable(IGameObject? gameObject)
         {
+            _taskManager.Enqueue(() => BossMod_IPCSubscriber.SetMovement(false));
             _taskManager.Enqueue(() => InteractableCheck(gameObject), "Interactable-InteractableCheck");
             _taskManager.Enqueue(() => IsCasting, 500, "Interactable-WaitIsCasting");
             _taskManager.Enqueue(() => !IsCasting, "Interactable-WaitNotIsCasting");
+            _taskManager.Enqueue(() => BossMod_IPCSubscriber.SetMovement(true));
             _taskManager.DelayNext("Interactable-DelayNext100", 100);
             _taskManager.Enqueue(() =>
             {
