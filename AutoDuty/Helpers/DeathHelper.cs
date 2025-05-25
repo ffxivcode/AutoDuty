@@ -10,6 +10,8 @@ using System;
 
 namespace AutoDuty.Helpers
 {
+    using System.Numerics;
+
     internal static class DeathHelper
     {
         private static PlayerLifeState _deathState = PlayerLifeState.Alive;
@@ -68,41 +70,30 @@ namespace AutoDuty.Helpers
 
         private static int FindWaypoint()
         {
+            /*
             if (Plugin.Indexer == 0)
             {
-                //Svc.Log.Info($"Finding Closest Waypoint {ListBoxPOSText.Count}");
                 float closestWaypointDistance = float.MaxValue;
                 int closestWaypointIndex = -1;
-                float currentDistance;
 
                 for (int i = 0; i < Plugin.Actions.Count; i++)
                 {
-                    var node = Plugin.Actions[i].Name;
-                    var position = Plugin.Actions[i].Position;
-                    if (node.Equals("Boss", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        currentDistance = ObjectHelper.GetDistanceToPlayer(position);
+                    string node = Plugin.Actions[i].Name;
+                    Vector3 position = Plugin.Actions[i].Position;
 
-                        if (currentDistance < closestWaypointDistance)
-                        {
-                            closestWaypointDistance = currentDistance;
-                            closestWaypointIndex = i;
-                        }
-                    }
-                    else
+                    float currentDistance = ObjectHelper.GetDistanceToPlayer(position);
+                    if (currentDistance < closestWaypointDistance)
+
                     {
-                        currentDistance = ObjectHelper.GetDistanceToPlayer(position);
-                        //Svc.Log.Info($"cd: {currentDistance}");
-                        if (currentDistance < closestWaypointDistance)
-                        {
-                            closestWaypointDistance = ObjectHelper.GetDistanceToPlayer(Plugin.Actions[Plugin.Indexer].Position);
-                            closestWaypointIndex = i;
-                        }
+                        closestWaypointDistance = node.Equals("Boss", StringComparison.InvariantCultureIgnoreCase) ?
+                                                      currentDistance :
+                                                      ObjectHelper.GetDistanceToPlayer(Plugin.Actions[Plugin.Indexer].Position);
+                        closestWaypointIndex = i;
                     }
                 }
-                //Svc.Log.Info($"Closest Waypoint was {closestWaypointIndex}");
+                Svc.Log.Info($"Closest Waypoint was {closestWaypointIndex}");
                 return closestWaypointIndex;
-            }
+            }*/
 
             if (Plugin.Indexer != -1)
             {
@@ -118,14 +109,12 @@ namespace AutoDuty.Helpers
 
 
 
-                Svc.Log.Info("Finding Revival Point. Using Revival Action: " + revivalFound);
+                Svc.Log.Info($"Finding Revival Point starting at {Plugin.Indexer}. Using Revival Action: {revivalFound}");
                 for (int i = Plugin.Indexer; i >= 0; i--)
                 {
-                    if (revivalFound)
-                    {
-                        if (Plugin.Actions[i].Name.Equals(isBoss ? "Revival" : "Boss", StringComparison.InvariantCultureIgnoreCase) && i != Plugin.Indexer) 
-                            return isBoss ? i : i+1;
-                    }/* Pre 7.2
+                    if (Plugin.Actions[i].Name.Equals(isBoss ? "Revival" : "Boss", StringComparison.InvariantCultureIgnoreCase) && i != Plugin.Indexer)
+                        return isBoss ? i : i + 1;
+                    /* Pre 7.2
                     else
                     {
                         if (Plugin.Actions[i].Name.Equals("Boss", StringComparison.InvariantCultureIgnoreCase) && i != Plugin.Indexer)
