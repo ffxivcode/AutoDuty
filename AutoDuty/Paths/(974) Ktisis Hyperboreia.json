@@ -647,7 +647,7 @@
       },
       {
         "version": 215,
-        "change": "Delay in leg 2 pull 2 to allow rotation to pick up all mobs in w2w"
+        "change": "5s Delay in leg 2 pull 2 to allow rotation to pick up all mobs in w2w"
       }
     ],
     "notes": []
