@@ -3,12 +3,14 @@ using ECommons.DalamudServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Dalamud.Networking.Http;
 
 namespace AutoDuty.Updater
 {
@@ -16,7 +18,9 @@ namespace AutoDuty.Updater
     {
         const string CLIENT_ID = "Iv23liWV5R21nasKaQjP";
 
-        private static readonly HttpClient _client = new();
+        private static readonly SocketsHttpHandler _handler = new() { AutomaticDecompression = DecompressionMethods.All, ConnectCallback = new HappyEyeballsCallback().ConnectCallback };
+
+        private static readonly HttpClient _client = new(_handler) { Timeout = TimeSpan.FromSeconds(20) };
 
         internal static async Task<bool> DownloadFileAsync(string url, string localPath)
         {
@@ -40,7 +44,7 @@ namespace AutoDuty.Updater
         {
             try
             {
-                using HttpClient client = new();
+                using HttpClient client = new(_handler) { Timeout = TimeSpan.FromSeconds(20) };
                 var md5List = await client.GetFromJsonAsync<Dictionary<string, string>>("https://raw.githubusercontent.com/ffxivcode/AutoDuty/refs/heads/master/AutoDuty/Resources/md5s.json");
                 return md5List ?? [];
             }
