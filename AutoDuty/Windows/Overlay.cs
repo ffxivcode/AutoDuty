@@ -28,10 +28,24 @@ public unsafe class Overlay : Window
             if (!SchedulerHelper.Schedules.ContainsKey("OpenOverlay"))
                 SchedulerHelper.ScheduleAction("OpenOverlay", () => IsOpen = true, () => PlayerHelper.IsReady);
             IsOpen = false;
+            return;
         }
+
+        if(!Plugin.Configuration.ShowOverlay)
+        {
+            this.IsOpen = false;
+            return;
+        }
+
 
         if (!Plugin.States.HasFlag(PluginState.Looping) && !Plugin.States.HasFlag(PluginState.Navigating))
         {
+            if (Plugin.Configuration.HideOverlayWhenStopped)
+            {
+                this.IsOpen = false;
+                return;
+            }
+
             MainWindow.GotoAndActions();
             if (!Plugin.InDungeon)
             {
