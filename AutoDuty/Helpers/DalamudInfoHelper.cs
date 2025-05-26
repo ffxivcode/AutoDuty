@@ -3,7 +3,9 @@ using ECommons.Reflection;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using Dalamud.Networking.Http;
 
 namespace AutoDuty.Helpers
 {
@@ -27,7 +29,8 @@ namespace AutoDuty.Helpers
             {
                 try
                 {
-                    HttpClient         client         = new();
+                    SocketsHttpHandler httpHandler    = new() { AutomaticDecompression = DecompressionMethods.All, ConnectCallback = new HappyEyeballsCallback().ConnectCallback };
+                    HttpClient         client         = new(httpHandler) { Timeout = TimeSpan.FromSeconds(10) };
                     const string       dalDeclarative = "https://raw.githubusercontent.com/goatcorp/dalamud-declarative/refs/heads/main/config.yaml";
                     using Stream       stream         = client.GetStreamAsync(dalDeclarative).Result;
                     using StreamReader reader         = new(stream);
