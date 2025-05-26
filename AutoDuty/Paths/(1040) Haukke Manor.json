@@ -157,6 +157,17 @@
       "note": "Green Key"
     },
     {
+      "tag": "Revival",
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
       "tag": "None",
       "name": "MoveTo",
       "position": {
@@ -183,6 +194,17 @@
       "note": "Ivy Door"
     },
     {
+      "tag": "Revival",
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
       "tag": "None",
       "name": "MoveTo",
       "position": {
@@ -197,14 +219,14 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -60.04,
-        "Y": -0,
-        "Z": 12.65
+        "X": -65.38289,
+        "Y": 0,
+        "Z": 12.968736
       },
       "arguments": [
-        "1500"
+        "false"
       ],
       "note": ""
     },
@@ -456,6 +478,17 @@
       "note": "Aetherial Flow"
     },
     {
+      "tag": "Revival",
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
       "tag": "None",
       "name": "MoveTo",
       "position": {
@@ -530,6 +563,10 @@
       {
         "version": 203,
         "change": "Unlock coffers to avoid boss loot issue"
+      },
+      {
+        "version": 215,
+        "change": "Adjusting revivals"
       }
     ],
     "notes": []

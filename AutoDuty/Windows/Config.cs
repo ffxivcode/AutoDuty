@@ -155,11 +155,12 @@ public class ConfigurationMain : IEzConfig
 
     public void SetProfileToDefault()
     {
+        this.SetProfile(CONFIGNAME_BARE);
         Svc.Framework.RunOnTick(() =>
         {
-            DebugLog("Setting to default profile");
+            DebugLog($"Setting to default profile for {Player.Name} ({Player.CID}) {PlayerHelper.IsValid}");
 
-            if (PlayerHelper.IsValid && this.profileByCID.TryGetValue(Player.CID, out string? charProfile))
+            if (Player.Available && this.profileByCID.TryGetValue(Player.CID, out string? charProfile))
                 if (this.SetProfile(charProfile))
                     return;
             DebugLog("No char default found. Using general default");
@@ -215,6 +216,7 @@ public class ConfigurationMain : IEzConfig
 
     public void RemoveCurrentProfile()
     {
+        DebugLog("Removing " + this.ActiveProfileName);
         this.profileData.Remove(this.GetCurrentProfile);
         this.profileByName.Remove(this.ActiveProfileName);
         this.SetProfileToDefault();
@@ -263,6 +265,22 @@ public class ConfigurationMain : IEzConfig
 
                               EzConfig.Save();
                           });
+    }
+
+    public void RemoveCharacterDefault()
+    {
+        Svc.Framework.RunOnTick(() =>
+                                {
+                                    if (!PlayerHelper.IsValid)
+                                        return;
+
+                                    ulong cid = Player.CID;
+
+                                    this.profileByName[this.ActiveProfileName].CIDs.Remove(cid);
+                                    this.profileByCID.Remove(cid);
+
+                                    EzConfig.Save();
+                                });
     }
 
     public static void DebugLog(string message)
@@ -678,16 +696,19 @@ public static class ConfigTab
                 if (configCombo)
                     foreach (string key in ConfigurationMain.Instance.ConfigNames)
                     {
+                        float selectableX = ImGui.GetCursorPosX();
                         if (key == ConfigurationMain.CONFIGNAME_BARE)
                             ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
                         if (key == ConfigurationMain.Instance.DefaultConfigName)
                             ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
-                        float x = ImGui.GetCursorPosX();
-                        ImGui.SameLine(0.1f);
+
+                        float textX = ImGui.GetCursorPosX();
+                        
+                        ImGui.SetCursorPosX(selectableX);
                         ImGui.SetItemAllowOverlap();
                         if (ImGui.Selectable($"###{key}ConfigSelectable"))
                             ConfigurationMain.Instance.SetProfile(key);
-                        ImGui.SameLine(x);
+                        ImGui.SameLine(textX);
                         ImGui.Text(key);
 
                         ProfileData? profile = ConfigurationMain.Instance.GetProfile(key);
@@ -758,14 +779,17 @@ public static class ConfigTab
                 ImGui.SetTooltip("Duplicate Profile");
 
             ImGui.SameLine();
-            using (ImRaii.Disabled(ImGui.GetIO().KeyCtrl ? ConfigurationMain.Instance.GetCurrentProfile.CIDs.Contains(Player.CID) : ConfigurationMain.Instance.DefaultConfigName == ConfigurationMain.Instance.ActiveProfileName))
+            using (ImRaii.Disabled(ImGui.GetIO().KeyCtrl ? ConfigurationMain.Instance.GetCurrentProfile.CIDs.Contains(Player.CID) != ImGui.GetIO().KeyShift : ConfigurationMain.Instance.DefaultConfigName == ConfigurationMain.Instance.ActiveProfileName))
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.CheckCircle))
                     if(ImGui.GetIO().KeyCtrl)
-                        ConfigurationMain.Instance.SetCharacterDefault();
+                        if (ImGui.GetIO().KeyShift)
+                            ConfigurationMain.Instance.RemoveCharacterDefault();
+                        else
+                            ConfigurationMain.Instance.SetCharacterDefault();
                     else
                         ConfigurationMain.Instance.SetProfileAsDefault();
             if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
-                ImGui.SetTooltip("Make Default\nHold ctrl to make default for the current character");
+                ImGui.SetTooltip("Make Default\nHold ctrl to make default for the current character\nctrl+shift to remove it as default for the current character");
 
 
             ImGui.SameLine();

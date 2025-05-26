@@ -340,8 +340,8 @@
         "Option": "Enabled"
       },
       {
-        "Track": "Esuna",
-        "Option": "Cleanse all party members that have a removable debuff"
+        "Track": "Esuna2",
+        "Option": "Enabled"
       }
     ],
     "BossMod.Autorotation.xan.MeleeAI": [
@@ -378,10 +378,6 @@
         "Option": "Enabled"
       },
       {
-        "Track": "Interject",
-        "Option": "Enabled"
-      },
-      {
         "Track": "Low Blow",
         "Option": "Enabled"
       },
@@ -399,6 +395,10 @@
       },
       {
         "Track": "Protect party members",
+        "Option": "Enabled"
+      },
+      {
+        "Track": "Interject2",
         "Option": "Enabled"
       }
     ],

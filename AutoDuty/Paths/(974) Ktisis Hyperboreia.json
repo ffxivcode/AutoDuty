@@ -319,6 +319,19 @@
     },
     {
       "tag": "W2W",
+      "name": "Wait",
+      "position": {
+        "X": -120,
+        "Y": 624,
+        "Z": 150
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": "Set agro before long run"
+    },
+    {
+      "tag": "W2W",
       "name": "MoveTo",
       "position": {
         "X": -0.39594802,
@@ -631,6 +644,10 @@
       {
         "version": 206,
         "change": "Modernized path"
+      },
+      {
+        "version": 215,
+        "change": "5s Delay in leg 2 pull 2 to allow rotation to pick up all mobs in w2w"
       }
     ],
     "notes": []
