@@ -44,7 +44,13 @@ namespace AutoDuty.Updater
         {
             try
             {
-                using HttpClient client = new(_handler) { Timeout = TimeSpan.FromSeconds(20) };
+                // Temporary handler and client, to avoid default headers below
+                using SocketsHttpHandler handler = new();
+                handler.AutomaticDecompression = DecompressionMethods.All;
+                handler.ConnectCallback = new HappyEyeballsCallback().ConnectCallback;
+                using HttpClient client = new(handler);
+                client.Timeout = TimeSpan.FromSeconds(20);
+
                 var md5List = await client.GetFromJsonAsync<Dictionary<string, string>>("https://raw.githubusercontent.com/ffxivcode/AutoDuty/refs/heads/master/AutoDuty/Resources/md5s.json");
                 return md5List ?? [];
             }
