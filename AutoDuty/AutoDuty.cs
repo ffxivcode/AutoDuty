@@ -1734,7 +1734,13 @@ public sealed class AutoDuty : IDalamudPlugin
                 break;
             case "overlay":
                 if (argsArray.Length == 1)
-                    Overlay.IsOpen = true;
+                {
+                    this.Configuration.ShowOverlay = true;
+                    this.Overlay.IsOpen            = true;
+
+                    if (!Plugin.States.HasAnyFlag(PluginState.Looping, PluginState.Navigating))
+                        this.Configuration.HideOverlayWhenStopped = false;
+                }
                 else
                 {
                     switch (argsArray[1].ToLower())
