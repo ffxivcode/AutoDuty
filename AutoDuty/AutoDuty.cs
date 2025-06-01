@@ -1208,17 +1208,14 @@ public sealed class AutoDuty : IDalamudPlugin
         if (Configuration.LootTreasure)
         {
             if (PandorasBox_IPCSubscriber.IsEnabled)
-                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", Configuration.LootMethodEnum == LootMethod.Pandora || Configuration.LootMethodEnum == LootMethod.All);
-            if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
-                ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", $"{Configuration.LootMethodEnum == LootMethod.RotationSolver || Configuration.LootMethodEnum == LootMethod.All}");
-            _lootTreasure = Configuration.LootMethodEnum == LootMethod.AutoDuty || Configuration.LootMethodEnum == LootMethod.All;
+                PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", this.Configuration.LootMethodEnum is LootMethod.Pandora or LootMethod.All);
+            this._lootTreasure = this.Configuration.LootMethodEnum is LootMethod.AutoDuty or LootMethod.All;
         }
         else
         {
             if (PandorasBox_IPCSubscriber.IsEnabled)
                 PandorasBox_IPCSubscriber.SetFeatureEnabled("Automatically Open Chests", false);
-            ReflectionHelper.RotationSolver_Reflection.SetConfigValue("OpenCoffers", "false");
-            _lootTreasure = false;
+            this._lootTreasure = false;
         }
         Svc.Log.Info("Starting Navigation");
         if (startFromZero)
@@ -1505,9 +1502,9 @@ public sealed class AutoDuty : IDalamudPlugin
         if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType != 0 && InDungeon)
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
 
-        if (States.HasFlag(PluginState.Navigating) && Configuration.LootTreasure && (!Configuration.LootBossTreasureOnly || (PathAction?.Name == "Boss" && Stage == Stage.Action)) &&
-            (treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)
-                                                   ?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
+        if (this.States.HasFlag(PluginState.Navigating) && this.Configuration.LootTreasure && (!this.Configuration.LootBossTreasureOnly || (this.PathAction?.Name == "Boss" && this.Stage == Stage.Action)) &&
+            (this.treasureCofferGameObject = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)
+                                                        ?.FirstOrDefault(x => ObjectHelper.GetDistanceToPlayer(x) < 2)) != null)
         {
             BossMod_IPCSubscriber.SetRange(30f);
             ObjectHelper.InteractWithObject(this.treasureCofferGameObject, false);
