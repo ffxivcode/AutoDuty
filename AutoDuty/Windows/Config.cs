@@ -111,6 +111,9 @@ public class ConfigurationMain : IEzConfig
                 foreach (ulong cid in profile.CIDs)
                     this.profileByCID[cid] = profile.Name;
             this.profileByName[profile.Name] = profile;
+
+            if(profile.Config.LootMethodEnum == LootMethod.RotationSolver) //RSR removed
+                profile.Config.LootMethodEnum = LootMethod.All;
         }
 
         foreach (ProfileData profile in this.profileData)
@@ -1225,7 +1228,9 @@ public static class ConfigTab
                 {
                     foreach (LootMethod lootMethod in Enum.GetValues(typeof(LootMethod)))
                     {
-                        using (ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled) || (lootMethod == LootMethod.RotationSolver && !ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)))
+                        if(lootMethod == LootMethod.RotationSolver)
+                            continue;
+                        using (ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled)))
                         {
                             if (ImGui.Selectable(lootMethod.ToCustomString()))
                             {
@@ -1236,14 +1241,11 @@ public static class ConfigTab
                     }
                     ImGui.EndCombo();
                 }
-                ImGuiComponents.HelpMarker("RSR Toggles Not Yet Implemented");
                 
-                using (ImRaii.Disabled(Configuration.LootMethodEnum != LootMethod.AutoDuty))
-                {
-                    if (ImGui.Checkbox("Loot Boss Treasure Only", ref Configuration.LootBossTreasureOnly))
+                if (ImGui.Checkbox("Loot Boss Treasure Only", ref Configuration.LootBossTreasureOnly))
                         Configuration.Save();
-                }
-                ImGuiComponents.HelpMarker("AutoDuty will ignore all non-boss chests, and only loot boss chests. (Only works with AD Looting)");
+
+                ImGuiComponents.HelpMarker("AutoDuty will walk around non-boss chests, and only loot boss chests.\nNot all paths may accomodate.");
                 ImGui.Unindent();
             }
 
