@@ -681,128 +681,127 @@ public static class ConfigTab
         if (MainWindow.CurrentTabName != "Config")
             MainWindow.CurrentTabName = "Config";
 
-        { //Start of Profile Selection
-            ImGui.AlignTextToFramePadding();
-            ImGui.Text("Currently selected profile: ");
-            ImGui.SameLine();
-            if (ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.CONFIGNAME_BARE)
-                ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
-            if (ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.Instance.DefaultConfigName)
-                ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
-            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 180 * ImGuiHelpers.GlobalScale);
-            ImGui.SetItemAllowOverlap();
-            using (ImRaii.IEndObject configCombo = ImRaii.Combo("##ConfigCombo", ConfigurationMain.Instance.ActiveProfileName))
-            {
-                if (configCombo)
-                    foreach (string key in ConfigurationMain.Instance.ConfigNames)
-                    {
-                        float selectableX = ImGui.GetCursorPosX();
-                        if (key == ConfigurationMain.CONFIGNAME_BARE)
-                            ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
-                        if (key == ConfigurationMain.Instance.DefaultConfigName)
-                            ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
+        //Start of Profile Selection
+        ImGui.AlignTextToFramePadding();
+        ImGui.Text("Currently selected profile: ");
+        ImGui.SameLine();
+        if (ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.CONFIGNAME_BARE)
+            ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
+        if (ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.Instance.DefaultConfigName)
+            ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
+        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 180 * ImGuiHelpers.GlobalScale);
+        ImGui.SetItemAllowOverlap();
+        using (ImRaii.IEndObject configCombo = ImRaii.Combo("##ConfigCombo", ConfigurationMain.Instance.ActiveProfileName))
+        {
+            if (configCombo)
+                foreach (string key in ConfigurationMain.Instance.ConfigNames)
+                {
+                    float selectableX = ImGui.GetCursorPosX();
+                    if (key == ConfigurationMain.CONFIGNAME_BARE)
+                        ImGuiHelper.DrawIcon(FontAwesomeIcon.Lock);
+                    if (key == ConfigurationMain.Instance.DefaultConfigName)
+                        ImGuiHelper.DrawIcon(FontAwesomeIcon.CheckCircle);
 
-                        float textX = ImGui.GetCursorPosX();
+                    float textX = ImGui.GetCursorPosX();
                         
-                        ImGui.SetCursorPosX(selectableX);
-                        ImGui.SetItemAllowOverlap();
-                        if (ImGui.Selectable($"###{key}ConfigSelectable"))
-                            ConfigurationMain.Instance.SetProfile(key);
-                        ImGui.SameLine(textX);
-                        ImGui.Text(key);
+                    ImGui.SetCursorPosX(selectableX);
+                    ImGui.SetItemAllowOverlap();
+                    if (ImGui.Selectable($"###{key}ConfigSelectable"))
+                        ConfigurationMain.Instance.SetProfile(key);
+                    ImGui.SameLine(textX);
+                    ImGui.Text(key);
 
-                        ProfileData? profile = ConfigurationMain.Instance.GetProfile(key);
-                        if(profile?.CIDs.Any() ?? false)
-                        {
-                            ImGui.SameLine();
-                            ImGuiEx.TextWrapped(ImGuiHelper.VersionColor, string.Join(", ", profile.CIDs.Select(cid => ConfigurationMain.Instance.charByCID.TryGetValue(cid, out ConfigurationMain.CharData cd) ? cd.GetName() : cid.ToString())));
-                        }
-                    }
-            }
-
-            ImGui.PopItemWidth();
-            ImGui.SameLine();
-
-            if (ImGui.IsPopupOpen("##RenameProfile"))
-            {
-                bool    open     = true;
-                Vector2 textSize = ImGui.CalcTextSize(profileRenameInput);
-                ImGui.SetNextWindowSize(new Vector2(textSize.X + 200, textSize.Y + 120) * ImGuiHelpers.GlobalScale);
-                if (ImGui.BeginPopupModal($"##RenameProfile", ref open, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoMove))
-                {
-                    ImGuiHelper.CenterNextElement(ImGui.CalcTextSize("New Profile Name").X);
-                    ImGui.Text("New Profile Name");
-                    ImGui.NewLine();
-                    ImGui.SameLine(50);
-                    ImGui.SetNextItemWidth((textSize.X + 100) * ImGuiHelpers.GlobalScale);
-
-                    ImGui.InputText("##RenameProfileInput", ref profileRenameInput, 100);
-                    ImGui.Spacing();
-                    ImGuiHelper.CenterNextElement(ImGui.CalcTextSize("Change Profile Name").X);
-                    if (ImGui.Button("Change Profile Name"))
+                    ProfileData? profile = ConfigurationMain.Instance.GetProfile(key);
+                    if(profile?.CIDs.Any() ?? false)
                     {
-                        if (ConfigurationMain.Instance.RenameCurrentProfile(profileRenameInput))
-                        {
-                            open = false;
-                            ImGui.CloseCurrentPopup();
-                        }
+                        ImGui.SameLine();
+                        ImGuiEx.TextWrapped(ImGuiHelper.VersionColor, string.Join(", ", profile.CIDs.Select(cid => ConfigurationMain.Instance.charByCID.TryGetValue(cid, out ConfigurationMain.CharData cd) ? cd.GetName() : cid.ToString())));
                     }
-
-                    ImGui.EndPopup();
                 }
+        }
+
+        ImGui.PopItemWidth();
+        ImGui.SameLine();
+
+        if (ImGui.IsPopupOpen("##RenameProfile"))
+        {
+            bool    open     = true;
+            Vector2 textSize = ImGui.CalcTextSize(profileRenameInput);
+            ImGui.SetNextWindowSize(new Vector2(textSize.X + 200, textSize.Y + 120) * ImGuiHelpers.GlobalScale);
+            if (ImGui.BeginPopupModal($"##RenameProfile", ref open, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoMove))
+            {
+                ImGuiHelper.CenterNextElement(ImGui.CalcTextSize("New Profile Name").X);
+                ImGui.Text("New Profile Name");
+                ImGui.NewLine();
+                ImGui.SameLine(50);
+                ImGui.SetNextItemWidth((textSize.X + 100) * ImGuiHelpers.GlobalScale);
+
+                ImGui.InputText("##RenameProfileInput", ref profileRenameInput, 100);
+                ImGui.Spacing();
+                ImGuiHelper.CenterNextElement(ImGui.CalcTextSize("Change Profile Name").X);
+                if (ImGui.Button("Change Profile Name"))
+                {
+                    if (ConfigurationMain.Instance.RenameCurrentProfile(profileRenameInput))
+                    {
+                        open = false;
+                        ImGui.CloseCurrentPopup();
+                    }
+                }
+
+                ImGui.EndPopup();
+            }
+        }
+
+
+
+        bool bareProfile = ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.CONFIGNAME_BARE;
+
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus))
+            ConfigurationMain.Instance.CreateNewProfile();
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Create new Profile");
+
+        ImGui.SameLine(0, 15f);
+        using (ImRaii.Disabled(bareProfile))
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Pen))
+            {
+                profileRenameInput = ConfigurationMain.Instance.ActiveProfileName;
+                ImGui.OpenPopup("##RenameProfile");
             }
 
+        if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
+            ImGui.SetTooltip("Rename Profile");
 
+        ImGui.SameLine();
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.Copy))
+            ConfigurationMain.Instance.DuplicateCurrentProfile();
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Duplicate Profile");
 
-            bool bareProfile = ConfigurationMain.Instance.ActiveProfileName == ConfigurationMain.CONFIGNAME_BARE;
-
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.Plus))
-                ConfigurationMain.Instance.CreateNewProfile();
-            if (ImGui.IsItemHovered())
-                ImGui.SetTooltip("Create new Profile");
-
-            ImGui.SameLine(0, 15f);
-            using (ImRaii.Disabled(bareProfile))
-                if (ImGuiComponents.IconButton(FontAwesomeIcon.Pen))
-                {
-                    profileRenameInput = ConfigurationMain.Instance.ActiveProfileName;
-                    ImGui.OpenPopup("##RenameProfile");
-                }
-
-            if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
-                ImGui.SetTooltip("Rename Profile");
-
-            ImGui.SameLine();
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.Copy))
-                ConfigurationMain.Instance.DuplicateCurrentProfile();
-            if (ImGui.IsItemHovered())
-                ImGui.SetTooltip("Duplicate Profile");
-
-            ImGui.SameLine();
-            using (ImRaii.Disabled(ImGui.GetIO().KeyCtrl ? ConfigurationMain.Instance.GetCurrentProfile.CIDs.Contains(Player.CID) != ImGui.GetIO().KeyShift : ConfigurationMain.Instance.DefaultConfigName == ConfigurationMain.Instance.ActiveProfileName))
-                if (ImGuiComponents.IconButton(FontAwesomeIcon.CheckCircle))
-                    if(ImGui.GetIO().KeyCtrl)
-                        if (ImGui.GetIO().KeyShift)
-                            ConfigurationMain.Instance.RemoveCharacterDefault();
-                        else
-                            ConfigurationMain.Instance.SetCharacterDefault();
+        ImGui.SameLine();
+        using (ImRaii.Disabled(ImGui.GetIO().KeyCtrl ? ConfigurationMain.Instance.GetCurrentProfile.CIDs.Contains(Player.CID) != ImGui.GetIO().KeyShift : ConfigurationMain.Instance.DefaultConfigName == ConfigurationMain.Instance.ActiveProfileName))
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.CheckCircle))
+                if(ImGui.GetIO().KeyCtrl)
+                    if (ImGui.GetIO().KeyShift)
+                        ConfigurationMain.Instance.RemoveCharacterDefault();
                     else
-                        ConfigurationMain.Instance.SetProfileAsDefault();
-            if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
-                ImGui.SetTooltip("Make Default\nHold ctrl to make default for the current character\nctrl+shift to remove it as default for the current character");
+                        ConfigurationMain.Instance.SetCharacterDefault();
+                else
+                    ConfigurationMain.Instance.SetProfileAsDefault();
+        if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
+            ImGui.SetTooltip("Make Default\nHold ctrl to make default for the current character\nctrl+shift to remove it as default for the current character");
 
 
-            ImGui.SameLine();
-            using (ImRaii.Disabled(bareProfile || !ImGui.GetIO().KeyCtrl))
-                if (ImGuiComponents.IconButton(FontAwesomeIcon.TrashAlt))
-                    ConfigurationMain.Instance.RemoveCurrentProfile();
-            if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
-                ImGui.SetTooltip("Delete Config\nHold ctrl to enable");
+        ImGui.SameLine();
+        using (ImRaii.Disabled(bareProfile || !ImGui.GetIO().KeyCtrl))
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.TrashAlt))
+                ConfigurationMain.Instance.RemoveCurrentProfile();
+        if (ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax()))
+            ImGui.SetTooltip("Delete Config\nHold ctrl to enable");
 
-            if (bareProfile)
-                ImGuiEx.TextWrapped("The bare profile is for just running a duty, and nothing else. You can duplicate it to make edits.");
-            using ImRaii.IEndObject _ = ImRaii.Disabled(bareProfile);
-        }
+        if (bareProfile)
+            ImGuiEx.TextWrapped("The bare profile is for just running a duty, and nothing else. You can duplicate it to make edits.");
+        using ImRaii.IEndObject _ = ImRaii.Disabled(bareProfile);
 
         //Start of Window & Overlay Settings
         ImGui.Spacing();
