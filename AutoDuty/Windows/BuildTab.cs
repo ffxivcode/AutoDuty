@@ -35,19 +35,21 @@ namespace AutoDuty.Windows
         private static          string                   _note              = string.Empty;
         private static          Vector3                  _position          = Vector3.Zero;
         //private static          string                   _positionText      = string.Empty;
-        private static          List<string>             _arguments         = [];
-        private static          string                   _argumentHint      = string.Empty;
-        private static          bool                     _dontMove          = false;
-        private static          bool                     _showAddActionUI   = false;
-        private static          (string, string, string) _dropdownSelected  = (string.Empty, string.Empty, string.Empty);
-        private static          int                      _buildListSelected = -1;
-        private static          string                   _addActionButton   = "Add";
-        private static          bool                     _dragDrop          = false;
-        private static          bool                     _noArgument        = false;
-        private static          bool                     _comment           = false;
-        private static          Vector4                  _argumentTextColor = new(1,1,1,1);
-        private static          bool                     _deleteItem        = false;
-        private static          int                      _deleteItemIndex   = -1;
+        private static          List<string>             _arguments          = [];
+        private static          string                   _argumentHint       = string.Empty;
+        private static          bool                     _dontMove           = false;
+        private static          bool                     _showAddActionUI    = false;
+        private static          (string, string, string) _dropdownSelected   = (string.Empty, string.Empty, string.Empty);
+        private static          int                      _buildListSelected  = -1;
+        private static          string                   _addActionButton    = "Add";
+        private static          bool                     _dragDrop           = false;
+        private static          bool                     _noArgument         = false;
+        private static          bool                     _comment            = false;
+        private static          Vector4                  _argumentTextColor  = new(1,1,1,1);
+        private static          bool                     _deleteItem         = false;
+        private static          int                      _deleteItemIndex    = -1;
+        private static          bool                     _duplicateItem      = false;
+        private static          int                      _duplicateItemIndex = -1;
         private static          ActionTag                _actionTag;
         private static readonly ActionTag[]              _actionTags           = [ActionTag.None, ActionTag.Synced, ActionTag.Unsynced, ActionTag.W2W, ActionTag.Treasure];
         public static readonly  JsonSerializerOptions    jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
@@ -451,6 +453,12 @@ namespace AutoDuty.Windows
                             _deleteItemIndex = item.Index;
                         }
 
+                        if (ImGui.IsItemClicked(ImGuiMouseButton.Middle))
+                        {
+                            _duplicateItem      = true;
+                            _duplicateItemIndex = item.Index;
+                        }
+
                         if (ImGui.IsItemActive() && !ImGui.IsItemHovered() && !_dragDrop) 
                             _buildListSelected = item.Index;
 
@@ -491,6 +499,12 @@ namespace AutoDuty.Windows
                         Plugin.Actions.RemoveAt(_deleteItemIndex);
                         _deleteItemIndex = -1;
                         _deleteItem      = false;
+                    }
+
+                    if (_duplicateItem)
+                    {
+                        Plugin.Actions.Insert(_duplicateItemIndex, Plugin.Actions[_duplicateItemIndex.JSONClone()]);
+                        _duplicateItem = false;
                     }
                 }
                 else
