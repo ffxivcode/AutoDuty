@@ -15,14 +15,27 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -314.79,
-        "Y": 19.75,
-        "Z": 234.13
+        "X": 271.0136,
+        "Y": 6.517125,
+        "Z": -8.986708
       },
       "arguments": [
-        "10000"
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -43,9 +56,9 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": -322.02,
-        "Y": -0,
-        "Z": 103.88
+        "X": -322.25327,
+        "Y": 0.9446621,
+        "Z": 88.71765
       },
       "arguments": [
         ""
@@ -54,14 +67,40 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -322.08,
-        "Y": 2.02,
-        "Z": 84.88
+        "X": -322.04517,
+        "Y": 1.9623067,
+        "Z": 81.951324
       },
       "arguments": [
-        "15000"
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -106,14 +145,27 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": 268.24,
-        "Y": 6.46,
-        "Z": -7.02
+        "X": 397.4885,
+        "Y": 46.017067,
+        "Z": -144.94305
       },
       "arguments": [
-        "8000"
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -121,13 +173,24 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": 386.53,
-        "Y": 41.34,
-        "Z": -89.11
+        "X": 379.9397,
+        "Y": 40.518124,
+        "Z": -88.439445
       },
       "arguments": [
         ""
       ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 386.8695,
+        "Y": 41.416477,
+        "Z": -89.95641
+      },
+      "arguments": [],
       "note": ""
     },
     {
@@ -145,14 +208,27 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": 396.6,
-        "Y": 46.02,
-        "Z": -142.09
+        "X": 425.03162,
+        "Y": 20.49185,
+        "Z": -479.4899
       },
       "arguments": [
-        "17000"
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -184,14 +260,40 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": 424.92,
-        "Y": 20.51,
-        "Z": -476.71
+        "X": -395.3447,
+        "Y": -815.03546,
+        "Z": -190.23793
       },
       "arguments": [
-        "20000"
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -199,9 +301,9 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": -384.17,
-        "Y": -801.78,
-        "Z": -46.29
+        "X": -383.4525,
+        "Y": -801.42664,
+        "Z": -39.015007
       },
       "arguments": [
         ""
@@ -209,16 +311,38 @@
       "note": ""
     },
     {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -384.241,
+        "Y": -801.8029,
+        "Z": -45.95507
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": -389.1,
-        "Y": -814.33,
-        "Z": -174.08
+        "X": -390.51404,
+        "Y": -814.36035,
+        "Z": -168.01634
       },
       "arguments": [
         ""
       ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -389.03613,
+        "Y": -814.3262,
+        "Z": -173.5647
+      },
+      "arguments": [],
       "note": ""
     },
     {
@@ -236,27 +360,27 @@
     },
     {
       "tag": "None",
-      "name": "AutoMoveFor",
+      "name": "MoveTo",
       "position": {
-        "X": -395.32,
-        "Y": -815.01,
-        "Z": -181.16
+        "X": -395.3447,
+        "Y": -815.03546,
+        "Z": -190.23793
       },
       "arguments": [
-        "10000"
+        "false"
       ],
       "note": ""
     },
     {
       "tag": "None",
-      "name": "ForceAttack",
+      "name": "WaitFor",
       "position": {
-        "X": -369.88,
-        "Y": -873,
-        "Z": -348.5
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
-        ""
+        "IsReady"
       ],
       "note": ""
     },
@@ -305,6 +429,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 221,
+        "change": "Automoves adjusted to direct movement"
       }
     ],
     "notes": []
