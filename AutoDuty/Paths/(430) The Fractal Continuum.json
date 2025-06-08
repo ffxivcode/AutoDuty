@@ -2,27 +2,27 @@
   "actions": [
     {
       "tag": "None",
-      "name": "MoveTo",
+      "name": "Interactable",
       "position": {
-        "X": 11.9,
-        "Y": 11.2,
-        "Z": 0
+        "X": 35.560867,
+        "Y": -2.3841858E-07,
+        "Z": 215.45259
       },
       "arguments": [
-        ""
+        "2005242"
       ],
-      "note": ""
+      "note": "Allagan Teleporter"
     },
     {
       "tag": "None",
-      "name": "Interactable",
+      "name": "WaitFor",
       "position": {
         "X": 0,
         "Y": 0,
         "Z": 0
       },
       "arguments": [
-        "Allagan Teleporter"
+        "IsReady"
       ],
       "note": ""
     },
@@ -30,12 +30,12 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": 11.6,
-        "Y": 10.2,
-        "Z": 0
+        "X": 147.06482,
+        "Y": 2.6999996,
+        "Z": 31.211569
       },
       "arguments": [
-        ""
+        "true"
       ],
       "note": ""
     },
@@ -43,12 +43,36 @@
       "tag": "None",
       "name": "Boss",
       "position": {
-        "X": 10.4,
-        "Y": 10.5,
+        "X": 130.79497,
+        "Y": 2.7524755,
+        "Z": 40.11606
+      },
+      "arguments": [],
+      "note": "Phantom Ray"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 66.452194,
+        "Y": 2.7416694,
+        "Z": 76.812996
+      },
+      "arguments": [
+        "2005243"
+      ],
+      "note": "Allagan Teleporter"
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
         "Z": 0
       },
       "arguments": [
-        ""
+        "IsReady"
       ],
       "note": ""
     },
@@ -56,13 +80,266 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": 9.3,
-        "Y": 11.2,
+        "X": -313.1523,
+        "Y": -1.5233903,
+        "Z": 131.68538
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "Jump",
+      "position": {
+        "X": -312.52225,
+        "Y": -1.5154858,
+        "Z": 133.97801
+      },
+      "arguments": [
+        "250"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -313.05432,
+        "Y": 0.17434967,
+        "Z": 138.3718
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "MoveTo",
+      "position": {
+        "X": -317.07504,
+        "Y": -0.3263378,
+        "Z": 133.18024
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -242.42778,
+        "Y": -1.4720837,
+        "Z": 112.8937
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "Jump",
+      "position": {
+        "X": -243.13081,
+        "Y": -1.5103258,
+        "Z": 110.60748
+      },
+      "arguments": [
+        "250"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -242.38641,
+        "Y": 0.17994857,
+        "Z": 106.3097
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "MoveTo",
+      "position": {
+        "X": -236.0963,
+        "Y": -1.8119812E-05,
+        "Z": 110.54394
+      },
+      "arguments": [
+        "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -191.90323,
+        "Y": 0.037077665,
+        "Z": 99.47533
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -169.39519,
+        "Y": 0.011669397,
+        "Z": 93.915375
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -105.57304,
+        "Y": -3.8146973E-06,
+        "Z": 76.94864
+      },
+      "arguments": [
+        "2005244"
+      ],
+      "note": "Allagan Teleporter"
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
         "Z": 0
       },
       "arguments": [
-        ""
+        "IsReady"
       ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 1.8260361,
+        "Y": 0.23716056,
+        "Z": 205.09894
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 2.275641,
+        "Y": -2.3841858E-07,
+        "Z": 179.72731
+      },
+      "arguments": [
+        "2005261"
+      ],
+      "note": "Allagan Teleporter"
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -22.730883,
+        "Y": 53.142616,
+        "Z": -185.50232
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 23.271034,
+        "Y": 53.142616,
+        "Z": -195.31618
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -2.2747152,
+        "Y": 53.142616,
+        "Z": -196.40973
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -0.41926986,
+        "Y": 53.142616,
+        "Z": -202.04817
+      },
+      "arguments": [
+        "2005263"
+      ],
+      "note": "Violet Control Unit"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 57.484985,
+        "Y": 53.142616,
+        "Z": -213.15906
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 138.01868,
+        "Y": 53.142616,
+        "Z": -426.78165
+      },
+      "arguments": [],
       "note": ""
     }
   ],
@@ -76,6 +353,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 221,
+        "change": "Full overhaul (b3 not included due to it being impossible to reach atm)"
       }
     ],
     "notes": []
