@@ -66,7 +66,7 @@ namespace AutoDuty.Helpers
             Job        playerJob  = PlayerHelper.GetJob();
             CombatRole playerRole = playerJob.GetCombatRole();
 
-            if (!Members.Any(tm => tm.Value.Level < tm.Value.LevelCap) && Plugin.Configuration.SelectedTrustMembers.Any(tmn => tmn.HasValue))
+            if (Members.All(tm => tm.Value.Level >= tm.Value.LevelCap) && Plugin.Configuration.SelectedTrustMembers.All(tmn => tmn.HasValue))
             {
                 bool test = true;
 
