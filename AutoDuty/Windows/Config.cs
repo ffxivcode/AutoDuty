@@ -1246,9 +1246,10 @@ public static class ConfigTab
                         Configuration.Save();
 
                 ImGuiComponents.HelpMarker("AutoDuty will walk around non-boss chests, and only loot boss chests.\nNot all paths may accomodate.");
+                ImGui.PopItemWidth();
                 ImGui.Unindent();
             }
-
+            ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
             if (ImGui.InputInt("Minimum time before declared stuck (in ms)", ref Configuration.MinStuckTime))
             {
                 Configuration.MinStuckTime = Math.Max(250, Configuration.MinStuckTime);
@@ -1271,7 +1272,7 @@ public static class ConfigTab
 
             if(ImGui.Checkbox("Draw next steps in Path", ref Configuration.PathDrawEnabled))
                 Configuration.Save();
-
+            ImGui.PopItemWidth();
             if (Configuration.PathDrawEnabled)
             {
                 ImGui.Indent();
