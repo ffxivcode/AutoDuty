@@ -27,7 +27,7 @@ namespace AutoDuty.Data
                 results.Add((new Vector4(0, 1, 0, 1), pathAction.Note));
                 return results;
             }
-            if (!pathAction.Tag.HasAnyFlag(ActionTag.Treasure, ActionTag.Revival) && pathAction.Tag != ActionTag.None)
+            if (!pathAction.Tag.HasAnyFlag(ActionTag.Revival) && pathAction.Tag != ActionTag.None)
             {
                 results.Add((index == Plugin.Indexer ? v4 : new(1, 165 / 255f, 0, 1), $"{pathAction.Tag}"));
                 results.Add((v4, "|"));
