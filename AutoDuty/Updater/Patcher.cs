@@ -1,4 +1,5 @@
-﻿using ECommons.DalamudServices;
+﻿using AutoDuty.Windows;
+using ECommons.DalamudServices;
 using System;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace AutoDuty.Updater
 
         internal static void Patch(bool skipMD5 = false, bool startup = false)
         {
-            if (PatcherTask == null && (!startup || Plugin.Configuration.UpdatePathsOnStartup))
+            if (PatcherTask == null && (!startup || ConfigurationMain.Instance.UpdatePathsOnStartup))
             {
                 PatcherTask = Task.Run(() => PatchTask(skipMD5));
                 PatcherTask.ContinueWith(t => {

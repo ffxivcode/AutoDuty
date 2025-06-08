@@ -72,6 +72,16 @@ public class ConfigurationMain : IEzConfig
         public override int GetHashCode() => this.CID.GetHashCode();
     }
 
+    [JsonProperty]
+    //Dev Options
+    internal bool updatePathsOnStartup = true;
+    public bool UpdatePathsOnStartup
+    {
+        get => !Plugin.isDev || this.updatePathsOnStartup;
+        set => this.updatePathsOnStartup = value;
+    }
+
+
     public IEnumerable<string> ConfigNames => this.profileByName.Keys;
      
     public ProfileData GetCurrentProfile
@@ -409,15 +419,6 @@ public class Configuration
     public bool CofferButton           = true;
     public bool TTButton               = true;
 
-
-    //Dev Options
-    internal bool updatePathsOnStartup = true;
-    public   bool UpdatePathsOnStartup
-    {
-        get => !Plugin.isDev || this.updatePathsOnStartup;
-        set => this.updatePathsOnStartup = value;
-    }
-    
 
     //Duty Config Options
     public   bool AutoExitDuty                  = true;
@@ -914,7 +915,7 @@ public static class ConfigTab
 
             if (devHeaderSelected)
             {
-                if (ImGui.Checkbox("Update Paths on startup", ref Configuration.updatePathsOnStartup))
+                if (ImGui.Checkbox("Update Paths on startup", ref ConfigurationMain.Instance.updatePathsOnStartup))
                     Configuration.Save();
 
                 if (ImGui.Button("Print mod list")) 
