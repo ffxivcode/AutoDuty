@@ -223,6 +223,17 @@
       "note": ""
     },
     {
+      "tag": "Revival",
+      "name": "Revival",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
       "tag": "None",
       "name": "MoveTo",
       "position": {
@@ -309,9 +320,9 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": 57.484985,
+        "X": 57.620113,
         "Y": 53.142616,
-        "Z": -213.15906
+        "Z": -213.32004
       },
       "arguments": [
         "true"
@@ -341,6 +352,128 @@
       },
       "arguments": [],
       "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 166.81139,
+        "Y": 53.142616,
+        "Z": -446.03644
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 128.53969,
+        "Y": 53.142616,
+        "Z": -424.13513
+      },
+      "arguments": [
+        "2005262"
+      ],
+      "note": "Emerald Control Unit"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 89.733315,
+        "Y": 53.14261,
+        "Z": -468.2036
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -133.41525,
+        "Y": 53.142616,
+        "Z": -439.93835
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -166.79626,
+        "Y": 53.142616,
+        "Z": -446.57635
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -127.52142,
+        "Y": 53.14261,
+        "Z": -423.7697
+      },
+      "arguments": [
+        "2005264"
+      ],
+      "note": "Crimson Control Unit"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -146.94633,
+        "Y": 53.142616,
+        "Z": -368.65564
+      },
+      "arguments": [
+        "true"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 0.2976375,
+        "Y": 46.597,
+        "Z": -344.6078
+      },
+      "arguments": [],
+      "note": "Curator"
     }
   ],
   "meta": {
@@ -357,6 +490,10 @@
       {
         "version": 221,
         "change": "Full overhaul (b3 not included due to it being impossible to reach atm)"
+      },
+      {
+        "version": 221,
+        "change": "added last part"
       }
     ],
     "notes": []
