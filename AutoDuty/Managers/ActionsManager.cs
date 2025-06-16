@@ -519,7 +519,7 @@ namespace AutoDuty.Managers
 
         private bool BossCheck()
         {
-            if (((Plugin.BossObject?.IsDead ?? true) && !Svc.Condition[ConditionFlag.InCombat]) || !Svc.Condition[ConditionFlag.InCombat])
+            if (!Svc.Condition[ConditionFlag.InCombat])
                 return true;
 
             
