@@ -194,12 +194,12 @@ public class MainWindow : Window, IDisposable
                             if (Deliveroo_IPCSubscriber.IsEnabled)
                                 GCTurninHelper.Invoke();
                             else
-                                ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                                ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://puni.sh/api/repository/vera");
                         }
                         if (Deliveroo_IPCSubscriber.IsEnabled)
                             ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
                         else
-                            ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                            ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://puni.sh/api/repository/vera");
                     }
                 }
             }
