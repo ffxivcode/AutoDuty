@@ -23,7 +23,7 @@ namespace AutoDuty.Helpers
         internal override void Start()
         {
             if (!Deliveroo_IPCSubscriber.IsEnabled)
-                Svc.Log.Info("GC Turnin Requires Deliveroo plugin. Get @ https://git.carvel.li/liza/plugin-repo");
+                Svc.Log.Info("GC Turnin Requires Deliveroo plugin. Get @ https://puni.sh/api/repository/vera");
             else
                 base.Start();
         }
