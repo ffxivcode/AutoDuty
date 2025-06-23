@@ -56,7 +56,7 @@ Additionally, the following plugins are required. Right-click the name of the pl
 
 The following plugins are optional. They integrate with AutoDuty well and in some cases can be triggered by AD itself.
 
-- [Deliveroo](https://plugins.carvel.li): Automatically turns in items to your Grand Company
+- [Deliveroo](https://puni.sh/api/repository/vera): Automatically turns in items to your Grand Company
 - [Gearsetter](https://plugins.carvel.li): Automatically finds equipment upgrades in your inventory
 - [AutoRetainer](https://love.puni.sh/ment.json): Automatically manages your retainers and submersibles as well as sends them out on ventures
  
