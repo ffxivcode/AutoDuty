@@ -1838,7 +1838,7 @@ public static class ConfigTab
                     ImGui.SameLine();
                     ImGui.Text("Get @ ");
                     ImGui.SameLine(0, 0);
-                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
+                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://puni.sh/api/repository/vera");
                 }
 
 
@@ -1939,7 +1939,7 @@ public static class ConfigTab
                     ImGui.Text("* Auto GC Turnin Requires Deliveroo plugin");
                     ImGui.Text("Get @ ");
                     ImGui.SameLine(0, 0);
-                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
+                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://puni.sh/api/repository/vera");
                 }
 
                 if(ImGui.Checkbox("Triple Triad", ref Configuration.TripleTriadEnabled))
