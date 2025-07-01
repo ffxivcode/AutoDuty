@@ -21,7 +21,7 @@ namespace AutoDuty.IPC
         [EzIPC] public bool IsNavigating() => Plugin.States.HasFlag(PluginState.Navigating);
         [EzIPC] public bool IsLooping() => Plugin.States.HasFlag(PluginState.Looping);
         [EzIPC] public bool IsStopped() => Plugin.Stage == Stage.Stopped;
-        [EzIPC] public bool ContentHasPath(uint territoryType) => ContentHelper.DictionaryContent.ContainsKey(territoryType);
+        [EzIPC] public bool ContentHasPath(uint territoryType) => ContentPathsManager.DictionaryPaths.ContainsKey(territoryType);
 
         //Callback for Wrath Combo Lease Cancel
         [EzIPC] public void WrathComboCallback(int reason, string s) => Wrath_IPCSubscriber.CancelActions(reason, s);
