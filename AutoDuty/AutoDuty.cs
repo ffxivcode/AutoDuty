@@ -228,7 +228,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 223) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 224) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
 
             if (!_configDirectory.Exists)
@@ -243,7 +243,9 @@ public sealed class AutoDuty : IDalamudPlugin
             };
 
             TrustHelper.PopulateTrustMembers();
+            Svc.Data.GameData.Options.PanicOnSheetChecksumMismatch = false; // TODO: remove - temporary workaround until lumina is updated
             ContentHelper.PopulateDuties();
+            Svc.Data.GameData.Options.PanicOnSheetChecksumMismatch = true; // TODO: remove - temporary workaround until lumina is updated
             RepairNPCHelper.PopulateRepairNPCs();
             FileHelper.Init();
             Patcher.Patch(startup: true);
