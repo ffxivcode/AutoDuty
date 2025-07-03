@@ -89,27 +89,27 @@ namespace AutoDuty.Helpers
 
                 var content = new Content
                               {
-                                  Id = contentFinderCondition.Content.RowId,
-                                  RowId = contentFinderCondition.RowId,
-                                  Name = CleanName(contentFinderCondition.Name.ToDalamudString().TextValue),
-                                  EnglishName = CleanName(englishCondition!.Name.ToDalamudString().TextValue),
-                                  TerritoryType = contentFinderCondition.TerritoryType.Value.RowId,
-                                  ContentType = contentFinderCondition.ContentType.Value.RowId,
-                                  ContentMemberType = contentFinderCondition.ContentMemberType.ValueNullable?.RowId ?? 0,
-                                  ContentFinderCondition = contentFinderCondition.RowId,
-                                  ExVersion = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId,
-                                  ClassJobLevelRequired = contentFinderCondition.ClassJobLevelRequired,
-                                  ItemLevelRequired = contentFinderCondition.ItemLevelRequired,
-                                  DawnRowId = dawnContent?.RowId ?? 0,
-                                  DawnIndex = TryGetDawnIndex(dawnContent?.RowId ?? 0, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1,
-                                  DawnIndicator = (ushort) (dawnContent?.RowId != default(uint) ? dawnContent?.Unknown15 ?? 0u : 0u),
-                                  TrustIndex = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value.RowId == contentFinderCondition.RowId), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1,
-                                  VariantContent = ListVVDContent.Any(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
-                                  VVDIndex = ListVVDContent.FindIndex(variantContent => variantContent == contentFinderCondition.TerritoryType.Value.RowId),
-                                  GCArmyContent = ListGCArmyContent.Any(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
-                                  GCArmyIndex = ListGCArmyContent.FindIndex(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId),
                                   UnlockQuest = dawnContent?.RowId != default(uint) ? dawnContent?.Unknown0 ?? 0 : 0
                               };
+                content.Id                     = contentFinderCondition.Content.RowId;
+                content.RowId                  = contentFinderCondition.RowId;
+                content.Name                   = CleanName(contentFinderCondition.Name.ToDalamudString().TextValue);
+                content.EnglishName            = CleanName(englishCondition!.Name.ToDalamudString().TextValue);
+                content.TerritoryType          = contentFinderCondition.TerritoryType.Value.RowId;
+                content.ContentType            = contentFinderCondition.ContentType.Value.RowId;
+                content.ContentMemberType      = contentFinderCondition.ContentMemberType.ValueNullable?.RowId ?? 0;
+                content.ContentFinderCondition = contentFinderCondition.RowId;
+                content.ExVersion              = contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId;
+                content.ClassJobLevelRequired  = contentFinderCondition.ClassJobLevelRequired;
+                content.ItemLevelRequired      = contentFinderCondition.ItemLevelRequired;
+                content.DawnRowId              = dawnContent?.RowId ?? 0;
+                content.DawnIndex              = TryGetDawnIndex(dawnContent?.RowId ?? 0, contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int dawnIndex) ? dawnIndex : -1;
+                content.DawnIndicator          = (ushort) (dawnContent?.RowId != default(uint) ? dawnContent?.Unknown15 ?? 0u : 0u);
+                content.TrustIndex             = TryGetTrustIndex(listDawnContent.Where(dawnContent => dawnContent.Unknown13).IndexOf(x => x.Content.Value.RowId == contentFinderCondition.RowId), contentFinderCondition.TerritoryType.Value.ExVersion.Value.RowId, out int trustIndex) ? trustIndex : -1;
+                content.VariantContent         = ListVVDContent.Any(variantContent => variantContent        == contentFinderCondition.TerritoryType.Value.RowId);
+                content.VVDIndex               = ListVVDContent.FindIndex(variantContent => variantContent  == contentFinderCondition.TerritoryType.Value.RowId);
+                content.GCArmyContent          = ListGCArmyContent.Any(gcArmyContent => gcArmyContent       == contentFinderCondition.TerritoryType.Value.RowId);
+                content.GCArmyIndex            = ListGCArmyContent.FindIndex(gcArmyContent => gcArmyContent == contentFinderCondition.TerritoryType.Value.RowId);
 
                 if (contentFinderCondition.ContentType.Value.RowId == 2)
                     content.DutyModes |= DutyMode.Regular;

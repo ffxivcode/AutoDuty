@@ -1,0 +1,20 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 100.06962,
+        "Y": 0,
+        "Z": 100.73334
+      },
+      "arguments": [],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 221,
+    "changelog": [],
+    "notes": []
+  }
+}
