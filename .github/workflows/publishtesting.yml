@@ -51,3 +51,14 @@ jobs:
           changelog: ${{ github.event.release.body }}
         env:
           PUBLISHER_KEY: ${{ secrets.PUBLISHER_KEY }}
+
+      - name: Github Releases To Discord
+        uses: SethCohen/github-releases-to-discord@v1.15.0
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          color: "2105893"
+          username: "TESTING Release Changelog"
+          avatar_url: "https://s3.puni.sh/media/plugin/54/icon-15ug2vnr9m1.png"
+          footer_title: "Testing Changelog"
+          footer_icon_url: "https://s3.puni.sh/media/plugin/54/icon-15ug2vnr9m1.png"
+          footer_timestamp: true
