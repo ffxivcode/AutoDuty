@@ -17,14 +17,14 @@
       "tag": "None",
       "name": "Interactable",
       "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+        "X": -15.032367,
+        "Y": 0.05813718,
+        "Z": 16.869753
       },
       "arguments": [
-        "Silent Terminal"
+        "2000633"
       ],
-      "note": ""
+      "note": "Silent Terminal"
     },
     {
       "tag": "None",
@@ -97,6 +97,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 221,
+        "change": ""
       }
     ],
     "notes": []
