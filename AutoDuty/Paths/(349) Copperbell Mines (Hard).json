@@ -50,9 +50,9 @@
       "tag": "None",
       "name": "Wait",
       "position": {
-        "X": -184.04,
-        "Y": -5.87,
-        "Z": -207.46
+        "X": -183.95573,
+        "Y": 23.999985,
+        "Z": -207.47868
       },
       "arguments": [
         "10000"
@@ -592,6 +592,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 224,
+        "change": ""
       }
     ],
     "notes": []
