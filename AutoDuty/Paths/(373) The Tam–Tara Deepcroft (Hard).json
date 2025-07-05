@@ -1,0 +1,237 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -57.082607,
+        "Y": 44.378345,
+        "Z": -79.43368
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 11.0968075,
+        "Y": 29.766638,
+        "Z": -17.26853
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -9.429698,
+        "Y": 23.498175,
+        "Z": 33.033974
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -17.30768,
+        "Y": 23.34082,
+        "Z": 40.064457
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 34.46099,
+        "Y": 16.283735,
+        "Z": 92.025566
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 80.45018,
+        "Y": 16.418499,
+        "Z": 139.93646
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 79.35395,
+        "Y": 17.793236,
+        "Z": 148.62628
+      },
+      "arguments": [
+        "2004090"
+      ],
+      "note": "Defiled Coffin"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 86.39106,
+        "Y": 16.278233,
+        "Z": 90.39626
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 74.20715,
+        "Y": 18.378536,
+        "Z": 48.960712
+      },
+      "arguments": [
+        "2004091"
+      ],
+      "note": "Defiled Coffin"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 103.70011,
+        "Y": 16.36594,
+        "Z": 66.243546
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 132.78822,
+        "Y": 16.447414,
+        "Z": 78.63995
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 147.13266,
+        "Y": 17.999992,
+        "Z": 67.24258
+      },
+      "arguments": [
+        "2004092"
+      ],
+      "note": "Defiled Coffin"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 98.2151,
+        "Y": 17.334892,
+        "Z": 47.106094
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 87.42144,
+        "Y": 22.1,
+        "Z": -39.165085
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 93.28349,
+        "Y": 22.1,
+        "Z": -49.031143
+      },
+      "arguments": [
+        "2004095"
+      ],
+      "note": "Aetherial Flow"
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -150.57936,
+        "Y": 15.770657,
+        "Z": 92.03536
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -128.84354,
+        "Y": 16.0257,
+        "Z": 91.56823
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -98.22843,
+        "Y": 14.793076,
+        "Z": 47.50894
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -105.407776,
+        "Y": 13.850068,
+        "Z": 21.695337
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -58.24336,
+        "Y": 14.054999,
+        "Z": -6.5979557
+      },
+      "arguments": [],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 224,
+    "changelog": [Initial Path],
+    "notes": []
+  }
+}
