@@ -238,6 +238,17 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
+        "X": -72.352264,
+        "Y": 25.92187,
+        "Z": -284.30087
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
         "X": -53.26,
         "Y": 25.92,
         "Z": -276.86
@@ -331,6 +342,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 224,
+        "change": "ensured crab after b2 is pulled"
       }
     ],
     "notes": []
