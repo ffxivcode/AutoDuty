@@ -1851,7 +1851,7 @@ public static class ConfigTab
                 }
                 ImGui.NextColumn();
                 //ImGui.SameLine(0, 5);
-                using (ImRaii.Disabled(!Deliveroo_IPCSubscriber.IsEnabled))
+                using (ImRaii.Disabled(!AutoRetainer_IPCSubscriber.IsEnabled))
                 {
                     if (ImGui.Checkbox("Auto GC Turnin", ref Configuration.autoGCTurnin))
                     {
@@ -1929,17 +1929,17 @@ public static class ConfigTab
                 }
                 ImGui.Columns(1);
 
-                if (!Deliveroo_IPCSubscriber.IsEnabled)
+                if (!AutoRetainer_IPCSubscriber.IsEnabled)
                 {
                     if (Configuration.AutoGCTurnin)
                     {
                         Configuration.AutoGCTurnin = false;
                         Configuration.Save();
                     }
-                    ImGui.Text("* Auto GC Turnin Requires Deliveroo plugin");
+                    ImGui.Text("* Auto GC Turnin Requires AutoRetainer plugin");
                     ImGui.Text("Get @ ");
                     ImGui.SameLine(0, 0);
-                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://puni.sh/api/repository/vera");
+                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://love.puni.sh/ment.json");
                 }
 
                 if(ImGui.Checkbox("Triple Triad", ref Configuration.TripleTriadEnabled))

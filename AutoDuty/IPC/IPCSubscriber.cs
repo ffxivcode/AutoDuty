@@ -31,6 +31,7 @@ namespace AutoDuty.IPC
         [EzIPC] internal static readonly Action EnableMultiMode;
         [EzIPC] internal static readonly Func<int> GetInventoryFreeSlotCount;
         [EzIPC] internal static readonly Action EnqueueHET;
+        [EzIPC("AutoRetainer.GC.EnqueueInitiation", applyPrefix: false)] internal static readonly Action EnqueueGCInitiation;
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
@@ -194,19 +195,6 @@ namespace AutoDuty.IPC
 
         public static void SetState(bool on) => 
             SetPluginEnabled(on);
-    }
-
-    internal static class Deliveroo_IPCSubscriber
-    {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Deliveroo_IPCSubscriber), "Deliveroo", SafeWrapper.IPCException);
-
-        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Deliveroo");
-
-        [EzIPC] internal static readonly Func<bool> IsTurnInRunning;
-        //[EzIPC] internal static readonly Action TurnInStarted;
-        //[EzIPC] internal static readonly Action TurnInStopped;
-
-        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
 
     internal static class Gearsetter_IPCSubscriber
