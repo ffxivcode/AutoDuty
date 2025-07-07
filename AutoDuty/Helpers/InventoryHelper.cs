@@ -171,14 +171,21 @@ namespace AutoDuty.Helpers
             uint itemLowestCondition = 60000;
             uint itemLowest = 0;
 
+            Svc.Log.Verbose("Lowest Equipped Item checks:");
+
             for (uint i = 0; i < 13; i++)
             {
-                if (itemLowestCondition > equipedItems->Items[i].Condition)
+                InventoryItem item = equipedItems->Items[i];
+                Svc.Log.Verbose($"{i}: {item.ItemId} {item.Condition}");
+                if (itemLowestCondition > item.Condition)
                 {
+                    Svc.Log.Verbose($"lower");
                     itemLowest = i;
-                    itemLowestCondition = equipedItems->Items[i].Condition;
+                    itemLowestCondition = item.Condition;
                 }
             }
+
+            Svc.Log.Verbose($"lowest Index {itemLowest}");
 
             return equipedItems->Items[itemLowest];
         }
@@ -199,8 +206,8 @@ namespace AutoDuty.Helpers
             return items.Where(item => item.ItemId > 0);
         }
 
-        internal static bool CanRepair() => (LowestEquippedItem().Condition / 300f) <= Plugin.Configuration.AutoRepairPct;// && (!Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
-        internal static bool CanRepair(uint percent) => (LowestEquippedItem().Condition / 300f) < percent;// && (!Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
+        internal static bool CanRepair() => CanRepair(Plugin.Configuration.AutoRepairPct);// && (!Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
+        internal static bool CanRepair(uint percent) => (LowestEquippedItem().Condition / 300f) <= percent;// && (!Plugin.Configuration.AutoRepairSelf || CanRepairItem(LowestEquippedItem().GetItemId()));
 
         //artisan
         internal static bool CanRepairItem(uint itemID)

@@ -479,7 +479,7 @@ public class Configuration
     public bool                                       AutoEquipRecommendedGearGearsetter;
     public bool                                       AutoEquipRecommendedGearGearsetterOldToInventory;
     public bool                                       AutoRepair              = false;
-    public int                                        AutoRepairPct           = 50;
+    public uint                                        AutoRepairPct           = 50;
     public bool                                       AutoRepairSelf          = false;
     public RepairNpcData?                             PreferredRepairNPC      = null;
     public bool                                       AutoConsume             = false;
