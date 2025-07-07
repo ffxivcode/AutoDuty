@@ -153,5 +153,10 @@ namespace AutoDuty.Helpers
         {
             Svc.Log.Debug($"{this.Name}: {s}");
         }
+
+        protected void InfoLog(string s)
+        {
+            Svc.Log.Info($"{this.Name}: {s}");
+        }
     }
 }

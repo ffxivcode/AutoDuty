@@ -22,15 +22,15 @@ namespace AutoDuty.Helpers
 
         internal override void Start()
         {
-            if (!Deliveroo_IPCSubscriber.IsEnabled)
-                Svc.Log.Info("GC Turnin Requires Deliveroo plugin. Get @ https://puni.sh/api/repository/vera");
+            if (!AutoRetainer_IPCSubscriber.IsEnabled)
+                Svc.Log.Info("GC Turnin Requires AutoRetainer plugin. Get @ https://love.puni.sh/ment.json");
             else
                 base.Start();
         }
 
         internal override void Stop() 
         {
-            _deliverooStarted = false;
+            this._turninStarted = false;
             GotoHelper.ForceStop();
             base.Stop();
         }
@@ -40,7 +40,7 @@ namespace AutoDuty.Helpers
         private IGameObject? _personnelOfficerGameObject => ObjectHelper.GetObjectByDataId(_personnelOfficerDataId);
         private static uint _personnelOfficerDataId => PlayerHelper.GetGrandCompany() == 1 ? 1002388u : (PlayerHelper.GetGrandCompany() == 2 ? 1002394u : 1002391u);
         private static uint _aetheryteTicketId = PlayerHelper.GetGrandCompany() == 1 ? 21069u : (PlayerHelper.GetGrandCompany() == 2 ? 21070u : 21071u);
-        private bool _deliverooStarted = false;
+        private bool _turninStarted = false;
 
         protected override unsafe void HelperStopUpdate(IFramework framework)
         {
@@ -64,15 +64,15 @@ namespace AutoDuty.Helpers
                 Stop();
                 return;
             }
-            if (!_deliverooStarted && Deliveroo_IPCSubscriber.IsTurnInRunning())
+            if (!this._turninStarted && AutoRetainer_IPCSubscriber.IsBusy())
             {
-                Svc.Log.Info("Deliveroo has Started");
-                _deliverooStarted = true;
+                InfoLog("TurnIn has Started");
+                this._turninStarted = true;
                 return;
             }
-            else if (_deliverooStarted && !Deliveroo_IPCSubscriber.IsTurnInRunning())
+            else if (this._turninStarted && !AutoRetainer_IPCSubscriber.IsBusy())
             {
-                DebugLog("Deliveroo is Complete");
+                DebugLog("TurnIn is Complete");
                 Stop();
                 return;
             }
@@ -117,8 +117,9 @@ namespace AutoDuty.Helpers
                 VNavmesh_IPCSubscriber.Path_Stop();
                 return;
             }
-            else if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) <= 4 && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0 && !_deliverooStarted)
+            else if (ObjectHelper.GetDistanceToPlayer(GCSupplyLocation) <= 4 && VNavmesh_IPCSubscriber.Path_NumWaypoints() == 0 && !this._turninStarted)
             {
+                /*
                 if (_personnelOfficerGameObject == null)
                     return;
                 if (Svc.Targets.Target?.DataId != _personnelOfficerGameObject.DataId)
@@ -139,10 +140,10 @@ namespace AutoDuty.Helpers
                         ObjectHelper.InteractWithObjectUntilAddon(_personnelOfficerGameObject, "SelectString");
                     }
                 }
-                else
+                else*/
                 {
-                    DebugLog("Sending Chat Command /deliveroo e");
-                    Plugin.Chat.SendMessage("/deliveroo e");
+                    DebugLog("Starting TurnIn proper");
+                    AutoRetainer_IPCSubscriber.EnqueueGCInitiation();
                 }
                 return;
             }

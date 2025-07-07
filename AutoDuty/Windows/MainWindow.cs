@@ -191,15 +191,15 @@ public class MainWindow : Window, IDisposable
                     {
                         if (ImGui.Button("TurnIn"))
                         {
-                            if (Deliveroo_IPCSubscriber.IsEnabled)
+                            if (AutoRetainer_IPCSubscriber.IsEnabled)
                                 GCTurninHelper.Invoke();
                             else
-                                ShowPopup("Missing Plugin", "GC Turnin Requires Deliveroo plugin. Get @ https://puni.sh/api/repository/vera");
+                                ShowPopup("Missing Plugin", "GC Turnin Requires AutoRetainer plugin. Get @ https://love.puni.sh/ment.json");
                         }
-                        if (Deliveroo_IPCSubscriber.IsEnabled)
-                            ToolTip("Click to Goto GC Turnin and Invoke Deliveroo");
+                        if (AutoRetainer_IPCSubscriber.IsEnabled)
+                            ToolTip("Click to Goto GC Turnin and Invoke AutoRetainer's GC Turnin");
                         else
-                            ToolTip("GC Turnin Requires Deliveroo plugin. Get @ https://puni.sh/api/repository/vera");
+                            ToolTip("GC Turnin Requires AutoRetainer plugin. Get @ https://love.puni.sh/ment.json");
                     }
                 }
             }
