@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace AutoDuty.Updater
 {
+    using System.Collections.Generic;
+
     public class Patcher
     {
         internal static ActionState PatcherState => PatcherTask != null && !PatcherTask.IsCompleted && !PatcherTask.IsCanceled && !PatcherTask.IsFaulted ? ActionState.Running : ActionState.None;
@@ -44,7 +46,9 @@ namespace AutoDuty.Updater
                 var list = await GitHubHelper.GetPathFileListAsync();
                 if (list == null) return false;
 
-                var downloadList = list.Where(kvp => !localFilesDictionary.ContainsKey(kvp.Key) || !localFilesDictionary[kvp.Key].Equals(kvp.Value, StringComparison.OrdinalIgnoreCase));
+                HashSet<string> doNotUpdatePathFiles = ConfigurationMain.Instance.GetCurrentConfig.DoNotUpdatePathFiles;
+
+                var downloadList = list.Where(kvp => !doNotUpdatePathFiles.Contains(kvp.Key) && (!localFilesDictionary.ContainsKey(kvp.Key) || !localFilesDictionary[kvp.Key].Equals(kvp.Value, StringComparison.OrdinalIgnoreCase)));
 
                 foreach (var file in downloadList)
                 {
