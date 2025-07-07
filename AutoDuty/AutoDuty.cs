@@ -16,7 +16,6 @@ using ECommons;
 using ECommons.DalamudServices;
 using AutoDuty.Windows;
 using AutoDuty.IPC;
-using ECommons.Automation.LegacyTaskManager;
 using AutoDuty.External;
 using AutoDuty.Helpers;
 using ECommons.Throttlers;
@@ -44,9 +43,11 @@ using Dalamud.Utility.Numerics;
 using Data;
 using ECommons.Configuration;
 using ECommons.SimpleGui;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using Lumina.Excel.Sheets;
 using Pictomancy;
 using static Data.Classes;
+using TaskManager = ECommons.Automation.LegacyTaskManager.TaskManager;
 
 // TODO:
 // Scrapped interable list, going to implement an internal list that when a interactable step end in fail, the Dataid gets add to the list and is scanned for from there on out, if found we goto it and get it, then remove from list.
@@ -834,24 +835,25 @@ public sealed class AutoDuty : IDalamudPlugin
                     Configuration.TerminationMethodEnum = TerminationMode.Do_Nothing;
                     Configuration.Save();
                 }
-
-                if (OperatingSystem.IsWindows())
-                {
-                    ProcessStartInfo startinfo = new("shutdown.exe", "-s -t 20");
-                    Process.Start(startinfo);
-                }
-                else if (OperatingSystem.IsLinux())
-                {
-                    //Educated guess
-                    ProcessStartInfo startinfo = new("shutdown", "-t 20");
-                    Process.Start(startinfo);
-                }
-                else if (OperatingSystem.IsMacOS())
-                {
-                    //hell if I know
-                }
-
-                Chat.ExecuteCommand($"/xlkill");
+                TaskManager.Enqueue(() =>
+                                    {
+                                        if (OperatingSystem.IsWindows())
+                                        {
+                                            ProcessStartInfo startinfo = new("shutdown.exe", "-s -t 20");
+                                            Process.Start(startinfo);
+                                        }
+                                        else if (OperatingSystem.IsLinux())
+                                        {
+                                            //Educated guess
+                                            ProcessStartInfo startinfo = new("shutdown", "-t 20");
+                                            Process.Start(startinfo);
+                                        }
+                                        else if (OperatingSystem.IsMacOS())
+                                        {
+                                            //hell if I know
+                                        }
+                                    }, "Enqueuing SystemShutdown");
+                TaskManager.Enqueue(() => Chat.ExecuteCommand($"/xlkill"), "Killing the game");
             }
             else if (Configuration.TerminationMethodEnum == TerminationMode.Kill_Client)
             {
@@ -862,7 +864,7 @@ public sealed class AutoDuty : IDalamudPlugin
                     Configuration.Save();
                 }
 
-                Chat.ExecuteCommand($"/xlkill");
+                TaskManager.Enqueue(() => Chat.ExecuteCommand($"/xlkill"), "Killing the game");
             }
             else if (Configuration.TerminationMethodEnum == TerminationMode.Logout)
             {
