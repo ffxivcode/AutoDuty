@@ -479,7 +479,7 @@ public class Configuration
     public bool                                       AutoEquipRecommendedGearGearsetter;
     public bool                                       AutoEquipRecommendedGearGearsetterOldToInventory;
     public bool                                       AutoRepair              = false;
-    public int                                        AutoRepairPct           = 50;
+    public uint                                       AutoRepairPct           = 50;
     public bool                                       AutoRepairSelf          = false;
     public RepairNpcData?                             PreferredRepairNPC      = null;
     public bool                                       AutoConsume             = false;
@@ -1527,9 +1527,10 @@ public static class ConfigTab
                     ImGui.Text("Trigger @");
                     ImGui.SameLine();
                     ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                    if (ImGui.SliderInt("##Repair@", ref Configuration.AutoRepairPct, 0, 99, "%d%%"))
+                    int autoRepairPct = (int)Configuration.AutoRepairPct;
+                    if (ImGui.SliderInt("##Repair@", ref autoRepairPct, 0, 99, "%d%%"))
                     {
-                        Configuration.AutoRepairPct = Math.Clamp(Configuration.AutoRepairPct, 0, 99);
+                        Configuration.AutoRepairPct = Math.Clamp((uint)autoRepairPct, 0, 99);
                         Configuration.Save();
                     }
 
