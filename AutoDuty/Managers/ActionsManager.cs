@@ -81,13 +81,14 @@ namespace AutoDuty.Managers
             var conditionActionArray = action.Arguments.ToArray();
             // There are 4 paths that uses conditionaction before the argument array was split, 
             // so we need to handle that case until they can be modified to use properly split arguments and retested
+            if (action.Arguments.Count == 0) return;
             if (action.Arguments.Count == 1)
             {
                 if (!action.Arguments[0].Any(x => x.Equals('&'))) return;
 
                 conditionActionArray = action.Arguments[0].Split("&");
             }
-            Plugin.Action = $"ConditionAction: {conditionActionArray}";
+            Plugin.Action = $"ConditionAction: {conditionActionArray[0]}, {conditionActionArray[1]}";
             var condition = conditionActionArray[0];
             string[] conditionArray = [];
             if (condition.Any(x => x.EqualsAny(';')))
@@ -126,7 +127,7 @@ namespace AutoDuty.Managers
                 case "ObjectDistanceToPoint":
                     {
                         if (conditionArray.Length < 5) return;
-                        if (!conditionArray[1].TryGetVector3(out var vector3)) return;
+                        if (!conditionArray[2].TryGetVector3(out var vector3)) return;
                         if (!float.TryParse(conditionArray[4], out var distance)) return;
                         if (!(operatorValue = conditionArray[3]).EqualsAny(operation.Keys)) return;
                         IGameObject? targetObject = null;
