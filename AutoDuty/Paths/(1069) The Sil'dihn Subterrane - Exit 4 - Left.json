@@ -1,0 +1,500 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "15000"
+      ],
+      "note": "Wait for RP"
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": -3.832395,
+        "Y": -4.001427,
+        "Z": 235.11568
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -80.046,
+        "Y": -9.998411,
+        "Z": 212.97565
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -96.737564,
+        "Y": -10.2459345,
+        "Z": 214.3834
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -99.86,
+        "Y": -10.245935,
+        "Z": 189.25768
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -135.15195,
+        "Y": -9.643027,
+        "Z": 187.67593
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -137.27261,
+        "Y": -9.7061205,
+        "Z": 189.54294
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": -142.43811,
+        "Y": -10.494109,
+        "Z": 204.61743
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -192.37419,
+        "Y": -10.99247,
+        "Z": 234.22612
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -191.6487,
+        "Y": -14.235626,
+        "Z": 204.54617
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -188.81757,
+        "Y": -14.958614,
+        "Z": 178.8203
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -188.99171,
+        "Y": -14.995612,
+        "Z": 178.12292
+      },
+      "arguments": [
+        "2013036"
+      ],
+      "note": "Culvert Switch"
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -212.73433,
+        "Y": -32.00006,
+        "Z": 92.49706
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -212.95665,
+        "Y": -29.000004,
+        "Z": 49.45182
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "ConditionAction",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "ObjectDistanceToPoint;14619;-213.157,-28.100,34.952;\u003C;3",
+        "ModifyIndex;23"
+      ],
+      "note": "Nanamo Ul Namo went forward"
+    },
+    {
+      "tag": "None",
+      "name": "ConditionAction",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "ObjectDistanceToPoint;14619;-221.960,-29.000,48.698;\u003C;3",
+        "ModifyIndex;19"
+      ],
+      "note": "Nanamo Ul Namo turned"
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "1000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "ModifyIndex",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "15"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Comment",
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Split based on nanamo! --\u003E"
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": -264.1557,
+        "Y": -35.00001,
+        "Z": 30.957745
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "ModifyIndex",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "26"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Comment",
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [],
+      "note": "\u003C-- Straight path --\u003E"
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": -244.47842,
+        "Y": -35,
+        "Z": -12.598689
+      },
+      "arguments": [
+        "5000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "Combat"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Comment",
+      "name": "\u003C-- Comment --\u003E",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "20000"
+      ],
+      "note": "\u003C-- Paths rejoin --\u003E"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -271.49033,
+        "Y": -35,
+        "Z": -9.258928
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -293.30014,
+        "Y": -35,
+        "Z": -8.484629
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -282.6113,
+        "Y": -29,
+        "Z": -33.746384
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Wait",
+      "position": {
+        "X": -294.29532,
+        "Y": -29,
+        "Z": -45.109776
+      },
+      "arguments": [
+        "1000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "ConditionAction",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "ObjectData;2013130;IsTargetable;false",
+        "ModifyIndex;30"
+      ],
+      "note": "Is Ore Sack targetable yet"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -293.7991,
+        "Y": -29,
+        "Z": -34.571575
+      },
+      "arguments": [
+        "2013130"
+      ],
+      "note": "Ore Sack"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -288.1328,
+        "Y": -28.99998,
+        "Z": -25.604975
+      },
+      "arguments": [
+        "2013129"
+      ],
+      "note": "Ore Sack"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -289.0445,
+        "Y": -29,
+        "Z": -35.952015
+      },
+      "arguments": [
+        "2013085"
+      ],
+      "note": "Stone Plinth"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": -300.60208,
+        "Y": -29,
+        "Z": -36.07515
+      },
+      "arguments": [
+        "2013086"
+      ],
+      "note": "Stone Plinth"
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -301.91345,
+        "Y": -28.99998,
+        "Z": -77.28339
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -334.9924,
+        "Y": -29.00006,
+        "Z": -129.95512
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -334.9924,
+        "Y": -29.00006,
+        "Z": -164.95512
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -335.1584,
+        "Y": -29.00006,
+        "Z": -172.51382
+      },
+      "arguments": [],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 224,
+    "changelog": [],
+    "notes": []
+  }
+}
