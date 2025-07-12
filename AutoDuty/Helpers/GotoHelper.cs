@@ -19,6 +19,8 @@ namespace AutoDuty.Helpers
 
         protected override string[] AddonsToClose { get; } = ["SelectYesno"];
 
+        protected override int TimeOut { get; set; } = 0;
+
         internal static void Invoke(uint territoryType) => Invoke(territoryType, 0);
 
         internal static void Invoke(uint territoryType, uint gameObjectDataId) => Invoke(territoryType, [], gameObjectDataId, 0.25f, 0.25f, false, false, true);
@@ -48,14 +50,13 @@ namespace AutoDuty.Helpers
                 _useFlight = useFlight;
                 _useMesh = useMesh;
                 Instance.Start();
-                SchedulerHelper.DescheduleAction($"Helper_{nameof(GotoHelper)}_TimeOut");
             }
         }
 
         internal override unsafe void Stop() 
         {
-            if (State == ActionState.Running)
-                Svc.Log.Info($"Goto Finished");
+            if (State == ActionState.Running) 
+                this.InfoLog($"Goto Finished");
             Svc.Framework.Update -= this.HelperUpdate;
             State                =  ActionState.None;
             Plugin.States        &= ~PluginState.Other;
@@ -136,7 +137,7 @@ namespace AutoDuty.Helpers
 
                     if (aetheryte == null)
                     {
-                        Svc.Log.Info($"We are unable to find the closest Aetheryte to: {_territoryType}, Most likely the zone does not have one");
+                        this.InfoLog($"We are unable to find the closest Aetheryte to: {_territoryType}, Most likely the zone does not have one");
 
                         Stop();
                         return;
