@@ -50,17 +50,18 @@ namespace AutoDuty.Helpers
         {
             if(State == ActionState.Running)
             {
-                Svc.Log.Debug(this.Name + " already running");
+                this.DebugLog(this.Name + " already running");
                 return;
             }
-            Svc.Log.Info(this.Name + " started");
+            this.InfoLog(this.Name + " started");
             State         =  ActionState.Running;
             Plugin.States |= PluginState.Other;
 
             if (!Plugin.States.HasFlag(PluginState.Looping))
                 Plugin.SetGeneralSettings(false);
 
-            SchedulerHelper.ScheduleAction($"Helper_{this.Name}_TimeOut", this.Stop, this.TimeOut);
+            if(this.TimeOut > 0)
+                SchedulerHelper.ScheduleAction($"Helper_{this.Name}_TimeOut", this.Stop, this.TimeOut);
 
             if (this.DisplayName != string.Empty)
                 Plugin.Action = this.DisplayName;
@@ -83,7 +84,7 @@ namespace AutoDuty.Helpers
         internal virtual void Stop()
         {
             if (State == ActionState.Running)
-                Svc.Log.Info(this.Name + " finished");
+                this.InfoLog(this.Name + " finished");
 
             if (this.DisplayName != string.Empty)
                 Plugin.Action = string.Empty;
@@ -140,7 +141,7 @@ namespace AutoDuty.Helpers
             {
                 if (GenericHelpers.TryGetAddonByName(this.AddonsToClose[i], out AtkUnitBase* atkUnitBase) && atkUnitBase->IsVisible)
                 {
-                    DebugLog("Closing Addon " + this.AddonsToClose[i]);
+                    this.DebugLog("Closing Addon " + this.AddonsToClose[i]);
                     atkUnitBase->Close(true);
                     return false;
                 }
