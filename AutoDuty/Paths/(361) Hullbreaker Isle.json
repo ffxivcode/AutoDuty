@@ -695,7 +695,7 @@
       },
       {
         "version": 227,
-        "change": "Redid area with the tablets from scratch; removed a lot of unnecessary/redunant steps. Removed final Wait step that wasn't doing anything."
+        "change": "Redid area with the tablets from scratch; removed a lot of unnecessary/redunant steps. Removed final Wait step that wasn't doing anything"
       }
     ],
     "notes": []
