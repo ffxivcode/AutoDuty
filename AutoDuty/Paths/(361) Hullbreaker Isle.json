@@ -201,23 +201,34 @@
       "note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 203.24196,
+        "X": 203.17941,
         "Y": 65.66713,
-        "Z": -134.41452
+        "Z": -138.06348
       },
       "arguments": [],
       "note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 202.9019,
-        "Y": 65.66713,
-        "Z": -138.41432
+        "X": 228.24257,
+        "Y": 62.587807,
+        "Z": -142.35904
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 231.76184,
+        "Y": 65.72262,
+        "Z": -144.42972
       },
       "arguments": [],
       "note": ""
@@ -226,9 +237,22 @@
       "tag": "None",
       "name": "Interactable",
       "position": {
-        "X": 202.91,
-        "Y": 65.67,
-        "Z": -137.54
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2004075"
+      ],
+      "note": "Treasure Coffer"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
         "2004074"
@@ -239,104 +263,14 @@
       "tag": "None",
       "name": "Interactable",
       "position": {
-        "X": 202.52,
-        "Y": 65.67,
-        "Z": -138.09
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
         "2004054"
       ],
       "note": "Stone Tablet"
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 218.35832,
-        "Y": 63.151424,
-        "Z": -131.946
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 228.03821,
-        "Y": 62.598637,
-        "Z": -142.14806
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 233.3344,
-        "Y": 63.394444,
-        "Z": -130.08693
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 232.07582,
-        "Y": 65.91977,
-        "Z": -144.09564
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 232.08,
-        "Y": 65.92,
-        "Z": -144.1
-      },
-      "arguments": [
-        "2004075"
-      ],
-      "note": "Treasure Coffer"
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 206.47899,
-        "Y": 62.028606,
-        "Z": -154.27824
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 168.71588,
-        "Y": 53.132767,
-        "Z": -184.28694
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 162.94366,
-        "Y": 52.607826,
-        "Z": -185.5714
-      },
-      "arguments": [],
-      "note": ""
     },
     {
       "tag": "None",
@@ -366,39 +300,6 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": 136.23412,
-        "Y": 50.375443,
-        "Z": -195.77519
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 124.44408,
-        "Y": 49.22897,
-        "Z": -203.47348
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 98.051796,
-        "Y": 48.58332,
-        "Z": -189.4283
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
         "X": 82.25805,
         "Y": 53.829166,
         "Z": -225.50804
@@ -410,9 +311,31 @@
       "tag": "Treasure",
       "name": "TreasureCoffer",
       "position": {
-        "X": 67.5368,
-        "Y": 53.609344,
-        "Z": -211.85718
+        "X": 82.33147,
+        "Y": 53.7926,
+        "Z": -225.22066
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 66.94492,
+        "Y": 53.56103,
+        "Z": -213.60599
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 67.83361,
+        "Y": 53.715935,
+        "Z": -210.27649
       },
       "arguments": [],
       "note": ""
@@ -421,9 +344,9 @@
       "tag": "None",
       "name": "Interactable",
       "position": {
-        "X": 70.75531,
-        "Y": 53.234386,
-        "Z": -213.07759
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
         "2004079"
@@ -434,33 +357,9 @@
       "tag": "None",
       "name": "Interactable",
       "position": {
-        "X": 73.384796,
-        "Y": 53.102295,
-        "Z": -209.61041
-      },
-      "arguments": [
-        "2004055"
-      ],
-      "note": "Stone Tablet"
-    },
-    {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
-        "X": 39.08534,
-        "Y": 44.220364,
-        "Z": -129.38905
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 38.479786,
-        "Y": 44.663124,
-        "Z": -132.91002
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
         "2004078"
@@ -471,9 +370,22 @@
       "tag": "None",
       "name": "Interactable",
       "position": {
-        "X": 22.83309,
-        "Y": 44.670025,
-        "Z": -133.07677
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2004077"
+      ],
+      "note": "Treasure Coffer"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
         "2004076"
@@ -484,9 +396,22 @@
       "tag": "None",
       "name": "Interactable",
       "position": {
-        "X": 23.961056,
-        "Y": 44.678116,
-        "Z": -136.11554
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "2004055"
+      ],
+      "note": "Stone Tablet"
+    },
+    {
+      "tag": "None",
+      "name": "Interactable",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
       },
       "arguments": [
         "2004056"
@@ -494,34 +419,34 @@
       "note": "Stone Tablet"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
       "position": {
-        "X": 18.470798,
-        "Y": 44.647697,
-        "Z": -128.06187
+        "X": 41.319855,
+        "Y": 44.516823,
+        "Z": -131.19429
       },
       "arguments": [],
       "note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -13.828918,
-        "Y": 44.907402,
-        "Z": -119.00255
+        "X": 39.2607,
+        "Y": 44.18918,
+        "Z": -128.04016
       },
       "arguments": [],
       "note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
       "position": {
-        "X": -33.95337,
-        "Y": 44.996815,
-        "Z": -117.84345
+        "X": 18.298824,
+        "Y": 44.914265,
+        "Z": -136.44756
       },
       "arguments": [],
       "note": ""
@@ -541,17 +466,6 @@
     },
     {
       "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -34.10716,
-        "Y": 44.94787,
-        "Z": -129.13844
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
       "name": "Interactable",
       "position": {
         "X": -34.11,
@@ -562,28 +476,6 @@
         "2004059"
       ],
       "note": "Stone Pedestal"
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -36.04839,
-        "Y": 44.98822,
-        "Z": -123.82226
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -62.797024,
-        "Y": 44.230167,
-        "Z": -125.1183
-      },
-      "arguments": [],
-      "note": ""
     },
     {
       "tag": "None",
@@ -788,19 +680,6 @@
       },
       "arguments": [],
       "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
-        "X": -326.92,
-        "Y": 1.9,
-        "Z": 35.08
-      },
-      "arguments": [
-        "20000"
-      ],
-      "note": ""
     }
   ],
   "meta": {
@@ -813,6 +692,10 @@
       {
         "version": 224,
         "change": ""
+      },
+      {
+        "version": 227,
+        "change": "Redid area with the tablets from scratch; removed a lot of unnecessary/redunant steps. Removed final Wait step that wasn't doing anything."
       }
     ],
     "notes": []
