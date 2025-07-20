@@ -146,8 +146,9 @@ namespace AutoDuty.Data
             Do_Nothing = 0,
             Logout = 1,
             Start_AR_Multi_Mode = 2,
-            Kill_Client = 3,
-            Kill_PC = 4
+            Start_AR_Night_Mode = 3,
+            Kill_Client = 4,
+            Kill_PC = 5
         }
         public enum Role : int
         {
