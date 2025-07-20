@@ -885,6 +885,11 @@ public sealed class AutoDuty : IDalamudPlugin
                 TaskManager.Enqueue(() => Svc.Log.Debug($"Starting AR Multi Mode"));
                 TaskManager.Enqueue(() => Chat.ExecuteCommand($"/ays multi e"));
             }
+            else if (Configuration.TerminationMethodEnum == TerminationMode.Start_AR_Night_Mode)
+            {
+                TaskManager.Enqueue(() => Svc.Log.Debug($"Starting AR Night Mode"));
+                TaskManager.Enqueue(() => Chat.ExecuteCommand($"/ays night e"));
+            }
         }
 
         Svc.Log.Debug($"Removing Looping, Setting CurrentLoop to 0, and Setting Stage to Stopped");
