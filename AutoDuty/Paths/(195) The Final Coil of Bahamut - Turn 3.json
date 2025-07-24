@@ -1,0 +1,20 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 0,
+        "Y": -53.68296,
+        "Z": -170
+      },
+      "arguments": [],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 227,
+    "changelog": [],
+    "notes": []
+  }
+}
