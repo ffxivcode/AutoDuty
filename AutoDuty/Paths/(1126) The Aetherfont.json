@@ -106,6 +106,19 @@
     },
     {
       "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 233.08,
@@ -147,9 +160,9 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": 397.4885,
-        "Y": 46.017067,
-        "Z": -144.94305
+        "X": 271.52707,
+        "Y": 6.1938925,
+        "Z": -9.472502
       },
       "arguments": [
         "false"
@@ -210,9 +223,9 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": 425.03162,
-        "Y": 20.49185,
-        "Z": -479.4899
+        "X": 397.62384,
+        "Y": 45.834545,
+        "Z": -145.18292
       },
       "arguments": [
         "false"
@@ -262,12 +275,25 @@
       "tag": "None",
       "name": "MoveTo",
       "position": {
-        "X": -395.3447,
-        "Y": -815.03546,
-        "Z": -190.23793
+        "X": 425.01373,
+        "Y": 20.000229,
+        "Z": -480.4952
       },
       "arguments": [
         "false"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "WaitFor",
+      "position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "arguments": [
+        "IsReady"
       ],
       "note": ""
     },
@@ -433,6 +459,10 @@
       {
         "version": 221,
         "change": "Automoves adjusted to direct movement"
+      },
+      {
+        "version": 227,
+        "change": "adjusted porter pointers"
       }
     ],
     "notes": []
