@@ -1,0 +1,380 @@
+{
+  "actions": [
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 335.76447,
+        "Y": 53.489285,
+        "Z": 306.00183
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 384.5346,
+        "Y": 65.45841,
+        "Z": 373.2803
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 423.19855,
+        "Y": 65.14658,
+        "Z": 412.41843
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": 421.91132,
+        "Y": 65.14661,
+        "Z": 457.23923
+      },
+      "arguments": [
+        "",
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "MoveTo",
+      "position": {
+        "X": 438.10593,
+        "Y": 65.14661,
+        "Z": 461.15512
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": 438.10593,
+        "Y": 65.14661,
+        "Z": 461.15512
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": 467.1881,
+        "Y": 70.02851,
+        "Z": 460.763
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "AutoMoveFor",
+      "position": {
+        "X": 468.549,
+        "Y": 70.70085,
+        "Z": 460.7251
+      },
+      "arguments": [
+        "1000"
+      ],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -377.59247,
+        "Y": 270.25848,
+        "Z": 116.3246
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -373.22818,
+        "Y": 271.96133,
+        "Z": 82.9035
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -374.61475,
+        "Y": 288.38974,
+        "Z": 7.3567734
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "MoveTo",
+      "position": {
+        "X": -378.09668,
+        "Y": 288.67853,
+        "Z": -7.5481896
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -378.09668,
+        "Y": 288.67853,
+        "Z": -7.5481896
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -344.32544,
+        "Y": 289.10422,
+        "Z": 4.2192106
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -249.02162,
+        "Y": 296.25043,
+        "Z": -34.494904
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "MoveTo",
+      "position": {
+        "X": -234.16931,
+        "Y": 295.92477,
+        "Z": -36.51519
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -234.16931,
+        "Y": 295.92477,
+        "Z": -36.51519
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -249.00015,
+        "Y": 295.70187,
+        "Z": -73.60591
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -249.69643,
+        "Y": 296,
+        "Z": -99.20142
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "MoveTo",
+      "position": {
+        "X": -249.97351,
+        "Y": 296,
+        "Z": -112.22834
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -249.97351,
+        "Y": 296,
+        "Z": -112.22834
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -248.94336,
+        "Y": 300,
+        "Z": -216.45236
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -227.86134,
+        "Y": 300.0002,
+        "Z": -260.09653
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "MoveTo",
+      "position": {
+        "X": -251.23999,
+        "Y": 300.00018,
+        "Z": -260.0487
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -251.23999,
+        "Y": 300.00018,
+        "Z": -260.0487
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -181.06831,
+        "Y": 300.0002,
+        "Z": -330.16022
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "MoveTo",
+      "position": {
+        "X": -155.95601,
+        "Y": 300.00018,
+        "Z": -328.9614
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -155.95601,
+        "Y": 300.00018,
+        "Z": -328.9614
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "MoveTo",
+      "position": {
+        "X": -249.80591,
+        "Y": 292,
+        "Z": -386.475
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "None",
+      "name": "Boss",
+      "position": {
+        "X": -249.1947,
+        "Y": 276,
+        "Z": -459.87018
+      },
+      "arguments": [],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "MoveTo",
+      "position": {
+        "X": -249.83485,
+        "Y": 276,
+        "Z": -471.84164
+      },
+      "arguments": [
+        ""
+      ],
+      "note": ""
+    },
+    {
+      "tag": "Treasure",
+      "name": "TreasureCoffer",
+      "position": {
+        "X": -249.83485,
+        "Y": 276,
+        "Z": -471.84164
+      },
+      "arguments": [],
+      "note": ""
+    }
+  ],
+  "meta": {
+    "createdAt": 228,
+    "changelog": [],
+    "notes": []
+  }
+}
