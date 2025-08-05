@@ -124,6 +124,9 @@ public sealed class AutoDuty : IDalamudPlugin
                 case Stage.Waiting_For_Combat:
                     BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
                     break;
+                case Stage.Reading_Path:
+                    ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep = true;
+                    break;
             }
             _stage = value;
             Svc.Log.Debug($"Stage={_stage.ToCustomString()}");
@@ -229,7 +232,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 227) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 229) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
 
             if (!_configDirectory.Exists)
@@ -956,7 +959,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void StageReadingPath()
     {
-        if (!PlayerHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= Actions.Count)
+        if (!PlayerHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= Actions.Count || ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep)
             return;
 
         Action = $"{(Actions.Count >= Indexer ? Plugin.Actions[Indexer].ToCustomString() : "")}";
@@ -1006,6 +1009,8 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
 
+        ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep = false;
+
         if (PathAction.Position == Vector3.Zero)
         {
             Stage = Stage.Action;
@@ -1022,6 +1027,7 @@ public sealed class AutoDuty : IDalamudPlugin
             }
             else
                 VNavmesh_IPCSubscriber.SimpleMove_PathfindAndMoveTo(PathAction.Position, false);
+
             Stage = Stage.Moving;
         }
     }
@@ -1048,9 +1054,9 @@ public sealed class AutoDuty : IDalamudPlugin
         }
 
         Action = $"{Plugin.Actions[Indexer].ToCustomString()}";
-        if (PlayerHelper.InCombat && Plugin.StopForCombat)
+        if (PartyHelper.PartyInCombat() && Plugin.StopForCombat)
         {
-            if (Configuration.AutoManageRotationPluginState && !Configuration.UsingAlternativeRotationPlugin)
+            if (this.Configuration is { AutoManageRotationPluginState: true, UsingAlternativeRotationPlugin: false })
                 SetRotationPluginSettings(true);
             VNavmesh_IPCSubscriber.Path_Stop();
             Stage = Stage.Waiting_For_Combat;
@@ -1132,7 +1138,7 @@ public sealed class AutoDuty : IDalamudPlugin
             }
         }
 
-        if (PlayerHelper.InCombat)
+        if (PartyHelper.PartyInCombat())
         {
             if (Svc.Targets.Target == null)
             {
@@ -1166,7 +1172,7 @@ public sealed class AutoDuty : IDalamudPlugin
             else if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && VNavmesh_IPCSubscriber.Path_IsRunning())
                 VNavmesh_IPCSubscriber.Path_Stop();
         }
-        else if (!PlayerHelper.InCombat && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
+        else if (!PartyHelper.PartyInCombat() && !VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress())
         {
             BossMod_IPCSubscriber.SetRange(Configuration.MaxDistanceToTargetFloat);
 
@@ -1604,8 +1610,9 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         GitHubHelper.Dispose();
         StopAndResetALL();
-        Svc.Framework.Update -= Framework_Update;
-        Svc.Framework.Update -= SchedulerHelper.ScheduleInvoker;
+        ConfigurationMain.Instance.MultiBox =  false;
+        Svc.Framework.Update                -= Framework_Update;
+        Svc.Framework.Update                -= SchedulerHelper.ScheduleInvoker;
         FileHelper.FileSystemWatcher.Dispose();
         FileHelper.FileWatcher.Dispose();
         WindowSystem.RemoveAllWindows();

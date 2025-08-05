@@ -11,12 +11,12 @@ using ECommons.MathHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using ImGuiNET;
 using Serilog.Events;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using static AutoDuty.Helpers.RepairNPCHelper;
 using static AutoDuty.Windows.ConfigTab;
+using static FFXIVClientStructs.FFXIV.Client.System.String.Utf8String.Delegates;
 
 namespace AutoDuty.Windows;
 
@@ -30,10 +30,16 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
 using Properties;
+using System;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Numerics;
+using System.Security.Principal;
 using System.Text;
-using ReflectionHelper = Helpers.ReflectionHelper;
+using Achievement = Lumina.Excel.Sheets.Achievement;
+using Map = Lumina.Excel.Sheets.Map;
+using Thread = System.Threading.Thread;
 using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 
 [JsonObject(MemberSerialization.OptIn)]
@@ -81,6 +87,442 @@ public class ConfigurationMain : IEzConfig
         set => this.updatePathsOnStartup = value;
     }
 
+    internal bool multiBox = false;
+    public bool MultiBox
+    {
+        get => !Plugin.isDev || this.multiBox;
+        set
+        {
+            if (this.multiBox == value)
+                return;
+            this.multiBox = value;
+
+            MultiboxUtility.Set(this.multiBox);
+        }
+    }
+
+    [JsonProperty]
+    internal bool host = false;
+
+    public class MultiboxUtility
+    {
+        private const int    BUFFER_SIZE            = 4096;
+        private const string PIPE_NAME              = "AutoDutyPipe";
+
+        private const string SERVER_AUTH_KEY        = "AD Server Auth!";
+        private const string CLIENT_AUTH_KEY        = "AD Client Auth!";
+        private const string CLIENT_CID_KEY  = "CLIENT CID";
+
+        private const string KEEPALIVE_KEY          = "KEEP_ALIVE";
+        private const string KEEPALIVE_RESPONSE_KEY = "KEEP_ALIVE received";
+
+        private const string DEATH_KEY   = "DEATH";
+        private const string UNDEATH_KEY = "UNDEATH";
+        private const string DEATH_RESET_KEY = "DEATH_RESET";
+
+        private const string STEP_COMPLETED = "STEP_COMPLETED";
+        private const string STEP_START     = "STEP_START";
+
+        private static bool stepBlock = false;
+        public static bool MultiboxBlockingNextStep
+        {
+            get
+            {
+                if (!Instance.MultiBox)
+                    return false;
+
+                return stepBlock;
+            }
+            set
+            {
+                if (!Instance.MultiBox)
+                    return;
+
+                if (stepBlock == value)
+                {
+                    if (Instance.host)
+                        Server.SendStepStart();
+                    return;
+                }
+
+                stepBlock = value;
+
+                if(stepBlock)
+                    if (Instance.host)
+                    {
+                        Plugin.Action = "Waiting for clients";
+                        Server.CheckStepProgress();
+                    }
+                    else
+                    {
+                        Client.SendStepCompleted();
+                    }
+            }
+        }
+
+        public static void IsDead(bool dead)
+        {
+            if (Instance.MultiBox)
+                return;
+
+            if(!Instance.host)
+                Client.SendDeath(dead);
+            else
+                Server.CheckDeaths();
+        }
+
+        public static void Set(bool on)
+        {
+            if (Instance.host)
+                Server.Set(on);
+            else
+                Client.Set(on);
+        }
+
+        internal static class Server
+        {
+            public const             int             MAX_SERVERS = 3;
+            private static readonly  Thread?[]       threads     = new Thread?[MAX_SERVERS];
+            private static readonly  StreamString?[] streams     = new StreamString?[MAX_SERVERS];
+            internal static readonly ulong?[]        cids        = new ulong?[MAX_SERVERS];
+
+            internal static readonly DateTime[] keepAlives    = new DateTime[MAX_SERVERS];
+            private static readonly  bool[]     stepConfirms  = new bool[MAX_SERVERS];
+            private static readonly  bool[]     deathConfirms = new bool[MAX_SERVERS];
+
+            private static readonly NamedPipeServerStream?[] pipes = new NamedPipeServerStream[MAX_SERVERS];
+
+            public static void Set(bool on)
+            {
+                try
+                {
+                    if (on)
+                    {
+                        for (int i = 0; i < MAX_SERVERS; i++)
+                        {
+                            threads[i] = new Thread(ServerThread);
+                            threads[i]?.Start(i);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < MAX_SERVERS; i++)
+                        {
+                            if (pipes[i]?.IsConnected ?? false)
+                                pipes[i]?.Disconnect();
+                            pipes[i]?.Close();
+                            pipes[i]?.Dispose();
+                            threads[i] = null;
+                            streams[i] = null;
+
+                            keepAlives[i]   = DateTime.MinValue;
+                            stepConfirms[i] = false;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorLog(ex.ToString());
+                }
+            }
+
+
+            private static void ServerThread(object? data)
+            {
+                try
+                {
+                    int index = (int)(data ?? throw new ArgumentNullException(nameof(data)));
+
+                    NamedPipeServerStream pipeServer = new(PIPE_NAME, PipeDirection.InOut, MAX_SERVERS, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+                    pipes[index] = pipeServer;
+
+                    int threadId = Thread.CurrentThread.ManagedThreadId;
+
+                    DebugLog($"Server thread started with ID: {threadId}");
+                    pipeServer.WaitForConnection();
+
+                    DebugLog($"Client connected on ID: {threadId}");
+
+
+                    StreamString ss = new(pipeServer);
+                    ss.WriteString(SERVER_AUTH_KEY);
+
+                    if (ss.ReadString() != CLIENT_AUTH_KEY)
+                        return;
+
+                    DebugLog($"Client authenticated on ID: {threadId}");
+                    streams[index] = ss;
+
+                    while (pipes[index]?.IsConnected ?? false)
+                    {
+                        string   message = ss.ReadString().Trim();
+                        string[] split   = message.Split("|");
+
+
+                        switch (split[0])
+                        {
+                            case CLIENT_CID_KEY:
+                                string? cidString = ss.ReadString();
+                                if (ulong.TryParse(cidString, out ulong cid))
+                                {
+                                    cids[index] = cid;
+                                    DebugLog($"Client CID received: {cid}");
+                                }
+                                else
+                                {
+                                    ErrorLog($"Invalid CID received: {cidString}");
+                                    cids[index] = null;
+                                }
+                                break;
+                            case KEEPALIVE_KEY:
+                                ss.WriteString($"{KEEPALIVE_RESPONSE_KEY}");
+                                keepAlives[index] = DateTime.Now;
+                                break;
+                            case STEP_COMPLETED:
+                                stepConfirms[index] = true;
+                                CheckStepProgress();
+                                break;
+                            case DEATH_KEY:
+                                deathConfirms[index] = true;
+                                CheckDeaths();
+                                break;
+                            case UNDEATH_KEY:
+                                deathConfirms[index] = false;
+                                break;
+                            default:
+                                ss.WriteString($"Unknown Message: {message}");
+                                break;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    DebugLog($"SERVER ERROR: {e.Message}");
+                }
+            }
+
+            public static void CheckDeaths()
+            {
+                if (deathConfirms.All(x => x) && Player.IsDead)
+                {
+                    for (int i = 0; i < deathConfirms.Length; i++)
+                        deathConfirms[i] = false;
+
+                    DebugLog("All dead");
+                    SendToAllClients(DEATH_RESET_KEY);
+                }
+                else
+                {
+                    DebugLog("Not all clients are dead yet, waiting for more death.");
+                }
+            }
+
+            public static void CheckStepProgress()
+            {
+                if(Plugin.Indexer >= 0 && Plugin.Indexer < Plugin.Actions.Count && Plugin.Actions[Plugin.Indexer].Tag == ActionTag.Treasure || stepConfirms.All(x => x) && stepBlock)
+                {
+                    for (int i = 0; i < stepConfirms.Length; i++)
+                        stepConfirms[i] = false;
+
+                    DebugLog("All clients completed the step");
+                    stepBlock = false;
+                }
+                else
+                {
+                    DebugLog("Not all clients have completed the step yet, waiting for more confirmations.");
+                }
+            }
+
+            public static void SendStepStart()
+            {
+                DebugLog("Synchronizing Clients to Server step");
+                SendToAllClients($"{STEP_START}|{Plugin.Indexer}");
+            }
+
+            private static void SendToAllClients(string message)
+            {
+                foreach (StreamString? ss in streams) 
+                    ss?.WriteString(message);
+            }
+        }
+
+        private static class Client
+        {
+            private static Thread?                thread;
+            private static NamedPipeClientStream? pipe;
+            private static StreamString?          clientSS;
+
+            public static void Set(bool on)
+            {
+                if (on)
+                {
+                    thread = new Thread(ClientThread);
+                    thread.Start();
+                }
+                else
+                {
+                    pipe?.Close();
+                    pipe?.Dispose();
+                    clientSS = null;
+                    thread   = null;
+                }
+            }
+
+
+            private static void ClientThread(object? data)
+            {
+                try
+                {
+                    NamedPipeClientStream pipeClient = new(".", PIPE_NAME, PipeDirection.InOut, PipeOptions.Asynchronous);
+
+                    pipe = pipeClient;
+
+                    DebugLog("Connecting to server...\n");
+                    pipeClient.Connect();
+
+                    clientSS = new StreamString(pipeClient);
+
+                    if (clientSS.ReadString() == SERVER_AUTH_KEY)
+                    {
+                        clientSS.WriteString(CLIENT_AUTH_KEY);
+
+                        if(Player.Available)
+                            clientSS.WriteString($"{CLIENT_CID_KEY}|{Player.CID}");
+
+                        new Thread(ClientKeepAliveThread).Start();
+
+                        while (pipe?.IsConnected ?? false)
+                        {
+                            string   message = clientSS.ReadString().Trim();
+                            string[] split   = message.Split("|");
+
+                            switch (split[0])
+                            {
+                                case STEP_START:
+                                    if (int.TryParse(split[1], out int step))
+                                    {
+                                        Plugin.Indexer = step;
+                                        stepBlock      = false;
+                                    }
+                                    break;
+                                case KEEPALIVE_RESPONSE_KEY:
+                                    break;
+                                default:
+                                    ErrorLog("Unknown response: " + message);
+                                    break;
+                            }
+                        }
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    DebugLog($"Client ERROR: {e.Message}");
+                }
+            }
+
+            private static void ClientKeepAliveThread(object? data)
+            {
+                try
+                {
+                    Thread.Sleep(1000);
+                    while (pipe?.IsConnected ?? false)
+                    {
+                        clientSS?.WriteString(KEEPALIVE_KEY);
+                        Thread.Sleep(10000);
+                    }
+                }
+                catch (Exception e)
+                {
+                    DebugLog("Client KEEPALIVE Error: " + e);
+                }
+            }
+
+            public static void SendStepCompleted()
+            {
+                if (clientSS == null || !(pipe?.IsConnected ?? false))
+                {
+                    DebugLog("Client not connected, cannot send step completed.");
+                    return;
+                }
+                Plugin.Action = "Waiting for others";
+                clientSS.WriteString(STEP_COMPLETED);
+                DebugLog("Step completed sent to server.");
+            }
+
+            public static void SendDeath(bool dead)
+            {
+                if (clientSS == null || !(pipe?.IsConnected ?? false))
+                {
+                    DebugLog("Client not connected, cannot send death.");
+                    return;
+                }
+                clientSS.WriteString(dead ? DEATH_KEY : UNDEATH_KEY);
+                DebugLog("Death sent to server.");
+            }
+        }
+
+
+        private static void DebugLog(string message)
+        {
+            Svc.Log.Debug($"Pipe Connection: {message}");
+        }
+        private static void ErrorLog(string message)
+        {
+            Svc.Log.Error($"Pipe Connection: {message}");
+        }
+
+        private class StreamString
+        {
+            private readonly Stream ioStream;
+            private readonly UnicodeEncoding streamEncoding;
+
+            public StreamString(Stream ioStream)
+            {
+                this.ioStream = ioStream;
+                this.streamEncoding = new UnicodeEncoding();
+            }
+
+            public string ReadString()
+            {
+                int b1 = this.ioStream.ReadByte();
+                int b2 = this.ioStream.ReadByte();
+
+                if(b1 == -1)
+                {
+                    DebugLog("End of stream reached.");
+                    return string.Empty;
+                }
+
+                int    len      = b1 * 256 + b2;
+                byte[] inBuffer = new byte[len];
+                this.ioStream.Read(inBuffer, 0, len);
+                string readString = this.streamEncoding.GetString(inBuffer);
+
+                DebugLog("Reading: " + readString);
+
+                return readString;
+            }
+
+            public int WriteString(string outString)
+            {
+                DebugLog("Writing: " + outString);
+
+                byte[] outBuffer = this.streamEncoding.GetBytes(outString);
+                int len = outBuffer.Length;
+                if (len > ushort.MaxValue)
+                {
+                    len = (int)ushort.MaxValue;
+                }
+                this.ioStream.WriteByte((byte)(len / 256));
+                this.ioStream.WriteByte((byte)(len & 255));
+                this.ioStream.Write(outBuffer, 0, len);
+                this.ioStream.Flush();
+
+                return outBuffer.Length + 2;
+            }
+        }
+    }
 
     public IEnumerable<string> ConfigNames => this.profileByName.Keys;
      
@@ -917,6 +1359,27 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Update Paths on startup", ref ConfigurationMain.Instance.updatePathsOnStartup))
                     Configuration.Save();
+
+                bool multiBox = ConfigurationMain.Instance.multiBox;
+                if (ImGui.Checkbox(nameof(ConfigurationMain.MultiBox), ref multiBox))
+                {
+                    ConfigurationMain.Instance.MultiBox = multiBox;
+                    Configuration.Save();
+                }
+
+                if (ImGui.Checkbox(nameof(ConfigurationMain.host), ref ConfigurationMain.Instance.host))
+                    Configuration.Save();
+
+                if(ConfigurationMain.Instance.MultiBox && ConfigurationMain.Instance.host)
+                {
+                    ImGui.Indent();
+                    for (int i = 0; i < ConfigurationMain.MultiboxUtility.Server.MAX_SERVERS; i++)
+                    {
+                        ImGuiEx.Text($"Client {i}: {(PartyHelper.IsPartyMember(ConfigurationMain.MultiboxUtility.Server.cids[i]) ? "in party" : "no party")} | {DateTime.Now.Subtract(ConfigurationMain.MultiboxUtility.Server.keepAlives[i]):ss\\.fff}s ago");
+                    }
+                    ImGui.Unindent();
+                }
+
 
                 if (ImGui.Button("Print mod list")) 
                     Svc.Log.Info(string.Join("\n", PluginInterface.InstalledPlugins.Where(pl => pl.IsLoaded).GroupBy(pl => pl.Manifest.InstalledFromUrl).OrderByDescending(g => g.Count()).Select(g => g.Key+"\n\t"+string.Join("\n\t", g.Select(pl => pl.Name)))));

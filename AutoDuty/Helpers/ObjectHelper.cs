@@ -7,7 +7,6 @@ using System.Linq;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using System;
-using Dalamud.Game.ClientState.Objects.Enums;
 using ECommons;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ECommons.Throttlers;
@@ -16,7 +15,9 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace AutoDuty.Helpers
 {
+    using FFXIVClientStructs.FFXIV.Client.Game.Object;
     using Lumina.Excel.Sheets;
+    using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
     internal static class ObjectHelper
     {
@@ -52,6 +53,14 @@ namespace AutoDuty.Helpers
 
         internal static unsafe bool BelowDistanceToPlayer(Vector3 v3, float maxDistance, float maxHeightDistance) => GetDistanceToPlayer(v3) < maxDistance &&
                                                                                                                      MathF.Abs(v3.Y - Player.GameObject->Position.Y) < maxHeightDistance;
+
+        /// <summary>
+        ///     Converts a GameObject pointer to an IGameObject from the object table.
+        /// </summary>
+        /// <param name="ptr">The GameObject pointer to convert.</param>
+        /// <returns>An IGameObject if found in the object table; otherwise, null.</returns>
+        public static unsafe IGameObject? GetObjectFrom(GameObject* ptr) =>
+            ptr == null ? null : Svc.Objects.FirstOrDefault(x => x.Address == (IntPtr)ptr);
 
         internal static unsafe IGameObject? GetPartyMemberFromRole(string role)
         {
