@@ -15,10 +15,6 @@
       {
         "Track": "AOE",
         "Option": "AOE"
-      },
-      {
-        "Track": "Buffs",
-        "Option": "Auto"
       }
     ],
     "BossMod.Autorotation.xan.PCT": [
@@ -410,6 +406,16 @@
       {
         "Track": "Use Between The Lines",
         "Option": "Yes"
+      }
+    ],
+    "BossMod.Autorotation.MiscAI.StayCloseToPartyRole": [
+      {
+        "Track": "Role",
+        "Option": "Tank"
+      },
+      {
+        "Track": "range",
+        "Option": "20"
       }
     ],
     "BossMod.Autorotation.MiscAI.NormalMovement": [

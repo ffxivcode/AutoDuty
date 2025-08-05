@@ -11,6 +11,8 @@ using System;
 namespace AutoDuty.Helpers
 {
     using System.Numerics;
+    using Windows;
+    using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
     internal static class DeathHelper
     {
@@ -20,20 +22,21 @@ namespace AutoDuty.Helpers
             get => _deathState;
             set
             {
-                if (Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) && !Plugin.Configuration.Unsynced)
-                    return;
-                else if (value == PlayerLifeState.Dead)
+                if(_deathState != value)
+                    ConfigurationMain.MultiboxUtility.IsDead(value == PlayerLifeState.Dead);
+
+                if (value == PlayerLifeState.Dead)
                 {
                     if (value != _deathState)
                     {
-                        Svc.Log.Debug("DeathHelper - Player is Dead changing state to Dead");
-                        SchedulerHelper.ScheduleAction("OnDeath", OnDeath, 500, false); 
+                        DebugLog("Player is Dead changing state to Dead");
+                        SchedulerHelper.ScheduleAction(nameof(OnDeath), OnDeath, 500, false); 
                     }
                 }
                 else if (value == PlayerLifeState.Revived)
                 {
-                    SchedulerHelper.DescheduleAction("OnDeath");
-                    Svc.Log.Debug("DeathHelper - Player is Revived changing state to Revived");
+                    SchedulerHelper.DescheduleAction(nameof(OnDeath));
+                    DebugLog("Player is Revived changing state to Revived");
                     _oldIndex = Plugin.Indexer;
                     _findShortcutStartTime = Environment.TickCount;
                     FindShortcut();
@@ -44,8 +47,11 @@ namespace AutoDuty.Helpers
 
         private static unsafe void OnDeath()
         {
-            if (Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) && !Plugin.Configuration.Unsynced)
-                return;
+            if (!Player.IsDead)
+            {
+                DebugLog("Player is Alive, stopping OnDeath");
+                SchedulerHelper.DescheduleAction(nameof(OnDeath));
+            }
 
             Plugin.StopForCombat = true;
             Plugin.SkipTreasureCoffer = true;
@@ -58,9 +64,19 @@ namespace AutoDuty.Helpers
             
             if (Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid, DutyMode.Variant))
             {
-                Svc.Log.Debug("DeathHelper - On Death, looking for YesNo");
-                if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
+                bool yesNo = GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno);
+                bool dead  = PartyHelper.PartyDead();
+
+                if (dead)
+                {
+                    if(yesNo)
+                        AddonHelper.ClickSelectYesno();
+                    else if (!AgentRevive.Instance()->IsAddonShown()) 
+                        AgentRevive.Instance()->ShowAddon();
+                } else if(yesNo && !AgentRevive.Instance()->IsAddonShown())
+                {
                     AddonHelper.ClickSelectYesno();
+                }
             }
         }
 
@@ -185,6 +201,11 @@ namespace AutoDuty.Helpers
                 ObjectHelper.InteractWithObjectUntilAddon(_gameObject, "SelectYesno");
                 AddonHelper.ClickSelectYesno();
             }
+        }
+
+        public static void DebugLog(string s)
+        {
+            Svc.Log.Debug($"DeathHelper: {s}");
         }
     }
 }

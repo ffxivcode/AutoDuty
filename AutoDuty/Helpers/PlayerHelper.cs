@@ -11,6 +11,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 namespace AutoDuty.Helpers
 {
     using System;
+    using System.Diagnostics;
     using Dalamud.Utility;
     using FFXIVClientStructs.FFXIV.Client.Game.Control;
     using Lumina.Excel.Sheets;
@@ -117,7 +118,15 @@ namespace AutoDuty.Helpers
 
         internal static unsafe bool IsMoving => AgentMap.Instance()->IsPlayerMoving;
 
-        internal static unsafe bool InCombat => Svc.Condition[ConditionFlag.InCombat];
+        internal static unsafe bool InCombat
+        {
+            get
+            {
+                Svc.Log.Debug(Environment.StackTrace);
+                return Svc.Condition[ConditionFlag.InCombat];
+            }
+        }
+
 
         /*internal static unsafe short GetCurrentItemLevelFromGearSet(int gearsetId = -1, bool updateGearsetBeforeCheck = true)
         {
