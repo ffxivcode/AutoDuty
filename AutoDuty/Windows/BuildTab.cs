@@ -160,7 +160,7 @@ namespace AutoDuty.Windows
                                 IGameObject? targetObject = Player.Object.TargetObject;
                                 IGameObject? gameObject = (targetObject ?? null) ?? ClosestObject;
                                 _arguments = [gameObject != null ? $"{gameObject.DataId}" : string.Empty];
-                                _note = gameObject != null ? gameObject.Name.ExtractText() : string.Empty;
+                                _note = gameObject != null ? gameObject.Name.GetText() : string.Empty;
                                 break;
                             default:
                                 break;

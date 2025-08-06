@@ -43,7 +43,7 @@ using Thread = System.Threading.Thread;
 using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 
 [JsonObject(MemberSerialization.OptIn)]
-public class ConfigurationMain : IEzConfig
+public class ConfigurationMain
 {
     public const string CONFIGNAME_BARE = "Bare";
 
