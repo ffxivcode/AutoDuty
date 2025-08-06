@@ -1,6 +1,3 @@
 [submodule "ECommons"]
 	path = ECommons
 	url = https://github.com/ffxivcode/ECommons
-[submodule "ffxiv_pictomancy"]
-	path = ffxiv_pictomancy
-	url = https://github.com/sourpuh/ffxiv_pictomancy
