@@ -23,7 +23,7 @@ namespace AutoDuty.Managers
 {
     using System.Xml;
 
-    internal class ActionsManager(AutoDuty _plugin, Chat _chat, TaskManager _taskManager)
+    internal class ActionsManager(AutoDuty _plugin, TaskManager _taskManager)
     {
         public readonly List<(string, string, string)> ActionsList =
         [
@@ -242,7 +242,7 @@ namespace AutoDuty.Managers
 
             if (int.TryParse(action.Arguments[0], out int wait) && wait > 0)
             {
-                _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "Jump");
+                _taskManager.Enqueue(() => Chat.ExecuteCommand("/automove on"), "Jump");
                 _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(wait)), "Jump");
                 _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(wait), "Jump");
             }
@@ -253,7 +253,7 @@ namespace AutoDuty.Managers
             {
                 _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(100)), "Jump");
                 _taskManager.Enqueue(() => EzThrottler.Check("AutoMove"), Convert.ToInt32(100), "AutoMove");
-                _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "Jump");
+                _taskManager.Enqueue(() => Chat.ExecuteCommand("/automove off"), "Jump");
             }
         }
 
@@ -262,7 +262,7 @@ namespace AutoDuty.Managers
             if (!Player.Available)
                 return;
             Plugin.Action = $"ChatCommand: {action.Arguments[0]}";
-            _taskManager.Enqueue(() => _chat.ExecuteCommand(action.Arguments[0]), "ChatCommand");
+            _taskManager.Enqueue(() => Chat.ExecuteCommand(action.Arguments[0]), "ChatCommand");
             _taskManager.Enqueue(() => Plugin.Action = "");
         }
 
@@ -273,12 +273,12 @@ namespace AutoDuty.Managers
             Plugin.Action = $"AutoMove For {action.Arguments[0]}";
             var movementMode = Svc.GameConfig.UiControl.TryGetUInt("MoveMode", out var mode) ? mode : 0;
             _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 0); }, "AutoMove-MoveMode");
-            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove on"), "AutoMove-On");
+            _taskManager.Enqueue(() => Chat.ExecuteCommand("/automove on"), "AutoMove-On");
             _taskManager.Enqueue(() => EzThrottler.Throttle("AutoMove", Convert.ToInt32(action.Arguments[0])), "AutoMove-Throttle");
             _taskManager.Enqueue(() => EzThrottler.Check("AutoMove") || !IsReady, Convert.ToInt32(action.Arguments[0]), "AutoMove-CheckThrottleOrNotReady");
             _taskManager.Enqueue(() => { if (movementMode == 1) Svc.GameConfig.UiControl.Set("MoveMode", 1); }, "AutoMove-MoveMode2");
             _taskManager.Enqueue(() => IsReady, int.MaxValue, "AutoMove-WaitIsReady");
-            _taskManager.Enqueue(() => _chat.ExecuteCommand("/automove off"), "AutoMove-Off");
+            _taskManager.Enqueue(() => Chat.ExecuteCommand("/automove off"), "AutoMove-Off");
         }
 
         public unsafe void Wait(PathAction action)
@@ -770,31 +770,31 @@ namespace AutoDuty.Managers
                             }
                             break;
                         case "12":
-                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/rotation Settings AoEType Off"), "DutySpecificCode");
+                            _taskManager.Enqueue(() => Chat.ExecuteCommand("/rotation Settings AoEType Off"), "DutySpecificCode");
                             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
-                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk ignore1"), "DutySpecificCode");
+                            _taskManager.Enqueue(() => Chat.ExecuteCommand("/mk ignore1"), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(100)));
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(100), "DutySpecificCode");
 
                             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
-                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk ignore2"), "DutySpecificCode");
+                            _taskManager.Enqueue(() => Chat.ExecuteCommand("/mk ignore2"), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(100)));
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(100), "DutySpecificCode");
 
                             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
-                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk attack1"), "DutySpecificCode");
+                            _taskManager.Enqueue(() => Chat.ExecuteCommand("/mk attack1"), "DutySpecificCode");
                             break;
                         case "13":
                             _taskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 16), "DutySpecificCode");
                             _taskManager.Enqueue(() => EzThrottler.Throttle("DutySpecificCode", Convert.ToInt32(500)));
                             _taskManager.Enqueue(() => EzThrottler.Check("DutySpecificCode"), Convert.ToInt32(500), "DutySpecificCode");
-                            _taskManager.Enqueue(() => _chat.ExecuteCommand("/mk attack1"), "DutySpecificCode");
+                            _taskManager.Enqueue(() => Chat.ExecuteCommand("/mk attack1"), "DutySpecificCode");
                             break;
 
                         default: break;

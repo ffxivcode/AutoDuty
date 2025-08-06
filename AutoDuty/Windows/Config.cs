@@ -9,7 +9,7 @@ using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ECommons.MathHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Serilog.Events;
 using System.Collections.Generic;
 using System.Globalization;

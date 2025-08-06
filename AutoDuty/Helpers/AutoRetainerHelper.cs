@@ -10,6 +10,8 @@ using System.Linq;
 
 namespace AutoDuty.Helpers
 {
+    using ECommons.Automation;
+
     internal class AutoRetainerHelper : ActiveHelperBase<AutoRetainerHelper>
     {
         protected override string Name        { get; } = nameof(AutoRetainerHelper);
@@ -40,7 +42,7 @@ namespace AutoDuty.Helpers
 
             if (AutoRetainer_IPCSubscriber.IsBusy())
                 AutoRetainer_IPCSubscriber.AbortAllTasks();
-            Plugin.Chat.ExecuteCommand("/autoretainer d");
+            Chat.ExecuteCommand("/autoretainer d");
         }
 
         private bool         _autoRetainerStarted = false;
@@ -113,7 +115,7 @@ namespace AutoDuty.Helpers
                     if (VNavmesh_IPCSubscriber.Path_IsRunning())
                         VNavmesh_IPCSubscriber.Path_Stop();
                     DebugLog("Waiting for AutoRetainer to Start");
-                    Plugin.Chat.ExecuteCommand("/autoretainer e");
+                    Chat.ExecuteCommand("/autoretainer e");
                 }
                 else
                     DebugLog("Interacting with SummoningBell");

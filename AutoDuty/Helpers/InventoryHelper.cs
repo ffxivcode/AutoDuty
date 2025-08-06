@@ -89,7 +89,8 @@ namespace AutoDuty.Helpers
             return targetSlot;
         }
 
-        internal static void EquipGear(Item item, InventoryType type, int slotIndex, RaptureGearsetModule.GearsetItemIndex targetSlot) => InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot, 1);
+        internal static void EquipGear(Item item, InventoryType type, int slotIndex, RaptureGearsetModule.GearsetItemIndex targetSlot) => 
+            InventoryManager.Instance()->MoveItemSlot(type, (ushort)slotIndex, InventoryType.EquippedItems, (ushort)targetSlot, true);
 
         internal static (InventoryType, ushort) GetFirstAvailableSlot(params InventoryType[] types)
         {

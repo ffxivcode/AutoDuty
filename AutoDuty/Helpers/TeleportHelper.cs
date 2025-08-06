@@ -40,7 +40,7 @@ namespace AutoDuty.Helpers
 
         internal static MapMarkerData FCEstateMapMarkerData => AgentHUD.Instance()->MapMarkers.ToList().FirstOrDefault(x => x.IconId.EqualsAny((uint[])Enum.GetValuesAsUnderlyingType<FCHousingMarker>()));
 
-        internal static Vector3 FCEstateWardCenterVector3 => new(FCEstateMapMarkerData.X, FCEstateMapMarkerData.Y, FCEstateMapMarkerData.Z);
+        internal static Vector3 FCEstateWardCenterVector3 => new(FCEstateMapMarkerData.Position.X, FCEstateMapMarkerData.Position.Y, FCEstateMapMarkerData.Position.Z);
 
         internal static uint FCEstateTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: false, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(56, 57, 58, 96, 164))?.AetheryteId ?? 0;
 
@@ -48,7 +48,7 @@ namespace AutoDuty.Helpers
 
         internal static MapMarkerData PersonalHomeMapMarkerData => AgentHUD.Instance()->MapMarkers.ToList().FirstOrDefault(x => x.IconId.EqualsAny((uint[])Enum.GetValuesAsUnderlyingType<PrivateHousingMarker>()));
 
-        internal static Vector3 PersonalHomeWardCenterVector3 => new(PersonalHomeMapMarkerData.X, PersonalHomeMapMarkerData.Y, PersonalHomeMapMarkerData.Z);
+        internal static Vector3 PersonalHomeWardCenterVector3 => new(PersonalHomeMapMarkerData.Position.X, PersonalHomeMapMarkerData.Position.Y, PersonalHomeMapMarkerData.Position.Z);
 
         internal static uint PersonalHomeTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: false, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(59, 60, 61, 97, 165))?.AetheryteId ?? 0;
 
@@ -56,7 +56,7 @@ namespace AutoDuty.Helpers
 
         internal static MapMarkerData ApartmentMapMarkerData => AgentHUD.Instance()->MapMarkers.ToList().FirstOrDefault(x => x.IconId.EqualsAny((uint[])Enum.GetValuesAsUnderlyingType<ApartmentHousingMarker>()));
 
-        internal static Vector3 ApartmentWardCenterVector3 => new(ApartmentMapMarkerData.X, ApartmentMapMarkerData.Y, ApartmentMapMarkerData.Z);
+        internal static Vector3 ApartmentWardCenterVector3 => new(ApartmentMapMarkerData.Position.X, ApartmentMapMarkerData.Position.Y, ApartmentMapMarkerData.Position.Z);
 
         internal static uint ApartmentTeleportId => Svc.AetheryteList.FirstOrDefault(x => x is { IsApartment: true, IsSharedHouse: false } && x.AetheryteId.EqualsAny<uint>(59, 60, 61, 97, 165))?.AetheryteId ?? 0;
 

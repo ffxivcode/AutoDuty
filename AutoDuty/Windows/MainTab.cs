@@ -7,7 +7,7 @@ using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameFunctions;
 using ECommons.ImGuiMethods;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace AutoDuty.Windows
             static void DrawSearchBar()
             {
                 // Set the maximum search to 10 characters
-                uint inputMaxLength = 10;
+                int inputMaxLength = 10;
                 
                 // Calculate the X width of the maximum amount of search characters
                 Vector2 _characterWidth = ImGui.CalcTextSize("W");
@@ -352,7 +352,7 @@ namespace AutoDuty.Windows
                                     SchedulerHelper.ScheduleAction("Refresh Levels - DT", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[1167u]), () => TrustHelper.State == ActionState.None);
                                 }
                                 ImGui.NextColumn();
-                                ImGui.Columns(1, null, true);
+                                ImGui.Columns(1);
                             }
                             else if (ImGui.Button("Refresh trust member levels"))
                             {

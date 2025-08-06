@@ -189,7 +189,7 @@ namespace AutoDuty.Helpers
             
             vectorDutyListItems.ForEach(pointAtkComponentTreeListItem => listAtkComponentTreeListItems.Add(*(pointAtkComponentTreeListItem.Value)));
 
-            if (!_allConditionsMetToJoin && AgentContentsFinder.Instance()->SelectedDutyId != _content!.ContentFinderCondition)
+            if (!_allConditionsMetToJoin && AgentContentsFinder.Instance()->SelectedDuty.Id != _content!.ContentFinderCondition)
             {
                 Svc.Log.Debug($"Queue Helper - Opening ContentsFinder to {_content.Name} because we have the wrong selection of {listAtkComponentTreeListItems[(int)_addonContentsFinder->DutyList->SelectedItemIndex].Renderer->GetTextNodeById(5)->GetAsAtkTextNode()->NodeText.ToString().Replace("...", "")}");
                 AgentContentsFinder.Instance()->OpenRegularDuty(_content.ContentFinderCondition);
