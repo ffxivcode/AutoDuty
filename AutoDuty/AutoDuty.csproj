@@ -42,7 +42,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
     <PackageReference Include="DalamudPackager" Version="13.0.0" />
-    <PackageReference Include="Pictomancy" Version="0.0.0" />
+    <PackageReference Include="Pictomancy" Version="0.0.*" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
     </Reference>

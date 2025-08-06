@@ -10,13 +10,14 @@
       },
       "Pictomancy": {
         "type": "Direct",
-        "requested": "[0.0.0, )",
-        "resolved": "0.0.0",
-        "contentHash": "yT8ak19FG+vhjBRIxjEiUIFzkVqY26PZ3WJ4SPWfuyHUjXnWxtCbhaKgDqzcBWkmNlp0YFpxDvi2FsxZ8Uc7kg==",
+        "requested": "[0.0.*, )",
+        "resolved": "0.0.1",
+        "contentHash": "o40yKEYUsUmHLGEyfi2dzrPJBaiYGAL6Jwc32NOZUx9znXvwL0RS2A3AOGzi4wHhTEfTesLuU5yNIs60hT4ayg==",
         "dependencies": {
           "SharpDX.D3DCompiler": "4.2.0",
           "SharpDX.Direct2D1": "4.2.0",
-          "SharpDX.Direct3D11": "4.2.0"
+          "SharpDX.Direct3D11": "4.2.0",
+          "SharpDX.Mathematics": "4.2.0"
         }
       },
       "Microsoft.NETCore.Platforms": {
@@ -238,6 +239,15 @@
         "type": "Transitive",
         "resolved": "4.2.0",
         "contentHash": "UjKqkgWc8U+SP+j3LBzFP6OB6Ntapjih7Xo+g1rLcsGbIb5KwewBrBChaUu7sil8rWoeVU/k0EJd3SMN4VqNZw==",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1",
+          "SharpDX": "4.2.0"
+        }
+      },
+      "SharpDX.Mathematics": {
+        "type": "Transitive",
+        "resolved": "4.2.0",
+        "contentHash": "R2pcKLgdsP9p5WyTjHmGOZ0ka0zASAZYc6P4L6rSvjYhf6klGYbent7MiVwbkwkt9dD44p5brjy5IwAnVONWGw==",
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "SharpDX": "4.2.0"
