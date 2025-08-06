@@ -55,13 +55,13 @@ namespace AutoDuty.Helpers
                 switch (stateType)
                 {
                     case StateTypeEnum.Manual:
-                        new Chat().ExecuteCommand("/rotation manual");
+                        Chat.ExecuteCommand("/rotation manual");
                         break;
                     case StateTypeEnum.Auto:
-                        new Chat().ExecuteCommand("/rotation auto");
+                        Chat.ExecuteCommand("/rotation auto");
                         break;
                     default:
-                        new Chat().ExecuteCommand("/rotation cancel");
+                        Chat.ExecuteCommand("/rotation cancel");
                         break;
                 }
             }

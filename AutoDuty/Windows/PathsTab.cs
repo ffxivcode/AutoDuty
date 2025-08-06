@@ -1,5 +1,5 @@
 ﻿using Dalamud.Interface.Utility.Raii;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using static AutoDuty.AutoDuty;
 using System.Numerics;
 using System.Linq;

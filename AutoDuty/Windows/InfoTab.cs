@@ -1,5 +1,5 @@
 ﻿using ECommons.ImGuiMethods;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using System.Diagnostics;
 
 namespace AutoDuty.Windows

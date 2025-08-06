@@ -3,7 +3,7 @@ using Dalamud.Interface.Utility.Raii;
 using ECommons;
 using ECommons.ImGuiMethods;
 using ECommons.Throttlers;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Serilog.Events;
 using System.Collections.Generic;
 using System.Linq;
@@ -160,7 +160,8 @@ namespace AutoDuty.Windows
             }
             else if (_taskUserCode != null && !_taskUserCode.IsCompletedSuccessfully)
             {
-                ImGui.TextColored(new(0, 1, 0, 1), "Waiting for Response from GitHub");
+                Vector4 vector4 = new(0, 1, 0, 1);
+                ImGui.TextColored(in vector4, "Waiting for Response from GitHub");
                 return;
             }
             else if (_taskUserCode != null && _taskUserCode.IsCompletedSuccessfully)
@@ -179,7 +180,8 @@ namespace AutoDuty.Windows
                 ImGui.SameLine();
                 ImGui.Text($" to Copy ");
                 ImGui.SameLine();
-                ImGui.TextColored(new(0, 1, 0, 1), _userCode.User_Code);
+                Vector4 vector4 = new(0, 1, 0, 1);
+                ImGui.TextColored(vector4, _userCode.User_Code);
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
                 {
                     ImGui.SetClipboardText(_userCode.User_Code);

@@ -37,7 +37,7 @@ namespace AutoDuty.Managers
             }
 
             //Defining the GUI for the squadron duty finder
-            _taskManager.Enqueue(() => addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("GcArmyCapture"), "RegisterSquadron");
+            _taskManager.Enqueue(() => GenericHelpers.TryGetAddonByName("GcArmyCapture", out addon), "RegisterSquadron");
             
             // Run logic to open the squadron duty finder
             _taskManager.Enqueue(() => OpenSquadron(addon), "RegisterSquadron");
@@ -81,8 +81,6 @@ namespace AutoDuty.Managers
             ViewingMissions = false;
             OpeningMissions = false;
             InteractedWithSergeant = false;
-            AtkUnitBase* sergeantListMenu = null;
-            AtkUnitBase* expeditionResultScreen = null;
 
             if (aub != null)
             {
@@ -113,7 +111,7 @@ namespace AutoDuty.Managers
             }
 
             // Check if the GcArmyExpeditionResult addon is open
-            if (GenericHelpers.TryGetAddonByName("GcArmyExpeditionResult", out expeditionResultScreen))
+            if (GenericHelpers.TryGetAddonByName("GcArmyExpeditionResult", out AtkUnitBase* expeditionResultScreen))
             {
                 Svc.Log.Info("Viewing expedition result");
                 // Close the expedition result menu
@@ -126,11 +124,10 @@ namespace AutoDuty.Managers
             }
 
             // Check if the SelectString addon is open (List Menu for "Command Missions", "Squadron Missions", etc.)
-            if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* _))
+            if (GenericHelpers.TryGetAddonByName("SelectString", out AtkUnitBase* sergeantListMenu))
             {
                 // Successfully interacted with the Sergeant
                 InteractedWithSergeant = true;
-                sergeantListMenu = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SelectString");
                 AddonHelper.FireCallBack(sergeantListMenu, true, 0);
                 AddonHelper.ClickSelectString(0);
                 OpeningMissions = true; // Set the opened missions state to true

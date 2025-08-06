@@ -24,7 +24,6 @@ using System.Linq;
 using ECommons.GameFunctions;
 using ECommons.Automation;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using ImGuiNET;
 using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Dalamud.IoC;
@@ -39,6 +38,7 @@ using AutoDuty.Updater;
 namespace AutoDuty;
 
 using System.Text.RegularExpressions;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Utility.Numerics;
 using Data;
 using ECommons.Configuration;
@@ -183,7 +183,6 @@ public sealed class AutoDuty : IDalamudPlugin
     internal TaskManager TaskManager;
     internal Job JobLastKnown;
     internal DutyState DutyState = DutyState.None;
-    internal Chat Chat;
     internal PathAction PathAction = new();
     internal List<Data.Classes.LogMessage> DalamudLogEntries = [];
     private LevelingMode levelingModeEnum = LevelingMode.None;
@@ -254,12 +253,11 @@ public sealed class AutoDuty : IDalamudPlugin
             FileHelper.Init();
             Patcher.Patch(startup: true);
 
-            Chat = new();
             _overrideAFK = new();
             _ipcProvider = new();
             _squadronManager = new(TaskManager);
             _variantManager = new(TaskManager);
-            _actions = new(Plugin, Chat, TaskManager);
+            _actions = new(Plugin, TaskManager);
             BuildTab.ActionsList = _actions.ActionsList;
             OverrideCamera = new();
             Overlay = new();
