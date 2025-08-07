@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 namespace AutoDuty.Data
 {
     using Lumina.Excel.Sheets;
+    using Newtonsoft.Json;
 
     public class Classes
     {
@@ -99,7 +100,7 @@ namespace AutoDuty.Data
 
         public class PathAction
         {
-            [JsonConverter(typeof(JsonStringEnumConverter))]
+            [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
             [JsonPropertyName("tag")]
             public ActionTag Tag { get; set; } = ActionTag.None;
 
@@ -124,6 +125,7 @@ namespace AutoDuty.Data
             [JsonPropertyName("changelog")]
             public List<PathFileChangelogEntry> Changelog { get; set; } = [];
 
+            [JsonIgnore]
             public int LastUpdatedVersion => Changelog.Count > 0 ? Changelog.Last().Version : CreatedAt;
 
             [JsonPropertyName("notes")]

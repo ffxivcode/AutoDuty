@@ -3,19 +3,17 @@ using AutoDuty.Windows;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
-using ECommons.GameFunctions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace AutoDuty.Managers
 {
     using Data;
+    using Newtonsoft.Json;
     using static Data.Classes;
 
     internal static class ContentPathsManager
@@ -154,7 +152,7 @@ namespace AutoDuty.Managers
                                 json = streamReader.ReadToEnd();
 
 
-                            pathFile = JsonSerializer.Deserialize<PathFile>(json, BuildTab.jsonSerializerOptions);
+                            pathFile = JsonConvert.DeserializeObject<PathFile>(json, ConfigurationMain.JsonSerializerSettings);
 
                             RevivalFound = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.Revival));
                             W2WFound     = PathFile.Actions.Any(x => x.Tag.HasFlag(ActionTag.W2W));

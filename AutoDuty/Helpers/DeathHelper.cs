@@ -113,7 +113,9 @@ namespace AutoDuty.Helpers
 
             if (Plugin.Indexer != -1)
             {
-                bool revivalFound = ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryType].Paths[Plugin.CurrentPath].RevivalFound;
+                ContentPathsManager.ContentPathContainer container     = ContentPathsManager.DictionaryPaths[Plugin.CurrentTerritoryType];
+                ContentPathsManager.DutyPath             dutyPath = container.Paths[Plugin.CurrentPath];
+                bool                                     revivalFound  = dutyPath.RevivalFound;
 
                 bool isBoss = Plugin.Actions[Plugin.Indexer].Name.Equals("Boss");
                 if (!revivalFound)

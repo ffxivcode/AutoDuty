@@ -1,605 +1,610 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -0.7,
         "Y": -3.95,
-        "Z": 382
+        "Z": 382.0
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -3.8205848,
         "Y": -3.8000038,
         "Z": 287.15213
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -35.55,
         "Y": -13.45,
         "Z": 275.54
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -78.838974,
         "Y": -13.500716,
         "Z": 271.81262
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -49.07,
         "Y": -13.5,
         "Z": 276.15
       },
-      "arguments": [
+      "Arguments": [
         "true"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -122.73,
         "Y": -23.72,
         "Z": 239.55
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -131.28,
         "Y": -28.01,
         "Z": 230.14
       },
-      "arguments": [
+      "Arguments": [
         "true"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "Wait",
-      "position": {
+      "Tag": "W2W",
+      "Name": "Wait",
+      "Position": {
         "X": -141.83,
         "Y": -33.67,
         "Z": 194.98
       },
-      "arguments": [
+      "Arguments": [
         "2500"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -207.417,
         "Y": -40.43065,
         "Z": 176.33145
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -186.09,
         "Y": -40.87,
         "Z": 169.32
       },
-      "arguments": [
+      "Arguments": [
         "true"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "Revival",
-      "name": "Revival",
-      "position": {
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
         "X": -208.95,
         "Y": -40.21,
         "Z": 176.38
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -210.11986,
         "Y": -40.043884,
         "Z": 176.08403
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -230,
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -230.0,
         "Y": -42.3,
-        "Z": 175
+        "Z": 175.0
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "IsReady"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -247.73,
-        "Y": -70,
+        "Y": -70.0,
         "Z": 117.9
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": "Gargant"
+      "Note": "Gargant"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -246.54092,
         "Y": -78.23413,
         "Z": 89.580284
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -217.42934,
         "Y": -83.23113,
         "Z": 34.437275
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -128.325,
         "Y": -99.39995,
         "Z": -40.51007
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -143.09,
         "Y": -99.16,
         "Z": -35.53
       },
-      "arguments": [
+      "Arguments": [
         "true"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": -128.62,
         "Y": -99.4,
         "Z": -32.95
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -127.55989,
         "Y": -99.39994,
         "Z": -40.26813
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -120,
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -120.0,
         "Y": -99.3,
-        "Z": -40
+        "Z": -40.0
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "IsReady"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -4.234772,
         "Y": -232.03612,
         "Z": -51.9515
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -0.052762702,
         "Y": -236.97702,
         "Z": -90.24552
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": 0.25,
         "Y": -236.96,
         "Z": -101.14
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -6.721261,
         "Y": -236.84799,
         "Z": -93.34017
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 0.60570014,
         "Y": -234.0002,
         "Z": -143.57544
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -10.44,
-        "Y": -234,
+        "Y": -234.0,
         "Z": -127.4
       },
-      "arguments": [
+      "Arguments": [
         "true"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "Revival",
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -0.34,
-        "Y": -234,
+        "Y": -234.0,
         "Z": -181.13
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": "Soldier S0"
+      "Note": "Soldier S0"
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -0.05,
-        "Y": -235,
+        "Y": -235.0,
         "Z": -225.73
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -2.0477884,
         "Y": -232.5,
         "Z": -290.5042
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -1.12,
         "Y": -232.5,
         "Z": -283.81
       },
-      "arguments": [
+      "Arguments": [
         "true"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 2.0477073,
         "Y": -210.99002,
         "Z": -225.7433
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": -4.38,
         "Y": -210.99,
         "Z": -221.22
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -0.17,
-        "Y": -211,
+        "Y": -211.0,
         "Z": -213.38
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "MoveTo",
-      "position": {
-        "X": 1,
-        "Y": -211,
-        "Z": -183
+      "Tag": "W2W",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 1.0,
+        "Y": -211.0,
+        "Z": -183.0
       },
-      "arguments": [
+      "Arguments": [
         "true"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "W2W",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "500"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 0.11571973,
-        "Y": -190,
+        "Y": -190.0,
         "Z": -210.26152
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "W2W",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -2.75,
-        "Y": -190,
+        "Y": -190.0,
         "Z": -192.44
       },
-      "arguments": [
+      "Arguments": [
         "true"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 0.36391297,
-        "Y": -190,
+        "Y": -190.0,
         "Z": -243.31987
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": 8.62,
         "Y": -189.95,
         "Z": -252.03
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "Revival",
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 0.11,
         "Y": -190.02,
         "Z": -323.95
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": "Valia Pira"
+      "Note": "Valia Pira"
     }
   ],
-  "meta": {
-    "createdAt": 200,
-    "changelog": [
+  "Meta": {
+    "CreatedAt": 200,
+    "Changelog": [
       {
-        "version": 202,
-        "change": "tweaked b1 entrance"
+        "Version": 202,
+        "Change": "tweaked b1 entrance"
       },
       {
-        "version": 203,
-        "change": "adjusted staircase w2w pull"
+        "Version": 203,
+        "Change": "adjusted staircase w2w pull"
       },
       {
-        "version": 203,
-        "change": "adjusted b1 arena exit"
+        "Version": 203,
+        "Change": "adjusted b1 arena exit"
       },
       {
-        "version": 204,
-        "change": "Added wait in second mob pull W2W"
+        "Version": 204,
+        "Change": "Added wait in second mob pull W2W"
+      },
+      {
+        "Version": 229,
+        "Change": ""
       }
     ],
-    "notes": []
+    "LastUpdatedVersion": 229,
+    "Notes": []
   }
 }

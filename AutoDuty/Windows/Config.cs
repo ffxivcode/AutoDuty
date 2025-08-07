@@ -37,13 +37,15 @@ using System.IO.Pipes;
 using System.Numerics;
 using System.Security.Principal;
 using System.Text;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using Achievement = Lumina.Excel.Sheets.Achievement;
 using Map = Lumina.Excel.Sheets.Map;
 using Thread = System.Threading.Thread;
 using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
 
 [JsonObject(MemberSerialization.OptIn)]
-public class ConfigurationMain : IEzConfig
+public class ConfigurationMain
 {
     public const string CONFIGNAME_BARE = "Bare";
 
@@ -563,9 +565,6 @@ public class ConfigurationMain : IEzConfig
                 foreach (ulong cid in profile.CIDs)
                     this.profileByCID[cid] = profile.Name;
             this.profileByName[profile.Name] = profile;
-
-            if(profile.Config.LootMethodEnum == LootMethod.RotationSolver) //RSR removed
-                profile.Config.LootMethodEnum = LootMethod.All;
         }
 
         foreach (ProfileData profile in this.profileData)
@@ -742,6 +741,14 @@ public class ConfigurationMain : IEzConfig
     {
         Svc.Log.Debug($"Configuration Main: {message}");
     }
+
+    public static JsonSerializerSettings JsonSerializerSettings = new()
+                                                                   {
+                                                                       Formatting           = Formatting.Indented,
+                                                                       DefaultValueHandling = DefaultValueHandling.Include,
+                                                                       Converters           = [new StringEnumConverter(new DefaultNamingStrategy())],
+                                                                       
+                                                                   };
 }
 
 [JsonObject(MemberSerialization.OptOut)]
@@ -757,7 +764,7 @@ public class AutoDutySerializationFactory : DefaultSerializationFactory, ISerial
     public override string DefaultConfigFileName { get; } = "AutoDutyConfig.json";
 
     public new string Serialize(object config) => 
-        base.Serialize(config, true);
+        base.Serialize(config);
 
     public override byte[] SerializeAsBin(object config) => 
         Encoding.UTF8.GetBytes(this.Serialize(config));
@@ -1692,8 +1699,6 @@ public static class ConfigTab
                 {
                     foreach (LootMethod lootMethod in Enum.GetValues(typeof(LootMethod)))
                     {
-                        if(lootMethod == LootMethod.RotationSolver)
-                            continue;
                         using (ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled)))
                         {
                             if (ImGui.Selectable(lootMethod.ToCustomString()))

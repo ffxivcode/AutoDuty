@@ -2,7 +2,6 @@
 using ECommons.DalamudServices;
 using ECommons;
 using Dalamud.Bindings.ImGui;
-using System.Text.Json;
 using System;
 using System.Numerics;
 using System.Linq;
@@ -23,6 +22,7 @@ namespace AutoDuty.Windows
 {
     using System.Globalization;
     using Dalamud.Utility.Numerics;
+    using Newtonsoft.Json;
 
     internal static class BuildTab
     {
@@ -52,7 +52,6 @@ namespace AutoDuty.Windows
         private static          int                      _duplicateItemIndex = -1;
         private static          ActionTag                _actionTag;
         private static readonly ActionTag[]              _actionTags           = [ActionTag.None, ActionTag.Synced, ActionTag.Unsynced, ActionTag.W2W, ActionTag.Treasure];
-        public static readonly  JsonSerializerOptions    jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
 
         internal static unsafe void Draw()
         {
@@ -160,7 +159,7 @@ namespace AutoDuty.Windows
                                 IGameObject? targetObject = Player.Object.TargetObject;
                                 IGameObject? gameObject = (targetObject ?? null) ?? ClosestObject;
                                 _arguments = [gameObject != null ? $"{gameObject.DataId}" : string.Empty];
-                                _note = gameObject != null ? gameObject.Name.ExtractText() : string.Empty;
+                                _note = gameObject != null ? gameObject.Name.GetText() : string.Empty;
                                 break;
                             default:
                                 break;
@@ -225,7 +224,7 @@ namespace AutoDuty.Windows
                     pathFile ??= new();
 
                     pathFile.Actions = [.. Plugin.Actions];
-                    string json = JsonSerializer.Serialize(pathFile, jsonSerializerOptions);
+                    string json = JsonConvert.SerializeObject(pathFile, ConfigurationMain.JsonSerializerSettings);
                     File.WriteAllText(Plugin.PathFile, json);
                     Plugin.CurrentPath = 0;
                 }
@@ -401,7 +400,7 @@ namespace AutoDuty.Windows
             }
         }
 
-        private static bool guide = false;
+        private static         bool                  guide                 = false;
 
         private static void DrawBuildList()
         {

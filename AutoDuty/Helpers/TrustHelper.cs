@@ -26,7 +26,7 @@ namespace AutoDuty.Helpers
             AtkComponentNode* atkResNode       = addon->GetComponentNodeById(88);
             AtkResNode*       resNode          = atkResNode->Component->UldManager.NodeList[5];
             AtkResNode*       resNodeChildNode = resNode->GetComponent()->UldManager.NodeList[0];
-            return Convert.ToUInt32(resNodeChildNode->GetAsAtkCounterNode()->NodeText.ExtractText());
+            return Convert.ToUInt32(resNodeChildNode->GetAsAtkCounterNode()->NodeText.GetText());
         }
 
 

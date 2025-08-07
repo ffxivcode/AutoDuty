@@ -22,6 +22,8 @@ namespace AutoDuty.Updater
 
         private static readonly HttpClient _client = new(_handler) { Timeout = TimeSpan.FromSeconds(20) };
 
+        public static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, IgnoreReadOnlyProperties = true, IncludeFields = true };
+
         internal static async Task<bool> DownloadFileAsync(string url, string localPath)
         {
             try
@@ -71,7 +73,7 @@ namespace AutoDuty.Updater
                 var response = await _client.PostAsync(uri, parameters);
                 var jsonString = await response.Content.ReadAsStringAsync();
                 _client.Dispose();
-                return JsonSerializer.Deserialize<UserCode>(jsonString, BuildTab.jsonSerializerOptions);
+                return JsonSerializer.Deserialize<UserCode>(jsonString, jsonSerializerOptions);
             }
             catch (Exception ex)
             {
@@ -95,7 +97,7 @@ namespace AutoDuty.Updater
                 var response = await _client.PostAsync(uri, parameters);
                 var jsonString = await response.Content.ReadAsStringAsync();
                 _client.Dispose();
-                return JsonSerializer.Deserialize<PollResponseClass>(jsonString, BuildTab.jsonSerializerOptions);
+                return JsonSerializer.Deserialize<PollResponseClass>(jsonString, jsonSerializerOptions);
             }
             catch (Exception ex)
             {
@@ -116,7 +118,7 @@ namespace AutoDuty.Updater
                     Body = body
                 };
 
-                var json = JsonSerializer.Serialize(issue, BuildTab.jsonSerializerOptions);
+                var json = JsonSerializer.Serialize(issue, jsonSerializerOptions);
                 Svc.Log.Info(json);
                 _client.DefaultRequestHeaders.Add("User-Agent", "AutoDuty");
                 _client.DefaultRequestHeaders.Add("Accept", "application/vnd.github+json");
@@ -138,6 +140,6 @@ namespace AutoDuty.Updater
             }
         }
 
-        internal static void Dispose() => _client.Dispose();
+        internal static        void                  Dispose() => _client.Dispose();
     }
 }

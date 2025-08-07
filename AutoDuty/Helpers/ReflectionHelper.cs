@@ -3,6 +3,7 @@ using ECommons.Reflection;
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 
 #nullable disable
 
@@ -170,12 +171,13 @@ namespace AutoDuty.Helpers
                 if (DalamudReflector.TryGetDalamudPlugin("Avarice", out var pl, false, true))
                 {
                     avariceReady = true;
-                    return;
-
+                    
+                    /*
                     Assembly assembly = Assembly.GetAssembly(pl.GetType());
-                    /* not used anymore, but might as well keep it here as an example
+                    
+                    not used anymore, but might as well keep it here as an example
                     Positionals = StaticFieldRefAccess<SortedList<uint, byte>>(assembly.GetType("Avarice.StaticData.Data").GetField("ActionPositional", BindingFlags.Static | BindingFlags.Public));
-                    */
+                    
                     Type utilType = assembly?.GetType("Avarice.Util");
 
                     if (utilType != null)
@@ -191,7 +193,7 @@ namespace AutoDuty.Helpers
                         isViperFlank   = MethodDelegate<StaticBoolMethod>(utilType.GetMethod("IsViperAnticipatedFlank"));
 
                         avariceReady = true;
-                    }
+                    }*/
                 }
 
             }

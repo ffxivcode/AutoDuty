@@ -32,7 +32,7 @@ namespace AutoDuty.Windows
         private static ImGuiWindowFlags _imGuiWindowFlags = ImGuiWindowFlags.None;
         private static bool _copied = false;
         private static bool _clearedDataAfterPopupClose = true;
-        public static async void Draw()
+        public static void Draw()
         {
             if (MainWindow.CurrentTabName != "Log")
                 MainWindow.CurrentTabName = "Log";

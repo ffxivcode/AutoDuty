@@ -383,21 +383,6 @@ public sealed class AutoDuty : IDalamudPlugin
         this.CheckFinishing();
     }
 
-    private void MessageReceived(string messageJson)
-    {
-        if (!Player.Available || messageJson.IsNullOrEmpty())
-            return;
-
-        var message = System.Text.Json.JsonSerializer.Deserialize<Message>(messageJson, BuildTab.jsonSerializerOptions);
-
-        if (message == null) return;
-
-        if (message.Sender == Player.Name || message.Action.Count == 0 || Svc.Party.All(x => x.Name.ExtractText() != message.Sender))
-            return;
-
-        message.Action.Each(_actions.InvokeAction);
-    }
-
     internal void ExitDuty() => _actions.ExitDuty(new());
 
     internal void LoadPath()
@@ -1017,7 +1002,7 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!VNavmesh_IPCSubscriber.SimpleMove_PathfindInProgress() && !VNavmesh_IPCSubscriber.Path_IsRunning())
         {
-            Chat.Instance.ExecuteCommand("/automove off");
+            Chat.ExecuteCommand("/automove off");
             VNavmesh_IPCSubscriber.Path_SetTolerance(0.25f);
             if (PathAction.Name == "MoveTo" && PathAction.Arguments.Count > 0 && bool.TryParse(PathAction.Arguments[0], out bool useMesh) && !useMesh)
             {
@@ -1034,22 +1019,6 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         if (!PlayerHelper.IsReady || Indexer == -1 || Indexer >= Actions.Count)
             return;
-
-        if (Configuration.DutyModeEnum == DutyMode.Regular && Svc.Party.PartyId > 0)
-        {
-            Message message = new()
-            {
-                Sender = Player.Name,
-                Action =
-                [
-                    new PathAction(){ Name = "Follow", Arguments = [$"{Player.Name}"] }
-                ]
-            };
-
-            var messageJson = System.Text.Json.JsonSerializer.Serialize(message, BuildTab.jsonSerializerOptions);
-
-            //_messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
-        }
 
         Action = $"{Plugin.Actions[Indexer].ToCustomString()}";
         if (PartyHelper.PartyInCombat() && Plugin.StopForCombat)
@@ -1414,26 +1383,6 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!TaskManager.IsBusy && !PathAction.Name.IsNullOrEmpty())
         {
-            if (PathAction.Name.Equals("Boss"))
-            {
-
-                if (Configuration.DutyModeEnum == DutyMode.Regular && Svc.Party.PartyId > 0)
-                {
-                    Message message = new()
-                    {
-                        Sender = Player.Name,
-                        Action =
-                        [
-                            new PathAction(){ Name = "Follow", Arguments = [$"null"] },
-                            new PathAction(){ Name = "SetBMSettings", Arguments = [$"true"] }
-                        ]
-                    };
-
-                    var messageJson = System.Text.Json.JsonSerializer.Serialize(message, BuildTab.jsonSerializerOptions);
-
-                    //_messageBusSend.PublishAsync(Encoding.UTF8.GetBytes(messageJson));
-                }
-            }
             _actions.InvokeAction(PathAction);
             PathAction = new();
         }
