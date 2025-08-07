@@ -80,6 +80,7 @@ public unsafe class OverrideCamera : IDisposable
             var maxV = SpeedV.Rad * dt;
             self->InputDeltaH = Math.Clamp(deltaH.Rad, -maxH, maxH);
             self->InputDeltaV = Math.Clamp(deltaV.Rad, -maxV, maxV);
+            Enabled           = false;
         }
     }
 }
