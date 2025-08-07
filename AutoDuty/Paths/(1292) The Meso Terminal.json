@@ -1,0 +1,508 @@
+{
+  "Actions": [
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 24.509026,
+        "Y": -600.0009,
+        "Z": 158.80441
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 131.98157,
+        "Y": -584.9994,
+        "Z": 137.70357
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 117.20792,
+        "Y": -584.99945,
+        "Z": 142.94978
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 161.71756,
+        "Y": -585.0,
+        "Z": 152.2225
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 270.77335,
+        "Y": -585.001,
+        "Z": 65.3661
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 270.4341,
+        "Y": -585.001,
+        "Z": 73.71743
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 269.93945,
+        "Y": -585.0004,
+        "Z": 40.84859
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": 270.27402,
+        "Y": -582.50006,
+        "Z": 5.9204926
+      },
+      "Arguments": [],
+      "Note": "Chirurgeon General"
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 270.1288,
+        "Y": -583.0005,
+        "Z": -25.19606
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 269.74295,
+        "Y": -582.40063,
+        "Z": -33.55754
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 266.9175,
+        "Y": -582.8032,
+        "Z": -40.984848
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 264.61737,
+        "Y": -582.1034,
+        "Z": -45.884773
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 246.10902,
+        "Y": -499.80005,
+        "Z": -62.785725
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
+        "X": 242.93494,
+        "Y": -499.99994,
+        "Z": -129.10977
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 191.86952,
+        "Y": -496.4004,
+        "Z": -147.2462
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 203.41747,
+        "Y": -498.2082,
+        "Z": -141.3031
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 151.072,
+        "Y": -494.50113,
+        "Z": -166.82776
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
+        "X": 94.952644,
+        "Y": -488.99918,
+        "Z": -199.03227
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 79.11159,
+        "Y": -488.99918,
+        "Z": -194.35382
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 90.05845,
+        "Y": -488.99918,
+        "Z": -193.70074
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 60.042824,
+        "Y": -489.97607,
+        "Z": -228.66226
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": 60.19793,
+        "Y": -490.0,
+        "Z": -257.8255
+      },
+      "Arguments": [],
+      "Note": "Headsman"
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": -10.440411,
+        "Y": -486.5363,
+        "Z": -252.2599
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
+        "X": -29.226082,
+        "Y": -484.9981,
+        "Z": -174.37683
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -57.34819,
+        "Y": -485.0009,
+        "Z": -154.12202
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": -51.500954,
+        "Y": -485.00092,
+        "Z": -155.4269
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -67.43194,
+        "Y": -484.8624,
+        "Z": -151.62737
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -72.33186,
+        "Y": -484.25003,
+        "Z": -149.0272
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": -99.41867,
+        "Y": -396.0001,
+        "Z": 190.79678
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
+        "X": -45.10846,
+        "Y": -396.00012,
+        "Z": 188.40088
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -20.590227,
+        "Y": -395.3611,
+        "Z": 193.27481
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": -30.02543,
+        "Y": -395.3296,
+        "Z": 193.10432
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -19.3792,
+        "Y": -395.32965,
+        "Z": 181.98979
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -0.3544033,
+        "Y": -390.3488,
+        "Z": 181.99037
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -0.43725258,
+        "Y": -388.95013,
+        "Z": 133.51065
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -0.43491396,
+        "Y": -388.95013,
+        "Z": 121.73173
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": 0.1671081,
+        "Y": 320.0,
+        "Z": -4.7156987
+      },
+      "Arguments": [],
+      "Note": "Immortal Remains"
+    }
+  ],
+  "Meta": {
+    "CreatedAt": 229,
+    "Changelog": [],
+    "Notes": []
+  }
+}
