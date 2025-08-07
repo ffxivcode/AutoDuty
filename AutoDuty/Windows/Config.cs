@@ -92,7 +92,7 @@ public class ConfigurationMain
     internal bool multiBox = false;
     public bool MultiBox
     {
-        get => !Plugin.isDev || this.multiBox;
+        get => Plugin.isDev && this.multiBox;
         set
         {
             if (this.multiBox == value)
