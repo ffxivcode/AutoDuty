@@ -122,11 +122,11 @@ namespace AutoDuty.Data
         public enum LootMethod : int
         {
             AutoDuty = 0,
-            [Obsolete("Removed by RSR", false)]
-            RotationSolver = 1,
+            //[Obsolete("Removed by RSR", false)] RotationSolver = 1,
             Pandora = 2,
-            All = 3
+            All     = 3
         }
+
         public enum Housing : int
         {
             Apartment = 1,
