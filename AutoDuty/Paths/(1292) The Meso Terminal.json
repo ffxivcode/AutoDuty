@@ -15,11 +15,24 @@
     },
     {
       "Tag": "W2W",
+      "Name": "Wait",
+      "Position": {
+        "X": 53.559254,
+        "Y": -597.4213,
+        "Z": 154.98344
+      },
+      "Arguments": [
+        "2500"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
       "Name": "MoveTo",
       "Position": {
-        "X": 131.98157,
+        "X": 122.84894,
         "Y": -584.9994,
-        "Z": 137.70357
+        "Z": 141.02426
       },
       "Arguments": [
         "true"
@@ -54,11 +67,24 @@
     },
     {
       "Tag": "W2W",
+      "Name": "Wait",
+      "Position": {
+        "X": 212.3917,
+        "Y": -585.0,
+        "Z": 130.60243
+      },
+      "Arguments": [
+        "2500"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
       "Name": "MoveTo",
       "Position": {
-        "X": 270.77335,
-        "Y": -585.001,
-        "Z": 65.3661
+        "X": 270.4635,
+        "Y": -584.9661,
+        "Z": 69.50709
       },
       "Arguments": [
         "true"
@@ -69,13 +95,24 @@
       "Tag": "W2W",
       "Name": "StopForCombat",
       "Position": {
-        "X": 270.4341,
+        "X": 270.4153,
         "Y": -585.001,
-        "Z": 73.71743
+        "Z": 80.12381
       },
       "Arguments": [
         "true"
       ],
+      "Note": ""
+    },
+    {
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [],
       "Note": ""
     },
     {
@@ -175,6 +212,19 @@
       "Note": ""
     },
     {
+      "Tag": "W2W",
+      "Name": "Wait",
+      "Position": {
+        "X": 245.29323,
+        "Y": -499.9999,
+        "Z": -104.787796
+      },
+      "Arguments": [
+        "2500"
+      ],
+      "Note": ""
+    },
+    {
       "Tag": "Treasure",
       "Name": "TreasureCoffer",
       "Position": {
@@ -189,9 +239,9 @@
       "Tag": "W2W",
       "Name": "MoveTo",
       "Position": {
-        "X": 191.86952,
-        "Y": -496.4004,
-        "Z": -147.2462
+        "X": 194.9148,
+        "Y": -496.86176,
+        "Z": -145.9401
       },
       "Arguments": [
         "true"
@@ -208,6 +258,19 @@
       },
       "Arguments": [
         "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "Wait",
+      "Position": {
+        "X": 120.51746,
+        "Y": -490.94412,
+        "Z": -181.58107
+      },
+      "Arguments": [
+        "2500"
       ],
       "Note": ""
     },
@@ -260,6 +323,17 @@
       "Note": ""
     },
     {
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
       "Tag": "None",
       "Name": "MoveTo",
       "Position": {
@@ -291,6 +365,19 @@
       },
       "Arguments": [
         "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "Wait",
+      "Position": {
+        "X": -19.687092,
+        "Y": -484.9101,
+        "Z": -213.93898
+      },
+      "Arguments": [
+        "2500"
       ],
       "Note": ""
     },
@@ -378,6 +465,19 @@
       },
       "Arguments": [
         "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
+      "Name": "Wait",
+      "Position": {
+        "X": -63.41578,
+        "Y": -396.0001,
+        "Z": 193.2685
+      },
+      "Arguments": [
+        "2500"
       ],
       "Note": ""
     },
@@ -502,7 +602,12 @@
   ],
   "Meta": {
     "CreatedAt": 229,
-    "Changelog": [],
+    "Changelog": [
+      {
+        "Version": 230,
+        "Change": "Adjusted Wait in W2W pulls, and Revival points before b1 and b2"
+      }
+    ],
     "Notes": []
   }
 }
