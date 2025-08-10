@@ -1,251 +1,242 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "None",
-      "name": "DutySpecificCode",
-      "position": {
+      "Tag": "None",
+      "Name": "DutySpecificCode",
+      "Position": {
         "X": 347.75,
         "Y": 44.14,
         "Z": -223.21
       },
-      "arguments": [
+      "Arguments": [
         "1"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": 132.58,
         "Y": 27.83,
         "Z": -100.06
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "DutySpecificCode",
-      "position": {
+      "Tag": "None",
+      "Name": "DutySpecificCode",
+      "Position": {
         "X": 90.26,
         "Y": 27.2,
         "Z": -56.04
       },
-      "arguments": [
+      "Arguments": [
         "2"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "DutySpecificCode",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "DutySpecificCode",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "3"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 71.8,
         "Y": 30.37,
         "Z": -44.91
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2000216"
       ],
-      "note": "Inconspicuous Switch"
+      "Note": "Inconspicuous Switch"
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -27.17,
         "Y": 22.86,
         "Z": 56.34
       },
-      "arguments": [
-        "<-16,22,47>"
+      "Arguments": [
+        "<-31,24,63>"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -91.82,
         "Y": 13.84,
         "Z": 145.88
       },
-      "arguments": [
+      "Arguments": [
         "2000250"
       ],
-      "note": "Captain\u0027s Quarters Key"
+      "Note": "Captain's Quarters Key"
     },
     {
-      "tag": "Comment",
-      "name": "\u003C-- Comment --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "Comment",
+      "Name": "<-- Comment -->",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
+      "Note": "<-- Below line is a temporary bandaid until Issue #409 is implemented -->"
     },
     {
-      "tag": "None",
-      "name": "ConditionAction",
-      "position": {
+      "Tag": "None",
+      "Name": "ConditionAction",
+      "Position": {
         "X": -95.1,
         "Y": 19.9,
         "Z": 171.1
       },
-      "arguments": [
-        "ItemCount;2000512;\u003C;1\u0026ModifyIndex;7"
+      "Arguments": [
+        "ItemCount;2000512;<;1&ModifyIndex;7"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -95.1,
         "Y": 19.9,
         "Z": 171.1
       },
-      "arguments": [
+      "Arguments": [
         "2000227"
       ],
-      "note": "Captain\u0027s Quarters"
+      "Note": "Captain's Quarters"
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -95.15,
         "Y": 20.01,
         "Z": 190.03
       },
-      "arguments": [
+      "Arguments": [
         "2000255"
       ],
-      "note": "Waverider Gate Key"
+      "Note": "Waverider Gate Key"
     },
     {
-      "tag": "Comment",
-      "name": "\u003C-- Comment --\u003E",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "Comment",
+      "Name": "<-- Comment -->",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": "\u003C-- Below line is a temporary bandaid until Issue #409 is implemented --\u003E"
+      "Note": "<-- Below line is a temporary bandaid until Issue #409 is implemented -->"
     },
     {
-      "tag": "None",
-      "name": "ConditionAction",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "ConditionAction",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
-        "ItemCount;2000513;\u003C;1\u0026ModifyIndex;11"
+      "Arguments": [
+        "ItemCount;2000513;<;1&ModifyIndex;11"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -129.54,
         "Y": 16.3,
         "Z": 156.32
       },
-      "arguments": [
+      "Arguments": [
         "2000231"
       ],
-      "note": "Waverider Gate"
+      "Note": "Waverider Gate"
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -183.12,
         "Y": 6.38,
         "Z": 244.52
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
-        "X": -332.47,
-        "Y": 5.57,
-        "Z": 317.23
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
+      "Note": ""
     }
   ],
-  "meta": {
-    "createdAt": 122,
-    "changelog": [
+  "Meta": {
+    "CreatedAt": 122,
+    "Changelog": [
       {
-        "version": 132,
-        "change": " "
+        "Version": 132,
+        "Change": " "
       },
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
+        "Version": 161,
+        "Change": "Converted to new JSON Structure"
       },
       {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
+        "Version": 163,
+        "Change": "Converted to newer JSON Structure"
       },
       {
-        "version": 164,
-        "change": "Converted to JSON Structure with Tags"
+        "Version": 164,
+        "Change": "Converted to JSON Structure with Tags"
       },
       {
-        "version": 189,
-        "change": "Adjusted tags to string values"
+        "Version": 189,
+        "Change": "Adjusted tags to string values"
+      },
+      {
+        "Version": 230,
+        "Change": "Adjusted boss loot loc"
       }
     ],
-    "notes": []
+    "Notes": []
   }
 }

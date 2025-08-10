@@ -1458,6 +1458,12 @@ public static class ConfigTab
                     Plugin.LoopTasks(false);
                 }
 
+                if (ImGui.Button("BossLootTest##DevBossLootTest"))
+                {
+                    var treasures = ObjectHelper.GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => ObjectHelper.BelowDistanceToPoint(x.Position, Player.Position, 50, 10));
+                    Svc.Log.Debug(treasures.Count() + "\n" + string.Join("\n", treasures.Select(igo => igo.Position.ToString())));
+                }
+
                 if (ImGui.CollapsingHeader("teleport playthings"))
                 {
                     if (ImGui.CollapsingHeader("Warps"))
