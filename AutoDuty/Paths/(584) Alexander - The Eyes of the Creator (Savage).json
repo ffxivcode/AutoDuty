@@ -1,81 +1,124 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -38.98,
         "Y": 114.71,
         "Z": -4.16
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -40.24,
         "Y": 114.71,
         "Z": 3.47
       },
-      "arguments": [
+      "Arguments": [
         "2007455"
       ],
-      "note": "Cranial Hatch"
+      "Note": "Cranial Hatch"
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -40.24,
         "Y": 114.71,
         "Z": 3.47
       },
-      "arguments": [
+      "Arguments": [
         "2007456"
       ],
-      "note": "Ingress"
+      "Note": "Ingress"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 0.041660503,
         "Y": -250.29001,
         "Z": -239.65451
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 0.04,
         "Y": -250.29,
         "Z": -239.65
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
     }
   ],
-  "meta": {
-    "createdAt": 173,
-    "changelog": [
+  "Meta": {
+    "CreatedAt": 173,
+    "Changelog": [
       {
-        "version": 173,
-        "change": "kuku"
+        "Version": 173,
+        "Change": "kuku"
       },
       {
-        "version": 189,
-        "change": "Adjusted tags to string values"
+        "Version": 189,
+        "Change": "Adjusted tags to string values"
+      },
+      {
+        "Version": 231,
+        "Change": "Added IsReady checks"
       }
     ],
-    "notes": []
+    "Notes": []
   }
 }
