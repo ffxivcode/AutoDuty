@@ -51,9 +51,10 @@ namespace AutoDuty.Helpers
 
         internal static unsafe float GetDistanceToPlayer(Vector3 v3) => Vector3.Distance(v3, Player.GameObject->Position);
 
-        internal static unsafe bool BelowDistanceToPlayer(Vector3 v3, float maxDistance, float maxHeightDistance) => GetDistanceToPlayer(v3) < maxDistance &&
-                                                                                                                     MathF.Abs(v3.Y - Player.GameObject->Position.Y) < maxHeightDistance;
+        internal static unsafe bool BelowDistanceToPlayer(Vector3 v3, float maxDistance, float maxHeightDistance) => BelowDistanceToPoint(v3, Player.GameObject->Position, maxDistance, maxHeightDistance);
 
+        internal static bool BelowDistanceToPoint(Vector3 target, Vector3 origin, float maxDistance, float maxHeightDistance) => Vector3.Distance(target, origin) < maxDistance &&
+                                                                                                                     MathF.Abs(target.Y - origin.Y) < maxHeightDistance;
         /// <summary>
         ///     Converts a GameObject pointer to an IGameObject from the object table.
         /// </summary>
