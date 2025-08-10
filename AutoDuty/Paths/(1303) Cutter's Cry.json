@@ -1,0 +1,646 @@
+{
+  "Actions": [
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 262.3238,
+        "Y": -3.877349,
+        "Z": 97.74034
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 260.48566,
+        "Y": -3.2773004,
+        "Z": 120.82767
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 240.00394,
+        "Y": 0.19740486,
+        "Z": 121.001976
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 232.23796,
+        "Y": -0.46770436,
+        "Z": 104.55332
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 232.50401,
+        "Y": 0.08594012,
+        "Z": 87.71773
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 246.62613,
+        "Y": -0.25502157,
+        "Z": 78.507744
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 257.6512,
+        "Y": -0.68717194,
+        "Z": 74.84829
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 271.88013,
+        "Y": -0.03839594,
+        "Z": 74.45197
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 281.5283,
+        "Y": 0.21550202,
+        "Z": 81.54088
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 270.07333,
+        "Y": -1.9196674,
+        "Z": 85.65687
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 283.1796,
+        "Y": -1.0302867,
+        "Z": 95.27032
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 288.75528,
+        "Y": -3.8951075,
+        "Z": 107.95148
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 275.0449,
+        "Y": -2.3672457,
+        "Z": 114.07657
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 259.92047,
+        "Y": -3.6040947,
+        "Z": 89.454475
+      },
+      "Arguments": [
+        "2000460"
+      ],
+      "Note": "Shifting Sands"
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 94.59323,
+        "Y": -4.9000087,
+        "Z": 167.98488
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 108.00793,
+        "Y": -0.039770246,
+        "Z": 192.24707
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 79.82843,
+        "Y": 0.36503756,
+        "Z": 194.56201
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 69.21125,
+        "Y": -0.1354472,
+        "Z": 178.71301
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 74.11221,
+        "Y": 1.6900713,
+        "Z": 151.0486
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 111.92877,
+        "Y": 0.28742886,
+        "Z": 145.65475
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 117.95951,
+        "Y": 0.009686708,
+        "Z": 183.58286
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 79.6635,
+        "Y": -0.1638177,
+        "Z": 153.41248
+      },
+      "Arguments": [
+        "2000461"
+      ],
+      "Note": "Shifting Sands"
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 19.061289,
+        "Y": 0.094186544,
+        "Z": 122.0342
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 12.721626,
+        "Y": -1.6114043,
+        "Z": 135.71356
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -15.59859,
+        "Y": -1.1316875,
+        "Z": 147.11903
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -36.615063,
+        "Y": -0.35103357,
+        "Z": 140.27277
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -48.01541,
+        "Y": 5.5611906,
+        "Z": 150.80896
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -48.539455,
+        "Y": 3.2327464,
+        "Z": 168.12364
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -41.619495,
+        "Y": -2.5139806,
+        "Z": 173.88075
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -32.93459,
+        "Y": -8.89973,
+        "Z": 187.39543
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": -21.831406,
+        "Y": -11.2415695,
+        "Z": 202.95177
+      },
+      "Arguments": [],
+      "Note": "Myrmidon Princess"
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": -9.087362,
+        "Y": -6.1487885,
+        "Z": 215.57568
+      },
+      "Arguments": [
+        "2000464"
+      ],
+      "Note": "Shifting Sands"
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 314.32767,
+        "Y": -2.7567952,
+        "Z": -37.694542
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 343.35587,
+        "Y": -1.8021742,
+        "Z": -56.586197
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 292.03067,
+        "Y": -1.3353313,
+        "Z": -98.50478
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 300.9183,
+        "Y": -0.6729607,
+        "Z": -110.25766
+      },
+      "Arguments": [
+        "2000465"
+      ],
+      "Note": "Shifting Sands"
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 344.41623,
+        "Y": -1.2898402,
+        "Z": -167.20987
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 298.11945,
+        "Y": -2.9724498,
+        "Z": -180.70879
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 320.29593,
+        "Y": -1.7199845,
+        "Z": -224.33194
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 318.14767,
+        "Y": 0.0061250925,
+        "Z": -231.26143
+      },
+      "Arguments": [
+        "2000466"
+      ],
+      "Note": "Shifting Sands"
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -144.47176,
+        "Y": -0.5039823,
+        "Z": 186.63612
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -144.45644,
+        "Y": -3.254499,
+        "Z": 179.36198
+      },
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": -144.45644,
+        "Y": -5.7544966,
+        "Z": 154.4618
+      },
+      "Arguments": [],
+      "Note": "Giant Tunnel Worm"
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": -144.6307,
+        "Y": -3.7818506,
+        "Z": 135.87802
+      },
+      "Arguments": [
+        "2000469"
+      ],
+      "Note": "Shifting Sands"
+    },
+    {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -14.588497,
+        "Y": -4.0279956,
+        "Z": -154.41905
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -178.32861,
+        "Y": 2.0487468,
+        "Z": -154.38928
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -179.44313,
+        "Y": -0.46356416,
+        "Z": -164.45644
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": -179.84793,
+        "Y": -5.590948,
+        "Z": -209.0836
+      },
+      "Arguments": [],
+      "Note": "Chimera"
+    },
+    {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
+        "X": -180.63861,
+        "Y": -4.6792245,
+        "Z": -217.90047
+      },
+      "Arguments": [],
+      "Note": ""
+    }
+  ],
+  "Meta": {
+    "CreatedAt": 230,
+    "Changelog": [],
+    "Notes": []
+  }
+}
