@@ -234,9 +234,10 @@
       },
       {
         "Version": 230,
-        "Change": "Adjusted boss loot loc"
+        "Change": "Adjusted boss loot search"
       }
     ],
     "Notes": []
   }
+
 }
