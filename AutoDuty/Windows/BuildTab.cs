@@ -161,6 +161,10 @@ namespace AutoDuty.Windows
                                 _arguments = [gameObject != null ? $"{gameObject.DataId}" : string.Empty];
                                 _note = gameObject != null ? gameObject.Name.GetText() : string.Empty;
                                 break;
+                            case "Boss":
+                                IGameObject? gameObject2   = Player.Object.TargetObject;
+                                _note = gameObject2 != null ? gameObject2.Name.GetText() : string.Empty;
+                                break;
                             default:
                                 break;
                         }

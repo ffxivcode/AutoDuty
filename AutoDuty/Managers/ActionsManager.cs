@@ -30,7 +30,7 @@ namespace AutoDuty.Managers
             ("<-- Comment -->","comment?","Adds a Comment to the path; AutoDuty will do nothing but display them.\nExample: <-- Trash Pack #1 -->"),
             ("Wait","how long?", "Adds a Wait (for x milliseconds) step to the path; after moving to the position, AutoDuty will wait x milliseconds.\nExample: Wait|0.02, 23.85, -394.89|8000"),
             ("WaitFor","for?","Adds a WaitFor (Condition) step to the path; after moving to the position, AutoDuty will wait for a condition from the following list:\nCombat - waits until in combat\nIsReady - waits until the player is ready\nIsValid - waits until the player is valid\nIsOccupied - waits until the player is occupied\nBNpcInRadius - waits until a battle npc either spawns or path's into the radius specified\nExample: WaitFor|-12.12, 18.76, -148.05|Combat"),
-            ("Boss","false", "Adds a Boss step to the path; after (and while) moving to the position, AutoDuty will attempt to find the boss object. If not found, AD will wait 10s at the position for the boss to spawn and will then Invoke the Boss Action.\nExample: Boss|-2.91, 2.90, -204.68|"),
+            ("Boss","Loot Loc, Loot Range", "Adds a Boss step to the path; after (and while) moving to the position, AutoDuty will attempt to find the boss object. If not found, AD will wait 10s at the position for the boss to spawn and will then Invoke the Boss Action.\nExample: Boss|-2.91, 2.90, -204.68|"),
             ("Interactable","interact with?", "Adds an Interactable step to the path; after moving to within 2y of the position, AutoDuty will interact with the object specified (recommended to input DataId) until either the object is no longer targetable, you meet certain conditions, or a YesNo/Talk addon appears.\nExample: Interactable|21.82, 7.10, 27.40|1004346 (Goblin Pathfinder)"),
             ("TreasureCoffer","false", "Adds a TreasureCoffer flag to the path; AutoDuty will loot any treasure coffers automatically if it gets within interact range of one (while Config Loop Option is on), this is just a flag to mark the positions of Treasure Coffers.\nNote: AutoDuty will ignore this Path entry when Looting is disabled entirely or Boss Loot Only is enabled.\nExample: TreasureCoffer|3.21, 6.06, -97.63|"),
             ("SelectYesno","yes or no?", "Adds a SelectYesNo step to the path; after moving to the position, AutoDuty will click Yes or No on this addon.\nExample: SelectYesno|9.41, 1.94, -311.25|Yes"),
@@ -603,11 +603,18 @@ namespace AutoDuty.Managers
             {
                 
                 _taskManager.DelayNext("Boss-TreasureDelay", 1000);
-                if(action.Arguments[0].TryGetVector3(out var vector3)) {
-                    _taskManager.Enqueue(() => treasureCofferObjects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => BelowDistanceToPoint(x.Position, vector3, 50, 10)).ToList(), "Boss-GetTreasureChestsBounded");
-                } else {
-                    _taskManager.Enqueue(() => treasureCofferObjects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => BelowDistanceToPlayer(x.Position, 50, 10)).ToList(), "Boss-GetTreasureChestsPlayer");
-                }
+
+                float lootRange = 50f;
+
+                if (action.Arguments.Count > 0 && action.Arguments[0].TryGetVector3(out Vector3 lootPos))
+                    lootRange = 5;
+                else
+                    lootPos = action.Position.LengthSquared() > 0.1f ? action.Position : Player.Position;
+
+                if (action.Arguments.Count > 1)
+                    float.TryParse(action.Arguments[1], out lootRange);
+
+                _taskManager.Enqueue(() => treasureCofferObjects = GetObjectsByObjectKind(Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Treasure)?.Where(x => BelowDistanceToPoint(x.Position, lootPos, lootRange, 10)).ToList(), "Boss-GetTreasureChestsBounded");
                 _taskManager.Enqueue(() => BossLoot(treasureCofferObjects, index), "Boss-LootCheck");
             }
         }
