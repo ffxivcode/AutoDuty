@@ -447,10 +447,12 @@ namespace AutoDuty.Managers
 
             if (EzThrottler.Throttle("Interactable", 1000))
             {
-                if (!TryGetObjectByDataId(gameObject?.DataId ?? 0, out gameObject)) return true;
-
+                if (!TryGetObjectByDataId(gameObject?.DataId ?? 0, igo => igo.IsTargetable, out gameObject)) return true;
+                
                 if (GetBattleDistanceToPlayer(gameObject!) > 2f)
+                {
                     MovementHelper.Move(gameObject, 0.25f, 2f, false);
+                }
                 else
                 {
                     Svc.Log.Debug($"InteractableCheck: Interacting with {gameObject!.Name} at {gameObject.Position} which is {GetDistanceToPlayer(gameObject)} away, because game object is not null: {gameObject != null} and IsTargetable: {gameObject!.IsTargetable} and IsValid: {gameObject.IsValid()}");
@@ -517,25 +519,27 @@ namespace AutoDuty.Managers
             else
                 dataIds.Add(TryGetObjectIdRegex(action.Arguments[0], out objectDataId) ? (uint.TryParse(objectDataId, out var dataId) ? dataId : 0) : 0);
 
-            if (dataIds.All(x => x.Equals("0"))) return;
+            if (dataIds.All(x => x.Equals(0u))) return;
 
             IGameObject? gameObject = null;
             Plugin.Action = $"Interactable";
-            _taskManager.Enqueue(() => Player.Character->InCombat || (gameObject = Svc.Objects.Where(x => x.DataId.EqualsAny(dataIds) && x.IsTargetable).OrderBy(GetDistanceToPlayer).FirstOrDefault()) != null, "Interactable-GetGameObjectUnlessInCombat");
+            _taskManager.Enqueue(() => (Player.Character->InCombat && Plugin.StopForCombat) || (gameObject = Svc.Objects.Where(x => x.DataId.EqualsAny(dataIds) && x.IsTargetable).OrderBy(GetDistanceToPlayer).FirstOrDefault()) != null, "Interactable-GetGameObjectUnlessInCombat");
             _taskManager.Enqueue(() => { Plugin.Action = $"Interactable: {gameObject?.DataId}"; }, "Interactable-SetActionVar");
             _taskManager.Enqueue(() =>
             {
-                if (Player.Character->InCombat)
+                if (Player.Character->InCombat && Plugin.StopForCombat)
                 {
                     _taskManager.Abort();
                     _taskManager.Enqueue(() => !Player.Character->InCombat, int.MaxValue, "Interactable-InCombatWait");
-                    Interactable(action);
+                    this.Interactable(action);
                 }
                 else if (gameObject == null)
+                {
                     _taskManager.Abort();
-                }, "Interactable-InCombatCheck");
+                }
+            }, "Interactable-InCombatCheck");
             _taskManager.Enqueue(() => gameObject?.IsTargetable ?? true, "Interactable-WaitGameObjectTargetable");
-            _taskManager.Enqueue(() => Interactable(gameObject), "Interactable-InteractableLoop");
+            _taskManager.Enqueue(() => this.Interactable(gameObject),       "Interactable-InteractableLoop");
         }
 
         private bool TryGetObjectIdRegex(string input, out string output) => (RegexHelper.ObjectIdRegex().Match(input).Success ? output = RegexHelper.ObjectIdRegex().Match(input).Captures.First().Value : output = string.Empty) != string.Empty;
