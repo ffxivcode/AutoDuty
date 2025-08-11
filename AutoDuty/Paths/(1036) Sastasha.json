@@ -207,6 +207,19 @@
         ""
       ],
       "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": -332.47,
+        "Y": 5.57,
+        "Z": 317.23
+      },
+      "Arguments": [
+        ""
+      ],
+      "Note": ""
     }
   ],
   "Meta": {
@@ -235,9 +248,14 @@
       {
         "Version": 230,
         "Change": "Adjusted boss loot search"
+      },
+      {
+        "Version": 231,
+        "Change": "Re-added last boss step"
       }
     ],
     "Notes": []
   }
 
 }
+
