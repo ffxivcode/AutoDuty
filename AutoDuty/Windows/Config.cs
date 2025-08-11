@@ -855,6 +855,8 @@ public class Configuration
                 SchedulerHelper.ScheduleAction("OverlayNoBGSetter", () => { if (Plugin.Overlay.Flags.HasFlag(ImGuiWindowFlags.NoBackground)) Plugin.Overlay.Flags -= ImGuiWindowFlags.NoBackground; }, () => Plugin.Overlay != null);
         }
     }
+
+    public bool OverlayAnchorBottom           = false;
     public bool ShowDutyLoopText       = true;
     public bool ShowActionText         = true;
     public bool UseSliderInputs        = false;
@@ -1304,12 +1306,15 @@ public static class ConfigTab
                     Configuration.Save();
                 }
                 ImGui.NextColumn();
+                if (ImGui.Checkbox("Show AD Action Text", ref Configuration.ShowActionText))
+                    Configuration.Save();
+                ImGui.NextColumn();
+                if (ImGui.Checkbox("Anchor at Bottom", ref Configuration.OverlayAnchorBottom))
+                    Configuration.Save();
+                ImGui.NextColumn();
                 if (ImGui.Checkbox("Override Overlay Buttons", ref Configuration.OverrideOverlayButtons))
                     Configuration.Save();
                 ImGuiComponents.HelpMarker("Overlay buttons by default are enabled if their config is enabled\nThis will allow you to chose which buttons are enabled");
-                ImGui.NextColumn();
-                if (ImGui.Checkbox("Show AD Action Text", ref Configuration.ShowActionText))
-                    Configuration.Save();
                 if (Configuration.OverrideOverlayButtons)
                 {
                     ImGui.Indent();
