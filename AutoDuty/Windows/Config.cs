@@ -1730,7 +1730,7 @@ public static class ConfigTab
                 ImGui.Unindent();
             }
             ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-            if (ImGui.InputInt("Minimum time before declared stuck (in ms)", ref Configuration.MinStuckTime))
+            if (ImGui.InputInt("Minimum time before declared stuck (in ms)", ref Configuration.MinStuckTime, 10, 100))
             {
                 Configuration.MinStuckTime = Math.Max(250, Configuration.MinStuckTime);
                 Configuration.Save();
@@ -1743,7 +1743,7 @@ public static class ConfigTab
             {
                 ImGui.SameLine();
                 int rebuildX = Configuration.RebuildNavmeshAfterStuckXTimes;
-                if(ImGui.InputInt("times##RebuildNavmeshAfterStuckXTimes", ref rebuildX))
+                if(ImGui.InputInt("times##RebuildNavmeshAfterStuckXTimes", ref rebuildX, 1))
                 {
                     Configuration.RebuildNavmeshAfterStuckXTimes = (byte) Math.Clamp(rebuildX, byte.MinValue+1, byte.MaxValue);
                     Configuration.Save();
@@ -2080,7 +2080,7 @@ public static class ConfigTab
 
                     using (ImRaii.Disabled(Configuration.AutoConsumeIgnoreStatus))
                     {
-                        if (ImGui.InputInt("Min time remaining", ref Configuration.AutoConsumeTime))
+                        if (ImGui.InputInt("Min time remaining", ref Configuration.AutoConsumeTime, 1))
                         {
                             Configuration.AutoConsumeTime = Math.Clamp(Configuration.AutoConsumeTime, 0, 59);
                             Configuration.Save();
@@ -2175,7 +2175,7 @@ public static class ConfigTab
 
                 ImGui.Separator();
                 ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - ImGui.CalcItemWidth());
-                if (ImGui.InputInt("(s) Wait time between loops", ref Configuration.WaitTimeBeforeAfterLoopActions))
+                if (ImGui.InputInt("(s) Wait time between loops", ref Configuration.WaitTimeBeforeAfterLoopActions, 10, 100))
                 {
                     if (Configuration.WaitTimeBeforeAfterLoopActions < 0) Configuration.WaitTimeBeforeAfterLoopActions = 0;
                     Configuration.Save();
@@ -2394,7 +2394,7 @@ public static class ConfigTab
                             {
                                 Configuration.AutoGCTurninSlotsLeft = Math.Clamp(Configuration.AutoGCTurninSlotsLeft, 0, 140);
 
-                                if (ImGui.InputInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft))
+                                if (ImGui.InputInt("##Slots", ref Configuration.AutoGCTurninSlotsLeft, 1))
                                 {
                                     Configuration.AutoGCTurninSlotsLeft = Math.Clamp(Configuration.AutoGCTurninSlotsLeft, 0, 140);
                                     Configuration.Save();
@@ -2509,7 +2509,7 @@ public static class ConfigTab
                     }
                     else
                     {
-                        if (ImGui.InputInt("##Level", ref Configuration.StopLevelInt))
+                        if (ImGui.InputInt("##Level", ref Configuration.StopLevelInt, 1, 5))
                         {
                             Configuration.StopLevelInt = Math.Clamp(Configuration.StopLevelInt, 1, 100);
                             Configuration.Save();
@@ -2541,7 +2541,7 @@ public static class ConfigTab
                     }
                     ImGui.PopItemWidth();
                     ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 220 * ImGuiHelpers.GlobalScale);
-                    if (ImGui.InputInt("Quantity", ref Configuration.StopItemQtyInt))
+                    if (ImGui.InputInt("Quantity", ref Configuration.StopItemQtyInt, 1, 10))
                         Configuration.Save();
 
                     ImGui.SameLine(0, 5);
