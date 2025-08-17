@@ -127,6 +127,13 @@ namespace AutoDuty.Data
             All     = 3
         }
 
+        public enum GearsetUpdateSource : int
+        {
+            Vanilla,
+            Gearsetter,
+            Stylist
+        }
+
         public enum Housing : int
         {
             Apartment = 1,
@@ -336,6 +343,20 @@ namespace AutoDuty.Data
             SmallBlue = 60779,
             MediumBlue = 60780,
             LargeBlue = 60781,
+        }
+
+        public enum ExternalPlugin
+        {
+            vnav,
+            BossMod,
+            Avarice,
+            RotationSolverReborn,
+            Wrath,
+            AutoRetainer,
+            Gearsetter,
+            Stylist,
+            Lifestream,
+            AntiAFK
         }
 
         public static bool HasAnyFlag<T>(this T instance, params T[] parameter) where T : Enum
