@@ -133,7 +133,7 @@ namespace AutoDuty.Helpers
             ImGui.SameLine();
         }
 
-        internal static IEndObject RequiresPlugin(ExternalPlugin plugin, string? message = null, bool inline = false)
+        internal static IEndObject RequiresPlugin(ExternalPlugin plugin, string id, string? message = null, bool inline = false)
         {
             if (IPCSubscriber_Common.IsReady(plugin.GetExternalPluginData().name))
             {
@@ -157,12 +157,11 @@ namespace AutoDuty.Helpers
                                                   if (inline)
                                                       ImGui.SameLine();
                                                   ImGui.Text(message ?? $"{(inline ? "| " : "\t")} requires ");
-                                                  if (inline)
-                                                      ImGui.SameLine(0,1);
+                                                  ImGui.SameLine(0,1);
                                                   ImGui.TextColored(LinkColor, plugin.GetExternalPluginName());
 
                                                   ImGui.SameLine(0, 5);
-                                                  if (ImGui.Button("Install"))
+                                                  if (ImGui.Button($"Install##InstallExternalPlugin_{plugin}_{id}"))
                                                       PluginInstaller.InstallPlugin(plugin);
                                               }, true);
             }
