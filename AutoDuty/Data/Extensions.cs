@@ -138,5 +138,37 @@ namespace AutoDuty.Data
                 _ => "Unknown",
             };
         }
+
+        public static (string url, string name) GetExternalPluginData(this ExternalPlugin plugin) =>
+            plugin switch
+            {
+                ExternalPlugin.vnav => (@"https://puni.sh/api/repository/veyn", "vnavmesh"),
+                ExternalPlugin.BossMod => (@"https://puni.sh/api/repository/veyn", "BossMod"),
+                ExternalPlugin.Avarice => (@"https://love.puni.sh/ment.json", "Avarice"),
+                ExternalPlugin.RotationSolverReborn => (@"https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json", "RotationSolver"),
+                ExternalPlugin.Wrath => (@"https://love.puni.sh/ment.json", "WrathCombo"),
+                ExternalPlugin.AutoRetainer => (@"https://love.puni.sh/ment.json", "AutoRetainer"),
+                ExternalPlugin.Gearsetter => (@"https://plugins.carvel.li/", "Gearsetter"),
+                ExternalPlugin.Stylist => (@"https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json", "Stylist"),
+                ExternalPlugin.Lifestream => (@"https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json", "Lifestream"),
+                ExternalPlugin.AntiAFK => (@"https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json", "AntiAfkKick-Dalamud"),
+                _ => throw new ArgumentOutOfRangeException(nameof(plugin), plugin, null)
+            };
+
+        public static string GetExternalPluginName(this ExternalPlugin plugin) =>
+            plugin switch
+            {
+                ExternalPlugin.vnav => "vnavmesh",
+                ExternalPlugin.BossMod => "Boss Mod",
+                ExternalPlugin.Avarice => "Avarice",
+                ExternalPlugin.RotationSolverReborn => "Rotation Solver Reborn",
+                ExternalPlugin.Wrath => "Wrath Combo",
+                ExternalPlugin.AutoRetainer => "AutoRetainer",
+                ExternalPlugin.Gearsetter => "Gearsetter",
+                ExternalPlugin.Stylist => "Stylist",
+                ExternalPlugin.Lifestream => "Lifestream",
+                ExternalPlugin.AntiAFK => "Anti-AfkKick",
+                _ => throw new ArgumentOutOfRangeException(nameof(plugin), plugin, null)
+            };
     }
 }
