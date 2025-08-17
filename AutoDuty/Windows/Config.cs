@@ -1947,7 +1947,7 @@ public static class ConfigTab
                     {
                         foreach (GearsetUpdateSource updateSource in Enum.GetValues(typeof(GearsetUpdateSource)))
                         {
-                            using (updateSource == GearsetUpdateSource.Vanilla ? _ : ImGuiHelper.RequiresPlugin(updateSource == GearsetUpdateSource.Gearsetter ? ExternalPlugin.Gearsetter : ExternalPlugin.Stylist, inline: true))
+                            using (updateSource == GearsetUpdateSource.Vanilla ? _ : ImGuiHelper.RequiresPlugin(updateSource == GearsetUpdateSource.Gearsetter ? ExternalPlugin.Gearsetter : ExternalPlugin.Stylist, "GearSet", inline: true))
                             {
                                 if (ImGui.Selectable(updateSource.ToCustomString(), flags: ImGuiSelectableFlags.AllowItemOverlap))
                                 {
@@ -2349,7 +2349,7 @@ public static class ConfigTab
                 }
                 ImGui.NextColumn();
                 //ImGui.SameLine(0, 5);
-                using (ImGuiHelper.RequiresPlugin(ExternalPlugin.AutoRetainer))
+                using (ImGuiHelper.RequiresPlugin(ExternalPlugin.AutoRetainer, "GCTurnin"))
                 {
                     if (ImGui.Checkbox("Auto GC Turnin", ref Configuration.autoGCTurnin))
                     {
@@ -2432,10 +2432,6 @@ public static class ConfigTab
                         Configuration.AutoGCTurnin = false;
                         Configuration.Save();
                     }
-                    ImGui.Text("* Auto GC Turnin Requires AutoRetainer plugin");
-                    ImGui.Text("Get @ ");
-                    ImGui.SameLine(0, 0);
-                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://love.puni.sh/ment.json");
                 }
 
                 if(ImGui.Checkbox("Triple Triad", ref Configuration.TripleTriadEnabled))
@@ -2450,7 +2446,7 @@ public static class ConfigTab
                     ImGui.Unindent();
                 }
 
-                using (ImGuiHelper.RequiresPlugin(ExternalPlugin.AutoRetainer, inline: true))
+                using (ImGuiHelper.RequiresPlugin(ExternalPlugin.AutoRetainer, "AR", inline: true))
                 {
                     if (ImGui.Checkbox("Enable AutoRetainer Integration", ref Configuration.EnableAutoRetainer))
                         Configuration.Save();
