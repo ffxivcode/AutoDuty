@@ -927,7 +927,7 @@ public class Configuration
     public List<System.Numerics.Vector3>              PersonalHomeEntrancePath = [];
     public List<System.Numerics.Vector3>              FCEstateEntrancePath     = [];
     public bool                                       AutoEquipRecommendedGear;
-    public bool                                       AutoEquipRecommendedGearGearsetter;
+    public GearsetUpdateSource                        AutoEquipRecommendedGearSource;
     public bool                                       AutoEquipRecommendedGearGearsetterOldToInventory;
     public bool                                       AutoRepair              = false;
     public uint                                       AutoRepairPct           = 50;
@@ -1813,7 +1813,7 @@ public static class ConfigTab
 
                 if (ImGui.Checkbox("Using Alternative Boss Plugin", ref Configuration.UsingAlternativeBossPlugin))
                     Configuration.Save();
-                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than BossMod/BMR.");
+                ImGuiComponents.HelpMarker("You are deciding to use a plugin other than BossMod.");
             }
         }
 
@@ -1939,18 +1939,36 @@ public static class ConfigTab
                 if (ImGui.Checkbox("Auto Equip Recommended Gear", ref Configuration.AutoEquipRecommendedGear))
                     Configuration.Save();
 
-                ImGuiComponents.HelpMarker("Uses Gear from Armory Chest Only");
+                using (ImRaii.Disabled(!Configuration.AutoEquipRecommendedGear))
+                {
+                    ImGui.SameLine(0, 5);
+                    ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X/3*2);
+                    if (ImGui.BeginCombo("##AutoEquipRecommendedSource", Configuration.AutoEquipRecommendedGearSource.ToCustomString()))
+                    {
+                        foreach (GearsetUpdateSource updateSource in Enum.GetValues(typeof(GearsetUpdateSource)))
+                        {
+                            using (updateSource == GearsetUpdateSource.Vanilla ? _ : ImGuiHelper.RequiresPlugin(updateSource == GearsetUpdateSource.Gearsetter ? ExternalPlugin.Gearsetter : ExternalPlugin.Stylist, inline: true))
+                            {
+                                if (ImGui.Selectable(updateSource.ToCustomString(), flags: ImGuiSelectableFlags.AllowItemOverlap))
+                                {
+                                    Configuration.AutoEquipRecommendedGearSource = updateSource;
+                                    Configuration.Save();
+                                }
+                            }
+                        }
+
+                        ImGui.EndCombo();
+                    }
+                }
+
+                ImGuiComponents.HelpMarker("Vanilla - Uses Gear from Armory Chest Only\nGearsetter - Asks gearsetter, can move old items to inventory\nStylist - Uses your stylist settings");
 
 
                 if (Configuration.AutoEquipRecommendedGear)
                 {
                     ImGui.Indent();
-                    using (ImRaii.Disabled(!Gearsetter_IPCSubscriber.IsEnabled))
-                    {
-                        if (ImGui.Checkbox("Consider items outside of armoury chest", ref Configuration.AutoEquipRecommendedGearGearsetter))
-                            Configuration.Save();
-
-                        if (Configuration.AutoEquipRecommendedGearGearsetter)
+                    if(Configuration.AutoEquipRecommendedGearSource == GearsetUpdateSource.Gearsetter)
+                        using (ImRaii.Disabled(!Gearsetter_IPCSubscriber.IsEnabled))
                         {
                             ImGui.Indent();
                             if (ImGui.Checkbox("Move old items to inventory", ref Configuration.AutoEquipRecommendedGearGearsetterOldToInventory))
@@ -1958,21 +1976,21 @@ public static class ConfigTab
                             ImGuiComponents.HelpMarker("Except for weapons, this will move the gear to be replaced to the inventory.");
                             ImGui.Unindent();
                         }
-                    }
 
-                    if (!Gearsetter_IPCSubscriber.IsEnabled)
+                    if (!Gearsetter_IPCSubscriber.IsEnabled && !Stylist_IPCSubscriber.IsEnabled)
                     {
-                        if (Configuration.AutoEquipRecommendedGearGearsetter)
-                        {
-                            Configuration.AutoEquipRecommendedGearGearsetter = false;
-                            Configuration.Save();
-                        }
-
-                        ImGui.Text("* Items outside the armoury chest requires Gearsetter plugin");
-                        ImGui.Text("Get @ ");
-                        ImGui.SameLine(0, 0);
-                        ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://plugins.carvel.li");
+                        ImGui.Text("* Items outside the armoury chest requires Gearsetter or Stylist plugin");
                     }
+
+
+                    if (Configuration.AutoEquipRecommendedGearSource == GearsetUpdateSource.Gearsetter && !Gearsetter_IPCSubscriber.IsEnabled ||
+                        Configuration.AutoEquipRecommendedGearSource == GearsetUpdateSource.Stylist    && !Stylist_IPCSubscriber.IsEnabled)
+                    {
+
+                        Configuration.AutoEquipRecommendedGearSource = GearsetUpdateSource.Vanilla;
+                        Configuration.Save();
+                    }
+
 
                     ImGui.Unindent();
                 }
@@ -2331,7 +2349,7 @@ public static class ConfigTab
                 }
                 ImGui.NextColumn();
                 //ImGui.SameLine(0, 5);
-                using (ImRaii.Disabled(!AutoRetainer_IPCSubscriber.IsEnabled))
+                using (ImGuiHelper.RequiresPlugin(ExternalPlugin.AutoRetainer))
                 {
                     if (ImGui.Checkbox("Auto GC Turnin", ref Configuration.autoGCTurnin))
                     {
@@ -2370,11 +2388,9 @@ public static class ConfigTab
                             ImGui.Unindent();
                         }
                     }
-
+                    ImGui.NextColumn();
                     if (Configuration.AutoGCTurnin)
                     {
-                        ImGui.NextColumn();
-
                         ImGui.Indent();
                         if (ImGui.Checkbox("Inventory Slots Left @", ref Configuration.AutoGCTurninSlotsLeftBool))
                             Configuration.Save();
@@ -2424,8 +2440,6 @@ public static class ConfigTab
 
                 if(ImGui.Checkbox("Triple Triad", ref Configuration.TripleTriadEnabled))
                     Configuration.Save();
-                ImGui.SameLine();
-                ImGui.TextColored(Configuration.TripleTriadEnabled ? GradientColor.Get(ImGuiHelper.ExperimentalColor, ImGuiHelper.ExperimentalColor2, 500) : ImGuiHelper.ExperimentalColor, "EXPERIMENTAL");
                 if (Configuration.TripleTriadEnabled)
                 {
                     ImGui.Indent();
@@ -2436,7 +2450,7 @@ public static class ConfigTab
                     ImGui.Unindent();
                 }
 
-                using (ImRaii.Disabled(!AutoRetainer_IPCSubscriber.IsEnabled))
+                using (ImGuiHelper.RequiresPlugin(ExternalPlugin.AutoRetainer, inline: true))
                 {
                     if (ImGui.Checkbox("Enable AutoRetainer Integration", ref Configuration.EnableAutoRetainer))
                         Configuration.Save();
@@ -2465,10 +2479,6 @@ public static class ConfigTab
                         Configuration.EnableAutoRetainer = false;
                         Configuration.Save();
                     }
-                    ImGui.Text("* AutoRetainer requires a plugin");
-                    ImGui.Text("Visit ");
-                    ImGui.SameLine(0, 0);
-                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://puni.sh/plugin/AutoRetainer");
                 }
             }
         }
