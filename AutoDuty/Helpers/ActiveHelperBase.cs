@@ -34,9 +34,13 @@ namespace AutoDuty.Helpers
         {
             get
             {
-                T helper = new();
-                ActiveHelper.activeHelpers.Add(helper);
-                return instance ??= helper;
+                if (instance == null)
+                {
+                    T helper = new();
+                    ActiveHelper.activeHelpers.Add(helper);
+                    instance = helper;
+                }
+                return instance;
             }
         }
 
