@@ -15,20 +15,25 @@ namespace AutoDuty.Helpers
     {
         internal override void Start()
         {
-            if (Plugin.Configuration.AutoEquipRecommendedGearGearsetter && Gearsetter_IPCSubscriber.IsEnabled)
+            switch (Plugin.Configuration.AutoEquipRecommendedGearSource)
             {
-                this.TimeOut    = 5000;
-                this.gearsetter = true;
-            }
-            else
-            {
-                this.TimeOut    = 2000;
-                this.gearsetter = false;
+                case GearsetUpdateSource.Gearsetter when Gearsetter_IPCSubscriber.IsEnabled:
+                    this.TimeOut = 5000;
+                    this.source  = GearsetUpdateSource.Gearsetter;
+                    break;
+                case GearsetUpdateSource.Stylist when Stylist_IPCSubscriber.IsEnabled:
+                    this.TimeOut = 2000;
+                    this.source  = GearsetUpdateSource.Stylist;
+                    break;
+                default:
+                    this.TimeOut = 2000;
+                    this.source  = GearsetUpdateSource.Vanilla;
+                    break;
             }
             base.Start();
         }
 
-        private bool gearsetter;
+        private GearsetUpdateSource source;
 
         protected override string Name        => nameof(AutoEquipHelper);
         protected override string DisplayName => "Auto Equip";
@@ -38,10 +43,18 @@ namespace AutoDuty.Helpers
 
         protected override void     HelperUpdate(IFramework framework)
         {
-            if(this.gearsetter)
-                this.AutoEquipGearSetterUpdate(framework);
-            else
-                this.AutoEquipUpdate(framework);
+            switch (this.source)
+            {
+                case GearsetUpdateSource.Vanilla:
+                    this.AutoEquipUpdate(framework);
+                    break;
+                case GearsetUpdateSource.Gearsetter:
+                    this.AutoEquipGearSetterUpdate(framework);
+                    break;
+                case GearsetUpdateSource.Stylist:
+                    this.AutoEquipStylistUpdate(framework);
+                    break;
+            }
         }
 
         internal override void Stop()
@@ -195,6 +208,43 @@ namespace AutoDuty.Helpers
             {
                 DebugLog($"Gearsetter doesn't recommend any more");
                 this.Stop();
+            }
+        }
+
+        private void AutoEquipStylistUpdate(IFramework framework)
+        {
+            const string throttleName = "AutoEquip_Stylist";
+
+            if (!EzThrottler.Throttle(throttleName, 250))
+                return;
+
+            switch (this._statesExecuted)
+            {
+                case AutoEquipState.None:
+                    this._statesExecuted = AutoEquipState.Setting_Up;
+                    break;
+                case AutoEquipState.Setting_Up:
+                    this.DebugLog($"RaptureGearsetModule - UpdateGearset");
+                    RaptureGearsetModule.Instance()->UpdateGearset(RaptureGearsetModule.Instance()->CurrentGearsetIndex);
+                    this._statesExecuted = AutoEquipState.Equipping;
+                    EzThrottler.Throttle(throttleName, 500, true);
+                    break;
+                case AutoEquipState.Equipping:
+                    this.DebugLog($"Stylist - UpdateCurrentGearset");
+                    Stylist_IPCSubscriber.UpdateCurrentGearset(null);
+                    this._statesExecuted = AutoEquipState.Updating_Gearset;
+                    break;
+                case AutoEquipState.Updating_Gearset:
+                    this.Stop();
+                    break;
+                case AutoEquipState.Getting_Recommended_Gear:
+                case AutoEquipState.Recommended_Gear_Need_Second_Pass:
+                case AutoEquipState.Updating_Gearset_Second_Pass:
+                case AutoEquipState.Getting_Recommended_Gear_Second_Pass:
+                default:
+                    this.DebugLog("How.. did we get here");
+                    this.Stop();
+                    break;
             }
         }
     }

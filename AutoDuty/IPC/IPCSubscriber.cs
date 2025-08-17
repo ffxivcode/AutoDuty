@@ -210,6 +210,15 @@ namespace AutoDuty.IPC
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
 
+    internal static class Stylist_IPCSubscriber
+    {
+        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Stylist_IPCSubscriber), "Stylist", SafeWrapper.IPCException);
+        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Stylist");
+        [EzIPC] internal static readonly Action<bool?> UpdateCurrentGearset;
+        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+    }
+
+
     internal static class VNavmesh_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(VNavmesh_IPCSubscriber), "vnavmesh", SafeWrapper.IPCException);
