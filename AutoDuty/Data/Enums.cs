@@ -23,6 +23,14 @@ namespace AutoDuty.Data
             W2W      = 1 << 5
         }
 
+        public enum RotationPlugin
+        {
+            BossMod              = 0,
+            RotationSolverReborn = 1,
+            WrathCombo           = 2,
+            All                  = 3
+        }
+
         public enum ClassJobType
         {
             Adventurer = 0,
@@ -351,7 +359,7 @@ namespace AutoDuty.Data
             BossMod,
             Avarice,
             RotationSolverReborn,
-            Wrath,
+            WrathCombo,
             AutoRetainer,
             Gearsetter,
             Stylist,

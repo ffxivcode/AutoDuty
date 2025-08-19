@@ -46,6 +46,7 @@ using ECommons.SimpleGui;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using Lumina.Excel.Sheets;
 using Pictomancy;
+using Serilog;
 using static Data.Classes;
 using TaskManager = ECommons.Automation.LegacyTaskManager.TaskManager;
 
@@ -1277,60 +1278,82 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (!ignoreConfig && !this.Configuration.AutoManageRotationPluginState)
             return;
-        bool bmEnabled     = BossMod_IPCSubscriber.IsEnabled;
-        bool foundRotation = false;
 
-        if (Wrath_IPCSubscriber.IsEnabled)
+        bool EnableWrath(bool active)
         {
-            bool wrathRotationReady = true;
-            if (on)
-                wrathRotationReady = Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady() ||
-                                     this.Configuration.Wrath_AutoSetupJobs && Wrath_IPCSubscriber.SetJobAutoReady();
-
-            if (!on || wrathRotationReady)
+            if (Wrath_IPCSubscriber.IsEnabled)
             {
-                Svc.Log.Debug("Wrath rotation enabled");
-                Wrath_IPCSubscriber.SetAutoMode(on);
-                foundRotation = true;
-            }
-        }
+                bool wrathRotationReady = true;
+                if (active)
+                    wrathRotationReady = Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady() ||
+                                         this.Configuration.Wrath_AutoSetupJobs && Wrath_IPCSubscriber.SetJobAutoReady();
 
-        if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
-        {
-            if (on && !foundRotation)
-            {
-                Svc.Log.Debug("RSR enabled");
-                if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Auto)
-                    ReflectionHelper.RotationSolver_Reflection.RotationAuto();
-                foundRotation = true;
-            }
-            else
-            {
-                if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
-                    ReflectionHelper.RotationSolver_Reflection.RotationStop();
-            }
-        }
-
-
-        if (bmEnabled)
-        {
-            if (on)
-            {
-                BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
-                if (!foundRotation)
+                if (!active || wrathRotationReady)
                 {
-                    BossMod_IPCSubscriber.SetPreset("AutoDuty", Resources.AutoDutyPreset);
+                    Svc.Log.Debug("Wrath rotation:" + active);
+                    Wrath_IPCSubscriber.SetAutoMode(active);
+                    return active;
                 }
-                else if(this.Configuration.AutoManageBossModAISettings)
-                {
-                    BossMod_IPCSubscriber.SetPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
-                }
-            } 
-            else if(!foundRotation || this.Configuration.AutoManageBossModAISettings)
-            {
-                BossMod_IPCSubscriber.DisablePresets();
             }
+            return false;
         }
+
+        bool EnableRSR(bool active)
+        {
+            if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+            {
+                if (active)
+                {
+                    if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Auto)
+                        ReflectionHelper.RotationSolver_Reflection.RotationAuto();
+                }
+                else
+                {
+                    if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
+                        ReflectionHelper.RotationSolver_Reflection.RotationStop();
+                }
+                Svc.Log.Debug("RSR: " + active);
+                return true;
+            }
+
+            return false;
+        }
+
+        bool EnableBM(bool active, bool rotation)
+        {
+            if (BossMod_IPCSubscriber.IsEnabled)
+            {
+                if (active)
+                {
+                    BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
+                    if (rotation)
+                        BossMod_IPCSubscriber.SetPreset("AutoDuty", Resources.AutoDutyPreset);
+                    else if (this.Configuration.AutoManageBossModAISettings)
+                        BossMod_IPCSubscriber.SetPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
+                }
+                else if (!rotation || this.Configuration.AutoManageBossModAISettings)
+                {
+                    BossMod_IPCSubscriber.DisablePresets();
+                }
+            }
+            return false;
+        }
+
+        bool act = on;
+
+        
+
+        bool wrathEnabled = this.Configuration.rotationPlugin is RotationPlugin.WrathCombo or RotationPlugin.All;
+        bool wrath        = EnableWrath(on && wrathEnabled);
+        if (on && wrathEnabled)
+            act = !wrath;
+        
+        bool rsrEnabled = this.Configuration.rotationPlugin is RotationPlugin.RotationSolverReborn or RotationPlugin.All;
+        bool rsr        = EnableRSR(act && on && rsrEnabled);
+        if (on && rsrEnabled) 
+            act = !rsr;
+
+        EnableBM(on, act && this.Configuration.rotationPlugin is RotationPlugin.BossMod or RotationPlugin.All);
     }
 
     internal void SetBMSettings(bool defaults = false)
