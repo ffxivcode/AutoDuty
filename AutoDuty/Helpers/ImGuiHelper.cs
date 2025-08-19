@@ -133,12 +133,15 @@ namespace AutoDuty.Helpers
             ImGui.SameLine();
         }
 
-        internal static IEndObject RequiresPlugin(ExternalPlugin plugin, string id, string? message = null, bool inline = false)
+        internal static IEndObject RequiresPlugin(ExternalPlugin plugin, string id, string? message = null, bool inline = false, bool write = true)
         {
             if (IPCSubscriber_Common.IsReady(plugin.GetExternalPluginData().name))
             {
                 return new EndUnconditionally(() =>
                                               {
+                                                  if (!write)
+                                                      return;
+
                                                   if(inline)
                                                       ImGui.SameLine();
                                                   ImGui.Text($"{(inline ? "| " : "\t")}powered by ");
@@ -153,6 +156,10 @@ namespace AutoDuty.Helpers
                 return new EndUnconditionally(() =>
                                               {
                                                   ImGui.EndDisabled();
+
+                                                  if (!write)
+                                                      return;
+
                                                   ImGui.AlignTextToFramePadding();
                                                   if (inline)
                                                       ImGui.SameLine();

@@ -804,7 +804,8 @@ public class Configuration
 
     public bool ShowMainWindowOnStartup = false;
 
-    //Overlay Config Options
+    
+    #region OverlayConfig
     internal bool showOverlay = true;
     public bool ShowOverlay
     {
@@ -869,12 +870,24 @@ public class Configuration
     public bool EquipButton            = true;
     public bool CofferButton           = true;
     public bool TTButton               = true;
+    #endregion
 
-
+    #region DutyConfig
     //Duty Config Options
-    public   bool AutoExitDuty                  = true;
-    public   bool OnlyExitWhenDutyDone          = false;
-    public   bool AutoManageRotationPluginState = true;
+    public bool           AutoExitDuty                  = true;
+    public bool           OnlyExitWhenDutyDone          = false;
+    public bool           AutoManageRotationPluginState = true;
+    public RotationPlugin rotationPlugin                = RotationPlugin.All;
+
+    #region Wrath
+    public bool                                Wrath_AutoSetupJobs { get; set; } = true;
+    public Wrath_IPCSubscriber.DPSRotationMode Wrath_TargetingTank    = Wrath_IPCSubscriber.DPSRotationMode.Highest_Max;
+    public Wrath_IPCSubscriber.DPSRotationMode Wrath_TargetingNonTank = Wrath_IPCSubscriber.DPSRotationMode.Lowest_Current;
+    #endregion
+
+
+
+
     internal bool autoManageBossModAISettings   = true;
     public bool AutoManageBossModAISettings
     {
@@ -885,6 +898,44 @@ public class Configuration
             HideBossModAIConfig = !value;
         }
     }
+
+    #region BossMod
+    public bool HideBossModAIConfig           = false;
+    public bool BM_UpdatePresetsAutomatically = true;
+
+
+    internal bool maxDistanceToTargetRoleBased = true;
+    public bool MaxDistanceToTargetRoleBased
+    {
+        get => maxDistanceToTargetRoleBased;
+        set
+        {
+            maxDistanceToTargetRoleBased = value;
+            if (value)
+                SchedulerHelper.ScheduleAction("MaxDistanceToTargetRoleBasedBMRoleChecks", () => Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
+        }
+    }
+    public float MaxDistanceToTargetFloat    = 2.6f;
+    public float MaxDistanceToTargetAoEFloat = 12;
+
+    internal bool positionalRoleBased = true;
+    public bool PositionalRoleBased
+    {
+        get => positionalRoleBased;
+        set
+        {
+            positionalRoleBased = value;
+            if (value)
+                SchedulerHelper.ScheduleAction("PositionalRoleBasedBMRoleChecks", () => Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
+        }
+    }
+    public float MaxDistanceToTargetRoleMelee  = 2.6f;
+    public float MaxDistanceToTargetRoleRanged = 10f;
+    #endregion
+
+    internal bool       positionalAvarice = true;
+    public   Positional PositionalEnum    = Positional.Any;
+
     public bool       AutoManageVnavAlignCamera      = true;
     public bool       LootTreasure                   = true;
     public LootMethod LootMethodEnum                 = LootMethod.AutoDuty;
@@ -916,16 +967,16 @@ public class Configuration
 
         return unsync.Value && this.TreatUnsyncAsW2W;
     }
+    #endregion
 
-
-    //PreLoop Config Options
+    #region PreLoop
     public bool                                       EnablePreLoopActions     = true;
     public bool                                       ExecuteCommandsPreLoop   = false;
     public List<string>                               CustomCommandsPreLoop    = [];
     public bool                                       RetireMode               = false;
     public RetireLocation                             RetireLocationEnum       = RetireLocation.Inn;
-    public List<System.Numerics.Vector3>              PersonalHomeEntrancePath = [];
-    public List<System.Numerics.Vector3>              FCEstateEntrancePath     = [];
+    public List<Vector3>                              PersonalHomeEntrancePath = [];
+    public List<Vector3>                              FCEstateEntrancePath     = [];
     public bool                                       AutoEquipRecommendedGear;
     public GearsetUpdateSource                        AutoEquipRecommendedGearSource;
     public bool                                       AutoEquipRecommendedGearGearsetterOldToInventory;
@@ -937,8 +988,10 @@ public class Configuration
     public bool                                       AutoConsumeIgnoreStatus = false;
     public int                                        AutoConsumeTime         = 29;
     public List<KeyValuePair<ushort, ConsumableItem>> AutoConsumeItemsList    = [];
+    #endregion
 
-    //Between Loop Config Options
+
+    #region BetweenLoop
     public bool         EnableBetweenLoopActions         = true;
     public bool         ExecuteBetweenLoopActionLastLoop = false;
     public int          WaitTimeBeforeAfterLoopActions   = 0;
@@ -979,8 +1032,8 @@ public class Configuration
                 AutoDesynth = false;
         }
     }
-    public int AutoDesynthSkillUpLimit = 50;
-    internal bool autoGCTurnin = false;
+    public   int  AutoDesynthSkillUpLimit = 50;
+    internal bool autoGCTurnin            = false;
     public bool AutoGCTurnin
     {
         get => autoGCTurnin;
@@ -991,9 +1044,9 @@ public class Configuration
                 AutoDesynth = false;
         }
     }
-    public int AutoGCTurninSlotsLeft = 5;
+    public int  AutoGCTurninSlotsLeft     = 5;
     public bool AutoGCTurninSlotsLeftBool = false;
-    public bool AutoGCTurninUseTicket = false;
+    public bool AutoGCTurninUseTicket     = false;
 
     public bool TripleTriadEnabled;
     public bool TripleTriadRegister;
@@ -1001,73 +1054,29 @@ public class Configuration
 
     public bool DiscardItems;
 
-    public bool EnableAutoRetainer = false;
+    public bool                   EnableAutoRetainer         = false;
     public SummoningBellLocations PreferredSummoningBellEnum = 0;
-    //Termination Config Options
-    public bool EnableTerminationActions = true;
-    public bool StopLevel = false;
-    public int StopLevelInt = 1;
-    public bool StopNoRestedXP = false;
-    public bool StopItemQty = false;
-    public bool StopItemAll = false;
-    public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary = [];
-    public int StopItemQtyInt = 1;
-    public bool ExecuteCommandsTermination = false;
-    public List<string> CustomCommandsTermination = [];
-    public bool PlayEndSound = false;
-    public bool CustomSound = false;
-    public float CustomSoundVolume = 0.5f;
-    public Sounds SoundEnum = Sounds.None;
-    public string SoundPath = "";
-    public TerminationMode TerminationMethodEnum = TerminationMode.Do_Nothing;
-    public bool TerminationKeepActive = true;
-    
-    //BMAI Config Options
-    public bool HideBossModAIConfig           = false;
-    public bool BM_UpdatePresetsAutomatically = true;
-
-
-    internal bool maxDistanceToTargetRoleBased = true;
-    public bool MaxDistanceToTargetRoleBased
-    {
-        get => maxDistanceToTargetRoleBased;
-        set
-        {
-            maxDistanceToTargetRoleBased = value;
-            if (value)
-                SchedulerHelper.ScheduleAction("MaxDistanceToTargetRoleBasedBMRoleChecks", () => Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
-        }
-    }
-    public float MaxDistanceToTargetFloat = 2.6f;
-    public float MaxDistanceToTargetAoEFloat = 12;
-    
-    internal bool positionalRoleBased = true;
-    public bool PositionalRoleBased
-    {
-        get => positionalRoleBased;
-        set
-        {
-            positionalRoleBased = value;
-            if (value)
-                SchedulerHelper.ScheduleAction("PositionalRoleBasedBMRoleChecks", () => Plugin.BMRoleChecks(), () => PlayerHelper.IsReady);
-        }
-    }
-    public float MaxDistanceToTargetRoleMelee  = 2.6f;
-    public float MaxDistanceToTargetRoleRanged = 10f;
-
-
-    internal bool       positionalAvarice = true;
-    public   Positional PositionalEnum    = Positional.Any;
-
-    #region Wrath
-
-    public   bool                                                       Wrath_AutoSetupJobs { get; set; } = true;
-    public Wrath_IPCSubscriber.DPSRotationMode    Wrath_TargetingTank    = Wrath_IPCSubscriber.DPSRotationMode.Highest_Max;
-    public Wrath_IPCSubscriber.DPSRotationMode    Wrath_TargetingNonTank = Wrath_IPCSubscriber.DPSRotationMode.Lowest_Current;
-
-
     #endregion
 
+    #region Termination
+    public bool                                        EnableTerminationActions   = true;
+    public bool                                        StopLevel                  = false;
+    public int                                         StopLevelInt               = 1;
+    public bool                                        StopNoRestedXP             = false;
+    public bool                                        StopItemQty                = false;
+    public bool                                        StopItemAll                = false;
+    public Dictionary<uint, KeyValuePair<string, int>> StopItemQtyItemDictionary  = [];
+    public int                                         StopItemQtyInt             = 1;
+    public bool                                        ExecuteCommandsTermination = false;
+    public List<string>                                CustomCommandsTermination  = [];
+    public bool                                        PlayEndSound               = false;
+    public bool                                        CustomSound                = false;
+    public float                                       CustomSoundVolume          = 0.5f;
+    public Sounds                                      SoundEnum                  = Sounds.None;
+    public string                                      SoundPath                  = "";
+    public TerminationMode                             TerminationMethodEnum      = TerminationMode.Do_Nothing;
+    public bool                                        TerminationKeepActive      = true;
+    #endregion
 
     public void Save()
     {
@@ -1445,13 +1454,13 @@ public static class ConfigTab
 
                 if (ImGui.Button("Turn on rotation"))
                 {
-                    Plugin.SetRotationPluginSettings(true, ignoreTimer: true);
+                    Plugin.SetRotationPluginSettings(true, ignoreConfig: true, ignoreTimer: true);
                 }
 
                 ImGui.SameLine();
                 if (ImGui.Button("Turn off rotation"))
                 {
-                    Plugin.SetRotationPluginSettings(false);
+                    Plugin.SetRotationPluginSettings(false, ignoreConfig: true, ignoreTimer: true);
                     if(Wrath_IPCSubscriber.IsEnabled)
                         Wrath_IPCSubscriber.Release();
                 }
@@ -1529,11 +1538,40 @@ public static class ConfigTab
             ImGui.Columns(1);
             if (ImGui.Checkbox("Auto Manage Rotation Plugin State", ref Configuration.AutoManageRotationPluginState))
                 Configuration.Save();
-            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*Only if using Wrath Combo, Rotation Solver or BossMod AutoRotation\n**AutoDuty will try to use them in that order");
+            ImGuiComponents.HelpMarker("Autoduty will enable the Rotation Plugin at the start of each duty\n*AutoDuty will try to use them in list order");
 
-            if (Configuration.AutoManageRotationPluginState)
+            using (ImRaii.Disabled(!Configuration.AutoManageRotationPluginState))
             {
-                if (Wrath_IPCSubscriber.IsEnabled)
+                ImGui.SameLine(0, 5);
+                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X / 3 * 2);
+                if (ImGui.BeginCombo("##RotationPluginSelection", Configuration.rotationPlugin.ToCustomString()))
+                {
+                    foreach (RotationPlugin rotationPlugin in Enum.GetValues(typeof(RotationPlugin)).Cast<RotationPlugin>().Reverse())
+                    {
+                        using (rotationPlugin.HasFlag(RotationPlugin.All) ? _ : ImGuiHelper.RequiresPlugin(rotationPlugin switch
+                               {
+                                   RotationPlugin.BossMod => ExternalPlugin.BossMod,
+                                   RotationPlugin.RotationSolverReborn => ExternalPlugin.RotationSolverReborn,
+                                   RotationPlugin.WrathCombo => ExternalPlugin.WrathCombo,
+                                   _ => throw new ArgumentOutOfRangeException()
+                               }, "RotationPluginSelection", inline: true))
+                        {
+                            if (ImGui.Selectable(rotationPlugin.ToCustomString(), Configuration.rotationPlugin == rotationPlugin, ImGuiSelectableFlags.AllowItemOverlap))
+                            {
+                                Configuration.rotationPlugin = rotationPlugin;
+                                Plugin.Configuration.Save();
+                            }
+                        }
+                    }
+
+                    ImGui.EndCombo();
+                }
+            }
+
+
+            if (Configuration is { AutoManageRotationPluginState: true, rotationPlugin: RotationPlugin.WrathCombo or RotationPlugin.All } && Wrath_IPCSubscriber.IsEnabled)
+            {
+                using (ImGuiHelper.RequiresPlugin(ExternalPlugin.WrathCombo, "WrathConfig", write: false))
                 {
                     ImGui.Indent();
                     ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
@@ -1552,6 +1590,7 @@ public static class ConfigTab
                             Configuration.Wrath_AutoSetupJobs = wrath_AutoSetupJobs;
                             Configuration.Save();
                         }
+
                         ImGuiComponents.HelpMarker("If this is not enabled and a job is not setup in Wrath Combo, AD will instead use RSR or bm AutoRotation");
 
                         ImGui.AlignTextToFramePadding();
@@ -1562,7 +1601,7 @@ public static class ConfigTab
                         {
                             foreach (Wrath_IPCSubscriber.DPSRotationMode targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.DPSRotationMode)))
                             {
-                                if(targeting == Wrath_IPCSubscriber.DPSRotationMode.Tank_Target)
+                                if (targeting == Wrath_IPCSubscriber.DPSRotationMode.Tank_Target)
                                     continue;
 
                                 if (ImGui.Selectable(targeting.ToCustomString()))
@@ -1571,6 +1610,7 @@ public static class ConfigTab
                                     Configuration.Save();
                                 }
                             }
+
                             ImGui.EndCombo();
                         }
 
@@ -1588,11 +1628,13 @@ public static class ConfigTab
                                     Configuration.Save();
                                 }
                             }
+
                             ImGui.EndCombo();
                         }
 
                         ImGui.Separator();
                     }
+
                     ImGui.Unindent();
                 }
             }
