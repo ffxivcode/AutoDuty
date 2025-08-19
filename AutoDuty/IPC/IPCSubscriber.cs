@@ -665,6 +665,12 @@ namespace AutoDuty.IPC
             /// </summary>
             [Description("Start the addon in Manual mode. You need to choose the target manually. This will bypass any engage settings that you have set up and will start attacking immediately once something is targeted.")]
             Manual,
+
+            /// <summary>
+            /// 
+            /// </summary>
+            [Description("This mode is managed by the Autoduty plugin")]
+            AutoDuty,
         }
 
         /// <summary>
@@ -820,8 +826,9 @@ namespace AutoDuty.IPC
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(RSR_IPCSubscriber), "RotationSolverReborn", SafeWrapper.IPCException);
         internal static bool IsEnabled => IPCSubscriber_Common.IsReady("RotationSolver");
 
-        [EzIPC] private static readonly Action<StateCommandType> ChangeOperatingMode;
-        [EzIPC] private static readonly Action<OtherCommandType, string> OtherCommand;
+        [EzIPC] private static readonly Action<StateCommandType, TargetingType> AutodutyChangeOperatingMode;
+        [EzIPC] private static readonly Action<StateCommandType>                ChangeOperatingMode;
+        [EzIPC] private static readonly Action<OtherCommandType, string>        OtherCommand;
 
         public static void RotationAuto()
         {
@@ -830,9 +837,7 @@ namespace AutoDuty.IPC
             OtherCommand(OtherCommandType.Settings, "AutoOffBetweenArea false");
             OtherCommand(OtherCommandType.Settings, "AutoOffCutScene false");
             OtherCommand(OtherCommandType.Settings, "AutoOffAfterCombat false");
-            OtherCommand(OtherCommandType.Settings, "TargetingTypes removeall");
-            OtherCommand(OtherCommandType.Settings, $"TargetingTypes add {Plugin.Configuration.RSR_TargetingType}");
-            ChangeOperatingMode(StateCommandType.Auto);
+            AutodutyChangeOperatingMode(StateCommandType.AutoDuty, Plugin.Configuration.RSR_TargetingType);
         }
 
         public static void RotationStop() => ChangeOperatingMode(StateCommandType.Off);
