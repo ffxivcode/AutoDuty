@@ -1300,19 +1300,13 @@ public sealed class AutoDuty : IDalamudPlugin
 
         bool EnableRSR(bool active)
         {
-            if (ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled)
+            if (RSR_IPCSubscriber.IsEnabled)
             {
-                if (active)
-                {
-                    if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Auto)
-                        ReflectionHelper.RotationSolver_Reflection.RotationAuto();
-                }
-                else
-                {
-                    if (ReflectionHelper.RotationSolver_Reflection.GetStateType != ReflectionHelper.RotationSolver_Reflection.StateTypeEnum.Off)
-                        ReflectionHelper.RotationSolver_Reflection.RotationStop();
-                }
                 Svc.Log.Debug("RSR: " + active);
+                if (active)
+                    RSR_IPCSubscriber.RotationAuto();
+                else
+                    RSR_IPCSubscriber.RotationStop();
                 return true;
             }
 
@@ -1473,14 +1467,17 @@ public sealed class AutoDuty : IDalamudPlugin
         if (EzThrottler.Throttle("OverrideAFK") && States.HasFlag(PluginState.Navigating) && PlayerHelper.IsValid)
             _overrideAFK.ResetTimers();
 
-        if (!Player.Available) return;
+        if (!Player.Available) 
+            return;
 
         if (!InDungeon && CurrentTerritoryContent != null)
             GetJobAndLevelingCheck();
 
-        if (!PlayerHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled) return;
+        if (!PlayerHelper.IsValid || !BossMod_IPCSubscriber.IsEnabled || !VNavmesh_IPCSubscriber.IsEnabled) 
+            return;
 
-        if (!ReflectionHelper.RotationSolver_Reflection.RotationSolverEnabled && !BossMod_IPCSubscriber.IsEnabled && !Configuration.UsingAlternativeRotationPlugin) return;
+        if (!RSR_IPCSubscriber.IsEnabled && !BossMod_IPCSubscriber.IsEnabled && !Configuration.UsingAlternativeRotationPlugin) 
+            return;
 
         if (CurrentTerritoryType == 0 && Svc.ClientState.TerritoryType != 0 && InDungeon)
             ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);

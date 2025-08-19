@@ -885,6 +885,11 @@ public class Configuration
     public Wrath_IPCSubscriber.DPSRotationMode Wrath_TargetingNonTank = Wrath_IPCSubscriber.DPSRotationMode.Lowest_Current;
     #endregion
 
+    #region RSR
+
+    public RSR_IPCSubscriber.TargetHostileType RSR_TargetHostileType = RSR_IPCSubscriber.TargetHostileType.AllTargetsCanAttack;
+    public RSR_IPCSubscriber.TargetingType     RSR_TargetingType     = RSR_IPCSubscriber.TargetingType.LowHP;
+    #endregion
 
 
 
@@ -1123,6 +1128,7 @@ public static class ConfigTab
     private static bool dutyConfigHeaderSelected   = false;
     private static bool bmaiSettingHeaderSelected  = false;
     private static bool wrathSettingHeaderSelected = false;
+    private static bool rsrSettingHeaderSelected   = false;
     private static bool w2wSettingHeaderSelected   = false;
     private static bool advModeHeaderSelected      = false;
     private static bool preLoopHeaderSelected      = false;
@@ -1569,73 +1575,133 @@ public static class ConfigTab
             }
 
 
-            if (Configuration is { AutoManageRotationPluginState: true, rotationPlugin: RotationPlugin.WrathCombo or RotationPlugin.All } && Wrath_IPCSubscriber.IsEnabled)
+            if (Configuration.AutoManageRotationPluginState)
             {
-                using (ImGuiHelper.RequiresPlugin(ExternalPlugin.WrathCombo, "WrathConfig", write: false))
+                if (Configuration.rotationPlugin is RotationPlugin.WrathCombo or RotationPlugin.All && Wrath_IPCSubscriber.IsEnabled)
                 {
-                    ImGui.Indent();
-                    ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
-                    var wrathSettingHeader = ImGui.Selectable("> Wrath Combo Config Options <", wrathSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
-                    ImGui.PopStyleVar();
-                    if (ImGui.IsItemHovered())
-                        ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-                    if (wrathSettingHeader)
-                        wrathSettingHeaderSelected = !wrathSettingHeaderSelected;
-
-                    if (wrathSettingHeaderSelected)
+                    using (ImGuiHelper.RequiresPlugin(ExternalPlugin.WrathCombo, "WrathConfig", write: false))
                     {
-                        bool wrath_AutoSetupJobs = Configuration.Wrath_AutoSetupJobs;
-                        if (ImGui.Checkbox("Auto setup jobs for autorotation", ref wrath_AutoSetupJobs))
-                        {
-                            Configuration.Wrath_AutoSetupJobs = wrath_AutoSetupJobs;
-                            Configuration.Save();
-                        }
+                        ImGui.Indent();
+                        ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+                        var wrathSettingHeader = ImGui.Selectable("> Wrath Combo Config Options <", wrathSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+                        ImGui.PopStyleVar();
+                        if (ImGui.IsItemHovered())
+                            ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                        if (wrathSettingHeader)
+                            wrathSettingHeaderSelected = !wrathSettingHeaderSelected;
 
-                        ImGuiComponents.HelpMarker("If this is not enabled and a job is not setup in Wrath Combo, AD will instead use RSR or bm AutoRotation");
-
-                        ImGui.AlignTextToFramePadding();
-                        ImGui.Text("Targeting | Tank: ");
-                        ImGui.SameLine(0, 5);
-                        ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                        if (ImGui.BeginCombo("##ConfigWrathTargetingTank", Configuration.Wrath_TargetingTank.ToCustomString()))
+                        if (wrathSettingHeaderSelected)
                         {
-                            foreach (Wrath_IPCSubscriber.DPSRotationMode targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.DPSRotationMode)))
+                            bool wrath_AutoSetupJobs = Configuration.Wrath_AutoSetupJobs;
+                            if (ImGui.Checkbox("Auto setup jobs for autorotation", ref wrath_AutoSetupJobs))
                             {
-                                if (targeting == Wrath_IPCSubscriber.DPSRotationMode.Tank_Target)
-                                    continue;
-
-                                if (ImGui.Selectable(targeting.ToCustomString()))
-                                {
-                                    Configuration.Wrath_TargetingTank = targeting;
-                                    Configuration.Save();
-                                }
+                                Configuration.Wrath_AutoSetupJobs = wrath_AutoSetupJobs;
+                                Configuration.Save();
                             }
 
-                            ImGui.EndCombo();
-                        }
+                            ImGuiComponents.HelpMarker("If this is not enabled and a job is not setup in Wrath Combo, AD will instead use RSR or bm AutoRotation");
 
-                        ImGui.AlignTextToFramePadding();
-                        ImGui.Text("Targeting | Non-Tank: ");
-                        ImGui.SameLine(0, 5);
-                        ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
-                        if (ImGui.BeginCombo("##ConfigWrathTargetingNonTank", Configuration.Wrath_TargetingNonTank.ToCustomString()))
-                        {
-                            foreach (Wrath_IPCSubscriber.DPSRotationMode targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.DPSRotationMode)))
+                            ImGui.AlignTextToFramePadding();
+                            ImGui.Text("Targeting | Tank: ");
+                            ImGui.SameLine(0, 5);
+                            ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+                            if (ImGui.BeginCombo("##ConfigWrathTargetingTank", Configuration.Wrath_TargetingTank.ToCustomString()))
                             {
-                                if (ImGui.Selectable(targeting.ToCustomString()))
+                                foreach (Wrath_IPCSubscriber.DPSRotationMode targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.DPSRotationMode)))
                                 {
-                                    Configuration.Wrath_TargetingNonTank = targeting;
-                                    Configuration.Save();
+                                    if (targeting == Wrath_IPCSubscriber.DPSRotationMode.Tank_Target)
+                                        continue;
+
+                                    if (ImGui.Selectable(targeting.ToCustomString()))
+                                    {
+                                        Configuration.Wrath_TargetingTank = targeting;
+                                        Configuration.Save();
+                                    }
                                 }
+
+                                ImGui.EndCombo();
                             }
 
-                            ImGui.EndCombo();
+                            ImGui.AlignTextToFramePadding();
+                            ImGui.Text("Targeting | Non-Tank: ");
+                            ImGui.SameLine(0, 5);
+                            ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+                            if (ImGui.BeginCombo("##ConfigWrathTargetingNonTank", Configuration.Wrath_TargetingNonTank.ToCustomString()))
+                            {
+                                foreach (Wrath_IPCSubscriber.DPSRotationMode targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.DPSRotationMode)))
+                                {
+                                    if (ImGui.Selectable(targeting.ToCustomString()))
+                                    {
+                                        Configuration.Wrath_TargetingNonTank = targeting;
+                                        Configuration.Save();
+                                    }
+                                }
+
+                                ImGui.EndCombo();
+                            }
+
+                            ImGui.Separator();
                         }
 
-                        ImGui.Separator();
+                        ImGui.Unindent();
                     }
+                }
 
-                    ImGui.Unindent();
+                if (Configuration.rotationPlugin is RotationPlugin.RotationSolverReborn or RotationPlugin.All && RSR_IPCSubscriber.IsEnabled)
+                {
+                    using (ImGuiHelper.RequiresPlugin(ExternalPlugin.RotationSolverReborn, "RSRConfig", write: false))
+                    {
+                        ImGui.Indent();
+                        ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+                        var rsrSettingHeader = ImGui.Selectable("> RSR Config Options <", rsrSettingHeaderSelected, ImGuiSelectableFlags.DontClosePopups);
+                        ImGui.PopStyleVar();
+                        if (ImGui.IsItemHovered())
+                            ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                        if (rsrSettingHeader)
+                            rsrSettingHeaderSelected = !rsrSettingHeaderSelected;
+
+                        if (rsrSettingHeaderSelected)
+                        {
+                            ImGui.AlignTextToFramePadding();
+                            ImGui.Text("Engage Settings: ");
+                            ImGui.SameLine(0, 5);
+                            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X * ImGuiHelpers.GlobalScale);
+                            if (ImGui.BeginCombo("##ConfigRSREngage", RSR_IPCSubscriber.GetHostileTypeDescription(Configuration.RSR_TargetHostileType)))
+                            {
+                                foreach (RSR_IPCSubscriber.TargetHostileType hostileType in Enum.GetValues(typeof(RSR_IPCSubscriber.TargetHostileType)))
+                                {
+                                    if (ImGui.Selectable(RSR_IPCSubscriber.GetHostileTypeDescription(hostileType), hostileType == Configuration.RSR_TargetHostileType))
+                                    {
+                                        Configuration.RSR_TargetHostileType = hostileType;
+                                        Configuration.Save();
+                                    }
+                                }
+                                ImGui.EndCombo();
+                            }
+
+
+                            ImGui.AlignTextToFramePadding();
+                            ImGui.Text("Targeting: ");
+                            ImGui.SameLine(0, 5);
+                            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X * ImGuiHelpers.GlobalScale);
+                            if (ImGui.BeginCombo("##ConfigRSRTarget", Configuration.RSR_TargetingType.ToCustomString()))
+                            {
+                                foreach (RSR_IPCSubscriber.TargetingType targetingType in Enum.GetValues(typeof(RSR_IPCSubscriber.TargetingType)))
+                                {
+                                    if (ImGui.Selectable(targetingType.ToCustomString(), targetingType == Configuration.RSR_TargetingType))
+                                    {
+                                        Configuration.RSR_TargetingType = targetingType;
+                                        Configuration.Save();
+                                    }
+                                }
+                                ImGui.EndCombo();
+                            }
+
+                            ImGui.Separator();
+                        }
+
+                        ImGui.Unindent();
+                    }
                 }
             }
 
