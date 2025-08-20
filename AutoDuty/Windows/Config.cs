@@ -1176,7 +1176,7 @@ public static class ConfigTab
                         
                     ImGui.SetCursorPosX(selectableX);
                     ImGui.SetItemAllowOverlap();
-                    if (ImGui.Selectable($"###{key}ConfigSelectable"))
+                    if (ImGui.Selectable($"###{key}ConfigSelectable", key == ConfigurationMain.Instance.ActiveProfileName))
                         ConfigurationMain.Instance.SetProfile(key);
                     ImGui.SameLine(textX);
                     ImGui.Text(key);
@@ -1612,7 +1612,7 @@ public static class ConfigTab
                                     if (targeting == Wrath_IPCSubscriber.DPSRotationMode.Tank_Target)
                                         continue;
 
-                                    if (ImGui.Selectable(targeting.ToCustomString()))
+                                    if (ImGui.Selectable(targeting.ToCustomString(), Configuration.Wrath_TargetingTank == targeting))
                                     {
                                         Configuration.Wrath_TargetingTank = targeting;
                                         Configuration.Save();
@@ -1630,7 +1630,7 @@ public static class ConfigTab
                             {
                                 foreach (Wrath_IPCSubscriber.DPSRotationMode targeting in Enum.GetValues(typeof(Wrath_IPCSubscriber.DPSRotationMode)))
                                 {
-                                    if (ImGui.Selectable(targeting.ToCustomString()))
+                                    if (ImGui.Selectable(targeting.ToCustomString(), Configuration.Wrath_TargetingNonTank == targeting))
                                     {
                                         Configuration.Wrath_TargetingNonTank = targeting;
                                         Configuration.Save();
@@ -1780,7 +1780,7 @@ public static class ConfigTab
                         {
                             foreach (Positional positional in Enum.GetValues(typeof(Positional)))
                             {
-                                if (ImGui.Selectable(positional.ToCustomString()))
+                                if (ImGui.Selectable(positional.ToCustomString(), Configuration.PositionalEnum == positional))
                                 {
                                     Configuration.PositionalEnum = positional;
                                     Configuration.Save();
@@ -1820,7 +1820,7 @@ public static class ConfigTab
                     {
                         using (ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled)))
                         {
-                            if (ImGui.Selectable(lootMethod.ToCustomString()))
+                            if (ImGui.Selectable(lootMethod.ToCustomString(), Configuration.LootMethodEnum == lootMethod))
                             {
                                 Configuration.LootMethodEnum = lootMethod;
                                 Configuration.Save();
@@ -1963,7 +1963,7 @@ public static class ConfigTab
                     {
                         foreach (RetireLocation retireLocation in Enum.GetValues(typeof(RetireLocation)))
                         {
-                            if (ImGui.Selectable(retireLocation.ToCustomString()))
+                            if (ImGui.Selectable(retireLocation.ToCustomString(), Configuration.RetireLocationEnum == retireLocation))
                             {
                                 Configuration.RetireLocationEnum = retireLocation;
                                 Configuration.Save();
@@ -2057,7 +2057,7 @@ public static class ConfigTab
                         {
                             using (updateSource == GearsetUpdateSource.Vanilla ? _ : ImGuiHelper.RequiresPlugin(updateSource == GearsetUpdateSource.Gearsetter ? ExternalPlugin.Gearsetter : ExternalPlugin.Stylist, "GearSet", inline: true))
                             {
-                                if (ImGui.Selectable(updateSource.ToCustomString(), flags: ImGuiSelectableFlags.AllowItemOverlap))
+                                if (ImGui.Selectable(updateSource.ToCustomString(), Configuration.AutoEquipRecommendedGearSource == updateSource, flags: ImGuiSelectableFlags.AllowItemOverlap))
                                 {
                                     Configuration.AutoEquipRecommendedGearSource = updateSource;
                                     Configuration.Save();
@@ -2150,7 +2150,7 @@ public static class ConfigTab
                                                  $"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(Configuration.PreferredRepairNPC.Name.ToLowerInvariant())} ({Svc.Data.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(Configuration.PreferredRepairNPC.TerritoryType)?.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(Configuration.PreferredRepairNPC.Position.ToVector2(), Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Configuration.PreferredRepairNPC.TerritoryType).Map.Value).Y.ToString("0.0", CultureInfo.InvariantCulture)})" :
                                                  "Grand Company Inn"))
                         {
-                            if (ImGui.Selectable("Grand Company Inn"))
+                            if (ImGui.Selectable("Grand Company Inn", Configuration.PreferredRepairNPC == null))
                             {
                                 Configuration.PreferredRepairNPC = null;
                                 Configuration.Save();
@@ -2168,8 +2168,7 @@ public static class ConfigTab
 
                                 if (territoryType == null) continue;
 
-                                if
-                                    (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.Value.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})"))
+                                if (ImGui.Selectable($"{CultureInfo.InvariantCulture.TextInfo.ToTitleCase(repairNPC.Name.ToLowerInvariant())} ({territoryType.Value.PlaceName.ValueNullable?.Name.ToString()})  ({MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).X.ToString("0.0", CultureInfo.InvariantCulture)}, {MapHelper.ConvertWorldXZToMap(repairNPC.Position.ToVector2(), territoryType.Value.Map.Value!).Y.ToString("0.0", CultureInfo.InvariantCulture)})", Configuration.PreferredRepairNPC == repairNPC))
                                 {
                                     Configuration.PreferredRepairNPC = repairNPC;
                                     Configuration.Save();
@@ -2356,7 +2355,7 @@ public static class ConfigTab
 
                         if (ImGui.BeginCombo("##CofferGearsetSelection", Configuration.AutoOpenCoffersGearset != null ? module->GetGearset(Configuration.AutoOpenCoffersGearset.Value)->NameString : "Current Gearset"))
                         {
-                            if (ImGui.Selectable("Current Gearset"))
+                            if (ImGui.Selectable("Current Gearset", Configuration.AutoOpenCoffersGearset == null))
                             {
                                 Configuration.AutoOpenCoffersGearset = null;
                                 Configuration.Save();
@@ -2365,7 +2364,7 @@ public static class ConfigTab
                             for (int i = 0; i < module->NumGearsets; i++)
                             {
                                 RaptureGearsetModule.GearsetEntry* gearset = module->GetGearset(i);
-                                if(ImGui.Selectable(gearset->NameString))
+                                if(ImGui.Selectable(gearset->NameString, Configuration.AutoOpenCoffersGearset == gearset->Id))
                                 {
                                     Configuration.AutoOpenCoffersGearset = gearset->Id;
                                     Configuration.Save();
@@ -2709,7 +2708,7 @@ public static class ConfigTab
                     foreach (TerminationMode terminationMode in Enum.GetValues(typeof(TerminationMode)))
                     {
                         if (terminationMode != TerminationMode.Kill_PC || OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
-                            if (ImGui.Selectable(terminationMode.ToCustomString()))
+                            if (ImGui.Selectable(terminationMode.ToCustomString(), Configuration.TerminationMethodEnum == terminationMode))
                             {
                                 Configuration.TerminationMethodEnum = terminationMode;
                                 Configuration.Save();

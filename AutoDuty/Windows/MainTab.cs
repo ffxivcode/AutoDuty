@@ -269,7 +269,7 @@ namespace AutoDuty.Windows
                     {
                         foreach (DutyMode mode in Enum.GetValues(typeof(DutyMode)))
                         {
-                            if (ImGui.Selectable(mode.ToCustomString()))
+                            if (ImGui.Selectable(mode.ToCustomString(), Plugin.Configuration.DutyModeEnum == mode))
                             {
                                 Plugin.Configuration.DutyModeEnum = mode;
                                 Plugin.Configuration.Save();
@@ -287,12 +287,12 @@ namespace AutoDuty.Windows
                             ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
                             if (ImGui.BeginCombo("##LevelingModeEnum", Plugin.LevelingModeEnum == LevelingMode.None ? "None" : "Auto"))
                             {
-                                if (ImGui.Selectable("None"))
+                                if (ImGui.Selectable("None", Plugin.LevelingModeEnum == LevelingMode.None))
                                 {
                                     Plugin.LevelingModeEnum = LevelingMode.None;
                                     Plugin.Configuration.Save();
                                 }
-                                if (ImGui.Selectable("Auto"))
+                                if (ImGui.Selectable("Auto", Plugin.LevelingModeEnum == (Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust)))
                                 {
                                     Plugin.LevelingModeEnum = Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust;
                                     Plugin.Configuration.Save();
