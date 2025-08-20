@@ -94,7 +94,10 @@ namespace AutoDuty.Helpers
 
                             if (memberIndex >= 3)
                             {
-                                lvl = (short)(memberTest[2]?.Level ?? 0);
+                                short newLvl = (short)(memberTest[2]?.Level ?? 0);
+
+                                if (newLvl < lvl)
+                                    lvl = newLvl;
                                 break;
                             }
                         }
