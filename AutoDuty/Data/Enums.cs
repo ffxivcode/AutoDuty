@@ -247,7 +247,8 @@ namespace AutoDuty.Data
         {
             None = 0,
             Support = 1,
-            Trust = 2
+            TrustGroup = 2,
+            TrustSolo = 3
         }
 
         [Flags]

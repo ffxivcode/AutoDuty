@@ -80,7 +80,7 @@ public sealed class AutoDuty : IDalamudPlugin
     internal int CurrentPath = -1;
 
     internal bool SupportLevelingEnabled => LevelingModeEnum == LevelingMode.Support;
-    internal bool TrustLevelingEnabled => LevelingModeEnum == LevelingMode.Trust;
+    internal bool TrustLevelingEnabled => LevelingModeEnum.IsTrustLeveling();
     internal bool LevelingEnabled => LevelingModeEnum != LevelingMode.None;
 
     internal static string Name => "AutoDuty";
@@ -141,7 +141,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (value != LevelingMode.None)
             {
                 Svc.Log.Debug($"Setting Leveling mode to {value}");
-                Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(value == LevelingMode.Trust);
+                Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(value);
 
                 if (duty != null)
                 {
@@ -750,20 +750,20 @@ public sealed class AutoDuty : IDalamudPlugin
         if (LevelingEnabled)
         {
             Svc.Log.Info("Leveling Enabled");
-            Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(LevelingModeEnum == LevelingMode.Trust);
+            Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(this.LevelingModeEnum);
             if (duty != null)
             {
-                if (this.LevelingModeEnum == LevelingMode.Support && Configuration.PreferTrustOverSupportLeveling && duty.ClassJobLevelRequired > 70)
+                if (this.LevelingModeEnum == LevelingMode.Support && this.Configuration.PreferTrustOverSupportLeveling && duty.ClassJobLevelRequired > 70)
                 {
-                    levelingModeEnum           = LevelingMode.Trust;
+                    levelingModeEnum           = LevelingMode.TrustSolo;
                     Configuration.dutyModeEnum = DutyMode.Trust;
 
-                    Content? dutyTrust = LevelingHelper.SelectHighestLevelingRelevantDuty(true);
+                    Content? dutyTrust = LevelingHelper.SelectHighestLevelingRelevantDuty(this.LevelingModeEnum);
 
                     if (duty != dutyTrust)
                     {
-                        levelingModeEnum           = LevelingMode.Support;
-                        Configuration.dutyModeEnum = DutyMode.Support;
+                        this.levelingModeEnum        = LevelingMode.Support;
+                        this.Configuration.dutyModeEnum = DutyMode.Support;
                     }
                 }
 
@@ -1415,7 +1415,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (LevelingEnabled)
             {
                 Svc.Log.Info($"{(Configuration.DutyModeEnum == DutyMode.Support || Configuration.DutyModeEnum == DutyMode.Trust) && (Configuration.DutyModeEnum == DutyMode.Support || SupportLevelingEnabled) && (Configuration.DutyModeEnum != DutyMode.Trust || TrustLevelingEnabled)} ({Configuration.DutyModeEnum == DutyMode.Support} || {Configuration.DutyModeEnum == DutyMode.Trust}) && ({Configuration.DutyModeEnum == DutyMode.Support} || {SupportLevelingEnabled}) && ({Configuration.DutyModeEnum != DutyMode.Trust} || {TrustLevelingEnabled})");
-                Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(LevelingModeEnum == LevelingMode.Trust);
+                Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(this.LevelingModeEnum);
                 if (duty != null)
                 {
                     Plugin.CurrentTerritoryContent = duty;

@@ -61,7 +61,7 @@ namespace AutoDuty.Helpers
             return false;
         }
 
-        internal static bool SetLevelingTrustMembers(Content content)
+        internal static bool SetLevelingTrustMembers(Content content, LevelingMode mode)
         {
             Job        playerJob  = PlayerHelper.GetJob();
             CombatRole playerRole = playerJob.GetCombatRole();
@@ -98,7 +98,7 @@ namespace AutoDuty.Helpers
 
             try
             {
-                TrustMember[] membersPossible = [.. content.TrustMembers
+                TrustMember[] membersPossible = [.. content.TrustMembers.Where(tm => tm.Level >= content.ClassJobLevelRequired)
                               .OrderBy(tm => tm.Level + (tm.Level < tm.LevelCap ? 0 : 100) +
                                                                       (playerRole == CombatRole.DPS ? playerJobRole == tm.Job?.GetJobRole() ? 0.5f : 0 : 0))];
                 foreach (TrustMember member in membersPossible)

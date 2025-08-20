@@ -285,20 +285,32 @@ namespace AutoDuty.Windows
                             ImGui.TextColored(Plugin.LevelingModeEnum == LevelingMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Leveling Mode: ");
                             ImGui.SameLine(0);
                             ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                            if (ImGui.BeginCombo("##LevelingModeEnum", Plugin.LevelingModeEnum == LevelingMode.None ? "None" : "Auto"))
+                            if (ImGui.BeginCombo("##LevelingModeEnum", Plugin.LevelingModeEnum == LevelingMode.None ? "None" : 
+                                                                           Plugin.LevelingModeEnum == LevelingMode.TrustSolo ? "Auto Solo" : "Auto"))
                             {
                                 if (ImGui.Selectable("None", Plugin.LevelingModeEnum == LevelingMode.None))
                                 {
                                     Plugin.LevelingModeEnum = LevelingMode.None;
                                     Plugin.Configuration.Save();
                                 }
-                                if (ImGui.Selectable("Auto", Plugin.LevelingModeEnum == (Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust)))
+                                if (ImGui.Selectable("Auto", Plugin.LevelingModeEnum == (Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.TrustGroup)))
                                 {
-                                    Plugin.LevelingModeEnum = Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust;
+                                    Plugin.LevelingModeEnum = Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.TrustGroup;
                                     Plugin.Configuration.Save();
                                     if (Plugin.Configuration.AutoEquipRecommendedGear)
                                         AutoEquipHelper.Invoke();
                                 }
+
+                                if(Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
+                                    if (ImGui.Selectable("Auto Solo", Plugin.LevelingModeEnum == LevelingMode.TrustSolo))
+                                    {
+                                        Plugin.LevelingModeEnum = LevelingMode.TrustSolo;
+                                        Plugin.Configuration.Save();
+                                        if (Plugin.Configuration.AutoEquipRecommendedGear)
+                                            AutoEquipHelper.Invoke();
+                                    }
+
+
                                 ImGui.EndCombo();
                             }
                             ImGui.PopItemWidth();
@@ -378,13 +390,13 @@ namespace AutoDuty.Windows
                         ImGui.SameLine();
                         if (ImGui.Checkbox("Hide Unavailable Duties", ref Plugin.Configuration.HideUnavailableDuties))
                             Plugin.Configuration.Save();
-                        if (Plugin.Configuration.DutyModeEnum == DutyMode.Regular || Plugin.Configuration.DutyModeEnum == DutyMode.Trial || Plugin.Configuration.DutyModeEnum == DutyMode.Raid)
+                        if (Plugin.Configuration.DutyModeEnum is DutyMode.Regular or DutyMode.Trial or DutyMode.Raid)
                         {
                             if (ImGuiEx.CheckboxWrapped("Unsynced", ref Plugin.Configuration.Unsynced))
                                 Plugin.Configuration.Save();
                         }
                     }
-                    var ilvl = InventoryHelper.CurrentItemLevel;
+                    ushort ilvl = InventoryHelper.CurrentItemLevel;
                     if (!ImGui.BeginListBox("##DutyList", new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetContentRegionAvail().Y))) return;
 
                     if (VNavmesh_IPCSubscriber.IsEnabled && BossMod_IPCSubscriber.IsEnabled)
@@ -393,7 +405,9 @@ namespace AutoDuty.Windows
                         {
                             if (Plugin.LevelingModeEnum != LevelingMode.None)
                             {
-                                if (Player.Job.GetCombatRole() == CombatRole.NonCombat || (Plugin.LevelingModeEnum == LevelingMode.Trust && ilvl < 370) || (Plugin.LevelingModeEnum == LevelingMode.Trust && Plugin.CurrentPlayerItemLevelandClassJob.Value != null && Plugin.CurrentPlayerItemLevelandClassJob.Value != Player.Job))
+                                if (Player.Job.GetCombatRole() == CombatRole.NonCombat || 
+                                    (Plugin.LevelingModeEnum.IsTrustLeveling() && 
+                                        (ilvl < 370 || Plugin.CurrentPlayerItemLevelandClassJob.Value != null && Plugin.CurrentPlayerItemLevelandClassJob.Value != Player.Job)))
                                 {
                                     Svc.Log.Debug($"You are on a non-compatible job: {Player.Job.GetCombatRole()}, or your doing trust and your iLvl({ilvl}) is below 370, or your iLvl has changed, Disabling Leveling Mode");
                                     Plugin.LevelingModeEnum = LevelingMode.None;
@@ -401,7 +415,7 @@ namespace AutoDuty.Windows
                                 else if (ilvl > 0 && ilvl != Plugin.CurrentPlayerItemLevelandClassJob.Key)
                                 {
                                     Svc.Log.Debug($"Your iLvl has changed, Selecting new Duty.");
-                                    Plugin.CurrentTerritoryContent = LevelingHelper.SelectHighestLevelingRelevantDuty(Plugin.LevelingModeEnum == LevelingMode.Trust);
+                                    Plugin.CurrentTerritoryContent = LevelingHelper.SelectHighestLevelingRelevantDuty(Plugin.LevelingModeEnum);
                                 }
                                 else
                                 {
