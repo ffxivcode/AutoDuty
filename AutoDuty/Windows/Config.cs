@@ -2424,26 +2424,18 @@ public static class ConfigTab
                     }
                 }
 
-                using (ImRaii.Disabled(!DiscardHelper_IPCSubscriber.IsEnabled))
+                using (ImGuiHelper.RequiresPlugin(ExternalPlugin.AutoRetainer, "DiscardConfig", inline: true))
                 {
-                    if (ImGui.Checkbox("Discard Items", ref Configuration.DiscardItems))
-                    {
+                    if (ImGui.Checkbox("Discard Items", ref Configuration.DiscardItems)) 
                         Configuration.Save();
-                    }
                 }
-                if (!DiscardHelper_IPCSubscriber.IsEnabled)
+                if (!AutoRetainer_IPCSubscriber.IsEnabled)
                 {
                     if (Configuration.DiscardItems)
                     {
                         Configuration.DiscardItems = false;
                         Configuration.Save();
                     }
-                    ImGui.SameLine();
-                    ImGui.Text("* Discarding Items Requires DiscardHelper plugin!");
-                    ImGui.SameLine();
-                    ImGui.Text("Get @ ");
-                    ImGui.SameLine(0, 0);
-                    ImGuiEx.TextCopy(ImGuiHelper.LinkColor, @"https://puni.sh/api/repository/vera");
                 }
 
 
