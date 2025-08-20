@@ -232,7 +232,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 234) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 235) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
 
             if (!_configDirectory.Exists)
@@ -1270,35 +1270,37 @@ public sealed class AutoDuty : IDalamudPlugin
     internal void SetRotationPluginSettings(bool on, bool ignoreConfig = false, bool ignoreTimer = false)
     {
         // Only try to set the rotation state every few seconds
-        if (on && (DateTime.Now - _lastRotationSetTime).TotalSeconds < 5 && !ignoreTimer)
+        if (on && (DateTime.Now - this._lastRotationSetTime).TotalSeconds < 5 && !ignoreTimer)
             return;
         
-        if(on)
-            _lastRotationSetTime = DateTime.Now;
+        if(on) 
+            this._lastRotationSetTime = DateTime.Now;
 
         if (!ignoreConfig && !this.Configuration.AutoManageRotationPluginState)
             return;
 
-        bool EnableWrath(bool active)
+        bool? EnableWrath(bool active)
         {
             if (Wrath_IPCSubscriber.IsEnabled)
             {
                 bool wrathRotationReady = true;
                 if (active)
                     wrathRotationReady = Wrath_IPCSubscriber.IsCurrentJobAutoRotationReady() ||
-                                         this.Configuration.Wrath_AutoSetupJobs && Wrath_IPCSubscriber.SetJobAutoReady();
+                                         ConfigurationMain.Instance.GetCurrentConfig.Wrath_AutoSetupJobs && Wrath_IPCSubscriber.SetJobAutoReady();
 
                 if (!active || wrathRotationReady)
                 {
                     Svc.Log.Debug("Wrath rotation:" + active);
                     Wrath_IPCSubscriber.SetAutoMode(active);
-                    return active;
+
+                    return true;
                 }
+                return false;
             }
-            return false;
+            return null;
         }
 
-        bool EnableRSR(bool active)
+        bool? EnableRSR(bool active)
         {
             if (RSR_IPCSubscriber.IsEnabled)
             {
@@ -1309,11 +1311,10 @@ public sealed class AutoDuty : IDalamudPlugin
                     RSR_IPCSubscriber.RotationStop();
                 return true;
             }
-
-            return false;
+            return null;
         }
 
-        bool EnableBM(bool active, bool rotation)
+        bool? EnableBM(bool active, bool rotation)
         {
             if (BossMod_IPCSubscriber.IsEnabled)
             {
@@ -1322,15 +1323,18 @@ public sealed class AutoDuty : IDalamudPlugin
                     BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
                     if (rotation)
                         BossMod_IPCSubscriber.SetPreset("AutoDuty", Resources.AutoDutyPreset);
-                    else if (this.Configuration.AutoManageBossModAISettings)
+                    else if (ConfigurationMain.Instance.GetCurrentConfig.AutoManageBossModAISettings)
                         BossMod_IPCSubscriber.SetPreset("AutoDuty Passive", Resources.AutoDutyPassivePreset);
+                    return true;
                 }
-                else if (!rotation || this.Configuration.AutoManageBossModAISettings)
+                else if (!rotation || ConfigurationMain.Instance.GetCurrentConfig.AutoManageBossModAISettings)
                 {
                     BossMod_IPCSubscriber.DisablePresets();
+                    return true;
                 }
+                return false;
             }
-            return false;
+            return null;
         }
 
         bool act = on;
@@ -1338,14 +1342,14 @@ public sealed class AutoDuty : IDalamudPlugin
         
 
         bool wrathEnabled = this.Configuration.rotationPlugin is RotationPlugin.WrathCombo or RotationPlugin.All;
-        bool wrath        = EnableWrath(on && wrathEnabled);
-        if (on && wrathEnabled)
-            act = !wrath;
+        bool? wrath        = EnableWrath(on && wrathEnabled);
+        if (on && wrathEnabled && wrath.HasValue)
+            act = !wrath.Value;
         
         bool rsrEnabled = this.Configuration.rotationPlugin is RotationPlugin.RotationSolverReborn or RotationPlugin.All;
-        bool rsr        = EnableRSR(act && on && rsrEnabled);
-        if (on && rsrEnabled) 
-            act = !rsr;
+        bool? rsr        = EnableRSR(act && on && rsrEnabled);
+        if (on && rsrEnabled && rsr.HasValue) 
+            act = !rsr.Value;
 
         EnableBM(on, act && this.Configuration.rotationPlugin is RotationPlugin.BossMod or RotationPlugin.All);
     }
