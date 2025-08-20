@@ -30,11 +30,11 @@ namespace AutoDuty.Helpers
                 return;
             if (!this.started)
             {
-                Chat.ExecuteCommand("/discardall");
+                Chat.ExecuteCommand("/ays discard");
                 this.started = true;
                 return;
             }
-            if(!DiscardHelper_IPCSubscriber.IsRunning())
+            if(!AutoRetainer_IPCSubscriber.IsBusy())
                 this.Stop();
         }
     }

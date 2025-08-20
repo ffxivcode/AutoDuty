@@ -51,30 +51,6 @@ namespace AutoDuty.IPC
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
 
-    internal static class Marketbuddy_IPCSubscriber
-    {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Marketbuddy_IPCSubscriber), "Marketbuddy", SafeWrapper.IPCException);
-
-        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Marketbuddy");
-
-        [EzIPC] internal static readonly Func<string, bool> IsLocked;
-        [EzIPC] internal static readonly Func<string, bool> Lock;
-        [EzIPC] internal static readonly Func<string, bool> Unlock;
-
-        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
-    }
-
-    internal static class DiscardHelper_IPCSubscriber
-    {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(DiscardHelper_IPCSubscriber), "ARDiscard", SafeWrapper.AnyException);
-
-        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("ARDiscard");
-
-        [EzIPC("IsRunning", true)] internal static readonly Func<bool> IsRunning;
-
-        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
-    }
-
     internal static class BossModReborn_IPCSubscriber
     {
         private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(BossModReborn_IPCSubscriber), "BossMod", SafeWrapper.AnyException);
