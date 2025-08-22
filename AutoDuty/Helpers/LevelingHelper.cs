@@ -72,7 +72,7 @@ namespace AutoDuty.Helpers
 
                 switch (mode)
                 {
-                    case LevelingMode.TrustGroup:
+                    case LevelingMode.Trust_Group:
                     {
                         foreach ((TrustMemberName _, TrustMember member) in TrustHelper.Members)
                         {
@@ -83,7 +83,7 @@ namespace AutoDuty.Helpers
 
                         break;
                     }
-                    case LevelingMode.TrustSolo:
+                    case LevelingMode.Trust_Solo:
                     {
                         int memberIndex = 0;
                         foreach ((TrustMemberName _, TrustMember member) in TrustHelper.Members.OrderByDescending(tm => tm.Value.Level))

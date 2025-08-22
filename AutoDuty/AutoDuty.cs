@@ -755,7 +755,7 @@ public sealed class AutoDuty : IDalamudPlugin
             {
                 if (this.LevelingModeEnum == LevelingMode.Support && this.Configuration.PreferTrustOverSupportLeveling && duty.ClassJobLevelRequired > 70)
                 {
-                    levelingModeEnum           = LevelingMode.TrustSolo;
+                    levelingModeEnum           = LevelingMode.Trust_Solo;
                     Configuration.dutyModeEnum = DutyMode.Trust;
 
                     Content? dutyTrust = LevelingHelper.SelectHighestLevelingRelevantDuty(this.LevelingModeEnum);

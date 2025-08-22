@@ -140,7 +140,7 @@ namespace AutoDuty.Data
         }
 
         public static bool IsTrustLeveling(this LevelingMode mode) =>
-            mode is LevelingMode.TrustGroup or LevelingMode.TrustSolo;
+            mode is LevelingMode.Trust_Group or LevelingMode.Trust_Solo;
 
 
         public static (string url, string name) GetExternalPluginData(this ExternalPlugin plugin) =>
