@@ -285,26 +285,31 @@ namespace AutoDuty.Windows
                             ImGui.TextColored(Plugin.LevelingModeEnum == LevelingMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Leveling Mode: ");
                             ImGui.SameLine(0);
                             ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                            if (ImGui.BeginCombo("##LevelingModeEnum", Plugin.LevelingModeEnum == LevelingMode.None ? "None" : 
-                                                                           Plugin.LevelingModeEnum == LevelingMode.TrustSolo ? "Auto Solo" : "Auto"))
+                            if (ImGui.BeginCombo("##LevelingModeEnum", Plugin.LevelingModeEnum switch
+                                {
+                                    LevelingMode.None => "None",
+                                    _ => $"{Plugin.LevelingModeEnum.ToCustomString().Replace(Plugin.Configuration.DutyModeEnum.ToString(), null)} Auto".Trim()
+                                }))
                             {
                                 if (ImGui.Selectable("None", Plugin.LevelingModeEnum == LevelingMode.None))
                                 {
                                     Plugin.LevelingModeEnum = LevelingMode.None;
                                     Plugin.Configuration.Save();
                                 }
-                                if (ImGui.Selectable("Auto", Plugin.LevelingModeEnum == (Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.TrustGroup)))
+
+                                LevelingMode autoLevelMode = (Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.Trust_Group);
+                                if (ImGui.Selectable($"{autoLevelMode.ToCustomString().Replace(Plugin.Configuration.DutyModeEnum.ToString(), null)} Auto".Trim(), Plugin.LevelingModeEnum == autoLevelMode))
                                 {
-                                    Plugin.LevelingModeEnum = Plugin.Configuration.DutyModeEnum == DutyMode.Support ? LevelingMode.Support : LevelingMode.TrustGroup;
+                                    Plugin.LevelingModeEnum = autoLevelMode;
                                     Plugin.Configuration.Save();
                                     if (Plugin.Configuration.AutoEquipRecommendedGear)
                                         AutoEquipHelper.Invoke();
                                 }
 
                                 if(Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
-                                    if (ImGui.Selectable("Auto Solo", Plugin.LevelingModeEnum == LevelingMode.TrustSolo))
+                                    if (ImGui.Selectable($"{LevelingMode.Trust_Solo.ToCustomString().Replace(Plugin.Configuration.DutyModeEnum.ToString(), null)} Auto".Trim(), Plugin.LevelingModeEnum == LevelingMode.Trust_Solo))
                                     {
-                                        Plugin.LevelingModeEnum = LevelingMode.TrustSolo;
+                                        Plugin.LevelingModeEnum = LevelingMode.Trust_Solo;
                                         Plugin.Configuration.Save();
                                         if (Plugin.Configuration.AutoEquipRecommendedGear)
                                             AutoEquipHelper.Invoke();
