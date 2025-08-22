@@ -59,6 +59,8 @@ public class ConfigurationMain
     
     public  string ActiveProfileName => this.activeProfileName;
 
+    public bool Initialized { get; private set; } = false;
+
     [JsonProperty]
     private readonly HashSet<ProfileData> profileData = [];
 
@@ -624,6 +626,8 @@ public class ConfigurationMain
                 this.DefaultConfigName = CONFIGNAME_BARE;
                 this.SetProfile(CONFIGNAME_BARE);
             }
+
+            this.Initialized = true;
         });
     }
 
