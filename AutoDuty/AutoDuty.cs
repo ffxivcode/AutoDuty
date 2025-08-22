@@ -232,7 +232,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 235) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 239) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
 
             if (!_configDirectory.Exists)
@@ -321,14 +321,17 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         ConfigurationMain.Instance.SetProfileToDefault();
 
-        Svc.Framework.RunOnTick(() =>
-                                {
-                                    if (Configuration.ShowOverlay && (!Configuration.HideOverlayWhenStopped || States.HasFlag(PluginState.Looping) || States.HasFlag(PluginState.Navigating)))
-                                        SchedulerHelper.ScheduleAction("ShowOverlay", () => Overlay.IsOpen = true, () => PlayerHelper.IsReady);
+        SchedulerHelper.ScheduleAction("LoginConfig", () =>
+                                                      {
+                                                          if (this.Configuration.ShowOverlay &&
+                                                              (!this.Configuration.HideOverlayWhenStopped || this.States.HasFlag(PluginState.Looping) ||
+                                                               this.States.HasFlag(PluginState.Navigating)))
+                                                              SchedulerHelper.ScheduleAction("ShowOverlay", () => this.Overlay.IsOpen = true, () => PlayerHelper.IsReady);
 
-                                    if (Configuration.ShowMainWindowOnStartup)
-                                        SchedulerHelper.ScheduleAction("ShowMainWindowOnStartup", () => OpenMainUI(), () => PlayerHelper.IsReady);
-                                });
+                                                          if (this.Configuration.ShowMainWindowOnStartup)
+                                                              SchedulerHelper.ScheduleAction("ShowMainWindowOnStartup", this.OpenMainUI, () => PlayerHelper.IsReady);
+                                                      }, () => ConfigurationMain.Instance.Initialized);
+                                
     }
 
     private void UiBuilderOnDraw()
