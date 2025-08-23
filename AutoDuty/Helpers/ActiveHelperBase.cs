@@ -97,11 +97,6 @@ namespace AutoDuty.Helpers
                 this.DebugLog(this.Name + " already running");
                 return;
             }
-            if (PlayerHelper.GetGrandCompanyRank() <= 5)
-            {
-                Svc.Log.Info("GC Turnin requires GC Rank 6 or Higher");
-                return;
-            }
 
 
             this.InfoLog(this.Name + " started");

@@ -27,6 +27,8 @@ namespace AutoDuty.Helpers
         {
             if (!AutoRetainer_IPCSubscriber.IsEnabled)
                 Svc.Log.Info("GC Turnin Requires AutoRetainer plugin. Get @ https://love.puni.sh/ment.json");
+            else if (PlayerHelper.GetGrandCompanyRank() <= 5)
+                Svc.Log.Info("GC Turnin requires GC Rank 6 or Higher");
             else
                 base.Start();
         }
