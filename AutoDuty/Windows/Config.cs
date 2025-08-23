@@ -891,8 +891,9 @@ public class Configuration
 
     #region RSR
 
-    public RSR_IPCSubscriber.TargetHostileType RSR_TargetHostileType = RSR_IPCSubscriber.TargetHostileType.AllTargetsCanAttack;
-    public RSR_IPCSubscriber.TargetingType     RSR_TargetingType     = RSR_IPCSubscriber.TargetingType.LowHP;
+    public RSR_IPCSubscriber.TargetHostileType RSR_TargetHostileType    = RSR_IPCSubscriber.TargetHostileType.AllTargetsCanAttack;
+    public RSR_IPCSubscriber.TargetingType     RSR_TargetingTypeTank    = RSR_IPCSubscriber.TargetingType.HighMaxHP;
+    public RSR_IPCSubscriber.TargetingType     RSR_TargetingTypeNonTank = RSR_IPCSubscriber.TargetingType.LowHP;
     #endregion
 
 
@@ -1685,16 +1686,33 @@ public static class ConfigTab
 
 
                             ImGui.AlignTextToFramePadding();
-                            ImGui.Text("Targeting: ");
+                            ImGui.Text("Targeting | Tank: ");
                             ImGui.SameLine(0, 5);
                             ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X * ImGuiHelpers.GlobalScale);
-                            if (ImGui.BeginCombo("##ConfigRSRTarget", Configuration.RSR_TargetingType.ToCustomString()))
+                            if (ImGui.BeginCombo("##ConfigRSRTargetTank", Configuration.RSR_TargetingTypeTank.ToCustomString()))
                             {
                                 foreach (RSR_IPCSubscriber.TargetingType targetingType in Enum.GetValues(typeof(RSR_IPCSubscriber.TargetingType)))
                                 {
-                                    if (ImGui.Selectable(targetingType.ToCustomString(), targetingType == Configuration.RSR_TargetingType))
+                                    if (ImGui.Selectable(targetingType.ToCustomString(), targetingType == Configuration.RSR_TargetingTypeTank))
                                     {
-                                        Configuration.RSR_TargetingType = targetingType;
+                                        Configuration.RSR_TargetingTypeTank = targetingType;
+                                        Configuration.Save();
+                                    }
+                                }
+                                ImGui.EndCombo();
+                            }
+
+                            ImGui.AlignTextToFramePadding();
+                            ImGui.Text("Targeting | Non-Tank: ");
+                            ImGui.SameLine(0, 5);
+                            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X * ImGuiHelpers.GlobalScale);
+                            if (ImGui.BeginCombo("##ConfigRSRTargetNonTank", Configuration.RSR_TargetingTypeNonTank.ToCustomString()))
+                            {
+                                foreach (RSR_IPCSubscriber.TargetingType targetingType in Enum.GetValues(typeof(RSR_IPCSubscriber.TargetingType)))
+                                {
+                                    if (ImGui.Selectable(targetingType.ToCustomString(), targetingType == Configuration.RSR_TargetingTypeNonTank))
+                                    {
+                                        Configuration.RSR_TargetingTypeNonTank = targetingType;
                                         Configuration.Save();
                                     }
                                 }
