@@ -13,6 +13,9 @@ namespace AutoDuty.Helpers
         protected override string Name        => nameof(ExtractHelper);
         protected override string DisplayName => "Extracting Materia";
 
+        public override string[]? Commands { get; init; } = ["extract"];
+        public override string? CommandDescription { get; init; } = "Extract's materia from equipment";
+
         protected override string[] AddonsToClose { get; } = ["Materialize", "MaterializeDialog", "SelectYesno", "SelectString"];
 
         internal override void Start()

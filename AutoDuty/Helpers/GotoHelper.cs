@@ -1,21 +1,26 @@
-﻿using Dalamud.Plugin.Services;
+﻿using AutoDuty.IPC;
+using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Plugin.Services;
+using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using System.Collections.Generic;
 using System.Numerics;
-using AutoDuty.IPC;
-using ECommons;
-using FFXIVClientStructs.FFXIV.Component.GUI;
-using Dalamud.Game.ClientState.Objects.Types;
 
 namespace AutoDuty.Helpers
 {
     using Lumina.Excel.Sheets;
+    using System;
+    using Windows;
 
     internal class GotoHelper : ActiveHelperBase<GotoHelper>
     {
         protected override string Name        { get; } = nameof(GotoHelper);
         protected override string DisplayName { get; } = string.Empty;
+
+        public override string[]? Commands { get; init; } = ["goto", "go"];
+        public override string? CommandDescription { get; init; } = "Goes to a specific location in the game world\ttargets: inn / barracks / gc / bell / apartment / home / fc";
 
         protected override string[] AddonsToClose { get; } = ["SelectYesno"];
 
@@ -195,6 +200,43 @@ namespace AutoDuty.Helpers
             }
 
             Stop();
+        }
+
+        public override void OnCommand(string[] argsArray)
+        {
+            Svc.Log.Debug("going to " + argsArray[1]);
+            switch (argsArray[1])
+            {
+                case "inn":
+                    GotoInnHelper.Invoke(argsArray.Length > 2 ? Convert.ToUInt32(argsArray[2]) : PlayerHelper.GetGrandCompany());
+                    break;
+                case "barracks":
+                    GotoBarracksHelper.Invoke();
+                    break;
+                case "gc":
+                case "gcsupply":
+                    GotoHelper.Invoke(PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany()), [GCTurninHelper.GCSupplyLocation], 0.25f, 2f, false);
+                    break;
+                case "ar":
+                case "bell":
+                case "summoningbell":
+                    SummoningBellHelper.Invoke(Plugin.Configuration.PreferredSummoningBellEnum);
+                    break;
+                case "ap":
+                case "apartment":
+                    GotoHousingHelper.Invoke(Housing.Apartment);
+                    break;
+                case "personal":
+                case "home":
+                case "personalhome":
+                    GotoHousingHelper.Invoke(Housing.Personal_Home);
+                    break;
+                case "estate":
+                case "fc":
+                case "fcestate":
+                    GotoHousingHelper.Invoke(Housing.FC_Estate);
+                    break;
+            }
         }
     }
 }

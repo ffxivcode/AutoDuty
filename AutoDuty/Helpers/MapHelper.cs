@@ -103,7 +103,7 @@ namespace AutoDuty.Helpers
         private static Vector3? flagMapMarkerVector3 = Vector3.Zero;
         private static FlagMapMarker? flagMapMarker = null;
 
-        internal unsafe static void StopMoveToMapMarker()
+        internal static unsafe void StopMoveToMapMarker()
         {
             Svc.Framework.Update -= MoveToMapMarkerUpdate;
             VNavmesh_IPCSubscriber.Path_Stop();
@@ -114,7 +114,7 @@ namespace AutoDuty.Helpers
             flagMapMarker = null;
         }
 
-        internal unsafe static void MoveToMapMarkerUpdate(IFramework _)
+        internal static unsafe void MoveToMapMarkerUpdate(IFramework _)
         {
             if (!EzThrottler.Throttle("MoveToMapMarker"))
                 return;

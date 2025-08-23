@@ -16,6 +16,9 @@ namespace AutoDuty.Helpers
         protected override string Name        => nameof(DesynthHelper);
         protected override string DisplayName => "Desynthing";
 
+        public override string[]? Commands { get; init; } = ["desynth"];
+        public override string? CommandDescription { get; init; } = "Desynth's items in your inventory";
+
         protected override string[] AddonsToClose { get; } = ["Desynth", "SalvageResult", "SalvageDialog", "SalvageItemSelector"];
 
         internal override void Start()

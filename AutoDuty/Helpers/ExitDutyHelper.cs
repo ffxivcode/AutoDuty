@@ -11,6 +11,9 @@ namespace AutoDuty.Helpers
         protected override string Name        => nameof(ExitDutyHelper);
         protected override string DisplayName => "Exiting Duty";
 
+        public override string[]? Commands           { get; init; } = ["exitduty"];
+        public override string?   CommandDescription { get; init; } = "Exits the current duty if you are not in combat";
+
         protected override int TimeOut { get; set; } = 60_000;
 
         protected override string[] AddonsToClose { get; } = ["ContentsFinderMenu"];
