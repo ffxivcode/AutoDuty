@@ -18,7 +18,7 @@ namespace AutoDuty.Helpers
     internal class ReflectionHelper
     {
         // What do you mean just (BindingFlags) 60 isn't great ?
-        private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+        public const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
         private static class YesAlready_Reflection
         {

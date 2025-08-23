@@ -16,7 +16,7 @@ using System;
 
 namespace AutoDuty.Helpers
 {
-    internal unsafe static class TeleportHelper
+    internal static unsafe class TeleportHelper
     {
         internal static bool TeleportFCEstate() => TeleportHousing(FCEstateTeleportId, 0);
 

@@ -15,8 +15,19 @@ namespace AutoDuty.Helpers
     {
         protected override string   Name          { get; } = nameof(RepairHelper);
         protected override string   DisplayName   { get; } = string.Empty;
+
+        public override string[]? Commands { get; init; } = ["repair"];
+        public override string? CommandDescription { get; init; } = "Repairs your gear";
+
         protected override int      TimeOut       => Plugin.Configuration.AutoRepairSelf ? 300000 : 600000;
         protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
+
+        internal override void Start()
+        {
+            if (!InventoryHelper.CanRepair(100))
+                return;
+            base.Start();
+        }
 
         internal override unsafe void Stop() 
         {

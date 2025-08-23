@@ -14,7 +14,7 @@ namespace AutoDuty.Helpers
     using FFXIVClientStructs.FFXIV.Client.UI.Misc;
     using Lumina.Excel.Sheets;
 
-    internal unsafe static class InventoryHelper
+    internal static unsafe class InventoryHelper
     {
         internal static InventoryType[] Bag       => [InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4];
         internal static uint            SlotsFree => InventoryManager.Instance()->GetEmptySlotsInBag();

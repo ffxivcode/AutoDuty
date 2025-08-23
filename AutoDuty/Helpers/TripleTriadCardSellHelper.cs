@@ -12,13 +12,16 @@ namespace AutoDuty.Helpers
     using Dalamud.Game.ClientState.Objects.Types;
     using System.Numerics;
     using ECommons.UIHelpers.AtkReaderImplementations;
-    using FFXIVClientStructs.FFXIV.Client.Game.UI;
     using Lumina.Excel.Sheets;
 
     internal class TripleTriadCardSellHelper : ActiveHelperBase<TripleTriadCardSellHelper>
     {
         protected override string Name        { get; } = nameof(TripleTriadCardSellHelper);
         protected override string DisplayName { get; } = "Selling TTT Cards";
+
+        public override string[]? Commands           { get; init; } = ["ttsell", "sellcards"];
+        public override string?   CommandDescription { get; init; } = "Sells Triple Triad cards to the vendor in Gold Saucer";
+
         protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "TripleTriadCoinExchange", "ShopCardDialog"];
 
         internal override void Start()

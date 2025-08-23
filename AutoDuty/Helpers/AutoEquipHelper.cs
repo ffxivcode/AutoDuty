@@ -9,10 +9,11 @@ using System;
 
 namespace AutoDuty.Helpers
 {
-    using Windows;
-
     internal unsafe class AutoEquipHelper : ActiveHelperBase<AutoEquipHelper>
     {
+        public override string[]? Commands { get; init; } = ["autoequip", "equiprec"];
+        public override string? CommandDescription { get; init; } = "Equips recommended gear";
+
         internal override void Start()
         {
             switch (Plugin.Configuration.AutoEquipRecommendedGearSource)

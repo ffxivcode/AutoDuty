@@ -8,22 +8,56 @@ namespace AutoDuty.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using static FFXIVClientStructs.FFXIV.Client.Game.GcArmyManager.Delegates;
+    using System.Linq;
+    using System.Reflection;
+    using Serilog;
 
     public static class ActiveHelper
     {
         internal static HashSet<IActiveHelper> activeHelpers = [];
+
+        public static void InvokeAllHelpers()
+        {
+            Type baseType = typeof(ActiveHelperBase<>);
+            Assembly assembly = typeof(ActiveHelper).Assembly;
+
+            foreach (Type type in assembly.GetTypes())
+            {
+                if (!type.IsClass || type.IsAbstract) 
+                    continue;
+
+                Type? current = type;
+                while (current != null)
+                {
+                    if (current.IsGenericType && current.GetGenericTypeDefinition() == baseType) 
+                        break;
+                    if (current.BaseType is { IsGenericType: true } && current.BaseType.GetGenericTypeDefinition() == baseType)
+                    {
+                        Svc.Log.Warning(type.FullName);
+                        Activator.CreateInstance(type);
+                        break;
+                    }
+                    current = current.BaseType;
+                }
+            }
+        }
     }
 
     internal interface IActiveHelper
     {
-        internal        void        StopIfRunning();
+        internal void      StopIfRunning();
+        public   string[]? Commands           { get; init; }
+        public   string?   CommandDescription { get; init; }
+        public   void      OnCommand(string[] args);
     }
 
     internal abstract class ActiveHelperBase<T> : IActiveHelper where T : ActiveHelperBase<T>, new()
     {
         protected abstract string   Name          { get; }
         protected abstract string   DisplayName   { get; }
+
+        public virtual string[]? Commands           { get; init; }
+        public virtual string?   CommandDescription { get; init; }
 
         protected virtual string[] AddonsToClose { get; } = [];
 
@@ -44,6 +78,12 @@ namespace AutoDuty.Helpers
             }
         }
 
+        public ActiveHelperBase()
+        {
+            instance = (T)this;
+            ActiveHelper.activeHelpers.Add(this);
+        }
+
 
         internal static void Invoke()
         {
@@ -57,6 +97,13 @@ namespace AutoDuty.Helpers
                 this.DebugLog(this.Name + " already running");
                 return;
             }
+            if (PlayerHelper.GetGrandCompanyRank() <= 5)
+            {
+                Svc.Log.Info("GC Turnin requires GC Rank 6 or Higher");
+                return;
+            }
+
+
             this.InfoLog(this.Name + " started");
             State         =  ActionState.Running;
             Plugin.States |= PluginState.Other;
@@ -84,6 +131,7 @@ namespace AutoDuty.Helpers
             if(State == ActionState.Running)
                 this.Stop();
         }
+
 
         internal virtual void Stop()
         {
@@ -152,6 +200,11 @@ namespace AutoDuty.Helpers
             }
 
             return true;
+        }
+
+        public virtual void OnCommand(string[] args)
+        {
+            this.Start();
         }
 
         protected void DebugLog(string s)

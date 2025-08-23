@@ -17,6 +17,10 @@ namespace AutoDuty.Helpers
         protected override string Name        { get; } = nameof(AutoRetainerHelper);
         protected override string DisplayName { get; } = "AutoRetainer";
 
+        public override string[]? Commands { get; init; } = ["ar", "autoretainer"];
+        public override string? CommandDescription { get; init; } = "Automatically manages retainers using the AutoRetainer plugin";
+
+
         protected override int TimeOut { get; set; } = 600_000;
 
         protected override string[] AddonsToClose { get; } = ["RetainerList", "SelectYesno", "SelectString", "RetainerTaskAsk"];

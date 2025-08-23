@@ -9,7 +9,7 @@ using System;
 
 namespace AutoDuty.Helpers
 {
-    internal unsafe static class AddonHelper
+    internal static unsafe class AddonHelper
     {
         internal static bool SeenAddon = false;
 

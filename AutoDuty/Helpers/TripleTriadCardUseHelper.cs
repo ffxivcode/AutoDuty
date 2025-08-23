@@ -18,7 +18,10 @@ namespace AutoDuty.Helpers
     {
         protected override string Name        { get; } = nameof(TripleTriadCardUseHelper);
         protected override string DisplayName { get; } = "Registering Cards";
-        
+
+        public override string[]? Commands { get; init; } = ["ttreg", "registercards"];
+        public override string? CommandDescription { get; init; } = "Automatically registers Triple Triad cards in your inventory";
+
         protected override unsafe void HelperUpdate(IFramework framework)
         {
             if (Plugin.States.HasFlag(PluginState.Navigating) || Plugin.InDungeon)

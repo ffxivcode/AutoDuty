@@ -12,6 +12,9 @@ namespace AutoDuty.Helpers
 
     internal class CofferHelper : ActiveHelperBase<CofferHelper>
     {
+        public override string[]? Commands { get; init; } = ["coffer"];
+        public override string? CommandDescription { get; init; } = "Opens coffers in your inventory";
+
         private readonly Dictionary<uint, int> doneItems = [];
         private          int           initialGearset;
 
