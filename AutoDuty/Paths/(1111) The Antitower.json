@@ -364,14 +364,31 @@
     }
   ],
   "Meta": {
-    "CreatedAt": 241,
-    "Changelog": [
+    "createdAt": 106,
+    "changelog": [
+      {
+        "version": 161,
+        "change": "Converted to new JSON Structure"
+      },
+      {
+        "version": 163,
+        "change": "Converted to newer JSON Structure"
+      },
+      {
+        "version": 164,
+        "change": "Converted to JSON Structure with Tags"
+      },
+      {
+        "version": 189,
+        "change": "Adjusted tags to string values"
+      },
       {
         "Version": 241,
-        "Change": "Moved walk positions after boss to actually continue"
+        "Change": "Adjusted AutoMove positions and moved walk positions after boss to actually continue"
       }
     ],
     "Notes": []
   }
 }
+
 
