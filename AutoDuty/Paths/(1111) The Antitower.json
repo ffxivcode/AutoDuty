@@ -1,364 +1,377 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -315.5,
-        "Y": 220,
+        "Y": 220.0,
         "Z": 169.61
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -315.25,
-        "Y": 220,
+        "Y": 220.0,
         "Z": 146.02
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
+      "Tag": "None",
+      "Name": "AutoMoveFor",
+      "Position": {
         "X": -315.28,
-        "Y": 220,
+        "Y": 220.0,
         "Z": 139.54
       },
-      "arguments": [
+      "Arguments": [
         "4000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -334.46,
-        "Y": 255,
+        "Y": 255.0,
         "Z": 40.74
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -347.81,
-        "Y": 255,
+        "Y": 255.0,
         "Z": 11.23
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
+      "Tag": "None",
+      "Name": "AutoMoveFor",
+      "Position": {
         "X": -350.17,
-        "Y": 255,
+        "Y": 255.0,
         "Z": 6.31
       },
-      "arguments": [
+      "Arguments": [
         "3500"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -365.15,
-        "Y": 290,
+        "Y": 290.0,
         "Z": -81.64
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -364.99,
-        "Y": 290,
+        "Y": 290.0,
         "Z": -121.03
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -365.01,
-        "Y": 290,
-        "Z": -127.28
+      "Tag": "None",
+      "Name": "AutoMoveFor",
+      "Position": {
+        "X": -365.51004,
+        "Y": 290.1,
+        "Z": -129.8801
       },
-      "arguments": [
+      "Arguments": [
         "3700"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -364.94,
-        "Y": 325,
+        "Y": 325.0,
         "Z": -254.27
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -364.99,
-        "Y": 325,
+        "Y": 325.0,
         "Z": -262.52
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
+      "Tag": "None",
+      "Name": "AutoMoveFor",
+      "Position": {
         "X": -365.04,
-        "Y": 325,
-        "Z": -272.95
+        "Y": 325.0,
+        "Z": -277.05026
       },
-      "arguments": [
+      "Arguments": [
         "11000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 191.18,
-        "Y": 8,
+        "Y": 8.0,
         "Z": 231.03
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 151.05,
-        "Y": -4,
+        "Y": -4.0,
         "Z": 167.94
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 185.36,
         "Y": -21.99,
         "Z": 137.4
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 199.77,
         "Y": -21.99,
         "Z": 137.5
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 213.27,
-        "Y": -22.1,
-        "Z": 137.52
+      "Tag": "None",
+      "Name": "AutoMoveFor",
+      "Position": {
+        "X": 217.47026,
+        "Y": -22.0,
+        "Z": 137.31999
       },
-      "arguments": [
+      "Arguments": [
         "7000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
+      "Tag": "None",
+      "Name": "Wait",
+      "Position": {
         "X": 252.06,
         "Y": 0.68,
         "Z": -80.06
       },
-      "arguments": [
+      "Arguments": [
         "2000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 261.18,
         "Y": 0.17,
         "Z": -64.11
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
+      "Tag": "None",
+      "Name": "Wait",
+      "Position": {
         "X": 295.15,
         "Y": 0.66,
         "Z": -139.27
       },
-      "arguments": [
+      "Arguments": [
         "2000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 279.97,
         "Y": 0.17,
         "Z": -148.83
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 295.07,
-        "Y": -0.71,
-        "Z": -150.19
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 295.37003,
+        "Y": 0.6900003,
+        "Z": -146.28976
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 290.98,
-        "Y": -6.2,
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 292.6801,
+        "Y": -6.1,
         "Z": -182.15
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 231.84,
         "Y": -9.45,
         "Z": -181.72
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 231.84,
         "Y": -9.45,
         "Z": -181.72
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": "Small Calca and Brina dolls"
+      "Note": "Small Calca and Brina dolls"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 220.82,
         "Y": -9.46,
         "Z": -181.47
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": "Wait for phase change and fight big Calcabrina doll"
+      "Note": "Wait for phase change and fight big Calcabrina doll"
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 221.23744,
+        "Y": -9.458684,
+        "Z": -181.61241
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 217.4081,
+        "Y": -9.458683,
+        "Z": -181.4966
+      },
+      "Arguments": [
+        "2000139"
+      ],
+      "Note": "Exit"
     }
   ],
-  "meta": {
-    "createdAt": 106,
-    "changelog": [
+  "Meta": {
+    "CreatedAt": 241,
+    "Changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
-      },
-      {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
-      },
-      {
-        "version": 164,
-        "change": "Converted to JSON Structure with Tags"
-      },
-      {
-        "version": 189,
-        "change": "Adjusted tags to string values"
+        "Version": 241,
+        "Change": "Moved walk positions after boss to actually continue"
       }
     ],
-    "notes": []
+    "Notes": []
   }
 }
+
