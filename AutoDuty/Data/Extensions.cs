@@ -152,7 +152,7 @@ namespace AutoDuty.Data
                 ExternalPlugin.RotationSolverReborn => (@"https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json", "RotationSolver"),
                 ExternalPlugin.WrathCombo => (@"https://love.puni.sh/ment.json", "WrathCombo"),
                 ExternalPlugin.AutoRetainer => (@"https://love.puni.sh/ment.json", "AutoRetainer"),
-                ExternalPlugin.Gearsetter => (@"https://plugins.carvel.li/", "Gearsetter"),
+                ExternalPlugin.Gearsetter => (@"https://puni.sh/api/repository/vera", "Gearsetter"),
                 ExternalPlugin.Stylist => (@"https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json", "Stylist"),
                 ExternalPlugin.Lifestream => (@"https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json", "Lifestream"),
                 ExternalPlugin.AntiAFK => (@"https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json", "AntiAfkKick-Dalamud"),
