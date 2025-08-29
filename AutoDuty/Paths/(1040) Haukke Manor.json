@@ -1,574 +1,637 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 70.33,
-        "Y": 0,
+        "Y": 0.0,
         "Z": 29.12
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
+      "Tag": "None",
+      "Name": "Wait",
+      "Position": {
         "X": 64.87,
-        "Y": 0,
+        "Y": 0.0,
         "Z": 30.58
       },
-      "arguments": [
+      "Arguments": [
         "500"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2000302"
       ],
-      "note": "Tiny Key"
+      "Note": "Tiny Key"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 0.58,
-        "Y": -0,
+        "Y": -0.0,
         "Z": 57.2
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2000329"
       ],
-      "note": "Locked Door"
+      "Note": "Locked Door"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -26.22,
-        "Y": 0,
+        "Y": 0.0,
         "Z": 50.81
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2000303"
       ],
-      "note": "Tiny Key"
+      "Note": "Tiny Key"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "Interactable",
+      "Position": {
+        "X": -16.81429,
+        "Y": 0.0,
+        "Z": 83.22746
+      },
+      "Arguments": [
+        "2000331"
+      ],
+      "Note": "Locked Door"
+    },
+    {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
+        "X": -11.6485815,
+        "Y": 0.0,
+        "Z": 106.26683
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -35.94,
-        "Y": 0,
+        "Y": 0.0,
         "Z": 75.39
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -36.03,
-        "Y": 0,
+        "Y": 0.0,
         "Z": 0.43
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 7.83,
-        "Y": 0,
+        "Y": 0.0,
         "Z": 0.06
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 11.04,
-        "Y": 0,
+        "Y": 0.0,
         "Z": 0.02
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2000324"
       ],
-      "note": "Green Key"
+      "Note": "Green Key"
     },
     {
-      "tag": "Revival",
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
+        "X": 16.157389,
+        "Y": 0.0,
+        "Z": 0.29687634
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -47.79,
-        "Y": -0,
+        "Y": -0.0,
         "Z": 0.06
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2000355"
       ],
-      "note": "Ivy Door"
+      "Note": "Ivy Door"
     },
     {
-      "tag": "Revival",
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -51.84,
-        "Y": -0,
+        "Y": -0.0,
         "Z": 12.88
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -65.38289,
-        "Y": 0,
+        "Y": 0.0,
         "Z": 12.968736
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "Interactable",
+      "Position": {
+        "X": -68.678955,
+        "Y": -16.8,
+        "Z": -8.081598
+      },
+      "Arguments": [
+        "2000305"
+      ],
+      "Note": "Tiny Key"
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -25.41,
         "Y": -18.8,
         "Z": -33.66
       },
-      "arguments": [
+      "Arguments": [
         "2000339"
       ],
-      "note": "Locked Door"
+      "Note": "Locked Door"
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": -46.45,
         "Y": -18.8,
         "Z": -53.6
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
+        "X": -46.427273,
+        "Y": -18.799997,
+        "Z": -53.58143
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -11.35,
         "Y": -18.8,
         "Z": -49.97
       },
-      "arguments": [
+      "Arguments": [
         "2000308"
       ],
-      "note": "Tiny Key"
+      "Note": "Tiny Key"
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": 13.48,
         "Y": -18.8,
         "Z": -43.61
       },
-      "arguments": [
+      "Arguments": [
         "2000307"
       ],
-      "note": "Tiny Key"
+      "Note": "Tiny Key"
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": 24.91,
         "Y": -18.8,
         "Z": 34.35
       },
-      "arguments": [
+      "Arguments": [
         "2000344"
       ],
-      "note": "Locked Door"
+      "Note": "Locked Door"
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": 46.66,
         "Y": -18.8,
         "Z": 37.5
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -0.19,
         "Y": -18.8,
         "Z": 33.91
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2000343"
       ],
-      "note": "Locked Door"
+      "Note": "Locked Door"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -12.14,
         "Y": -18.79,
         "Z": 51.88
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2000325"
       ],
-      "note": "Yellow Key"
+      "Note": "Yellow Key"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -1.74,
         "Y": -18.8,
         "Z": 24.97
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
+      "Tag": "None",
+      "Name": "AutoMoveFor",
+      "Position": {
         "X": -11.65,
         "Y": -18.8,
         "Z": 24.69
       },
-      "arguments": [
+      "Arguments": [
         "2000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -26.07,
         "Y": -18.8,
         "Z": 1.81
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2000356"
       ],
-      "note": "Carnation Door"
+      "Note": "Carnation Door"
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 14.58,
         "Y": -18.67,
         "Z": 0.05
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "4000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2001235"
       ],
-      "note": "Bloody Parchment"
+      "Note": "Bloody Parchment"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 14.57,
         "Y": -18.68,
         "Z": -0.02
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2012969"
       ],
-      "note": "Aetherial Flow"
+      "Note": "Aetherial Flow"
     },
     {
-      "tag": "Revival",
-      "name": "Revival",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [],
-      "note": ""
+      "Arguments": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 46.69,
         "Y": 9.87,
         "Z": -0.08
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2001233"
       ],
-      "note": "Sealed Barrier"
+      "Note": "Sealed Barrier"
     },
     {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
+      "Tag": "None",
+      "Name": "Wait",
+      "Position": {
         "X": 22.76,
-        "Y": 17,
+        "Y": 17.0,
         "Z": -0.24
       },
-      "arguments": [
+      "Arguments": [
         "5000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -10.65,
-        "Y": 17,
+        "Y": 17.0,
         "Z": -0.01
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     }
   ],
-  "meta": {
-    "createdAt": 106,
-    "changelog": [
+  "Meta": {
+    "CreatedAt": 106,
+    "Changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
+        "Version": 161,
+        "Change": "Converted to new JSON Structure"
       },
       {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
+        "Version": 163,
+        "Change": "Converted to newer JSON Structure"
       },
       {
-        "version": 164,
-        "change": "Converted to JSON Structure with Tags"
+        "Version": 164,
+        "Change": "Converted to JSON Structure with Tags"
       },
       {
-        "version": 189,
-        "change": "Adjusted tags to string values"
+        "Version": 189,
+        "Change": "Adjusted tags to string values"
       },
       {
-        "version": 203,
-        "change": "Unlock coffers to avoid boss loot issue"
+        "Version": 203,
+        "Change": "Unlock coffers to avoid boss loot issue"
       },
       {
-        "version": 215,
-        "change": "Adjusting revivals"
+        "Version": 215,
+        "Change": "Adjusting revivals"
+      },
+      {
+        "Version": 241,
+        "Change": ""
       }
     ],
-    "notes": []
+    "Notes": []
   }
 }
