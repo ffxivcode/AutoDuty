@@ -8,11 +8,8 @@ namespace AutoDuty.Helpers
     using System;
     using Dalamud.Interface;
     using Dalamud.Interface.Utility.Raii;
-    using ECommons.DalamudServices;
-    using ECommons.ImGuiMethods;
-    using global::AutoDuty.IPC;
+    using IPC;
     using System.Numerics;
-    using static Dalamud.Interface.Utility.Raii.ImRaii;
 
     internal static class ImGuiHelper
     {
@@ -133,7 +130,7 @@ namespace AutoDuty.Helpers
             ImGui.SameLine();
         }
 
-        internal static IEndObject RequiresPlugin(ExternalPlugin plugin, string id, string? message = null, bool inline = false, bool write = true)
+        internal static ImRaii.IEndObject RequiresPlugin(ExternalPlugin plugin, string id, string? message = null, bool inline = false, bool write = true)
         {
             if (IPCSubscriber_Common.IsReady(plugin.GetExternalPluginData().name))
             {
@@ -151,11 +148,12 @@ namespace AutoDuty.Helpers
             }
             else
             {
-                ImGui.BeginDisabled();
+                ImRaii.IEndObject disabled = ImRaii.Disabled();
+
                 ImGui.AlignTextToFramePadding();
                 return new EndUnconditionally(() =>
                                               {
-                                                  ImGui.EndDisabled();
+                                                  disabled.Dispose();
 
                                                   if (!write)
                                                       return;
@@ -176,7 +174,7 @@ namespace AutoDuty.Helpers
 
 
         //Straight from Dalamud
-        private struct EndUnconditionally(Action endAction, bool success) : IEndObject
+        private struct EndUnconditionally(Action endAction, bool success) : ImRaii.IEndObject
         {
             private Action EndAction { get; } = endAction;
 
