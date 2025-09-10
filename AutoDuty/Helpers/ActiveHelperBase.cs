@@ -33,7 +33,6 @@ namespace AutoDuty.Helpers
                         break;
                     if (current.BaseType is { IsGenericType: true } && current.BaseType.GetGenericTypeDefinition() == baseType)
                     {
-                        Svc.Log.Warning(type.FullName);
                         Activator.CreateInstance(type);
                         break;
                     }
