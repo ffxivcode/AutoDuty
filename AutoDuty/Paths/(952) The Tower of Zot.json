@@ -142,19 +142,6 @@
       "Note": ""
     },
     {
-      "Tag": "W2W",
-      "Name": "StopForCombat",
-      "Position": {
-        "X": -297.52512,
-        "Y": -187.67056,
-        "Z": 217.21396
-      },
-      "Arguments": [
-        "false"
-      ],
-      "Note": ""
-    },
-    {
       "Tag": "None",
       "Name": "MoveTo",
       "Position": {
@@ -169,14 +156,14 @@
     },
     {
       "Tag": "W2W",
-      "Name": "Wait",
+      "Name": "StopForCombat",
       "Position": {
         "X": 0.0,
         "Y": 0.0,
         "Z": 0.0
       },
       "Arguments": [
-        "2500"
+        "false"
       ],
       "Note": ""
     },
@@ -440,6 +427,19 @@
     },
     {
       "Tag": "W2W",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "W2W",
       "Name": "Wait",
       "Position": {
         "X": 0.0,
@@ -461,19 +461,6 @@
       },
       "Arguments": [
         ""
-      ],
-      "Note": ""
-    },
-    {
-      "Tag": "W2W",
-      "Name": "StopForCombat",
-      "Position": {
-        "X": 55.929604,
-        "Y": 535.03406,
-        "Z": -56.61157
-      },
-      "Arguments": [
-        "true"
       ],
       "Note": ""
     },
@@ -546,9 +533,9 @@
       "Tag": "W2W",
       "Name": "StopForCombat",
       "Position": {
-        "X": -100.40957,
-        "Y": 541.78076,
-        "Z": -55.473618
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
       "Arguments": [
         "true"
@@ -597,7 +584,11 @@
       },
       {
         "Version": 239,
-        "Change": "W2W, Scene transitions and boss revival steps"
+        "Change": "Scene transitions and boss revival steps"
+      },
+      {
+        "Version": 242,
+        "Change": "Adjusted b2-b3 w2w stretches"
       }
     ],
     "Notes": []
