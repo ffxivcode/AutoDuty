@@ -1,5 +1,6 @@
 using AutoDuty.Helpers;
 using AutoDuty.IPC;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
@@ -9,14 +10,12 @@ using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ECommons.MathHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using Dalamud.Bindings.ImGui;
 using Serilog.Events;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using static AutoDuty.Helpers.RepairNPCHelper;
 using static AutoDuty.Windows.ConfigTab;
-using static FFXIVClientStructs.FFXIV.Client.System.String.Utf8String.Delegates;
 
 namespace AutoDuty.Windows;
 
@@ -25,21 +24,24 @@ using ECommons.Configuration;
 using ECommons.ExcelServices;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using ECommons.UIHelpers.AtkReaderImplementations;
+using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using Properties;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Numerics;
-using System.Security.Principal;
 using System.Text;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
+using ECommons.Automation;
+using ECommons.PartyFunctions;
+using FFXIVClientStructs.FFXIV.Client.System.String;
 using Achievement = Lumina.Excel.Sheets.Achievement;
+using ExitDutyHelper = Helpers.ExitDutyHelper;
 using Map = Lumina.Excel.Sheets.Map;
 using Thread = System.Threading.Thread;
 using Vector2 = FFXIVClientStructs.FFXIV.Common.Math.Vector2;
@@ -113,12 +115,16 @@ public class ConfigurationMain
         private const int    BUFFER_SIZE            = 4096;
         private const string PIPE_NAME              = "AutoDutyPipe";
 
-        private const string SERVER_AUTH_KEY        = "AD Server Auth!";
-        private const string CLIENT_AUTH_KEY        = "AD Client Auth!";
-        private const string CLIENT_CID_KEY  = "CLIENT CID";
+        private const string SERVER_AUTH_KEY = "AD_Server_Auth!";
+        private const string CLIENT_AUTH_KEY = "AD_Client_Auth!";
+        private const string CLIENT_CID_KEY  = "CLIENT_CID";
+        private const string PARTY_INVITE    = "PARTY_INVITE";
 
         private const string KEEPALIVE_KEY          = "KEEP_ALIVE";
         private const string KEEPALIVE_RESPONSE_KEY = "KEEP_ALIVE received";
+
+        private const string DUTY_QUEUE_KEY = "DUTY_QUEUE";
+        private const string DUTY_EXIT_KEY = "DUTY_EXIT";
 
         private const string DEATH_KEY   = "DEATH";
         private const string UNDEATH_KEY = "UNDEATH";
@@ -142,12 +148,14 @@ public class ConfigurationMain
                 if (!Instance.MultiBox)
                     return;
 
-                if (stepBlock == value)
+                if (!value)
                 {
                     if (Instance.host)
                         Server.SendStepStart();
-                    return;
                 }
+
+                if (stepBlock == value)
+                    return;
 
                 stepBlock = value;
 
@@ -177,6 +185,9 @@ public class ConfigurationMain
 
         public static void Set(bool on)
         {
+            if(on)
+                Instance.GetCurrentConfig.DutyModeEnum = DutyMode.Regular;
+
             if (Instance.host)
                 Server.Set(on);
             else
@@ -188,7 +199,7 @@ public class ConfigurationMain
             public const             int             MAX_SERVERS = 3;
             private static readonly  Thread?[]       threads     = new Thread?[MAX_SERVERS];
             private static readonly  StreamString?[] streams     = new StreamString?[MAX_SERVERS];
-            internal static readonly ulong?[]        cids        = new ulong?[MAX_SERVERS];
+            internal static readonly ClientInfo?[]   clients        = new ClientInfo?[MAX_SERVERS];
 
             internal static readonly DateTime[] keepAlives    = new DateTime[MAX_SERVERS];
             private static readonly  bool[]     stepConfirms  = new bool[MAX_SERVERS];
@@ -218,10 +229,39 @@ public class ConfigurationMain
                             pipes[i]?.Dispose();
                             threads[i] = null;
                             streams[i] = null;
+                            clients[i] = null;
 
                             keepAlives[i]   = DateTime.MinValue;
                             stepConfirms[i] = false;
+
+                            Chat.ExecuteCommand("/partycmd breakup");
+
+                            SchedulerHelper.ScheduleAction("MultiboxServer PartyBreakup Accept", () =>
+                            {
+                                unsafe
+                                {
+                                    Utf8String inviterName = InfoProxyPartyInvite.Instance()->InviterName;
+
+                                    if(UniversalParty.Length <= 1)
+                                    {
+                                        SchedulerHelper.DescheduleAction("MultiboxServer PartyBreakup Accept");
+                                        return;
+                                    }
+
+
+                                    if (GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) &&
+                                        GenericHelpers.IsAddonReady(addonSelectYesno))
+                                    {
+                                        AddonMaster.SelectYesno yesno = new(addonSelectYesno);
+                                        if (yesno.Text.Contains(inviterName.ToString()))
+                                            yesno.Yes();
+                                        else
+                                            yesno.No();
+                                    }
+                                }
+                            }, 500, false);
                         }
+                        
                     }
                 }
                 catch (Exception ex)
@@ -266,20 +306,31 @@ public class ConfigurationMain
                         switch (split[0])
                         {
                             case CLIENT_CID_KEY:
-                                string? cidString = ss.ReadString();
-                                if (ulong.TryParse(cidString, out ulong cid))
-                                {
-                                    cids[index] = cid;
-                                    DebugLog($"Client CID received: {cid}");
-                                }
-                                else
-                                {
-                                    ErrorLog($"Invalid CID received: {cidString}");
-                                    cids[index] = null;
-                                }
+                                clients[index] = new ClientInfo(ulong.Parse(split[1]), split[2], ushort.Parse(split[3]));
+
+                                Svc.Framework.RunOnTick(() =>
+                                                        {
+
+                                                            unsafe
+                                                            {
+                                                                ClientInfo client = clients[index]!;
+                                                                DebugLog($"Client Identification received: {client.CID} {client.CName} {client.WorldId}");
+
+                                                                if (!PartyHelper.IsPartyMember(client.CID))
+                                                                {
+                                                                    if (client.WorldId == Player.CurrentWorldId)
+                                                                        InfoProxyPartyInvite.Instance()->InviteToParty(client.CID, client.CName, client.WorldId);
+                                                                    else
+                                                                        InfoProxyPartyInvite.Instance()->InviteToPartyContentId(client.CID, 0);
+
+                                                                    ss.WriteString(PARTY_INVITE);
+                                                                }
+                                                            }
+                                                        });
+
                                 break;
                             case KEEPALIVE_KEY:
-                                ss.WriteString($"{KEEPALIVE_RESPONSE_KEY}");
+                                ss.WriteString(KEEPALIVE_RESPONSE_KEY);
                                 keepAlives[index] = DateTime.Now;
                                 break;
                             case STEP_COMPLETED:
@@ -301,8 +352,19 @@ public class ConfigurationMain
                 }
                 catch (Exception e)
                 {
-                    DebugLog($"SERVER ERROR: {e.Message}");
+                    DebugLog($"SERVER ERROR: {e.Message}\n{e.StackTrace}");
                 }
+            }
+
+            public static bool AllInParty()
+            {
+                for (int i = 0; i < MAX_SERVERS; i++)
+                {
+                    if (clients[i] == null || !PartyHelper.IsPartyMember(clients[i]!.CID))
+                        return false;
+                }
+
+                return true;
             }
 
             public static void CheckDeaths()
@@ -323,7 +385,8 @@ public class ConfigurationMain
 
             public static void CheckStepProgress()
             {
-                if(Plugin.Indexer >= 0 && Plugin.Indexer < Plugin.Actions.Count && Plugin.Actions[Plugin.Indexer].Tag == ActionTag.Treasure || stepConfirms.All(x => x) && stepBlock)
+                if((Plugin.Stage != Stage.Looping && Plugin.Indexer >= 0 && Plugin.Indexer < Plugin.Actions.Count && Plugin.Actions[Plugin.Indexer].Tag == ActionTag.Treasure || stepConfirms.All(x => x)) &&
+                   stepBlock)
                 {
                     for (int i = 0; i < stepConfirms.Length; i++)
                         stepConfirms[i] = false;
@@ -343,11 +406,25 @@ public class ConfigurationMain
                 SendToAllClients($"{STEP_START}|{Plugin.Indexer}");
             }
 
+            public static void ExitDuty()
+            {
+                DebugLog("exiting duty");
+                SendToAllClients(DUTY_EXIT_KEY);
+            }
+
+            public static void Queue()
+            {
+                DebugLog("Queue initiated");
+                SendToAllClients(DUTY_QUEUE_KEY);
+            }
+
             private static void SendToAllClients(string message)
             {
                 foreach (StreamString? ss in streams) 
                     ss?.WriteString(message);
             }
+
+            internal record ClientInfo(ulong CID, string CName, ushort WorldId);
         }
 
         private static class Client
@@ -390,8 +467,12 @@ public class ConfigurationMain
                     {
                         clientSS.WriteString(CLIENT_AUTH_KEY);
 
-                        if(Player.Available)
-                            clientSS.WriteString($"{CLIENT_CID_KEY}|{Player.CID}");
+                        Svc.Framework.RunOnTick(() =>
+                                                {
+                                                    if (Player.CID != 0)
+                                                        clientSS.WriteString($"{CLIENT_CID_KEY}|{Player.CID}|{Player.Name}|{Player.CurrentWorldId}");
+                                                });
+
 
                         new Thread(ClientKeepAliveThread).Start();
 
@@ -411,6 +492,39 @@ public class ConfigurationMain
                                     break;
                                 case KEEPALIVE_RESPONSE_KEY:
                                     break;
+                                case DUTY_QUEUE_KEY:
+                                    QueueHelper.InvokeAcceptOnly();
+                                    break;
+                                case DUTY_EXIT_KEY:
+                                    ExitDutyHelper.Invoke();
+                                    break;
+                                case PARTY_INVITE:
+                                    SchedulerHelper.ScheduleAction("MultiboxClient PartyInvite Accept", () =>
+                                                                                                        {
+                                                                                                            unsafe
+                                                                                                            {
+                                                                                                                Utf8String inviterName = InfoProxyPartyInvite.Instance()->InviterName;
+
+                                                                                                                
+                                                                                                                if (InfoProxyPartyInvite.Instance()->InviterWorldId != 0 && 
+                                                                                                                    UniversalParty.Length <= 1 &&
+                                                                                                                    GenericHelpers.TryGetAddonByName("SelectYesno", out AtkUnitBase* addonSelectYesno) &&
+                                                                                                                    GenericHelpers.IsAddonReady(addonSelectYesno))
+                                                                                                                {
+                                                                                                                    AddonMaster.SelectYesno yesno = new(addonSelectYesno);
+                                                                                                                    if (yesno.Text.Contains(inviterName.ToString()))
+                                                                                                                    {
+                                                                                                                        yesno.Yes();
+                                                                                                                        SchedulerHelper.DescheduleAction("MultiboxClient PartyInvite Accept");
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        yesno.No();
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }, 500, false);
+                                    break;
                                 default:
                                     ErrorLog("Unknown response: " + message);
                                     break;
@@ -421,7 +535,7 @@ public class ConfigurationMain
                 }
                 catch (Exception e)
                 {
-                    DebugLog($"Client ERROR: {e.Message}");
+                    DebugLog($"Client ERROR: {e.Message}\n{e.StackTrace}");
                 }
             }
 
@@ -1407,7 +1521,11 @@ public static class ConfigTab
                     ImGui.Indent();
                     for (int i = 0; i < ConfigurationMain.MultiboxUtility.Server.MAX_SERVERS; i++)
                     {
-                        ImGuiEx.Text($"Client {i}: {(PartyHelper.IsPartyMember(ConfigurationMain.MultiboxUtility.Server.cids[i]) ? "in party" : "no party")} | {DateTime.Now.Subtract(ConfigurationMain.MultiboxUtility.Server.keepAlives[i]):ss\\.fff}s ago");
+                        ConfigurationMain.MultiboxUtility.Server.ClientInfo? info = ConfigurationMain.MultiboxUtility.Server.clients[i];
+
+                        ImGuiEx.Text(info != null ?
+                                         $"Client {i}: {(PartyHelper.IsPartyMember(info.CID) ? "in party" : "no party")} | {DateTime.Now.Subtract(ConfigurationMain.MultiboxUtility.Server.keepAlives[i]).TotalSeconds:F3}s ago" :
+                                         $"Client {i}: No Info");
                     }
                     ImGui.Unindent();
                 }
@@ -1415,6 +1533,10 @@ public static class ConfigTab
 
                 if (ImGui.Button("Print mod list")) 
                     Svc.Log.Info(string.Join("\n", PluginInterface.InstalledPlugins.Where(pl => pl.IsLoaded).GroupBy(pl => pl.Manifest.InstalledFromUrl).OrderByDescending(g => g.Count()).Select(g => g.Key+"\n\t"+string.Join("\n\t", g.Select(pl => pl.Name)))));
+                unsafe
+                {
+                    ImGuiEx.Text("Invited by: " + InfoProxyPartyInvite.Instance()->InviterName + " | " + InfoProxyPartyInvite.Instance()->InviterWorldId);
+                }
 
                 if (ImGui.CollapsingHeader("Available Duty Support"))//ImGui.Button("check duty support?"))
                 {

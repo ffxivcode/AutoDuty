@@ -13,6 +13,16 @@
       }
     ],
     "BossMod.Autorotation.MiscAI.GoToPositional": [],
+    "BossMod.Autorotation.MiscAI.StayCloseToPartyRole": [
+      {
+        "Track": "Role",
+        "Option": "Tank"
+      },
+      {
+        "Track": "range",
+        "Option": "20"
+      }
+    ],
     "BossMod.Autorotation.MiscAI.NormalMovement": [
       {
         "Track": "Destination",
