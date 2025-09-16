@@ -126,7 +126,8 @@ public sealed class AutoDuty : IDalamudPlugin
                     BossMod_IPCSubscriber.SetRange(Plugin.Configuration.MaxDistanceToTargetFloat);
                     break;
                 case Stage.Reading_Path:
-                    ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep = true;
+                    if(this._stage is not Stage.Waiting_For_Combat and not Stage.Revived and not Stage.Looping)
+                        ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep = true;
                     break;
             }
             _stage = value;
@@ -234,7 +235,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 239) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 242) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
 
             if (!_configDirectory.Exists)
@@ -664,7 +665,21 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void ClientState_TerritoryChanged(ushort t)
     {
-        if (Stage == Stage.Stopped) return;
+        if (ConfigurationMain.Instance.MultiBox)
+        {
+            bool isDuty = ContentHelper.DictionaryContent.ContainsKey(t);
+            if (!ConfigurationMain.Instance.host)
+            {
+                if (isDuty)
+                    this.Run(t, 1);
+            } else
+            {
+                if(!isDuty)
+                    ConfigurationMain.MultiboxUtility.Server.ExitDuty();
+            }
+        }
+
+        if (this.Stage == Stage.Stopped) return;
 
         Svc.Log.Debug($"ClientState_TerritoryChanged: t={t}");
 
@@ -960,6 +975,7 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => PlayerHelper.IsReadyFull, "Loop-WaitIsReadyFull");
         }
 
+        ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep = true;
 
         if (!queue)
         {
@@ -967,53 +983,62 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
 
-        if (LevelingEnabled)
-        {
-            Svc.Log.Info("Leveling Enabled");
-            Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(this.LevelingModeEnum);
-            if (duty != null)
-            {
-                if (this.LevelingModeEnum == LevelingMode.Support && this.Configuration.PreferTrustOverSupportLeveling && duty.ClassJobLevelRequired > 70)
-                {
-                    levelingModeEnum           = LevelingMode.Trust_Solo;
-                    Configuration.dutyModeEnum = DutyMode.Trust;
 
-                    Content? dutyTrust = LevelingHelper.SelectHighestLevelingRelevantDuty(this.LevelingModeEnum);
+        SchedulerHelper.ScheduleAction("LoopContinueTask", () =>
+                                                           {
+                                                               if (LevelingEnabled)
+                                                               {
+                                                                   Svc.Log.Info("Leveling Enabled");
+                                                                   Content? duty = LevelingHelper.SelectHighestLevelingRelevantDuty(this.LevelingModeEnum);
+                                                                   if (duty != null)
+                                                                   {
+                                                                       if (this.LevelingModeEnum      == LevelingMode.Support && this.Configuration.PreferTrustOverSupportLeveling &&
+                                                                           duty.ClassJobLevelRequired > 70)
+                                                                       {
+                                                                           levelingModeEnum           = LevelingMode.Trust_Solo;
+                                                                           Configuration.dutyModeEnum = DutyMode.Trust;
 
-                    if (duty != dutyTrust)
-                    {
-                        this.levelingModeEnum        = LevelingMode.Support;
-                        this.Configuration.dutyModeEnum = DutyMode.Support;
-                    }
-                }
+                                                                           Content? dutyTrust = LevelingHelper.SelectHighestLevelingRelevantDuty(this.LevelingModeEnum);
 
-                Svc.Log.Info("Next Leveling Duty: " + duty.Name);
-                CurrentTerritoryContent = duty;
-                ContentPathsManager.DictionaryPaths[duty.TerritoryType].SelectPath(out CurrentPath);
-            }
-            else
-            {
-                CurrentLoop = Configuration.LoopTimes;
-                LoopsCompleteActions();
-                return;
-            }
-        }
-        TaskManager.Enqueue(() => Svc.Log.Debug($"Registering New Loop"));
-        Queue(CurrentTerritoryContent);
-        TaskManager.Enqueue(() => Svc.Log.Debug($"Incrementing LoopCount, Setting Action Var, Wait for CorrectTerritory, PlayerIsValid, DutyStarted, and NavIsReady"));
-        TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
-        TaskManager.Enqueue(() => { Action = $"Looping: {CurrentTerritoryContent.Name} {CurrentLoop} of {Configuration.LoopTimes}"; }, "Loop-SetAction");
-        TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
-        TaskManager.Enqueue(() => PlayerHelper.IsValid, int.MaxValue, "Loop-WaitPlayerValid");
-        TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted, int.MaxValue, "Loop-WaitDutyStarted");
-        TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Loop-WaitNavReady");
-        TaskManager.Enqueue(() => Svc.Log.Debug($"StartNavigation"));
-        TaskManager.Enqueue(() => StartNavigation(true), "Loop-StartNavigation");
+                                                                           if (duty != dutyTrust)
+                                                                           {
+                                                                               this.levelingModeEnum           = LevelingMode.Support;
+                                                                               this.Configuration.dutyModeEnum = DutyMode.Support;
+                                                                           }
+                                                                       }
+
+                                                                       Svc.Log.Info("Next Leveling Duty: " + duty.Name);
+                                                                       CurrentTerritoryContent = duty;
+                                                                       ContentPathsManager.DictionaryPaths[duty.TerritoryType].SelectPath(out CurrentPath);
+                                                                   }
+                                                                   else
+                                                                   {
+                                                                       CurrentLoop = Configuration.LoopTimes;
+                                                                       LoopsCompleteActions();
+                                                                       return;
+                                                                   }
+                                                               }
+
+                                                               TaskManager.Enqueue(() => Svc.Log.Debug($"Registering New Loop"));
+                                                               Queue(CurrentTerritoryContent);
+                                                               TaskManager.Enqueue(() =>
+                                                                                       Svc.Log
+                                                                                          .Debug($"Incrementing LoopCount, Setting Action Var, Wait for CorrectTerritory, PlayerIsValid, DutyStarted, and NavIsReady"));
+                                                               TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
+                                                               TaskManager.Enqueue(() => { Action = $"Looping: {CurrentTerritoryContent.Name} {CurrentLoop} of {Configuration.LoopTimes}"; },
+                                                                                   "Loop-SetAction");
+                                                               TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue,
+                                                                                   "Loop-WaitCorrectTerritory");
+                                                               TaskManager.Enqueue(() => PlayerHelper.IsValid,                 int.MaxValue, "Loop-WaitPlayerValid");
+                                                               TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted,          int.MaxValue, "Loop-WaitDutyStarted");
+                                                               TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Loop-WaitNavReady");
+                                                               TaskManager.Enqueue(() => Svc.Log.Debug($"StartNavigation"));
+                                                               TaskManager.Enqueue(() => StartNavigation(true), "Loop-StartNavigation");
+                                                           }, () => !ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep);
     }
 
     private void LoopsCompleteActions()
     {
-
         SetGeneralSettings(false);
 
         if (Configuration.EnableTerminationActions)
@@ -1161,8 +1186,21 @@ public sealed class AutoDuty : IDalamudPlugin
 
     private void StageReadingPath()
     {
-        if (!PlayerHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= Actions.Count || ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep)
+        if (!PlayerHelper.IsValid || !EzThrottler.Check("PathFindFailure") || Indexer == -1 || Indexer >= Actions.Count)
             return;
+
+        if (ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep)
+        {
+            if (PartyHelper.PartyInCombat() && Plugin.StopForCombat)
+            {
+                if (this.Configuration is { AutoManageRotationPluginState: true, UsingAlternativeRotationPlugin: false })
+                    this.SetRotationPluginSettings(true);
+                VNavmesh_IPCSubscriber.Path_Stop();
+                this.Stage = Stage.Waiting_For_Combat;
+            }
+            return;
+        }
+
 
         Action = $"{(Actions.Count >= Indexer ? Plugin.Actions[Indexer].ToCustomString() : "")}";
 

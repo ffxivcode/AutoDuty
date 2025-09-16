@@ -70,7 +70,7 @@ namespace AutoDuty.Helpers
                 return partyInCombat;
 
             List<IBattleChara> members = GetPartyMembers();
-            if (!partyInCombat && members.Any(x => x.Struct()->InCombat))
+            if (!partyInCombat && members.Any(x => !x.Struct()->IsDead() && x.Struct()->InCombat))
                 partyInCombat = true;
             else if (!members.Any(x => !x.Struct()->IsDead() && x.Struct()->InCombat))
                 partyInCombat = false;
