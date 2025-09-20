@@ -1,385 +1,402 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": 196.44,
-        "Y": 186,
+        "Y": 186.0,
         "Z": -5.37
       },
-      "arguments": [
+      "Arguments": [
         "2012811"
       ],
-      "note": "Magitek Terminal"
+      "Note": "Magitek Terminal"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 226.77,
-        "Y": 156,
+        "Y": 156.0,
         "Z": 1.32
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": 172.81,
-        "Y": 156,
+        "Y": 156.0,
         "Z": -25.49
       },
-      "arguments": [
+      "Arguments": [
         "2012813"
       ],
-      "note": "Magitek Transporter"
+      "Note": "Magitek Transporter"
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 191.97,
-        "Y": 76,
+        "Y": 76.0,
         "Z": 0.02
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": 174.78,
-        "Y": 76,
+        "Y": 76.0,
         "Z": 3.76
       },
-      "arguments": [
+      "Arguments": [
         "2012815"
       ],
-      "note": "Magitek Terminal"
+      "Note": "Magitek Terminal"
     },
     {
-      "tag": "None",
-      "name": "DutySpecificCode",
-      "position": {
+      "Tag": "None",
+      "Name": "DutySpecificCode",
+      "Position": {
         "X": 174.68,
-        "Y": 102,
+        "Y": 102.0,
         "Z": -66.46
       },
-      "arguments": [
+      "Arguments": [
         "1"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 241.73,
         "Y": 66.38,
         "Z": 86.07
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
+      "Tag": "None",
+      "Name": "AutoMoveFor",
+      "Position": {
         "X": 237.91,
         "Y": 68.03,
         "Z": 79.14
       },
-      "arguments": [
+      "Arguments": [
         "10000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
         "X": 83.61,
         "Y": -107.99,
         "Z": -31.14
       },
-      "arguments": [
+      "Arguments": [
         "Combat"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 84.45,
         "Y": -107.89,
         "Z": -72.12
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
-        "X": 51,
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 51.0,
         "Y": -107.99,
         "Z": -72.18
       },
-      "arguments": [
+      "Arguments": [
         "Combat"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
         "X": -24.32,
-        "Y": -104,
+        "Y": -104.0,
         "Z": 0.08
       },
-      "arguments": [
+      "Arguments": [
         "Combat"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
         "X": -24.32,
-        "Y": -104,
+        "Y": -104.0,
         "Z": 0.08
       },
-      "arguments": [
+      "Arguments": [
         "Combat"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "StopForCombat",
-      "position": {
+      "Tag": "None",
+      "Name": "StopForCombat",
+      "Position": {
         "X": -24.32,
-        "Y": -104,
+        "Y": -104.0,
         "Z": 0.08
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
         "X": -60.12,
         "Y": -103.94,
         "Z": 0.06
       },
-      "arguments": [
+      "Arguments": [
         "Combat"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "StopForCombat",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "true"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "1"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "IsReady"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "10"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -83.86,
         "Y": -103.94,
         "Z": -0.08
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "DutySpecificCode",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "DutySpecificCode",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "2"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -164.13,
         "Y": -104.4,
         "Z": -0.09
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -202.18,
         "Y": -103.91,
         "Z": -0.61
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -210.61,
         "Y": -103.99,
         "Z": -0.63
       },
-      "arguments": [
+      "Arguments": [
         "false"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -238.41,
-        "Y": -104,
+        "Y": -104.0,
         "Z": -19.2
       },
-      "arguments": [
+      "Arguments": [
         "2012817"
       ],
-      "note": "Magitek Terminal"
+      "Note": "Magitek Terminal"
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "IsReady"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -566.27,
-        "Y": -268,
+        "Y": -268.0,
         "Z": 219.83
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "WaitFor",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
         "IsReady"
       ],
-      "note": ""
+      "Note": ""
     }
   ],
-  "meta": {
-    "createdAt": 106,
-    "changelog": [
+  "Meta": {
+    "CreatedAt": 106,
+    "Changelog": [
       {
-        "version": 114,
-        "change": "Added ForceAttack for Cermet Door as fallback (No DutySpecCode) and Added a Wait and MoveTo before final boss to prevent leaving early."
+        "Version": 114,
+        "Change": "Added ForceAttack for Cermet Door as fallback (No DutySpecCode) and Added a Wait and MoveTo before final boss to prevent leaving early."
       },
       {
-        "version": 135,
-        "change": "Added Duty Specific Code for Magitek stage"
+        "Version": 135,
+        "Change": "Added Duty Specific Code for Magitek stage"
       },
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
+        "Version": 161,
+        "Change": "Converted to new JSON Structure"
       },
       {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
+        "Version": 163,
+        "Change": "Converted to newer JSON Structure"
       },
       {
-        "version": 164,
-        "change": "Converted to JSON Structure with Tags"
+        "Version": 164,
+        "Change": "Converted to JSON Structure with Tags"
       },
       {
-        "version": 189,
-        "change": "Adjusted tags to string values"
+        "Version": 189,
+        "Change": "Adjusted tags to string values"
+      },
+      {
+        "Version": 241,
+        "Change": "Wait before b2 adjusted"
       }
     ],
-    "notes": []
+    "Notes": []
   }
 }
