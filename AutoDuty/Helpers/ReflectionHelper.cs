@@ -1,5 +1,4 @@
-﻿using ECommons.Automation;
-using ECommons.Reflection;
+﻿using ECommons.Reflection;
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -9,10 +8,11 @@ using System.Reflection.Emit;
 
 namespace AutoDuty.Helpers
 {
-    using System.Linq;
+    using System.IO;
     using ECommons.DalamudServices;
     using ECommons.EzSharedDataManager;
     using IPC;
+    using System.Linq;
     using static Data.Enums;
 
     internal class ReflectionHelper
@@ -194,10 +194,16 @@ namespace AutoDuty.Helpers
             return dm.CreateDelegate<FieldRef<T, F>>();
         }
 
-
         public delegate bool StaticBoolMethod();
 
-        public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, Type delegateInstanceType = null) where DelegateType : Delegate
+        public delegate bool InstanceBoolMethod<in T>(T instance);
+
+        public delegate string InstanceStringMethod<in T>(T instance);
+
+        public delegate FileInfo InstanceFileInfoMethod<in T>(T instance);
+
+
+        public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, Type delegateInstanceType = null, Type[] delegateArgs = null, bool debug = false) where DelegateType : Delegate
         {
             try
             {
@@ -229,12 +235,11 @@ namespace AutoDuty.Helpers
                 for (int i = 0; i < numParameters; i++)
                     parameterTypes[i + 1] = parameters[i].ParameterType;
 
-                Type[]        delegateArgsResolved = delegateType.GetGenericArguments();
+                Type[]        delegateArgsResolved = delegateArgs ?? delegateType.GetGenericArguments();
                 Type[]        dynMethodReturn      = delegateArgsResolved.Length < parameterTypes.Length ? parameterTypes : delegateArgsResolved;
                 DynamicMethod dmd                  = new("OpenInstanceDelegate_" + method.Name, method.ReturnType, dynMethodReturn);
                 ILGenerator   ilGen                = dmd.GetILGenerator();
                 if (declaringType is { IsValueType: true } && delegateArgsResolved.Length > 0 && !delegateArgsResolved[0].IsByRef)
-
                     ilGen.Emit(OpCodes.Ldarga_S, 0);
                 else
                     ilGen.Emit(OpCodes.Ldarg_0);
@@ -250,9 +255,16 @@ namespace AutoDuty.Helpers
 
                 ilGen.Emit(OpCodes.Call, method);
                 ilGen.Emit(OpCodes.Ret);
-                Svc.Log.Info(delegateType.FullName);
-                Svc.Log.Info(string.Join(" | ", delegateType.GenericTypeArguments.Select(t => t.FullName)));
-                Svc.Log.Info(string.Join(" | ", parameterTypes.Select(t => t.FullName)));
+
+                if (debug)
+                {
+                    Svc.Log.Warning(delegateType.FullName);
+                    Svc.Log.Warning(delegateType.ReflectedType.FullName);
+                    Svc.Log.Warning(dmd.Name + " " + dmd.ReturnType.FullName + " " + string.Join(" | ", dmd.GetParameters().Select(p => p.ParameterType.FullName)));
+                    Svc.Log.Warning(string.Join(" | ", delegateArgsResolved.Select(t => t.FullName)));
+                    Svc.Log.Warning(string.Join(" | ", parameterTypes.Select(t => t.FullName)));
+                }
+
                 return (DelegateType)dmd.CreateDelegate(delegateType);
             }
             catch (Exception ex)

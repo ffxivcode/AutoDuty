@@ -37,17 +37,24 @@ using AutoDuty.Updater;
 
 namespace AutoDuty;
 
+using System.Collections;
+using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Utility.Numerics;
 using Data;
 using ECommons.Configuration;
+using ECommons.ImGuiMethods;
+using ECommons.Reflection;
 using ECommons.SimpleGui;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using Lumina.Excel.Sheets;
 using Pictomancy;
 using Serilog;
 using static Data.Classes;
+using Module = ECommons.Module;
+using ReflectionHelper = Helpers.ReflectionHelper;
 using TaskManager = ECommons.Automation.LegacyTaskManager.TaskManager;
 
 // TODO:
@@ -235,7 +242,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 242) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 243) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
 
             if (!_configDirectory.Exists)
@@ -433,12 +440,59 @@ public sealed class AutoDuty : IDalamudPlugin
             Svc.DutyState.DutyCompleted      += DutyState_DutyCompleted;
             Svc.Log.MinimumLogLevel          =  LogEventLevel.Debug;
             PluginInterface.UiBuilder.Draw   += UiBuilderOnDraw;
+            Migrate();
         }
         catch (Exception e)
         {
             Svc.Log.Info($"Failed loading plugin\n{e}");
         }
     }
+
+    private static async void Migrate()
+    {
+        try
+        {
+            using StreamReader reader    = new(await new HttpClient().GetStreamAsync(@"https://puni.sh/api/repository/erdelf"));
+            string             json      = await reader.ReadToEndAsync();
+            
+            if (json.Length > 800)
+            {
+                DalamudReflector.AddRepo(@"https://puni.sh/api/repository/erdelf", true);
+
+                Assembly assembly      = typeof(IDalamudPlugin).Assembly;
+                Type?    service       = assembly.GetType("Dalamud.Service`1");
+                Type?    managerType   = assembly.GetType("Dalamud.Plugin.Internal.PluginManager", true);
+                object?  manager       = service.MakeGenericType(managerType).GetMethod("Get").Invoke(null, null);
+                object?  pluginsUncast = manager.GetType().GetProperty("InstalledPlugins").GetMethod.Invoke(manager, null);
+                IList?   plugins       = pluginsUncast as IList;
+
+                if (plugins.Count > 0)
+                {
+                    MethodInfo? pluginGetName = plugins[0]!.GetType().GetProperty("InternalName")!.GetMethod;
+
+                    ReflectionHelper.InstanceStringMethod<object>? pluginName =
+                        ReflectionHelper.MethodDelegate<ReflectionHelper.InstanceStringMethod<object>>(pluginGetName, delegateInstanceType: pluginGetName.DeclaringType);
+
+                    foreach (object plugin in plugins)
+                        if (pluginName(plugin) == "AutoDuty" && !(bool)(plugin.GetType().GetProperty("IsDev")?.GetMethod?.Invoke(plugin, null) ?? false))
+                        {
+                            object?       manifest   = plugin.GetType().GetField("manifest", ReflectionHelper.All).GetValue(plugin);
+                            PropertyInfo? installUrl = manifest.GetType().GetProperty("InstalledFromUrl");
+                            if ((installUrl.GetMethod.Invoke(manifest, null) as string).Contains("herc"))
+                            {
+                                installUrl.SetMethod.Invoke(manifest, [@"https://puni.sh/api/repository/erdelf"]);
+                                plugin.GetType().GetMethod("SaveManifest", ReflectionHelper.All).Invoke(plugin, ["Migrated to new repository"]);
+                            }
+                        }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Error(e.ToStringFull());
+        }
+    }
+
 
     private unsafe void OnCommand(string command, string args)
     {
