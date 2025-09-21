@@ -88,9 +88,9 @@ namespace AutoDuty.Helpers
                             if (!valueList.IsFixedSize)
                                 valueList.Clear();
 
-                            for (int i = 1; i < configValues.Length; i++)
+                            for (int i = 0; i < configValues.Length; i++)
                             {
-                                object? val = ModifyConfig(enumerableType, configValues[i], out _);
+                                object? val = ModifyConfig(enumerableType, configValues[i+1], out _);
                                 if (val != null)
                                     if (!valueList.IsFixedSize)
                                         valueList.Add(val);
