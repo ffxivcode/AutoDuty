@@ -55,3 +55,11 @@ jobs:
           footer_title: "Changelog"
           footer_icon_url: "https://s3.puni.sh/media/plugin/54/icon-15ug2vnr9m1.png"
           footer_timestamp: true
+
+      - name: 'Upload to GitHub release'
+        run: |
+            gh release upload ${{github.event.release.tag_name}} AutoDuty/bin/Release/AutoDuty/latest.zip
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        shell: bash
+
