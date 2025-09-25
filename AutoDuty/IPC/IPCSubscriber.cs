@@ -27,13 +27,27 @@ namespace AutoDuty.IPC
 
         [EzIPC] internal static readonly Func<bool> IsBusy;
         [EzIPC] internal static readonly Func<Dictionary<ulong, HashSet<string>>> GetEnabledRetainers;
-        [EzIPC] internal static readonly Func<bool> AreAnyRetainersAvailableForCurrentChara;
-        [EzIPC] internal static readonly Action AbortAllTasks;
-        [EzIPC] internal static readonly Action DisableAllFunctions;
-        [EzIPC] internal static readonly Action EnableMultiMode;
-        [EzIPC] internal static readonly Func<int> GetInventoryFreeSlotCount;
-        [EzIPC] internal static readonly Action EnqueueHET;
+
+        [EzIPC] internal static readonly Func<bool>         AreAnyRetainersAvailableForCurrentChara;
+        [EzIPC] internal static readonly Func<ulong, long?> GetClosestRetainerVentureSecondsRemaining; //ulong CID
+        [EzIPC] internal static readonly Action             AbortAllTasks;
+        [EzIPC] internal static readonly Action             DisableAllFunctions;
+        [EzIPC] internal static readonly Action             EnableMultiMode;
+        [EzIPC] internal static readonly Func<int>          GetInventoryFreeSlotCount;
+        [EzIPC] internal static readonly Action             EnqueueHET;
+
         [EzIPC("AutoRetainer.GC.EnqueueInitiation", applyPrefix: false)] internal static readonly Action EnqueueGCInitiation;
+
+        public static bool RetainersAvailable()
+        {
+            if (Plugin.Configuration.EnableAutoRetainer && IsEnabled)
+            {
+                long? remaining = GetClosestRetainerVentureSecondsRemaining(Player.CID);
+                return remaining.HasValue && remaining < Plugin.Configuration.AutoRetainer_RemainingTime;
+            }
+
+            return false;
+        }
 
         internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
