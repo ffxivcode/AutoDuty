@@ -77,13 +77,18 @@ namespace AutoDuty.Helpers
 
             if (this._autoRetainerStopped)
             {
+                this.DebugLog("Stopped?");
                 if (AutoRetainer_IPCSubscriber.IsBusy())
                 {
                     this._autoRetainerStopped = false;
+                    this.DebugLog("still busy");
+
                 } else if (AutoRetainer_IPCSubscriber.RetainersAvailable())
                 {
                     this._autoRetainerStopped = false;
                     this._autoRetainerStarted = false;
+
+                    this.DebugLog("Retainers available, restarting");
                 }
                 else
                 {
@@ -92,42 +97,53 @@ namespace AutoDuty.Helpers
                 }
             }
 
-            if (!this._autoRetainerStarted && AutoRetainer_IPCSubscriber.IsBusy())
+            if (!this._autoRetainerStarted)
             {
-                DebugLog("AutoRetainer has Started");
-                this._autoRetainerStarted = true;
-                UpdateBaseThrottle        = 1000;
-                return;
+                if (AutoRetainer_IPCSubscriber.IsBusy())
+                {
+                    this.DebugLog("AutoRetainer has Started");
+                    this._autoRetainerStarted = true;
+                    this.UpdateBaseThrottle   = 1000;
+                    return;
+                } else if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
+                {
+                    if (AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
+                    {
+                        this.DebugLog("Waiting for AutoRetainer to Start");
+                        Chat.ExecuteCommand("/autoretainer e");
+                    }
+                }
             }
             else if (this._autoRetainerStarted && !AutoRetainer_IPCSubscriber.IsBusy())
             {
-                DebugLog("AutoRetainer is Complete");
+                this.DebugLog("AutoRetainer is Complete");
                 this._autoRetainerStopped = true;
                 EzThrottler.Throttle(this.Name, 2000, true);
             }
 
             if (this.SummoningBellGameObject != null && !SummoningBellHelper.HousingZones.Contains(Player.Territory) && ObjectHelper.GetDistanceToPlayer(this.SummoningBellGameObject) > 4)
             {
-                DebugLog("Moving Closer to Summoning Bell");
+                this.DebugLog("Moving Closer to Summoning Bell");
                 MovementHelper.Move(this.SummoningBellGameObject, 0.25f, 4);
             }
             else if ((this.SummoningBellGameObject == null || SummoningBellHelper.HousingZones.Contains(Player.Territory)) && GotoHelper.State != ActionState.Running)
             {
-                DebugLog("Moving to Summoning Bell Location");
+                this.DebugLog("Moving to Summoning Bell Location");
                 SummoningBellHelper.Invoke(Plugin.Configuration.PreferredSummoningBellEnum);
             }
             else if (this.SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(this.SummoningBellGameObject) <= 4 && !this._autoRetainerStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* _) && (ObjectHelper.InteractWithObjectUntilAddon(this.SummoningBellGameObject, "RetainerList") == null))
             {
-                if (Svc.Condition[ConditionFlag.OccupiedSummoningBell] && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
+                this.DebugLog("Interacted");
+                if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
                 {
+                    this.DebugLog("Occupied");
                     if (VNavmesh_IPCSubscriber.Path_IsRunning())
                         VNavmesh_IPCSubscriber.Path_Stop();
-                    DebugLog("Waiting for AutoRetainer to Start");
-                    Chat.ExecuteCommand("/autoretainer e");
                 }
                 else
-                    DebugLog("Interacting with SummoningBell");
-                
+                {
+                    this.DebugLog("Interacting with SummoningBell");
+                }
             }
         }
     }
