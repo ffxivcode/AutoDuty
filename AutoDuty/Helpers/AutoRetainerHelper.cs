@@ -21,13 +21,13 @@ namespace AutoDuty.Helpers
         public override string? CommandDescription { get; init; } = "Automatically manages retainers using the AutoRetainer plugin";
 
 
-        protected override int TimeOut { get; set; } = 600_000;
+        protected override int TimeOut => 600_000 + ((int) Plugin.Configuration.AutoRetainer_RemainingTime*60);
 
         protected override string[] AddonsToClose { get; } = ["RetainerList", "SelectYesno", "SelectString", "RetainerTaskAsk"];
 
         internal override void Start()
         {
-            if (!AutoRetainer_IPCSubscriber.IsEnabled || !AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
+            if (!AutoRetainer_IPCSubscriber.RetainersAvailable())
                 return;
             DebugLog("AutoRetainerHelper.Invoke");
             if (!AutoRetainer_IPCSubscriber.IsEnabled)
@@ -80,6 +80,10 @@ namespace AutoDuty.Helpers
                 if (AutoRetainer_IPCSubscriber.IsBusy())
                 {
                     this._autoRetainerStopped = false;
+                } else if (AutoRetainer_IPCSubscriber.RetainersAvailable())
+                {
+                    this._autoRetainerStopped = false;
+                    this._autoRetainerStarted = false;
                 }
                 else
                 {
@@ -114,7 +118,7 @@ namespace AutoDuty.Helpers
             }
             else if (this.SummoningBellGameObject != null && ObjectHelper.GetDistanceToPlayer(this.SummoningBellGameObject) <= 4 && !this._autoRetainerStarted && !GenericHelpers.TryGetAddonByName("RetainerList", out AtkUnitBase* _) && (ObjectHelper.InteractWithObjectUntilAddon(this.SummoningBellGameObject, "RetainerList") == null))
             {
-                if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
+                if (Svc.Condition[ConditionFlag.OccupiedSummoningBell] && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
                 {
                     if (VNavmesh_IPCSubscriber.Path_IsRunning())
                         VNavmesh_IPCSubscriber.Path_Stop();

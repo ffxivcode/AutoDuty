@@ -1180,6 +1180,7 @@ public class Configuration
 
     public bool                   EnableAutoRetainer         = false;
     public SummoningBellLocations PreferredSummoningBellEnum = 0;
+    public long                   AutoRetainer_RemainingTime = 0L;
     #endregion
 
     #region Termination
@@ -2696,6 +2697,7 @@ public static class ConfigTab
                 }
                 if (Configuration.EnableAutoRetainer)
                 {
+                    ImGui.Indent();
                     ImGui.Text("Preferred Summoning Bell Location: ");
                     ImGuiComponents.HelpMarker("No matter what location is chosen, if there is a summoning bell in the location you are in when this is invoked it will go there instead");
                     if (ImGui.BeginCombo("##PreferredBell", Configuration.PreferredSummoningBellEnum.ToCustomString()))
@@ -2710,6 +2712,21 @@ public static class ConfigTab
                         }
                         ImGui.EndCombo();
                     }
+
+                    ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+                    ImGui.AlignTextToFramePadding();
+                    ImGui.Text("Waiting up to...");
+                    ImGui.SameLine();
+                    if (Configuration.UseSliderInputs && ImGui.SliderLong("###AutoRetainerTimeWaitingSlider", ref Configuration.AutoRetainer_RemainingTime, 0L, 300L) ||
+                        !Configuration.UseSliderInputs && ImGui.InputLong("###AutoRetainerTimeWaitingInput", ref Configuration.AutoRetainer_RemainingTime, step: 1L, stepFast: 10L))
+                    {
+                        Configuration.AutoRetainer_RemainingTime = Math.Max(Configuration.AutoRetainer_RemainingTime, 0L);
+                        Configuration.Save();
+                    }
+                    ImGui.SameLine();
+                    ImGui.Text("seconds");
+                    ImGui.PopItemWidth();
+                    ImGui.Unindent();
                 }
                 if (!AutoRetainer_IPCSubscriber.IsEnabled)
                 {

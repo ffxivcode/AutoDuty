@@ -959,7 +959,7 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Configuration.AutoOpenCoffers) 
                 EnqueueActiveHelper<CofferHelper>();
 
-            if (Configuration.EnableAutoRetainer && AutoRetainer_IPCSubscriber.IsEnabled && AutoRetainer_IPCSubscriber.AreAnyRetainersAvailableForCurrentChara())
+            if (AutoRetainer_IPCSubscriber.RetainersAvailable())
             {
                 TaskManager.Enqueue(() => Svc.Log.Debug($"AutoRetainer BetweenLoop Actions"));
                 if (Configuration.EnableAutoRetainer)
