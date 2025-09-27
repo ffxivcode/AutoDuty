@@ -156,6 +156,7 @@ namespace AutoDuty.Data
                 ExternalPlugin.Stylist => (@"https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json", "Stylist"),
                 ExternalPlugin.Lifestream => (@"https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json", "Lifestream"),
                 ExternalPlugin.AntiAFK => (@"https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json", "AntiAfkKick-Dalamud"),
+                ExternalPlugin.Pandora => (@"https://love.puni.sh/ment.json", "PandorasBox"),
                 _ => throw new ArgumentOutOfRangeException(nameof(plugin), plugin, null)
             };
 
@@ -172,6 +173,7 @@ namespace AutoDuty.Data
                 ExternalPlugin.Stylist => "Stylist",
                 ExternalPlugin.Lifestream => "Lifestream",
                 ExternalPlugin.AntiAFK => "Anti-AfkKick",
+                ExternalPlugin.Pandora => "Pandora's Box",
                 _ => throw new ArgumentOutOfRangeException(nameof(plugin), plugin, null)
             };
     }
