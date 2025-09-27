@@ -132,6 +132,9 @@ namespace AutoDuty.Helpers
 
         internal static ImRaii.IEndObject RequiresPlugin(ExternalPlugin plugin, string id, string? message = null, bool inline = false, bool write = true)
         {
+            if (plugin == ExternalPlugin.None)
+                return new EndUnconditionally();
+
             if (IPCSubscriber_Common.IsReady(plugin.GetExternalPluginData().name))
             {
                 return new EndUnconditionally(() =>
@@ -187,7 +190,7 @@ namespace AutoDuty.Helpers
                 if (this.Disposed)
                     return;
 
-                this.EndAction();
+                this.EndAction?.Invoke();
                 this.Disposed = true;
             }
         }

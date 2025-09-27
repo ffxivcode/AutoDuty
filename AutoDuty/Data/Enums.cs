@@ -356,6 +356,7 @@ namespace AutoDuty.Data
 
         public enum ExternalPlugin
         {
+            None,
             vnav,
             BossMod,
             Avarice,
@@ -365,7 +366,8 @@ namespace AutoDuty.Data
             Gearsetter,
             Stylist,
             Lifestream,
-            AntiAFK
+            AntiAFK,
+            Pandora
         }
 
         public static bool HasAnyFlag<T>(this T instance, params T[] parameter) where T : Enum

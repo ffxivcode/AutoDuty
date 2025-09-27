@@ -422,42 +422,67 @@ public class MainWindow : Window, IDisposable
             return data[0];
         }
     }
+
     public static void EzTabBar(string id, string? KoFiTransparent, string openTabName, ImGuiTabBarFlags flags, params (string name, Action function, Vector4? color, bool child)[] tabs)
     {
         ImGui.BeginTabBar(id, flags);
-        foreach (var x in tabs)
+
+
+        bool valid = (BossMod_IPCSubscriber.IsEnabled  || Plugin.Configuration.UsingAlternativeBossPlugin)     &&
+                     (VNavmesh_IPCSubscriber.IsEnabled || Plugin.Configuration.UsingAlternativeMovementPlugin) &&
+                     (BossMod_IPCSubscriber.IsEnabled  || Plugin.Configuration.UsingAlternativeRotationPlugin);
+
+        if (!valid)
+            openTabName = "Info";
+
+        foreach ((string name, Action function, Vector4? color, bool child) x in tabs)
         {
-            if (x.name == null) continue;
-            if (x.color != null)
-            {
+            if (x.name.IsNullOrEmpty()) 
+                continue;
+            if (x.color != null) 
                 ImGui.PushStyleColor(ImGuiCol.Tab, x.color.Value);
-            }
-            if (ImGui.BeginTabItem(x.name, openTabName == x.name ? ImGuiTabItemFlags.SetSelected : ImGuiTabItemFlags.None))
+            
+            if ((valid || x.name == "Info") && ImGui.BeginTabItem(x.name, openTabName == x.name ? ImGuiTabItemFlags.SetSelected : ImGuiTabItemFlags.None))
             {
                 if (x.color != null) 
                     ImGui.PopStyleColor();
                 if (x.child) 
                     ImGui.BeginChild(x.name + "child");
+
+                if(!valid)
+                {
+                    ImGui.NewLine();
+                    ImGui.TextColored(EzColor.Red, "You need to do the basic setup below. Enjoy");
+                }
+
                 x.function();
+
                 if (x.child) 
                     ImGui.EndChild();
                 ImGui.EndTabItem();
             }
             else
             {
-                if (x.color != null)
-                {
+                if (x.color != null) 
                     ImGui.PopStyleColor();
-                }
             }
         }
-        if (KoFiTransparent != null) PatreonBanner.RightTransparentTab();
+        if (KoFiTransparent != null) 
+            PatreonBanner.RightTransparentTab();
+        
         ImGui.EndTabBar();
     }
 
     private static readonly List<(string, Action, Vector4?, bool)> tabList =
-        [("Main", MainTab.Draw, null, false), ("Build", BuildTab.Draw, null, false), ("Paths", PathsTab.Draw, null, false), ("Config", ConfigTab.Draw, null, false), ("Info", InfoTab.Draw, null, false), ("Logs", LogTab.Draw, null, false),("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)
-        ];
+    [
+        ("Main", MainTab.Draw, null, false), 
+        ("Build", BuildTab.Draw, null, false), 
+        ("Paths", PathsTab.Draw, null, false), 
+        ("Config", ConfigTab.Draw, null, false), 
+        ("Info", InfoTab.Draw, null, false), 
+        ("Logs", LogTab.Draw, null, false),
+        ("Support AutoDuty", KofiLink, ImGui.ColorConvertU32ToFloat4(ColorNormal), false)
+    ];
 
     public override void Draw()
     {
