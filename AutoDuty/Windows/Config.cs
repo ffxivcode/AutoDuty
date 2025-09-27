@@ -1958,12 +1958,12 @@ public static class ConfigTab
                 ImGui.Indent();
                 ImGui.Text("Select Method: ");
                 ImGui.SameLine(0, 5);
-                ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+                ImGui.PushItemWidth(200 * ImGuiHelpers.GlobalScale);
                 if (ImGui.BeginCombo("##ConfigLootMethod", Configuration.LootMethodEnum.ToCustomString()))
                 {
                     foreach (LootMethod lootMethod in Enum.GetValues(typeof(LootMethod)))
                     {
-                        using (ImRaii.Disabled((lootMethod == LootMethod.Pandora && !PandorasBox_IPCSubscriber.IsEnabled)))
+                        using (lootMethod == LootMethod.Pandora ? ImGuiHelper.RequiresPlugin(ExternalPlugin.Pandora, $"{lootMethod}_Looting", inline: true) : _)
                         {
                             if (ImGui.Selectable(lootMethod.ToCustomString(), Configuration.LootMethodEnum == lootMethod))
                             {
