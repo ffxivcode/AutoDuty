@@ -80,19 +80,6 @@
     },
     {
       "tag": "None",
-      "name": "SelectYesno",
-      "position": {
-        "X": -2.16,
-        "Y": 0.96,
-        "Z": 33.69
-      },
-      "arguments": [
-        "Yes"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
       "name": "Boss",
       "position": {
         "X": 0.53,
@@ -171,19 +158,6 @@
     },
     {
       "tag": "None",
-      "name": "SelectYesno",
-      "position": {
-        "X": 158.12,
-        "Y": -8,
-        "Z": -23.54
-      },
-      "arguments": [
-        "Yes"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
       "name": "MoveTo",
       "position": {
         "X": 191.74,
@@ -259,19 +233,6 @@
         "2005178"
       ],
       "note": "Lord Commander\u0027s Seat"
-    },
-    {
-      "tag": "None",
-      "name": "SelectYesno",
-      "position": {
-        "X": 192.03,
-        "Y": -8.05,
-        "Z": -70.62
-      },
-      "arguments": [
-        "Yes"
-      ],
-      "note": ""
     },
     {
       "tag": "None",
@@ -470,19 +431,6 @@
     },
     {
       "tag": "None",
-      "name": "SelectYesno",
-      "position": {
-        "X": -69.07,
-        "Y": 32,
-        "Z": -291.78
-      },
-      "arguments": [
-        "Yes"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
       "name": "Boss",
       "position": {
         "X": -69.7,
@@ -513,6 +461,10 @@
       {
         "version": 189,
         "change": "Adjusted tags to string values"
+      },
+      {
+        "version": 244,
+        "change": "Removed redundant yesno steps"
       }
     ],
     "notes": []
