@@ -242,7 +242,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 244) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 245) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
 
             if (!_configDirectory.Exists)
@@ -976,8 +976,6 @@ public sealed class AutoDuty : IDalamudPlugin
                 }
             }
 
-            AutoConsume();
-
             AutoEquipRecommendedGear();
 
             if (Configuration.AutoRepair && InventoryHelper.CanRepair()) 
@@ -1029,6 +1027,9 @@ public sealed class AutoDuty : IDalamudPlugin
             TaskManager.Enqueue(() => PlayerHelper.IsReadyFull, "Loop-WaitIsReadyFull");
         }
 
+        if(queue || ConfigurationMain.Instance is { MultiBox: true, host: false })
+            AutoConsume();
+
         ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep = true;
 
         if (!queue)
@@ -1036,7 +1037,6 @@ public sealed class AutoDuty : IDalamudPlugin
             LoopsCompleteActions();
             return;
         }
-
 
         SchedulerHelper.ScheduleAction("LoopContinueTask", () =>
                                                            {
