@@ -15,8 +15,8 @@ namespace AutoDuty.Helpers
     internal static class ContentHelper
     {
         internal static Dictionary<uint, Content> DictionaryContent { get; set; } = [];
-
-        private static List<uint> ListGCArmyContent { get; set; } = [1245, 1039, 1041, 1042, 171, 172, 159, 160, 349, 362, 188, 1064, 1066, 430, 510];
+        
+        private static List<uint> ListGCArmyContent { get; set; } = [1245, 1039, 1041, 1042, 0/*171*/, 172, 0/*159*/, 160, 349, 362, 188, 1064, 1066, 430, 510]; //Keeping Dzemael and Wanderer's Palace out for now.
         
         private static List<uint> ListVVDContent { get; set; } = [1069, 1137, 1176]; //[1069, 1075, 1076, 1137, 1155, 1156, 1176, 1179, 1180]; *Criterions
 
