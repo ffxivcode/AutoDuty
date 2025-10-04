@@ -202,10 +202,11 @@ namespace AutoDuty.IPC
 
     internal static class Stylist_IPCSubscriber
     {
-        private static EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Stylist_IPCSubscriber), "Stylist", SafeWrapper.IPCException);
-        internal static bool IsEnabled => IPCSubscriber_Common.IsReady("Stylist");
-        [EzIPC] internal static readonly Action<bool?> UpdateCurrentGearset;
-        internal static void Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
+        private static                   EzIPCDisposalToken[] _disposalTokens = EzIPC.Init(typeof(Stylist_IPCSubscriber), "Stylist", SafeWrapper.IPCException);
+        internal static                  bool                 IsEnabled => IPCSubscriber_Common.IsReady("Stylist");
+        [EzIPC] internal static readonly Action<bool?, bool?> UpdateCurrentGearsetEx; //bool? moveItemsFromInventory, bool? shouldEquip
+        [EzIPC] internal static readonly Func<bool>           IsBusy;
+        internal static                  void                 Dispose() => IPCSubscriber_Common.DisposeAll(_disposalTokens);
     }
 
 
