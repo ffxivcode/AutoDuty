@@ -20,10 +20,13 @@ using static AutoDuty.Windows.ConfigTab;
 namespace AutoDuty.Windows;
 
 using Data;
+using ECommons.Automation;
 using ECommons.Configuration;
 using ECommons.ExcelServices;
+using ECommons.PartyFunctions;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using ECommons.UIHelpers.AtkReaderImplementations;
+using FFXIVClientStructs.FFXIV.Client.System.String;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -37,9 +40,6 @@ using System.IO;
 using System.IO.Pipes;
 using System.Numerics;
 using System.Text;
-using ECommons.Automation;
-using ECommons.PartyFunctions;
-using FFXIVClientStructs.FFXIV.Client.System.String;
 using Achievement = Lumina.Excel.Sheets.Achievement;
 using ExitDutyHelper = Helpers.ExitDutyHelper;
 using Map = Lumina.Excel.Sheets.Map;
@@ -1560,6 +1560,126 @@ public static class ConfigTab
                     }
                 }
 
+                if (ImGui.CollapsingHeader("Available Squadron stuff"))
+                {
+                    unsafe
+                    {
+                        if (GenericHelpers.TryGetAddonByName("GcArmyCapture", out AtkUnitBase* armyCaptureAtk) && GenericHelpers.IsAddonReady(armyCaptureAtk))
+                        {
+                            ImGui.Indent();
+                            if (ImGui.CollapsingHeader("Duties"))
+                            {
+                                ReaderGCArmyCapture armyCapture = new ReaderGCArmyCapture(armyCaptureAtk);
+                                ImGui.Text($"{armyCapture.PlayerCharLvl} ({armyCapture.PlayerCharIlvl}) {armyCapture.PlayerCharName}");
+                                ImGui.Columns(6);
+
+                                ImGui.Text("Enabled?");
+                                ImGui.NextColumn();
+                                ImGui.Text("Completed");
+                                ImGui.NextColumn();
+                                
+                                ImGui.NextColumn();
+                                ImGui.Text("Name");
+                                ImGui.NextColumn();
+                                ImGui.Text("Level");
+                                ImGui.NextColumn();
+                                ImGui.Text("Synced");
+                                ImGui.NextColumn();
+
+
+                                foreach (ReaderGCArmyCapture.DungeonInfo dungeon in armyCapture.Entries)
+                                {
+                                    bool unk0 = dungeon.Unk0;
+                                    ImGui.Checkbox(string.Empty, ref unk0);
+                                    ImGui.NextColumn();
+                                    bool unk1 = dungeon.Completed;
+                                    ImGui.Checkbox(string.Empty, ref unk1);
+                                    ImGui.NextColumn();
+                                    ImGui.Text(dungeon.Unk2.ToString());
+                                    ImGui.NextColumn();
+                                    ImGui.Text(dungeon.Name.TextValue);
+                                    ImGui.NextColumn();
+                                    ImGui.Text(dungeon.Level);
+                                    ImGui.NextColumn();
+                                    bool synced = dungeon.Synced;
+                                    ImGui.Checkbox(string.Empty, ref synced);
+                                    ImGui.NextColumn();
+                                }
+                                ImGui.Columns(1);
+                            }
+                            if (ImGui.CollapsingHeader("Available Members"))
+                            {
+                                if (GenericHelpers.TryGetAddonByName("GcArmyMemberList", out AtkUnitBase* armyMemberListAtk) && GenericHelpers.IsAddonReady(armyMemberListAtk))
+                                {
+                                    ReaderGCArmyMemberList armyMemberList = new ReaderGCArmyMemberList(armyMemberListAtk);
+
+                                    ImGui.Columns(13);
+
+
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Selected");
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Name");
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Class");
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Class Id");
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Level");
+                                    ImGui.NextColumn();
+                                    ImGui.NextColumn();
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Physical");
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Mental");
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Tactical");
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Chemistry");
+                                    ImGui.NextColumn();
+                                    ImGui.Text("Tactics");
+                                    ImGui.NextColumn();
+
+
+                                    foreach (ReaderGCArmyMemberList.MemberInfo? member in armyMemberList.Entries)
+                                    {
+                                        ImGui.Text(member.Unk0.ToString());
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Selected.ToString());
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Name);
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Class);
+                                        ImGui.NextColumn();
+                                        ImGui.Text($"{member.ClassId} ({(ReaderGCArmyMemberList.SquadronClassType)(byte) member.ClassId})");
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Level.ToString());
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Unk3.ToString());
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Unk4.ToString());
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Physical.ToString());
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Mental.ToString());
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Tactical.ToString());
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Chemistry.ToString());
+                                        ImGui.NextColumn();
+                                        ImGui.Text(member.Tactics.ToString());
+                                        ImGui.NextColumn();
+                                    }
+
+                                    ImGui.Columns(1);
+                                }
+                            }
+
+                            ImGui.Unindent();
+                        }
+                    }
+                }
+
                 if (ImGui.CollapsingHeader("Available TT cards"))
                 {
                     unsafe
@@ -1586,10 +1706,8 @@ public static class ConfigTab
 
 
 
-                if (ImGui.Button("Turn on rotation"))
-                {
+                if (ImGui.Button("Turn on rotation")) 
                     Plugin.SetRotationPluginSettings(true, ignoreConfig: true, ignoreTimer: true);
-                }
 
                 ImGui.SameLine();
                 if (ImGui.Button("Turn off rotation"))
@@ -1614,6 +1732,7 @@ public static class ConfigTab
 
                 if (ImGui.CollapsingHeader("teleport playthings"))
                 {
+                    ImGui.Indent();
                     if (ImGui.CollapsingHeader("Warps"))
                     {
                         ImGui.Indent();
@@ -1646,6 +1765,7 @@ public static class ConfigTab
                     }
 
                     ImGuiEx.Text($"{typeof(Achievement).Assembly.GetTypes().Where(x => x.FullName.StartsWith("Lumina.Excel.Sheets")).Select(x => (x, x.GetProperties().Where(f => f.PropertyType.Name == "RowRef`1" && f.PropertyType.GenericTypeArguments[0].FullName == typeof(Map).FullName))).Where(x => x.Item2.Any()).Select(x => $"{x.Item1} references {x.Item2.Select(x => x.Name).Print(", ")}").Print("\n")}");
+                    ImGui.Unindent();
                 }
             }
         }
