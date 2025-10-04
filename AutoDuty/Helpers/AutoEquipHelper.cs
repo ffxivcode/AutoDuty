@@ -19,15 +19,15 @@ namespace AutoDuty.Helpers
             switch (Plugin.Configuration.AutoEquipRecommendedGearSource)
             {
                 case GearsetUpdateSource.Gearsetter when Gearsetter_IPCSubscriber.IsEnabled:
-                    this.TimeOut = 5000;
+                    this.TimeOut = 10_000;
                     this.source  = GearsetUpdateSource.Gearsetter;
                     break;
                 case GearsetUpdateSource.Stylist when Stylist_IPCSubscriber.IsEnabled:
-                    this.TimeOut = 2000;
+                    this.TimeOut = 10_000;
                     this.source  = GearsetUpdateSource.Stylist;
                     break;
                 default:
-                    this.TimeOut = 2000;
+                    this.TimeOut = 5_000;
                     this.source  = GearsetUpdateSource.Vanilla;
                     break;
             }
@@ -232,11 +232,12 @@ namespace AutoDuty.Helpers
                     break;
                 case AutoEquipState.Equipping:
                     this.DebugLog($"Stylist - UpdateCurrentGearset");
-                    Stylist_IPCSubscriber.UpdateCurrentGearset(null);
+                    Stylist_IPCSubscriber.UpdateCurrentGearsetEx(true, true);
                     this._statesExecuted = AutoEquipState.Updating_Gearset;
                     break;
                 case AutoEquipState.Updating_Gearset:
-                    this.Stop();
+                    if(!Stylist_IPCSubscriber.IsBusy())
+                        this.Stop();
                     break;
                 case AutoEquipState.Getting_Recommended_Gear:
                 case AutoEquipState.Recommended_Gear_Need_Second_Pass:
