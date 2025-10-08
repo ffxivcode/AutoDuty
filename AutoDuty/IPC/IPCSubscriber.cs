@@ -171,6 +171,17 @@ namespace AutoDuty.IPC
                 Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.GoToPositional", "Positional", positional.ToString());
             }
         }
+
+        public static void InBoss(bool boss)
+        {
+            if (Plugin.Configuration.AutoManageBossModAISettings)
+            {
+                string role = boss ? "None" : Role.Tank.ToString();
+
+                Presets_AddTransientStrategy("AutoDuty",         "BossMod.Autorotation.MiscAI.StayCloseToPartyRole", "Role", role);
+                Presets_AddTransientStrategy("AutoDuty Passive", "BossMod.Autorotation.MiscAI.StayCloseToPartyRole", "Role", role);
+            }
+        }
     }
 
     
