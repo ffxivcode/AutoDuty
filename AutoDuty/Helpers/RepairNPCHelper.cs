@@ -10,6 +10,7 @@ using System.Numerics;
 namespace AutoDuty.Helpers
 {
     using Lumina.Excel.Sheets;
+    using Serilog;
 
     public static class RepairNPCHelper
     {
@@ -35,87 +36,39 @@ namespace AutoDuty.Helpers
 
         internal static void PopulateRepairNPCs()
         {
-            //var enpcResidentsSheet = Svc.Data.GetExcelSheet<ENpcResident>();
-            //var enpcBaseSheet = Svc.Data.GetExcelSheet<ENpcBase>();
-            //var levelSheet = Svc.Data.GetExcelSheet<Level>();
-            // todo: use IDs instead of english string
-            //var menderENpcResidents = enpcResidentsSheet?.ToList().Where(x => x.RowId != 1025308 && (x.Singular.ToString().Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.ToString().Contains("mender", StringComparison.InvariantCultureIgnoreCase) || x.Title.ToString().Contains("Repairman", StringComparison.InvariantCultureIgnoreCase)));
-            //var menderENpcBases = enpcBaseSheet?.ToList();
-
-            var cityAreaTerritoryTypes = Svc.Data.GetExcelSheet<TerritoryType>().ToList().Where(x => x.TerritoryIntendedUse.Value.RowId == 0);
-
-            //if (menderENpcResidents == null)
-            //    return;
-
-            BuildEnpcFromLgbFile(cityAreaTerritoryTypes);
+            List<TerritoryType>        territories            = Svc.Data.GetExcelSheet<TerritoryType>().ToList();
+            IEnumerable<TerritoryType> cityAreaTerritoryTypes = territories.Where(x => x.TerritoryIntendedUse.Value.RowId == 0);
+                                                                                            //Sinus   Phaenna         Apartment Lobbies
+            BuildEnpcFromLgbFile(territories.Where(t => t.RowId is not (1237 or 1291 or (573 or 574 or 575 or 654 or 985))));
 
             foreach (ENpcResidentData npc in cityENpcResidents)
             {
-                ENpcResident resident = npc.NPCResident!.Value;
+                if(RepairNPCs.Any(rnd => rnd.DataId == npc.DataId))
+                    continue;
 
-                if (resident.RowId != 1025308 && (resident.Singular.ToString().Contains("mender", StringComparison.InvariantCultureIgnoreCase) || resident.Title.ToString().Contains("mender", StringComparison.InvariantCultureIgnoreCase) ||
-                                           resident.Title.ToString().Contains("Repairman",                                                                                       StringComparison.InvariantCultureIgnoreCase)))
-                {
+                int repairIndex = npc.NPCBase!.Value.ENpcData.IndexOf(x => x.RowId == 720915);
+                if (repairIndex >= 0)
                     RepairNPCs.Add(new RepairNpcData
                                    {
                                        DataId        = npc.DataId,
                                        Name          = npc.Name,
                                        Position      = npc.Position,
                                        TerritoryType = npc.TerritoryType,
-                                       RepairIndex   = npc.NPCBase!.Value.ENpcData.IndexOf(x => x.RowId == 720915)
-                    });
-                }
+                                       RepairIndex   = repairIndex
+                                   });
             }
-
-
-            /*
-            if(false)
-                foreach (ENpcBase npcBase in menderENpcBases)
-                {
-                    int repairIndex = npcBase.ENpcData.IndexOf(x => x.RowId == 720915);
-                    if (true)//repairIndex >= 0)
-                    {
-                        Level   level         = levelSheet.FirstOrDefault(y => y.Object.RowId == npcBase.RowId);
-                        Vector3 position      = Vector3.Zero;
-                        uint    territoryType = 0;
-
-                    
-                        if (level.RowId != 0 && level.Territory.RowId != 0)
-                        {
-                            if (level.Territory.Value.RowId != 0 || level.Territory.Value.TerritoryIntendedUse.RowId != 0)
+            
+            RepairNPCs.Sort((first, second) => 
                             {
-                                ENpcResidentData? npc = cityENpcResidents.FirstOrDefault(x => x.DataId == npcBase.RowId);
-                                if (npc == null) 
-                                    continue;
+                                int cityFirst  = cityAreaTerritoryTypes.IndexOf(t => t.RowId == first.TerritoryType);
+                                int citySecond = cityAreaTerritoryTypes.IndexOf(t => t.RowId == second.TerritoryType);
 
-                                RepairNPCs.Add(new RepairNpcData
-                                               {
-                                                   DataId        = npc.DataId,
-                                                   Name          = npc.Name,
-                                                   Position      = npc.Position,
-                                                   TerritoryType = npc.TerritoryType,
-                                                   RepairIndex   = repairIndex
-                                               });
-                            }
-                            else
-                            {
-                                var npc = enpcResidentsSheet.GetRow(npcBase.RowId);
-                                position      = new Vector3(level.X, level.Y, level.Z);
-                                territoryType = level.Territory.Value.RowId;
-                                RepairNPCs.Add(new RepairNpcData
-                                               {
-                                                   DataId        = npcBase.RowId,
-                                                   Name          = npc.Singular.ToString(),
-                                                   Position      = position,
-                                                   TerritoryType = territoryType,
-                                                   RepairIndex   = repairIndex
-                                               });
-                            }
-                        }
-                    }
-                }
-            */
-            RepairNPCs.Sort((first, second) => first.TerritoryType.CompareTo(second.TerritoryType));
+                                long scoreFirst  = (cityFirst  < 0 ? 5000 : cityFirst)  + first.TerritoryType;
+                                long scoreSecond = (citySecond < 0 ? 5000 : citySecond) + second.TerritoryType;
+
+                                return scoreFirst.CompareTo(scoreSecond);
+                            });
+            
             cityENpcResidents = [];
         }
 
