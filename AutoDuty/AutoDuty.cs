@@ -1303,6 +1303,8 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
         }
 
+        BossMod_IPCSubscriber.InBoss(this.PathAction.Name.Equals("Boss"));
+
         ConfigurationMain.MultiboxUtility.MultiboxBlockingNextStep = false;
 
         if (PathAction.Position == Vector3.Zero)

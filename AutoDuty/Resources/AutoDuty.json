@@ -410,10 +410,6 @@
     ],
     "BossMod.Autorotation.MiscAI.StayCloseToPartyRole": [
       {
-        "Track": "Role",
-        "Option": "Tank"
-      },
-      {
         "Track": "range",
         "Option": "20"
       }
