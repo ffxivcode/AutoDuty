@@ -1,0 +1,22 @@
+{
+  "Actions": [
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": 0.8244999,
+        "Y": -5.363673E-05,
+        "Z": -1.5123348
+      },
+      "Arguments": [
+        ""
+      ],
+      "Note": "Nidhogg"
+    }
+  ],
+  "Meta": {
+    "CreatedAt": 245,
+    "Changelog": [],
+    "Notes": []
+  }
+}
