@@ -321,7 +321,7 @@ public class MainWindow : Window, IDisposable
             }
             ImGui.SameLine(0, 5);
 
-            using (ImRaii.Disabled(!Plugin.Configuration.TripleTriadEnabled && (!Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.TTButton)))
+            using (ImRaii.Disabled(!(Plugin.Configuration.TripleTriadRegister || Plugin.Configuration.TripleTriadSell) && (!Plugin.Configuration.OverrideOverlayButtons || !Plugin.Configuration.TTButton)))
             {
                 using (ImRaii.Disabled(Plugin.States.HasFlag(PluginState.Other)))
                 {

@@ -1172,9 +1172,10 @@ public class Configuration
     public bool AutoGCTurninSlotsLeftBool = false;
     public bool AutoGCTurninUseTicket     = false;
 
-    public bool TripleTriadEnabled;
     public bool TripleTriadRegister;
     public bool TripleTriadSell;
+    public int  TripleTriadSellMinItemCount = 1;
+    public int  TripleTriadSellMinSlotCount = 1;
 
     public bool DiscardItems;
 
@@ -2798,17 +2799,43 @@ public static class ConfigTab
                     }
                 }
 
-                if(ImGui.Checkbox("Triple Triad", ref Configuration.TripleTriadEnabled))
+                ImGui.Columns(2, "TripleTriadColumns");
+                ImGui.SetColumnWidth(0, 200 * ImGuiHelpers.GlobalScale);
+                if (ImGui.Checkbox("Register Triple Triad Cards", ref Configuration.TripleTriadRegister))
                     Configuration.Save();
-                if (Configuration.TripleTriadEnabled)
+                ImGui.NextColumn();
+                if (ImGui.Checkbox("Sell Triple Triad Cards", ref Configuration.TripleTriadSell))
+                    Configuration.Save();
+
+                if (Configuration.TripleTriadSell)
                 {
-                    ImGui.Indent();
-                    if (ImGui.Checkbox("Register Triple Triad Cards", ref Configuration.TripleTriadRegister))
+                    ImGui.PushItemWidth(150 * ImGuiHelpers.GlobalScale);
+
+
+                    ImGui.Text("Slots occupied");
+                    ImGui.SameLine();
+                    float curX = ImGui.GetCursorPosX();
+                    if (Configuration.UseSliderInputs  && ImGui.SliderInt("###TripleTriadSellingMinSlotSlider", ref Configuration.TripleTriadSellMinSlotCount, 1, 5) ||
+                        !Configuration.UseSliderInputs && ImGui.InputInt("###TripleTriadSellingMinSlotInput", ref Configuration.TripleTriadSellMinSlotCount, step: 1, stepFast: 2))
+                    {
+                        Configuration.TripleTriadSellMinSlotCount = Math.Max(Configuration.TripleTriadSellMinSlotCount, 1);
                         Configuration.Save();
-                    if (ImGui.Checkbox("Sell Triple Triad Cards", ref Configuration.TripleTriadSell))
+                    }
+
+                    ImGui.Text("Card count");
+                    ImGui.SameLine();
+                    ImGui.SetCursorPosX(curX);
+                    if (Configuration.UseSliderInputs  && ImGui.SliderInt("###TripleTriadSellingMinItemSlider", ref Configuration.TripleTriadSellMinItemCount, 1, 99) ||
+                        !Configuration.UseSliderInputs && ImGui.InputInt("###TripleTriadSellingMinItemInput", ref Configuration.TripleTriadSellMinItemCount, step: 1, stepFast: 10))
+                    {
+                        Configuration.TripleTriadSellMinItemCount = Math.Max(Configuration.TripleTriadSellMinItemCount, 1);
                         Configuration.Save();
-                    ImGui.Unindent();
+                    }
+                    ImGui.PopItemWidth();
                 }
+
+                ImGui.Columns(1);
+                
 
                 using (ImGuiHelper.RequiresPlugin(ExternalPlugin.AutoRetainer, "AR", inline: true))
                 {
