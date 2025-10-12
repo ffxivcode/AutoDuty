@@ -247,10 +247,13 @@ namespace AutoDuty.Windows
             }
             ImGuiComponents.HelpMarker("Loads the path");
             ImGui.SameLine(0, 5);
-            using (ImRaii.Disabled(Plugin.PathFile.IsNullOrEmpty()))
+            using(ImRaii.Enabled())
             {
-                if (ImGuiEx.ButtonWrapped("Open File"))
-                    Process.Start("explorer",  Plugin.PathFile ?? string.Empty);
+                using (ImRaii.Disabled(Plugin.PathFile.IsNullOrEmpty()))
+                {
+                    if (ImGuiEx.ButtonWrapped("Open File"))
+                        Process.Start("explorer",  Plugin.PathFile ?? string.Empty);
+                }
             }
         }
 
