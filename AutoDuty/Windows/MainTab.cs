@@ -262,6 +262,7 @@ namespace AutoDuty.Windows
                         MainWindow.LoopsConfig();
                         ImGui.PopItemWidth();
                     }
+                    ImGui.AlignTextToFramePadding();
                     ImGui.TextColored(Plugin.Configuration.DutyModeEnum == DutyMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Duty Mode: ");
                     ImGui.SameLine(0);
                     ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
@@ -282,6 +283,7 @@ namespace AutoDuty.Windows
                     {
                         if (Plugin.Configuration.DutyModeEnum == DutyMode.Support || Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
                         {
+                            ImGui.AlignTextToFramePadding();
                             ImGui.TextColored(Plugin.LevelingModeEnum == LevelingMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Leveling Mode: ");
                             ImGui.SameLine(0);
                             ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);

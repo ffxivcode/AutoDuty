@@ -242,7 +242,7 @@ public sealed class AutoDuty : IDalamudPlugin
             AssemblyDirectoryInfo = AssemblyFileInfo.Directory;
             
             Version = 
-                ((PluginInterface.IsDev     ? new Version(0,0,0, 245) :
+                ((PluginInterface.IsDev     ? new Version(0,0,0, 246) :
                   PluginInterface.IsTesting ? PluginInterface.Manifest.TestingAssemblyVersion ?? PluginInterface.Manifest.AssemblyVersion : PluginInterface.Manifest.AssemblyVersion)!).Revision;
 
             if (!_configDirectory.Exists)
@@ -990,13 +990,12 @@ public sealed class AutoDuty : IDalamudPlugin
             if (Configuration.AutoGCTurnin && (!Configuration.AutoGCTurninSlotsLeftBool || InventoryManager.Instance()->GetEmptySlotsInBag() <= Configuration.AutoGCTurninSlotsLeft) && PlayerHelper.GetGrandCompanyRank() > 5)
                 EnqueueActiveHelper<GCTurninHelper>();
 
-            if (Configuration.TripleTriadEnabled)
-            {
-                if (Configuration.TripleTriadRegister) 
-                    EnqueueActiveHelper<TripleTriadCardUseHelper>();
-                if (Configuration.TripleTriadSell) 
-                    EnqueueActiveHelper<TripleTriadCardSellHelper>();
-            }
+            
+            if (Configuration.TripleTriadRegister) 
+                EnqueueActiveHelper<TripleTriadCardUseHelper>();
+            if (Configuration.TripleTriadSell) 
+                EnqueueActiveHelper<TripleTriadCardSellHelper>();
+        
 
             if (Configuration.DiscardItems) 
                 EnqueueActiveHelper<DiscardHelper>();
