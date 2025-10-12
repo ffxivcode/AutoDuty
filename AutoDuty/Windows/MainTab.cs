@@ -30,8 +30,8 @@ namespace AutoDuty.Windows
 
         internal static void Draw()
         {
-            if (MainWindow.CurrentTabName != "Main")
                 MainWindow.CurrentTabName = "Main";
+            
             var dutyMode = Plugin.Configuration.DutyModeEnum;
             var levelingMode = Plugin.LevelingModeEnum;
 
@@ -262,8 +262,9 @@ namespace AutoDuty.Windows
                         MainWindow.LoopsConfig();
                         ImGui.PopItemWidth();
                     }
+
                     ImGui.AlignTextToFramePadding();
-                    ImGui.TextColored(Plugin.Configuration.DutyModeEnum == DutyMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Duty Mode: ");
+                            ImGui.TextColored(Plugin.Configuration.DutyModeEnum == DutyMode.None ? ImGuiHelper.StateBad : ImGuiHelper.StateGood, "Select Duty Mode: ");
                     ImGui.SameLine(0);
                     ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
                     if (ImGui.BeginCombo("##DutyModeEnum", Plugin.Configuration.DutyModeEnum.ToCustomString()))
@@ -279,12 +280,20 @@ namespace AutoDuty.Windows
                         ImGui.EndCombo();
                     }
                     ImGui.PopItemWidth();
+
                     if (Plugin.Configuration.DutyModeEnum != DutyMode.None)
                     {
                         if (Plugin.Configuration.DutyModeEnum == DutyMode.Support || Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
                         {
                             ImGui.AlignTextToFramePadding();
-                            ImGui.TextColored(Plugin.LevelingModeEnum == LevelingMode.None ? new Vector4(1, 0, 0, 1) : new Vector4(0, 1, 0, 1), "Select Leveling Mode: ");
+                                    ImGui.TextColored(Plugin.LevelingModeEnum == LevelingMode.None ? ImGuiHelper.StateBad : ImGuiHelper.StateGood, "Select Leveling Mode: ");
+                                    ImGui.SameLine(0);
+
+                                    ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl.\n" +
+                                                               (Plugin.Configuration.DutyModeEnum != DutyMode.Trust ?
+                                                                    string.Empty :
+                                                                    "GROUP will level your trust members equally.\nSOLO will only level them as much as needed") +
+                                                               "\n\nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead.");
                             ImGui.SameLine(0);
                             ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
                             if (ImGui.BeginCombo("##LevelingModeEnum", Plugin.LevelingModeEnum switch
@@ -308,7 +317,7 @@ namespace AutoDuty.Windows
                                         AutoEquipHelper.Invoke();
                                 }
 
-                                if(Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
+                                        if (Plugin.Configuration.DutyModeEnum == DutyMode.Trust)
                                     if (ImGui.Selectable($"{LevelingMode.Trust_Solo.ToCustomString().Replace(Plugin.Configuration.DutyModeEnum.ToString(), null)} Auto".Trim(), Plugin.LevelingModeEnum == LevelingMode.Trust_Solo))
                                     {
                                         Plugin.LevelingModeEnum = LevelingMode.Trust_Solo;
@@ -320,17 +329,13 @@ namespace AutoDuty.Windows
 
                                 ImGui.EndCombo();
                             }
-                            ImGui.PopItemWidth();
 
-                            if (Plugin.Configuration.DutyModeEnum != DutyMode.Trust) 
-                                ImGuiComponents.HelpMarker("Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl. \nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead.");
-                            else 
-                                ImGuiComponents.HelpMarker("TRUST Leveling Mode will queue you for the most CONSISTENT dungeon considering your lvl + Ilvl, as well as the LOWEST LEVEL trust members you have, in an attempt to level them all equally.\nIt will NOT always queue you for the highest level dungeon, it follows our stable dungeon list instead.");
+                            ImGui.PopItemWidth();
                         }
 
                         if (Plugin.Configuration.DutyModeEnum == DutyMode.Support && levelingMode == LevelingMode.Support)
                         {
-                            if(ImGui.Checkbox("Prefer Trust over Support Leveling", ref Plugin.Configuration.PreferTrustOverSupportLeveling))
+                                    if (ImGui.Checkbox("Prefer Trust over Support Leveling", ref Plugin.Configuration.PreferTrustOverSupportLeveling))
                                 Plugin.Configuration.Save();
                         }
 
@@ -356,11 +361,13 @@ namespace AutoDuty.Windows
                                         Plugin.Configuration.SelectedTrustMembers[i] = null;
                                     }
                                 }
+
                                 ImGui.Columns(3);
                                 using (ImRaii.Disabled(Plugin.TrustLevelingEnabled && TrustHelper.Members.Any(tm => tm.Value.Level < tm.Value.LevelCap)))
                                 {
                                     DrawTrustMembers(DutySelected.Content);
                                 }
+
                                 //ImGui.Columns(3, null, false);
                                 if (DutySelected.Content.TrustMembers.Count == 7)
                                     ImGui.NextColumn();
@@ -371,10 +378,11 @@ namespace AutoDuty.Windows
                                         Plugin.LevelingModeEnum = LevelingMode.None;
                                     TrustHelper.ClearCachedLevels();
 
-                                    SchedulerHelper.ScheduleAction("Refresh Levels - ShB", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[837u]), () => TrustHelper.State == ActionState.None);
-                                    SchedulerHelper.ScheduleAction("Refresh Levels - EW", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[952u]), () => TrustHelper.State == ActionState.None);
-                                    SchedulerHelper.ScheduleAction("Refresh Levels - DT", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[1167u]), () => TrustHelper.State == ActionState.None);
+                                            SchedulerHelper.ScheduleAction("Refresh Levels - ShB", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[837u]),  () => TrustHelper.State == ActionState.None);
+                                            SchedulerHelper.ScheduleAction("Refresh Levels - EW",  () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[952u]),  () => TrustHelper.State == ActionState.None);
+                                            SchedulerHelper.ScheduleAction("Refresh Levels - DT",  () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[1167u]), () => TrustHelper.State == ActionState.None);
                                 }
+
                                 ImGui.NextColumn();
                                 ImGui.Columns(1);
                             }
@@ -384,9 +392,9 @@ namespace AutoDuty.Windows
                                     Plugin.LevelingModeEnum = LevelingMode.None;
                                 TrustHelper.ClearCachedLevels();
 
-                                SchedulerHelper.ScheduleAction("Refresh Levels - ShB", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[837u]), () => TrustHelper.State == ActionState.None);
-                                SchedulerHelper.ScheduleAction("Refresh Levels - EW", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[952u]), () => TrustHelper.State == ActionState.None);
-                                SchedulerHelper.ScheduleAction("Refresh Levels - DT", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[1167u]), () => TrustHelper.State == ActionState.None);
+                                        SchedulerHelper.ScheduleAction("Refresh Levels - ShB", () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[837u]),  () => TrustHelper.State == ActionState.None);
+                                        SchedulerHelper.ScheduleAction("Refresh Levels - EW",  () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[952u]),  () => TrustHelper.State == ActionState.None);
+                                        SchedulerHelper.ScheduleAction("Refresh Levels - DT",  () => TrustHelper.GetLevels(ContentHelper.DictionaryContent[1167u]), () => TrustHelper.State == ActionState.None);
                             }
                         }
 
