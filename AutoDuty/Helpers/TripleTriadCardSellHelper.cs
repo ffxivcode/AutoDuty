@@ -9,6 +9,7 @@ using ECommons.Throttlers;
 
 namespace AutoDuty.Helpers
 {
+    using System.Collections.Generic;
     using Dalamud.Game.ClientState.Objects.Types;
     using System.Numerics;
     using ECommons.UIHelpers.AtkReaderImplementations;
@@ -30,14 +31,9 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Info("Gold Saucer requires having completed quest: It Could Happen To You");
             }
-            else if(!InventoryHelper.GetInventorySelection(InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4)
-                                   .Any(iv =>
-                                        {
-                                            Item? excelItem = InventoryHelper.GetExcelItem(iv.ItemId);
-                                            return excelItem is { ItemUICategory.RowId: 86 };
-                                        }))
+            else if(!EnoughCardsInInventory())
             {
-                Svc.Log.Info("No TTT cards in inventory");
+                Svc.Log.Info("Not enough TTT cards in inventory");
             }
             else if (State != ActionState.Running)
             {
@@ -132,6 +128,26 @@ namespace AutoDuty.Helpers
                     AddonHelper.FireCallBack(addonExchange, true, 0, 0u);
                 }
             }
+        }
+
+        private static bool EnoughCardsInInventory()
+        {
+            IEnumerable<InventoryItem> items      = InventoryHelper.GetInventorySelection(InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4);
+
+            int cardCount = 0;
+
+            int slotCount = items.Count(iv =>
+                                    {
+                                        Item? excelItem = InventoryHelper.GetExcelItem(iv.ItemId);
+                                        bool  isCard    = excelItem is { ItemUICategory.RowId: 86 };
+
+                                        if (isCard)
+                                            cardCount += iv.Quantity;
+
+                                        return isCard;
+                                    });
+            Svc.Log.Warning($"\n{cardCount} {slotCount}\n{Plugin.Configuration.TripleTriadSellMinItemCount} {Plugin.Configuration.TripleTriadSellMinSlotCount}\n{cardCount >= Plugin.Configuration.TripleTriadSellMinItemCount} {slotCount >= Plugin.Configuration.TripleTriadSellMinSlotCount}");
+            return cardCount >= Plugin.Configuration.TripleTriadSellMinItemCount && slotCount >= Plugin.Configuration.TripleTriadSellMinSlotCount;
         }
     }
 }
