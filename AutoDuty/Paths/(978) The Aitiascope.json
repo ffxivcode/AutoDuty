@@ -1,280 +1,234 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "None",
-      "name": "ChatCommand",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
-        "/bmrai follow Thancred"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "ChatCommand",
-      "position": {
-        "X": -5.86,
-        "Y": 164,
-        "Z": 501.72
-      },
-      "arguments": [
-        "/bmrai follow Alisaie"
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -5.89,
-        "Y": 164,
+        "Y": 164.0,
         "Z": 471.86
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "PausePandora",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 4.53,
-        "Y": 164,
-        "Z": 479.93
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 4.41,
-        "Y": 164,
-        "Z": 465.57
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -6.11,
-        "Y": 164,
-        "Z": 466.25
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
         "X": -5.86,
-        "Y": 164,
+        "Y": 164.0,
         "Z": 471.21
       },
-      "arguments": [
+      "Arguments": [
         "2011758"
       ],
-      "note": "Aether Current"
+      "Note": "Aether Current"
     },
     {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
-        "10000"
+      "Arguments": [
+        "IsReady"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "ChatCommand",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
-        "/bmrai follow Thancred"
+      "Arguments": [
+        "IsReady"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 9.19,
         "Y": -182.78,
         "Z": 441.2
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": 18.44,
         "Y": -200.46,
         "Z": 353.62
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
+      "Tag": "None",
+      "Name": "Wait",
+      "Position": {
         "X": -0.7,
         "Y": -202.18,
         "Z": 321.55
       },
-      "arguments": [
+      "Arguments": [
         "5000"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": -5.5,
         "Y": -212.01,
         "Z": 223.18
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 10.36,
         "Y": -211.41,
         "Z": 143.21
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 12.82,
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 12.519999,
         "Y": -211.11,
-        "Z": 106.87
+        "Z": 97.87
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 12.65,
-        "Y": -211.24,
-        "Z": 94.3
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 12.519999,
+        "Y": -211.11,
+        "Z": 81.87
       },
-      "arguments": [
-        "7000"
+      "Arguments": [
+        ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "2000"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": -15.15,
         "Y": -235.91,
         "Z": -219.18
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "Treasure",
-      "name": "TreasureCoffer",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "TreasureCoffer",
+      "Position": {
         "X": -17.84,
         "Y": -238.44,
         "Z": -432.05
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 10.85,
-        "Y": -236,
+        "Y": -236.0,
         "Z": -494.57
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     }
   ],
-  "meta": {
-    "createdAt": 160,
-    "changelog": [
+  "Meta": {
+    "CreatedAt": 160,
+    "Changelog": [
       {
-        "version": 168,
-        "change": "Converted to JSON Structure with Tags"
+        "Version": 168,
+        "Change": "Converted to JSON Structure with Tags"
       },
       {
-        "version": 172,
-        "change": "Converted to JSON Structure with Tags"
+        "Version": 172,
+        "Change": "Converted to JSON Structure with Tags"
       },
       {
-        "version": 189,
-        "change": "Adjusted tags to string values"
+        "Version": 189,
+        "Change": "Adjusted tags to string values"
+      },
+      {
+        "Version": 246,
+        "Change": "Modernized path"
       }
     ],
-    "notes": []
+    "Notes": []
   }
 }
