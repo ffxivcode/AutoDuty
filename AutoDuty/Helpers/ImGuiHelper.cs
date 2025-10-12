@@ -26,6 +26,9 @@ namespace AutoDuty.Helpers
         public static readonly Vector4 RoleDPSColor        = new(1, 0, 0, 1);
         public static readonly Vector4 RoleAllRounderColor = new(1, 1, 0.5f, 1);
 
+        public static readonly Vector4 StateGoodColor = new(0, 1, 0, 1);
+        public static readonly Vector4 StateBadColor  = new(1, 0, 0, 1);
+
 
         public const string idColor               = "<0.5,0.5,1>";
         public const string dutyColor             = "<0,1,0>";

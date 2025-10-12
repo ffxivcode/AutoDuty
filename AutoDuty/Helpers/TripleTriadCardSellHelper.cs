@@ -146,7 +146,7 @@ namespace AutoDuty.Helpers
 
                                         return isCard;
                                     });
-            Svc.Log.Warning($"\n{cardCount} {slotCount}\n{Plugin.Configuration.TripleTriadSellMinItemCount} {Plugin.Configuration.TripleTriadSellMinSlotCount}\n{cardCount >= Plugin.Configuration.TripleTriadSellMinItemCount} {slotCount >= Plugin.Configuration.TripleTriadSellMinSlotCount}");
+            
             return cardCount >= Plugin.Configuration.TripleTriadSellMinItemCount && slotCount >= Plugin.Configuration.TripleTriadSellMinSlotCount;
         }
     }
