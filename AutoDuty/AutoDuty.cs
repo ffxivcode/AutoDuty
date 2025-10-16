@@ -355,6 +355,17 @@ public sealed class AutoDuty : IDalamudPlugin
                                                              }
                                                          }),
                 (["movetoflag"], "moves to the flag map marker", _ => MapHelper.MoveToMapMarker()),
+                (["ttfull"], "opens packs, registers cards and sells the rest", _ =>
+                                                                                {
+                                                                                    this.TaskManager.Enqueue(CofferHelper.Invoke);
+                                                                                    this.TaskManager.Enqueue(() => CofferHelper.State == ActionState.None, 120000);
+                                                                                    this.TaskManager.Enqueue(TripleTriadCardUseHelper.Invoke);
+                                                                                    this.TaskManager.DelayNext(200);
+                                                                                    this.TaskManager.Enqueue(() => TripleTriadCardUseHelper.State == ActionState.None, 120000);
+                                                                                    this.TaskManager.DelayNext(200);
+                                                                                    this.TaskManager.Enqueue(TripleTriadCardSellHelper.Invoke);
+                                                                                    this.TaskManager.Enqueue(() => TripleTriadCardSellHelper.State == ActionState.None, 120000);
+                                                                                }),
                 (["run"], "starts auto duty in territory type specified", argsArray =>
                                                                           {
                                                                               const string failPreMessage  = "Run Error: Incorrect usage: ";
