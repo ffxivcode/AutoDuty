@@ -230,6 +230,12 @@ namespace AutoDuty.Data
             Running = 1
         }
 
+        public enum AutoDutyMode : byte
+        {
+            Looping = 0,
+            Playlist = 1
+        }
+
         [Flags]
         public enum DutyMode : int
         {
