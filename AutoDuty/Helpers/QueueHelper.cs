@@ -28,7 +28,7 @@ namespace AutoDuty.Helpers
 
         internal static void Invoke(Content? content, DutyMode dutyMode)
         {
-            if (State != ActionState.Running && content != null && dutyMode != DutyMode.None)
+            if (State != ActionState.Running && content != null && dutyMode != DutyMode.None && (!_dutyMode.HasAnyFlag(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) || Plugin.Configuration.Unsynced || Plugin.Configuration.OverridePartyValidation))
             {
                 _dutyMode = dutyMode;
                 _content = content;
