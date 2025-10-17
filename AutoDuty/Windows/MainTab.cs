@@ -257,7 +257,7 @@ namespace AutoDuty.Windows
                     ImGui.PopItemWidth();
                 }
 
-                using (ImRaii.Disabled(Plugin.CurrentTerritoryContent == null || (Plugin.Configuration is { AutoDutyModeEnum: AutoDutyMode.Looping, DutyModeEnum: DutyMode.Trust } && Plugin.Configuration.SelectedTrustMembers.Any(x => x is null))))
+                using (ImRaii.Disabled(Plugin.CurrentTerritoryContent == null))
                 {
                     if (!Plugin.States.HasFlag(PluginState.Looping))
                     {

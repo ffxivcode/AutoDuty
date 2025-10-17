@@ -99,8 +99,7 @@ namespace AutoDuty.Helpers
             try
             {
                 TrustMember[] membersPossible = [.. content.TrustMembers.Where(tm => tm.Level >= content.ClassJobLevelRequired)
-                              .OrderBy(tm => tm.Level + (tm.Level < tm.LevelCap ? 0 : 100) +
-                                                                      (playerRole == CombatRole.DPS ? playerJobRole == tm.Job?.GetJobRole() ? 0.5f : 0 : 0))];
+                              .OrderBy(tm => (mode != LevelingMode.Trust_Solo ? tm.Level : Members.First().Value.LevelCap - tm.Level) + (tm.Level < tm.LevelCap ? 0 : 100) + (playerRole == CombatRole.DPS ? playerJobRole == tm.Job?.GetJobRole() ? 0.5f : 0 : 0))];
                 foreach (TrustMember member in membersPossible)
                 {
                     Svc.Log.Info("checking: " + member.Name);
