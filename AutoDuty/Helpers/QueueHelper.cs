@@ -28,7 +28,7 @@ namespace AutoDuty.Helpers
 
         internal static void Invoke(Content? content, DutyMode dutyMode)
         {
-            if (State != ActionState.Running && content != null && dutyMode != DutyMode.None)
+            if (State != ActionState.Running && content != null && dutyMode != DutyMode.None && (!_dutyMode.HasAnyFlag(DutyMode.Regular, DutyMode.Trial, DutyMode.Raid) || Plugin.Configuration.Unsynced || Plugin.Configuration.OverridePartyValidation))
             {
                 _dutyMode = dutyMode;
                 _content = content;
@@ -113,19 +113,25 @@ namespace AutoDuty.Helpers
                 if (EzThrottler.Throttle("_turnedOnConfigMembers", 500))
                 {
                     AgentDawnInterface.DawnMemberEntry* curMembers = agentDawn->Data->MemberData.GetMembers(agentDawn->Data->MemberData.CurrentMembersIndex);
-                    var                                 members    = Plugin.Configuration.SelectedTrustMembers;
-                    if (members.Count(x => x is not null) == 3)
-                        members.OrderBy(x => TrustHelper.Members[(TrustMemberName)x!].Role)
-                               .Each(member =>
+                    TrustMemberName?[]                  members    = Plugin.Configuration.SelectedTrustMembers;
+                    if (members.Any(x => x is null || TrustHelper.Members[(TrustMemberName)x!].Level < _content.ClassJobLevelRequired))
+                    {
+                        Svc.Log.Info("Not all trust members selected. Selecting automatically now");
+                        TrustHelper.SetLevelingTrustMembers(_content, LevelingMode.Trust_Solo);
+                    }
+                    
+                    members.OrderBy(x => TrustHelper.Members[(TrustMemberName)x!].Role)
+                           .Each(member =>
+                                 {
+                                     if (member != null)
                                      {
-                                         if (member != null)
-                                         {
-                                             byte                               index       = TrustHelper.Members[(TrustMemberName)member].Index;
-                                             AgentDawnInterface.DawnMemberEntry memberEntry = curMembers[index];
+                                         byte                               index       = TrustHelper.Members[(TrustMemberName)member].Index;
+                                         AgentDawnInterface.DawnMemberEntry memberEntry = curMembers[index];
 
-                                             agentDawn->Data->PartyData.AddMember(index, &memberEntry);
-                                         }
-                                     });
+                                         agentDawn->Data->PartyData.AddMember(index, &memberEntry);
+                                     }
+                                 });
+
                     agentDawn->UpdateAddon();
                     SchedulerHelper.ScheduleAction("_turnedOnConfigMembers", () => _turnedOnConfigMembers = true, 250);
                 }

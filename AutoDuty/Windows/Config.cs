@@ -902,19 +902,39 @@ public class Configuration
     public LogEventLevel LogEventLevel = LogEventLevel.Debug;
 
     //General Options
-    public int LoopTimes = 1;
-    internal DutyMode dutyModeEnum = DutyMode.None;
-    public DutyMode DutyModeEnum
+    internal AutoDutyMode autoDutyModeEnum = AutoDutyMode.Looping;
+    public AutoDutyMode AutoDutyModeEnum
     {
-        get => dutyModeEnum;
+        get => this.autoDutyModeEnum;
         set
         {
-            dutyModeEnum = value;
+            this.autoDutyModeEnum               = value;
+            Plugin.CurrentTerritoryContent = null;
+            MainTab.DutySelected           = null;
+            Plugin.LevelingModeEnum        = LevelingMode.None;
+        }
+    }
+
+
+    public int LoopTimes = 1;
+    internal DutyMode dutyModeEnum = DutyMode.Support;
+    public DutyMode DutyModeEnum
+    {
+        get => this.AutoDutyModeEnum switch
+        {
+            AutoDutyMode.Playlist => Plugin.PlaylistCurrentEntry?.DutyMode ?? this.dutyModeEnum,
+            AutoDutyMode.Looping or _ => this.dutyModeEnum
+        };
+        set
+        {
+            this.dutyModeEnum = value;
             Plugin.CurrentTerritoryContent = null;
             MainTab.DutySelected = null;
             Plugin.LevelingModeEnum = LevelingMode.None;
         }
     }
+
+
     
     public bool Unsynced                       = false;
     public bool HideUnavailableDuties          = false;
