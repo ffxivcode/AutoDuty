@@ -704,7 +704,14 @@ public sealed class AutoDuty : IDalamudPlugin
                 return;
             }
 
-            ContentPathsManager.DutyPath? path = CurrentPath < 0 ?
+            if (this.States.HasFlag(PluginState.Looping) && this.Configuration.AutoDutyModeEnum == AutoDutyMode.Playlist)
+            {
+                string? s = this.PlaylistCurrentEntry?.path ?? null;
+                if(s != null) 
+                    this.CurrentPath = container.Paths.IndexOf(dp => dp.FileName.Equals(s, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            ContentPathsManager.DutyPath? path = this.CurrentPath < 0 ?
                                                      container.SelectPath(out CurrentPath) :
                                                      container.Paths[CurrentPath > -1 ? CurrentPath : 0];
 
