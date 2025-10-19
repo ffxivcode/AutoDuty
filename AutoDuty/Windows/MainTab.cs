@@ -274,7 +274,7 @@ namespace AutoDuty.Windows
                             else if (ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
                                 Plugin.Run();
                             else
-                                MainWindow.ShowPopup("Error", "No path was found");
+                                MainWindow.ShowPopup("Error", $"No path was found for {Plugin.CurrentTerritoryContent?.TerritoryType} {Plugin.CurrentTerritoryContent?.Name}");
                         }
                     }
                     else
@@ -564,7 +564,7 @@ namespace AutoDuty.Windows
                                         ContentPathsManager.ContentPathContainer entryContainer = ContentPathsManager.DictionaryPaths[entry.Id];
                                         Content                                  entryContent   = ContentHelper.DictionaryContent[entry.Id];
                                         
-                                        ImGui.PushItemWidth(100 * ImGuiHelpers.GlobalScale);
+                                        ImGui.PushItemWidth(100f.Scale());
                                         if (ImGui.BeginCombo($"##Playlist{i}DutyModeEnum", entry.DutyMode.ToCustomString()))
                                         {
                                             foreach (DutyMode mode in Enum.GetValues(typeof(DutyMode)))
@@ -581,10 +581,10 @@ namespace AutoDuty.Windows
 
                                             ImGui.EndCombo();
                                         }
-
+                                        
                                         ImGui.PopItemWidth();
                                         ImGui.SameLine();
-                                        ImGui.PushItemWidth((entryContainer.Paths.Count > 1 ? (ImGui.GetContentRegionAvail().X - 107) / 2 : ImGui.GetContentRegionAvail().X - 100) * ImGuiHelpers.GlobalScale);
+                                        ImGui.PushItemWidth((entryContainer.Paths.Count > 1 ? (ImGui.GetContentRegionAvail().X - 107f.Scale()) / 2f : ImGui.GetContentRegionAvail().X - 100f.Scale()));
                                         if (ImGui.BeginCombo($"##Playlist{i}DutySelection", $"({entry.Id}) {entryContent.Name}"))
                                         {
                                             short level = PlayerHelper.GetCurrentLevelFromSheet();

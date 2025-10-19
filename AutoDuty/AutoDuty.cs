@@ -48,6 +48,7 @@ using ECommons.Configuration;
 using ECommons.ImGuiMethods;
 using ECommons.Reflection;
 using ECommons.SimpleGui;
+using FFXIVClientStructs;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using Lumina.Excel.Sheets;
 using Pictomancy;
@@ -78,8 +79,9 @@ public sealed class AutoDuty : IDalamudPlugin
     {
         get => this.Configuration.AutoDutyModeEnum switch
         {
-            AutoDutyMode.Playlist => (this.PlaylistCurrent.Count >= 0 && this.PlaylistIndex < this.PlaylistCurrent.Count && this.PlaylistIndex >= 0) ?
-                                         this.PlaylistCurrent[this.PlaylistIndex].Content : null,
+            AutoDutyMode.Playlist when this.States.HasFlag(PluginState.Looping) || !this.InDungeon => (this.PlaylistCurrent.Count >= 0 && this.PlaylistIndex < this.PlaylistCurrent.Count && this.PlaylistIndex >= 0) ?
+                                                                                                                            this.PlaylistCurrent[this.PlaylistIndex].Content :
+                                                                                                                            null,
             AutoDutyMode.Looping or _ => this.currentTerritoryContent
         };
         set
@@ -704,7 +706,14 @@ public sealed class AutoDuty : IDalamudPlugin
                 return;
             }
 
-            ContentPathsManager.DutyPath? path = CurrentPath < 0 ?
+            if (this.States.HasFlag(PluginState.Looping) && this.Configuration.AutoDutyModeEnum == AutoDutyMode.Playlist)
+            {
+                string? s = this.PlaylistCurrentEntry?.path ?? null;
+                if(s != null) 
+                    this.CurrentPath = container.Paths.IndexOf(dp => dp.FileName.Equals(s, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            ContentPathsManager.DutyPath? path = this.CurrentPath < 0 ?
                                                      container.SelectPath(out CurrentPath) :
                                                      container.Paths[CurrentPath > -1 ? CurrentPath : 0];
 
@@ -867,6 +876,9 @@ public sealed class AutoDuty : IDalamudPlugin
 
     public void Run(uint territoryType = 0, int loops = 0, bool startFromZero = true, bool bareMode = false)
     {
+        if(this.InDungeon)
+            Plugin.Configuration.AutoDutyModeEnum = AutoDutyMode.Looping;
+
         Svc.Log.Debug($"Run: territoryType={territoryType} loops={loops} bareMode={bareMode}");
         if (territoryType > 0)
         {
