@@ -96,7 +96,7 @@ public class ConfigurationMain
     internal bool multiBox = false;
     public bool MultiBox
     {
-        get => Plugin.isDev && this.multiBox;
+        get => this.multiBox;
         set
         {
             if (this.multiBox == value)
@@ -1265,6 +1265,7 @@ public static class ConfigTab
     private static readonly Sounds[] _validSounds = ((Sounds[])Enum.GetValues(typeof(Sounds))).Where(s => s != Sounds.None && s != Sounds.Unknown).ToArray();
 
     private static bool overlayHeaderSelected      = false;
+    private static bool multiboxHeaderSelected           = false;
     private static bool devHeaderSelected          = false;
     private static bool dutyConfigHeaderSelected   = false;
     private static bool bmaiSettingHeaderSelected  = false;
@@ -1527,31 +1528,6 @@ public static class ConfigTab
             {
                 if (ImGui.Checkbox("Update Paths on startup", ref ConfigurationMain.Instance.updatePathsOnStartup))
                     Configuration.Save();
-
-                bool multiBox = ConfigurationMain.Instance.multiBox;
-                if (ImGui.Checkbox(nameof(ConfigurationMain.MultiBox), ref multiBox))
-                {
-                    ConfigurationMain.Instance.MultiBox = multiBox;
-                    Configuration.Save();
-                }
-
-                if (ImGui.Checkbox(nameof(ConfigurationMain.host), ref ConfigurationMain.Instance.host))
-                    Configuration.Save();
-
-                if(ConfigurationMain.Instance.MultiBox && ConfigurationMain.Instance.host)
-                {
-                    ImGui.Indent();
-                    for (int i = 0; i < ConfigurationMain.MultiboxUtility.Server.MAX_SERVERS; i++)
-                    {
-                        ConfigurationMain.MultiboxUtility.Server.ClientInfo? info = ConfigurationMain.MultiboxUtility.Server.clients[i];
-
-                        ImGuiEx.Text(info != null ?
-                                         $"Client {i}: {(PartyHelper.IsPartyMember(info.CID) ? "in party" : "no party")} | {DateTime.Now.Subtract(ConfigurationMain.MultiboxUtility.Server.keepAlives[i]).TotalSeconds:F3}s ago" :
-                                         $"Client {i}: No Info");
-                    }
-                    ImGui.Unindent();
-                }
-
 
                 if (ImGui.Button("Print mod list")) 
                     Svc.Log.Info(string.Join("\n", PluginInterface.InstalledPlugins.Where(pl => pl.IsLoaded).GroupBy(pl => pl.Manifest.InstalledFromUrl).OrderByDescending(g => g.Count()).Select(g => g.Key+"\n\t"+string.Join("\n\t", g.Select(pl => pl.Name)))));
@@ -3044,6 +3020,48 @@ public static class ConfigTab
                         Configuration.Save();
                     ImGui.Unindent();
                 }
+            }
+        }
+
+        ImGui.Separator();
+        ImGui.Spacing();
+        ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+
+        ImGui.SetItemAllowOverlap();
+        if (ImGui.Selectable("Multiboxing", multiboxHeaderSelected, ImGuiSelectableFlags.DontClosePopups))
+            multiboxHeaderSelected = !multiboxHeaderSelected;
+
+        ImGui.PopStyleVar();
+        if (ImGui.IsItemHovered())
+            ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+
+        if (multiboxHeaderSelected)
+        {
+            ImGui.TextColored(GradientColor.Get(ImGuiHelper.ExperimentalColor, ImGuiHelper.ExperimentalColor2, 500), "EXTREMELY EXPERIMENTAL");
+
+            bool multiBox = ConfigurationMain.Instance.multiBox;
+            if (ImGui.Checkbox(nameof(ConfigurationMain.MultiBox), ref multiBox))
+            {
+                ConfigurationMain.Instance.MultiBox = multiBox;
+                Configuration.Save();
+            }
+
+            if (ImGui.Checkbox(nameof(ConfigurationMain.host), ref ConfigurationMain.Instance.host))
+                Configuration.Save();
+
+            if (ConfigurationMain.Instance.MultiBox && ConfigurationMain.Instance.host)
+            {
+                ImGui.Indent();
+                for (int i = 0; i < ConfigurationMain.MultiboxUtility.Server.MAX_SERVERS; i++)
+                {
+                    ConfigurationMain.MultiboxUtility.Server.ClientInfo? info = ConfigurationMain.MultiboxUtility.Server.clients[i];
+
+                    ImGuiEx.Text(info != null ?
+                                     $"Client {i}: {(PartyHelper.IsPartyMember(info.CID) ? "in party" : "no party")} | {DateTime.Now.Subtract(ConfigurationMain.MultiboxUtility.Server.keepAlives[i]).TotalSeconds:F3}s ago" :
+                                     $"Client {i}: No Info");
+                }
+
+                ImGui.Unindent();
             }
         }
 
