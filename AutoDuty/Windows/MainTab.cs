@@ -274,7 +274,7 @@ namespace AutoDuty.Windows
                             else if (ContentPathsManager.DictionaryPaths.ContainsKey(Plugin.CurrentTerritoryContent?.TerritoryType ?? 0))
                                 Plugin.Run();
                             else
-                                MainWindow.ShowPopup("Error", "No path was found");
+                                MainWindow.ShowPopup("Error", $"No path was found for {Plugin.CurrentTerritoryContent?.TerritoryType} {Plugin.CurrentTerritoryContent?.Name}");
                         }
                     }
                     else
