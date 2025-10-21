@@ -93,14 +93,14 @@
     },
     {
       "Tag": "None",
-      "Name": "AutoMoveFor",
+      "Name": "MoveTo",
       "Position": {
-        "X": 237.91,
-        "Y": 68.03,
-        "Z": 79.14
+        "X": 226.73793,
+        "Y": 60.99994,
+        "Z": 60.57332
       },
       "Arguments": [
-        "10000"
+        ""
       ],
       "Note": ""
     },
@@ -395,6 +395,10 @@
       {
         "Version": 241,
         "Change": "Wait before b2 adjusted"
+      },
+      {
+        "Version": 246,
+        "Change": "Replaced old automove instruction"
       }
     ],
     "Notes": []
