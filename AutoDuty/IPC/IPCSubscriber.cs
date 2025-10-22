@@ -836,8 +836,6 @@ namespace AutoDuty.IPC
         {
             OtherCommand(OtherCommandType.Settings, $"HostileType {Plugin.Configuration.RSR_TargetHostileType}");
             OtherCommand(OtherCommandType.Settings, "FriendlyPartyNpcHealRaise3 true");
-            OtherCommand(OtherCommandType.Settings, "AutoOffBetweenArea false");
-            OtherCommand(OtherCommandType.Settings, "AutoOffCutScene false");
             OtherCommand(OtherCommandType.Settings, "AutoOffAfterCombat false");
             AutodutyChangeOperatingMode(StateCommandType.AutoDuty, Plugin.CurrentPlayerItemLevelandClassJob.Value.GetCombatRole() == CombatRole.Tank ?
                                                                        Plugin.Configuration.RSR_TargetingTypeTank :
