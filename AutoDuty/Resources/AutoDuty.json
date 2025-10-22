@@ -1,10 +1,14 @@
 {
   "Name": "AutoDuty",
   "Modules": {
-    "BossMod.Autorotation.MiscAI.AutoFarm": [
+    "BossMod.Autorotation.MiscAI.AutoTarget": [
       {
         "Track": "General",
         "Option": "Aggressive"
+      },
+      {
+        "Track": "Everything",
+        "Option": "Enabled"
       }
     ],
     "BossMod.Autorotation.xan.BLM": [
