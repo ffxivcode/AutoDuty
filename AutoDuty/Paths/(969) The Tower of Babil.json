@@ -491,19 +491,6 @@
       "Note": ""
     },
     {
-      "Tag": "None",
-      "Name": "MoveTo",
-      "Position": {
-        "X": -19.83,
-        "Y": 487.0,
-        "Z": -85.83
-      },
-      "Arguments": [
-        ""
-      ],
-      "Note": ""
-    },
-    {
       "Tag": "W2W",
       "Name": "StopForCombat",
       "Position": {
@@ -513,6 +500,19 @@
       },
       "Arguments": [
         "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -19.83,
+        "Y": 487.0,
+        "Z": -85.83
+      },
+      "Arguments": [
+        ""
       ],
       "Note": ""
     },
