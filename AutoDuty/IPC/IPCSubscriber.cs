@@ -663,6 +663,12 @@ namespace AutoDuty.IPC
             Auto,
 
             /// <summary>
+            /// Start the addon in Target-Only mode. RSR will auto-select targets per normal logic but will not perform any actions.
+            /// </summary>
+            [Description("Start in Target-Only mode. RSR will auto-select targets per normal logic but will not perform any actions.")]
+            TargetOnly,
+
+            /// <summary>
             /// Start the addon in Manual mode. You need to choose the target manually. This will bypass any engage settings that you have set up and will start attacking immediately once something is targeted.
             /// </summary>
             [Description("Start the addon in Manual mode. You need to choose the target manually. This will bypass any engage settings that you have set up and will start attacking immediately once something is targeted.")]
