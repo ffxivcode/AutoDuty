@@ -230,7 +230,7 @@ namespace AutoDuty.Data
         [JsonObject(MemberSerialization.OptOut)]
         public class PlaylistEntry
         {
-            private uint     id;
+            private uint id = 0;
 
             public uint Id
             {
@@ -250,8 +250,8 @@ namespace AutoDuty.Data
             [JsonIgnore]
             private Content? content;
 
-            public Content Content => 
-                this.content ??= ContentHelper.DictionaryContent[this.id];
+            public Content? Content => 
+                this.content ??= this.id == 0 ? null : ContentHelper.DictionaryContent[this.id];
 
             private DutyMode dutyMode;
 
@@ -260,9 +260,8 @@ namespace AutoDuty.Data
                 get => this.dutyMode;
                 set
                 {
-                    if (value != this.dutyMode)
+                    if (value != this.dutyMode && !(this.Content?.DutyModes.HasFlag(value) ?? false))
                         this.Id = ContentPathsManager.DictionaryPaths.Keys.FirstOrDefault(key => ContentHelper.DictionaryContent[key].DutyModes.HasFlag(value));
-
                     this.dutyMode = value;
                 }
             }
