@@ -597,7 +597,7 @@ namespace AutoDuty.Windows
                                                 if (!string.IsNullOrWhiteSpace(_searchText) && !(content.Name?.ToLower().Contains(_searchText) ?? false))
                                                     continue;
 
-                                                if (content.DutyModes.HasFlag(entry.DutyMode) && content.CanRun(level, entry.DutyMode == DutyMode.Trust, unsync: Plugin.Configuration.Unsynced))
+                                                if (content.DutyModes.HasFlag(entry.DutyMode) && content.CanRun(level, entry.DutyMode == DutyMode.Trust))
                                                     if (ImGui.Selectable($"({key}) {content.Name}", entry.Id == key))
                                                         entry.Id = key;
                                             }
