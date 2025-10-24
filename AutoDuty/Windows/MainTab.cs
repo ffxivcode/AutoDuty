@@ -657,7 +657,7 @@ namespace AutoDuty.Windows
                                     }
 
                                     if (ImGuiComponents.IconButton("PlaylistAdd", FontAwesomeIcon.Plus)) 
-                                        Plugin.PlaylistCurrent.Add(new PlaylistEntry { DutyMode = DutyMode.Support });
+                                        Plugin.PlaylistCurrent.Add(new PlaylistEntry { DutyMode = Plugin.PlaylistCurrent.Any() ? Plugin.PlaylistCurrent.Last().DutyMode : DutyMode.Support });
 
                                     break;
                             }
