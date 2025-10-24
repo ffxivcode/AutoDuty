@@ -419,7 +419,7 @@ public sealed class AutoDuty : IDalamudPlugin
                                                                                   return;
                                                                               }
 
-                                                                              if (!content.CanRun(trust: dutyMode == DutyMode.Trust))
+                                                                              if (!content.CanRun(mode: dutyMode))
                                                                               {
                                                                                   string failReason = !UIState.IsInstanceContentCompleted(content.Id) ?
                                                                                                           "You dont have it unlocked" :
@@ -974,7 +974,11 @@ public sealed class AutoDuty : IDalamudPlugin
         TaskManager.Enqueue(() => Svc.Log.Debug($"Start Navigation"));
         TaskManager.Enqueue(() => StartNavigation(startFromZero), "Run-StartNavigation");
         if (CurrentLoop == 0)
+        {
             CurrentLoop = 1;
+            if (this.Configuration.AutoDutyModeEnum == AutoDutyMode.Playlist)
+                Plugin.Configuration.LoopTimes = Plugin.PlaylistCurrentEntry?.count ?? Plugin.Configuration.LoopTimes;
+        }
     }
 
     internal unsafe void LoopTasks(bool queue = true)
@@ -1067,13 +1071,26 @@ public sealed class AutoDuty : IDalamudPlugin
 
         if (queue && this.Configuration.AutoDutyModeEnum == AutoDutyMode.Playlist)
         {
-            Svc.Log.Debug("next entry on playlist");
-            Plugin.PlaylistIndex++;
-            if (Plugin.PlaylistIndex >= Plugin.PlaylistCurrent.Count)
+            PlaylistEntry? currentEntry = Plugin.PlaylistCurrentEntry;
+            if (currentEntry != null && ++currentEntry.curCount < currentEntry.count)
             {
-                Svc.Log.Debug("playlist done");
-                queue                = false;
-                Plugin.PlaylistIndex = 0;
+                Svc.Log.Debug($"repeating the duty once more: {currentEntry.curCount+1} of {currentEntry.count}");
+                currentEntry.curCount++;
+            }
+            else
+            {
+                Svc.Log.Debug("next playlist entry");
+                Plugin.PlaylistIndex++;
+                if (Plugin.PlaylistIndex >= Plugin.PlaylistCurrent.Count)
+                {
+                    Svc.Log.Debug("playlist done");
+                    queue                = false;
+                    Plugin.PlaylistIndex = 0;
+                }
+                else
+                {
+                    Plugin.PlaylistCurrentEntry!.curCount = 0;
+                }
             }
         }
 
@@ -1123,11 +1140,20 @@ public sealed class AutoDuty : IDalamudPlugin
                                                                TaskManager.Enqueue(() =>
                                                                                        Svc.Log
                                                                                           .Debug($"Incrementing LoopCount, Setting Action Var, Wait for CorrectTerritory, PlayerIsValid, DutyStarted, and NavIsReady"));
-                                                               TaskManager.Enqueue(() => CurrentLoop++, "Loop-IncrementCurrentLoop");
-                                                               TaskManager.Enqueue(() => { Action = $"Looping: {CurrentTerritoryContent.Name} {CurrentLoop} of {Configuration.LoopTimes}"; },
-                                                                                   "Loop-SetAction");
-                                                               TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue,
-                                                                                   "Loop-WaitCorrectTerritory");
+                                                               TaskManager.Enqueue(() =>
+                                                                                   {
+                                                                                       if (this.Configuration.AutoDutyModeEnum == AutoDutyMode.Playlist)
+                                                                                       {
+                                                                                           this.CurrentLoop               = this.PlaylistCurrentEntry?.curCount ?? this.CurrentLoop + 1;
+                                                                                           Plugin.Configuration.LoopTimes = this.PlaylistCurrentEntry?.count ?? Plugin.Configuration.LoopTimes;
+                                                                                       }
+                                                                                       else
+                                                                                       {
+                                                                                           this.CurrentLoop ++;
+                                                                                       }
+                                                                                   }, "Loop-IncrementCurrentLoop");
+                                                               TaskManager.Enqueue(() => { Action = $"Looping: {CurrentTerritoryContent.Name} {CurrentLoop} of {Configuration.LoopTimes}"; }, "Loop-SetAction");
+                                                               TaskManager.Enqueue(() => Svc.ClientState.TerritoryType == CurrentTerritoryContent.TerritoryType, int.MaxValue, "Loop-WaitCorrectTerritory");
                                                                TaskManager.Enqueue(() => PlayerHelper.IsValid,                 int.MaxValue, "Loop-WaitPlayerValid");
                                                                TaskManager.Enqueue(() => Svc.DutyState.IsDutyStarted,          int.MaxValue, "Loop-WaitDutyStarted");
                                                                TaskManager.Enqueue(() => VNavmesh_IPCSubscriber.Nav_IsReady(), int.MaxValue, "Loop-WaitNavReady");

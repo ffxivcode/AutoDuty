@@ -67,7 +67,13 @@ public class MainWindow : Window, IDisposable
     internal static void LoopsConfig()
     {
         if ((Plugin.Configuration.UseSliderInputs && ImGui.SliderInt("Times", ref Plugin.Configuration.LoopTimes, 0, 100)) || (!Plugin.Configuration.UseSliderInputs && ImGui.InputInt("Times", ref Plugin.Configuration.LoopTimes, 1)))
+        {
+            if (Plugin.Configuration.AutoDutyModeEnum == AutoDutyMode.Playlist)
+                if (Plugin.PlaylistCurrentEntry != null)
+                    Plugin.PlaylistCurrentEntry.count = Plugin.Configuration.LoopTimes;
+
             Plugin.Configuration.Save();
+        }
     }
 
     internal static void StopResumePause()

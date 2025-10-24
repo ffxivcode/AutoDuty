@@ -157,7 +157,7 @@ namespace AutoDuty.Helpers
             DictionaryContent = DictionaryContent.OrderBy(content => content.Value.ExVersion).ThenBy(content => content.Value.ClassJobLevelRequired).ThenBy(content => content.Value.TerritoryType).ToDictionary();
         }
 
-        public static bool CanRun(this Content content, short level = -1, bool? trust = null, bool trustCheckLevels = true, bool? unsync = null)
+        public static bool CanRun(this Content content, short level = -1, DutyMode mode = DutyMode.None, bool trustCheckLevels = true, bool? unsync = null)
         {
             if ((Player.Available ? Player.Object.GetRole() : CombatRole.NonCombat) == CombatRole.NonCombat)
                 return false;
@@ -174,12 +174,14 @@ namespace AutoDuty.Helpers
                 return false;
 
 
-            trust ??= Plugin.Configuration.DutyModeEnum == DutyMode.Trust;
-            if (trust.Value)
+            if (mode == DutyMode.None)
+                mode = Plugin.Configuration.DutyModeEnum;
+
+            if (mode.HasFlag(DutyMode.Trust))
                 if (!content.CanTrustRun(trustCheckLevels))
                     return false;
 
-            unsync ??= Plugin.Configuration.Unsynced && Plugin.Configuration.DutyModeEnum.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial);
+            unsync ??= Plugin.Configuration.Unsynced && mode.EqualsAny(DutyMode.Raid, DutyMode.Regular, DutyMode.Trial);
 
             if (unsync.Value)
                 if (content.ExVersion == 5)
