@@ -112,6 +112,7 @@ namespace AutoDuty.Helpers
             {
                 if (EzThrottler.Throttle("_turnedOnConfigMembers", 500))
                 {
+                    TrustHelper.ResetTrustIfInvalid();
                     AgentDawnInterface.DawnMemberEntry* curMembers = agentDawn->Data->MemberData.GetMembers(agentDawn->Data->MemberData.CurrentMembersIndex);
                     TrustMemberName?[]                  members    = Plugin.Configuration.SelectedTrustMembers;
                     if (members.Any(x => x is null || TrustHelper.Members[(TrustMemberName)x!].Level < _content.ClassJobLevelRequired))

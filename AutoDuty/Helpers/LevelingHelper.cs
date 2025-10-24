@@ -122,8 +122,8 @@ namespace AutoDuty.Helpers
                 return null;
             }
 
-            LevelingDuties.Each(x => Svc.Log.Debug($"Leveling Mode: Duties: {x.Name} CanRun: {x.CanRun(lvl, false)}{(trust ? $"CanTrustRun : {x.CanTrustRun()}" : "")}"));
-            curContent = LevelingDuties.LastOrDefault(x => x.CanRun(lvl, trust));
+            LevelingDuties.Each(x => Svc.Log.Debug($"Leveling Mode: Duties: {x.Name} CanRun: {x.CanRun(lvl)}{(trust ? $"CanTrustRun : {x.CanTrustRun()}" : "")}"));
+            curContent = LevelingDuties.LastOrDefault(x => x.CanRun(lvl, trust ? DutyMode.Trust : DutyMode.None));
 
             Svc.Log.Debug($"Leveling Mode: We found {curContent?.Name ?? "no duty"} to run");
 

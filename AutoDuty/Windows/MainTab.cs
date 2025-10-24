@@ -547,15 +547,11 @@ namespace AutoDuty.Windows
                                     {
                                         PlaylistEntry entry = Plugin.PlaylistCurrent[i];
 
-                                        ImGui.NewLine();
-                                        ImGui.SameLine(0, 1);
-
                                         ImGui.AlignTextToFramePadding();
                                         ImGui.SetItemAllowOverlap();
-                                        if (ImGui.Selectable($"{i+1}", Plugin.PlaylistIndex == i, ImGuiSelectableFlags.AllowItemOverlap)) 
+                                        if (ImGui.Selectable($"{i}:##Playlist{i+1}Entry", Plugin.PlaylistIndex == i, ImGuiSelectableFlags.AllowItemOverlap)) 
                                             Plugin.PlaylistIndex = i;
-
-                                        ImGui.SameLine(0, 3);
+                                        ImGui.SameLine(0, 10);
 
                                         //ImGui.AlignTextToFramePadding();
                                         //ImGui.Text($"{i}:"); // {entry.dutyMode} {entry.id}");
@@ -563,7 +559,16 @@ namespace AutoDuty.Windows
 
                                         ContentPathsManager.ContentPathContainer entryContainer = ContentPathsManager.DictionaryPaths[entry.Id];
                                         Content                                  entryContent   = ContentHelper.DictionaryContent[entry.Id];
-                                        
+
+
+
+                                        ImGui.PushItemWidth(80f.Scale());
+                                        if (ImGui.InputInt($"##Playlist{i}Count", ref entry.count, step: 1, stepFast: 2, @"%dx")) 
+                                            entry.count = Math.Max(1, entry.count);
+
+                                        ImGui.PopItemWidth();
+                                        ImGui.SameLine();
+
                                         ImGui.PushItemWidth(100f.Scale());
                                         if (ImGui.BeginCombo($"##Playlist{i}DutyModeEnum", entry.DutyMode.ToCustomString()))
                                         {
@@ -597,7 +602,7 @@ namespace AutoDuty.Windows
                                                 if (!string.IsNullOrWhiteSpace(_searchText) && !(content.Name?.ToLower().Contains(_searchText) ?? false))
                                                     continue;
 
-                                                if (content.DutyModes.HasFlag(entry.DutyMode) && content.CanRun(level, entry.DutyMode == DutyMode.Trust))
+                                                if (content.DutyModes.HasFlag(entry.DutyMode) && content.CanRun(level, entry.DutyMode))
                                                     if (ImGui.Selectable($"({key}) {content.Name}", entry.Id == key))
                                                         entry.Id = key;
                                             }

@@ -267,6 +267,9 @@ namespace AutoDuty.Data
             }
 
             public string path = string.Empty;
+
+            public int count    = 1;
+            public int curCount = 0;
         }
     }
 }
