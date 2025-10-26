@@ -9,6 +9,10 @@
       {
         "Track": "Everything",
         "Option": "Enabled"
+      },
+      {
+        "Track": "Retarget",
+        "Option": "Always"
       }
     ],
     "BossMod.Autorotation.xan.BLM": [
