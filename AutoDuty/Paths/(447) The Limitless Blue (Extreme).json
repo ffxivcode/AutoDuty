@@ -134,9 +134,9 @@
       "Tag": "Unsynced",
       "Name": "Wait",
       "Position": {
-        "X": 5.497095,
+        "X": 2.497095,
         "Y": -0.045776367,
-        "Z": -2.8932495
+        "Z": -4.8932495
       },
       "Arguments": [
         "5000"
@@ -266,9 +266,9 @@
       "Tag": "Unsynced",
       "Name": "StopForCombat",
       "Position": {
-        "X": 5.5,
+        "X": 2.5,
         "Y": -0.05,
-        "Z": -2.89
+        "Z": -4.8900003
       },
       "Arguments": [
         "true"
@@ -323,6 +323,10 @@
       {
         "Version": 251,
         "Change": "Use the relative indexing"
+      },
+      {
+        "Version": 252,
+        "Change": ""
       }
     ],
     "Notes": []
