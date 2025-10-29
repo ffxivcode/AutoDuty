@@ -14,19 +14,6 @@
       "Note": ""
     },
     {
-      "Tag": "Unsynced",
-      "Name": "BossMod",
-      "Position": {
-        "X": 0.0,
-        "Y": 0.0,
-        "Z": 0.0
-      },
-      "Arguments": [
-        "off"
-      ],
-      "Note": ""
-    },
-    {
       "Tag": "None",
       "Name": "MoveTo",
       "Position": {
@@ -60,7 +47,7 @@
       },
       "Arguments": [
         "ObjectData;2005545;IsTargetable;false",
-        "ModifyIndex;3"
+        "ModifyIndex;2"
       ],
       "Note": ""
     },
@@ -152,7 +139,7 @@
       },
       "Arguments": [
         "ObjectData;2005545;IsTargetable;false",
-        "ModifyIndex;10"
+        "ModifyIndex;9"
       ],
       "Note": ""
     },
@@ -246,30 +233,6 @@
         ""
       ],
       "Note": ""
-    },
-    {
-      "Tag": "None",
-      "Name": "WaitFor",
-      "Position": {
-        "X": 0.0,
-        "Y": 0.0,
-        "Z": 0.0
-      },
-      "Arguments": [
-        "IsReady"
-      ],
-      "Note": ""
-    },
-    {
-      "Tag": "Treasure",
-      "Name": "TreasureCoffer",
-      "Position": {
-        "X": -10.083874,
-        "Y": -0.008312345,
-        "Z": -0.0011939415
-      },
-      "Arguments": [],
-      "Note": ""
     }
   ],
   "Meta": {
@@ -290,6 +253,10 @@
       {
         "Version": 189,
         "Change": "Adjusted tags to string values"
+      },
+      {
+        "Version": 251,
+        "Change": ""
       },
       {
         "Version": 251,
