@@ -186,8 +186,14 @@ namespace AutoDuty.Managers
 
         public void ModifyIndex(PathAction action)
         {
-            if (!int.TryParse(action.Arguments[0], out int _index)) return;
-            Plugin.Indexer = _index;
+            if (!int.TryParse(action.Arguments[0], out int _index))
+                return;
+
+
+            if (action.Arguments[0][0] is '+' or '-')
+                Plugin.Indexer += _index;
+            else
+                Plugin.Indexer = _index;
             Plugin.Stage = Stage.Reading_Path;
         }
 
