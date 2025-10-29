@@ -132,16 +132,29 @@
     },
     {
       "Tag": "Unsynced",
-      "Name": "Wait",
+      "Name": "WaitFor",
       "Position": {
-        "X": 2.497095,
-        "Y": -0.045776367,
-        "Z": -4.8932495
+        "X": 2.5,
+        "Y": 0.0,
+        "Z": -5.0
       },
       "Arguments": [
-        "5000"
+        "ConditionFlag;48;true"
       ],
-      "Note": ""
+      "Note": "Wait for jumping from the shell"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": "and land before moving..."
     },
     {
       "Tag": "Unsynced",
@@ -267,8 +280,8 @@
       "Name": "StopForCombat",
       "Position": {
         "X": 2.5,
-        "Y": -0.05,
-        "Z": -4.8900003
+        "Y": 0.0,
+        "Z": -5.0
       },
       "Arguments": [
         "true"
@@ -327,6 +340,10 @@
       {
         "Version": 252,
         "Change": ""
+      },
+      {
+        "Version": 252,
+        "Change": "change the static wait to flag"
       }
     ],
     "Notes": []
