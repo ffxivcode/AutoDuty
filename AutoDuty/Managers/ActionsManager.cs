@@ -154,15 +154,15 @@ namespace AutoDuty.Managers
                         IGameObject? gameObject = null;
                         if ((gameObject = GetObjectByDataId(uint.TryParse(conditionArray[1], out uint dataId) ? dataId : 0)) != null)
                         {
-                            var csObj = *gameObject.Struct();
+                            var csObj = gameObject.Struct();
                             switch (conditionArray[2])
                             {
                                 case "EventState":
-                                    if (csObj.EventState == (int.TryParse(conditionArray[3], out int es) ? es : -1))
+                                    if (csObj->EventState == (int.TryParse(conditionArray[3], out int es) ? es : -1))
                                         invokeAction = true;
                                     break;
                                 case "IsTargetable":
-                                    if (csObj.GetIsTargetable() == (bool.TryParse(conditionArray[3], out bool it) && it))
+                                    if (csObj->GetIsTargetable() == (bool.TryParse(conditionArray[3], out bool it) && it))
                                         invokeAction = true;
                                     break;
                             }
