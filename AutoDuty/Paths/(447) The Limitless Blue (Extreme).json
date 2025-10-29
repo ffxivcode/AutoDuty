@@ -66,6 +66,19 @@
     },
     {
       "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
       "Name": "Interactable",
       "Position": {
         "X": -13.2553,
@@ -120,9 +133,9 @@
       "Tag": "Unsynced",
       "Name": "Wait",
       "Position": {
-        "X": -14.15,
+        "X": -16.15,
         "Y": 0.2,
-        "Z": 9.6399975
+        "Z": 7.6399975
       },
       "Arguments": [
         "100"
@@ -139,7 +152,7 @@
       },
       "Arguments": [
         "ObjectData;2005545;IsTargetable;false",
-        "ModifyIndex;9"
+        "ModifyIndex;10"
       ],
       "Note": ""
     },
@@ -168,6 +181,19 @@
         "2005545"
       ],
       "Note": "Dragonkiller"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": ""
     },
     {
       "Tag": "Unsynced",
