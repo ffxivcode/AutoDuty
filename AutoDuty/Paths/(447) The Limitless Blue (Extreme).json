@@ -26,6 +26,45 @@
     },
     {
       "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "on"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "25000"
+      ],
+      "Note": "allow time for melees to kill stuff before stopping AI"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
       "Name": "Wait",
       "Position": {
         "X": -14.147824,
@@ -132,11 +171,24 @@
     },
     {
       "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "on"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
       "Name": "WaitFor",
       "Position": {
-        "X": 2.5,
-        "Y": 0.0,
-        "Z": -5.0
+        "X": 3.5999997,
+        "Y": -0.25,
+        "Z": -4.9
       },
       "Arguments": [
         "ConditionFlag;48;true"
@@ -155,6 +207,72 @@
         "IsReady"
       ],
       "Note": "and land before moving..."
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "250"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ConditionAction",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "ObjectData;3824;IsTargetable;true",
+        "ModifyIndex;+2"
+      ],
+      "Note": "Vapor Bubble"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ModifyIndex",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "-2"
+      ],
+      "Note": "allow ai for melees untill the bubbles show up"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "5000"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": "back to the scripted events"
     },
     {
       "Tag": "Unsynced",
@@ -279,9 +397,9 @@
       "Tag": "Unsynced",
       "Name": "StopForCombat",
       "Position": {
-        "X": 2.5,
-        "Y": 0.0,
-        "Z": -5.0
+        "X": 3.5999997,
+        "Y": -0.25,
+        "Z": -4.9
       },
       "Arguments": [
         "true"
@@ -344,6 +462,10 @@
       {
         "Version": 252,
         "Change": "change the static wait to flag"
+      },
+      {
+        "Version": 252,
+        "Change": "Move closer to the shell and allow more time with the AI on for melee fighting"
       }
     ],
     "Notes": []
