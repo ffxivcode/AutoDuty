@@ -47,7 +47,7 @@
       },
       "Arguments": [
         "ObjectData;2005545;IsTargetable;false",
-        "ModifyIndex;2"
+        "ModifyIndex;-1"
       ],
       "Note": ""
     },
@@ -112,9 +112,23 @@
         "Z": -5.4239273
       },
       "Arguments": [
-        "8000"
+        "500"
       ],
       "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ConditionAction",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "ObjectData;4421;IsTargetable;false",
+        "ModifyIndex;-1"
+      ],
+      "Note": "Chitin Carapace (4421)"
     },
     {
       "Tag": "Unsynced",
@@ -127,7 +141,7 @@
       "Arguments": [
         "5000"
       ],
-      "Note": "Chitin Carapace (4421)"
+      "Note": ""
     },
     {
       "Tag": "Unsynced",
@@ -152,7 +166,7 @@
       },
       "Arguments": [
         "ObjectData;2005545;IsTargetable;false",
-        "ModifyIndex;10"
+        "ModifyIndex;-1"
       ],
       "Note": ""
     },
@@ -230,9 +244,23 @@
         "Z": -5.42
       },
       "Arguments": [
-        "8000"
+        "500"
       ],
       "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ConditionAction",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "ObjectData;4422;IsTargetable;false",
+        "ModifyIndex;-1"
+      ],
+      "Note": "Corona (4422)"
     },
     {
       "Tag": "Unsynced",
@@ -245,7 +273,7 @@
       "Arguments": [
         "true"
       ],
-      "Note": "Corona (4422)"
+      "Note": ""
     },
     {
       "Tag": "None",
@@ -287,6 +315,14 @@
       {
         "Version": 251,
         "Change": "Attempts to do the hookshot stuff when unsyced"
+      },
+      {
+        "Version": 251,
+        "Change": "change waits to loops so we dont walk off the edge"
+      },
+      {
+        "Version": 251,
+        "Change": "Use the relative indexing"
       }
     ],
     "Notes": []
