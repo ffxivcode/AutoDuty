@@ -1,312 +1,323 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -0.11,
-        "Y": 750,
+        "Y": 750.0,
         "Z": 342.57
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -60.32,
         "Y": 744.96,
         "Z": 151.43
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -80.35,
         "Y": 748.23,
         "Z": 81.87
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": "The First Beast"
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -79.62,
-        "Y": 748.23,
-        "Z": 67.5
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -76.5,
-        "Y": 729,
+        "Y": 729.0,
         "Z": -98.63
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "MoveTo",
+      "Position": {
         "X": 27.76,
         "Y": 728.47,
         "Z": -122.06
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 72.4,
         "Y": 729.66,
         "Z": -156.97
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": 58.35,
         "Y": 729.27,
         "Z": -205.24
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 60.01,
-        "Y": 728,
+        "Y": 728.0,
         "Z": -360.71
       },
-      "arguments": [
-        ""
+      "Arguments": [
+        " "
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 60.03,
-        "Y": 728,
-        "Z": -366.85
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 57.028,
+        "Y": 728.0,
+        "Z": -369.60672
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 59.98,
-        "Y": 728,
-        "Z": -367.82
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "Interactable",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      },
-      "arguments": [
+      "Arguments": [
         "2009984"
       ],
-      "note": "Aetherial Flow"
+      "Note": "Aetherial Flow"
     },
     {
-      "tag": "None",
-      "name": "Wait",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
-        "2000"
+      "Arguments": [
+        "IsReady"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 0.16,
-        "Y": -740,
-        "Z": 330.98
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -0.23181379,
+        "Y": -739.95,
+        "Z": 323.81335
       },
-      "arguments": [
-        "4000"
+      "Arguments": [
+        ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Treasure",
+      "Name": "MoveTo",
+      "Position": {
         "X": 5.88,
-        "Y": -730,
+        "Y": -730.0,
         "Z": 182.32
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 0.5,
-        "Y": -730,
-        "Z": 186.45
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -0.5,
+        "Y": -730.0,
+        "Z": 174.45
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
-        "X": 0.14,
-        "Y": -730,
-        "Z": 181.03
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
-        "4000"
+      "Arguments": [
+        "IsReady"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "Treasure",
+      "Name": "MoveTo",
+      "Position": {
         "X": 5.62,
-        "Y": -732,
+        "Y": -732.0,
         "Z": 48.54
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
+      "Tag": "Revival",
+      "Name": "Revival",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
         "X": -0.14,
-        "Y": -732,
-        "Z": 51.35
+        "Y": -732.0,
+        "Z": 40.35
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "AutoMoveFor",
-      "position": {
-        "X": -0.12,
-        "Y": -732,
-        "Z": 46.38
+      "Tag": "None",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
-        "4000"
+      "Arguments": [
+        "IsReady"
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": 0.09,
-        "Y": -720,
+        "Y": -720.0,
         "Z": -64.39
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -0.09,
-        "Y": -720,
-        "Z": -56.01
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
+      "Note": ""
     }
   ],
-  "meta": {
-    "createdAt": 106,
-    "changelog": [
+  "Meta": {
+    "CreatedAt": 106,
+    "Changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
+        "Version": 161,
+        "Change": "Converted to new JSON Structure"
       },
       {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
+        "Version": 163,
+        "Change": "Converted to newer JSON Structure"
       },
       {
-        "version": 164,
-        "change": "Converted to JSON Structure with Tags"
+        "Version": 164,
+        "Change": "Converted to JSON Structure with Tags"
       },
       {
-        "version": 189,
-        "change": "Adjusted tags to string values"
+        "Version": 189,
+        "Change": "Adjusted tags to string values"
+      },
+      {
+        "Version": 252,
+        "Change": "Fixed revivals, automoves and some treasure steps"
       }
     ],
-    "notes": []
+    "Notes": []
   }
 }
