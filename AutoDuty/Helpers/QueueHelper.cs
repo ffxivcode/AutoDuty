@@ -78,6 +78,12 @@ namespace AutoDuty.Helpers
             if (TrustHelper.State == ActionState.Running) return;
 
             AgentDawn* agentDawn = AgentDawn.Instance();
+            if (!TrustHelper.LevelsSetFor(_content))
+            {
+                TrustHelper.GetLevels(_content);
+                return;
+            }
+
             if (!agentDawn->IsAddonReady())
             {
                 if (!EzThrottler.Throttle("OpenDawn", 5000) || !AgentHUD.Instance()->IsMainCommandEnabled(82)) return;
@@ -91,6 +97,14 @@ namespace AutoDuty.Helpers
             {
                 Svc.Log.Debug($"Queue Helper - You do not have expansion: {_content.ExVersion} unlocked stopping");
                 Stop();
+                return;
+            }
+
+            if(!_content.CanTrustRun())
+            {
+                Svc.Log.Debug("Queue Helper - Trust can't run, stopping QueueHelper");
+                this.Stop();
+                Plugin.Stage = Stage.Stopped;
                 return;
             }
 
