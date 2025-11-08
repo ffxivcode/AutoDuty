@@ -1827,7 +1827,7 @@ public sealed class AutoDuty : IDalamudPlugin
             return;
 
         if (Svc.Condition[ConditionFlag.OccupiedSummoningBell])
-            while(!AutoRetainerHelper.Instance.CloseAddons());
+            AutoRetainerHelper.Instance.CloseAddons();
     }
 
     private void InteractablesCheck()
