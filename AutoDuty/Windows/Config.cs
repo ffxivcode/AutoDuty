@@ -40,6 +40,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Numerics;
 using System.Text;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Achievement = Lumina.Excel.Sheets.Achievement;
 using ExitDutyHelper = Helpers.ExitDutyHelper;
 using Map = Lumina.Excel.Sheets.Map;
@@ -1176,7 +1177,10 @@ public class Configuration
                 AutoDesynth = false;
         }
     }
-    public   int  AutoDesynthSkillUpLimit = 50;
+    public int   AutoDesynthSkillUpLimit = 50;
+    public bool  AutoDesynthNoGearset    = true;
+    public ulong AutoDesynthCategories   = 0x1;
+
     internal bool autoGCTurnin            = false;
     public bool AutoGCTurnin
     {
@@ -2702,13 +2706,62 @@ public static class ConfigTab
 
 
                 ImGui.Columns(2, "##DesynthColumns");
+                float columnY = ImGui.GetCursorPosY();
 
                 if (ImGui.Checkbox("Auto Desynth", ref Configuration.autoDesynth))
                 {
                     Configuration.AutoDesynth = Configuration.autoDesynth;
                     Configuration.Save();
                 }
+                if (Configuration.AutoDesynth)
+                {
+                    ImGui.Indent();
+                    if (ImGui.Checkbox("Only Skill Ups", ref Configuration.autoDesynthSkillUp))
+                    {
+                        Configuration.AutoDesynthSkillUp = Configuration.autoDesynthSkillUp;
+                        Configuration.Save();
+                    }
+                    if (Configuration.AutoDesynthSkillUp)
+                    {
+                        ImGui.Indent();
+                        ImGui.Text("Item Level Limit");
+                        ImGuiComponents.HelpMarker("Stops desynthesising an item once your desynthesis skill reaches the Item Level + this limit.");
+                        ImGui.SameLine();
+                        ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
+                        if (ImGui.SliderInt("##AutoDesynthSkillUpLimit", ref Configuration.AutoDesynthSkillUpLimit, 0, 50))
+                        {
+                            Configuration.AutoDesynthSkillUpLimit = Math.Clamp(Configuration.AutoDesynthSkillUpLimit, 0, 50);
+                            Configuration.Save();
+                        }
+                        ImGui.PopItemWidth();
+                        ImGui.Unindent();
+                    }
+
+                    if (ImGui.Checkbox($"Protect Gearsets##Desynth{nameof(Configuration.AutoDesynthNoGearset)}", ref Configuration.AutoDesynthNoGearset)) 
+                        Configuration.Save();
+
+                    if (ImGui.CollapsingHeader("Desynth Categories"))
+                    {
+                        ImGui.Indent();
+                        AgentSalvage.SalvageItemCategory[] values = Enum.GetValues<AgentSalvage.SalvageItemCategory>();
+                        for (int index = 0; index < values.Length; index++)
+                        {
+                            bool   x            = Bitmask.IsBitSet(Configuration.AutoDesynthCategories, index);
+                            string categoryName = values[index].ToCustomString();
+                            if (ImGui.Checkbox(categoryName + $"##DesynthCategory{categoryName}", ref x))
+                                if (x)
+                                    Bitmask.SetBit(ref Configuration.AutoDesynthCategories, index);
+                                else
+                                    Bitmask.ResetBit(ref Configuration.AutoDesynthCategories, index);
+                        }
+                        ImGui.Unindent();
+                    }
+
+                    ImGui.Unindent();
+                }
+
                 ImGui.NextColumn();
+                ImGui.SetCursorPosY(columnY);
                 //ImGui.SameLine(0, 5);
                 using (ImGuiHelper.RequiresPlugin(ExternalPlugin.AutoRetainer, "GCTurnin"))
                 {
@@ -2717,39 +2770,6 @@ public static class ConfigTab
                         Configuration.AutoGCTurnin = Configuration.autoGCTurnin;
                         Configuration.Save();
                     }
-                    
-                    ImGui.NextColumn();
-
-                    //slightly cursed
-                    using (ImRaii.Enabled())
-                    {
-                        if (Configuration.AutoDesynth)
-                        {
-                            ImGui.Indent();
-                            if (ImGui.Checkbox("Only Skill Ups", ref Configuration.autoDesynthSkillUp))
-                            {
-                                Configuration.AutoDesynthSkillUp = Configuration.autoDesynthSkillUp;
-                                Configuration.Save();
-                            }
-                            if (Configuration.AutoDesynthSkillUp)
-                            {
-                                ImGui.Indent();
-                                ImGui.Text("Item Level Limit");
-                                ImGuiComponents.HelpMarker("Stops desynthesising an item once your desynthesis skill reaches the Item Level + this limit.");
-                                ImGui.SameLine();
-                                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
-                                if (ImGui.SliderInt("##AutoDesynthSkillUpLimit", ref Configuration.AutoDesynthSkillUpLimit, 0, 50))
-                                {
-                                    Configuration.AutoDesynthSkillUpLimit = Math.Clamp(Configuration.AutoDesynthSkillUpLimit, 0, 50);
-                                    Configuration.Save();
-                                }
-                                ImGui.PopItemWidth();
-                                ImGui.Unindent();
-                            }
-                            ImGui.Unindent();
-                        }
-                    }
-                    ImGui.NextColumn();
                     if (Configuration.AutoGCTurnin)
                     {
                         ImGui.Indent();
