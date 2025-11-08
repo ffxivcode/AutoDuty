@@ -1,39 +1,473 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -6.79,
-        "Y": 0.02,
-        "Z": -1.58
+      "Tag": "Unsynced",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
       },
-      "arguments": [
+      "Arguments": [
+        "false"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -1.2386193,
+        "Y": 0.11446941,
+        "Z": -5.53312
+      },
+      "Arguments": [],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "on"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "25000"
+      ],
+      "Note": "allow time for melees to kill stuff before stopping AI"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": -14.147824,
+        "Y": 0.20295143,
+        "Z": 19.137663
+      },
+      "Arguments": [
+        "1000"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ConditionAction",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "ObjectData;2005545;IsTargetable;false",
+        "ModifyIndex;-1"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Interactable",
+      "Position": {
+        "X": -14.147824,
+        "Y": 0.20295143,
+        "Z": 19.137663
+      },
+      "Arguments": [
+        "2005545"
+      ],
+      "Note": "Dragonkiller"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Interactable",
+      "Position": {
+        "X": -13.2553,
+        "Y": 0.20263457,
+        "Z": -17.338472
+      },
+      "Arguments": [
+        "2005544"
+      ],
+      "Note": "Dragonkiller"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": -0.17507425,
+        "Y": 0.08412838,
+        "Z": -5.4239273
+      },
+      "Arguments": [
+        "500"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ConditionAction",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "ObjectData;4421;IsTargetable;false",
+        "ModifyIndex;-1"
+      ],
+      "Note": "Chitin Carapace (4421)"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "on"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 3.5999997,
+        "Y": -0.25,
+        "Z": -4.9
+      },
+      "Arguments": [
+        "ConditionFlag;48;true"
+      ],
+      "Note": "Wait for jumping from the shell"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "WaitFor",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "IsReady"
+      ],
+      "Note": "and land before moving..."
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "250"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ConditionAction",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "ObjectData;3824;IsTargetable;true",
+        "ModifyIndex;+2"
+      ],
+      "Note": "Vapor Bubble"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ModifyIndex",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "-2"
+      ],
+      "Note": "allow ai for melees untill the bubbles show up"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "5000"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": "back to the scripted events"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": -16.15,
+        "Y": 0.2,
+        "Z": 7.6399975
+      },
+      "Arguments": [
+        "100"
+      ],
+      "Note": "Wait away from the edge to maybe survive the random KB"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ConditionAction",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "ObjectData;2005545;IsTargetable;false",
+        "ModifyIndex;-1"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ChatCommand",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "/ac Sprint"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Interactable",
+      "Position": {
+        "X": -14.15,
+        "Y": 0.2,
+        "Z": 19.14
+      },
+      "Arguments": [
+        "2005545"
+      ],
+      "Note": "Dragonkiller"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Interactable",
+      "Position": {
+        "X": -13.26,
+        "Y": 0.2,
+        "Z": -17.34
+      },
+      "Arguments": [
+        "2005544"
+      ],
+      "Note": "Dragonkiller"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "BossMod",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "off"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "Wait",
+      "Position": {
+        "X": -0.18,
+        "Y": 0.08,
+        "Z": -5.42
+      },
+      "Arguments": [
+        "500"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "ConditionAction",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Arguments": [
+        "ObjectData;4422;IsTargetable;false",
+        "ModifyIndex;-1"
+      ],
+      "Note": "Corona (4422)"
+    },
+    {
+      "Tag": "Unsynced",
+      "Name": "StopForCombat",
+      "Position": {
+        "X": 3.5999997,
+        "Y": -0.25,
+        "Z": -4.9
+      },
+      "Arguments": [
+        "true"
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": -8.369999,
+        "Y": 0.017663715,
+        "Z": -2.975
+      },
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Note": ""
     }
   ],
-  "meta": {
-    "createdAt": 106,
-    "changelog": [
+  "Meta": {
+    "CreatedAt": 106,
+    "Changelog": [
       {
-        "version": 161,
-        "change": "Converted to new JSON Structure"
+        "Version": 161,
+        "Change": "Converted to new JSON Structure"
       },
       {
-        "version": 163,
-        "change": "Converted to newer JSON Structure"
+        "Version": 163,
+        "Change": "Converted to newer JSON Structure"
       },
       {
-        "version": 164,
-        "change": "Converted to JSON Structure with Tags"
+        "Version": 164,
+        "Change": "Converted to JSON Structure with Tags"
       },
       {
-        "version": 189,
-        "change": "Adjusted tags to string values"
+        "Version": 189,
+        "Change": "Adjusted tags to string values"
+      },
+      {
+        "Version": 251,
+        "Change": ""
+      },
+      {
+        "Version": 251,
+        "Change": "Attempts to do the hookshot stuff when unsyced"
+      },
+      {
+        "Version": 251,
+        "Change": "change waits to loops so we dont walk off the edge"
+      },
+      {
+        "Version": 251,
+        "Change": "Use the relative indexing"
+      },
+      {
+        "Version": 252,
+        "Change": ""
+      },
+      {
+        "Version": 252,
+        "Change": "change the static wait to flag"
+      },
+      {
+        "Version": 252,
+        "Change": "Move closer to the shell and allow more time with the AI on for melee fighting"
       }
     ],
-    "notes": []
+    "Notes": []
   }
 }
