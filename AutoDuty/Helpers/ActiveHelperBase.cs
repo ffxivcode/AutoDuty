@@ -185,10 +185,10 @@ namespace AutoDuty.Helpers
         {
             for (int i = 0; i < this.AddonsToClose.Length; i++)
             {
-                if (GenericHelpers.TryGetAddonByName(this.AddonsToClose[i], out AtkUnitBase* atkUnitBase) && atkUnitBase->IsVisible)
+                if (GenericHelpers.TryGetAddonByName(this.AddonsToClose[i], out AtkUnitBase* atkUnitBase) && atkUnitBase->IsReady)
                 {
                     this.DebugLog("Closing Addon " + this.AddonsToClose[i]);
-                    atkUnitBase->Close(true);
+                    atkUnitBase->FireCallbackInt(-1);
                     return false;
                 }
             }
