@@ -185,7 +185,7 @@ namespace AutoDuty.Helpers
         {
             for (int i = 0; i < this.AddonsToClose.Length; i++)
             {
-                if (GenericHelpers.TryGetAddonByName(this.AddonsToClose[i], out AtkUnitBase* atkUnitBase) && atkUnitBase->IsReady)
+                if (GenericHelpers.TryGetAddonByName(this.AddonsToClose[i], out AtkUnitBase* atkUnitBase) && atkUnitBase->IsVisible && atkUnitBase->IsReady)
                 {
                     this.DebugLog("Closing Addon " + this.AddonsToClose[i]);
                     atkUnitBase->FireCallbackInt(-1);
