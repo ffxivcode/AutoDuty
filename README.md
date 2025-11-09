@@ -40,7 +40,7 @@ AutoDuty supports a wide range of automations and integrations with other plugin
 
 # Installation
 
-Add `https://puni.sh/api/repository/herc` to your plugin repositories and then search for `AutoDuty` in the Plugin Installer to install AutoDuty.
+Add `https://puni.sh/api/repository/erdelf` to your plugin repositories and then search for `AutoDuty` in the Plugin Installer to install AutoDuty.
 
 Settings can be accessed via the Plugin Installer or using the chat command `/ad`.
 
