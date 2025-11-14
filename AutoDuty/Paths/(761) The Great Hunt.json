@@ -1,0 +1,48 @@
+{
+  "Actions": [
+    {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
+        "X": 98.16419,
+        "Y": -0.50000006,
+        "Z": 96.38113
+      },
+      "Arguments": [
+        ""
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 97.39385,
+        "Y": -0.50000006,
+        "Z": 102.54938
+      },
+      "Arguments": [
+        "2009422"
+      ],
+      "Note": "Rathalos"
+    },
+    {
+      "Tag": "None",
+      "Name": "Interactable",
+      "Position": {
+        "X": 97.39385,
+        "Y": -0.50000006,
+        "Z": 102.54938
+      },
+      "Arguments": [
+        "2009576"
+      ],
+      "Note": "Rathalos's Tail"
+    }
+  ],
+  "Meta": {
+    "CreatedAt": 258,
+    "Changelog": [],
+    "Notes": []
+  }
+}
