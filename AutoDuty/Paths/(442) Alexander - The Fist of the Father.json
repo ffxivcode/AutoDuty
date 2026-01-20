@@ -1,230 +1,192 @@
 {
-  "actions": [
+  "Actions": [
     {
-      "tag": "None",
-      "name": "ChatCommand",
-      "position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
+      "Tag": "None",
+      "Name": "ChatCommand",
+      "Position": {
+        "X": -1.090649,
+        "Y": -7.4295893,
+        "Z": 21.08543
       },
-      "arguments": [
-        "/vnav rebuild"
+      "Arguments": [
+        "/ac \"Arm's Length\""
       ],
-      "note": ""
+      "Conditions": [
+        {
+          "$type": "AutoDuty.Data.Classes+PathActionConditionJob, AutoDuty",
+          "job": "Tanks, Melee, Aiming"
+        }
+      ],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 0.09,
-        "Y": -15,
-        "Z": 64.02
+      "Tag": "None",
+      "Name": "ChatCommand",
+      "Position": {
+        "X": -1.090649,
+        "Y": -7.4295893,
+        "Z": 21.08543
       },
-      "arguments": [
+      "Arguments": [
+        "/ac \"Surecast\""
+      ],
+      "Conditions": [
+        {
+          "$type": "AutoDuty.Data.Classes+PathActionConditionJob, AutoDuty",
+          "job": "Healers, Casters"
+        }
+      ],
+      "Note": ""
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -8.272447,
+        "Y": -5.515032,
+        "Z": 10.227431
+      },
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Conditions": [],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 9.79,
-        "Y": -14.95,
-        "Z": 63.75
+      "Tag": "None",
+      "Name": "AutoMoveFor",
+      "Position": {
+        "X": -7.337,
+        "Y": -5.381,
+        "Z": 9.469
       },
-      "arguments": [
+      "Arguments": [
+        "2500"
+      ],
+      "Conditions": [],
+      "Note": "Runs through the opening on the left (if there is one)."
+    },
+    {
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": -2.55,
+        "Y": -5.18,
+        "Z": 8.34
+      },
+      "Arguments": [
+        "",
         ""
       ],
-      "note": ""
+      "Conditions": [
+        {
+          "$type": "AutoDuty.Data.Classes+PathActionConditionDistance, AutoDuty",
+          "origin": "Player",
+          "originId": 0,
+          "originLoc": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "target": "Location",
+          "targetId": 0,
+          "targetLoc": {
+            "X": 0.0,
+            "Y": 5.57,
+            "Z": -18.11
+          },
+          "operatorValue": ">=",
+          "distance": 22.0
+        }
+      ],
+      "Note": "If character hasn't moved because there's no opening, goes around to the right."
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 10.06,
-        "Y": -7.16,
-        "Z": 42.59
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 2.5,
+        "Y": -5.22,
+        "Z": 8.54
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Conditions": [
+        {
+          "$type": "AutoDuty.Data.Classes+PathActionConditionDistance, AutoDuty",
+          "origin": "Player",
+          "originId": 0,
+          "originLoc": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "target": "Location",
+          "targetId": 0,
+          "targetLoc": {
+            "X": 0.0,
+            "Y": 5.57,
+            "Z": -18.11
+          },
+          "operatorValue": ">=",
+          "distance": 22.0
+        }
+      ],
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 0.12,
-        "Y": -7.19,
-        "Z": 42.77
+      "Tag": "None",
+      "Name": "MoveTo",
+      "Position": {
+        "X": 0.86,
+        "Y": -3.8050988,
+        "Z": 0.5299241
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 0.02,
-        "Y": -7.71,
-        "Z": 23.55
-      },
-      "arguments": [
-        ""
+      "Conditions": [
+        {
+          "$type": "AutoDuty.Data.Classes+PathActionConditionDistance, AutoDuty",
+          "origin": "Player",
+          "originId": 0,
+          "originLoc": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "target": "Location",
+          "targetId": 0,
+          "targetLoc": {
+            "X": 0.0,
+            "Y": 5.57,
+            "Z": -18.11
+          },
+          "operatorValue": ">=",
+          "distance": 22.0
+        }
       ],
-      "note": ""
+      "Note": ""
     },
     {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -6.2,
-        "Y": -6.12,
-        "Z": 13.66
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -7.82,
-        "Y": -4.94,
-        "Z": 6.94
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 0.1,
-        "Y": -3.73,
-        "Z": 0.12
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 6.11,
-        "Y": -3.19,
-        "Z": -2.96
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 6.19,
-        "Y": 5.49,
-        "Z": -17.66
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 0.18,
-        "Y": 5.61,
-        "Z": -18.33
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": 0.41,
-        "Y": 8,
-        "Z": -45.34
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
-        "X": 0.16,
-        "Y": 8,
-        "Z": -53.36
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "MoveTo",
-      "position": {
-        "X": -0.13,
-        "Y": 11.87,
-        "Z": -109
-      },
-      "arguments": [
-        ""
-      ],
-      "note": ""
-    },
-    {
-      "tag": "None",
-      "name": "Boss",
-      "position": {
+      "Tag": "None",
+      "Name": "Boss",
+      "Position": {
         "X": -0.04,
         "Y": -23.9,
         "Z": -161.8
       },
-      "arguments": [
+      "Arguments": [
         ""
       ],
-      "note": ""
+      "Conditions": [],
+      "Note": ""
     }
   ],
-  "meta": {
-    "createdAt": 156,
-    "changelog": [
-      {
-        "version": 169,
-        "change": "Converted to JSON Structure with Tags"
-      },
-      {
-        "version": 182,
-        "change": ""
-      },
-      {
-        "version": 189,
-        "change": "Adjusted tags to string values"
-      }
-    ],
-    "notes": []
+  "Meta": {
+    "CreatedAt": 284,
+    "Changelog": [],
+    "Notes": []
   }
 }
